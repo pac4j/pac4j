@@ -1,0 +1,21 @@
+h2. What is scribe-up ?
+
+Scribe UP (for Scribe User Profile) is a web-oriented extension for the Scribe:http://wiki.github.com/fernandezpablo85/scribe-java library. It retrieves the profile of a user after this user has been authenticated by an OAuth provider.
+
+h2. OAuth providers supported
+
+* Facebook
+
+* Yahoo
+
+* Google
+
+* Twitter
+
+* LinkedIn
+
+* GitHub
+
+h2. Contact
+
+Email : leleuj at gmail.com
