@@ -15,9 +15,8 @@
  */
 package org.scribe.builder.api;
 
-import static org.scribe.utils.URLUtils.formURLEncode;
-
 import org.scribe.model.OAuthConfig;
+import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
 
 /**
@@ -42,10 +41,10 @@ public class GitHubApi extends DefaultApi20 {
         
         // Append scope if present
         if (config.hasScope()) {
-            return String.format(SCOPED_AUTHORIZE_URL, config.getApiKey(), formURLEncode(config.getCallback()),
-                                 formURLEncode(config.getScope()));
+            return String.format(SCOPED_AUTHORIZE_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
+                                 OAuthEncoder.encode(config.getScope()));
         } else {
-            return String.format(AUTHORIZE_URL, config.getApiKey(), formURLEncode(config.getCallback()));
+            return String.format(AUTHORIZE_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
 }
