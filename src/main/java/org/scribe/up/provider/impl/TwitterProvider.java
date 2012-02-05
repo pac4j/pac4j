@@ -24,7 +24,7 @@ import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
- * This class is the Twitter provider to authenticate user in Twitter.
+ * This class is the Twitter provider to authenticate user in Twitter. It extends the <b>BaseOAuth10Provider</b> class.
  * 
  * @author Jérôme Leleu
  * @since 1.0.0

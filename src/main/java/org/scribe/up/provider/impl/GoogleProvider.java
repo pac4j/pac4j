@@ -26,7 +26,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
 /**
- * This class is the Google provider to authenticate user in Google.
+ * This class is the Google provider to authenticate user in Google. It extends the <b>BaseOAuth10Provider</b> class.
  * 
  * @author Jérôme Leleu
  * @since 1.0.0

@@ -22,7 +22,7 @@ import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
- * This class is the LinkedIn provider to authenticate user in LinkedIn.
+ * This class is the LinkedIn provider to authenticate user in LinkedIn. It extends the <b>BaseOAuth10Provider</b> class.
  * 
  * @author Jérôme Leleu
  * @since 1.0.0

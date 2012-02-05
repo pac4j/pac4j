@@ -24,7 +24,7 @@ import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
- * This class is the GitHub provider to authenticate user in GitHub.
+ * This class is the GitHub provider to authenticate user in GitHub. It extends the <b>BaseOAuth20Provider</b> class.
  * 
  * @author Jérôme Leleu
  * @since 1.0.0

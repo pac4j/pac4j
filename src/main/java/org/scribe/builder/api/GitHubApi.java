@@ -20,7 +20,7 @@ import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
 
 /**
- * This class represents the OAuth API implementation for GitHub. Should be implemented natively in Scribe in further release.
+ * This class represents the OAuth API implementation for GitHub. It should be implemented natively in Scribe in further release.
  * 
  * @author Jérôme Leleu
  */
