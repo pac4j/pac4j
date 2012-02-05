@@ -22,6 +22,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.session.UserSession;
+import org.scribe.utils.OAuthEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         String[] tokens = parameters.get(OAUTH_TOKEN);
         String[] verifiers = parameters.get(OAUTH_VERIFIER);
         if (tokens != null && tokens.length == 1 && verifiers != null && verifiers.length == 1) {
-            return new OAuthCredential(tokens[0], verifiers[0]);
+            return new OAuthCredential(OAuthEncoder.decode(tokens[0]), OAuthEncoder.decode(verifiers[0]));
         }
         return null;
     }
