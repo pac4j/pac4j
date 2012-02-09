@@ -15,8 +15,12 @@
  */
 package org.scribe.up.profile;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +34,15 @@ public class UserProfileHelper {
     
     private static final Logger logger = LoggerFactory.getLogger(UserProfileHelper.class);
     
+    private static ObjectMapper mapper = new ObjectMapper();
+    
     /**
      * Return the text between the two strings specified. Return null if no string is found.
      * 
      * @param text
      * @param s1
      * @param s2
-     * @return
+     * @return the text between the two strings specified in input
      */
     public static String extractString(String text, String s1, String s2) {
         if (text != null && s1 != null && s2 != null) {
@@ -56,46 +62,71 @@ public class UserProfileHelper {
     }
     
     /**
-     * Add identifier extracted from JSON response to user profile. Fail without exception.
+     * Add identifier extracted from JSON response to user profile.
      * 
      * @param userProfile
      * @param json
      * @param attributeName
      */
-    public static void addIdentifier(UserProfile userProfile, JSONObject json, String attributeName) {
-        try {
-            String userId = null;
-            Object id = json.get(attributeName);
-            if (id instanceof Integer) {
-                userId = "" + id;
-            } else {
-                userId = (String) id;
+    public static void addIdentifier(UserProfile userProfile, JsonNode json, String attributeName) {
+        String userId = null;
+        if (json != null) {
+            JsonNode id = json.get(attributeName);
+            if (id != null && !id.isMissingNode()) {
+                if (id.isNumber()) {
+                    userId = id.getNumberValue().toString();
+                } else if (id.isTextual()) {
+                    userId = id.getTextValue();
+                }
+                logger.debug("userId : {}", userId);
+                userProfile.setId(userId);
             }
-            logger.debug("userId : {}", userId);
-            userProfile.setId(userId);
-        } catch (JSONException e) {
-            logger.warn("JSON exception", e);
-        } catch (RuntimeException e) {
-            logger.warn("Runtime exception", e);
         }
     }
     
     /**
-     * Add attribute extracted from JSON response to user profile. Fail without exception.
+     * Add attribute extracted from JSON response to user profile.
      * 
      * @param userProfile
      * @param json
      * @param attributeName
      */
-    public static void addAttribute(UserProfile userProfile, JSONObject json, String attributeName) {
-        try {
-            Object value = json.get(attributeName);
-            logger.debug("key : {} / value : {}", attributeName, value);
-            userProfile.addAttribute(attributeName, value);
-        } catch (JSONException e) {
-            logger.warn("JSON exception", e);
-        } catch (RuntimeException e) {
-            logger.warn("Runtime exception", e);
+    public static void addAttribute(UserProfile userProfile, JsonNode json, String attributeName) {
+        if (json != null) {
+            JsonNode value = json.get(attributeName);
+            if (value != null && !value.isMissingNode()) {
+                Object object = null;
+                if (value.isNumber()) {
+                    object = value.getNumberValue();
+                } else if (value.isBoolean()) {
+                    object = value.getBooleanValue();
+                } else if (value.isTextual()) {
+                    object = value.getTextValue();
+                }
+                if (object != null) {
+                    logger.debug("key : {} / value : {}", attributeName, object);
+                    userProfile.addAttribute(attributeName, object);
+                }
+            }
         }
+    }
+    
+    /**
+     * Return the first node of a JSON response.
+     * 
+     * @param text
+     * @return the first node of the JSON response or null if exception is thrown
+     */
+    public static JsonNode getFirstNode(String text) {
+        try {
+            return mapper.readValue(text, JsonNode.class);
+        } catch (JsonParseException e) {
+            logger.warn("JsonParseException", e);
+        } catch (JsonMappingException e) {
+            logger.warn("JsonMappingException", e);
+        } catch (IOException e) {
+            logger.warn("IOException", e);
+        }
+        return null;
     }
 }

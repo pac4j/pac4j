@@ -15,8 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GitHubApi;
 import org.scribe.up.profile.UserProfile;
@@ -46,8 +45,8 @@ public class GitHubProvider extends BaseOAuth20Provider {
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
         try {
-            JSONObject jsonBody = new JSONObject(body);
-            JSONObject json = (JSONObject) jsonBody.get("user");
+            JsonNode json = UserProfileHelper.getFirstNode(body);
+            json = json.get("user");
             UserProfileHelper.addIdentifier(userProfile, json, "id");
             UserProfileHelper.addAttribute(userProfile, json, "gravatar_id");
             UserProfileHelper.addAttribute(userProfile, json, "company");
@@ -68,8 +67,8 @@ public class GitHubProvider extends BaseOAuth20Provider {
             UserProfileHelper.addAttribute(userProfile, json, "followers_count");
             UserProfileHelper.addAttribute(userProfile, json, "login");
             UserProfileHelper.addAttribute(userProfile, json, "email");
-        } catch (JSONException e) {
-            logger.error("JSON exception", e);
+        } catch (RuntimeException e) {
+            logger.error("RuntimeException", e);
         }
         return userProfile;
     }

@@ -15,8 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
 import org.scribe.up.profile.UserProfile;
@@ -46,7 +45,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
         try {
-            JSONObject json = new JSONObject(body);
+            JsonNode json = UserProfileHelper.getFirstNode(body);
             UserProfileHelper.addIdentifier(userProfile, json, "id");
             UserProfileHelper.addAttribute(userProfile, json, "name");
             UserProfileHelper.addAttribute(userProfile, json, "first_name");
@@ -58,8 +57,8 @@ public class FacebookProvider extends BaseOAuth20Provider {
             UserProfileHelper.addAttribute(userProfile, json, "locale");
             UserProfileHelper.addAttribute(userProfile, json, "verified");
             UserProfileHelper.addAttribute(userProfile, json, "updated_time");
-        } catch (JSONException e) {
-            logger.error("JSON exception", e);
+        } catch (RuntimeException e) {
+            logger.error("RuntimeException", e);
         }
         return userProfile;
     }

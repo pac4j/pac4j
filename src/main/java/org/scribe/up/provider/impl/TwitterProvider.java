@@ -15,8 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.up.profile.UserProfile;
@@ -46,7 +45,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
         try {
-            JSONObject json = new JSONObject(body);
+            JsonNode json = UserProfileHelper.getFirstNode(body);
             UserProfileHelper.addIdentifier(userProfile, json, "id_str");
             UserProfileHelper.addAttribute(userProfile, json, "lang");
             UserProfileHelper.addAttribute(userProfile, json, "profile_background_tile");
@@ -84,8 +83,8 @@ public class TwitterProvider extends BaseOAuth10Provider {
             UserProfileHelper.addAttribute(userProfile, json, "profile_image_url_https");
             UserProfileHelper.addAttribute(userProfile, json, "profile_background_color");
             UserProfileHelper.addAttribute(userProfile, json, "url");
-        } catch (JSONException e) {
-            logger.error("JSON exception", e);
+        } catch (RuntimeException e) {
+            logger.error("RuntimeException", e);
         }
         return userProfile;
     }

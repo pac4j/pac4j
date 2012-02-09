@@ -73,7 +73,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     /**
      * Retrieve the url of the profile of the authenticated user for this provider.
      * 
-     * @return
+     * @return the url of the user profile given by the provider
      */
     protected abstract String getProfileUrl();
     
@@ -82,7 +82,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      * 
      * @param accessToken
      * @param profileUrl
-     * @return
+     * @return the user profile response
      */
     protected String sendRequestForProfile(Token accessToken, String profileUrl) {
         logger.debug("accessToken : {} / profileUrl : {}", accessToken, profileUrl);
@@ -107,7 +107,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      * Extract the user profile from the response (JSON, XML...) of the profile url.
      * 
      * @param body
-     * @return
+     * @return the user profile object
      */
     protected abstract UserProfile extractUserProfile(String body);
     

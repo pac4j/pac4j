@@ -15,8 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
@@ -60,18 +59,18 @@ public class GoogleProvider extends BaseOAuth10Provider {
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
         try {
-            JSONObject jsonObject = new JSONObject(body);
-            JSONObject json = (JSONObject) jsonObject.get("entry");
+            JsonNode json = UserProfileHelper.getFirstNode(body);
+            json = json.get("entry");
             UserProfileHelper.addIdentifier(userProfile, json, "id");
             UserProfileHelper.addAttribute(userProfile, json, "profileUrl");
             UserProfileHelper.addAttribute(userProfile, json, "isViewer");
             UserProfileHelper.addAttribute(userProfile, json, "displayName");
-            json = (JSONObject) json.get("name");
+            json = json.get("name");
             UserProfileHelper.addAttribute(userProfile, json, "formatted");
             UserProfileHelper.addAttribute(userProfile, json, "familyName");
             UserProfileHelper.addAttribute(userProfile, json, "givenName");
-        } catch (JSONException e) {
-            logger.error("JSON exception", e);
+        } catch (RuntimeException e) {
+            logger.error("RuntimeException", e);
         }
         return userProfile;
     }

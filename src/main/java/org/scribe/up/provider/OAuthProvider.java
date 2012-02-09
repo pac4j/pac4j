@@ -49,7 +49,7 @@ public interface OAuthProvider {
      * Get the authorization url.
      * 
      * @param session
-     * @return
+     * @return the authorization url
      */
     public String getAuthorizationUrl(UserSession session);
     
@@ -58,7 +58,7 @@ public interface OAuthProvider {
      * 
      * @param session
      * @param credential
-     * @return
+     * @return the access token
      */
     public Token getAccessToken(UserSession session, OAuthCredential credential);
     
@@ -66,15 +66,15 @@ public interface OAuthProvider {
      * Retrieve the user profile from the access token.
      * 
      * @param accessToken
-     * @return
+     * @return the user profile object
      */
     public UserProfile getUserProfile(Token accessToken);
     
     /**
-     * Extract the OAuth credential from given parameters. Return null if no credential is found.
+     * Extract the OAuth credential from given parameters.
      * 
      * @param parameters
-     * @return
+     * @return the OAuth credential or null if no credential is found.
      */
     public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters);
 }

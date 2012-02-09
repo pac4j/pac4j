@@ -15,8 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
@@ -65,8 +64,8 @@ public class YahooProvider extends BaseOAuth10Provider {
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
         try {
-            JSONObject jsonBody = new JSONObject(body);
-            JSONObject json = jsonBody.getJSONObject("profile");
+            JsonNode json = UserProfileHelper.getFirstNode(body);
+            json = json.get("profile");
             UserProfileHelper.addIdentifier(userProfile, json, "guid");
             UserProfileHelper.addAttribute(userProfile, json, "uri");
             UserProfileHelper.addAttribute(userProfile, json, "birthdate");
@@ -81,8 +80,8 @@ public class YahooProvider extends BaseOAuth10Provider {
             UserProfileHelper.addAttribute(userProfile, json, "timeZone");
             UserProfileHelper.addAttribute(userProfile, json, "updated");
             UserProfileHelper.addAttribute(userProfile, json, "isConnected");
-        } catch (JSONException e) {
-            logger.error("JSON exception", e);
+        } catch (RuntimeException e) {
+            logger.error("RuntimeException", e);
         }
         return userProfile;
     }
