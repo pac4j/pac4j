@@ -15,12 +15,7 @@
  */
 package org.scribe.up.test.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ResourceBundle;
 
 /**
  * This class provides private data like keys, secrets, logins and passwords. All these data are read from a properties file, defined by a
@@ -31,19 +26,9 @@ import org.slf4j.LoggerFactory;
  */
 public class PrivateData {
     
-    private static final Logger logger = LoggerFactory.getLogger(PrivateData.class);
-    
-    private static Properties properties = new Properties();
-    
-    static {
-        try {
-            properties.load(new FileInputStream(System.getProperty("scribe-up.properties")));
-        } catch (IOException e) {
-            logger.warn("Cannot load properties : ", e);
-        }
-    }
+    private static ResourceBundle properties = ResourceBundle.getBundle("scribe-up");
     
     public static String get(String key) {
-        return properties.getProperty(key);
+        return properties.getString(key);
     }
 }

@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.LinkedInProvider;
-import org.scribe.up.test.util.FakeServer;
 import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
@@ -46,8 +45,6 @@ public class TestLinkedInProvider extends TestCase {
     private static final Logger logger = LoggerFactory.getLogger(TestLinkedInProvider.class);
     
     public void testProvider() throws Exception {
-        FakeServer.start();
-        
         // init provider
         LinkedInProvider linkedinProvider = new LinkedInProvider();
         linkedinProvider.setKey(PrivateData.get("linkedin.key"));

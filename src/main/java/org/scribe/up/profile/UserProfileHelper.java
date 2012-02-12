@@ -72,7 +72,7 @@ public class UserProfileHelper {
         String userId = null;
         if (json != null) {
             JsonNode id = json.get(attributeName);
-            if (id != null && !id.isMissingNode()) {
+            if (id != null) {
                 if (id.isNumber()) {
                     userId = id.getNumberValue().toString();
                 } else if (id.isTextual()) {
@@ -94,7 +94,7 @@ public class UserProfileHelper {
     public static void addAttribute(UserProfile userProfile, JsonNode json, String attributeName) {
         if (json != null) {
             JsonNode value = json.get(attributeName);
-            if (value != null && !value.isMissingNode()) {
+            if (value != null) {
                 Object object = null;
                 if (value.isNumber()) {
                     object = value.getNumberValue();
@@ -103,10 +103,8 @@ public class UserProfileHelper {
                 } else if (value.isTextual()) {
                     object = value.getTextValue();
                 }
-                if (object != null) {
-                    logger.debug("key : {} / value : {}", attributeName, object);
-                    userProfile.addAttribute(attributeName, object);
-                }
+                logger.debug("key : {} / value : {}", attributeName, object);
+                userProfile.addAttribute(attributeName, object);
             }
         }
     }

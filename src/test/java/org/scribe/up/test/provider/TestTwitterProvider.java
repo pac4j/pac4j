@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.TwitterProvider;
-import org.scribe.up.test.util.FakeServer;
 import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
@@ -46,8 +45,6 @@ public class TestTwitterProvider extends TestCase {
     private static final Logger logger = LoggerFactory.getLogger(TestTwitterProvider.class);
     
     public void testProvider() throws Exception {
-        FakeServer.start();
-        
         // init provider
         TwitterProvider twitterProvider = new TwitterProvider();
         twitterProvider.setKey(PrivateData.get("twitter.key"));
