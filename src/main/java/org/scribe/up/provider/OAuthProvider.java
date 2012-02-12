@@ -46,6 +46,13 @@ public interface OAuthProvider {
     public String getName();
     
     /**
+     * Get the type of the provider.
+     * 
+     * @return
+     */
+    public String getType();
+    
+    /**
      * Get the authorization url.
      * 
      * @param session

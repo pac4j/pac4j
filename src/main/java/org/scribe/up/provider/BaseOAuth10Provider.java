@@ -76,7 +76,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         String[] tokens = parameters.get(OAUTH_TOKEN);
         String[] verifiers = parameters.get(OAUTH_VERIFIER);
         if (tokens != null && tokens.length == 1 && verifiers != null && verifiers.length == 1) {
-            return new OAuthCredential(OAuthEncoder.decode(tokens[0]), OAuthEncoder.decode(verifiers[0]));
+            return new OAuthCredential(OAuthEncoder.decode(tokens[0]), OAuthEncoder.decode(verifiers[0]), getType());
         }
         return null;
     }

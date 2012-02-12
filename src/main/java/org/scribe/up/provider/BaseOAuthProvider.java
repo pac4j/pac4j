@@ -129,10 +129,14 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     public String getName() {
         if (name == null || "".equals(name)) {
-            return this.getClass().getName();
+            return getType();
         } else {
             return name;
         }
+    }
+    
+    public String getType() {
+        return this.getClass().getName();
     }
     
     public String getKey() {

@@ -16,20 +16,23 @@
 package org.scribe.up.credential;
 
 /**
- * This class represents an OAuth credential : a token and a verifier.
+ * This class represents an OAuth credential : a token and a verifier associated to a provider type.
  * 
  * @author Jérôme Leleu
  * @since 1.0.0
  */
 public class OAuthCredential {
     
-    private String token;
+    protected String token;
     
-    private String verifier;
+    protected String verifier;
     
-    public OAuthCredential(String token, String verifier) {
+    protected String providerType;
+    
+    public OAuthCredential(String token, String verifier, String providerType) {
         this.token = token;
         this.verifier = verifier;
+        this.providerType = providerType;
     }
     
     public String getToken() {
@@ -40,8 +43,12 @@ public class OAuthCredential {
         return verifier;
     }
     
+    public String getProviderType() {
+        return providerType;
+    }
+    
     @Override
     public String toString() {
-        return "[token:" + token + ",verifier:" + verifier + "]";
+        return "[token:" + token + ",verifier:" + verifier + ",providerType:" + providerType + "]";
     }
 }
