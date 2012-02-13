@@ -44,7 +44,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in session
-        session.setAttribute(getName() + "#" + REQUEST_TOKEN, requestToken);
+        session.setAttribute(getType() + "#" + REQUEST_TOKEN, requestToken);
         String authorizationUrl = service.getAuthorizationUrl(requestToken);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
@@ -56,7 +56,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         logger.debug("token : {}", token);
         logger.debug("verifier : {}", verifier);
         // get tokenRequest from session
-        Token tokenRequest = (Token) session.getAttribute(getName() + "#" + REQUEST_TOKEN);
+        Token tokenRequest = (Token) session.getAttribute(getType() + "#" + REQUEST_TOKEN);
         logger.debug("tokenRequest : {}", tokenRequest);
         if (tokenRequest == null) {
             throw new OAuthException("Token request expired");

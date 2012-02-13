@@ -50,7 +50,6 @@ public class TestGoogleProvider extends TestCase {
         googleProvider.setKey(PrivateData.get("google.key"));
         googleProvider.setSecret(PrivateData.get("google.secret"));
         googleProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        googleProvider.setName("testGoogle");
         googleProvider.init();
         
         // authorization url

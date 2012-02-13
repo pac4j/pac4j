@@ -50,7 +50,6 @@ public class TestLinkedInProvider extends TestCase {
         linkedinProvider.setKey(PrivateData.get("linkedin.key"));
         linkedinProvider.setSecret(PrivateData.get("linkedin.secret"));
         linkedinProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        linkedinProvider.setName("testLinkedIn");
         linkedinProvider.init();
         
         // authorization url

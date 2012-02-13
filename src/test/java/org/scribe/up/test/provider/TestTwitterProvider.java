@@ -50,7 +50,6 @@ public class TestTwitterProvider extends TestCase {
         twitterProvider.setKey(PrivateData.get("twitter.key"));
         twitterProvider.setSecret(PrivateData.get("twitter.secret"));
         twitterProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        twitterProvider.setName("testTwitter");
         twitterProvider.init();
         
         // authorization url

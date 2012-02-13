@@ -17,7 +17,7 @@ package org.scribe.up.provider.impl;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.GitHubApi;
+import org.scribe.up.builder.api.GitHubApi;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth20Provider;

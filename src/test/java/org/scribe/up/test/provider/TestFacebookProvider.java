@@ -50,7 +50,6 @@ public class TestFacebookProvider extends TestCase {
         facebookProvider.setKey(PrivateData.get("facebook.key"));
         facebookProvider.setSecret(PrivateData.get("facebook.secret"));
         facebookProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        facebookProvider.setName("testFacebook");
         facebookProvider.init();
         
         // authorization url

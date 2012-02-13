@@ -46,8 +46,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     protected String callbackUrl;
     
-    protected String name;
-    
     private boolean initialized = false;
     
     public synchronized void init() {
@@ -121,18 +119,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public String getName() {
-        if (name == null || "".equals(name)) {
-            return getType();
-        } else {
-            return name;
-        }
     }
     
     public String getType() {

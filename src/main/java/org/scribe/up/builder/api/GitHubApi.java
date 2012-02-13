@@ -13,8 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.scribe.up.builder.api;
 
+import org.scribe.builder.api.DefaultApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;

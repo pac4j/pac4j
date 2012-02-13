@@ -50,7 +50,6 @@ public class TestYahooProvider extends TestCase {
         yahooProvider.setKey(PrivateData.get("yahoo.key"));
         yahooProvider.setSecret(PrivateData.get("yahoo.secret"));
         yahooProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        yahooProvider.setName("testYahoo");
         yahooProvider.init();
         
         // authorization url

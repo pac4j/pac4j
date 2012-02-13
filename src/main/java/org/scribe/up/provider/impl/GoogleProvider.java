@@ -43,7 +43,7 @@ public class GoogleProvider extends BaseOAuth10Provider {
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in session
-        session.setAttribute(getName() + "#" + REQUEST_TOKEN, requestToken);
+        session.setAttribute(getType() + "#" + REQUEST_TOKEN, requestToken);
         String authorizationUrl = "https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token="
                                   + requestToken.getToken();
         logger.debug("authorizationUrl : {}", authorizationUrl);

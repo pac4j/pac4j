@@ -50,7 +50,6 @@ public class TestGitHubProvider extends TestCase {
         githubProvider.setKey(PrivateData.get("github.key"));
         githubProvider.setSecret(PrivateData.get("github.secret"));
         githubProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        githubProvider.setName("testGitHub");
         githubProvider.init();
         
         // authorization url
