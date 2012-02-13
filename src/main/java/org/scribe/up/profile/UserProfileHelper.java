@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfileHelper {
     
-    private static final Logger logger = LoggerFactory.getLogger(UserProfileHelper.class);
+    protected static final Logger logger = LoggerFactory.getLogger(UserProfileHelper.class);
     
-    private static ObjectMapper mapper = new ObjectMapper();
+    protected ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Return the text between the two strings specified. Return null if no string is found.
@@ -44,7 +44,7 @@ public class UserProfileHelper {
      * @param s2
      * @return the text between the two strings specified in input
      */
-    public static String extractString(String text, String s1, String s2) {
+    public String substringBetween(String text, String s1, String s2) {
         if (text != null && s1 != null && s2 != null) {
             int begin = text.indexOf(s1);
             if (begin >= 0) {
@@ -62,13 +62,13 @@ public class UserProfileHelper {
     }
     
     /**
-     * Add identifier extracted from JSON response to user profile.
+     * Add identifier extracted from JSON response to the user profile.
      * 
      * @param userProfile
      * @param json
      * @param attributeName
      */
-    public static void addIdentifier(UserProfile userProfile, JsonNode json, String attributeName) {
+    public void addIdentifier(UserProfile userProfile, JsonNode json, String attributeName) {
         String userId = null;
         if (json != null) {
             JsonNode id = json.get(attributeName);
@@ -78,35 +78,92 @@ public class UserProfileHelper {
                 } else if (id.isTextual()) {
                     userId = id.getTextValue();
                 }
-                logger.debug("userId : {}", userId);
-                userProfile.setId(userId);
+                addIdentifier(userProfile, userId);
             }
         }
     }
     
     /**
-     * Add attribute extracted from JSON response to user profile.
+     * Add identifier to the user profile.
+     * 
+     * @param userProfile
+     * @param id
+     */
+    public void addIdentifier(UserProfile userProfile, String id) {
+        logger.debug("id : {}", id);
+        userProfile.setId(id);
+    }
+    
+    /**
+     * Add attribute extracted from JSON response to the user profile (without attribute conversion).
      * 
      * @param userProfile
      * @param json
      * @param attributeName
      */
-    public static void addAttribute(UserProfile userProfile, JsonNode json, String attributeName) {
+    public void addAttribute(UserProfile userProfile, JsonNode json, String attributeName) {
+        addAttribute(userProfile, json, attributeName, null);
+    }
+    
+    /**
+     * Add attribute extracted from JSON response to the user profile.
+     * 
+     * @param userProfile
+     * @param json
+     * @param attributeName
+     * @param converter
+     */
+    public void addAttribute(UserProfile userProfile, JsonNode json, String attributeName,
+                             AttributeConverter<Object> converter) {
         if (json != null) {
             JsonNode value = json.get(attributeName);
             if (value != null) {
-                Object object = null;
+                Object attribute = null;
                 if (value.isNumber()) {
-                    object = value.getNumberValue();
+                    attribute = value.getNumberValue();
                 } else if (value.isBoolean()) {
-                    object = value.getBooleanValue();
+                    attribute = value.getBooleanValue();
                 } else if (value.isTextual()) {
-                    object = value.getTextValue();
+                    attribute = value.getTextValue();
                 }
-                logger.debug("key : {} / value : {}", attributeName, object);
-                userProfile.addAttribute(attributeName, object);
+                addAttribute(userProfile, attributeName, attribute, converter);
             }
         }
+    }
+    
+    /**
+     * Add attribute to the user profile (without attribute conversion).
+     * 
+     * @param userProfile
+     * @param attributeName
+     * @param attribute
+     * @param converter
+     */
+    public void addAttribute(UserProfile userProfile, String attributeName, Object attribute) {
+        addAttribute(userProfile, attributeName, attribute, null);
+    }
+    
+    /**
+     * Add attribute to the user profile.
+     * 
+     * @param userProfile
+     * @param attributeName
+     * @param attribute
+     * @param converter
+     */
+    public void addAttribute(UserProfile userProfile, String attributeName, Object attribute,
+                             AttributeConverter<Object> converter) {
+        if (converter != null) {
+            attribute = converter.convert(attribute);
+        }
+        if (attribute == null) {
+            logger.debug("key : {} / attribute : {}", attributeName, attribute);
+        } else {
+            logger.debug("key : {} / attribute : {} / {}", new Object[] {
+                attributeName, attribute, attribute.getClass()
+            });
+        }
+        userProfile.addAttribute(attributeName, attribute);
     }
     
     /**
@@ -115,15 +172,15 @@ public class UserProfileHelper {
      * @param text
      * @return the first node of the JSON response or null if exception is thrown
      */
-    public static JsonNode getFirstNode(String text) {
+    public JsonNode getFirstJsonNode(String text) {
         try {
             return mapper.readValue(text, JsonNode.class);
         } catch (JsonParseException e) {
-            logger.warn("JsonParseException", e);
+            logger.error("JsonParseException", e);
         } catch (JsonMappingException e) {
-            logger.warn("JsonMappingException", e);
+            logger.error("JsonMappingException", e);
         } catch (IOException e) {
-            logger.warn("IOException", e);
+            logger.error("IOException", e);
         }
         return null;
     }

@@ -15,12 +15,17 @@
  */
 package org.scribe.up.provider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
+import org.scribe.up.profile.AttributeConverter;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +50,10 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected String secret;
     
     protected String callbackUrl;
+    
+    protected static UserProfileHelper profileHelper = new UserProfileHelper();
+    
+    protected Map<String, AttributeConverter<Object>> mainAttributes = new HashMap<String, AttributeConverter<Object>>();
     
     private boolean initialized = false;
     

@@ -20,7 +20,6 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
@@ -36,6 +35,9 @@ public class GoogleProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(GoogleApi.class).apiKey(key).apiSecret(secret)
             .scope("http://www-opensocial.googleusercontent.com/api/people/").callback(callbackUrl).build();
+        mainAttributes.put("profileUrl", null);
+        mainAttributes.put("isViewer", null);
+        mainAttributes.put("displayName", null);
     }
     
     @Override
@@ -58,19 +60,21 @@ public class GoogleProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        try {
-            JsonNode json = UserProfileHelper.getFirstNode(body);
+        JsonNode json = profileHelper.getFirstJsonNode(body);
+        if (json != null) {
             json = json.get("entry");
-            UserProfileHelper.addIdentifier(userProfile, json, "id");
-            UserProfileHelper.addAttribute(userProfile, json, "profileUrl");
-            UserProfileHelper.addAttribute(userProfile, json, "isViewer");
-            UserProfileHelper.addAttribute(userProfile, json, "displayName");
-            json = json.get("name");
-            UserProfileHelper.addAttribute(userProfile, json, "formatted");
-            UserProfileHelper.addAttribute(userProfile, json, "familyName");
-            UserProfileHelper.addAttribute(userProfile, json, "givenName");
-        } catch (RuntimeException e) {
-            logger.error("RuntimeException", e);
+            if (json != null) {
+                profileHelper.addIdentifier(userProfile, json, "id");
+                for (String attribute : mainAttributes.keySet()) {
+                    profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                }
+                json = json.get("name");
+                if (json != null) {
+                    profileHelper.addAttribute(userProfile, json, "formatted", null);
+                    profileHelper.addAttribute(userProfile, json, "familyName", null);
+                    profileHelper.addAttribute(userProfile, json, "givenName", null);
+                }
+            }
         }
         return userProfile;
     }

@@ -19,7 +19,6 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
@@ -34,6 +33,19 @@ public class TwitterProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(TwitterApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
+        String[] names = new String[] {
+            "lang", "profile_background_tile", "protected", "listed_count", "geo_enabled",
+            "profile_sidebar_fill_color", "name", "statuses_count", "followers_count", "profile_image_url",
+            "default_profile", "show_all_inline_media", "follow_request_sent", "utc_offset", "created_at",
+            "profile_sidebar_border_color", "description", "following", "notifications",
+            "profile_use_background_image", "time_zone", "friends_count", "screen_name", "contributors_enabled",
+            "verified", "profile_text_color", "default_profile_image", "profile_background_image_url",
+            "profile_background_image_url_https", "favourites_count", "profile_link_color", "location",
+            "is_translator", "profile_image_url_https", "profile_background_color", "url"
+        };
+        for (String name : names) {
+            mainAttributes.put(name, null);
+        }
     }
     
     @Override
@@ -44,47 +56,12 @@ public class TwitterProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        try {
-            JsonNode json = UserProfileHelper.getFirstNode(body);
-            UserProfileHelper.addIdentifier(userProfile, json, "id_str");
-            UserProfileHelper.addAttribute(userProfile, json, "lang");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_background_tile");
-            UserProfileHelper.addAttribute(userProfile, json, "protected");
-            UserProfileHelper.addAttribute(userProfile, json, "listed_count");
-            UserProfileHelper.addAttribute(userProfile, json, "geo_enabled");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_sidebar_fill_color");
-            UserProfileHelper.addAttribute(userProfile, json, "name");
-            UserProfileHelper.addAttribute(userProfile, json, "statuses_count");
-            UserProfileHelper.addAttribute(userProfile, json, "followers_count");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_image_url");
-            UserProfileHelper.addAttribute(userProfile, json, "default_profile");
-            UserProfileHelper.addAttribute(userProfile, json, "show_all_inline_media");
-            UserProfileHelper.addAttribute(userProfile, json, "follow_request_sent");
-            UserProfileHelper.addAttribute(userProfile, json, "utc_offset");
-            UserProfileHelper.addAttribute(userProfile, json, "created_at");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_sidebar_border_color");
-            UserProfileHelper.addAttribute(userProfile, json, "description");
-            UserProfileHelper.addAttribute(userProfile, json, "following");
-            UserProfileHelper.addAttribute(userProfile, json, "notifications");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_use_background_image");
-            UserProfileHelper.addAttribute(userProfile, json, "time_zone");
-            UserProfileHelper.addAttribute(userProfile, json, "friends_count");
-            UserProfileHelper.addAttribute(userProfile, json, "screen_name");
-            UserProfileHelper.addAttribute(userProfile, json, "contributors_enabled");
-            UserProfileHelper.addAttribute(userProfile, json, "verified");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_text_color");
-            UserProfileHelper.addAttribute(userProfile, json, "default_profile_image");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_background_image_url");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_background_image_url_https");
-            UserProfileHelper.addAttribute(userProfile, json, "favourites_count");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_link_color");
-            UserProfileHelper.addAttribute(userProfile, json, "location");
-            UserProfileHelper.addAttribute(userProfile, json, "is_translator");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_image_url_https");
-            UserProfileHelper.addAttribute(userProfile, json, "profile_background_color");
-            UserProfileHelper.addAttribute(userProfile, json, "url");
-        } catch (RuntimeException e) {
-            logger.error("RuntimeException", e);
+        JsonNode json = profileHelper.getFirstJsonNode(body);
+        if (json != null) {
+            profileHelper.addIdentifier(userProfile, json, "id_str");
+            for (String attribute : mainAttributes.keySet()) {
+                profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+            }
         }
         return userProfile;
     }

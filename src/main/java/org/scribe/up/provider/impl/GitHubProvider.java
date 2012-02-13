@@ -19,7 +19,6 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.builder.api.GitHubApi;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
@@ -34,6 +33,14 @@ public class GitHubProvider extends BaseOAuth20Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(GitHubApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .scope("user").build();
+        String[] names = new String[] {
+            "gravatar_id", "company", "name", "created_at", "location", "disk_usage", "collaborators",
+            "public_repo_count", "public_gist_count", "blog", "following_count", "owned_private_repo_count",
+            "private_gist_count", "type", "permission", "total_private_repo_count", "followers_count", "login", "email"
+        };
+        for (String name : names) {
+            mainAttributes.put(name, null);
+        }
     }
     
     @Override
@@ -44,31 +51,15 @@ public class GitHubProvider extends BaseOAuth20Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        try {
-            JsonNode json = UserProfileHelper.getFirstNode(body);
+        JsonNode json = profileHelper.getFirstJsonNode(body);
+        if (json != null) {
             json = json.get("user");
-            UserProfileHelper.addIdentifier(userProfile, json, "id");
-            UserProfileHelper.addAttribute(userProfile, json, "gravatar_id");
-            UserProfileHelper.addAttribute(userProfile, json, "company");
-            UserProfileHelper.addAttribute(userProfile, json, "name");
-            UserProfileHelper.addAttribute(userProfile, json, "created_at");
-            UserProfileHelper.addAttribute(userProfile, json, "location");
-            UserProfileHelper.addAttribute(userProfile, json, "disk_usage");
-            UserProfileHelper.addAttribute(userProfile, json, "collaborators");
-            UserProfileHelper.addAttribute(userProfile, json, "public_repo_count");
-            UserProfileHelper.addAttribute(userProfile, json, "public_gist_count");
-            UserProfileHelper.addAttribute(userProfile, json, "blog");
-            UserProfileHelper.addAttribute(userProfile, json, "following_count");
-            UserProfileHelper.addAttribute(userProfile, json, "owned_private_repo_count");
-            UserProfileHelper.addAttribute(userProfile, json, "private_gist_count");
-            UserProfileHelper.addAttribute(userProfile, json, "type");
-            UserProfileHelper.addAttribute(userProfile, json, "permission");
-            UserProfileHelper.addAttribute(userProfile, json, "total_private_repo_count");
-            UserProfileHelper.addAttribute(userProfile, json, "followers_count");
-            UserProfileHelper.addAttribute(userProfile, json, "login");
-            UserProfileHelper.addAttribute(userProfile, json, "email");
-        } catch (RuntimeException e) {
-            logger.error("RuntimeException", e);
+            if (json != null) {
+                profileHelper.addIdentifier(userProfile, json, "id");
+                for (String attribute : mainAttributes.keySet()) {
+                    profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                }
+            }
         }
         return userProfile;
     }

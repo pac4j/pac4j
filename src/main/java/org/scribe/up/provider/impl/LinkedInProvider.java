@@ -18,7 +18,6 @@ package org.scribe.up.provider.impl;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
@@ -33,6 +32,10 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(LinkedInApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
+        mainAttributes.put("first-name", null);
+        mainAttributes.put("last-name", null);
+        mainAttributes.put("headline", null);
+        mainAttributes.put("url", null);
     }
     
     @Override
@@ -42,21 +45,15 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     
     @Override
     protected UserProfile extractUserProfile(String body) {
-        String firstName = UserProfileHelper.extractString(body, "<first-name>", "</first-name>");
-        String lastName = UserProfileHelper.extractString(body, "<last-name>", "</last-name>");
-        String headline = UserProfileHelper.extractString(body, "<headline>", "</headline>");
-        String url = UserProfileHelper.extractString(body, "<url>", "</url>");
-        String id = UserProfileHelper.extractString(url, "&amp;key=", "&amp;authToken=");
-        logger.debug("id : {}", id);
-        logger.debug("firstName : {}", firstName);
-        logger.debug("lastName : {}", lastName);
-        logger.debug("headline : {}", headline);
-        logger.debug("url : {}", url);
-        UserProfile userProfile = new UserProfile(id);
-        userProfile.addAttribute("firstName", firstName);
-        userProfile.addAttribute("lastName", lastName);
-        userProfile.addAttribute("headline", headline);
-        userProfile.addAttribute("url", url);
+        UserProfile userProfile = new UserProfile();
+        for (String attribute : mainAttributes.keySet()) {
+            String value = profileHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
+            profileHelper.addAttribute(userProfile, attribute, value, mainAttributes.get(attribute));
+            if ("url".equals(attribute)) {
+                String id = profileHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
+                profileHelper.addIdentifier(userProfile, id);
+            }
+        }
         return userProfile;
     }
 }

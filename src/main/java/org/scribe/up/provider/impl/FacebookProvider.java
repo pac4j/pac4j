@@ -19,7 +19,6 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
@@ -34,6 +33,13 @@ public class FacebookProvider extends BaseOAuth20Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
+        String[] names = new String[] {
+            "name", "first_name", "last_name", "link", "gender", "email", "timezone", "locale", "verified",
+            "updated_time"
+        };
+        for (String name : names) {
+            mainAttributes.put(name, null);
+        }
     }
     
     @Override
@@ -44,21 +50,12 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        try {
-            JsonNode json = UserProfileHelper.getFirstNode(body);
-            UserProfileHelper.addIdentifier(userProfile, json, "id");
-            UserProfileHelper.addAttribute(userProfile, json, "name");
-            UserProfileHelper.addAttribute(userProfile, json, "first_name");
-            UserProfileHelper.addAttribute(userProfile, json, "last_name");
-            UserProfileHelper.addAttribute(userProfile, json, "link");
-            UserProfileHelper.addAttribute(userProfile, json, "gender");
-            UserProfileHelper.addAttribute(userProfile, json, "email");
-            UserProfileHelper.addAttribute(userProfile, json, "timezone");
-            UserProfileHelper.addAttribute(userProfile, json, "locale");
-            UserProfileHelper.addAttribute(userProfile, json, "verified");
-            UserProfileHelper.addAttribute(userProfile, json, "updated_time");
-        } catch (RuntimeException e) {
-            logger.error("RuntimeException", e);
+        JsonNode json = profileHelper.getFirstJsonNode(body);
+        if (json != null) {
+            profileHelper.addIdentifier(userProfile, json, "id");
+            for (String attribute : mainAttributes.keySet()) {
+                profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+            }
         }
         return userProfile;
     }

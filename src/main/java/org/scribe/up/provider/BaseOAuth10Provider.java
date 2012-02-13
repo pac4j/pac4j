@@ -36,9 +36,9 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth10Provider.class);
     
-    private static final String OAUTH_TOKEN = "oauth_token";
+    public static final String OAUTH_TOKEN = "oauth_token";
     
-    private static final String OAUTH_VERIFIER = "oauth_verifier";
+    public static final String OAUTH_VERIFIER = "oauth_verifier";
     
     public String getAuthorizationUrl(UserSession session) {
         Token requestToken = service.getRequestToken();
@@ -70,6 +70,15 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         Token accessToken = service.getAccessToken(tokenRequest, providerVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
+    }
+    
+    public OAuthCredential extractCredentialFromMapParameters(Map<String, String> mapParameters) {
+        String token = mapParameters.get(OAUTH_TOKEN);
+        String verifier = mapParameters.get(OAUTH_VERIFIER);
+        if (token != null && verifier != null) {
+            return new OAuthCredential(OAuthEncoder.decode(token), OAuthEncoder.decode(verifier), getType());
+        }
+        return null;
     }
     
     public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {

@@ -35,7 +35,7 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth20Provider.class);
     
-    private static final String OAUTH_CODE = "code";
+    protected static final String OAUTH_CODE = "code";
     
     public String getAuthorizationUrl(UserSession session) {
         // no requestToken for OAuth 2.0 -> no need to save it in session
@@ -52,6 +52,14 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
         Token accessToken = service.getAccessToken(null, providerVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
+    }
+    
+    public OAuthCredential extractCredentialFromMapParameters(Map<String, String> mapParameters) {
+        String verifier = mapParameters.get(OAUTH_CODE);
+        if (verifier != null) {
+            return new OAuthCredential(null, OAuthEncoder.decode(verifier), getType());
+        }
+        return null;
     }
     
     public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {

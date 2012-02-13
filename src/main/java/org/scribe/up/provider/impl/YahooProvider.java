@@ -20,7 +20,6 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
@@ -35,6 +34,13 @@ public class YahooProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(YahooApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
+        String[] names = new String[] {
+            "uri", "birthdate", "created", "familyName", "gender", "givenName", "lang", "memberSince", "nickname",
+            "profileUrl", "timeZone", "updated", "isConnected"
+        };
+        for (String name : names) {
+            mainAttributes.put(name, null);
+        }
     }
     
     @Override
@@ -48,7 +54,7 @@ public class YahooProvider extends BaseOAuth10Provider {
         if (body == null) {
             return null;
         }
-        String guid = UserProfileHelper.extractString(body, "<value>", "</value>");
+        String guid = profileHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         if (guid != null && !"".equals(guid.trim())) {
             body = sendRequestForProfile(accessToken, "http://social.yahooapis.com/v1/user/" + guid
@@ -63,25 +69,15 @@ public class YahooProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        try {
-            JsonNode json = UserProfileHelper.getFirstNode(body);
+        JsonNode json = profileHelper.getFirstJsonNode(body);
+        if (json != null) {
             json = json.get("profile");
-            UserProfileHelper.addIdentifier(userProfile, json, "guid");
-            UserProfileHelper.addAttribute(userProfile, json, "uri");
-            UserProfileHelper.addAttribute(userProfile, json, "birthdate");
-            UserProfileHelper.addAttribute(userProfile, json, "created");
-            UserProfileHelper.addAttribute(userProfile, json, "familyName");
-            UserProfileHelper.addAttribute(userProfile, json, "gender");
-            UserProfileHelper.addAttribute(userProfile, json, "givenName");
-            UserProfileHelper.addAttribute(userProfile, json, "lang");
-            UserProfileHelper.addAttribute(userProfile, json, "memberSince");
-            UserProfileHelper.addAttribute(userProfile, json, "nickname");
-            UserProfileHelper.addAttribute(userProfile, json, "profileUrl");
-            UserProfileHelper.addAttribute(userProfile, json, "timeZone");
-            UserProfileHelper.addAttribute(userProfile, json, "updated");
-            UserProfileHelper.addAttribute(userProfile, json, "isConnected");
-        } catch (RuntimeException e) {
-            logger.error("RuntimeException", e);
+            if (json != null) {
+                profileHelper.addIdentifier(userProfile, json, "guid");
+                for (String attribute : mainAttributes.keySet()) {
+                    profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                }
+            }
         }
         return userProfile;
     }
