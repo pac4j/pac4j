@@ -27,7 +27,7 @@ public interface AttributeConverter<T> {
      * Convert an attribute to a specific type T.
      * 
      * @param attribute
-     * @return
+     * @return the converted attribute
      */
     public T convert(Object attribute);
 }

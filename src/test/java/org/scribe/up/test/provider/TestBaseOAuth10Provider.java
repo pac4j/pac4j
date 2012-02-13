@@ -33,8 +33,6 @@ public class TestBaseOAuth10Provider extends TestCase {
     private BaseOAuth10Provider provider = new YahooProvider();
     
     public void testNoTokenNoVerifier() {
-        Map<String, String> mapParameters = new HashMap<String, String>();
-        assertEquals(null, provider.extractCredentialFromMapParameters(mapParameters));
         Map<String, String[]> parameters = new HashMap<String, String[]>();
         assertEquals(null, provider.extractCredentialFromParameters(parameters));
     }

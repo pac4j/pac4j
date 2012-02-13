@@ -54,14 +54,6 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
         return accessToken;
     }
     
-    public OAuthCredential extractCredentialFromMapParameters(Map<String, String> mapParameters) {
-        String verifier = mapParameters.get(OAUTH_CODE);
-        if (verifier != null) {
-            return new OAuthCredential(null, OAuthEncoder.decode(verifier), getType());
-        }
-        return null;
-    }
-    
     public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
         String[] verifiers = parameters.get(OAUTH_CODE);
         if (verifiers != null && verifiers.length == 1) {

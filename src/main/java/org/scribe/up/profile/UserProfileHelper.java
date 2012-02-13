@@ -137,7 +137,6 @@ public class UserProfileHelper {
      * @param userProfile
      * @param attributeName
      * @param attribute
-     * @param converter
      */
     public void addAttribute(UserProfile userProfile, String attributeName, Object attribute) {
         addAttribute(userProfile, attributeName, attribute, null);

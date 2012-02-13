@@ -73,14 +73,6 @@ public interface OAuthProvider {
     public UserProfile getUserProfile(Token accessToken);
     
     /**
-     * Extract the OAuth credential from given map parameters.
-     * 
-     * @param mapParameters
-     * @return the OAuth credential or null if no credential is found.
-     */
-    public OAuthCredential extractCredentialFromMapParameters(Map<String, String> mapParameters);
-    
-    /**
      * Extract the OAuth credential from given parameters.
      * 
      * @param parameters
