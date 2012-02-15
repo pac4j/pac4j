@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * This class is a default implementation of an OAuth protocol provider based on the Scribe library. It should work for all OAuth providers.
  * In subclasses, some methods are to be implemented / customized for specific needs depending on the provider.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public abstract class BaseOAuthProvider implements OAuthProvider {
@@ -131,7 +131,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     }
     
     public String getType() {
-        return this.getClass().getName();
+        return this.getClass().getSimpleName();
     }
     
     public String getKey() {

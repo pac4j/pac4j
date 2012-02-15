@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import java.util.StringTokenizer;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
- * This class is an helper to get a basic web client and to extract parameters from an url.
+ * This class is an helper to get a basic web client and parameters from an url.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public class WebHelper {
@@ -37,7 +37,7 @@ public class WebHelper {
         return webClient;
     }
     
-    public static Map<String, String[]> extractParametersFromUrl(String url) {
+    public static Map<String, String[]> getParametersFromUrl(String url) {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
         int pos = url.indexOf("?");
         if (pos > 0) {

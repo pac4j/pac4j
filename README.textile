@@ -1,21 +1,24 @@
 h2. What is scribe-up ?
 
 Scribe UP (for Scribe User Profile) is a web-oriented extension for the "Scribe":http://wiki.github.com/fernandezpablo85/scribe-java library. It retrieves the profile of a user after this user has been authenticated by an OAuth provider.
-It's available under the Apache 2 license. "A technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description.
+It's available under the Apache 2 license. Take a look at the "A technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description.
 
 h2. OAuth providers supported
 
 * Facebook
-
+* Github
+* Google
+* LinkedIn
+* Twitter
 * Yahoo
 
-* Google
+h2. Version
 
-* Twitter
+The current version is 1.0.0-SNAPSHOT. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
 
-* LinkedIn
+h2. Testing
 
-* GitHub
+Scribe UP is tested by unit tests and also integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
 
 h2. Contact
 

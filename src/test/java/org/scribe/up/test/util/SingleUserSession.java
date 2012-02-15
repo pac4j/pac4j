@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.scribe.up.session.UserSession;
 /**
  * This class is a single user session provided by a map.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public class SingleUserSession implements UserSession {

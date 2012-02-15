@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import org.scribe.up.session.UserSession;
  * This interface represents a provider using OAuth protocol. It's the main contract of the project. A provider has a type accessible by the
  * <i>getType()</i> method and could be initialized throught the <i>init()</i> method. A provider supports off course the OAuth
  * authentication process through the <i>getAuthorizationUrl(UserSession session)</i> and <i>getAccessToken(UserSession session,
- * OAuthCredential credential)</i> methods, <b>UserSession</b> is the session of the current user. A provider can extract an
- * <b>OAuthCredential</b> from a map of parameters : <i>extractCredentialFromParameters(Map<String, String[]> parameters)</i> method and get
- * a user profile from an OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
+ * OAuthCredential credential)</i> methods, <b>UserSession</b> is the session of the current user. A provider can retrieve an
+ * <b>OAuthCredential</b> from a map of parameters : <i>getCredentialFromParameters(Map<String, String[]> parameters)</i> method and get a
+ * user profile from an OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public interface OAuthProvider {
@@ -73,10 +73,10 @@ public interface OAuthProvider {
     public UserProfile getUserProfile(Token accessToken);
     
     /**
-     * Extract the OAuth credential from given parameters.
+     * Get the OAuth credential from given parameters.
      * 
      * @param parameters
      * @return the OAuth credential or null if no credential is found.
      */
-    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters);
+    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters);
 }

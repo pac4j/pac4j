@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.scribe.up.credential;
 /**
  * This class represents an OAuth credential : a token and a verifier associated to a provider type.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public class OAuthCredential {

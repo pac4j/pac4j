@@ -13,21 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.session;
+
+import javax.servlet.http.HttpSession;
 
 /**
- * This interface is the contract for an attribute converter.
+ * This implementation uses the HTTP session for the user session.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public interface AttributeConverter<T> {
+public class HttpUserSession implements UserSession {
     
-    /**
-     * Convert an attribute to a specific type T.
-     * 
-     * @param attribute
-     * @return the converted attribute
-     */
-    public T convert(Object attribute);
+    protected HttpSession session;
+    
+    public HttpUserSession(HttpSession session) {
+        this.session = session;
+    }
+    
+    public void setAttribute(String key, Object value) {
+        session.setAttribute(key, value);
+    }
+    
+    public Object getAttribute(String key) {
+        return session.getAttribute(key);
+    }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is the common implementation for provider supporting OAuth protocol v1.0.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
@@ -43,7 +43,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
     public String getAuthorizationUrl(UserSession session) {
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
-        // save requestToken in session
+        // save requestToken in user session
         session.setAttribute(getType() + "#" + REQUEST_TOKEN, requestToken);
         String authorizationUrl = service.getAuthorizationUrl(requestToken);
         logger.debug("authorizationUrl : {}", authorizationUrl);
@@ -55,7 +55,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         String verifier = credential.getVerifier();
         logger.debug("token : {}", token);
         logger.debug("verifier : {}", verifier);
-        // get tokenRequest from session
+        // get tokenRequest from user session
         Token tokenRequest = (Token) session.getAttribute(getType() + "#" + REQUEST_TOKEN);
         logger.debug("tokenRequest : {}", tokenRequest);
         if (tokenRequest == null) {
@@ -72,7 +72,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         return accessToken;
     }
     
-    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
+    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters) {
         String[] tokens = parameters.get(OAUTH_TOKEN);
         String[] verifiers = parameters.get(OAUTH_VERIFIER);
         if (tokens != null && tokens.length == 1 && verifiers != null && verifiers.length == 1) {

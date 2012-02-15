@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,17 +28,17 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is the common implementation for provider supporting OAuth protocol v2.0.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth20Provider.class);
     
-    protected static final String OAUTH_CODE = "code";
+    public static final String OAUTH_CODE = "code";
     
     public String getAuthorizationUrl(UserSession session) {
-        // no requestToken for OAuth 2.0 -> no need to save it in session
+        // no requestToken for OAuth 2.0 -> no need to save it in the user session
         String authorizationUrl = service.getAuthorizationUrl(null);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
@@ -48,13 +48,13 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
         String verifier = credential.getVerifier();
         logger.debug("verifier : {}", verifier);
         Verifier providerVerifier = new Verifier(verifier);
-        // no request token saved in session (OAuth v2.0)
+        // no request token saved in user session (OAuth v2.0)
         Token accessToken = service.getAccessToken(null, providerVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
     }
     
-    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
+    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters) {
         String[] verifiers = parameters.get(OAUTH_CODE);
         if (verifiers != null && verifiers.length == 1) {
             return new OAuthCredential(null, OAuthEncoder.decode(verifiers[0]), getType());

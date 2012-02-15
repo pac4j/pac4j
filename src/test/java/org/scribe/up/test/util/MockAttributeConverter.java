@@ -13,21 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.test.util;
+
+import org.scribe.up.profile.AttributeConverter;
 
 /**
- * This interface is the contract for an attribute converter.
+ * This mock has a specific conversion behaviour for test.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public interface AttributeConverter<T> {
+public class MockAttributeConverter implements AttributeConverter<String> {
     
-    /**
-     * Convert an attribute to a specific type T.
-     * 
-     * @param attribute
-     * @return the converted attribute
-     */
-    public T convert(Object attribute);
+    public static final String CONVERTED_VALUE = "convertedValue";
+    
+    public String convert(Object attribute) {
+        return CONVERTED_VALUE;
+    }
 }

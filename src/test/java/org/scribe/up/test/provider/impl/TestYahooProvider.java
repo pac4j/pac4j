@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.provider;
+package org.scribe.up.test.provider.impl;
 
 import junit.framework.TestCase;
 
@@ -37,7 +37,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 /**
  * This class tests the YahooProvider by simulating a complete authentication.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public class TestYahooProvider extends TestCase {
@@ -71,8 +71,8 @@ public class TestYahooProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = yahooProvider.extractCredentialFromParameters(WebHelper
-            .extractParametersFromUrl(callbackUrl));
+        OAuthCredential credential = yahooProvider.getCredentialFromParameters(WebHelper
+            .getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = yahooProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

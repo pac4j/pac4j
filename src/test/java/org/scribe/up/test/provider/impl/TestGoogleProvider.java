@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.provider;
+package org.scribe.up.test.provider.impl;
 
 import junit.framework.TestCase;
 
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.GitHubProvider;
+import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
@@ -35,50 +35,53 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the GitHubProvider by simulating a complete authentication.
+ * This class tests the GoogleProvider by simulating a complete authentication.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestGitHubProvider extends TestCase {
+public class TestGoogleProvider extends TestCase {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestGitHubProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestGoogleProvider.class);
     
     public void testProvider() throws Exception {
         // init provider
-        GitHubProvider githubProvider = new GitHubProvider();
-        githubProvider.setKey(PrivateData.get("github.key"));
-        githubProvider.setSecret(PrivateData.get("github.secret"));
-        githubProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
-        githubProvider.init();
+        GoogleProvider googleProvider = new GoogleProvider();
+        googleProvider.setKey(PrivateData.get("google.key"));
+        googleProvider.setSecret(PrivateData.get("google.secret"));
+        googleProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
+        googleProvider.init();
         
         // authorization url
         SingleUserSession testSession = new SingleUserSession();
-        String authorizationUrl = githubProvider.getAuthorizationUrl(testSession);
+        String authorizationUrl = googleProvider.getAuthorizationUrl(testSession);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         WebClient webClient = WebHelper.newClient();
         HtmlPage loginPage = webClient.getPage(authorizationUrl);
         HtmlForm form = loginPage.getForms().get(0);
-        HtmlTextInput login = form.getInputByName("login");
-        login.setValueAttribute(PrivateData.get("github.login"));
-        HtmlPasswordInput password = form.getInputByName("password");
-        password.setValueAttribute(PrivateData.get("github.password"));
-        HtmlSubmitInput submit = form.getInputByName("commit");
+        HtmlTextInput email = form.getInputByName("Email");
+        email.setValueAttribute(PrivateData.get("google.login"));
+        HtmlPasswordInput passwd = form.getInputByName("Passwd");
+        passwd.setValueAttribute(PrivateData.get("google.password"));
+        HtmlSubmitInput submit = form.getInputByName("signIn");
+        HtmlPage confirmPage = submit.click();
+        form = confirmPage.getForms().get(0);
+        submit = form.getInputByName("allow");
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = githubProvider.extractCredentialFromParameters(WebHelper
-            .extractParametersFromUrl(callbackUrl));
+        OAuthCredential credential = googleProvider.getCredentialFromParameters(WebHelper
+            .getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = githubProvider.getAccessToken(testSession, credential);
+        Token accessToken = googleProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
-        UserProfile userProfile = githubProvider.getUserProfile(accessToken);
+        UserProfile userProfile = googleProvider.getUserProfile(accessToken);
         logger.debug("userProfile : {}", userProfile);
-        assertEquals(PrivateData.get("github.id"), userProfile.getId());
-        assertEquals(PrivateData.get("github.attributeValue1"),
-                     userProfile.getAttributes().get(PrivateData.get("github.attributeName1")));
-        assertEquals(PrivateData.get("github.nbAttributes"), "" + userProfile.getAttributes().size());
+        assertEquals(PrivateData.get("google.id"), userProfile.getId());
+        assertEquals(PrivateData.get("google.attributeValue1"),
+                     userProfile.getAttributes().get(PrivateData.get("google.attributeName1")));
+        assertEquals(PrivateData.get("google.nbAttributes"), "" + userProfile.getAttributes().size());
     }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,20 +20,90 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.impl.YahooProvider;
 
 /**
- * This class tests the credential extraction of the BaseOAuth10Provider.
+ * This class tests the OAuth credential retrieval in the BaseOAuth10Provider.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
+ * @since 1.0.0
  */
 public class TestBaseOAuth10Provider extends TestCase {
     
     private BaseOAuth10Provider provider = new YahooProvider();
     
+    private static final String VERIFIER = "verifier";
+    
+    private static final String VERIFIER2 = "verifier2";
+    
+    private static final String TOKEN = "token";
+    
+    private static final String TOKEN2 = "token2";
+    
     public void testNoTokenNoVerifier() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertEquals(null, provider.extractCredentialFromParameters(parameters));
+        assertEquals(null, provider.getCredentialFromParameters(parameters));
+    }
+    
+    public void testNoToken() {
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        String[] verifiers = new String[] {
+            VERIFIER
+        };
+        parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
+        assertEquals(null, provider.getCredentialFromParameters(parameters));
+    }
+    
+    public void testNoVerifier() {
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        String[] tokens = new String[] {
+            TOKEN
+        };
+        parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
+        assertEquals(null, provider.getCredentialFromParameters(parameters));
+    }
+    
+    public void testOk() {
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        String[] verifiers = new String[] {
+            VERIFIER
+        };
+        String[] tokens = new String[] {
+            TOKEN
+        };
+        parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
+        parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
+        OAuthCredential oauthCredential = provider.getCredentialFromParameters(parameters);
+        assertNotNull(oauthCredential);
+        assertEquals(TOKEN, oauthCredential.getToken());
+        assertEquals(VERIFIER, oauthCredential.getVerifier());
+    }
+    
+    public void testTwoTokens() {
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        String[] verifiers = new String[] {
+            VERIFIER
+        };
+        String[] tokens = new String[] {
+            TOKEN, TOKEN2
+        };
+        parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
+        parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
+        assertEquals(null, provider.getCredentialFromParameters(parameters));
+    }
+    
+    public void testTwoVerifiers() {
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        String[] verifiers = new String[] {
+            VERIFIER, VERIFIER2
+        };
+        String[] tokens = new String[] {
+            TOKEN
+        };
+        parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
+        parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
+        assertEquals(null, provider.getCredentialFromParameters(parameters));
     }
 }

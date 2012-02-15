@@ -13,21 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.test.provider;
+
+import junit.framework.TestCase;
+
+import org.scribe.up.provider.BaseOAuth10Provider;
+import org.scribe.up.provider.impl.YahooProvider;
 
 /**
- * This interface is the contract for an attribute converter.
+ * This class tests the type returned by the BaseOAuthProvider.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public interface AttributeConverter<T> {
+public class TestBaseOAuthProvider extends TestCase {
     
-    /**
-     * Convert an attribute to a specific type T.
-     * 
-     * @param attribute
-     * @return the converted attribute
-     */
-    public T convert(Object attribute);
+    public void testType() {
+        BaseOAuth10Provider provider = new YahooProvider();
+        assertEquals("YahooProvider", provider.getType());
+    }
 }

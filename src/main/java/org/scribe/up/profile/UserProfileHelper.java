@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 Jérôme Leleu
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is an helper with some basic methods to parse profile response or build the user profile.
  * 
- * @author Jérôme Leleu
+ * @author Jerome Leleu
  * @since 1.0.0
  */
 public class UserProfileHelper {
@@ -114,7 +114,7 @@ public class UserProfileHelper {
      * @param converter
      */
     public void addAttribute(UserProfile userProfile, JsonNode json, String attributeName,
-                             AttributeConverter<Object> converter) {
+                             AttributeConverter<? extends Object> converter) {
         if (json != null) {
             JsonNode value = json.get(attributeName);
             if (value != null) {
@@ -151,7 +151,7 @@ public class UserProfileHelper {
      * @param converter
      */
     public void addAttribute(UserProfile userProfile, String attributeName, Object attribute,
-                             AttributeConverter<Object> converter) {
+                             AttributeConverter<? extends Object> converter) {
         if (converter != null) {
             attribute = converter.convert(attribute);
         }
