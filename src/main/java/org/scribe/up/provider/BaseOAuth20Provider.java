@@ -54,11 +54,15 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
         return accessToken;
     }
     
-    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters) {
+    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
         String[] verifiers = parameters.get(OAUTH_CODE);
         if (verifiers != null && verifiers.length == 1) {
-            return new OAuthCredential(null, OAuthEncoder.decode(verifiers[0]), getType());
+            String verifier = OAuthEncoder.decode(verifiers[0]);
+            logger.debug("verifier : {}", verifier);
+            return new OAuthCredential(null, verifier, getType());
+        } else {
+            logger.error("No credential found");
+            return null;
         }
-        return null;
     }
 }

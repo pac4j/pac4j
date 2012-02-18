@@ -72,12 +72,17 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         return accessToken;
     }
     
-    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters) {
+    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
         String[] tokens = parameters.get(OAUTH_TOKEN);
         String[] verifiers = parameters.get(OAUTH_VERIFIER);
         if (tokens != null && tokens.length == 1 && verifiers != null && verifiers.length == 1) {
-            return new OAuthCredential(OAuthEncoder.decode(tokens[0]), OAuthEncoder.decode(verifiers[0]), getType());
+            String token = OAuthEncoder.decode(tokens[0]);
+            String verifier = OAuthEncoder.decode(verifiers[0]);
+            logger.debug("token : {} / verifier : {}", token, verifier);
+            return new OAuthCredential(token, verifier, getType());
+        } else {
+            logger.error("No credential found");
+            return null;
         }
-        return null;
     }
 }

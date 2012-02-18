@@ -23,6 +23,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
+import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.AttributeConverter;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
@@ -42,6 +43,10 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthProvider.class);
     
     protected static final String REQUEST_TOKEN = "requestToken";
+    
+    protected static final String ERROR_REASON = "error_reason";
+    
+    protected static final String ERROR_DESCRIPTION = "error_description";
     
     protected OAuthService service;
     
@@ -117,6 +122,33 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      * @return the user profile object
      */
     protected abstract UserProfile extractUserProfile(String body);
+    
+    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters) {
+        String[] error_reasons = parameters.get(ERROR_REASON);
+        String error_reason = null;
+        String[] error_descriptions = parameters.get(ERROR_DESCRIPTION);
+        String error_description = null;
+        if (error_reasons != null && error_reasons.length > 0) {
+            error_reason = error_reasons[0];
+        }
+        if (error_descriptions != null && error_descriptions.length > 0) {
+            error_description = error_descriptions[0];
+        }
+        if (error_reason != null || error_description != null) {
+            logger.error("Error reason : {} / description : {}", error_reason, error_description);
+            return null;
+        } else {
+            return extractCredentialFromParameters(parameters);
+        }
+    }
+    
+    /**
+     * Get credential from given parameters.
+     * 
+     * @param parameters
+     * @return the OAuth credential or null if no credential is found.
+     */
+    protected abstract OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters);
     
     public void setKey(String key) {
         this.key = key;
