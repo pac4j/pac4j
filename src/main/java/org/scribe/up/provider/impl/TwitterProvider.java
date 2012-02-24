@@ -18,6 +18,7 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
+import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
@@ -33,6 +34,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(TwitterApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
+        // https://dev.twitter.com/docs/api/1/get/account/verify_credentials
         String[] names = new String[] {
             "lang", "profile_background_tile", "protected", "listed_count", "geo_enabled",
             "profile_sidebar_fill_color", "name", "statuses_count", "followers_count", "profile_image_url",
@@ -56,7 +58,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        JsonNode json = profileHelper.getFirstJsonNode(body);
+        JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profileHelper.addIdentifier(userProfile, json, "id_str");
             for (String attribute : mainAttributes.keySet()) {

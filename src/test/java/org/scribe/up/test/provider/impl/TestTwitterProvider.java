@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.TwitterProvider;
-import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
 import org.slf4j.Logger;
@@ -47,9 +46,9 @@ public class TestTwitterProvider extends TestCase {
     public void testProvider() throws Exception {
         // init provider
         TwitterProvider twitterProvider = new TwitterProvider();
-        twitterProvider.setKey(PrivateData.get("twitter.key"));
-        twitterProvider.setSecret(PrivateData.get("twitter.secret"));
-        twitterProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
+        twitterProvider.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
+        twitterProvider.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
+        twitterProvider.setCallbackUrl("http://www.google.com/");
         twitterProvider.init();
         
         // authorization url
@@ -60,9 +59,9 @@ public class TestTwitterProvider extends TestCase {
         HtmlPage loginPage = webClient.getPage(authorizationUrl);
         HtmlForm form = loginPage.getForms().get(0);
         HtmlTextInput sessionUsernameOrEmail = form.getInputByName("session[username_or_email]");
-        sessionUsernameOrEmail.setValueAttribute(PrivateData.get("twitter.login"));
+        sessionUsernameOrEmail.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput sessionPassword = form.getInputByName("session[password]");
-        sessionPassword.setValueAttribute(PrivateData.get("twitter.password"));
+        sessionPassword.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getElementById("allow");
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
@@ -76,9 +75,8 @@ public class TestTwitterProvider extends TestCase {
         // user profile
         UserProfile userProfile = twitterProvider.getUserProfile(accessToken);
         logger.debug("userProfile : {}", userProfile);
-        assertEquals(PrivateData.get("twitter.id"), userProfile.getId());
-        assertEquals(PrivateData.get("twitter.attributeValue1"),
-                     userProfile.getAttributes().get(PrivateData.get("twitter.attributeName1")));
-        assertEquals(PrivateData.get("twitter.nbAttributes"), "" + userProfile.getAttributes().size());
+        assertEquals("488358057", userProfile.getId());
+        assertEquals("test scribeUP", userProfile.getAttributes().get("name"));
+        assertEquals(36, userProfile.getAttributes().size());
     }
 }

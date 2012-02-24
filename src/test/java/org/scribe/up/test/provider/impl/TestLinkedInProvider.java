@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.LinkedInProvider;
-import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
 import org.slf4j.Logger;
@@ -47,9 +46,9 @@ public class TestLinkedInProvider extends TestCase {
     public void testProvider() throws Exception {
         // init provider
         LinkedInProvider linkedinProvider = new LinkedInProvider();
-        linkedinProvider.setKey(PrivateData.get("linkedin.key"));
-        linkedinProvider.setSecret(PrivateData.get("linkedin.secret"));
-        linkedinProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
+        linkedinProvider.setKey("gsqj8dn56ayn");
+        linkedinProvider.setSecret("kUFAZ2oYvwMQ6HFl");
+        linkedinProvider.setCallbackUrl("http://www.google.com/");
         linkedinProvider.init();
         
         // authorization url
@@ -60,9 +59,9 @@ public class TestLinkedInProvider extends TestCase {
         HtmlPage loginPage = webClient.getPage(authorizationUrl);
         HtmlForm form = loginPage.getFormByName("oauthAuthorizeForm");
         HtmlTextInput sessionKey = form.getInputByName("session_key");
-        sessionKey.setValueAttribute(PrivateData.get("linkedin.login"));
+        sessionKey.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput sessionPassword = form.getInputByName("session_password");
-        sessionPassword.setValueAttribute(PrivateData.get("linkedin.password"));
+        sessionPassword.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName("authorize");
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
@@ -76,9 +75,8 @@ public class TestLinkedInProvider extends TestCase {
         // user profile
         UserProfile userProfile = linkedinProvider.getUserProfile(accessToken);
         logger.debug("userProfile : {}", userProfile);
-        assertEquals(PrivateData.get("linkedin.id"), userProfile.getId());
-        assertEquals(PrivateData.get("linkedin.attributeValue1"),
-                     userProfile.getAttributes().get(PrivateData.get("linkedin.attributeName1")));
-        assertEquals(PrivateData.get("linkedin.nbAttributes"), "" + userProfile.getAttributes().size());
+        assertEquals("167439971", userProfile.getId());
+        assertEquals("scribeUp", userProfile.getAttributes().get("last-name"));
+        assertEquals(4, userProfile.getAttributes().size());
     }
 }

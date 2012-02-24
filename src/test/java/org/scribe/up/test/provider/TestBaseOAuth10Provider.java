@@ -44,7 +44,7 @@ public class TestBaseOAuth10Provider extends TestCase {
     
     public void testNoTokenNoVerifier() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
     
     public void testNoToken() {
@@ -53,7 +53,7 @@ public class TestBaseOAuth10Provider extends TestCase {
             VERIFIER
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
     
     public void testNoVerifier() {
@@ -62,7 +62,7 @@ public class TestBaseOAuth10Provider extends TestCase {
             TOKEN
         };
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
     
     public void testOk() {
@@ -91,7 +91,7 @@ public class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
     
     public void testTwoVerifiers() {
@@ -104,6 +104,6 @@ public class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
 }

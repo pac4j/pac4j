@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GitHubProvider;
-import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
 import org.slf4j.Logger;
@@ -47,9 +46,9 @@ public class TestGitHubProvider extends TestCase {
     public void testProvider() throws Exception {
         // init provider
         GitHubProvider githubProvider = new GitHubProvider();
-        githubProvider.setKey(PrivateData.get("github.key"));
-        githubProvider.setSecret(PrivateData.get("github.secret"));
-        githubProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
+        githubProvider.setKey("62374f5573a89a8f9900");
+        githubProvider.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
+        githubProvider.setCallbackUrl("http://www.google.com/");
         githubProvider.init();
         
         // authorization url
@@ -60,9 +59,9 @@ public class TestGitHubProvider extends TestCase {
         HtmlPage loginPage = webClient.getPage(authorizationUrl);
         HtmlForm form = loginPage.getForms().get(0);
         HtmlTextInput login = form.getInputByName("login");
-        login.setValueAttribute(PrivateData.get("github.login"));
+        login.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput password = form.getInputByName("password");
-        password.setValueAttribute(PrivateData.get("github.password"));
+        password.setValueAttribute("testpwdscribeup1");
         HtmlSubmitInput submit = form.getInputByName("commit");
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
@@ -76,9 +75,8 @@ public class TestGitHubProvider extends TestCase {
         // user profile
         UserProfile userProfile = githubProvider.getUserProfile(accessToken);
         logger.debug("userProfile : {}", userProfile);
-        assertEquals(PrivateData.get("github.id"), userProfile.getId());
-        assertEquals(PrivateData.get("github.attributeValue1"),
-                     userProfile.getAttributes().get(PrivateData.get("github.attributeName1")));
-        assertEquals(PrivateData.get("github.nbAttributes"), "" + userProfile.getAttributes().size());
+        assertEquals("1412558", userProfile.getId());
+        assertEquals("testscribeup", userProfile.getAttributes().get("login"));
+        assertEquals(14, userProfile.getAttributes().size());
     }
 }

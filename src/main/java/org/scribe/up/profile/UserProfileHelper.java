@@ -15,12 +15,7 @@
  */
 package org.scribe.up.profile;
 
-import java.io.IOException;
-
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +28,6 @@ import org.slf4j.LoggerFactory;
 public class UserProfileHelper {
     
     protected static final Logger logger = LoggerFactory.getLogger(UserProfileHelper.class);
-    
-    protected ObjectMapper mapper = new ObjectMapper();
     
     /**
      * Return the text between the two strings specified. Return null if no string is found.
@@ -171,16 +164,8 @@ public class UserProfileHelper {
      * @param text
      * @return the first node of the JSON response or null if exception is thrown
      */
+    @Deprecated
     public JsonNode getFirstJsonNode(String text) {
-        try {
-            return mapper.readValue(text, JsonNode.class);
-        } catch (JsonParseException e) {
-            logger.error("JsonParseException", e);
-        } catch (JsonMappingException e) {
-            logger.error("JsonMappingException", e);
-        } catch (IOException e) {
-            logger.error("IOException", e);
-        }
-        return null;
+        return JsonHelper.getFirstNode(text);
     }
 }

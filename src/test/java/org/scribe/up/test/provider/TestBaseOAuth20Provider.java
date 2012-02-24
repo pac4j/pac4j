@@ -40,7 +40,7 @@ public class TestBaseOAuth20Provider extends TestCase {
     
     public void testNoCode() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
     
     public void testOk() {
@@ -60,6 +60,6 @@ public class TestBaseOAuth20Provider extends TestCase {
             CODE, CODE2
         };
         parameters.put(BaseOAuth20Provider.OAUTH_CODE, codes);
-        assertEquals(null, provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredentialFromParameters(parameters));
     }
 }

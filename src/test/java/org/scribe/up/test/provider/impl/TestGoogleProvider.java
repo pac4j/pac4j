@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
-import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
 import org.slf4j.Logger;
@@ -47,9 +46,9 @@ public class TestGoogleProvider extends TestCase {
     public void testProvider() throws Exception {
         // init provider
         GoogleProvider googleProvider = new GoogleProvider();
-        googleProvider.setKey(PrivateData.get("google.key"));
-        googleProvider.setSecret(PrivateData.get("google.secret"));
-        googleProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
+        googleProvider.setKey("anonymous");
+        googleProvider.setSecret("anonymous");
+        googleProvider.setCallbackUrl("http://www.google.com/");
         googleProvider.init();
         
         // authorization url
@@ -60,9 +59,9 @@ public class TestGoogleProvider extends TestCase {
         HtmlPage loginPage = webClient.getPage(authorizationUrl);
         HtmlForm form = loginPage.getForms().get(0);
         HtmlTextInput email = form.getInputByName("Email");
-        email.setValueAttribute(PrivateData.get("google.login"));
+        email.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute(PrivateData.get("google.password"));
+        passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName("signIn");
         HtmlPage confirmPage = submit.click();
         form = confirmPage.getForms().get(0);
@@ -79,9 +78,8 @@ public class TestGoogleProvider extends TestCase {
         // user profile
         UserProfile userProfile = googleProvider.getUserProfile(accessToken);
         logger.debug("userProfile : {}", userProfile);
-        assertEquals(PrivateData.get("google.id"), userProfile.getId());
-        assertEquals(PrivateData.get("google.attributeValue1"),
-                     userProfile.getAttributes().get(PrivateData.get("google.attributeName1")));
-        assertEquals(PrivateData.get("google.nbAttributes"), "" + userProfile.getAttributes().size());
+        assertEquals("113675986756217860428", userProfile.getId());
+        assertEquals("test ScribeUP", userProfile.getAttributes().get("displayName"));
+        assertEquals(6, userProfile.getAttributes().size());
     }
 }

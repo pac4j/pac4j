@@ -19,6 +19,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
+import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
@@ -69,7 +70,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
-        JsonNode json = profileHelper.getFirstJsonNode(body);
+        JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("profile");
             if (json != null) {

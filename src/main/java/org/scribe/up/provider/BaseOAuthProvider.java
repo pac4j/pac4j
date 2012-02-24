@@ -58,7 +58,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     protected static UserProfileHelper profileHelper = new UserProfileHelper();
     
-    protected Map<String, AttributeConverter<Object>> mainAttributes = new HashMap<String, AttributeConverter<Object>>();
+    protected Map<String, AttributeConverter<? extends Object>> mainAttributes = new HashMap<String, AttributeConverter<? extends Object>>();
+    
+    protected String scope;
     
     private boolean initialized = false;
     
@@ -176,5 +178,13 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     public String getCallbackUrl() {
         return callbackUrl;
+    }
+    
+    public String getScope() {
+        return scope;
+    }
+    
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }

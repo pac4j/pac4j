@@ -18,6 +18,7 @@ package org.scribe.up.test.profile;
 import junit.framework.TestCase;
 
 import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.test.util.MockAttributeConverter;
@@ -50,21 +51,19 @@ public class TestUserProfileHelper extends TestCase {
     
     private static final String GOOD_JSON = "{ \"" + KEY + "\" : \"" + VALUE + "\" }";
     
-    private static final String BAD_JSON = "this_is_definitively_not_a_json_texte";
-    
     public void testSubstringNoBeginNoEnd() {
         String s = PART1 + PART2 + PART3;
-        assertEquals(null, profileHelper.substringBetween(s, BEGIN, END));
+        assertNull(profileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testSubstringNoEnd() {
         String s = PART1 + BEGIN + PART2 + PART3;
-        assertEquals(null, profileHelper.substringBetween(s, BEGIN, END));
+        assertNull(profileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testSubstringNoBegin() {
         String s = PART1 + PART2 + END + PART3;
-        assertEquals(null, profileHelper.substringBetween(s, BEGIN, END));
+        assertNull(profileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testSubstringOk() {
@@ -74,51 +73,43 @@ public class TestUserProfileHelper extends TestCase {
     
     public void testAddIdentifier() {
         UserProfile userProfile = new UserProfile();
-        assertEquals(null, userProfile.getId());
+        assertNull(userProfile.getId());
         profileHelper.addIdentifier(userProfile, ID);
         assertEquals(ID, userProfile.getId());
     }
     
     public void testAddIdentifierJson() {
         UserProfile userProfile = new UserProfile();
-        JsonNode json = profileHelper.getFirstJsonNode(GOOD_JSON);
+        JsonNode json = JsonHelper.getFirstNode(GOOD_JSON);
         profileHelper.addIdentifier(userProfile, json, KEY);
         assertEquals(VALUE, userProfile.getId());
     }
     
     public void testAddAttribute() {
         UserProfile userProfile = new UserProfile();
-        assertEquals(null, userProfile.getAttributes().get(KEY));
+        assertNull(userProfile.getAttributes().get(KEY));
         profileHelper.addAttribute(userProfile, KEY, VALUE);
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
     
     public void testAddAttributeConversion() {
         UserProfile userProfile = new UserProfile();
-        assertEquals(null, userProfile.getAttributes().get(KEY));
+        assertNull(userProfile.getAttributes().get(KEY));
         profileHelper.addAttribute(userProfile, KEY, VALUE, new MockAttributeConverter());
         assertEquals(MockAttributeConverter.CONVERTED_VALUE, userProfile.getAttributes().get(KEY));
     }
     
     public void testAddAttributeJson() {
         UserProfile userProfile = new UserProfile();
-        JsonNode json = profileHelper.getFirstJsonNode(GOOD_JSON);
+        JsonNode json = JsonHelper.getFirstNode(GOOD_JSON);
         profileHelper.addAttribute(userProfile, json, KEY);
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
     
     public void testAddAttributeJsonConversion() {
         UserProfile userProfile = new UserProfile();
-        JsonNode json = profileHelper.getFirstJsonNode(GOOD_JSON);
+        JsonNode json = JsonHelper.getFirstNode(GOOD_JSON);
         profileHelper.addAttribute(userProfile, json, KEY, new MockAttributeConverter());
         assertEquals(MockAttributeConverter.CONVERTED_VALUE, userProfile.getAttributes().get(KEY));
-    }
-    
-    public void testGetFirstJsonNodeOk() {
-        assertNotNull(profileHelper.getFirstJsonNode(GOOD_JSON));
-    }
-    
-    public void testGetFirstJsonNodeKo() {
-        assertNull(profileHelper.getFirstJsonNode(BAD_JSON));
     }
 }

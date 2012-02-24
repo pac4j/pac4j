@@ -109,6 +109,7 @@
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -126,6 +127,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                	<charset>UTF-8</charset>
+                	<encoding>UTF-8</encoding>
+                	<docencoding>UTF-8</docencoding>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

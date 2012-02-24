@@ -21,7 +21,6 @@ import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.YahooProvider;
-import org.scribe.up.test.util.PrivateData;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
 import org.slf4j.Logger;
@@ -47,9 +46,10 @@ public class TestYahooProvider extends TestCase {
     public void testProvider() throws Exception {
         // init provider
         YahooProvider yahooProvider = new YahooProvider();
-        yahooProvider.setKey(PrivateData.get("yahoo.key"));
-        yahooProvider.setSecret(PrivateData.get("yahoo.secret"));
-        yahooProvider.setCallbackUrl(PrivateData.get("callbackUrl"));
+        yahooProvider
+            .setKey("dj0yJmk9ekJzMk9vQnJIVk1ZJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PWNk");
+        yahooProvider.setSecret("7bb5e2585da4ce9032d6a9cddb556ce7ffc493f7");
+        yahooProvider.setCallbackUrl("http://www.google.com/");
         yahooProvider.init();
         
         // authorization url
@@ -60,9 +60,9 @@ public class TestYahooProvider extends TestCase {
         HtmlPage loginPage = webClient.getPage(authorizationUrl);
         HtmlForm form = loginPage.getFormByName("login_form");
         HtmlTextInput login = form.getInputByName("login");
-        login.setValueAttribute(PrivateData.get("yahoo.login"));
+        login.setValueAttribute("testscribeup@yahoo.fr");
         HtmlPasswordInput passwd = form.getInputByName("passwd");
-        passwd.setValueAttribute(PrivateData.get("yahoo.password"));
+        passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName(".save");
         HtmlPage confirmPage = submit.click();
         form = confirmPage.getFormByName("rcForm");
@@ -79,9 +79,8 @@ public class TestYahooProvider extends TestCase {
         // user profile
         UserProfile userProfile = yahooProvider.getUserProfile(accessToken);
         logger.debug("userProfile : {}", userProfile);
-        assertEquals(PrivateData.get("yahoo.id"), userProfile.getId());
-        assertEquals(PrivateData.get("yahoo.attributeValue1"),
-                     userProfile.getAttributes().get(PrivateData.get("yahoo.attributeName1")));
-        assertEquals(PrivateData.get("yahoo.nbAttributes"), "" + userProfile.getAttributes().size());
+        assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", userProfile.getId());
+        assertEquals("Test", userProfile.getAttributes().get("nickname"));
+        assertEquals(8, userProfile.getAttributes().size());
     }
 }
