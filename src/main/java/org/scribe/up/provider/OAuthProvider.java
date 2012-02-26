@@ -27,8 +27,8 @@ import org.scribe.up.session.UserSession;
  * <i>getType()</i> method and could be initialized throught the <i>init()</i> method. A provider supports off course the OAuth
  * authentication process through the <i>getAuthorizationUrl(UserSession session)</i> and <i>getAccessToken(UserSession session,
  * OAuthCredential credential)</i> methods, <b>UserSession</b> is the session of the current user. A provider can retrieve an
- * <b>OAuthCredential</b> from a map of parameters : <i>getCredentialFromParameters(Map<String, String[]> parameters)</i> method and get a
- * user profile from an OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
+ * <b>OAuthCredential</b> from parameters : <i>getCredential(Map<String, String[]> parameters)</i> method and get a user profile from an
+ * OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -78,5 +78,5 @@ public interface OAuthProvider {
      * @param parameters
      * @return the OAuth credential or null if no credential is found.
      */
-    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters);
+    public OAuthCredential getCredential(Map<String, String[]> parameters);
 }

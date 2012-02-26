@@ -25,9 +25,12 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfileHelper {
+public final class UserProfileHelper {
     
-    protected static final Logger logger = LoggerFactory.getLogger(UserProfileHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserProfileHelper.class);
+    
+    private UserProfileHelper() {
+    }
     
     /**
      * Return the text between the two strings specified. Return null if no string is found.
@@ -37,7 +40,7 @@ public class UserProfileHelper {
      * @param s2
      * @return the text between the two strings specified in input
      */
-    public String substringBetween(String text, String s1, String s2) {
+    public static String substringBetween(String text, String s1, String s2) {
         if (text != null && s1 != null && s2 != null) {
             int begin = text.indexOf(s1);
             if (begin >= 0) {
@@ -61,7 +64,7 @@ public class UserProfileHelper {
      * @param json
      * @param attributeName
      */
-    public void addIdentifier(UserProfile userProfile, JsonNode json, String attributeName) {
+    public static void addIdentifier(UserProfile userProfile, JsonNode json, String attributeName) {
         String userId = null;
         if (json != null) {
             JsonNode id = json.get(attributeName);
@@ -82,7 +85,7 @@ public class UserProfileHelper {
      * @param userProfile
      * @param id
      */
-    public void addIdentifier(UserProfile userProfile, String id) {
+    public static void addIdentifier(UserProfile userProfile, String id) {
         logger.debug("id : {}", id);
         userProfile.setId(id);
     }
@@ -94,7 +97,7 @@ public class UserProfileHelper {
      * @param json
      * @param attributeName
      */
-    public void addAttribute(UserProfile userProfile, JsonNode json, String attributeName) {
+    public static void addAttribute(UserProfile userProfile, JsonNode json, String attributeName) {
         addAttribute(userProfile, json, attributeName, null);
     }
     
@@ -106,8 +109,8 @@ public class UserProfileHelper {
      * @param attributeName
      * @param converter
      */
-    public void addAttribute(UserProfile userProfile, JsonNode json, String attributeName,
-                             AttributeConverter<? extends Object> converter) {
+    public static void addAttribute(UserProfile userProfile, JsonNode json, String attributeName,
+                                    AttributeConverter<? extends Object> converter) {
         if (json != null) {
             JsonNode value = json.get(attributeName);
             if (value != null) {
@@ -131,7 +134,7 @@ public class UserProfileHelper {
      * @param attributeName
      * @param attribute
      */
-    public void addAttribute(UserProfile userProfile, String attributeName, Object attribute) {
+    public static void addAttribute(UserProfile userProfile, String attributeName, Object attribute) {
         addAttribute(userProfile, attributeName, attribute, null);
     }
     
@@ -143,8 +146,8 @@ public class UserProfileHelper {
      * @param attribute
      * @param converter
      */
-    public void addAttribute(UserProfile userProfile, String attributeName, Object attribute,
-                             AttributeConverter<? extends Object> converter) {
+    public static void addAttribute(UserProfile userProfile, String attributeName, Object attribute,
+                                    AttributeConverter<? extends Object> converter) {
         if (converter != null) {
             attribute = converter.convert(attribute);
         }
@@ -156,16 +159,5 @@ public class UserProfileHelper {
             });
         }
         userProfile.addAttribute(attributeName, attribute);
-    }
-    
-    /**
-     * Return the first node of a JSON response.
-     * 
-     * @param text
-     * @return the first node of the JSON response or null if exception is thrown
-     */
-    @Deprecated
-    public JsonNode getFirstJsonNode(String text) {
-        return JsonHelper.getFirstNode(text);
     }
 }

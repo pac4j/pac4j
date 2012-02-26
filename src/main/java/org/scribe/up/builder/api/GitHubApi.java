@@ -26,7 +26,7 @@ import org.scribe.utils.Preconditions;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class GitHubApi extends DefaultApi20 {
+public final class GitHubApi extends DefaultApi20 {
     
     private static final String AUTHORIZE_URL = "https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s";
     private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";

@@ -26,7 +26,7 @@ import org.scribe.up.profile.facebook.FacebookObject;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestFacebookObject extends TestCase {
+public final class TestFacebookObject extends TestCase {
     
     private static final String ID = "12123112";
     

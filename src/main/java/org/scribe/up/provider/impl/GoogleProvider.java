@@ -21,6 +21,7 @@ import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
@@ -65,15 +66,15 @@ public class GoogleProvider extends BaseOAuth10Provider {
         if (json != null) {
             json = json.get("entry");
             if (json != null) {
-                profileHelper.addIdentifier(userProfile, json, "id");
+                UserProfileHelper.addIdentifier(userProfile, json, "id");
                 for (String attribute : mainAttributes.keySet()) {
-                    profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                    UserProfileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
                 }
                 json = json.get("name");
                 if (json != null) {
-                    profileHelper.addAttribute(userProfile, json, "formatted", null);
-                    profileHelper.addAttribute(userProfile, json, "familyName", null);
-                    profileHelper.addAttribute(userProfile, json, "givenName", null);
+                    UserProfileHelper.addAttribute(userProfile, json, "formatted", null);
+                    UserProfileHelper.addAttribute(userProfile, json, "familyName", null);
+                    UserProfileHelper.addAttribute(userProfile, json, "givenName", null);
                 }
             }
         }

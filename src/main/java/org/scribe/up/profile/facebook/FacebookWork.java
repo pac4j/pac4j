@@ -27,21 +27,21 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class FacebookWork {
+public final class FacebookWork {
     
-    protected static DateConverter dateConverter = new DateConverter("yyyy-MM");
+    private static DateConverter dateConverter = new DateConverter("yyyy-MM");
     
-    protected FacebookObject employer;
+    private FacebookObject employer;
     
-    protected FacebookObject location;
+    private FacebookObject location;
     
-    protected FacebookObject position;
+    private FacebookObject position;
     
-    protected String description;
+    private String description;
     
-    protected Date startDate;
+    private Date startDate;
     
-    protected Date endDate;
+    private Date endDate;
     
     public FacebookWork(JsonNode json) {
         if (json != null) {

@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestGoogleProvider extends TestCase {
+public final class TestGoogleProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestGoogleProvider.class);
     
@@ -70,8 +70,7 @@ public class TestGoogleProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = googleProvider.getCredentialFromParameters(WebHelper
-            .getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = googleProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = googleProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

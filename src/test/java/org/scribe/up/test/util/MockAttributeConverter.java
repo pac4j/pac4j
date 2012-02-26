@@ -23,7 +23,7 @@ import org.scribe.up.profile.AttributeConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class MockAttributeConverter implements AttributeConverter<String> {
+public final class MockAttributeConverter implements AttributeConverter<String> {
     
     public static final String CONVERTED_VALUE = "convertedValue";
     

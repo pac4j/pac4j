@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestYahooProvider extends TestCase {
+public final class TestYahooProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestYahooProvider.class);
     
@@ -71,8 +71,7 @@ public class TestYahooProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = yahooProvider.getCredentialFromParameters(WebHelper
-            .getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = yahooProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = yahooProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

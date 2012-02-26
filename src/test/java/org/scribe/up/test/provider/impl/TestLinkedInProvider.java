@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestLinkedInProvider extends TestCase {
+public final class TestLinkedInProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestLinkedInProvider.class);
     
@@ -67,8 +67,7 @@ public class TestLinkedInProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = linkedinProvider.getCredentialFromParameters(WebHelper
-            .getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = linkedinProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = linkedinProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

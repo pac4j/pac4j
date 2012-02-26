@@ -25,7 +25,7 @@ import org.scribe.up.credential.OAuthCredential;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestOAuthCredential extends TestCase {
+public final class TestOAuthCredential extends TestCase {
     
     private final static String TOKEN = "token";
     

@@ -21,7 +21,7 @@ package org.scribe.up.profile;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class GenderConverter implements AttributeConverter<Gender> {
+public final class GenderConverter implements AttributeConverter<Gender> {
     
     protected String maleText;
     

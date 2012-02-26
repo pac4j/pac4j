@@ -28,7 +28,7 @@ import org.scribe.up.profile.facebook.FacebookWork;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestFacebookWork extends TestCase {
+public final class TestFacebookWork extends TestCase {
     
     private static DateConverter dateConverter = new DateConverter("yyyy-MM");
     

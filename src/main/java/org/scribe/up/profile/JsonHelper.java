@@ -30,11 +30,14 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class JsonHelper {
+public final class JsonHelper {
     
     private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
     
     private static ObjectMapper mapper = new ObjectMapper();
+    
+    private JsonHelper() {
+    }
     
     /**
      * Return the first node of a JSON response.

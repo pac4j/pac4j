@@ -25,7 +25,7 @@ import org.scribe.up.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestUserProfile extends TestCase {
+public final class TestUserProfile extends TestCase {
     
     private static final String ID = "id";
     

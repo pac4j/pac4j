@@ -26,17 +26,17 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class FacebookEducation {
+public final class FacebookEducation {
     
-    protected FacebookObject school;
+    private FacebookObject school;
     
-    protected FacebookObject degree;
+    private FacebookObject degree;
     
-    protected FacebookObject year;
+    private FacebookObject year;
     
-    protected List<FacebookObject> concentration;
+    private List<FacebookObject> concentration;
     
-    protected String type;
+    private String type;
     
     public FacebookEducation(JsonNode json) {
         if (json != null) {

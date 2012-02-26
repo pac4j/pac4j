@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the common implementation for provider supporting OAuth protocol v2.0.
+ * This class is the common implementation for provider supporting OAuth protocol version 2.0.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

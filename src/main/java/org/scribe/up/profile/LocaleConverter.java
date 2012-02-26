@@ -23,7 +23,7 @@ import java.util.Locale;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class LocaleConverter implements AttributeConverter<Locale> {
+public final class LocaleConverter implements AttributeConverter<Locale> {
     
     public Locale convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {

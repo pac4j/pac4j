@@ -27,7 +27,7 @@ import org.scribe.up.profile.facebook.FacebookObject;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestFacebookEducation extends TestCase {
+public final class TestFacebookEducation extends TestCase {
     
     private static final String ID = "12345";
     
@@ -37,9 +37,9 @@ public class TestFacebookEducation extends TestCase {
     
     private static final String TYPE = "type";
     
-    private static final String GOOD_JSON = "{\"school\": " + FACEBOOK_OBJECT + ", \"degree\": " + FACEBOOK_OBJECT + ", \"year\": "
-                                            + FACEBOOK_OBJECT + ", \"concentration\": [" + FACEBOOK_OBJECT + "],\"type\": \"" + TYPE
-                                            + "\" }";
+    private static final String GOOD_JSON = "{\"school\": " + FACEBOOK_OBJECT + ", \"degree\": " + FACEBOOK_OBJECT
+                                            + ", \"year\": " + FACEBOOK_OBJECT + ", \"concentration\": ["
+                                            + FACEBOOK_OBJECT + "],\"type\": \"" + TYPE + "\" }";
     
     public void testNull() {
         FacebookEducation facebookEducation = new FacebookEducation(null);

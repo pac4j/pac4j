@@ -29,7 +29,7 @@ import org.scribe.up.profile.facebook.FacebookProfileHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestFacebookProfileHelper extends TestCase {
+public final class TestFacebookProfileHelper extends TestCase {
     
     private static final String ID = "12123112";
     

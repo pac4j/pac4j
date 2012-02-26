@@ -26,7 +26,7 @@ import org.scribe.up.profile.GenderConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestGenderConverter extends TestCase {
+public final class TestGenderConverter extends TestCase {
     
     private static final String MALE = "male";
     

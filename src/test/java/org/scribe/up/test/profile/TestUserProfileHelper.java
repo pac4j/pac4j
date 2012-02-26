@@ -29,9 +29,7 @@ import org.scribe.up.test.util.MockAttributeConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestUserProfileHelper extends TestCase {
-    
-    private UserProfileHelper profileHelper = new UserProfileHelper();
+public final class TestUserProfileHelper extends TestCase {
     
     private static final String PART1 = "5645646547";
     
@@ -53,63 +51,63 @@ public class TestUserProfileHelper extends TestCase {
     
     public void testSubstringNoBeginNoEnd() {
         String s = PART1 + PART2 + PART3;
-        assertNull(profileHelper.substringBetween(s, BEGIN, END));
+        assertNull(UserProfileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testSubstringNoEnd() {
         String s = PART1 + BEGIN + PART2 + PART3;
-        assertNull(profileHelper.substringBetween(s, BEGIN, END));
+        assertNull(UserProfileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testSubstringNoBegin() {
         String s = PART1 + PART2 + END + PART3;
-        assertNull(profileHelper.substringBetween(s, BEGIN, END));
+        assertNull(UserProfileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testSubstringOk() {
         String s = PART1 + BEGIN + PART2 + END + PART3;
-        assertEquals(PART2, profileHelper.substringBetween(s, BEGIN, END));
+        assertEquals(PART2, UserProfileHelper.substringBetween(s, BEGIN, END));
     }
     
     public void testAddIdentifier() {
         UserProfile userProfile = new UserProfile();
         assertNull(userProfile.getId());
-        profileHelper.addIdentifier(userProfile, ID);
+        UserProfileHelper.addIdentifier(userProfile, ID);
         assertEquals(ID, userProfile.getId());
     }
     
     public void testAddIdentifierJson() {
         UserProfile userProfile = new UserProfile();
         JsonNode json = JsonHelper.getFirstNode(GOOD_JSON);
-        profileHelper.addIdentifier(userProfile, json, KEY);
+        UserProfileHelper.addIdentifier(userProfile, json, KEY);
         assertEquals(VALUE, userProfile.getId());
     }
     
     public void testAddAttribute() {
         UserProfile userProfile = new UserProfile();
         assertNull(userProfile.getAttributes().get(KEY));
-        profileHelper.addAttribute(userProfile, KEY, VALUE);
+        UserProfileHelper.addAttribute(userProfile, KEY, VALUE);
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
     
     public void testAddAttributeConversion() {
         UserProfile userProfile = new UserProfile();
         assertNull(userProfile.getAttributes().get(KEY));
-        profileHelper.addAttribute(userProfile, KEY, VALUE, new MockAttributeConverter());
+        UserProfileHelper.addAttribute(userProfile, KEY, VALUE, new MockAttributeConverter());
         assertEquals(MockAttributeConverter.CONVERTED_VALUE, userProfile.getAttributes().get(KEY));
     }
     
     public void testAddAttributeJson() {
         UserProfile userProfile = new UserProfile();
         JsonNode json = JsonHelper.getFirstNode(GOOD_JSON);
-        profileHelper.addAttribute(userProfile, json, KEY);
+        UserProfileHelper.addAttribute(userProfile, json, KEY);
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
     
     public void testAddAttributeJsonConversion() {
         UserProfile userProfile = new UserProfile();
         JsonNode json = JsonHelper.getFirstNode(GOOD_JSON);
-        profileHelper.addAttribute(userProfile, json, KEY, new MockAttributeConverter());
+        UserProfileHelper.addAttribute(userProfile, json, KEY, new MockAttributeConverter());
         assertEquals(MockAttributeConverter.CONVERTED_VALUE, userProfile.getAttributes().get(KEY));
     }
 }

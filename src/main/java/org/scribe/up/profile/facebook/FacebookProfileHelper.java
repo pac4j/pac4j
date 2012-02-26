@@ -27,7 +27,10 @@ import org.codehaus.jackson.JsonNode;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class FacebookProfileHelper {
+public final class FacebookProfileHelper {
+    
+    private FacebookProfileHelper() {
+    }
     
     /**
      * Return a list of FacebookObject.

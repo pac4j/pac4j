@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class DateConverter implements AttributeConverter<Date> {
+public final class DateConverter implements AttributeConverter<Date> {
     
     protected static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
     protected String format;

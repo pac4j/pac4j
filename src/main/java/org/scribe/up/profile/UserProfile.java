@@ -27,9 +27,9 @@ import java.util.Map;
  */
 public class UserProfile {
     
-    private String id;
+    protected String id;
     
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    protected Map<String, Object> attributes = new HashMap<String, Object>();
     
     public UserProfile() {
     }

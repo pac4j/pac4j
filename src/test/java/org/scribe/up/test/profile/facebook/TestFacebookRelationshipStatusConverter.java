@@ -26,7 +26,7 @@ import org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestFacebookRelationshipStatusConverter extends TestCase {
+public final class TestFacebookRelationshipStatusConverter extends TestCase {
     
     private FacebookRelationshipStatusConverter converter = new FacebookRelationshipStatusConverter();
     

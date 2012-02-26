@@ -20,6 +20,7 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
@@ -60,9 +61,9 @@ public class TwitterProvider extends BaseOAuth10Provider {
         UserProfile userProfile = new UserProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profileHelper.addIdentifier(userProfile, json, "id_str");
+            UserProfileHelper.addIdentifier(userProfile, json, "id_str");
             for (String attribute : mainAttributes.keySet()) {
-                profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                UserProfileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
             }
         }
         return userProfile;

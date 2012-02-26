@@ -24,11 +24,11 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class FacebookObject {
+public final class FacebookObject {
     
-    protected String id;
+    private String id;
     
-    protected String name;
+    private String name;
     
     public FacebookObject(JsonNode json) {
         this.id = JsonHelper.getTextValue(json, "id");

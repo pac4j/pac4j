@@ -25,7 +25,7 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestJsonHelper extends TestCase {
+public final class TestJsonHelper extends TestCase {
     
     private static final String KEY = "key";
     

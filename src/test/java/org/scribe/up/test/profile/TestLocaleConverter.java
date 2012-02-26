@@ -27,7 +27,7 @@ import org.scribe.up.profile.LocaleConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestLocaleConverter extends TestCase {
+public final class TestLocaleConverter extends TestCase {
     
     private LocaleConverter converter = new LocaleConverter();
     

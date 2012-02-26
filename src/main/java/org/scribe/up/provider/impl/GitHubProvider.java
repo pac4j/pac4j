@@ -20,6 +20,7 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.builder.api.GitHubApi;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
@@ -56,9 +57,9 @@ public class GitHubProvider extends BaseOAuth20Provider {
         if (json != null) {
             json = json.get("user");
             if (json != null) {
-                profileHelper.addIdentifier(userProfile, json, "id");
+                UserProfileHelper.addIdentifier(userProfile, json, "id");
                 for (String attribute : mainAttributes.keySet()) {
-                    profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                    UserProfileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
                 }
             }
         }

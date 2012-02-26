@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestTwitterProvider extends TestCase {
+public final class TestTwitterProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestTwitterProvider.class);
     
@@ -67,8 +67,7 @@ public class TestTwitterProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = twitterProvider.getCredentialFromParameters(WebHelper
-            .getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = twitterProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = twitterProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

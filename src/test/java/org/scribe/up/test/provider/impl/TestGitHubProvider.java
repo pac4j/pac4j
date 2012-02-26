@@ -39,7 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestGitHubProvider extends TestCase {
+public final class TestGitHubProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestGitHubProvider.class);
     
@@ -67,8 +67,7 @@ public class TestGitHubProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = githubProvider.getCredentialFromParameters(WebHelper
-            .getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = githubProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = githubProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

@@ -26,7 +26,6 @@ import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.AttributeConverter;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +54,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected String secret;
     
     protected String callbackUrl;
-    
-    protected static UserProfileHelper profileHelper = new UserProfileHelper();
     
     protected Map<String, AttributeConverter<? extends Object>> mainAttributes = new HashMap<String, AttributeConverter<? extends Object>>();
     
@@ -125,7 +122,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      */
     protected abstract UserProfile extractUserProfile(String body);
     
-    public OAuthCredential getCredentialFromParameters(Map<String, String[]> parameters) {
+    public OAuthCredential getCredential(Map<String, String[]> parameters) {
         String[] error_reasons = parameters.get(ERROR_REASON);
         String error_reason = null;
         String[] error_descriptions = parameters.get(ERROR_DESCRIPTION);

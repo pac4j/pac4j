@@ -27,6 +27,7 @@ import org.scribe.up.profile.GenderConverter;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.LocaleConverter;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookProfileHelper;
@@ -37,12 +38,12 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 /**
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and attributes are defined in
  * http://developers.facebook.com/docs/reference/api/user/.<br />
- * Attributes (Java type) : name (String), first_name (String), middle_name (String), last_name (String), gender (Gender), locale (Locale),
- * languages (List<FacebookObject>), link (String), username (String), third_party_id (String), timezone (Integer), updated_time (Date),
- * verified (Boolean), bio (String), birthday (Date), education (List<FacebookEducation>), email (String), hometown (FacebookObject),
- * interested_in (List<String>), location (FacebookObject), political (String), favorite_athletes (List<FacebookObject>), favorite_teams
- * (List<FacebookObject>), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String), significant_other
- * (FacebookObject), website (String), work (List<FacebookWork>).
+ * Attributes (Java type) available in {@link org.scribe.up.profile.UserProfile} : name (String), first_name (String), middle_name (String),
+ * last_name (String), gender (Gender), locale (Locale), languages (List<FacebookObject>), link (String), username (String), third_party_id
+ * (String), timezone (Integer), updated_time (Date), verified (Boolean), bio (String), birthday (Date), education
+ * (List<FacebookEducation>), email (String), hometown (FacebookObject), interested_in (List<String>), location (FacebookObject), political
+ * (String), favorite_athletes (List<FacebookObject>), favorite_teams (List<FacebookObject>), quotes (String), relationship_status
+ * (FacebookRelationshipStatus), religion (String), significant_other (FacebookObject), website (String), work (List<FacebookWork>).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -82,15 +83,16 @@ public class FacebookProvider extends BaseOAuth20Provider {
         UserProfile userProfile = new UserProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profileHelper.addIdentifier(userProfile, json, "id");
+            UserProfileHelper.addIdentifier(userProfile, json, "id");
             for (String attribute : mainAttributes.keySet()) {
-                profileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                UserProfileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
             }
         }
         // languages
         JsonNode subJson = json.get("languages");
         if (subJson != null) {
-            profileHelper.addAttribute(userProfile, "languages", FacebookProfileHelper.getListFacebookObject(subJson));
+            UserProfileHelper.addAttribute(userProfile, "languages",
+                                           FacebookProfileHelper.getListFacebookObject(subJson));
         }
         // installed
         // education
@@ -103,12 +105,12 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 FacebookEducation oneEducation = new FacebookEducation(jsonEducation);
                 education.add(oneEducation);
             }
-            profileHelper.addAttribute(userProfile, "education", education);
+            UserProfileHelper.addAttribute(userProfile, "education", education);
         }
         // hometown
         subJson = json.get("hometown");
         if (subJson != null) {
-            profileHelper.addAttribute(userProfile, "hometown", new FacebookObject(subJson));
+            UserProfileHelper.addAttribute(userProfile, "hometown", new FacebookObject(subJson));
         }
         // interested_in
         subJson = json.get("interested_in");
@@ -119,29 +121,29 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 JsonNode interest = interestIterator.next();
                 interested_in.add(interest.getTextValue());
             }
-            profileHelper.addAttribute(userProfile, "interested_in", interested_in);
+            UserProfileHelper.addAttribute(userProfile, "interested_in", interested_in);
         }
         // location
         subJson = json.get("location");
         if (subJson != null) {
-            profileHelper.addAttribute(userProfile, "location", new FacebookObject(subJson));
+            UserProfileHelper.addAttribute(userProfile, "location", new FacebookObject(subJson));
         }
         // favorite_athletes
         subJson = json.get("favorite_athletes");
         if (subJson != null) {
-            profileHelper.addAttribute(userProfile, "favorite_athletes",
-                                       FacebookProfileHelper.getListFacebookObject(subJson));
+            UserProfileHelper.addAttribute(userProfile, "favorite_athletes",
+                                           FacebookProfileHelper.getListFacebookObject(subJson));
         }
         // favorite_teams
         subJson = json.get("favorite_teams");
         if (subJson != null) {
-            profileHelper.addAttribute(userProfile, "favorite_teams",
-                                       FacebookProfileHelper.getListFacebookObject(subJson));
+            UserProfileHelper.addAttribute(userProfile, "favorite_teams",
+                                           FacebookProfileHelper.getListFacebookObject(subJson));
         }
         // significant_other
         subJson = json.get("significant_other");
         if (subJson != null) {
-            profileHelper.addAttribute(userProfile, "significant_other", new FacebookObject(subJson));
+            UserProfileHelper.addAttribute(userProfile, "significant_other", new FacebookObject(subJson));
         }
         // video_upload_limits
         // work
@@ -154,7 +156,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 FacebookWork oneWork = new FacebookWork(jsonWork);
                 work.add(oneWork);
             }
-            profileHelper.addAttribute(userProfile, "work", work);
+            UserProfileHelper.addAttribute(userProfile, "work", work);
         }
         return userProfile;
     }

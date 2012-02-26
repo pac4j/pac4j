@@ -26,7 +26,7 @@ import org.scribe.up.provider.impl.YahooProvider;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestBaseOAuthProvider extends TestCase {
+public final class TestBaseOAuthProvider extends TestCase {
     
     public void testType() {
         BaseOAuth10Provider provider = new YahooProvider();

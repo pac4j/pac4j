@@ -28,7 +28,7 @@ import org.scribe.up.profile.DateConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestDateConverter extends TestCase {
+public final class TestDateConverter extends TestCase {
     
     private static final String FORMAT = "yyyy.MM.dd";
     

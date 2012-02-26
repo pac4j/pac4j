@@ -30,7 +30,7 @@ import org.scribe.up.provider.impl.FacebookProvider;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestBaseOAuth20Provider extends TestCase {
+public final class TestBaseOAuth20Provider extends TestCase {
     
     private BaseOAuth20Provider provider = new FacebookProvider();
     
@@ -40,7 +40,7 @@ public class TestBaseOAuth20Provider extends TestCase {
     
     public void testNoCode() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
     
     public void testOk() {
@@ -49,7 +49,7 @@ public class TestBaseOAuth20Provider extends TestCase {
             CODE
         };
         parameters.put(BaseOAuth20Provider.OAUTH_CODE, codes);
-        OAuthCredential oauthCredential = provider.getCredentialFromParameters(parameters);
+        OAuthCredential oauthCredential = provider.getCredential(parameters);
         assertNotNull(oauthCredential);
         assertEquals(CODE, oauthCredential.getVerifier());
     }
@@ -60,6 +60,6 @@ public class TestBaseOAuth20Provider extends TestCase {
             CODE, CODE2
         };
         parameters.put(BaseOAuth20Provider.OAUTH_CODE, codes);
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
 }

@@ -49,7 +49,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestFacebookProvider extends TestCase {
+public final class TestFacebookProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestFacebookProvider.class);
     
@@ -80,8 +80,7 @@ public class TestFacebookProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = facebookProvider.getCredentialFromParameters(WebHelper
-            .getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = facebookProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
         // access token
         Token accessToken = facebookProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);

@@ -23,9 +23,9 @@ import javax.servlet.http.HttpSession;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class HttpUserSession implements UserSession {
+public final class HttpUserSession implements UserSession {
     
-    protected HttpSession session;
+    private HttpSession session;
     
     public HttpUserSession(HttpSession session) {
         this.session = session;

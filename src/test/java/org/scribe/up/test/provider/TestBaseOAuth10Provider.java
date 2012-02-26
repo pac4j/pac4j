@@ -30,7 +30,7 @@ import org.scribe.up.provider.impl.YahooProvider;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TestBaseOAuth10Provider extends TestCase {
+public final class TestBaseOAuth10Provider extends TestCase {
     
     private BaseOAuth10Provider provider = new YahooProvider();
     
@@ -44,7 +44,7 @@ public class TestBaseOAuth10Provider extends TestCase {
     
     public void testNoTokenNoVerifier() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
     
     public void testNoToken() {
@@ -53,7 +53,7 @@ public class TestBaseOAuth10Provider extends TestCase {
             VERIFIER
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
     
     public void testNoVerifier() {
@@ -62,7 +62,7 @@ public class TestBaseOAuth10Provider extends TestCase {
             TOKEN
         };
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
     
     public void testOk() {
@@ -75,7 +75,7 @@ public class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        OAuthCredential oauthCredential = provider.getCredentialFromParameters(parameters);
+        OAuthCredential oauthCredential = provider.getCredential(parameters);
         assertNotNull(oauthCredential);
         assertEquals(TOKEN, oauthCredential.getToken());
         assertEquals(VERIFIER, oauthCredential.getVerifier());
@@ -91,7 +91,7 @@ public class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
     
     public void testTwoVerifiers() {
@@ -104,6 +104,6 @@ public class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertNull(provider.getCredentialFromParameters(parameters));
+        assertNull(provider.getCredential(parameters));
     }
 }

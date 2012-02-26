@@ -27,7 +27,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class WebHelper {
+public final class WebHelper {
     
     public static WebClient newClient() {
         WebClient webClient = new WebClient();

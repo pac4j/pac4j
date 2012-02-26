@@ -23,7 +23,7 @@ import org.scribe.up.profile.AttributeConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class FacebookRelationshipStatusConverter implements AttributeConverter<FacebookRelationshipStatus> {
+public final class FacebookRelationshipStatusConverter implements AttributeConverter<FacebookRelationshipStatus> {
     
     public FacebookRelationshipStatus convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {

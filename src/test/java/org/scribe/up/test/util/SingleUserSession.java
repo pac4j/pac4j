@@ -26,7 +26,7 @@ import org.scribe.up.session.UserSession;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class SingleUserSession implements UserSession {
+public final class SingleUserSession implements UserSession {
     
     private Map<String, Object> session = new HashMap<String, Object>();
     
