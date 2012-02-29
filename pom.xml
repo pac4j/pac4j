@@ -41,8 +41,8 @@
 
     <scm>
         <url>http://github.com/leleuj/scribe-up.git</url>
-        <connection>scm:git:git://github.com/leleuj/scribe-up.git</connection>
-        <developerConnection>scm:git:git://github.com/leleuj/scribe-up.git</developerConnection>
+        <connection>scm:git:git@github.com:leleuj/scribe-up.git</connection>
+        <developerConnection>scm:git:git@github.com:leleuj/scribe-up.git</developerConnection>
     </scm>
 
     <developers>
