@@ -14,12 +14,16 @@ h2. OAuth providers supported
 
 h2. Version
 
-The current version is 1.0.0-SNAPSHOT. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
+The version 1.0.0 has been released.
+The current version : 1.1.0-SNAPSHOT is under development. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
+Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 
 Scribe UP is tested by unit tests and also integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
 
 h2. Contact
+
+Find me on "LinkedIn":http://www.linkedin.com/in/jleleu
 
 Email : leleuj at gmail.com
