@@ -13,30 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.util;
 
 /**
- * This class is the converter of a String to a Gender.
+ * This class is an helper to return default value instead of object.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class GenderConverter implements AttributeConverter<Gender> {
+public final class ObjectHelper {
     
-    private String maleText;
-    
-    public GenderConverter(String maleText) {
-        this.maleText = maleText;
+    private ObjectHelper() {
     }
     
-    public Gender convert(Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            if (attribute.equals(maleText)) {
-                return Gender.MALE;
-            } else {
-                return Gender.FEMALE;
-            }
+    /**
+     * Return the default value if object is null.
+     * 
+     * @param object
+     * @param defaultValue
+     * @return the default value if object is null
+     */
+    public static Object getDefaultIfNull(Object object, Object defaultValue) {
+        if (object != null) {
+            return object;
+        } else {
+            return defaultValue;
         }
-        return null;
     }
 }

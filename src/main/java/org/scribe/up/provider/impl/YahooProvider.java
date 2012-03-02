@@ -23,6 +23,7 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
+import org.scribe.up.util.StringHelper;
 
 /**
  * This class is the OAuth provider to authenticate user in Yahoo.
@@ -56,9 +57,9 @@ public class YahooProvider extends BaseOAuth10Provider {
         if (body == null) {
             return null;
         }
-        String guid = UserProfileHelper.substringBetween(body, "<value>", "</value>");
+        String guid = StringHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
-        if (guid != null && !"".equals(guid.trim())) {
+        if (StringHelper.isNotBlank(guid)) {
             body = sendRequestForProfile(accessToken, "http://social.yahooapis.com/v1/user/" + guid
                                                       + "/profile?format=json");
             if (body == null) {

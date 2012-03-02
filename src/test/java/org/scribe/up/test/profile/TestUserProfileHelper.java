@@ -31,16 +31,6 @@ import org.scribe.up.test.util.MockAttributeConverter;
  */
 public final class TestUserProfileHelper extends TestCase {
     
-    private static final String PART1 = "5645646547";
-    
-    private static final String PART2 = "86431231848684534";
-    
-    private static final String PART3 = "156446316448645";
-    
-    private static final String BEGIN = "begin";
-    
-    private static final String END = "end";
-    
     private static final String ID = "id";
     
     private static final String KEY = "key";
@@ -48,26 +38,6 @@ public final class TestUserProfileHelper extends TestCase {
     private static final String VALUE = "value";
     
     private static final String GOOD_JSON = "{ \"" + KEY + "\" : \"" + VALUE + "\" }";
-    
-    public void testSubstringNoBeginNoEnd() {
-        String s = PART1 + PART2 + PART3;
-        assertNull(UserProfileHelper.substringBetween(s, BEGIN, END));
-    }
-    
-    public void testSubstringNoEnd() {
-        String s = PART1 + BEGIN + PART2 + PART3;
-        assertNull(UserProfileHelper.substringBetween(s, BEGIN, END));
-    }
-    
-    public void testSubstringNoBegin() {
-        String s = PART1 + PART2 + END + PART3;
-        assertNull(UserProfileHelper.substringBetween(s, BEGIN, END));
-    }
-    
-    public void testSubstringOk() {
-        String s = PART1 + BEGIN + PART2 + END + PART3;
-        assertEquals(PART2, UserProfileHelper.substringBetween(s, BEGIN, END));
-    }
     
     public void testAddIdentifier() {
         UserProfile userProfile = new UserProfile();

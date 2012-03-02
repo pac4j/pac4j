@@ -18,6 +18,7 @@ package org.scribe.up.profile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,11 @@ import org.slf4j.LoggerFactory;
  */
 public final class DateConverter implements AttributeConverter<Date> {
     
-    protected static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
-    protected String format;
+    private static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
+    
+    private String format;
+    
+    private Locale locale;
     
     public DateConverter() {
     }
@@ -40,10 +44,20 @@ public final class DateConverter implements AttributeConverter<Date> {
         this.format = format;
     }
     
+    public DateConverter(String format, Locale locale) {
+        this.format = format;
+        this.locale = locale;
+    }
+    
     public Date convert(Object attribute) {
         if (attribute != null) {
             if (attribute instanceof String && format != null) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+                SimpleDateFormat simpleDateFormat;
+                if (locale == null) {
+                    simpleDateFormat = new SimpleDateFormat(format);
+                } else {
+                    simpleDateFormat = new SimpleDateFormat(format, locale);
+                }
                 try {
                     return simpleDateFormat.parse((String) attribute);
                 } catch (ParseException e) {

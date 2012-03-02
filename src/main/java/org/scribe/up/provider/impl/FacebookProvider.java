@@ -25,22 +25,23 @@ import org.scribe.builder.api.FacebookApi;
 import org.scribe.up.profile.DateConverter;
 import org.scribe.up.profile.GenderConverter;
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.LocaleConverter;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
+import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.profile.facebook.FacebookProfileHelper;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter;
 import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.provider.BaseOAuth20Provider;
+import org.scribe.up.util.StringHelper;
 
 /**
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and attributes are defined in
  * http://developers.facebook.com/docs/reference/api/user/.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.UserProfile} : name (String), first_name (String), middle_name (String),
- * last_name (String), gender (Gender), locale (Locale), languages (List<FacebookObject>), link (String), username (String), third_party_id
- * (String), timezone (Integer), updated_time (Date), verified (Boolean), bio (String), birthday (Date), education
+ * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
+ * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (List<FacebookObject>), link (String), username
+ * (String), third_party_id (String), timezone (Integer), updated_time (Date), verified (Boolean), bio (String), birthday (Date), education
  * (List<FacebookEducation>), email (String), hometown (FacebookObject), interested_in (List<String>), location (FacebookObject), political
  * (String), favorite_athletes (List<FacebookObject>), favorite_teams (List<FacebookObject>), quotes (String), relationship_status
  * (FacebookRelationshipStatus), religion (String), significant_other (FacebookObject), website (String), work (List<FacebookWork>).
@@ -52,7 +53,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     @Override
     protected void internalInit() {
-        if (scope != null) {
+        if (StringHelper.isNotBlank(scope)) {
             service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret)
                 .callback(callbackUrl).scope(scope).build();
         } else {
@@ -60,17 +61,19 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 .callback(callbackUrl).build();
         }
         String[] names = new String[] {
-            "name", "first_name", "middle_name", "last_name", "link", "username", "third_party_id", "timezone",
-            "verified", "bio", "email", "political", "quotes", "religion", "website"
+            FacebookProfile.NAME, FacebookProfile.FIRST_NAME, FacebookProfile.MIDDLE_NAME, FacebookProfile.LAST_NAME,
+            FacebookProfile.LINK, FacebookProfile.USERNAME, FacebookProfile.THIRD_PARTY_ID, FacebookProfile.TIMEZONE,
+            FacebookProfile.VERIFIED, FacebookProfile.BIO, FacebookProfile.EMAIL, FacebookProfile.POLITICAL,
+            FacebookProfile.QUOTES, FacebookProfile.RELIGION, FacebookProfile.WEBSITE
         };
         for (String name : names) {
             mainAttributes.put(name, null);
         }
-        mainAttributes.put("gender", new GenderConverter("male"));
-        mainAttributes.put("locale", new LocaleConverter());
-        mainAttributes.put("updated_time", new DateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
-        mainAttributes.put("birthday", new DateConverter("MM/dd/yyyy"));
-        mainAttributes.put("relationship_status", new FacebookRelationshipStatusConverter());
+        mainAttributes.put(FacebookProfile.GENDER, new GenderConverter("male"));
+        mainAttributes.put(FacebookProfile.LOCALE, localeConverter);
+        mainAttributes.put(FacebookProfile.UPDATED_TIME, new DateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
+        mainAttributes.put(FacebookProfile.BIRTHDAY, new DateConverter("MM/dd/yyyy"));
+        mainAttributes.put(FacebookProfile.RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
     }
     
     @Override
@@ -80,23 +83,23 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     @Override
     protected UserProfile extractUserProfile(String body) {
-        UserProfile userProfile = new UserProfile();
+        FacebookProfile profile = new FacebookProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            UserProfileHelper.addIdentifier(userProfile, json, "id");
+            UserProfileHelper.addIdentifier(profile, json, FacebookProfile.ID);
             for (String attribute : mainAttributes.keySet()) {
-                UserProfileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                UserProfileHelper.addAttribute(profile, json, attribute, mainAttributes.get(attribute));
             }
         }
         // languages
-        JsonNode subJson = json.get("languages");
+        JsonNode subJson = json.get(FacebookProfile.LANGUAGES);
         if (subJson != null) {
-            UserProfileHelper.addAttribute(userProfile, "languages",
+            UserProfileHelper.addAttribute(profile, FacebookProfile.LANGUAGES,
                                            FacebookProfileHelper.getListFacebookObject(subJson));
         }
         // installed
         // education
-        subJson = json.get("education");
+        subJson = json.get(FacebookProfile.EDUCATION);
         if (subJson != null) {
             List<FacebookEducation> education = new ArrayList<FacebookEducation>();
             Iterator<JsonNode> educationIterator = subJson.getElements();
@@ -105,15 +108,15 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 FacebookEducation oneEducation = new FacebookEducation(jsonEducation);
                 education.add(oneEducation);
             }
-            UserProfileHelper.addAttribute(userProfile, "education", education);
+            UserProfileHelper.addAttribute(profile, FacebookProfile.EDUCATION, education);
         }
         // hometown
-        subJson = json.get("hometown");
+        subJson = json.get(FacebookProfile.HOMETOWN);
         if (subJson != null) {
-            UserProfileHelper.addAttribute(userProfile, "hometown", new FacebookObject(subJson));
+            UserProfileHelper.addAttribute(profile, FacebookProfile.HOMETOWN, new FacebookObject(subJson));
         }
         // interested_in
-        subJson = json.get("interested_in");
+        subJson = json.get(FacebookProfile.INTERESTED_IN);
         if (subJson != null) {
             Iterator<JsonNode> interestIterator = subJson.getElements();
             List<String> interested_in = new ArrayList<String>();
@@ -121,33 +124,33 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 JsonNode interest = interestIterator.next();
                 interested_in.add(interest.getTextValue());
             }
-            UserProfileHelper.addAttribute(userProfile, "interested_in", interested_in);
+            UserProfileHelper.addAttribute(profile, FacebookProfile.INTERESTED_IN, interested_in);
         }
         // location
-        subJson = json.get("location");
+        subJson = json.get(FacebookProfile.LOCATION);
         if (subJson != null) {
-            UserProfileHelper.addAttribute(userProfile, "location", new FacebookObject(subJson));
+            UserProfileHelper.addAttribute(profile, FacebookProfile.LOCATION, new FacebookObject(subJson));
         }
         // favorite_athletes
-        subJson = json.get("favorite_athletes");
+        subJson = json.get(FacebookProfile.FAVORITE_ATHLETES);
         if (subJson != null) {
-            UserProfileHelper.addAttribute(userProfile, "favorite_athletes",
+            UserProfileHelper.addAttribute(profile, FacebookProfile.FAVORITE_ATHLETES,
                                            FacebookProfileHelper.getListFacebookObject(subJson));
         }
         // favorite_teams
-        subJson = json.get("favorite_teams");
+        subJson = json.get(FacebookProfile.FAVORITE_TEAMS);
         if (subJson != null) {
-            UserProfileHelper.addAttribute(userProfile, "favorite_teams",
+            UserProfileHelper.addAttribute(profile, FacebookProfile.FAVORITE_TEAMS,
                                            FacebookProfileHelper.getListFacebookObject(subJson));
         }
         // significant_other
-        subJson = json.get("significant_other");
+        subJson = json.get(FacebookProfile.SIGNIFICANT_OTHER);
         if (subJson != null) {
-            UserProfileHelper.addAttribute(userProfile, "significant_other", new FacebookObject(subJson));
+            UserProfileHelper.addAttribute(profile, FacebookProfile.SIGNIFICANT_OTHER, new FacebookObject(subJson));
         }
         // video_upload_limits
         // work
-        subJson = json.get("work");
+        subJson = json.get(FacebookProfile.WORK);
         if (subJson != null) {
             List<FacebookWork> work = new ArrayList<FacebookWork>();
             Iterator<JsonNode> workIterator = subJson.getElements();
@@ -156,8 +159,8 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 FacebookWork oneWork = new FacebookWork(jsonWork);
                 work.add(oneWork);
             }
-            UserProfileHelper.addAttribute(userProfile, "work", work);
+            UserProfileHelper.addAttribute(profile, FacebookProfile.WORK, work);
         }
-        return userProfile;
+        return profile;
     }
 }

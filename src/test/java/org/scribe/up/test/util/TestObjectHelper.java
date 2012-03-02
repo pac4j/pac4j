@@ -13,30 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.test.util;
+
+import junit.framework.TestCase;
+
+import org.scribe.up.util.ObjectHelper;
 
 /**
- * This class is the converter of a String to a Gender.
+ * This class tests the ObjectHelper class.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class GenderConverter implements AttributeConverter<Gender> {
+public final class TestObjectHelper extends TestCase {
     
-    private String maleText;
-    
-    public GenderConverter(String maleText) {
-        this.maleText = maleText;
+    public void testObjectNull() {
+        assertEquals(Boolean.TRUE, ObjectHelper.getDefaultIfNull(null, Boolean.TRUE));
     }
     
-    public Gender convert(Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            if (attribute.equals(maleText)) {
-                return Gender.MALE;
-            } else {
-                return Gender.FEMALE;
-            }
-        }
-        return null;
+    public void testObjectNotNull() {
+        assertEquals(Boolean.FALSE, ObjectHelper.getDefaultIfNull(Boolean.FALSE, Boolean.TRUE));
     }
 }

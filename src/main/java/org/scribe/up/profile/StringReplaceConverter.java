@@ -15,26 +15,31 @@
  */
 package org.scribe.up.profile;
 
+import org.scribe.up.util.StringHelper;
+
 /**
- * This class is the converter of a String to a Gender.
+ * This class makes replacements in a String.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class GenderConverter implements AttributeConverter<Gender> {
+public final class StringReplaceConverter implements AttributeConverter<String> {
     
-    private String maleText;
+    private String regex;
     
-    public GenderConverter(String maleText) {
-        this.maleText = maleText;
+    private String replacement;
+    
+    public StringReplaceConverter(String regex, String replacement) {
+        this.regex = regex;
+        this.replacement = replacement;
     }
     
-    public Gender convert(Object attribute) {
+    public String convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
-            if (attribute.equals(maleText)) {
-                return Gender.MALE;
-            } else {
-                return Gender.FEMALE;
+            String value = (String) attribute;
+            if (StringHelper.isNotBlank(value) && StringHelper.isNotBlank(regex)
+                && StringHelper.isNotBlank(replacement)) {
+                return value.replaceAll(regex, replacement);
             }
         }
         return null;

@@ -25,6 +25,7 @@ import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.AttributeConverter;
+import org.scribe.up.profile.LocaleConverter;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.slf4j.Logger;
@@ -46,6 +47,8 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected static final String ERROR_REASON = "error_reason";
     
     protected static final String ERROR_DESCRIPTION = "error_description";
+    
+    protected static final LocaleConverter localeConverter = new LocaleConverter();
     
     protected OAuthService service;
     

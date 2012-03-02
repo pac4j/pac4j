@@ -18,16 +18,15 @@ package org.scribe.up.test.provider.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.Gender;
-import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
+import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
 import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.provider.impl.FacebookProvider;
@@ -53,7 +52,6 @@ public final class TestFacebookProvider extends TestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(TestFacebookProvider.class);
     
-    @SuppressWarnings("unchecked")
     public void testProvider() throws Exception {
         // init provider
         FacebookProvider facebookProvider = new FacebookProvider();
@@ -85,49 +83,48 @@ public final class TestFacebookProvider extends TestCase {
         Token accessToken = facebookProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
-        UserProfile userProfile = facebookProvider.getUserProfile(accessToken);
-        logger.debug("userProfile : {}", userProfile);
-        assertEquals("100003571536393", userProfile.getId());
-        Map<String, Object> attributes = userProfile.getAttributes();
-        assertEquals(24, attributes.size());
-        assertEquals("Jerome Testscribeup", attributes.get("name"));
-        assertEquals("jerome", attributes.get("first_name"));
+        FacebookProfile profile = (FacebookProfile) facebookProvider.getUserProfile(accessToken);
+        logger.debug("userProfile : {}", profile);
+        assertEquals("100003571536393", profile.getId());
+        assertEquals(24, profile.getAttributes().size());
+        assertEquals("Jerome Testscribeup", profile.getName());
+        assertEquals("jerome", profile.getFirstName());
         // middle_name
-        assertEquals("Testscribeup", attributes.get("last_name"));
-        assertEquals(Gender.MALE, attributes.get("gender"));
-        assertEquals(Locale.FRANCE, attributes.get("locale"));
-        List<FacebookObject> languages = (List<FacebookObject>) attributes.get("languages");
+        assertEquals("Testscribeup", profile.getLastName());
+        assertEquals(Gender.MALE, profile.getGender());
+        assertEquals(Locale.FRANCE, profile.getLocale());
+        List<FacebookObject> languages = profile.getLanguages();
         assertEquals("Français", languages.get(0).getName());
-        assertEquals("http://www.facebook.com/profile.php?id=100003571536393", attributes.get("link"));
+        assertEquals("http://www.facebook.com/profile.php?id=100003571536393", profile.getLink());
         // username
         // third_party_id
-        assertEquals(1, attributes.get("timezone"));
-        assertTrue(attributes.get("updated_time") instanceof Date);
+        assertEquals(1, profile.getTimezone());
+        assertTrue(profile.getUpdateTime() instanceof Date);
         // verified
-        assertEquals("A propos de moi", attributes.get("bio"));
-        assertTrue(attributes.get("birthday") instanceof Date);
-        List<FacebookEducation> educations = (List<FacebookEducation>) attributes.get("education");
+        assertEquals("A propos de moi", profile.getBio());
+        assertTrue(profile.getBirthday() instanceof Date);
+        List<FacebookEducation> educations = profile.getEducation();
         FacebookEducation education = educations.get(0);
         assertEquals("lycée mixte", education.getSchool().getName());
         assertEquals("2000", education.getYear().getName());
         assertEquals("High School", education.getType());
         education = educations.get(1);
         assertEquals("Ingénieur", education.getDegree().getName());
-        assertEquals("testscribeup@gmail.com", attributes.get("email"));
-        assertEquals("San Francisco, California", ((FacebookObject) attributes.get("hometown")).getName());
-        assertEquals("female", ((List<String>) attributes.get("interested_in")).get(0));
-        assertEquals("New York, New York", ((FacebookObject) attributes.get("location")).getName());
-        assertEquals("Sans Opinion (desc)", attributes.get("political"));
-        List<FacebookObject> favoriteAthletes = (List<FacebookObject>) attributes.get("favorite_athletes");
+        assertEquals("testscribeup@gmail.com", profile.getEmail());
+        assertEquals("San Francisco, California", (profile.getHometown()).getName());
+        assertEquals("female", (profile.getInterestedIn()).get(0));
+        assertEquals("New York, New York", (profile.getLocation()).getName());
+        assertEquals("Sans Opinion (desc)", profile.getPolitical());
+        List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
         assertEquals("Surfing", favoriteAthletes.get(0).getName());
-        List<FacebookObject> favoriteTeams = (List<FacebookObject>) attributes.get("favorite_teams");
+        List<FacebookObject> favoriteTeams = profile.getFavoriteTeams();
         assertEquals("Handball Féminin de France", favoriteTeams.get(0).getName());
-        assertEquals("citation", attributes.get("quotes"));
-        assertEquals(FacebookRelationshipStatus.MARRIED, attributes.get("relationship_status"));
-        assertEquals("Athéisme (desc)", attributes.get("religion"));
+        assertEquals("citation", profile.getQuotes());
+        assertEquals(FacebookRelationshipStatus.MARRIED, profile.getRelationshipStatus());
+        assertEquals("Athéisme (desc)", profile.getReligion());
         // significant_other
-        assertEquals("web site", attributes.get("website"));
-        List<FacebookWork> works = (List<FacebookWork>) attributes.get("work");
+        assertEquals("web site", profile.getWebsite());
+        List<FacebookWork> works = profile.getWork();
         FacebookWork work = works.get(0);
         assertEquals("Employeur", work.getEmployer().getName());
         assertEquals("Paris, France", work.getLocation().getName());

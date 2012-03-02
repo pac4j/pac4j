@@ -20,6 +20,7 @@ import org.scribe.builder.api.LinkedInApi;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
+import org.scribe.up.util.StringHelper;
 
 /**
  * This class is the OAuth provider to authenticate user in LinkedIn.
@@ -48,10 +49,10 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     protected UserProfile extractUserProfile(String body) {
         UserProfile userProfile = new UserProfile();
         for (String attribute : mainAttributes.keySet()) {
-            String value = UserProfileHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
+            String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             UserProfileHelper.addAttribute(userProfile, attribute, value, mainAttributes.get(attribute));
             if ("url".equals(attribute)) {
-                String id = UserProfileHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
+                String id = StringHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
                 UserProfileHelper.addIdentifier(userProfile, id);
             }
         }
