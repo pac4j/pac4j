@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.UserProfileHelper;
 
 /**
  * This class represents an education object for Facebook.
@@ -38,13 +39,15 @@ public final class FacebookEducation {
     
     private String type;
     
+    @SuppressWarnings("unchecked")
     public FacebookEducation(JsonNode json) {
         if (json != null) {
             this.school = new FacebookObject(json.get("school"));
             this.degree = new FacebookObject(json.get("degree"));
             this.year = new FacebookObject(json.get("year"));
             JsonNode jsonConcentration = json.get("concentration");
-            this.concentration = FacebookProfileHelper.getListFacebookObject(jsonConcentration);
+            this.concentration = (List<FacebookObject>) UserProfileHelper.getListObject(jsonConcentration,
+                                                                                        FacebookObject.class);
             this.type = JsonHelper.getTextValue(json, "type");
         }
     }

@@ -30,7 +30,6 @@ import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookProfile;
-import org.scribe.up.profile.facebook.FacebookProfileHelper;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter;
 import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.provider.BaseOAuth20Provider;
@@ -95,7 +94,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         JsonNode subJson = json.get(FacebookProfile.LANGUAGES);
         if (subJson != null) {
             UserProfileHelper.addAttribute(profile, FacebookProfile.LANGUAGES,
-                                           FacebookProfileHelper.getListFacebookObject(subJson));
+                                           UserProfileHelper.getListObject(subJson, FacebookObject.class));
         }
         // installed
         // education
@@ -135,13 +134,13 @@ public class FacebookProvider extends BaseOAuth20Provider {
         subJson = json.get(FacebookProfile.FAVORITE_ATHLETES);
         if (subJson != null) {
             UserProfileHelper.addAttribute(profile, FacebookProfile.FAVORITE_ATHLETES,
-                                           FacebookProfileHelper.getListFacebookObject(subJson));
+                                           UserProfileHelper.getListObject(subJson, FacebookObject.class));
         }
         // favorite_teams
         subJson = json.get(FacebookProfile.FAVORITE_TEAMS);
         if (subJson != null) {
             UserProfileHelper.addAttribute(profile, FacebookProfile.FAVORITE_TEAMS,
-                                           FacebookProfileHelper.getListFacebookObject(subJson));
+                                           UserProfileHelper.getListObject(subJson, FacebookObject.class));
         }
         // significant_other
         subJson = json.get(FacebookProfile.SIGNIFICANT_OTHER);

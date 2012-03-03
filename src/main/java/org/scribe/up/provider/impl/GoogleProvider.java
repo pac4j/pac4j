@@ -22,8 +22,8 @@ import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.google.GoogleObject;
 import org.scribe.up.profile.google.GoogleProfile;
-import org.scribe.up.profile.google.GoogleProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
@@ -87,13 +87,13 @@ public class GoogleProvider extends BaseOAuth10Provider {
                 subJson = json.get(GoogleProfile.URLS);
                 if (subJson != null) {
                     UserProfileHelper.addAttribute(profile, GoogleProfile.URLS,
-                                                   GoogleProfileHelper.getListGoogleObject(subJson));
+                                                   UserProfileHelper.getListObject(subJson, GoogleObject.class));
                 }
                 // photos
                 subJson = json.get(GoogleProfile.PHOTOS);
                 if (subJson != null) {
                     UserProfileHelper.addAttribute(profile, GoogleProfile.PHOTOS,
-                                                   GoogleProfileHelper.getListGoogleObject(subJson));
+                                                   UserProfileHelper.getListObject(subJson, GoogleObject.class));
                 }
             }
         }

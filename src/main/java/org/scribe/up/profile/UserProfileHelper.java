@@ -15,7 +15,13 @@
  */
 package org.scribe.up.profile;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.facebook.FacebookObject;
+import org.scribe.up.profile.google.GoogleObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,5 +140,26 @@ public final class UserProfileHelper {
             });
         }
         userProfile.addAttribute(attributeName, attribute);
+    }
+    
+    /**
+     * Return a list of specific profile object.
+     * 
+     * @param json
+     * @return a list of specific profile object
+     */
+    public static List<? extends Object> getListObject(JsonNode json, Class<? extends Object> clazz) {
+        List<Object> list = new ArrayList<Object>();
+        if (json != null) {
+            Iterator<JsonNode> jsonIterator = json.getElements();
+            while (jsonIterator.hasNext()) {
+                if (clazz == FacebookObject.class) {
+                    list.add(new FacebookObject(jsonIterator.next()));
+                } else if (clazz == GoogleObject.class) {
+                    list.add(new GoogleObject(jsonIterator.next()));
+                }
+            }
+        }
+        return list;
     }
 }

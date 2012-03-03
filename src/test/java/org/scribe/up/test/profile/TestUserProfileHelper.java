@@ -15,12 +15,16 @@
  */
 package org.scribe.up.test.profile;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.facebook.FacebookObject;
+import org.scribe.up.profile.google.GoogleObject;
 import org.scribe.up.test.util.MockAttributeConverter;
 
 /**
@@ -29,6 +33,7 @@ import org.scribe.up.test.util.MockAttributeConverter;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@SuppressWarnings("unchecked")
 public final class TestUserProfileHelper extends TestCase {
     
     private static final String ID = "id";
@@ -38,6 +43,15 @@ public final class TestUserProfileHelper extends TestCase {
     private static final String VALUE = "value";
     
     private static final String GOOD_JSON = "{ \"" + KEY + "\" : \"" + VALUE + "\" }";
+    
+    private static final String GOOD_FACEBOOK_LIST_JSON = "[ {\"id\" : \"" + ID + "\", \"name\" : \"" + VALUE + "\"} ]";
+    
+    private static final String BAD_JSON = "[ {\"key\" : \"" + ID + "\", \"key2\" : \"" + VALUE + "\"} ]";
+    
+    private static final String TYPE = "type";
+    
+    private static final String GOOD_GOOGLE_LIST_JSON = "[ {\"value\" : \"" + VALUE + "\", \"type\" : \"" + TYPE
+                                                        + "\"} ]";
     
     public void testAddIdentifier() {
         UserProfile userProfile = new UserProfile();
@@ -80,4 +94,57 @@ public final class TestUserProfileHelper extends TestCase {
         UserProfileHelper.addAttribute(userProfile, json, KEY, new MockAttributeConverter());
         assertEquals(MockAttributeConverter.CONVERTED_VALUE, userProfile.getAttributes().get(KEY));
     }
+    
+    public void testGetListFacebookNull() {
+        List<FacebookObject> list = (List<FacebookObject>) UserProfileHelper.getListObject(null, FacebookObject.class);
+        assertNotNull(list);
+        assertEquals(0, list.size());
+    }
+    
+    public void testGetListFacebookBadKeys() {
+        List<FacebookObject> list = (List<FacebookObject>) UserProfileHelper.getListObject(JsonHelper
+            .getFirstNode(BAD_JSON), FacebookObject.class);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        FacebookObject facebookObject = list.get(0);
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
+    }
+    
+    public void testGetListFacebookOk() {
+        List<FacebookObject> list = (List<FacebookObject>) UserProfileHelper.getListObject(JsonHelper
+            .getFirstNode(GOOD_FACEBOOK_LIST_JSON), FacebookObject.class);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        FacebookObject facebookObject = list.get(0);
+        assertEquals(ID, facebookObject.getId());
+        assertEquals(VALUE, facebookObject.getName());
+    }
+    
+    public void testGetListGoogleNull() {
+        List<GoogleObject> list = (List<GoogleObject>) UserProfileHelper.getListObject(null, GoogleObject.class);
+        assertNotNull(list);
+        assertEquals(0, list.size());
+    }
+    
+    public void testGetListGoogleBadKeys() {
+        List<GoogleObject> list = (List<GoogleObject>) UserProfileHelper.getListObject(JsonHelper
+            .getFirstNode(BAD_JSON), GoogleObject.class);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        GoogleObject googleObject = list.get(0);
+        assertNull(googleObject.getValue());
+        assertNull(googleObject.getType());
+    }
+    
+    public void testGetListGoogleOk() {
+        List<GoogleObject> list = (List<GoogleObject>) UserProfileHelper.getListObject(JsonHelper
+            .getFirstNode(GOOD_GOOGLE_LIST_JSON), GoogleObject.class);
+        assertNotNull(list);
+        assertEquals(1, list.size());
+        GoogleObject googleObject = list.get(0);
+        assertEquals(VALUE, googleObject.getValue());
+        assertEquals(TYPE, googleObject.getType());
+    }
+    
 }
