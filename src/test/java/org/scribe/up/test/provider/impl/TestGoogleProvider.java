@@ -15,11 +15,14 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.google.GoogleObject;
+import org.scribe.up.profile.google.GoogleProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
@@ -75,10 +78,26 @@ public final class TestGoogleProvider extends TestCase {
         Token accessToken = googleProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
-        UserProfile userProfile = googleProvider.getUserProfile(accessToken);
-        logger.debug("userProfile : {}", userProfile);
-        assertEquals("113675986756217860428", userProfile.getId());
-        assertEquals("test ScribeUP", userProfile.getAttributes().get("displayName"));
-        assertEquals(6, userProfile.getAttributes().size());
+        GoogleProfile profile = (GoogleProfile) googleProvider.getUserProfile(accessToken);
+        logger.debug("userProfile : {}", profile);
+        assertEquals("113675986756217860428", profile.getId());
+        assertEquals(9, profile.getAttributes().size());
+        assertEquals("test ScribeUP", profile.getDisplayName());
+        assertEquals("", profile.getProfileUrl());
+        assertEquals(true, profile.isViewer());
+        assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
+                     profile.getThumbnailUrl());
+        assertEquals("test ScribeUP", profile.getFormatted());
+        assertEquals("ScribeUP", profile.getFamilyName());
+        assertEquals("test", profile.getGivenName());
+        List<GoogleObject> urls = profile.getUrls();
+        GoogleObject url = urls.get(0);
+        assertEquals("", url.getValue());
+        assertEquals("profile", url.getType());
+        List<GoogleObject> photos = profile.getPhotos();
+        GoogleObject photo = photos.get(0);
+        assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
+                     photo.getValue());
+        assertEquals("thumbnail", photo.getType());
     }
 }

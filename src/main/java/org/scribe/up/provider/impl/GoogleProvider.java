@@ -22,11 +22,17 @@ import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.google.GoogleProfile;
+import org.scribe.up.profile.google.GoogleProfileHelper;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
 /**
- * This class is the OAuth provider to authenticate user in Google.
+ * This class is the OAuth provider to authenticate user in Google. Scope is not used. Attributes are defined in
+ * http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html.<br />
+ * Attributes (Java type) available in {@link org.scribe.up.profile.google.GoogleProfile} : profileUrl (String), isViewer (Boolean),
+ * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls (List<GoogleObject>),
+ * photos (List<GoogleObject>).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -37,9 +43,10 @@ public class GoogleProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(GoogleApi.class).apiKey(key).apiSecret(secret)
             .scope("http://www-opensocial.googleusercontent.com/api/people/").callback(callbackUrl).build();
-        mainAttributes.put("profileUrl", null);
-        mainAttributes.put("isViewer", null);
-        mainAttributes.put("displayName", null);
+        mainAttributes.put(GoogleProfile.PROFILE_URL, null);
+        mainAttributes.put(GoogleProfile.THUMBNAIL_URL, null);
+        mainAttributes.put(GoogleProfile.IS_VIEWER, null);
+        mainAttributes.put(GoogleProfile.DISPLAY_NAME, null);
     }
     
     @Override
@@ -61,23 +68,35 @@ public class GoogleProvider extends BaseOAuth10Provider {
     
     @Override
     protected UserProfile extractUserProfile(String body) {
-        UserProfile userProfile = new UserProfile();
+        GoogleProfile profile = new GoogleProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            json = json.get("entry");
+            json = json.get(GoogleProfile.ENTRY);
             if (json != null) {
-                UserProfileHelper.addIdentifier(userProfile, json, "id");
+                UserProfileHelper.addIdentifier(profile, json, GoogleProfile.ID);
                 for (String attribute : mainAttributes.keySet()) {
-                    UserProfileHelper.addAttribute(userProfile, json, attribute, mainAttributes.get(attribute));
+                    UserProfileHelper.addAttribute(profile, json, attribute, mainAttributes.get(attribute));
                 }
-                json = json.get("name");
-                if (json != null) {
-                    UserProfileHelper.addAttribute(userProfile, json, "formatted", null);
-                    UserProfileHelper.addAttribute(userProfile, json, "familyName", null);
-                    UserProfileHelper.addAttribute(userProfile, json, "givenName", null);
+                JsonNode subJson = json.get(GoogleProfile.NAME);
+                if (subJson != null) {
+                    UserProfileHelper.addAttribute(profile, subJson, GoogleProfile.FORMATTED, null);
+                    UserProfileHelper.addAttribute(profile, subJson, GoogleProfile.FAMILY_NAME, null);
+                    UserProfileHelper.addAttribute(profile, subJson, GoogleProfile.GIVEN_NAME, null);
+                }
+                // urls
+                subJson = json.get(GoogleProfile.URLS);
+                if (subJson != null) {
+                    UserProfileHelper.addAttribute(profile, GoogleProfile.URLS,
+                                                   GoogleProfileHelper.getListGoogleObject(subJson));
+                }
+                // photos
+                subJson = json.get(GoogleProfile.PHOTOS);
+                if (subJson != null) {
+                    UserProfileHelper.addAttribute(profile, GoogleProfile.PHOTOS,
+                                                   GoogleProfileHelper.getListGoogleObject(subJson));
                 }
             }
         }
-        return userProfile;
+        return profile;
     }
 }
