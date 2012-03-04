@@ -5,8 +5,7 @@ It's available under the Apache 2 license. Take a look at the "technical descrip
 
 h2. OAuth providers supported
 
-| Facebook | Github | Google |
-| LinkedIn | Twitter | Yahoo |
+| Facebook | Github | Google | LinkedIn | Twitter | Yahoo |
 
 h2. Who can use ScribeUP ?
 
@@ -25,6 +24,4 @@ ScribeUP is tested by 85 unit tests and also 6 integration tests on OAuth provid
 
 h2. Contact
 
-Find me on "LinkedIn":http://www.linkedin.com/in/jleleu
-
-Email : leleuj at gmail.com
+Find me on "LinkedIn":http://www.linkedin.com/in/jleleu or by email : leleuj at gmail.com
