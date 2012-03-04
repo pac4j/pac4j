@@ -37,6 +37,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(YahooApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
+        // http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
         String[] names = new String[] {
             "uri", "birthdate", "created", "familyName", "gender", "givenName", "lang", "memberSince", "nickname",
             "profileUrl", "timeZone", "updated", "isConnected"
@@ -53,12 +54,14 @@ public class YahooProvider extends BaseOAuth10Provider {
     
     @Override
     public UserProfile getUserProfile(Token accessToken) {
+        // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForProfile(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
         String guid = StringHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
+        // then the profile with the guid
         if (StringHelper.isNotBlank(guid)) {
             body = sendRequestForProfile(accessToken, "http://social.yahooapis.com/v1/user/" + guid
                                                       + "/profile?format=json");
