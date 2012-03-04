@@ -1,18 +1,19 @@
-h2. What is scribe-up ?
+h2. What is ScribeUP ?
 
-Scribe UP (for Scribe User Profile) is a web-oriented extension for the "Scribe":http://wiki.github.com/fernandezpablo85/scribe-java library. It retrieves the profile of a user after this user has been authenticated by an OAuth provider.
+ScribeUP (for Scribe User Profile) is a web-oriented extension for the "Scribe":http://wiki.github.com/fernandezpablo85/scribe-java library. It retrieves the profile of a user after this user has been authenticated by an OAuth provider.
 It's available under the Apache 2 license. Take a look at the "technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description.
 
 h2. OAuth providers supported
 
-* Facebook
-* Github
-* Google
-* LinkedIn
-* Twitter
-* Yahoo
+| Facebook | Github | Google |
+| LinkedIn | Twitter | Yahoo |
 
-h2. Version
+h2. Who can use ScribeUP ?
+
+Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
+However, the library was created to be the foundation of the cas-server-support-oauth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (planned very soon on version 3.5.0).
+
+h2. Versions
 
 The version 1.0.0 has been released.
 The current version : 1.1.0-SNAPSHOT is under development. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
@@ -20,7 +21,7 @@ Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 
-Scribe UP is tested by unit tests and also integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
+ScribeUP is tested by 85 unit tests and also 6 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
 
 h2. Contact
 
