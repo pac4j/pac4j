@@ -30,7 +30,7 @@ import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
- * This class is the OAuth provider to authenticate user in Twitter. Scope is not used. Attributes are defined in
+ * This class is the OAuth provider to authenticate user in Twitter. Scope is not used. Attributes are defined at
  * https://dev.twitter.com/docs/api/1/get/account/verify_credentials.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.twitter.TwitterProfile} : contributors_enabled (Boolean), created_at
  * (Date), default_profile (Boolean), default_profile_image (Boolean), description (String), favourites_count (Integer), follow_request_sent
@@ -39,7 +39,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
  * profile_background_image_url (String), profile_background_image_url_https (String), profile_background_tile (Boolean), profile_image_url
  * (String), profile_image_url_https (String), profile_link_color (Color), profile_sidebar_border_color (Color), profile_sidebar_fill_color
  * (Color), profile_text_color (Color), profile_use_background_image (Boolean), protected (Boolean), screen_name (String),
- * show_all_inline_media (Boolean), statuses_count (Integer), time_zone (String), url (String), utc_offset (Integer), verified (Boolean).
+ * show_all_inline_media (Boolean), statuses_count (Integer), time_zone (String), url (String), utc_offset (Integer) and verified (Boolean).
  * 
  * @author Jerome Leleu
  * @since 1.0.0

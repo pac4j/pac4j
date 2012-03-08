@@ -22,7 +22,7 @@ import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
 
 /**
- * This class tests the FacebookEducation class.
+ * This class tests the {@link org.scribe.up.profile.facebook.FacebookEducation} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -37,6 +37,8 @@ public final class TestFacebookEducation extends TestCase {
     
     private static final String TYPE = "type";
     
+    private static final String BAD_JSON = "{ }";
+    
     private static final String GOOD_JSON = "{\"school\": " + FACEBOOK_OBJECT + ", \"degree\": " + FACEBOOK_OBJECT
                                             + ", \"year\": " + FACEBOOK_OBJECT + ", \"concentration\": ["
                                             + FACEBOOK_OBJECT + "],\"type\": \"" + TYPE + "\" }";
@@ -47,6 +49,21 @@ public final class TestFacebookEducation extends TestCase {
         assertNull(facebookEducation.getDegree());
         assertNull(facebookEducation.getYear());
         assertNull(facebookEducation.getConcentration());
+        assertNull(facebookEducation.getType());
+    }
+    
+    public void testBadJson() {
+        FacebookEducation facebookEducation = new FacebookEducation(JsonHelper.getFirstNode(BAD_JSON));
+        FacebookObject facebookObject = facebookEducation.getSchool();
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
+        facebookObject = facebookEducation.getDegree();
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
+        assertEquals(0, facebookEducation.getConcentration().size());
+        facebookObject = facebookEducation.getYear();
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
         assertNull(facebookEducation.getType());
     }
     

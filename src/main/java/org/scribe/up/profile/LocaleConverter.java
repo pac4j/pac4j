@@ -27,7 +27,9 @@ public final class LocaleConverter implements AttributeConverter<Locale> {
     
     public Locale convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
-            String[] parts = ((String) attribute).split("_");
+            String value = (String) attribute;
+            value = value.replaceAll("-", "_");
+            String[] parts = value.split("_");
             int length = parts.length;
             if (length == 2) {
                 return new Locale(parts[0], parts[1]);

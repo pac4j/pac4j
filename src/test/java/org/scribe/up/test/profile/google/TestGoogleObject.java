@@ -21,7 +21,7 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.google.GoogleObject;
 
 /**
- * This class tests the GoogleObject.
+ * This class tests the {@link org.scribe.up.profile.google.GoogleObject} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -34,9 +34,7 @@ public final class TestGoogleObject extends TestCase {
     
     private static final String GOOD_JSON = "{\"value\" : \"" + VALUE + "\", \"type\" : \"" + TYPE + "\"}";
     
-    private static final String MISSING_VALUE_JSON = "{\"type\" : \"" + TYPE + "\"}";
-    
-    private static final String MISSING_TYPE_JSON = "{\"value\" : \"" + VALUE + "\"}";
+    private static final String BAD_JSON = "{ }";
     
     public void testNull() {
         GoogleObject googleObject = new GoogleObject(null);
@@ -44,15 +42,9 @@ public final class TestGoogleObject extends TestCase {
         assertNull(googleObject.getType());
     }
     
-    public void testMissingValueJson() {
-        GoogleObject googleObject = new GoogleObject(JsonHelper.getFirstNode(MISSING_VALUE_JSON));
+    public void testBadJson() {
+        GoogleObject googleObject = new GoogleObject(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(googleObject.getValue());
-        assertEquals(TYPE, googleObject.getType());
-    }
-    
-    public void testMissingTypeJson() {
-        GoogleObject googleObject = new GoogleObject(JsonHelper.getFirstNode(MISSING_TYPE_JSON));
-        assertEquals(VALUE, googleObject.getValue());
         assertNull(googleObject.getType());
     }
     

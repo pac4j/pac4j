@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.scribe.up.profile.ColorConverter;
 
 /**
- * This class tests the ColorConverter.
+ * This class tests the {@link org.scribe.up.profile.ColorConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

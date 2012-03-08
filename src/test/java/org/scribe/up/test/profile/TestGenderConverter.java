@@ -21,7 +21,7 @@ import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.GenderConverter;
 
 /**
- * This class tests the GenderConverter.
+ * This class tests the {@link org.scribe.up.profile.GenderConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -30,7 +30,11 @@ public final class TestGenderConverter extends TestCase {
     
     private static final String MALE = "male";
     
-    private GenderConverter converter = new GenderConverter(MALE);
+    private static final String FEMALE = "female";
+    
+    private static final String UNSPECIFIED = "unspecified";
+    
+    private GenderConverter converter = new GenderConverter(MALE, FEMALE);
     
     public void testNull() {
         assertNull(converter.convert(null));
@@ -45,6 +49,10 @@ public final class TestGenderConverter extends TestCase {
     }
     
     public void testFemale() {
-        assertEquals(Gender.FEMALE, converter.convert("not" + MALE));
+        assertEquals(Gender.FEMALE, converter.convert(FEMALE));
+    }
+    
+    public void testUnspecified() {
+        assertEquals(Gender.UNSPECIFIED, converter.convert(UNSPECIFIED));
     }
 }

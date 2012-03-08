@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.scribe.up.credential.OAuthCredential;
 
 /**
- * This class tests the OAuthCredential class.
+ * This class tests the {@link org.scribe.up.credential.OAuthCredential} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

@@ -21,7 +21,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.impl.YahooProvider;
 
 /**
- * This class tests the type returned by the BaseOAuthProvider.
+ * This class tests the type returned by the {@link org.scribe.up.provider.BaseOAuthProvider} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

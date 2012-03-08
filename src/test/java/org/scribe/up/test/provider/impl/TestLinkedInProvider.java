@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.linkedin.LinkedInProfile;
 import org.scribe.up.provider.impl.LinkedInProvider;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
@@ -34,7 +34,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the LinkedInProvider by simulating a complete authentication.
+ * This class tests the {@link org.scribe.up.provider.impl.LinkedInProvider} class by simulating a complete authentication.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -72,10 +72,14 @@ public final class TestLinkedInProvider extends TestCase {
         Token accessToken = linkedinProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
-        UserProfile userProfile = linkedinProvider.getUserProfile(accessToken);
-        logger.debug("userProfile : {}", userProfile);
-        assertEquals("167439971", userProfile.getId());
-        assertEquals("scribeUp", userProfile.getAttributes().get("last-name"));
-        assertEquals(4, userProfile.getAttributes().size());
+        LinkedInProfile profile = (LinkedInProfile) linkedinProvider.getUserProfile(accessToken);
+        logger.debug("userProfile : {}", profile);
+        assertEquals(4, profile.getAttributes().size());
+        assertEquals("167439971", profile.getId());
+        assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());
+        assertEquals("test", profile.getFirstName());
+        assertEquals("scribeUp", profile.getLastName());
+        assertEquals("http://www.linkedin.com/profile?viewProfile=&amp;key=167439971&amp;authToken=_IWF&amp;authType=name&amp;trk=api*a167383*s175634*",
+                     profile.getUrl());
     }
 }

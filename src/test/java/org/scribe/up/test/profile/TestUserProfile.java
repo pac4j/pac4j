@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.scribe.up.profile.UserProfile;
 
 /**
- * This class tests the UserProfile class.
+ * This class tests the {@link org.scribe.up.profile.UserProfile} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

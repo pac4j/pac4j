@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.scribe.up.profile.DateConverter;
 
 /**
- * This class tests the DateConverter.
+ * This class tests the {@link org.scribe.up.profile.DateConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

@@ -29,7 +29,7 @@ import org.scribe.up.profile.JsonHelper;
  */
 public final class FacebookWork {
     
-    private static DateConverter dateConverter = new DateConverter("yyyy-MM");
+    private final static DateConverter dateConverter = new DateConverter("yyyy-MM");
     
     private FacebookObject employer;
     
@@ -78,8 +78,9 @@ public final class FacebookWork {
         return endDate;
     }
     
+    @Override
     public String toString() {
-        return "FacebookWork[employer:" + employer + ",location:" + location + ",position:" + position
-               + ",description:" + description + ",start_date:" + startDate + ",end_date:" + endDate + "]";
+        return "FacebookWork(employer:" + employer + ",location:" + location + ",position:" + position
+               + ",description:" + description + ",start_date:" + startDate + ",end_date:" + endDate + ")";
     }
 }

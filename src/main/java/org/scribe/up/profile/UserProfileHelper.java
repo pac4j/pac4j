@@ -20,8 +20,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
+import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.profile.google.GoogleObject;
+import org.scribe.up.profile.yahoo.YahooAddress;
+import org.scribe.up.profile.yahoo.YahooDisclosure;
+import org.scribe.up.profile.yahoo.YahooEmail;
+import org.scribe.up.profile.yahoo.YahooInterest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,9 +149,14 @@ public final class UserProfileHelper {
     }
     
     /**
-     * Return a list of specific profile object.
+     * Return a list of specific profile object, which could be of type : {@link org.scribe.up.profile.facebook.FacebookObject},
+     * {@link org.scribe.up.profile.facebook.FacebookEducation}, String, {@link org.scribe.up.profile.facebook.FacebookWork},
+     * {@link org.scribe.up.profile.google.GoogleObject}, {@link org.scribe.up.profile.yahoo.YahooAddress},
+     * {@link org.scribe.up.profile.yahoo.YahooDisclosure}, {@link org.scribe.up.profile.yahoo.YahooEmail} or
+     * {@link org.scribe.up.profile.yahoo.YahooInterest}.
      * 
      * @param json
+     * @param clazz
      * @return a list of specific profile object
      */
     public static List<? extends Object> getListObject(JsonNode json, Class<? extends Object> clazz) {
@@ -153,10 +164,29 @@ public final class UserProfileHelper {
         if (json != null) {
             Iterator<JsonNode> jsonIterator = json.getElements();
             while (jsonIterator.hasNext()) {
-                if (clazz == FacebookObject.class) {
-                    list.add(new FacebookObject(jsonIterator.next()));
-                } else if (clazz == GoogleObject.class) {
-                    list.add(new GoogleObject(jsonIterator.next()));
+                JsonNode node = jsonIterator.next();
+                // google
+                if (clazz == GoogleObject.class) {
+                    list.add(new GoogleObject(node));
+                    // facebook
+                } else if (clazz == FacebookObject.class) {
+                    list.add(new FacebookObject(node));
+                } else if (clazz == FacebookEducation.class) {
+                    list.add(new FacebookEducation(node));
+                } else if (clazz == FacebookWork.class) {
+                    list.add(new FacebookWork(node));
+                    // yahoo
+                } else if (clazz == YahooAddress.class) {
+                    list.add(new YahooAddress(node));
+                } else if (clazz == YahooDisclosure.class) {
+                    list.add(new YahooDisclosure(node));
+                } else if (clazz == YahooEmail.class) {
+                    list.add(new YahooEmail(node));
+                } else if (clazz == YahooInterest.class) {
+                    list.add(new YahooInterest(node));
+                    //
+                } else if (clazz == String.class) {
+                    list.add(node.getTextValue());
                 }
             }
         }

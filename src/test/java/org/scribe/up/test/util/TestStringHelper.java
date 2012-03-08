@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class tests the StringHelper class.
+ * This class tests the {@link org.scribe.up.util.StringHelper} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

@@ -56,6 +56,6 @@ public class UserProfile {
     
     @Override
     public String toString() {
-        return "[id:" + id + ",attributes:" + attributes + "]";
+        return "UserProfile(id:" + id + ",attributes:" + attributes + ")";
     }
 }

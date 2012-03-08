@@ -25,7 +25,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.provider.impl.FacebookProvider;
 
 /**
- * This class tests the OAuth credential retrieval in the BaseOAuth20Provider.
+ * This class tests the OAuth credential retrieval in the {@link org.scribe.up.provider.BaseOAuth20Provider} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

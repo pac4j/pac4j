@@ -19,11 +19,15 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.linkedin.LinkedInProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class is the OAuth provider to authenticate user in LinkedIn.
+ * This class is the OAuth provider to authenticate user in LinkedIn. Scope is not used. Attributes are defined at
+ * https://developer.linkedin.com/documents/profile-api.<br />
+ * Attributes (Java type) available in {@link org.scribe.up.profile.linkedin.LinkedInProfile} : first-name (String), last-name (String),
+ * headline (String) and url (String).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -34,10 +38,10 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     protected void internalInit() {
         service = new ServiceBuilder().provider(LinkedInApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
-        mainAttributes.put("first-name", null);
-        mainAttributes.put("last-name", null);
-        mainAttributes.put("headline", null);
-        mainAttributes.put("url", null);
+        mainAttributes.put(LinkedInProfile.FIRST_NAME, null);
+        mainAttributes.put(LinkedInProfile.LAST_NAME, null);
+        mainAttributes.put(LinkedInProfile.HEADLINE, null);
+        mainAttributes.put(LinkedInProfile.URL, null);
     }
     
     @Override
@@ -47,15 +51,15 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     
     @Override
     protected UserProfile extractUserProfile(String body) {
-        UserProfile userProfile = new UserProfile();
+        LinkedInProfile profile = new LinkedInProfile();
         for (String attribute : mainAttributes.keySet()) {
             String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
-            UserProfileHelper.addAttribute(userProfile, attribute, value, mainAttributes.get(attribute));
-            if ("url".equals(attribute)) {
+            UserProfileHelper.addAttribute(profile, attribute, value, mainAttributes.get(attribute));
+            if (LinkedInProfile.URL.equals(attribute)) {
                 String id = StringHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
-                UserProfileHelper.addIdentifier(userProfile, id);
+                UserProfileHelper.addIdentifier(profile, id);
             }
         }
-        return userProfile;
+        return profile;
     }
 }

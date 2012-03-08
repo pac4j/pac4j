@@ -21,7 +21,7 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.facebook.FacebookObject;
 
 /**
- * This class tests the FacebookObject.
+ * This class tests the {@link org.scribe.up.profile.facebook.FacebookObject} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -34,9 +34,7 @@ public final class TestFacebookObject extends TestCase {
     
     private static final String GOOD_JSON = "{\"id\" : \"" + ID + "\", \"name\" : \"" + NAME + "\"}";
     
-    private static final String MISSING_ID_JSON = "{\"name\" : \"" + NAME + "\"}";
-    
-    private static final String MISSING_NAME_JSON = "{\"id\" : \"" + ID + "\"}";
+    private static final String BAD_JSON = "{ }";
     
     public void testNull() {
         FacebookObject facebookObject = new FacebookObject(null);
@@ -44,15 +42,9 @@ public final class TestFacebookObject extends TestCase {
         assertNull(facebookObject.getName());
     }
     
-    public void testMissingIdJson() {
-        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(MISSING_ID_JSON));
+    public void testBadJson() {
+        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(facebookObject.getId());
-        assertEquals(NAME, facebookObject.getName());
-    }
-    
-    public void testMissingNameJson() {
-        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(MISSING_NAME_JSON));
-        assertEquals(ID, facebookObject.getId());
         assertNull(facebookObject.getName());
     }
     

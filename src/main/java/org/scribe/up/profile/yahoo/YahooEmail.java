@@ -13,32 +13,48 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.google;
+package org.scribe.up.profile.yahoo;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.util.ObjectHelper;
 
 /**
- * This class represents a common Google object (value + type).
+ * This class represents an email for Yahoo.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class GoogleObject {
+public final class YahooEmail {
     
-    private String value;
+    private int id;
+    
+    private boolean primary;
+    
+    private String handle;
     
     private String type;
     
-    public GoogleObject(JsonNode json) {
+    public YahooEmail(JsonNode json) {
         if (json != null) {
-            this.value = JsonHelper.getTextValue(json, "value");
+            this.id = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json, "id"), new Integer(0));
+            this.primary = (Boolean) ObjectHelper.getDefaultIfNull(JsonHelper.getBooleanValue(json, "primary"),
+                                                                   Boolean.FALSE);
+            this.handle = JsonHelper.getTextValue(json, "handle");
             this.type = JsonHelper.getTextValue(json, "type");
         }
     }
     
-    public String getValue() {
-        return value;
+    public int getId() {
+        return id;
+    }
+    
+    public boolean isPrimary() {
+        return primary;
+    }
+    
+    public String getHandle() {
+        return handle;
     }
     
     public String getType() {
@@ -47,6 +63,6 @@ public final class GoogleObject {
     
     @Override
     public String toString() {
-        return "GoogleObject(value:" + value + ",type:" + type + ")";
+        return "YahooEmail(id:" + id + ",primary:" + primary + ",handle:" + handle + ",type:" + type + ")";
     }
 }

@@ -37,7 +37,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the GoogleProvider by simulating a complete authentication.
+ * This class tests the {@link org.scribe.up.provider.impl.GoogleProvider} class by simulating a complete authentication.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

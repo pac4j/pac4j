@@ -29,6 +29,9 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 public final class WebHelper {
     
+    private WebHelper() {
+    }
+    
     public static WebClient newClient() {
         WebClient webClient = new WebClient();
         webClient.setRedirectEnabled(true);

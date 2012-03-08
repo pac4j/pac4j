@@ -31,8 +31,10 @@ public final class FacebookObject {
     private String name;
     
     public FacebookObject(JsonNode json) {
-        this.id = JsonHelper.getTextValue(json, "id");
-        this.name = JsonHelper.getTextValue(json, "name");
+        if (json != null) {
+            this.id = JsonHelper.getTextValue(json, "id");
+            this.name = JsonHelper.getTextValue(json, "name");
+        }
     }
     
     public String getId() {
@@ -43,7 +45,8 @@ public final class FacebookObject {
         return name;
     }
     
+    @Override
     public String toString() {
-        return "FacebookObject[id:" + id + ",name:" + name + "]";
+        return "FacebookObject(id:" + id + ",name:" + name + ")";
     }
 }

@@ -38,7 +38,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the TwitterProvider by simulating a complete authentication.
+ * This class tests the {@link org.scribe.up.provider.impl.TwitterProvider} class by simulating a complete authentication.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

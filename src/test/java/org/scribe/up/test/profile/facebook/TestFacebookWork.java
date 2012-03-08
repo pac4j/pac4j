@@ -23,7 +23,7 @@ import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookWork;
 
 /**
- * This class tests the FacebookWork.
+ * This class tests the {@link org.scribe.up.profile.facebook.FacebookWork} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -47,11 +47,29 @@ public final class TestFacebookWork extends TestCase {
                                             + DESCRIPTION + "\", \"start_date\" : \"" + DATE + "\", \"end_date\" : \""
                                             + DATE + "\" }";
     
+    private static final String BAD_JSON = "{ }";
+    
     public void testNull() {
         FacebookWork facebookWork = new FacebookWork(null);
         assertNull(facebookWork.getEmployer());
         assertNull(facebookWork.getLocation());
         assertNull(facebookWork.getPosition());
+        assertNull(facebookWork.getDescription());
+        assertNull(facebookWork.getStartDate());
+        assertNull(facebookWork.getEndDate());
+    }
+    
+    public void testBadJson() {
+        FacebookWork facebookWork = new FacebookWork(JsonHelper.getFirstNode(BAD_JSON));
+        FacebookObject facebookObject = facebookWork.getEmployer();
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
+        facebookObject = facebookWork.getLocation();
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
+        facebookObject = facebookWork.getPosition();
+        assertNull(facebookObject.getId());
+        assertNull(facebookObject.getName());
         assertNull(facebookWork.getDescription());
         assertNull(facebookWork.getStartDate());
         assertNull(facebookWork.getEndDate());

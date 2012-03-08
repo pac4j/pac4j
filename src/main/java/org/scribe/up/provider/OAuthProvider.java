@@ -23,12 +23,13 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.session.UserSession;
 
 /**
- * This interface represents a provider using OAuth protocol. It's the main contract of the project. A provider has a type accessible by the
- * <i>getType()</i> method and could be initialized throught the <i>init()</i> method. A provider supports off course the OAuth
- * authentication process through the <i>getAuthorizationUrl(UserSession session)</i> and <i>getAccessToken(UserSession session,
- * OAuthCredential credential)</i> methods, <b>UserSession</b> is the session of the current user. A provider can retrieve an
- * <b>OAuthCredential</b> from parameters : <i>getCredential(Map<String, String[]> parameters)</i> method and get a user profile from an
- * OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
+ * This interface represents a provider using OAuth protocol. It's the main contract of the project.<br />
+ * <br />
+ * A provider has a type accessible by the <i>getType()</i> method and could be initialized through the <i>init()</i> method.<br />
+ * A provider supports off course the OAuth authentication process through the <i>getAuthorizationUrl(UserSession session)</i> and
+ * <i>getAccessToken(UserSession session, OAuthCredential credential)</i> methods, <b>UserSession</b> is the session of the current user.<br />
+ * A provider can retrieve an <b>OAuthCredential</b> from parameters : <i>getCredential(Map&lt;String, String[]&gt; parameters)</i> method
+ * and get a user profile from an OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -76,7 +77,7 @@ public interface OAuthProvider {
      * Get the OAuth credential from given parameters.
      * 
      * @param parameters
-     * @return the OAuth credential or null if no credential is found.
+     * @return the OAuth credential or null if no credential is found
      */
     public OAuthCredential getCredential(Map<String, String[]> parameters);
 }

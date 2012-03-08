@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.scribe.up.profile.LocaleConverter;
 
 /**
- * This class tests the LocaleConverter.
+ * This class tests the {@link org.scribe.up.profile.LocaleConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

@@ -15,11 +15,14 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import java.util.Date;
+
 import junit.framework.TestCase;
 
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.github.GitHubPlan;
+import org.scribe.up.profile.github.GitHubProfile;
 import org.scribe.up.provider.impl.GitHubProvider;
 import org.scribe.up.test.util.SingleUserSession;
 import org.scribe.up.test.util.WebHelper;
@@ -34,7 +37,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the GitHubProvider by simulating a complete authentication.
+ * This class tests the {@link org.scribe.up.provider.impl.GitHubProvider} class by simulating a complete authentication.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -72,10 +75,33 @@ public final class TestGitHubProvider extends TestCase {
         Token accessToken = githubProvider.getAccessToken(testSession, credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
-        UserProfile userProfile = githubProvider.getUserProfile(accessToken);
-        logger.debug("userProfile : {}", userProfile);
-        assertEquals("1412558", userProfile.getId());
-        assertEquals("testscribeup", userProfile.getAttributes().get("login"));
-        assertEquals(14, userProfile.getAttributes().size());
+        GitHubProfile profile = (GitHubProfile) githubProvider.getUserProfile(accessToken);
+        logger.debug("userProfile : {}", profile);
+        assertEquals("1412558", profile.getId());
+        assertEquals(20, profile.getAttributes().size());
+        assertEquals(0, profile.getDiskUsage());
+        assertEquals(0, profile.getTotalPrivateRepoCount());
+        assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
+        assertEquals("Paris", profile.getLocation());
+        assertNull(profile.getPermission());
+        assertEquals(0, profile.getPrivateGistCount());
+        assertEquals("User", profile.getType());
+        assertEquals(0, profile.getFollowingCount());
+        assertEquals("ScribeUp", profile.getBlog());
+        assertEquals(0, profile.getPublicGistCount());
+        assertEquals(0, profile.getCollaborators());
+        assertEquals("testscribeup@gmail.com", profile.getEmail());
+        assertEquals("Company", profile.getCompany());
+        assertEquals("Test", profile.getName());
+        assertTrue(profile.getCreatedAt() instanceof Date);
+        assertEquals(0, profile.getOwnedPrivateRepoCount());
+        assertEquals("testscribeup", profile.getLogin());
+        assertEquals(0, profile.getPublicRepoCount());
+        assertEquals(0, profile.getFollowersCount());
+        GitHubPlan plan = profile.getPlan();
+        assertEquals("free", plan.getName());
+        assertEquals(0, plan.getCollaborators());
+        assertEquals(307200, plan.getSpace());
+        assertEquals(0, plan.getPrivateRepos());
     }
 }

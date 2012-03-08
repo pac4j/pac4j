@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is an helper to test if a String is blank.
+ * This class is an helper to work on strings.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -46,7 +46,7 @@ public final class StringHelper {
                 int end = text.indexOf(s2, begin);
                 if (end >= 0) {
                     String extract = text.substring(begin + s1.length(), end);
-                    logger.debug("String extracted between {} and {} in {} : {}", new Object[] {
+                    logger.trace("String extracted between {} and {} in {} : {}", new Object[] {
                         s1, s2, text, extract
                     });
                     return extract;

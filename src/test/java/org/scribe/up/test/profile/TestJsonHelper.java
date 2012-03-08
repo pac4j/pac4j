@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.scribe.up.profile.JsonHelper;
 
 /**
- * This class tests the JsonHelper class.
+ * This class tests the {@link org.scribe.up.profile.JsonHelper} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -29,14 +29,18 @@ public final class TestJsonHelper extends TestCase {
     
     private static final String KEY = "key";
     
-    private static final String VALUE = "value";
+    private static final String TEXT_VALUE = "value";
     
-    private static final String GOOD_JSON = "{ \"" + KEY + "\" : \"" + VALUE + "\" }";
+    private static final String GOOD_TEXT_JSON = "{ \"" + KEY + "\" : \"" + TEXT_VALUE + "\" }";
+    
+    private static final String GOOD_BOOLEAN_JSON = "{ \"" + KEY + "\" : " + Boolean.TRUE + " }";
+    
+    private static final String GOOD_NUMBER_JSON = "{ \"" + KEY + "\" : " + 1 + " }";
     
     private static final String BAD_JSON = "this_is_definitively_not_a_json_text";
     
     public void testGetFirstNodeOk() {
-        assertNotNull(JsonHelper.getFirstNode(GOOD_JSON));
+        assertNotNull(JsonHelper.getFirstNode(GOOD_TEXT_JSON));
     }
     
     public void testGetFirstNodeKo() {
@@ -48,10 +52,34 @@ public final class TestJsonHelper extends TestCase {
     }
     
     public void testGetTextValueBadKey() {
-        assertNull(JsonHelper.getTextValue(JsonHelper.getFirstNode(GOOD_JSON), "bad" + KEY));
+        assertNull(JsonHelper.getTextValue(JsonHelper.getFirstNode(GOOD_TEXT_JSON), "bad" + KEY));
     }
     
     public void testGetTextValueOk() {
-        assertEquals(VALUE, JsonHelper.getTextValue(JsonHelper.getFirstNode(GOOD_JSON), KEY));
+        assertEquals(TEXT_VALUE, JsonHelper.getTextValue(JsonHelper.getFirstNode(GOOD_TEXT_JSON), KEY));
+    }
+    
+    public void testGetNumberValueNull() {
+        assertNull(JsonHelper.getNumberValue(null, KEY));
+    }
+    
+    public void testGetNumberValueBadKey() {
+        assertNull(JsonHelper.getNumberValue(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), "bad" + KEY));
+    }
+    
+    public void testGetNumberValueOk() {
+        assertEquals(1, JsonHelper.getNumberValue(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), KEY));
+    }
+    
+    public void testGetBooleanValueNull() {
+        assertNull(JsonHelper.getBooleanValue(null, KEY));
+    }
+    
+    public void testGetBooleanValueBadKey() {
+        assertNull(JsonHelper.getBooleanValue(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), "bad" + KEY));
+    }
+    
+    public void testGetBooleanValueOk() {
+        assertEquals(Boolean.TRUE, JsonHelper.getBooleanValue(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), KEY));
     }
 }

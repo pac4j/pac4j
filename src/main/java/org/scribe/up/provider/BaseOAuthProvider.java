@@ -42,8 +42,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthProvider.class);
     
-    protected static final String REQUEST_TOKEN = "requestToken";
-    
     protected static final String ERROR_REASON = "error_reason";
     
     protected static final String ERROR_DESCRIPTION = "error_description";
@@ -148,9 +146,18 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      * Get credential from given parameters.
      * 
      * @param parameters
-     * @return the OAuth credential or null if no credential is found.
+     * @return the OAuth credential or null if no credential is found
      */
     protected abstract OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters);
+    
+    /**
+     * Return the name of the attribute storing in session the request token.
+     * 
+     * @return the name of the attribute storing in session the request token
+     */
+    public String getRequestTokenSessionAttributeName() {
+        return getType() + "#requestToken";
+    }
     
     public void setKey(String key) {
         this.key = key;

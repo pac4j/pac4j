@@ -49,6 +49,6 @@ public class OAuthCredential {
     
     @Override
     public String toString() {
-        return "[token:" + token + ",verifier:" + verifier + ",providerType:" + providerType + "]";
+        return "OAuthCredential(token:" + token + ",verifier:" + verifier + ",providerType:" + providerType + ")";
     }
 }

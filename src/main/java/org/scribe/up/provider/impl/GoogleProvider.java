@@ -28,11 +28,11 @@ import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
 /**
- * This class is the OAuth provider to authenticate user in Google. Scope is not used. Attributes are defined in
+ * This class is the OAuth provider to authenticate user in Google. Scope is not used. Attributes are defined at
  * http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.google.GoogleProfile} : profileUrl (String), isViewer (Boolean),
- * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls (List<GoogleObject>),
- * photos (List<GoogleObject>).
+ * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls (List&lt;
+ * {@link org.scribe.up.profile.google.GoogleObject}&gt;) and photos (List&lt;{@link org.scribe.up.profile.google.GoogleObject}&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -54,7 +54,7 @@ public class GoogleProvider extends BaseOAuth10Provider {
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in session
-        session.setAttribute(getType() + "#" + REQUEST_TOKEN, requestToken);
+        session.setAttribute(getRequestTokenSessionAttributeName(), requestToken);
         String authorizationUrl = "https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token="
                                   + requestToken.getToken();
         logger.debug("authorizationUrl : {}", authorizationUrl);

@@ -16,12 +16,13 @@
 package org.scribe.up.profile;
 
 /**
- * This enumeration is the gender of a user.
+ * This enumeration is the gender of a user : MALE (Facebook & Yahoo), FEMALE (Facebook & Yahoo), UNSPECIFIED (Yahoo).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public enum Gender {
     MALE,
-    FEMALE
+    FEMALE,
+    UNSPECIFIED
 }

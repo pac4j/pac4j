@@ -18,7 +18,7 @@ package org.scribe.up.profile;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class makes replacements in a String.
+ * This class makes replacements in a String attribute.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.scribe.up.util.ObjectHelper;
 
 /**
- * This class tests the ObjectHelper class.
+ * This class tests the {@link org.scribe.up.util.ObjectHelper} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

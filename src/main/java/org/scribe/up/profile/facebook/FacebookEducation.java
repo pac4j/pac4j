@@ -52,15 +52,6 @@ public final class FacebookEducation {
         }
     }
     
-    public FacebookEducation(FacebookObject school, FacebookObject degree, FacebookObject year,
-                             List<FacebookObject> concentration, String type) {
-        this.school = school;
-        this.degree = degree;
-        this.year = year;
-        this.concentration = concentration;
-        this.type = type;
-    }
-    
     public FacebookObject getSchool() {
         return school;
     }
@@ -81,8 +72,9 @@ public final class FacebookEducation {
         return type;
     }
     
+    @Override
     public String toString() {
-        return "FacebookEducation[school:" + school + ",degree:" + degree + ",year:" + year + ",concentration:"
-               + concentration + ",type:" + type + "]";
+        return "FacebookEducation(school:" + school + ",degree:" + degree + ",year:" + year + ",concentration:"
+               + concentration + ",type:" + type + ")";
     }
 }

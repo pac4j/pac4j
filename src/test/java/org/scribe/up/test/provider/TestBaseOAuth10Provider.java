@@ -25,7 +25,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.impl.YahooProvider;
 
 /**
- * This class tests the OAuth credential retrieval in the BaseOAuth10Provider.
+ * This class tests the OAuth credential retrieval in the {@link org.scribe.up.provider.BaseOAuth10Provider} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

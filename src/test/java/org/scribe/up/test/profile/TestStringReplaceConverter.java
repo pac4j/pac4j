@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.scribe.up.profile.StringReplaceConverter;
 
 /**
- * This class tests the StringReplaceConverter.
+ * This class tests the {@link org.scribe.up.profile.StringReplaceConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
