@@ -15,6 +15,7 @@
  */
 package org.scribe.up.session;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -26,6 +27,10 @@ import javax.servlet.http.HttpSession;
 public final class HttpUserSession implements UserSession {
     
     private HttpSession session;
+    
+    public HttpUserSession(HttpServletRequest request) {
+        this.session = request.getSession();
+    }
     
     public HttpUserSession(HttpSession session) {
         this.session = session;
