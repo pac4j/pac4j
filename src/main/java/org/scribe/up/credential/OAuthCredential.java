@@ -15,6 +15,8 @@
  */
 package org.scribe.up.credential;
 
+import java.io.Serializable;
+
 import org.scribe.model.Token;
 
 /**
@@ -23,7 +25,9 @@ import org.scribe.model.Token;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class OAuthCredential {
+public class OAuthCredential implements Serializable {
+    
+    private static final long serialVersionUID = -2519377757891215370L;
     
     protected Token requestToken;
     
