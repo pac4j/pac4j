@@ -60,7 +60,7 @@ public interface OAuthProvider {
     /**
      * Get the OAuth credential from user session and given parameters.
      * 
-     * @session
+     * @param session
      * @param parameters
      * @return the OAuth credential or null if no credential is found
      */
