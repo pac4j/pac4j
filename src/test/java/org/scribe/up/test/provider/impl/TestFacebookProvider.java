@@ -78,9 +78,10 @@ public final class TestFacebookProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = facebookProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = facebookProvider.getCredential(testSession,
+                                                                    WebHelper.getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = facebookProvider.getAccessToken(testSession, credential);
+        Token accessToken = facebookProvider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
         FacebookProfile profile = (FacebookProfile) facebookProvider.getUserProfile(accessToken);

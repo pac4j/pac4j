@@ -40,6 +40,17 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
     
     public static final String OAUTH_VERIFIER = "oauth_verifier";
     
+    public static final String REQUEST_TOKEN = "requestToken";
+    
+    /**
+     * Return the name of the attribute storing in session the request token.
+     * 
+     * @return the name of the attribute storing in session the request token
+     */
+    protected String getRequestTokenSessionAttributeName() {
+        return getType() + "#" + REQUEST_TOKEN;
+    }
+    
     public String getAuthorizationUrl(UserSession session) {
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
@@ -50,14 +61,13 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         return authorizationUrl;
     }
     
-    public Token getAccessToken(UserSession session, OAuthCredential credential) {
+    public Token getAccessToken(OAuthCredential credential) {
+        Token tokenRequest = credential.getRequestToken();
         String token = credential.getToken();
         String verifier = credential.getVerifier();
+        logger.debug("tokenRequest : {}", tokenRequest);
         logger.debug("token : {}", token);
         logger.debug("verifier : {}", verifier);
-        // get tokenRequest from user session
-        Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
-        logger.debug("tokenRequest : {}", tokenRequest);
         if (tokenRequest == null) {
             throw new OAuthException("Token request expired");
         }
@@ -72,14 +82,18 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         return accessToken;
     }
     
-    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
+    @Override
+    public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
         String[] tokens = parameters.get(OAUTH_TOKEN);
         String[] verifiers = parameters.get(OAUTH_VERIFIER);
         if (tokens != null && tokens.length == 1 && verifiers != null && verifiers.length == 1) {
+            // get tokenRequest from user session
+            Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
+            logger.debug("tokenRequest : {}", tokenRequest);
             String token = OAuthEncoder.decode(tokens[0]);
             String verifier = OAuthEncoder.decode(verifiers[0]);
             logger.debug("token : {} / verifier : {}", token, verifier);
-            return new OAuthCredential(token, verifier, getType());
+            return new OAuthCredential(tokenRequest, token, verifier, getType());
         } else {
             logger.error("No credential found");
             return null;

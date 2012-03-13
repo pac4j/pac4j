@@ -20,9 +20,11 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.impl.YahooProvider;
+import org.scribe.up.test.util.SingleUserSession;
 
 /**
  * This class tests the OAuth credential retrieval in the {@link org.scribe.up.provider.BaseOAuth10Provider} class.
@@ -42,9 +44,11 @@ public final class TestBaseOAuth10Provider extends TestCase {
     
     private static final String TOKEN2 = "token2";
     
+    private static final String SECRET = "secret";
+    
     public void testNoTokenNoVerifier() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertNull(provider.getCredential(parameters));
+        assertNull(provider.getCredential(null, parameters));
     }
     
     public void testNoToken() {
@@ -53,7 +57,7 @@ public final class TestBaseOAuth10Provider extends TestCase {
             VERIFIER
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
-        assertNull(provider.getCredential(parameters));
+        assertNull(provider.getCredential(null, parameters));
     }
     
     public void testNoVerifier() {
@@ -62,7 +66,7 @@ public final class TestBaseOAuth10Provider extends TestCase {
             TOKEN
         };
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertNull(provider.getCredential(parameters));
+        assertNull(provider.getCredential(null, parameters));
     }
     
     public void testOk() {
@@ -75,10 +79,16 @@ public final class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        OAuthCredential oauthCredential = provider.getCredential(parameters);
+        SingleUserSession singleUserSession = new SingleUserSession();
+        singleUserSession.setAttribute(provider.getType() + "#" + BaseOAuth10Provider.REQUEST_TOKEN, new Token(TOKEN,
+                                                                                                               SECRET));
+        OAuthCredential oauthCredential = provider.getCredential(singleUserSession, parameters);
         assertNotNull(oauthCredential);
         assertEquals(TOKEN, oauthCredential.getToken());
         assertEquals(VERIFIER, oauthCredential.getVerifier());
+        Token tokenRequest = oauthCredential.getRequestToken();
+        assertEquals(TOKEN, tokenRequest.getToken());
+        assertEquals(SECRET, tokenRequest.getSecret());
     }
     
     public void testTwoTokens() {
@@ -91,7 +101,7 @@ public final class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertNull(provider.getCredential(parameters));
+        assertNull(provider.getCredential(null, parameters));
     }
     
     public void testTwoVerifiers() {
@@ -104,6 +114,6 @@ public final class TestBaseOAuth10Provider extends TestCase {
         };
         parameters.put(BaseOAuth10Provider.OAUTH_VERIFIER, verifiers);
         parameters.put(BaseOAuth10Provider.OAUTH_TOKEN, tokens);
-        assertNull(provider.getCredential(parameters));
+        assertNull(provider.getCredential(null, parameters));
     }
 }

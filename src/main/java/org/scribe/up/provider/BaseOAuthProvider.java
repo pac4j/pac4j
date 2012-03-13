@@ -28,6 +28,7 @@ import org.scribe.up.profile.AttributeConverter;
 import org.scribe.up.profile.LocaleConverter;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
+import org.scribe.up.session.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +124,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      */
     protected abstract UserProfile extractUserProfile(String body);
     
-    public OAuthCredential getCredential(Map<String, String[]> parameters) {
+    public OAuthCredential getCredential(UserSession session, Map<String, String[]> parameters) {
         String[] error_reasons = parameters.get(ERROR_REASON);
         String error_reason = null;
         String[] error_descriptions = parameters.get(ERROR_DESCRIPTION);
@@ -138,26 +139,19 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
             logger.error("Error reason : {} / description : {}", error_reason, error_description);
             return null;
         } else {
-            return extractCredentialFromParameters(parameters);
+            return extractCredentialFromParameters(session, parameters);
         }
     }
     
     /**
-     * Get credential from given parameters.
+     * Get credential from user session and given parameters.
      * 
+     * @param session
      * @param parameters
      * @return the OAuth credential or null if no credential is found
      */
-    protected abstract OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters);
-    
-    /**
-     * Return the name of the attribute storing in session the request token.
-     * 
-     * @return the name of the attribute storing in session the request token
-     */
-    public String getRequestTokenSessionAttributeName() {
-        return getType() + "#requestToken";
-    }
+    protected abstract OAuthCredential extractCredentialFromParameters(UserSession session,
+                                                                       Map<String, String[]> parameters);
     
     public void setKey(String key) {
         this.key = key;

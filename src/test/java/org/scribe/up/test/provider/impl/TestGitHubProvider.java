@@ -70,9 +70,10 @@ public final class TestGitHubProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = githubProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = githubProvider.getCredential(testSession,
+                                                                  WebHelper.getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = githubProvider.getAccessToken(testSession, credential);
+        Token accessToken = githubProvider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
         GitHubProfile profile = (GitHubProfile) githubProvider.getUserProfile(accessToken);

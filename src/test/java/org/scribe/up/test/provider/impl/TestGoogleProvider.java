@@ -73,9 +73,10 @@ public final class TestGoogleProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = googleProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = googleProvider.getCredential(testSession,
+                                                                  WebHelper.getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = googleProvider.getAccessToken(testSession, credential);
+        Token accessToken = googleProvider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
         GoogleProfile profile = (GoogleProfile) googleProvider.getUserProfile(accessToken);

@@ -44,22 +44,23 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
         return authorizationUrl;
     }
     
-    public Token getAccessToken(UserSession session, OAuthCredential credential) {
+    public Token getAccessToken(OAuthCredential credential) {
+        // no request token saved in user session and no token (OAuth v2.0)
         String verifier = credential.getVerifier();
         logger.debug("verifier : {}", verifier);
         Verifier providerVerifier = new Verifier(verifier);
-        // no request token saved in user session (OAuth v2.0)
         Token accessToken = service.getAccessToken(null, providerVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
     }
     
-    public OAuthCredential extractCredentialFromParameters(Map<String, String[]> parameters) {
+    @Override
+    public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
         String[] verifiers = parameters.get(OAUTH_CODE);
         if (verifiers != null && verifiers.length == 1) {
             String verifier = OAuthEncoder.decode(verifiers[0]);
             logger.debug("verifier : {}", verifier);
-            return new OAuthCredential(null, verifier, getType());
+            return new OAuthCredential(null, null, verifier, getType());
         } else {
             logger.error("No credential found");
             return null;

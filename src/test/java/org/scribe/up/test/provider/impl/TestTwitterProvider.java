@@ -71,9 +71,10 @@ public final class TestTwitterProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = twitterProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = twitterProvider.getCredential(testSession,
+                                                                   WebHelper.getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = twitterProvider.getAccessToken(testSession, credential);
+        Token accessToken = twitterProvider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
         TwitterProfile profile = (TwitterProfile) twitterProvider.getUserProfile(accessToken);

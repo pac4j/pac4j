@@ -26,10 +26,11 @@ import org.scribe.up.session.UserSession;
  * This interface represents a provider using OAuth protocol. It's the main contract of the project.<br />
  * <br />
  * A provider has a type accessible by the <i>getType()</i> method and could be initialized through the <i>init()</i> method.<br />
- * A provider supports off course the OAuth authentication process through the <i>getAuthorizationUrl(UserSession session)</i> and
- * <i>getAccessToken(UserSession session, OAuthCredential credential)</i> methods, <b>UserSession</b> is the session of the current user.<br />
- * A provider can retrieve an <b>OAuthCredential</b> from parameters : <i>getCredential(Map&lt;String, String[]&gt; parameters)</i> method
- * and get a user profile from an OAuth access token : <i>getUserProfile(Token accessToken)</i> method.
+ * A provider supports off course the OAuth authentication process through the <i>getAuthorizationUrl(UserSession session)</i>,
+ * <i>getCredential(UserSession session, Map&lt;String, String[]&gt; parameters)</i> and <i>getAccessToken(OAuthCredential credential)</i>
+ * methods, {@link org.scribe.up.session.UserSession} is the session of the current user, {@link org.scribe.up.credential.OAuthCredential}
+ * is the OAuth credential.<br />
+ * A provider can finally retrieve the user profile from an OAuth access token through the <i>getUserProfile(Token accessToken)</i> method.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -57,13 +58,21 @@ public interface OAuthProvider {
     public String getAuthorizationUrl(UserSession session);
     
     /**
+     * Get the OAuth credential from user session and given parameters.
+     * 
+     * @session
+     * @param parameters
+     * @return the OAuth credential or null if no credential is found
+     */
+    public OAuthCredential getCredential(UserSession session, Map<String, String[]> parameters);
+    
+    /**
      * Retrieve the access token from OAuth credential.
      * 
-     * @param session
      * @param credential
      * @return the access token
      */
-    public Token getAccessToken(UserSession session, OAuthCredential credential);
+    public Token getAccessToken(OAuthCredential credential);
     
     /**
      * Retrieve the user profile from the access token.
@@ -72,12 +81,4 @@ public interface OAuthProvider {
      * @return the user profile object
      */
     public UserProfile getUserProfile(Token accessToken);
-    
-    /**
-     * Get the OAuth credential from given parameters.
-     * 
-     * @param parameters
-     * @return the OAuth credential or null if no credential is found
-     */
-    public OAuthCredential getCredential(Map<String, String[]> parameters);
 }

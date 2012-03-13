@@ -17,6 +17,7 @@ package org.scribe.up.test.credential;
 
 import junit.framework.TestCase;
 
+import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 
 /**
@@ -33,10 +34,17 @@ public final class TestOAuthCredential extends TestCase {
     
     private final static String TYPE = "type";
     
+    private final static String SECRET = "secret";
+    
+    private final static Token REQUEST_TOKEN = new Token(TOKEN, SECRET);
+    
     public void testOAuthCredential() {
-        OAuthCredential credential = new OAuthCredential(TOKEN, VERIFIER, TYPE);
+        OAuthCredential credential = new OAuthCredential(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
         assertEquals(TOKEN, credential.getToken());
         assertEquals(VERIFIER, credential.getVerifier());
         assertEquals(TYPE, credential.getProviderType());
+        Token requestToken = credential.getRequestToken();
+        assertEquals(TOKEN, requestToken.getToken());
+        assertEquals(SECRET, requestToken.getSecret());
     }
 }

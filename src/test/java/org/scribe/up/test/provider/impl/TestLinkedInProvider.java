@@ -67,9 +67,10 @@ public final class TestLinkedInProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = linkedinProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = linkedinProvider.getCredential(testSession,
+                                                                    WebHelper.getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = linkedinProvider.getAccessToken(testSession, credential);
+        Token accessToken = linkedinProvider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
         LinkedInProfile profile = (LinkedInProfile) linkedinProvider.getUserProfile(accessToken);

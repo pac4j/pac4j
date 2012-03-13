@@ -81,9 +81,10 @@ public final class TestYahooProvider extends TestCase {
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         
-        OAuthCredential credential = yahooProvider.getCredential(WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = yahooProvider.getCredential(testSession,
+                                                                 WebHelper.getParametersFromUrl(callbackUrl));
         // access token
-        Token accessToken = yahooProvider.getAccessToken(testSession, credential);
+        Token accessToken = yahooProvider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         // user profile
         YahooProfile profile = (YahooProfile) yahooProvider.getUserProfile(accessToken);
@@ -92,7 +93,7 @@ public final class TestYahooProvider extends TestCase {
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
         assertTrue(profile.getMemberSince() instanceof Date);
         assertEquals(1976, profile.getBirthYear());
-        assertEquals(35, profile.getDisplayAge());
+        assertEquals(36, profile.getDisplayAge());
         assertEquals("Chatou, Ile-de-France", profile.getLocation());
         assertEquals("Test", profile.getNickname());
         assertEquals("ScribeUP", profile.getFamilyName());
