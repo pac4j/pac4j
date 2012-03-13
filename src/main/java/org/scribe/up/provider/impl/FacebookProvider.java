@@ -38,10 +38,10 @@ import org.scribe.up.util.StringHelper;
  * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (List&lt;
  * {@link org.scribe.up.profile.facebook.FacebookObject}&gt;), link (String), username (String), third_party_id (String), timezone
  * (Integer), updated_time (Date), verified (Boolean), bio (String), birthday (Date), education (List&lt;
- * {@link org.scribe.up.profile.facebook.FacebookEducation&gt;), email (String), hometown (
+ * {@link org.scribe.up.profile.facebook.FacebookEducation}&gt;), email (String), hometown (
  * {@link org.scribe.up.profile.facebook.FacebookObject}), interested_in (List&lt;String&gt;), location (
  * {@link org.scribe.up.profile.facebook.FacebookObject}), political (String), favorite_athletes (List&lt;
- * {@link org.scribe.up.profile.facebook.FacebookObject}&gt;), favorite_teams (List&lt;{@link org.scribe.up.profile.facebook.FacebookObject
+ * {@link org.scribe.up.profile.facebook.FacebookObject}&gt;), favorite_teams (List&lt;{@link org.scribe.up.profile.facebook.FacebookObject}
  * &gt;), quotes (String), relationship_status ({@link org.scribe.up.profile.facebook.FacebookRelationshipStatus}), religion (String),
  * significant_other ({@link org.scribe.up.profile.facebook.FacebookObject}), website (String) and work (List&lt;
  * {@link org.scribe.up.profile.facebook.FacebookWork}&gt;).
