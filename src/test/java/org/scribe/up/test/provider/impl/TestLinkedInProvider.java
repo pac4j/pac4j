@@ -15,18 +15,11 @@
  */
 package org.scribe.up.test.provider.impl;
 
-import junit.framework.TestCase;
-
-import org.scribe.model.Token;
-import org.scribe.up.credential.OAuthCredential;
+import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.linkedin.LinkedInProfile;
+import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.LinkedInProvider;
-import org.scribe.up.test.util.SingleUserSession;
-import org.scribe.up.test.util.WebHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -39,25 +32,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestLinkedInProvider extends TestCase {
+public class TestLinkedInProvider extends TestProvider {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestLinkedInProvider.class);
-    
-    public void testProvider() throws Exception {
-        // init provider
+    @Override
+    protected OAuthProvider getProvider() {
         LinkedInProvider linkedinProvider = new LinkedInProvider();
         linkedinProvider.setKey("gsqj8dn56ayn");
         linkedinProvider.setSecret("kUFAZ2oYvwMQ6HFl");
         linkedinProvider.setCallbackUrl("http://www.google.com/");
         linkedinProvider.init();
-        
-        // authorization url
-        SingleUserSession testSession = new SingleUserSession();
-        String authorizationUrl = linkedinProvider.getAuthorizationUrl(testSession);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        WebClient webClient = WebHelper.newClient();
-        HtmlPage loginPage = webClient.getPage(authorizationUrl);
-        HtmlForm form = loginPage.getFormByName("oauthAuthorizeForm");
+        return linkedinProvider;
+    }
+    
+    @Override
+    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+        HtmlForm form = authorizationPage.getFormByName("oauthAuthorizeForm");
         HtmlTextInput sessionKey = form.getInputByName("session_key");
         sessionKey.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput sessionPassword = form.getInputByName("session_password");
@@ -66,14 +55,12 @@ public final class TestLinkedInProvider extends TestCase {
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
-        
-        OAuthCredential credential = linkedinProvider.getCredential(testSession,
-                                                                    WebHelper.getParametersFromUrl(callbackUrl));
-        // access token
-        Token accessToken = linkedinProvider.getAccessToken(credential);
-        logger.debug("accessToken : {}", accessToken);
-        // user profile
-        LinkedInProfile profile = (LinkedInProfile) linkedinProvider.getUserProfile(accessToken);
+        return callbackUrl;
+    }
+    
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
+        LinkedInProfile profile = (LinkedInProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals(4, profile.getAttributes().size());
         assertEquals("167439971", profile.getId());

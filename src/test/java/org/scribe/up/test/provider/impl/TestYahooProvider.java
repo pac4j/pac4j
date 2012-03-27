@@ -19,24 +19,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
-import org.scribe.model.Token;
-import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooAddress;
 import org.scribe.up.profile.yahoo.YahooDisclosure;
 import org.scribe.up.profile.yahoo.YahooEmail;
 import org.scribe.up.profile.yahoo.YahooImage;
 import org.scribe.up.profile.yahoo.YahooInterest;
 import org.scribe.up.profile.yahoo.YahooProfile;
+import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.YahooProvider;
-import org.scribe.up.test.util.SingleUserSession;
-import org.scribe.up.test.util.WebHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -49,26 +42,22 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestYahooProvider extends TestCase {
+public class TestYahooProvider extends TestProvider {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestYahooProvider.class);
-    
-    public void testProvider() throws Exception {
-        // init provider
+    @Override
+    protected OAuthProvider getProvider() {
         YahooProvider yahooProvider = new YahooProvider();
         yahooProvider
             .setKey("dj0yJmk9QUlLcTVINlBpdm5VJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PTJm");
         yahooProvider.setSecret("95220809156c027c0a10c959a04b099da5510b66");
         yahooProvider.setCallbackUrl("http://www.google.com/");
         yahooProvider.init();
-        
-        // authorization url
-        SingleUserSession testSession = new SingleUserSession();
-        String authorizationUrl = yahooProvider.getAuthorizationUrl(testSession);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        WebClient webClient = WebHelper.newClient();
-        HtmlPage loginPage = webClient.getPage(authorizationUrl);
-        HtmlForm form = loginPage.getFormByName("login_form");
+        return yahooProvider;
+    }
+    
+    @Override
+    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+        HtmlForm form = authorizationPage.getFormByName("login_form");
         HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@yahoo.fr");
         HtmlPasswordInput passwd = form.getInputByName("passwd");
@@ -80,14 +69,12 @@ public final class TestYahooProvider extends TestCase {
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
-        
-        OAuthCredential credential = yahooProvider.getCredential(testSession,
-                                                                 WebHelper.getParametersFromUrl(callbackUrl));
-        // access token
-        Token accessToken = yahooProvider.getAccessToken(credential);
-        logger.debug("accessToken : {}", accessToken);
-        // user profile
-        YahooProfile profile = (YahooProfile) yahooProvider.getUserProfile(accessToken);
+        return callbackUrl;
+    }
+    
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
+        YahooProfile profile = (YahooProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals(22, profile.getAttributes().size());
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());

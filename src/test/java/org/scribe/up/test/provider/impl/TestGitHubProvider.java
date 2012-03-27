@@ -17,19 +17,12 @@ package org.scribe.up.test.provider.impl;
 
 import java.util.Date;
 
-import junit.framework.TestCase;
-
-import org.scribe.model.Token;
-import org.scribe.up.credential.OAuthCredential;
+import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubPlan;
 import org.scribe.up.profile.github.GitHubProfile;
+import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.GitHubProvider;
-import org.scribe.up.test.util.SingleUserSession;
-import org.scribe.up.test.util.WebHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -42,25 +35,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestGitHubProvider extends TestCase {
+public class TestGitHubProvider extends TestProvider {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestGitHubProvider.class);
-    
-    public void testProvider() throws Exception {
-        // init provider
+    @Override
+    protected OAuthProvider getProvider() {
         GitHubProvider githubProvider = new GitHubProvider();
         githubProvider.setKey("62374f5573a89a8f9900");
         githubProvider.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
         githubProvider.setCallbackUrl("http://www.google.com/");
         githubProvider.init();
-        
-        // authorization url
-        SingleUserSession testSession = new SingleUserSession();
-        String authorizationUrl = githubProvider.getAuthorizationUrl(testSession);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        WebClient webClient = WebHelper.newClient();
-        HtmlPage loginPage = webClient.getPage(authorizationUrl);
-        HtmlForm form = loginPage.getForms().get(0);
+        return githubProvider;
+    }
+    
+    @Override
+    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+        HtmlForm form = authorizationPage.getForms().get(0);
         HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput password = form.getInputByName("password");
@@ -69,14 +58,12 @@ public final class TestGitHubProvider extends TestCase {
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
-        
-        OAuthCredential credential = githubProvider.getCredential(testSession,
-                                                                  WebHelper.getParametersFromUrl(callbackUrl));
-        // access token
-        Token accessToken = githubProvider.getAccessToken(credential);
-        logger.debug("accessToken : {}", accessToken);
-        // user profile
-        GitHubProfile profile = (GitHubProfile) githubProvider.getUserProfile(accessToken);
+        return callbackUrl;
+    }
+    
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
+        GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
         assertEquals(20, profile.getAttributes().size());

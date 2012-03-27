@@ -19,23 +19,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
-import org.scribe.model.Token;
-import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
 import org.scribe.up.profile.facebook.FacebookWork;
+import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.FacebookProvider;
-import org.scribe.up.test.util.SingleUserSession;
-import org.scribe.up.test.util.WebHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -48,12 +41,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestFacebookProvider extends TestCase {
+public class TestFacebookProvider extends TestProvider {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestFacebookProvider.class);
-    
-    public void testProvider() throws Exception {
-        // init provider
+    @Override
+    protected OAuthProvider getProvider() {
         FacebookProvider facebookProvider = new FacebookProvider();
         facebookProvider.setKey("291329260930505");
         facebookProvider.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
@@ -61,14 +52,12 @@ public final class TestFacebookProvider extends TestCase {
         facebookProvider
             .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website");
         facebookProvider.init();
-        
-        // authorization url
-        SingleUserSession testSession = new SingleUserSession();
-        String authorizationUrl = facebookProvider.getAuthorizationUrl(testSession);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        WebClient webClient = WebHelper.newClient();
-        HtmlPage loginPage = webClient.getPage(authorizationUrl);
-        HtmlForm form = loginPage.getForms().get(0);
+        return facebookProvider;
+    }
+    
+    @Override
+    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+        HtmlForm form = authorizationPage.getForms().get(0);
         HtmlTextInput email = form.getInputByName("email");
         email.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput password = form.getInputByName("pass");
@@ -77,14 +66,12 @@ public final class TestFacebookProvider extends TestCase {
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
-        
-        OAuthCredential credential = facebookProvider.getCredential(testSession,
-                                                                    WebHelper.getParametersFromUrl(callbackUrl));
-        // access token
-        Token accessToken = facebookProvider.getAccessToken(credential);
-        logger.debug("accessToken : {}", accessToken);
-        // user profile
-        FacebookProfile profile = (FacebookProfile) facebookProvider.getUserProfile(accessToken);
+        return callbackUrl;
+    }
+    
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
+        FacebookProfile profile = (FacebookProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("100003571536393", profile.getId());
         assertEquals(24, profile.getAttributes().size());

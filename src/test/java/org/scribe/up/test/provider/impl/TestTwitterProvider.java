@@ -19,18 +19,11 @@ import java.awt.Color;
 import java.util.Date;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
-import org.scribe.model.Token;
-import org.scribe.up.credential.OAuthCredential;
+import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
+import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.TwitterProvider;
-import org.scribe.up.test.util.SingleUserSession;
-import org.scribe.up.test.util.WebHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -43,25 +36,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestTwitterProvider extends TestCase {
+public class TestTwitterProvider extends TestProvider {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestTwitterProvider.class);
-    
-    public void testProvider() throws Exception {
-        // init provider
+    @Override
+    protected OAuthProvider getProvider() {
         TwitterProvider twitterProvider = new TwitterProvider();
         twitterProvider.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterProvider.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
         twitterProvider.setCallbackUrl("http://www.google.com/");
         twitterProvider.init();
-        
-        // authorization url
-        SingleUserSession testSession = new SingleUserSession();
-        String authorizationUrl = twitterProvider.getAuthorizationUrl(testSession);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        WebClient webClient = WebHelper.newClient();
-        HtmlPage loginPage = webClient.getPage(authorizationUrl);
-        HtmlForm form = loginPage.getForms().get(0);
+        return twitterProvider;
+    }
+    
+    @Override
+    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+        HtmlForm form = authorizationPage.getForms().get(0);
         HtmlTextInput sessionUsernameOrEmail = form.getInputByName("session[username_or_email]");
         sessionUsernameOrEmail.setValueAttribute("testscribeup@gmail.com");
         HtmlPasswordInput sessionPassword = form.getInputByName("session[password]");
@@ -70,14 +59,12 @@ public final class TestTwitterProvider extends TestCase {
         HtmlPage callbackPage = submit.click();
         String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
-        
-        OAuthCredential credential = twitterProvider.getCredential(testSession,
-                                                                   WebHelper.getParametersFromUrl(callbackUrl));
-        // access token
-        Token accessToken = twitterProvider.getAccessToken(credential);
-        logger.debug("accessToken : {}", accessToken);
-        // user profile
-        TwitterProfile profile = (TwitterProfile) twitterProvider.getUserProfile(accessToken);
+        return callbackUrl;
+    }
+    
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
+        TwitterProfile profile = (TwitterProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
         assertEquals("test scribeUP", profile.getAttributes().get("name"));
