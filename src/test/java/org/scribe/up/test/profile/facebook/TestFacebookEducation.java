@@ -53,7 +53,7 @@ public final class TestFacebookEducation extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookEducation facebookEducation = new FacebookEducation(JsonHelper.getFirstNode(BAD_JSON));
+        FacebookEducation facebookEducation = new FacebookEducation(BAD_JSON);
         FacebookObject facebookObject = facebookEducation.getSchool();
         assertNull(facebookObject.getId());
         assertNull(facebookObject.getName());
@@ -68,7 +68,7 @@ public final class TestFacebookEducation extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookEducation facebookEducation = new FacebookEducation(JsonHelper.getFirstNode(GOOD_JSON));
+        FacebookEducation facebookEducation = new FacebookEducation(GOOD_JSON);
         FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(FACEBOOK_OBJECT));
         assertEquals(facebookObject.toString(), facebookEducation.getSchool().toString());
         assertEquals(facebookObject.toString(), facebookEducation.getDegree().toString());

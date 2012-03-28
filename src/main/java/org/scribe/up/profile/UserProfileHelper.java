@@ -135,8 +135,8 @@ public final class UserProfileHelper {
      */
     public static void addAttribute(UserProfile userProfile, String attributeName, Object attribute,
                                     AttributeConverter<? extends Object> converter) {
-        if (converter != null) {
-            attribute = converter.convert(attribute);
+        if (converter != null && attribute != null) {
+            attribute = converter.convert(attribute.toString());
         }
         if (attribute == null) {
             logger.debug("key : {} / attribute : {}", attributeName, attribute);
@@ -172,7 +172,7 @@ public final class UserProfileHelper {
                 } else if (clazz == FacebookObject.class) {
                     list.add(new FacebookObject(node));
                 } else if (clazz == FacebookEducation.class) {
-                    list.add(new FacebookEducation(node));
+                    list.add(new FacebookEducation(node.toString()));
                 } else if (clazz == FacebookWork.class) {
                     list.add(new FacebookWork(node));
                     // yahoo

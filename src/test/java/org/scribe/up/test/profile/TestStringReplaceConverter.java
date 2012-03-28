@@ -43,10 +43,6 @@ public final class TestStringReplaceConverter extends TestCase {
         assertNull(converter.convert(null));
     }
     
-    public void testNotString() {
-        assertNull(converter.convert(Boolean.TRUE));
-    }
-    
     public void testBadRegex() {
         StringReplaceConverter converter = new StringReplaceConverter(null, GOOD_REPLACEMENT);
         assertNull(converter.convert(GOOD_STRING));

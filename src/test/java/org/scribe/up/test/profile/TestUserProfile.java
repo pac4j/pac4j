@@ -15,6 +15,9 @@
  */
 package org.scribe.up.test.profile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.scribe.up.profile.UserProfile;
@@ -33,22 +36,50 @@ public final class TestUserProfile extends TestCase {
     
     private static final String VALUE = "value";
     
-    public void testId() {
+    public void testSetId() {
         UserProfile userProfile = new UserProfile();
         assertNull(userProfile.getId());
         userProfile.setId(ID);
         assertEquals(ID, userProfile.getId());
     }
     
-    public void testIdInConstructor() {
+    public void testIdByConstructor() {
         UserProfile userProfile = new UserProfile(ID);
         assertEquals(ID, userProfile.getId());
     }
     
-    public void testAttributes() {
+    public void testAddAttribute() {
         UserProfile userProfile = new UserProfile();
         assertEquals(0, userProfile.getAttributes().size());
-        userProfile.getAttributes().put(KEY, VALUE);
+        userProfile.addAttribute(KEY, VALUE);
+        assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
+    }
+    
+    public void testAddAttributes() {
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put(KEY, VALUE);
+        UserProfile userProfile = new UserProfile();
+        assertEquals(0, userProfile.getAttributes().size());
+        userProfile.addAttributes(attributes);
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(VALUE, userProfile.getAttributes().get(KEY));
+    }
+    
+    public void testAttributesByConstructor() {
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put(KEY, VALUE);
+        UserProfile userProfile = new UserProfile(ID, attributes);
+        assertEquals(1, userProfile.getAttributes().size());
+        assertEquals(VALUE, userProfile.getAttributes().get(KEY));
+    }
+    
+    public void testUnsafeAddAttribute() {
+        UserProfile userProfile = new UserProfile();
+        try {
+            userProfile.getAttributes().put(KEY, VALUE);
+            fail();
+        } catch (UnsupportedOperationException e) {
+        }
     }
 }

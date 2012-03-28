@@ -34,12 +34,11 @@ public final class StringReplaceConverter implements AttributeConverter<String> 
         this.replacement = replacement;
     }
     
-    public String convert(Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            String value = (String) attribute;
-            if (StringHelper.isNotBlank(value) && StringHelper.isNotBlank(regex)
+    public String convert(String attribute) {
+        if (attribute != null) {
+            if (StringHelper.isNotBlank(attribute) && StringHelper.isNotBlank(regex)
                 && StringHelper.isNotBlank(replacement)) {
-                return value.replaceAll(regex, replacement);
+                return attribute.replaceAll(regex, replacement);
             }
         }
         return null;

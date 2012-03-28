@@ -16,6 +16,7 @@
 package org.scribe.up.profile.github;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.util.ObjectHelper;
@@ -50,6 +51,18 @@ public class GitHubProfile extends UserProfile {
     public static final String TYPE = "type";
     public static final String PERMISSION = "permission";
     public static final String GRAVATAR_ID = "gravatar_id";
+    
+    public GitHubProfile() {
+        super();
+    }
+    
+    public GitHubProfile(String id) {
+        super(id);
+    }
+    
+    public GitHubProfile(String id, Map<String, Object> attributes) {
+        super(id, attributes);
+    }
     
     public String getCompany() {
         return (String) attributes.get(COMPANY);

@@ -18,6 +18,7 @@ package org.scribe.up.profile.facebook;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
@@ -62,6 +63,18 @@ public class FacebookProfile extends UserProfile {
     public static final String SIGNIFICANT_OTHER = "significant_other";
     public static final String WEBSITE = "website";
     public static final String WORK = "work";
+    
+    public FacebookProfile() {
+        super();
+    }
+    
+    public FacebookProfile(String id) {
+        super(id);
+    }
+    
+    public FacebookProfile(String id, Map<String, Object> attributes) {
+        super(id, attributes);
+    }
     
     public String getName() {
         return (String) attributes.get(NAME);

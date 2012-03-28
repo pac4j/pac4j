@@ -15,9 +15,11 @@
  */
 package org.scribe.up.profile.facebook;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.FromJsonBuildableObject;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfileHelper;
 
@@ -27,7 +29,7 @@ import org.scribe.up.profile.UserProfileHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookEducation {
+public final class FacebookEducation extends FromJsonBuildableObject implements Serializable {
     
     private FacebookObject school;
     
@@ -39,17 +41,19 @@ public final class FacebookEducation {
     
     private String type;
     
-    @SuppressWarnings("unchecked")
-    public FacebookEducation(JsonNode json) {
-        if (json != null) {
-            this.school = new FacebookObject(json.get("school"));
-            this.degree = new FacebookObject(json.get("degree"));
-            this.year = new FacebookObject(json.get("year"));
-            JsonNode jsonConcentration = json.get("concentration");
-            this.concentration = (List<FacebookObject>) UserProfileHelper.getListObject(jsonConcentration,
-                                                                                        FacebookObject.class);
-            this.type = JsonHelper.getTextValue(json, "type");
-        }
+    public FacebookEducation(String json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.school = new FacebookObject(json.get("school"));
+        this.degree = new FacebookObject(json.get("degree"));
+        this.year = new FacebookObject(json.get("year"));
+        JsonNode jsonConcentration = json.get("concentration");
+        this.concentration = (List<FacebookObject>) UserProfileHelper.getListObject(jsonConcentration,
+                                                                                    FacebookObject.class);
+        this.type = JsonHelper.getTextValue(json, "type");
     }
     
     public FacebookObject getSchool() {
@@ -70,11 +74,5 @@ public final class FacebookEducation {
     
     public String getType() {
         return type;
-    }
-    
-    @Override
-    public String toString() {
-        return "FacebookEducation(school:" + school + ",degree:" + degree + ",year:" + year + ",concentration:"
-               + concentration + ",type:" + type + ")";
     }
 }

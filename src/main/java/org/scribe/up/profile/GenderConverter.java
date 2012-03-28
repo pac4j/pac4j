@@ -32,13 +32,12 @@ public final class GenderConverter implements AttributeConverter<Gender> {
         this.femaleText = femaleText;
     }
     
-    public Gender convert(Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            String value = (String) attribute;
-            value = value.toLowerCase();
-            if (value.equals(maleText)) {
+    public Gender convert(String attribute) {
+        if (attribute != null) {
+            attribute = attribute.toLowerCase();
+            if (attribute.equals(maleText)) {
                 return Gender.MALE;
-            } else if (value.equals(femaleText)) {
+            } else if (attribute.equals(femaleText)) {
                 return Gender.FEMALE;
             } else {
                 return Gender.UNSPECIFIED;

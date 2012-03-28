@@ -108,4 +108,25 @@ public final class JsonHelper {
         }
         return null;
     }
+    
+    /**
+     * Get the string value of the JSON with name.
+     * 
+     * @param json
+     * @param name
+     * @return the string value of the node.
+     */
+    public static String getStringValue(JsonNode json, String name) {
+        if (json != null) {
+            JsonNode node = json.get(name);
+            if (node != null) {
+                if (node.isTextual()) {
+                    return node.getTextValue();
+                } else {
+                    return node.toString();
+                }
+            }
+        }
+        return null;
+    }
 }

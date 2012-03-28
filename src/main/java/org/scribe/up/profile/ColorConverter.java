@@ -30,21 +30,18 @@ public final class ColorConverter implements AttributeConverter<Color> {
     
     private static final Logger logger = LoggerFactory.getLogger(ColorConverter.class);
     
-    public Color convert(Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            String value = (String) attribute;
-            if (value.length() == 6) {
-                try {
-                    String hex = value.substring(0, 2);
-                    int r = Integer.parseInt(hex, 16);
-                    hex = value.substring(2, 4);
-                    int g = Integer.parseInt(hex, 16);
-                    hex = value.substring(4, 6);
-                    int b = Integer.parseInt(hex, 16);
-                    return new Color(r, g, b);
-                } catch (NumberFormatException e) {
-                    logger.error("Cannot convert " + value + " into color", e);
-                }
+    public Color convert(String attribute) {
+        if (attribute != null && attribute.length() == 6) {
+            try {
+                String hex = attribute.substring(0, 2);
+                int r = Integer.parseInt(hex, 16);
+                hex = attribute.substring(2, 4);
+                int g = Integer.parseInt(hex, 16);
+                hex = attribute.substring(4, 6);
+                int b = Integer.parseInt(hex, 16);
+                return new Color(r, g, b);
+            } catch (NumberFormatException e) {
+                logger.error("Cannot convert " + attribute + " into color", e);
             }
         }
         return null;

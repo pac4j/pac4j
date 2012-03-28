@@ -40,10 +40,6 @@ public final class TestGenderConverter extends TestCase {
         assertNull(converter.convert(null));
     }
     
-    public void testNotAString() {
-        assertNull(converter.convert(Boolean.FALSE));
-    }
-    
     public void testMale() {
         assertEquals(Gender.MALE, converter.convert(MALE));
     }

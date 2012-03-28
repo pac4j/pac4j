@@ -13,21 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.test.profile;
+
+import junit.framework.TestCase;
+
+import org.scribe.up.profile.SafeIntegerConverter;
 
 /**
- * This interface is the contract for an attribute converter.
+ * This class tests the {@link org.scribe.up.profile.SafeIntegerConverter} class.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public interface AttributeConverter<T> {
+public final class TestSafeIntegerConverter extends TestCase {
     
-    /**
-     * Convert an attribute to a specific type T.
-     * 
-     * @param attribute
-     * @return the converted attribute
-     */
-    public T convert(String attribute);
+    private SafeIntegerConverter converter = new SafeIntegerConverter();
+    
+    private static final int VALUE = 12;
+    
+    public void testNull() {
+        assertEquals(0, (int) converter.convert(null));
+    }
+    
+    public void testInteger() {
+        assertEquals(VALUE, (int) converter.convert("" + VALUE));
+    }
 }

@@ -15,27 +15,15 @@
  */
 package org.scribe.up.profile;
 
-import java.util.Locale;
-
 /**
- * This class is the converter of a String to a Locale.
+ * This class converts a String into a not null Boolean.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class LocaleConverter implements AttributeConverter<Locale> {
+public final class SafeBooleanConverter implements AttributeConverter<Boolean> {
     
-    public Locale convert(String attribute) {
-        if (attribute != null) {
-            attribute = attribute.replaceAll("-", "_");
-            String[] parts = attribute.split("_");
-            int length = parts.length;
-            if (length == 2) {
-                return new Locale(parts[0], parts[1]);
-            } else if (length == 1) {
-                return new Locale(parts[0]);
-            }
-        }
-        return null;
+    public Boolean convert(String attribute) {
+        return Boolean.parseBoolean(attribute);
     }
 }

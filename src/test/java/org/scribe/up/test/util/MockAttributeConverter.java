@@ -27,7 +27,7 @@ public final class MockAttributeConverter implements AttributeConverter<String> 
     
     public static final String CONVERTED_VALUE = "convertedValue";
     
-    public String convert(Object attribute) {
+    public String convert(String attribute) {
         return CONVERTED_VALUE;
     }
 }

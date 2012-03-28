@@ -18,6 +18,7 @@ package org.scribe.up.profile.yahoo;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
@@ -56,6 +57,18 @@ public class YahooProfile extends UserProfile {
     public static final String TIME_ZONE = "timeZone";
     public static final String UPDATED = "updated";
     public static final String URI = "uri";
+    
+    public YahooProfile() {
+        super();
+    }
+    
+    public YahooProfile(String id) {
+        super(id);
+    }
+    
+    public YahooProfile(String id, Map<String, Object> attributes) {
+        super(id, attributes);
+    }
     
     public String getAboutMe() {
         return (String) attributes.get(ABOUT_ME);

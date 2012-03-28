@@ -18,6 +18,7 @@ package org.scribe.up.profile.twitter;
 import java.awt.Color;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.util.ObjectHelper;
@@ -67,6 +68,18 @@ public class TwitterProfile extends UserProfile {
     public static final String URL = "url";
     public static final String UTC_OFFSET = "utc_offset";
     public static final String VERIFIED = "verified";
+    
+    public TwitterProfile() {
+        super();
+    }
+    
+    public TwitterProfile(String id) {
+        super(id);
+    }
+    
+    public TwitterProfile(String id, Map<String, Object> attributes) {
+        super(id, attributes);
+    }
     
     public boolean isContributorsEnabled() {
         return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(CONTRIBUTORS_ENABLED), Boolean.FALSE);

@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class converts a String (depending on a specified format), an Integer or a Long into a Date.
+ * This class converts a String (depending on a specified format) into a Date.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -37,9 +37,6 @@ public final class DateConverter implements AttributeConverter<Date> {
     
     private Locale locale;
     
-    public DateConverter() {
-    }
-    
     public DateConverter(String format) {
         this.format = format;
     }
@@ -49,24 +46,18 @@ public final class DateConverter implements AttributeConverter<Date> {
         this.locale = locale;
     }
     
-    public Date convert(Object attribute) {
+    public Date convert(String attribute) {
         if (attribute != null) {
-            if (attribute instanceof String && format != null) {
-                SimpleDateFormat simpleDateFormat;
-                if (locale == null) {
-                    simpleDateFormat = new SimpleDateFormat(format);
-                } else {
-                    simpleDateFormat = new SimpleDateFormat(format, locale);
-                }
-                try {
-                    return simpleDateFormat.parse((String) attribute);
-                } catch (ParseException e) {
-                    logger.error("parse exception on " + attribute + " with format : " + format, e);
-                }
-            } else if (attribute instanceof Integer) {
-                return new Date((Integer) attribute);
-            } else if (attribute instanceof Long) {
-                return new Date((Long) attribute);
+            SimpleDateFormat simpleDateFormat;
+            if (locale == null) {
+                simpleDateFormat = new SimpleDateFormat(format);
+            } else {
+                simpleDateFormat = new SimpleDateFormat(format, locale);
+            }
+            try {
+                return simpleDateFormat.parse(attribute);
+            } catch (ParseException e) {
+                logger.error("parse exception on " + attribute + " with format : " + format, e);
             }
         }
         return null;

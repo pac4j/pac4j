@@ -35,10 +35,6 @@ public final class TestLocaleConverter extends TestCase {
         assertNull(converter.convert(null));
     }
     
-    public void testNotAString() {
-        assertNull(converter.convert(Boolean.TRUE));
-    }
-    
     public void testLanguage() {
         Locale locale = converter.convert("fr");
         assertEquals("fr", locale.getLanguage());

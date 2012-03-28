@@ -15,27 +15,15 @@
  */
 package org.scribe.up.profile;
 
-import java.util.Locale;
-
 /**
- * This class is the converter of a String to a Locale.
+ * This class is a converter from String to an object buildable from json (the input string must be a json text).
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class LocaleConverter implements AttributeConverter<Locale> {
+public final class JsonConverter<T extends FromJsonBuildableObject> implements AttributeConverter<T> {
     
-    public Locale convert(String attribute) {
-        if (attribute != null) {
-            attribute = attribute.replaceAll("-", "_");
-            String[] parts = attribute.split("_");
-            int length = parts.length;
-            if (length == 2) {
-                return new Locale(parts[0], parts[1]);
-            } else if (length == 1) {
-                return new Locale(parts[0]);
-            }
-        }
+    public T convert(String attribute) {
         return null;
     }
 }

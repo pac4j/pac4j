@@ -15,6 +15,8 @@
  */
 package org.scribe.up.profile.linkedin;
 
+import java.util.Map;
+
 import org.scribe.up.profile.UserProfile;
 
 /**
@@ -29,6 +31,18 @@ public class LinkedInProfile extends UserProfile {
     public static final String LAST_NAME = "last-name";
     public static final String HEADLINE = "headline";
     public static final String URL = "url";
+    
+    public LinkedInProfile() {
+        super();
+    }
+    
+    public LinkedInProfile(String id) {
+        super(id);
+    }
+    
+    public LinkedInProfile(String id, Map<String, Object> attributes) {
+        super(id, attributes);
+    }
     
     public String getFirstName() {
         return (String) attributes.get(FIRST_NAME);

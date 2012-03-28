@@ -41,10 +41,6 @@ public final class TestColorConverter extends TestCase {
         assertNull(converter.convert(null));
     }
     
-    public void testNotString() {
-        assertNull(converter.convert(true));
-    }
-    
     public void testStringBadLength() {
         assertNull(converter.convert(BAD_LENGTH_STRING));
     }

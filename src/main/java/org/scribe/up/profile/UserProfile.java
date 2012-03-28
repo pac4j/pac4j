@@ -15,6 +15,8 @@
  */
 package org.scribe.up.profile;
 
+import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +27,9 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile {
+public class UserProfile implements Serializable {
+    
+    private static final long serialVersionUID = 7945097610543538094L;
     
     protected String id;
     
@@ -35,11 +39,20 @@ public class UserProfile {
     }
     
     public UserProfile(String id) {
-        this.id = id;
+        setId(id);
+    }
+    
+    public UserProfile(String id, Map<String, Object> attributes) {
+        setId(id);
+        addAttributes(attributes);
     }
     
     public void addAttribute(String key, Object value) {
         attributes.put(key, value);
+    }
+    
+    public void addAttributes(Map<String, Object> attributes) {
+        this.attributes.putAll(attributes);
     }
     
     public void setId(String id) {
@@ -51,7 +64,7 @@ public class UserProfile {
     }
     
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return Collections.unmodifiableMap(attributes);
     }
     
     @Override

@@ -34,26 +34,12 @@ public final class TestDateConverter extends TestCase {
     
     private DateConverter converter = new DateConverter(FORMAT);
     
-    private static final int NUMERIC_VALUE = 1000;
-    
     private static final String GOOD_DATE = "2012.01.01";
     
     private static final String BAD_DATE = "2012/01/01";
     
     public void testNull() {
         assertNull(converter.convert(null));
-    }
-    
-    public void testBadInput() {
-        assertNull(converter.convert(Boolean.TRUE));
-    }
-    
-    public void testInteger() {
-        assertEquals(new Date(NUMERIC_VALUE), converter.convert(new Integer(NUMERIC_VALUE)));
-    }
-    
-    public void testLong() {
-        assertEquals(new Date(NUMERIC_VALUE), converter.convert(new Long(NUMERIC_VALUE)));
     }
     
     public void testGoodDate() {

@@ -16,6 +16,7 @@
 package org.scribe.up.profile.google;
 
 import java.util.List;
+import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.util.ObjectHelper;
@@ -41,6 +42,18 @@ public class GoogleProfile extends UserProfile {
     public static final String DISPLAY_NAME = "displayName";
     public static final String URLS = "urls";
     public static final String PHOTOS = "photos";
+    
+    public GoogleProfile() {
+        super();
+    }
+    
+    public GoogleProfile(String id) {
+        super(id);
+    }
+    
+    public GoogleProfile(String id, Map<String, Object> attributes) {
+        super(id, attributes);
+    }
     
     public String getProfileUrl() {
         return (String) attributes.get(PROFILE_URL);
