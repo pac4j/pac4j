@@ -13,29 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.test.profile;
 
-import java.util.Locale;
+import org.scribe.up.profile.converter.AttributeConverter;
 
 /**
- * This class is the converter of a String to a Locale.
+ * This mock has a specific conversion behaviour for test.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class LocaleConverter implements AttributeConverter<Locale> {
+public final class MockAttributeConverter implements AttributeConverter<String> {
     
-    public Locale convert(String attribute) {
-        if (attribute != null) {
-            attribute = attribute.replaceAll("-", "_");
-            String[] parts = attribute.split("_");
-            int length = parts.length;
-            if (length == 2) {
-                return new Locale(parts[0], parts[1]);
-            } else if (length == 1) {
-                return new Locale(parts[0]);
-            }
-        }
-        return null;
+    public static final String CONVERTED_VALUE = "convertedValue";
+    
+    public String convert(Object attribute) {
+        return CONVERTED_VALUE;
     }
 }

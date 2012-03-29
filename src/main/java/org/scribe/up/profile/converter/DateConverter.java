@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,18 +46,19 @@ public final class DateConverter implements AttributeConverter<Date> {
         this.locale = locale;
     }
     
-    public Date convert(String attribute) {
-        if (attribute != null) {
+    public Date convert(Object attribute) {
+        if (attribute != null && attribute instanceof String) {
             SimpleDateFormat simpleDateFormat;
             if (locale == null) {
                 simpleDateFormat = new SimpleDateFormat(format);
             } else {
                 simpleDateFormat = new SimpleDateFormat(format, locale);
             }
+            String s = (String) attribute;
             try {
-                return simpleDateFormat.parse(attribute);
+                return simpleDateFormat.parse(s);
             } catch (ParseException e) {
-                logger.error("parse exception on " + attribute + " with format : " + format, e);
+                logger.error("parse exception on " + s + " with format : " + format, e);
             }
         }
         return null;

@@ -20,12 +20,12 @@ import java.util.Locale;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
-import org.scribe.up.profile.ColorConverter;
-import org.scribe.up.profile.DateConverter;
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.StringReplaceConverter;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.converter.ColorConverter;
+import org.scribe.up.profile.converter.DateConverter;
+import org.scribe.up.profile.converter.StringReplaceConverter;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 

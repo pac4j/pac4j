@@ -13,31 +13,37 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.profile;
+package org.scribe.up.test.profile.converter;
 
 import junit.framework.TestCase;
 
-import org.scribe.up.profile.SafeBooleanConverter;
+import org.scribe.up.profile.converter.IntegerConverter;
 
 /**
- * This class tests the {@link org.scribe.up.profile.SafeBooleanConverter} class.
+ * This class tests the {@link org.scribe.up.profile.converter.IntegerConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class TestSafeBooleanConverter extends TestCase {
+public final class TestIntegerConverter extends TestCase {
     
-    private SafeBooleanConverter converter = new SafeBooleanConverter();
+    private IntegerConverter converter = new IntegerConverter();
+    
+    private static final int VALUE = 12;
     
     public void testNull() {
-        assertEquals(false, (boolean) converter.convert(null));
+        assertNull(converter.convert(null));
     }
     
-    public void testFalse() {
-        assertEquals(false, (boolean) converter.convert("false"));
+    public void testNotAStringNotAnInteger() {
+        assertNull(converter.convert(Boolean.TRUE));
     }
     
-    public void testTrue() {
-        assertEquals(true, (boolean) converter.convert("true"));
+    public void testInteger() {
+        assertEquals(VALUE, (int) converter.convert(VALUE));
+    }
+    
+    public void testIntegerString() {
+        assertEquals(VALUE, (int) converter.convert("" + VALUE));
     }
 }

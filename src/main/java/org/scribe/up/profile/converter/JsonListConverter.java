@@ -13,31 +13,32 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.JsonList;
 
 /**
- * This class is an object which can build from JSON.
+ * This class converts a json (String or JsonNode) into a list of objects.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public abstract class FromJsonBuildableObject {
+@SuppressWarnings({
+    "unchecked", "rawtypes"
+})
+public final class JsonListConverter implements AttributeConverter<JsonList> {
     
-    protected String json = "";
+    private final Class<? extends Object> clazz;
     
-    public FromJsonBuildableObject(String json) {
-        if (json != null) {
-            this.json = json;
-            buildFromJson(JsonHelper.getFirstNode(json));
-        }
+    public JsonListConverter(Class<? extends Object> clazz) {
+        this.clazz = clazz;
     }
     
-    protected abstract void buildFromJson(JsonNode json);
-    
-    @Override
-    public String toString() {
-        return json;
+    public JsonList convert(Object attribute) {
+        if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
+            return new JsonList(attribute, clazz);
+        }
+        return null;
     }
 }

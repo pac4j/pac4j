@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.facebook;
 
-import org.scribe.up.profile.AttributeConverter;
+import org.scribe.up.profile.converter.AttributeConverter;
 
 /**
  * This class is the converter of a String to a FacebookRelationshipStatus.
@@ -25,30 +25,30 @@ import org.scribe.up.profile.AttributeConverter;
  */
 public final class FacebookRelationshipStatusConverter implements AttributeConverter<FacebookRelationshipStatus> {
     
-    public FacebookRelationshipStatus convert(String attribute) {
-        if (attribute != null) {
-            attribute = attribute.toLowerCase();
-            if ("single".equals(attribute)) {
+    public FacebookRelationshipStatus convert(Object attribute) {
+        if (attribute != null && attribute instanceof String) {
+            String s = ((String) attribute).toLowerCase();
+            if ("single".equals(s)) {
                 return FacebookRelationshipStatus.SINGLE;
-            } else if ("in a relationship".equals(attribute)) {
+            } else if ("in a relationship".equals(s)) {
                 return FacebookRelationshipStatus.IN_A_RELATIONSHIP;
-            } else if ("engaged".equals(attribute)) {
+            } else if ("engaged".equals(s)) {
                 return FacebookRelationshipStatus.ENGAGED;
-            } else if ("married".equals(attribute)) {
+            } else if ("married".equals(s)) {
                 return FacebookRelationshipStatus.MARRIED;
-            } else if ("it's complicated".equals(attribute)) {
+            } else if ("it's complicated".equals(s)) {
                 return FacebookRelationshipStatus.ITS_COMPLICATED;
-            } else if ("in an open relationship".equals(attribute)) {
+            } else if ("in an open relationship".equals(s)) {
                 return FacebookRelationshipStatus.IN_AN_OPEN_RELATIONSHIP;
-            } else if ("widowed".equals(attribute)) {
+            } else if ("widowed".equals(s)) {
                 return FacebookRelationshipStatus.WIDOWED;
-            } else if ("separated".equals(attribute)) {
+            } else if ("separated".equals(s)) {
                 return FacebookRelationshipStatus.SEPARATED;
-            } else if ("divorced".equals(attribute)) {
+            } else if ("divorced".equals(s)) {
                 return FacebookRelationshipStatus.DIVORCED;
-            } else if ("in a civil union".equals(attribute)) {
+            } else if ("in a civil union".equals(s)) {
                 return FacebookRelationshipStatus.IN_A_CIVIL_UNION;
-            } else if ("in a domestic partnership".equals(attribute)) {
+            } else if ("in a domestic partnership".equals(s)) {
                 return FacebookRelationshipStatus.IN_A_DOMESTIC_PARTNERSHIP;
             }
         }

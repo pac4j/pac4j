@@ -33,7 +33,6 @@ import org.scribe.up.util.ObjectHelper;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    public static final String ID = "id";
     public static final String NAME = "name";
     public static final String FIRST_NAME = "first_name";
     public static final String MIDDLE_NAME = "middle_name";

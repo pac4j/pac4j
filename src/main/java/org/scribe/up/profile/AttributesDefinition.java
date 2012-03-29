@@ -20,6 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.converter.AttributeConverter;
+import org.scribe.up.profile.converter.BooleanConverter;
+import org.scribe.up.profile.converter.ColorConverter;
+import org.scribe.up.profile.converter.IntegerConverter;
+import org.scribe.up.profile.converter.LocaleConverter;
+import org.scribe.up.profile.converter.StringConverter;
+
 /**
  * This class is the definition of the attributes.
  * 
@@ -35,8 +43,8 @@ public class AttributesDefinition {
     // default converters
     protected LocaleConverter localeConverter = new LocaleConverter();
     protected StringConverter stringConverter = new StringConverter();
-    protected SafeBooleanConverter safeBooleanConverter = new SafeBooleanConverter();
-    protected SafeIntegerConverter safeIntegerConverter = new SafeIntegerConverter();
+    protected BooleanConverter booleanConverter = new BooleanConverter();
+    protected IntegerConverter integerConverter = new IntegerConverter();
     protected ColorConverter colorConverter = new ColorConverter();
     
     public List<String> getAttributes() {
@@ -45,10 +53,14 @@ public class AttributesDefinition {
     
     public Object convert(String name, Object value) {
         AttributeConverter<? extends Object> converter = converters.get(name);
-        if (converter != null && value != null) {
-            return converter.convert(value.toString());
+        if (converter != null) {
+            return converter.convert(value);
         } else {
             return value;
         }
+    }
+    
+    public Object convert(JsonNode json, String name) {
+        return convert(name, JsonHelper.get(json, name));
     }
 }

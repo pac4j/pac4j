@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.profile;
+package org.scribe.up.test.profile.converter;
 
 import junit.framework.TestCase;
 
-import org.scribe.up.profile.StringReplaceConverter;
+import org.scribe.up.profile.converter.StringReplaceConverter;
 
 /**
- * This class tests the {@link org.scribe.up.profile.StringReplaceConverter} class.
+ * This class tests the {@link org.scribe.up.profile.converter.StringReplaceConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -41,6 +41,10 @@ public final class TestStringReplaceConverter extends TestCase {
     
     public void testNull() {
         assertNull(converter.convert(null));
+    }
+    
+    public void testNotAString() {
+        assertNull(converter.convert(Boolean.TRUE));
     }
     
     public void testBadRegex() {

@@ -34,6 +34,10 @@ public final class TestFacebookRelationshipStatusConverter extends TestCase {
         assertNull(converter.convert(null));
     }
     
+    public void testNotAString() {
+        assertNull(converter.convert(Boolean.TRUE));
+    }
+    
     public void testSingle() {
         assertEquals(FacebookRelationshipStatus.SINGLE, converter.convert("Single"));
     }

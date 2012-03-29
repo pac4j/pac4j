@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.LocaleConverter;
+import org.scribe.up.profile.converter.LocaleConverter;
 import org.scribe.up.util.ObjectHelper;
 
 /**

@@ -1,9 +1,32 @@
+/*
+  Copyright 2012 Jerome Leleu
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.scribe.up.profile.facebook;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.DateConverter;
-import org.scribe.up.profile.GenderConverter;
+import org.scribe.up.profile.converter.DateConverter;
+import org.scribe.up.profile.converter.GenderConverter;
+import org.scribe.up.profile.converter.JsonListConverter;
+import org.scribe.up.profile.converter.JsonObjectConverter;
 
+/**
+ * This class defines the attributes of the Facebook profile.
+ * 
+ * @author Jerome Leleu
+ * @since 1.1.0
+ */
 public class FacebookProfileDefinition extends AttributesDefinition {
     
     public static final String NAME = "name";
@@ -47,20 +70,10 @@ public class FacebookProfileDefinition extends AttributesDefinition {
             attributes.add(name);
             converters.put(name, stringConverter);
         }
-        names = new String[] {
-            FacebookProfile.TIMEZONE
-        };
-        for (String name : names) {
-            attributes.add(name);
-            converters.put(name, safeIntegerConverter);
-        }
-        names = new String[] {
-            FacebookProfile.VERIFIED
-        };
-        for (String name : names) {
-            attributes.add(name);
-            converters.put(name, safeBooleanConverter);
-        }
+        attributes.add(TIMEZONE);
+        converters.put(TIMEZONE, integerConverter);
+        attributes.add(VERIFIED);
+        converters.put(VERIFIED, booleanConverter);
         attributes.add(GENDER);
         converters.put(GENDER, new GenderConverter("male", "female"));
         attributes.add(LOCALE);
@@ -71,5 +84,27 @@ public class FacebookProfileDefinition extends AttributesDefinition {
         converters.put(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         attributes.add(RELATIONSHIP_STATUS);
         converters.put(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
+        JsonListConverter listFacebookObjectConverter = new JsonListConverter(FacebookObject.class);
+        attributes.add(LANGUAGES);
+        converters.put(LANGUAGES, listFacebookObjectConverter);
+        // installed
+        attributes.add(EDUCATION);
+        converters.put(EDUCATION, new JsonObjectConverter(FacebookEducation.class));
+        JsonObjectConverter facebookObjectConverter = new JsonObjectConverter(FacebookObject.class);
+        attributes.add(HOMETOWN);
+        converters.put(HOMETOWN, facebookObjectConverter);
+        attributes.add(INTERESTED_IN);
+        converters.put(INTERESTED_IN, new JsonListConverter(String.class));
+        attributes.add(LOCATION);
+        converters.put(LOCATION, facebookObjectConverter);
+        attributes.add(FAVORITE_ATHLETES);
+        converters.put(FAVORITE_ATHLETES, listFacebookObjectConverter);
+        attributes.add(FAVORITE_TEAMS);
+        converters.put(FAVORITE_TEAMS, listFacebookObjectConverter);
+        attributes.add(SIGNIFICANT_OTHER);
+        converters.put(SIGNIFICANT_OTHER, facebookObjectConverter);
+        // video_upload_limits
+        attributes.add(EDUCATION);
+        converters.put(EDUCATION, new JsonObjectConverter(FacebookWork.class));
     }
 }

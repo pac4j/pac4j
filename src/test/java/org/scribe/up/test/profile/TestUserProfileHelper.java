@@ -31,7 +31,6 @@ import org.scribe.up.profile.yahoo.YahooAddress;
 import org.scribe.up.profile.yahoo.YahooDisclosure;
 import org.scribe.up.profile.yahoo.YahooEmail;
 import org.scribe.up.profile.yahoo.YahooInterest;
-import org.scribe.up.test.util.MockAttributeConverter;
 
 /**
  * This class tests the {@link org.scribe.up.profile.UserProfileHelper} class.

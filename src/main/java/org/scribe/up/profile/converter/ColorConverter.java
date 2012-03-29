@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 import java.awt.Color;
 
@@ -30,18 +30,21 @@ public final class ColorConverter implements AttributeConverter<Color> {
     
     private static final Logger logger = LoggerFactory.getLogger(ColorConverter.class);
     
-    public Color convert(String attribute) {
-        if (attribute != null && attribute.length() == 6) {
-            try {
-                String hex = attribute.substring(0, 2);
-                int r = Integer.parseInt(hex, 16);
-                hex = attribute.substring(2, 4);
-                int g = Integer.parseInt(hex, 16);
-                hex = attribute.substring(4, 6);
-                int b = Integer.parseInt(hex, 16);
-                return new Color(r, g, b);
-            } catch (NumberFormatException e) {
-                logger.error("Cannot convert " + attribute + " into color", e);
+    public Color convert(Object attribute) {
+        if (attribute != null && attribute instanceof String) {
+            String s = (String) attribute;
+            if (s.length() == 6) {
+                try {
+                    String hex = s.substring(0, 2);
+                    int r = Integer.parseInt(hex, 16);
+                    hex = s.substring(2, 4);
+                    int g = Integer.parseInt(hex, 16);
+                    hex = s.substring(4, 6);
+                    int b = Integer.parseInt(hex, 16);
+                    return new Color(r, g, b);
+                } catch (NumberFormatException e) {
+                    logger.error("Cannot convert " + attribute + " into color", e);
+                }
             }
         }
         return null;

@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class is the user profile retrieved from an OAuth provider after authentication : it's an identifier (string) and attributes
  * (objects).
@@ -29,7 +32,9 @@ import java.util.Map;
  */
 public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = 7945097610543538094L;
+    private static final long serialVersionUID = 4467971374910367721L;
+    
+    protected static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
     protected String id;
     
@@ -48,7 +53,12 @@ public class UserProfile implements Serializable {
     }
     
     public void addAttribute(String key, Object value) {
-        attributes.put(key, value);
+        if (value != null) {
+            logger.debug("key : {} / value : {} / {}", new Object[] {
+                key, value, value.getClass()
+            });
+            attributes.put(key, value);
+        }
     }
     
     public void addAttributes(Map<String, Object> attributes) {
@@ -56,6 +66,7 @@ public class UserProfile implements Serializable {
     }
     
     public void setId(String id) {
+        logger.debug("identifier : {}", id);
         this.id = id;
     }
     

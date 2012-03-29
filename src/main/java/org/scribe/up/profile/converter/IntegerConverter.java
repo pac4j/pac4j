@@ -13,21 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 /**
- * This interface is the contract for an attribute converter.
+ * This class converts a String into an Integer or returns the Integer in input.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public interface AttributeConverter<T> {
+public final class IntegerConverter implements AttributeConverter<Integer> {
     
-    /**
-     * Convert an attribute to a specific type T.
-     * 
-     * @param attribute
-     * @return the converted attribute
-     */
-    public T convert(String attribute);
+    public Integer convert(Object attribute) {
+        if (attribute != null) {
+            if (attribute instanceof Integer) {
+                return (Integer) attribute;
+            } else if (attribute instanceof String) {
+                return Integer.parseInt((String) attribute);
+            }
+        }
+        return null;
+    }
 }

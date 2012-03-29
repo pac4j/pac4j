@@ -13,17 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.facebook;
+
+import org.scribe.up.profile.AttributesDefinition;
 
 /**
- * This class is a converter from String to an object buildable from json (the input string must be a json text).
+ * This class defines the common Facebook object.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class JsonConverter<T extends FromJsonBuildableObject> implements AttributeConverter<T> {
+public class FacebookObjectDefinition extends AttributesDefinition {
     
-    public T convert(String attribute) {
-        return null;
+    public static final String ID = "id";
+    public static final String NAME = "name";
+    
+    public FacebookObjectDefinition() {
+        attributes.add(ID);
+        converters.put(ID, stringConverter);
+        attributes.add(NAME);
+        converters.put(NAME, stringConverter);
     }
 }

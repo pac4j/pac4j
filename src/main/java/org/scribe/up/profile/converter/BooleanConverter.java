@@ -13,17 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 /**
- * This class converts a String into a not null Boolean.
+ * This class converts a String into a Boolean or returns the Boolean in input.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class SafeBooleanConverter implements AttributeConverter<Boolean> {
+public final class BooleanConverter implements AttributeConverter<Boolean> {
     
-    public Boolean convert(String attribute) {
-        return Boolean.parseBoolean(attribute);
+    public Boolean convert(Object attribute) {
+        if (attribute != null) {
+            if (attribute instanceof Boolean) {
+                return (Boolean) attribute;
+            } else if (attribute instanceof String) {
+                return Boolean.parseBoolean((String) attribute);
+            }
+        }
+        return null;
     }
 }

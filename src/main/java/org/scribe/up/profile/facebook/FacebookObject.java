@@ -15,8 +15,11 @@
  */
 package org.scribe.up.profile.facebook;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.JsonObject;
 
 /**
  * This class represents a common Facebook object (id + name).
@@ -24,17 +27,28 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookObject {
+public final class FacebookObject extends JsonObject implements Serializable {
+    
+    private static final long serialVersionUID = -5973209423320686929L;
+    
+    private transient static final AttributesDefinition definition = new FacebookObjectDefinition();
     
     private String id;
     
     private String name;
     
-    public FacebookObject(JsonNode json) {
-        if (json != null) {
-            this.id = JsonHelper.getTextValue(json, "id");
-            this.name = JsonHelper.getTextValue(json, "name");
-        }
+    public FacebookObject() {
+    }
+    
+    public FacebookObject(Object json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.id = (String) definition.convert(json, FacebookObjectDefinition.ID);
+        this.name = (String) definition.convert(json, FacebookObjectDefinition.NAME);
+        
     }
     
     public String getId() {
@@ -43,10 +57,5 @@ public final class FacebookObject {
     
     public String getName() {
         return name;
-    }
-    
-    @Override
-    public String toString() {
-        return "FacebookObject(id:" + id + ",name:" + name + ")";
     }
 }

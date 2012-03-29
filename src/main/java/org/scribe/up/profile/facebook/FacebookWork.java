@@ -15,11 +15,12 @@
  */
 package org.scribe.up.profile.facebook;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.DateConverter;
-import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.JsonObject;
 
 /**
  * This class represents a Facebook work.
@@ -27,9 +28,11 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookWork {
+public final class FacebookWork extends JsonObject implements Serializable {
     
-    private final static DateConverter dateConverter = new DateConverter("yyyy-MM");
+    private static final long serialVersionUID = 2705703533936729650L;
+    
+    private transient static final AttributesDefinition definition = new FacebookWorkDefinition();
     
     private FacebookObject employer;
     
@@ -43,15 +46,21 @@ public final class FacebookWork {
     
     private Date endDate;
     
+    public FacebookWork() {
+    }
+    
     public FacebookWork(JsonNode json) {
-        if (json != null) {
-            this.employer = new FacebookObject(json.get("employer"));
-            this.location = new FacebookObject(json.get("location"));
-            this.position = new FacebookObject(json.get("position"));
-            this.description = JsonHelper.getTextValue(json, "description");
-            this.startDate = dateConverter.convert(JsonHelper.getTextValue(json, "start_date"));
-            this.endDate = dateConverter.convert(JsonHelper.getTextValue(json, "end_date"));
-        }
+        buildFrom(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.employer = (FacebookObject) definition.convert(json, FacebookWorkDefinition.EMPLOYER);
+        this.location = (FacebookObject) definition.convert(json, FacebookWorkDefinition.LOCATION);
+        this.position = (FacebookObject) definition.convert(json, FacebookWorkDefinition.POSITION);
+        this.description = (String) definition.convert(json, FacebookWorkDefinition.DESCRIPTION);
+        this.startDate = (Date) definition.convert(json, FacebookWorkDefinition.START_DATE);
+        this.endDate = (Date) definition.convert(json, FacebookWorkDefinition.END_DATE);
     }
     
     public FacebookObject getEmployer() {
@@ -76,11 +85,5 @@ public final class FacebookWork {
     
     public Date getEndDate() {
         return endDate;
-    }
-    
-    @Override
-    public String toString() {
-        return "FacebookWork(employer:" + employer + ",location:" + location + ",position:" + position
-               + ",description:" + description + ",start_date:" + startDate + ",end_date:" + endDate + ")";
     }
 }

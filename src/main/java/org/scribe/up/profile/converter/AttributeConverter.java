@@ -13,21 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 /**
- * This class converts a String into a not null Integer.
+ * This interface is the contract for an attribute converter.
  * 
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.0.0
  */
-public final class SafeIntegerConverter implements AttributeConverter<Integer> {
+public interface AttributeConverter<T> {
     
-    public Integer convert(String attribute) {
-        if (attribute == null) {
-            return 0;
-        } else {
-            return Integer.parseInt(attribute);
-        }
-    }
+    /**
+     * Convert an attribute to a specific type T.
+     * 
+     * @param attribute
+     * @return the converted attribute
+     */
+    public T convert(Object attribute);
 }

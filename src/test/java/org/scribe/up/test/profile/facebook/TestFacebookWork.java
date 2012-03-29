@@ -17,8 +17,8 @@ package org.scribe.up.test.profile.facebook;
 
 import junit.framework.TestCase;
 
-import org.scribe.up.profile.DateConverter;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.converter.DateConverter;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookWork;
 

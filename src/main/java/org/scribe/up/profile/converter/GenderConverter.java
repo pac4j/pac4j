@@ -13,7 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
+
+import org.scribe.up.profile.Gender;
 
 /**
  * This class is the converter of a String to a Gender.
@@ -32,12 +34,12 @@ public final class GenderConverter implements AttributeConverter<Gender> {
         this.femaleText = femaleText;
     }
     
-    public Gender convert(String attribute) {
-        if (attribute != null) {
-            attribute = attribute.toLowerCase();
-            if (attribute.equals(maleText)) {
+    public Gender convert(Object attribute) {
+        if (attribute != null && attribute instanceof String) {
+            String s = ((String) attribute).toLowerCase();
+            if (s.equals(maleText)) {
                 return Gender.MALE;
-            } else if (attribute.equals(femaleText)) {
+            } else if (s.equals(femaleText)) {
                 return Gender.FEMALE;
             } else {
                 return Gender.UNSPECIFIED;

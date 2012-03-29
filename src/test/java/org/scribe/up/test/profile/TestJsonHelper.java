@@ -37,7 +37,7 @@ public final class TestJsonHelper extends TestCase {
     
     private static final String GOOD_NUMBER_JSON = "{ \"" + KEY + "\" : 1 }";
     
-    private static final String GOOD_COMPLEX_JSON = "{ \"" + KEY + "\" : " + GOOD_TEXT_JSON + " }";
+    private static final String GOOD_NODE_JSON = "{ \"" + KEY + "\" : " + GOOD_TEXT_JSON + " }";
     
     private static final String BAD_JSON = "this_is_definitively_not_a_json_text";
     
@@ -85,29 +85,28 @@ public final class TestJsonHelper extends TestCase {
         assertEquals(Boolean.TRUE, JsonHelper.getBooleanValue(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), KEY));
     }
     
-    public void testGetStringText() {
-        assertEquals(TEXT_VALUE, JsonHelper.getStringValue(JsonHelper.getFirstNode(GOOD_TEXT_JSON), KEY));
+    public void testGetText() {
+        assertEquals(TEXT_VALUE, JsonHelper.get(JsonHelper.getFirstNode(GOOD_TEXT_JSON), KEY));
     }
     
-    public void testGetStringTextNull() {
-        assertNull(JsonHelper.getStringValue(null, KEY));
+    public void testGetNull() {
+        assertNull(JsonHelper.get(null, KEY));
     }
     
-    public void testGetStringTextBadKey() {
-        assertNull(JsonHelper.getStringValue(JsonHelper.getFirstNode(GOOD_TEXT_JSON), "bad" + KEY));
+    public void testGetBadKey() {
+        assertNull(JsonHelper.get(JsonHelper.getFirstNode(GOOD_TEXT_JSON), "bad" + KEY));
     }
     
-    public void testGetStringBoolean() {
-        assertEquals(Boolean.TRUE.toString(),
-                     JsonHelper.getStringValue(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), KEY));
+    public void testGetBoolean() {
+        assertEquals(Boolean.TRUE, JsonHelper.get(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), KEY));
     }
     
-    public void testGetStringNumber() {
-        assertEquals("1", JsonHelper.getStringValue(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), KEY));
+    public void testGetNumber() {
+        assertEquals(1, JsonHelper.get(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), KEY));
     }
     
-    public void testGetStringComplex() {
-        assertEquals(JsonHelper.getFirstNode(GOOD_TEXT_JSON).toString(),
-                     JsonHelper.getStringValue(JsonHelper.getFirstNode(GOOD_COMPLEX_JSON), KEY));
+    public void testGetNode() {
+        assertEquals(JsonHelper.getFirstNode(GOOD_TEXT_JSON),
+                     JsonHelper.get(JsonHelper.getFirstNode(GOOD_NODE_JSON), KEY));
     }
 }

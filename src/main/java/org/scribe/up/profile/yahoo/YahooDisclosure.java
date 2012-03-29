@@ -18,8 +18,8 @@ package org.scribe.up.profile.yahoo;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.DateConverter;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.converter.DateConverter;
 
 /**
  * This class represents a disclosure for Yahoo.

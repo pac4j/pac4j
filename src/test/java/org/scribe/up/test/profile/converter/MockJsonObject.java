@@ -13,21 +13,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.util;
+package org.scribe.up.test.profile.converter;
 
-import org.scribe.up.profile.AttributeConverter;
+import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.JsonObject;
 
 /**
- * This mock has a specific conversion behaviour for test.
+ * This class is a mock for JsonObject.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class MockAttributeConverter implements AttributeConverter<String> {
+public class MockJsonObject extends JsonObject {
     
-    public static final String CONVERTED_VALUE = "convertedValue";
+    private String value;
     
-    public String convert(String attribute) {
-        return CONVERTED_VALUE;
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        value = json.getTextValue();
+    }
+    
+    public String getValue() {
+        return value;
     }
 }

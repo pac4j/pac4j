@@ -18,14 +18,16 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
-import org.scribe.up.profile.DateConverter;
-import org.scribe.up.profile.GenderConverter;
+import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.converter.DateConverter;
+import org.scribe.up.profile.converter.GenderConverter;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookProfile;
+import org.scribe.up.profile.facebook.FacebookProfileDefinition;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter;
 import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.provider.BaseOAuth20Provider;
@@ -50,6 +52,8 @@ import org.scribe.up.util.StringHelper;
  * @since 1.0.0
  */
 public class FacebookProvider extends BaseOAuth20Provider {
+    
+    private static final AttributesDefinition definition = new FacebookProfileDefinition();
     
     @Override
     protected void internalInit() {
@@ -85,8 +89,14 @@ public class FacebookProvider extends BaseOAuth20Provider {
     protected UserProfile extractUserProfile(String body) {
         FacebookProfile profile = new FacebookProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
+        /*if (json != null) {
+            profile.setId((String) JsonHelper.get(json, "id"));
+            for (String attribute : definition.getAttributes()) {
+                profile.addAttribute(attribute, definition.convert(json, attribute));
+            }
+        }*/
         if (json != null) {
-            UserProfileHelper.addIdentifier(profile, json, FacebookProfile.ID);
+            UserProfileHelper.addIdentifier(profile, json, "id");
             for (String attribute : mainAttributes.keySet()) {
                 UserProfileHelper.addAttribute(profile, json, attribute, mainAttributes.get(attribute));
             }

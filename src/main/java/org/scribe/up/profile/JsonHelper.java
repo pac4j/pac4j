@@ -110,20 +110,24 @@ public final class JsonHelper {
     }
     
     /**
-     * Get the string value of the JSON with name.
+     * Return the field with name in JSON (a string, a boolean, a number or a node).
      * 
      * @param json
      * @param name
-     * @return the string value of the node.
+     * @return the field
      */
-    public static String getStringValue(JsonNode json, String name) {
+    public static Object get(JsonNode json, String name) {
         if (json != null) {
             JsonNode node = json.get(name);
             if (node != null) {
-                if (node.isTextual()) {
+                if (node.isNumber()) {
+                    return node.getNumberValue();
+                } else if (node.isBoolean()) {
+                    return node.getBooleanValue();
+                } else if (node.isTextual()) {
                     return node.getTextValue();
                 } else {
-                    return node.toString();
+                    return node;
                 }
             }
         }

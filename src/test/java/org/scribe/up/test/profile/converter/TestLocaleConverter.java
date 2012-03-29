@@ -13,16 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.profile;
+package org.scribe.up.test.profile.converter;
 
 import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.scribe.up.profile.LocaleConverter;
+import org.scribe.up.profile.converter.LocaleConverter;
 
 /**
- * This class tests the {@link org.scribe.up.profile.LocaleConverter} class.
+ * This class tests the {@link org.scribe.up.profile.converter.LocaleConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -33,6 +33,10 @@ public final class TestLocaleConverter extends TestCase {
     
     public void testNull() {
         assertNull(converter.convert(null));
+    }
+    
+    public void testNotAString() {
+        assertNull(converter.convert(Boolean.TRUE));
     }
     
     public void testLanguage() {

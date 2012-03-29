@@ -13,17 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile;
+package org.scribe.up.profile.converter;
 
 /**
- * This class converts a String into itself.
+ * This class only keeps String objects.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public final class StringConverter implements AttributeConverter<String> {
     
-    public String convert(String attribute) {
-        return attribute;
+    public String convert(Object attribute) {
+        if (attribute != null && attribute instanceof String) {
+            return (String) attribute;
+        }
+        return null;
     }
 }
