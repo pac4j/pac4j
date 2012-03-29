@@ -18,18 +18,9 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
-import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
-import org.scribe.up.profile.converter.DateConverter;
-import org.scribe.up.profile.converter.GenderConverter;
-import org.scribe.up.profile.facebook.FacebookEducation;
-import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookProfile;
-import org.scribe.up.profile.facebook.FacebookProfileDefinition;
-import org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter;
-import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.util.StringHelper;
 
@@ -53,8 +44,6 @@ import org.scribe.up.util.StringHelper;
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
-    private static final AttributesDefinition definition = new FacebookProfileDefinition();
-    
     @Override
     protected void internalInit() {
         if (StringHelper.isNotBlank(scope)) {
@@ -64,20 +53,6 @@ public class FacebookProvider extends BaseOAuth20Provider {
             service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret)
                 .callback(callbackUrl).build();
         }
-        String[] names = new String[] {
-            FacebookProfile.NAME, FacebookProfile.FIRST_NAME, FacebookProfile.MIDDLE_NAME, FacebookProfile.LAST_NAME,
-            FacebookProfile.LINK, FacebookProfile.USERNAME, FacebookProfile.THIRD_PARTY_ID, FacebookProfile.TIMEZONE,
-            FacebookProfile.VERIFIED, FacebookProfile.BIO, FacebookProfile.EMAIL, FacebookProfile.POLITICAL,
-            FacebookProfile.QUOTES, FacebookProfile.RELIGION, FacebookProfile.WEBSITE
-        };
-        for (String name : names) {
-            mainAttributes.put(name, null);
-        }
-        mainAttributes.put(FacebookProfile.GENDER, new GenderConverter("male", "female"));
-        mainAttributes.put(FacebookProfile.LOCALE, localeConverter);
-        mainAttributes.put(FacebookProfile.UPDATED_TIME, new DateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
-        mainAttributes.put(FacebookProfile.BIRTHDAY, new DateConverter("MM/dd/yyyy"));
-        mainAttributes.put(FacebookProfile.RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
     }
     
     @Override
@@ -89,70 +64,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
     protected UserProfile extractUserProfile(String body) {
         FacebookProfile profile = new FacebookProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
-        /*if (json != null) {
-            profile.setId((String) JsonHelper.get(json, "id"));
-            for (String attribute : definition.getAttributes()) {
-                profile.addAttribute(attribute, definition.convert(json, attribute));
-            }
-        }*/
         if (json != null) {
-            UserProfileHelper.addIdentifier(profile, json, "id");
-            for (String attribute : mainAttributes.keySet()) {
-                UserProfileHelper.addAttribute(profile, json, attribute, mainAttributes.get(attribute));
+            profile.setId((String) JsonHelper.get(json, "id"));
+            for (String attribute : FacebookProfile.getAttributesDefinition().getAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
-        }
-        // languages
-        JsonNode subJson = json.get(FacebookProfile.LANGUAGES);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.LANGUAGES,
-                                           UserProfileHelper.getListObject(subJson, FacebookObject.class));
-        }
-        // installed
-        // education
-        subJson = json.get(FacebookProfile.EDUCATION);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.EDUCATION,
-                                           UserProfileHelper.getListObject(subJson, FacebookEducation.class));
-        }
-        // hometown
-        subJson = json.get(FacebookProfile.HOMETOWN);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.HOMETOWN, new FacebookObject(subJson));
-        }
-        // interested_in
-        subJson = json.get(FacebookProfile.INTERESTED_IN);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.INTERESTED_IN,
-                                           UserProfileHelper.getListObject(subJson, String.class));
-        }
-        // location
-        subJson = json.get(FacebookProfile.LOCATION);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.LOCATION, new FacebookObject(subJson));
-        }
-        // favorite_athletes
-        subJson = json.get(FacebookProfile.FAVORITE_ATHLETES);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.FAVORITE_ATHLETES,
-                                           UserProfileHelper.getListObject(subJson, FacebookObject.class));
-        }
-        // favorite_teams
-        subJson = json.get(FacebookProfile.FAVORITE_TEAMS);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.FAVORITE_TEAMS,
-                                           UserProfileHelper.getListObject(subJson, FacebookObject.class));
-        }
-        // significant_other
-        subJson = json.get(FacebookProfile.SIGNIFICANT_OTHER);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.SIGNIFICANT_OTHER, new FacebookObject(subJson));
-        }
-        // video_upload_limits
-        // work
-        subJson = json.get(FacebookProfile.WORK);
-        if (subJson != null) {
-            UserProfileHelper.addAttribute(profile, FacebookProfile.WORK,
-                                           UserProfileHelper.getListObject(subJson, FacebookWork.class));
         }
         return profile;
     }

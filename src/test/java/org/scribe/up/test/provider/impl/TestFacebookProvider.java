@@ -74,7 +74,6 @@ public class TestFacebookProvider extends TestProvider {
         FacebookProfile profile = (FacebookProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("100003571536393", profile.getId());
-        assertEquals(24, profile.getAttributes().size());
         assertEquals("Jerome Testscribeup", profile.getName());
         assertEquals("jerome", profile.getFirstName());
         // middle_name
@@ -120,5 +119,6 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("Description", work.getDescription());
         assertTrue(work.getStartDate() instanceof Date);
         assertNull(work.getEndDate());
+        assertEquals(24, profile.getAttributes().size());
     }
 }

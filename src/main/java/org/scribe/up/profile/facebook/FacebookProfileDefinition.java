@@ -61,10 +61,8 @@ public class FacebookProfileDefinition extends AttributesDefinition {
     
     public FacebookProfileDefinition() {
         String[] names = new String[] {
-            FacebookProfile.NAME, FacebookProfile.FIRST_NAME, FacebookProfile.MIDDLE_NAME, FacebookProfile.LAST_NAME,
-            FacebookProfile.LINK, FacebookProfile.USERNAME, FacebookProfile.THIRD_PARTY_ID, FacebookProfile.BIO,
-            FacebookProfile.EMAIL, FacebookProfile.POLITICAL, FacebookProfile.QUOTES, FacebookProfile.RELIGION,
-            FacebookProfile.WEBSITE
+            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, USERNAME, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
+            RELIGION, WEBSITE
         };
         for (String name : names) {
             attributes.add(name);
@@ -89,7 +87,7 @@ public class FacebookProfileDefinition extends AttributesDefinition {
         converters.put(LANGUAGES, listFacebookObjectConverter);
         // installed
         attributes.add(EDUCATION);
-        converters.put(EDUCATION, new JsonObjectConverter(FacebookEducation.class));
+        converters.put(EDUCATION, new JsonListConverter(FacebookEducation.class));
         JsonObjectConverter facebookObjectConverter = new JsonObjectConverter(FacebookObject.class);
         attributes.add(HOMETOWN);
         converters.put(HOMETOWN, facebookObjectConverter);
@@ -104,7 +102,7 @@ public class FacebookProfileDefinition extends AttributesDefinition {
         attributes.add(SIGNIFICANT_OTHER);
         converters.put(SIGNIFICANT_OTHER, facebookObjectConverter);
         // video_upload_limits
-        attributes.add(EDUCATION);
-        converters.put(EDUCATION, new JsonObjectConverter(FacebookWork.class));
+        attributes.add(WORK);
+        converters.put(WORK, new JsonListConverter(FacebookWork.class));
     }
 }

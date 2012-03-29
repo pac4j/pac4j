@@ -32,7 +32,9 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = 4467971374910367721L;
+    private static final long serialVersionUID = 5589413454571662464L;
+    
+    protected transient static AttributesDefinition definition;
     
     protected static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -54,15 +56,29 @@ public class UserProfile implements Serializable {
     
     public void addAttribute(String key, Object value) {
         if (value != null) {
-            logger.debug("key : {} / value : {} / {}", new Object[] {
-                key, value, value.getClass()
-            });
+            AttributesDefinition definition = getAttributesDefinition();
+            // no attributes definition -> no conversion
+            if (definition == null) {
+                logger.debug("no conversion => key : {} / value : {} / {}", new Object[] {
+                    key, value, value.getClass()
+                });
+            } else {
+                logger.debug("before conversion => key : {} / value : {} / {}", new Object[] {
+                    key, value, value.getClass()
+                });
+                value = definition.convert(key, value);
+                logger.debug("after conversion => key : {} / value : {} / {}", new Object[] {
+                    key, value, value.getClass()
+                });
+            }
             attributes.put(key, value);
         }
     }
     
     public void addAttributes(Map<String, Object> attributes) {
-        this.attributes.putAll(attributes);
+        for (String key : attributes.keySet()) {
+            addAttribute(key, attributes.get(key));
+        }
     }
     
     public void setId(String id) {
@@ -76,6 +92,24 @@ public class UserProfile implements Serializable {
     
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
+    }
+    
+    public static AttributesDefinition getAttributesDefinition() {
+        return definition;
+    }
+    
+    protected boolean getSafeBoolean(Boolean b) {
+        if (b != null) {
+            return b;
+        }
+        return false;
+    }
+    
+    protected int getSafeInteger(Integer i) {
+        if (i != null) {
+            return i;
+        }
+        return 0;
     }
     
     @Override

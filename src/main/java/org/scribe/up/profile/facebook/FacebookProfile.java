@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.util.ObjectHelper;
 
 /**
  * This class is the user profile for Facebook with appropriate getters.
@@ -33,35 +32,11 @@ import org.scribe.up.util.ObjectHelper;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    public static final String NAME = "name";
-    public static final String FIRST_NAME = "first_name";
-    public static final String MIDDLE_NAME = "middle_name";
-    public static final String LAST_NAME = "last_name";
-    public static final String GENDER = "gender";
-    public static final String LOCALE = "locale";
-    public static final String LANGUAGES = "languages";
-    public static final String LINK = "link";
-    public static final String USERNAME = "username";
-    public static final String THIRD_PARTY_ID = "third_party_id";
-    public static final String TIMEZONE = "timezone";
-    public static final String UPDATED_TIME = "updated_time";
-    public static final String VERIFIED = "verified";
-    public static final String BIO = "bio";
-    public static final String BIRTHDAY = "birthday";
-    public static final String EDUCATION = "education";
-    public static final String EMAIL = "email";
-    public static final String HOMETOWN = "hometown";
-    public static final String INTERESTED_IN = "interested_in";
-    public static final String LOCATION = "location";
-    public static final String POLITICAL = "political";
-    public static final String FAVORITE_ATHLETES = "favorite_athletes";
-    public static final String FAVORITE_TEAMS = "favorite_teams";
-    public static final String QUOTES = "quotes";
-    public static final String RELATIONSHIP_STATUS = "relationship_status";
-    public static final String RELIGION = "religion";
-    public static final String SIGNIFICANT_OTHER = "significant_other";
-    public static final String WEBSITE = "website";
-    public static final String WORK = "work";
+    private static final long serialVersionUID = -3121349407626303056L;
+    
+    static {
+        definition = new FacebookProfileDefinition();
+    }
     
     public FacebookProfile() {
         super();
@@ -76,118 +51,126 @@ public class FacebookProfile extends UserProfile {
     }
     
     public String getName() {
-        return (String) attributes.get(NAME);
+        return (String) attributes.get(FacebookProfileDefinition.NAME);
     }
     
     public String getFirstName() {
-        return (String) attributes.get(FIRST_NAME);
+        return (String) attributes.get(FacebookProfileDefinition.FIRST_NAME);
     }
     
     public String getMiddleName() {
-        return (String) attributes.get(MIDDLE_NAME);
+        return (String) attributes.get(FacebookProfileDefinition.MIDDLE_NAME);
     }
     
     public String getLastName() {
-        return (String) attributes.get(LAST_NAME);
+        return (String) attributes.get(FacebookProfileDefinition.LAST_NAME);
     }
     
     public Gender getGender() {
-        return (Gender) attributes.get(GENDER);
+        return (Gender) attributes.get(FacebookProfileDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) attributes.get(LOCALE);
+        return (Locale) attributes.get(FacebookProfileDefinition.LOCALE);
     }
     
     public List<FacebookObject> getLanguages() {
-        return (List<FacebookObject>) attributes.get(LANGUAGES);
+        return (List<FacebookObject>) attributes.get(FacebookProfileDefinition.LANGUAGES);
     }
     
     public String getLink() {
-        return (String) attributes.get(LINK);
+        return (String) attributes.get(FacebookProfileDefinition.LINK);
     }
     
     public String getUsername() {
-        return (String) attributes.get(USERNAME);
+        return (String) attributes.get(FacebookProfileDefinition.USERNAME);
     }
     
     public String getThirdPartyId() {
-        return (String) attributes.get(THIRD_PARTY_ID);
+        return (String) attributes.get(FacebookProfileDefinition.THIRD_PARTY_ID);
     }
     
     public int getTimezone() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(TIMEZONE), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(FacebookProfileDefinition.TIMEZONE));
+    }
+    
+    public boolean isTimezoneDefined() {
+        return attributes.get(FacebookProfileDefinition.TIMEZONE) != null;
     }
     
     public Date getUpdateTime() {
-        return (Date) attributes.get(UPDATED_TIME);
+        return (Date) attributes.get(FacebookProfileDefinition.UPDATED_TIME);
     }
     
     public boolean isVerified() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(VERIFIED), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(FacebookProfileDefinition.VERIFIED));
+    }
+    
+    public boolean isVerifiedDefined() {
+        return attributes.get(FacebookProfileDefinition.VERIFIED) != null;
     }
     
     public String getBio() {
-        return (String) attributes.get(BIO);
+        return (String) attributes.get(FacebookProfileDefinition.BIO);
     }
     
     public Date getBirthday() {
-        return (Date) attributes.get(BIRTHDAY);
+        return (Date) attributes.get(FacebookProfileDefinition.BIRTHDAY);
     }
     
     public List<FacebookEducation> getEducation() {
-        return (List<FacebookEducation>) attributes.get(EDUCATION);
+        return (List<FacebookEducation>) attributes.get(FacebookProfileDefinition.EDUCATION);
     }
     
     public String getEmail() {
-        return (String) attributes.get(EMAIL);
+        return (String) attributes.get(FacebookProfileDefinition.EMAIL);
     }
     
     public FacebookObject getHometown() {
-        return (FacebookObject) attributes.get(HOMETOWN);
+        return (FacebookObject) attributes.get(FacebookProfileDefinition.HOMETOWN);
     }
     
     public List<String> getInterestedIn() {
-        return (List<String>) attributes.get(INTERESTED_IN);
+        return (List<String>) attributes.get(FacebookProfileDefinition.INTERESTED_IN);
     }
     
     public FacebookObject getLocation() {
-        return (FacebookObject) attributes.get(LOCATION);
+        return (FacebookObject) attributes.get(FacebookProfileDefinition.LOCATION);
     }
     
     public String getPolitical() {
-        return (String) attributes.get(POLITICAL);
+        return (String) attributes.get(FacebookProfileDefinition.POLITICAL);
     }
     
     public List<FacebookObject> getFavoriteAthletes() {
-        return (List<FacebookObject>) attributes.get(FAVORITE_ATHLETES);
+        return (List<FacebookObject>) attributes.get(FacebookProfileDefinition.FAVORITE_ATHLETES);
     }
     
     public List<FacebookObject> getFavoriteTeams() {
-        return (List<FacebookObject>) attributes.get(FAVORITE_TEAMS);
+        return (List<FacebookObject>) attributes.get(FacebookProfileDefinition.FAVORITE_TEAMS);
     }
     
     public String getQuotes() {
-        return (String) attributes.get(QUOTES);
+        return (String) attributes.get(FacebookProfileDefinition.QUOTES);
     }
     
     public FacebookRelationshipStatus getRelationshipStatus() {
-        return (FacebookRelationshipStatus) attributes.get(RELATIONSHIP_STATUS);
+        return (FacebookRelationshipStatus) attributes.get(FacebookProfileDefinition.RELATIONSHIP_STATUS);
     }
     
     public String getReligion() {
-        return (String) attributes.get(RELIGION);
+        return (String) attributes.get(FacebookProfileDefinition.RELIGION);
     }
     
     public FacebookObject getSignificantOther() {
-        return (FacebookObject) attributes.get(SIGNIFICANT_OTHER);
+        return (FacebookObject) attributes.get(FacebookProfileDefinition.SIGNIFICANT_OTHER);
     }
     
     public String getWebsite() {
-        return (String) attributes.get(WEBSITE);
+        return (String) attributes.get(FacebookProfileDefinition.WEBSITE);
     }
     
     public List<FacebookWork> getWork() {
-        return (List<FacebookWork>) attributes.get(WORK);
+        return (List<FacebookWork>) attributes.get(FacebookProfileDefinition.WORK);
     }
 }
