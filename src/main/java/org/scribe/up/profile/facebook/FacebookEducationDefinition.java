@@ -27,11 +27,11 @@ import org.scribe.up.profile.converter.JsonObjectConverter;
  */
 public class FacebookEducationDefinition extends AttributesDefinition {
     
-    public transient static final String SCHOOL = "school";
-    public transient static final String DEGREE = "degree";
-    public transient static final String YEAR = "year";
-    public transient static final String CONCENTRATION = "concentration";
-    public transient static final String TYPE = "type";
+    public static final String SCHOOL = "school";
+    public static final String DEGREE = "degree";
+    public static final String YEAR = "year";
+    public static final String CONCENTRATION = "concentration";
+    public static final String TYPE = "type";
     
     public FacebookEducationDefinition() {
         JsonObjectConverter facebookObjectConverter = new JsonObjectConverter(FacebookObject.class);

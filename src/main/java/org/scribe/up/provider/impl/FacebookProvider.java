@@ -30,7 +30,8 @@ import org.scribe.up.util.StringHelper;
  * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
  * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages ({@link org.scribe.up.profile.JsonList}&lt;
  * {@link org.scribe.up.profile.facebook.FacebookObject}&gt;), link (String), username (String), third_party_id (String), timezone
- * (Integer), updated_time (Date), verified (Boolean), bio (String), birthday (Date), education ({@link org.scribe.up.profile.JsonList}&lt;
+ * (Integer), updated_time ({@link org.scribe.up.profile.FormattedDate}), verified (Boolean), bio (String), birthday (
+ * {@link org.scribe.up.profile.FormattedDate}), education ( {@link org.scribe.up.profile.JsonList}&lt;
  * {@link org.scribe.up.profile.facebook.FacebookEducation}&gt;), email (String), hometown (
  * {@link org.scribe.up.profile.facebook.FacebookObject}), interested_in ({@link org.scribe.up.profile.JsonList}&lt;String&gt;), location (
  * {@link org.scribe.up.profile.facebook.FacebookObject}), political (String), favorite_athletes ({@link org.scribe.up.profile.JsonList}&lt;

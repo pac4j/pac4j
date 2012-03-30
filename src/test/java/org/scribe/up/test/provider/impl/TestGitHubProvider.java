@@ -15,8 +15,6 @@
  */
 package org.scribe.up.test.provider.impl;
 
-import java.util.Date;
-
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubPlan;
 import org.scribe.up.profile.github.GitHubProfile;
@@ -80,7 +78,7 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals("testscribeup@gmail.com", profile.getEmail());
         assertEquals("Company", profile.getCompany());
         assertEquals("Test", profile.getName());
-        assertTrue(profile.getCreatedAt() instanceof Date);
+        assertEquals("2012/02/06 14:05:21 CET", profile.getCreatedAt().toString());
         assertEquals(0, profile.getOwnedPrivateRepoCount());
         assertEquals("testscribeup", profile.getLogin());
         assertEquals(0, profile.getPublicRepoCount());

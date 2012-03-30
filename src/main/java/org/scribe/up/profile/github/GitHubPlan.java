@@ -15,9 +15,11 @@
  */
 package org.scribe.up.profile.github;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.JsonObject;
 
 /**
  * This class represents a GitHub plan.
@@ -25,25 +27,30 @@ import org.scribe.up.util.ObjectHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class GitHubPlan {
+public final class GitHubPlan extends JsonObject implements Serializable {
+    
+    private static final long serialVersionUID = 5048074846912710504L;
+    
+    private transient final static AttributesDefinition definition = new GitHubPlanDefinition();
     
     private String name;
     
-    private int collaborators;
+    private Integer collaborators;
     
-    private int space;
+    private Integer space;
     
-    private int private_repos;
+    private Integer private_repos;
     
-    public GitHubPlan(JsonNode json) {
-        if (json != null) {
-            this.name = JsonHelper.getTextValue(json, "name");
-            this.collaborators = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json,
-                                                                                                   "collaborators"), 0);
-            this.space = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json, "space"), 0);
-            this.private_repos = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json,
-                                                                                                   "private_repos"), 0);
-        }
+    public GitHubPlan(Object json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.name = (String) definition.convert(json, GitHubPlanDefinition.NAME);
+        this.collaborators = (Integer) definition.convert(json, GitHubPlanDefinition.COLLABORATORS);
+        this.space = (Integer) definition.convert(json, GitHubPlanDefinition.SPACE);
+        this.private_repos = (Integer) definition.convert(json, GitHubPlanDefinition.PRIVATE_REPOS);
     }
     
     public String getName() {
@@ -51,20 +58,26 @@ public final class GitHubPlan {
     }
     
     public int getCollaborators() {
-        return collaborators;
+        return collaborators != null ? collaborators : 0;
+    }
+    
+    public boolean isCollaboratorsDefined() {
+        return collaborators != null;
     }
     
     public int getSpace() {
-        return space;
+        return space != null ? space : 0;
+    }
+    
+    public boolean isSpaceDefined() {
+        return space != null;
     }
     
     public int getPrivateRepos() {
-        return private_repos;
+        return private_repos != null ? private_repos : 0;
     }
     
-    @Override
-    public String toString() {
-        return "GitHubPlan(name:" + name + ",collaborators:" + collaborators + ",space:" + space + ",private_repos:"
-               + private_repos + ")";
+    public boolean isPrivateReposDefined() {
+        return private_repos != null;
     }
 }

@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.provider.impl.GitHubProvider;
 
 /**
  * This class is the user profile for GitHub with appropriate getters.
@@ -29,28 +29,12 @@ import org.scribe.up.util.ObjectHelper;
  */
 public class GitHubProfile extends UserProfile {
     
-    public static final String ID = "id";
-    public static final String USER = "user";
-    public static final String COMPANY = "company";
-    public static final String NAME = "name";
-    public static final String FOLLOWING_COUNT = "following_count";
-    public static final String BLOG = "blog";
-    public static final String PUBLIC_REPO_COUNT = "public_repo_count";
-    public static final String PUBLIC_GIST_COUNT = "public_gist_count";
-    public static final String DISK_USAGE = "disk_usage";
-    public static final String COLLABORATORS = "collaborators";
-    public static final String PLAN = "plan";
-    public static final String OWNED_PRIVATE_REPO_COUNT = "owned_private_repo_count";
-    public static final String TOTAL_PRIVATE_REPO_COUNT = "total_private_repo_count";
-    public static final String PRIVATE_GIST_COUNT = "private_gist_count";
-    public static final String LOGIN = "login";
-    public static final String FOLLOWERS_COUNT = "followers_count";
-    public static final String CREATED_AT = "created_at";
-    public static final String EMAIL = "email";
-    public static final String LOCATION = "location";
-    public static final String TYPE = "type";
-    public static final String PERMISSION = "permission";
-    public static final String GRAVATAR_ID = "gravatar_id";
+    private static final long serialVersionUID = -6598587880259342655L;
+    
+    static {
+        definition = new GitHubProfileDefinition();
+        providerType = GitHubProvider.class.getSimpleName();
+    }
     
     public GitHubProfile() {
         super();
@@ -65,82 +49,118 @@ public class GitHubProfile extends UserProfile {
     }
     
     public String getCompany() {
-        return (String) attributes.get(COMPANY);
+        return (String) attributes.get(GitHubProfileDefinition.COMPANY);
     }
     
     public String getName() {
-        return (String) attributes.get(NAME);
+        return (String) attributes.get(GitHubProfileDefinition.NAME);
     }
     
     public int getFollowingCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(FOLLOWING_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.FOLLOWING_COUNT));
+    }
+    
+    public boolean isFollowingCountDefined() {
+        return attributes.get(GitHubProfileDefinition.FOLLOWING_COUNT) != null;
     }
     
     public String getBlog() {
-        return (String) attributes.get(BLOG);
+        return (String) attributes.get(GitHubProfileDefinition.BLOG);
     }
     
     public int getPublicRepoCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(PUBLIC_REPO_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.PUBLIC_REPO_COUNT));
+    }
+    
+    public boolean isPublicRepoCountDefined() {
+        return attributes.get(GitHubProfileDefinition.PUBLIC_REPO_COUNT) != null;
     }
     
     public int getPublicGistCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(PUBLIC_GIST_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.PUBLIC_GIST_COUNT));
+    }
+    
+    public boolean isPublicGistCountDefined() {
+        return attributes.get(GitHubProfileDefinition.PUBLIC_GIST_COUNT) != null;
     }
     
     public int getDiskUsage() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(DISK_USAGE), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.DISK_USAGE));
+    }
+    
+    public boolean isDiskUsageDefined() {
+        return attributes.get(GitHubProfileDefinition.DISK_USAGE) != null;
     }
     
     public int getCollaborators() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(COLLABORATORS), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.COLLABORATORS));
+    }
+    
+    public boolean isCollaboratorsDefined() {
+        return attributes.get(GitHubProfileDefinition.COLLABORATORS) != null;
     }
     
     public GitHubPlan getPlan() {
-        return (GitHubPlan) attributes.get(PLAN);
+        return (GitHubPlan) attributes.get(GitHubProfileDefinition.PLAN);
     }
     
     public int getOwnedPrivateRepoCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(OWNED_PRIVATE_REPO_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.OWNED_PRIVATE_REPO_COUNT));
+    }
+    
+    public boolean isOwnedPrivateRepoCountDefined() {
+        return attributes.get(GitHubProfileDefinition.OWNED_PRIVATE_REPO_COUNT) != null;
     }
     
     public int getTotalPrivateRepoCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(TOTAL_PRIVATE_REPO_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.TOTAL_PRIVATE_REPO_COUNT));
+    }
+    
+    public boolean isTotalPrivateRepoCountDefined() {
+        return attributes.get(GitHubProfileDefinition.TOTAL_PRIVATE_REPO_COUNT) != null;
     }
     
     public int getPrivateGistCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(PRIVATE_GIST_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.PRIVATE_GIST_COUNT));
+    }
+    
+    public boolean isPrivateGistCountDefined() {
+        return attributes.get(GitHubProfileDefinition.PRIVATE_GIST_COUNT) != null;
     }
     
     public String getLogin() {
-        return (String) attributes.get(LOGIN);
+        return (String) attributes.get(GitHubProfileDefinition.LOGIN);
     }
     
     public int getFollowersCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(FOLLOWERS_COUNT), 0);
+        return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.FOLLOWERS_COUNT));
+    }
+    
+    public boolean isFollowersCountDefined() {
+        return attributes.get(GitHubProfileDefinition.FOLLOWERS_COUNT) != null;
     }
     
     public Date getCreatedAt() {
-        return (Date) attributes.get(CREATED_AT);
+        return (Date) attributes.get(GitHubProfileDefinition.CREATED_AT);
     }
     
     public String getEmail() {
-        return (String) attributes.get(EMAIL);
+        return (String) attributes.get(GitHubProfileDefinition.EMAIL);
     }
     
     public String getLocation() {
-        return (String) attributes.get(LOCATION);
+        return (String) attributes.get(GitHubProfileDefinition.LOCATION);
     }
     
     public String getType() {
-        return (String) attributes.get(TYPE);
+        return (String) attributes.get(GitHubProfileDefinition.TYPE);
     }
     
     public String getPermission() {
-        return (String) attributes.get(PERMISSION);
+        return (String) attributes.get(GitHubProfileDefinition.PERMISSION);
     }
     
     public String getGravatarId() {
-        return (String) attributes.get(GRAVATAR_ID);
+        return (String) attributes.get(GitHubProfileDefinition.GRAVATAR_ID);
     }
 }
