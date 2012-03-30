@@ -41,11 +41,11 @@ public class AttributesDefinition {
     protected Map<String, AttributeConverter<? extends Object>> converters = new HashMap<String, AttributeConverter<? extends Object>>();
     
     // default converters
-    protected LocaleConverter localeConverter = new LocaleConverter();
-    protected StringConverter stringConverter = new StringConverter();
-    protected BooleanConverter booleanConverter = new BooleanConverter();
-    protected IntegerConverter integerConverter = new IntegerConverter();
-    protected ColorConverter colorConverter = new ColorConverter();
+    protected static LocaleConverter localeConverter = new LocaleConverter();
+    protected static StringConverter stringConverter = new StringConverter();
+    protected static BooleanConverter booleanConverter = new BooleanConverter();
+    protected static IntegerConverter integerConverter = new IntegerConverter();
+    protected static ColorConverter colorConverter = new ColorConverter();
     
     public List<String> getAttributes() {
         return attributes;

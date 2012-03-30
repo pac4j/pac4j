@@ -30,7 +30,7 @@ import org.scribe.up.profile.JsonObject;
  */
 public final class FacebookEducation extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = 4722394642069550793L;
+    private static final long serialVersionUID = -8349031473955546433L;
     
     private transient final static AttributesDefinition definition = new FacebookEducationDefinition();
     
@@ -44,11 +44,8 @@ public final class FacebookEducation extends JsonObject implements Serializable 
     
     private String type;
     
-    public FacebookEducation() {
-    }
-    
-    public FacebookEducation(String json) {
-        buildFrom(json);
+    public FacebookEducation(Object json) {
+        super(json);
     }
     
     @SuppressWarnings("unchecked")

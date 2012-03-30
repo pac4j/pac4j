@@ -30,7 +30,7 @@ import org.scribe.up.profile.JsonObject;
  */
 public final class FacebookWork extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = 2705703533936729650L;
+    private static final long serialVersionUID = -4398476232898674635L;
     
     private transient static final AttributesDefinition definition = new FacebookWorkDefinition();
     
@@ -46,11 +46,8 @@ public final class FacebookWork extends JsonObject implements Serializable {
     
     private Date endDate;
     
-    public FacebookWork() {
-    }
-    
-    public FacebookWork(JsonNode json) {
-        buildFrom(json);
+    public FacebookWork(Object json) {
+        super(json);
     }
     
     @Override

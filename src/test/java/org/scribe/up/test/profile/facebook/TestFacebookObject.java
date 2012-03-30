@@ -17,7 +17,6 @@ package org.scribe.up.test.profile.facebook;
 
 import junit.framework.TestCase;
 
-import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.facebook.FacebookObject;
 
 /**
@@ -43,13 +42,13 @@ public final class TestFacebookObject extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(BAD_JSON));
+        FacebookObject facebookObject = new FacebookObject(BAD_JSON);
         assertNull(facebookObject.getId());
         assertNull(facebookObject.getName());
     }
     
     public void testGoodJson() {
-        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(GOOD_JSON));
+        FacebookObject facebookObject = new FacebookObject(GOOD_JSON);
         assertEquals(ID, facebookObject.getId());
         assertEquals(NAME, facebookObject.getName());
     }

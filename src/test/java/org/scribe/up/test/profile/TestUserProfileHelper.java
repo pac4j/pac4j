@@ -23,9 +23,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.UserProfileHelper;
-import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookObject;
-import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.profile.google.GoogleObject;
 import org.scribe.up.profile.yahoo.YahooAddress;
 import org.scribe.up.profile.yahoo.YahooDisclosure;
@@ -109,36 +107,12 @@ public final class TestUserProfileHelper extends TestCase {
         assertEquals(0, list.size());
     }
     
-    public void testGetListEmptyJsonFacebookObject() {
-        List<FacebookObject> list = (List<FacebookObject>) UserProfileHelper.getListObject(JsonHelper
-            .getFirstNode(EMPTY_JSON), FacebookObject.class);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof FacebookObject);
-    }
-    
     public void testGetListEmptyJsonGoogleObject() {
         List<GoogleObject> list = (List<GoogleObject>) UserProfileHelper.getListObject(JsonHelper
             .getFirstNode(EMPTY_JSON), GoogleObject.class);
         assertNotNull(list);
         assertEquals(1, list.size());
         assertTrue(list.get(0) instanceof GoogleObject);
-    }
-    
-    public void testGetListEmptyJsonFacebookEducation() {
-        List<FacebookEducation> list = (List<FacebookEducation>) UserProfileHelper.getListObject(JsonHelper
-            .getFirstNode(EMPTY_JSON), FacebookEducation.class);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof FacebookEducation);
-    }
-    
-    public void testGetListEmptyJsonFacebookWork() {
-        List<FacebookWork> list = (List<FacebookWork>) UserProfileHelper.getListObject(JsonHelper
-            .getFirstNode(EMPTY_JSON), FacebookWork.class);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        assertTrue(list.get(0) instanceof FacebookWork);
     }
     
     public void testGetListEmptyJsonYahooAddress() {
@@ -178,16 +152,6 @@ public final class TestUserProfileHelper extends TestCase {
                                                                              Boolean.class);
         assertNotNull(list);
         assertEquals(0, list.size());
-    }
-    
-    public void testGetListFacebookObjectOk() {
-        List<FacebookObject> list = (List<FacebookObject>) UserProfileHelper.getListObject(JsonHelper
-            .getFirstNode(GOOD_FACEBOOK_OBJECT_LIST_JSON), FacebookObject.class);
-        assertNotNull(list);
-        assertEquals(1, list.size());
-        FacebookObject facebookObject = list.get(0);
-        assertEquals(ID, facebookObject.getId());
-        assertEquals(VALUE, facebookObject.getName());
     }
     
     public void testGetListGoogleObjectOk() {

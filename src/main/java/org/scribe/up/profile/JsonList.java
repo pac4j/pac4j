@@ -15,6 +15,7 @@
  */
 package org.scribe.up.profile;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.1.0
  */
+@SuppressWarnings("unchecked")
 public final class JsonList<T extends Object> extends JsonObject implements List<T> {
     
     private static final Logger logger = LoggerFactory.getLogger(JsonList.class);
@@ -40,28 +42,63 @@ public final class JsonList<T extends Object> extends JsonObject implements List
     private Class<T> clazz;
     
     public JsonList(Object o, Class<T> clazz) {
+        super(null);
         this.clazz = clazz;
-        buildFrom(o);
+        if (o instanceof List) {
+            List<String> elements = (List<String>) o;
+            for (String element : elements) {
+                // expect JSON element : "x"
+                if (clazz == String.class && element != null && !element.startsWith("\"")) {
+                    element = "\"" + element + "\"";
+                }
+                buildSingleNode(JsonHelper.getFirstNode(element));
+            }
+        } else {
+            // text is String
+            if (o instanceof String && o != null) {
+                String s = (String) o;
+                // expect array of String ["x", "y",...
+                if (clazz == String.class) {
+                    if (!s.startsWith("[")) {
+                        if (!s.startsWith("\"")) {
+                            s = "\"" + s + "\"";
+                        }
+                        s = "[" + s + "]";
+                    }
+                }
+                // expect array of objects [ {...}, {...}, ...
+                else if (JsonObject.class.isAssignableFrom(clazz)) {
+                    if (!s.startsWith("[")) {
+                        s = "[" + s + "]";
+                    }
+                }
+                o = s;
+            }
+            buildFrom(o);
+        }
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     protected void buildFromJson(JsonNode json) {
         if (json != null) {
             Iterator<JsonNode> jsonIterator = json.getElements();
             while (jsonIterator.hasNext()) {
                 JsonNode node = jsonIterator.next();
-                if (clazz == String.class) {
-                    list.add((T) node.getTextValue());
-                } else if (JsonObject.class.isAssignableFrom(clazz)) {
-                    try {
-                        JsonObject jsonObject = (JsonObject) clazz.newInstance();
-                        jsonObject.buildFrom(node);
-                        list.add((T) jsonObject);
-                    } catch (Exception e) {
-                        logger.error("Cannot build object", e);
-                    }
-                }
+                buildSingleNode(node);
+            }
+        }
+    }
+    
+    private void buildSingleNode(JsonNode node) {
+        if (clazz == String.class) {
+            list.add((T) node.getTextValue());
+        } else if (JsonObject.class.isAssignableFrom(clazz)) {
+            try {
+                Constructor<T> constructor = clazz.getDeclaredConstructor(Object.class);
+                T jsonObject = constructor.newInstance(node);
+                list.add(jsonObject);
+            } catch (Exception e) {
+                logger.error("Cannot build object", e);
             }
         }
     }

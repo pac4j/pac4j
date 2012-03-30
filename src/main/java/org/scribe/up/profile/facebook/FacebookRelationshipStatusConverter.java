@@ -28,6 +28,8 @@ public final class FacebookRelationshipStatusConverter implements AttributeConve
     public FacebookRelationshipStatus convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
             String s = ((String) attribute).toLowerCase();
+            s = s.replaceAll("_", " ");
+            s = s.replaceAll("'", "");
             if ("single".equals(s)) {
                 return FacebookRelationshipStatus.SINGLE;
             } else if ("in a relationship".equals(s)) {
@@ -36,7 +38,7 @@ public final class FacebookRelationshipStatusConverter implements AttributeConve
                 return FacebookRelationshipStatus.ENGAGED;
             } else if ("married".equals(s)) {
                 return FacebookRelationshipStatus.MARRIED;
-            } else if ("it's complicated".equals(s)) {
+            } else if ("its complicated".equals(s)) {
                 return FacebookRelationshipStatus.ITS_COMPLICATED;
             } else if ("in an open relationship".equals(s)) {
                 return FacebookRelationshipStatus.IN_AN_OPEN_RELATIONSHIP;

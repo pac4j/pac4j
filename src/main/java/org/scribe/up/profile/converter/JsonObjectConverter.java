@@ -15,6 +15,8 @@
  */
 package org.scribe.up.profile.converter;
 
+import java.lang.reflect.Constructor;
+
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.slf4j.Logger;
@@ -39,9 +41,8 @@ public final class JsonObjectConverter implements AttributeConverter<JsonObject>
     public JsonObject convert(Object attribute) {
         if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
             try {
-                JsonObject jsonObject = clazz.newInstance();
-                jsonObject.buildFrom(attribute);
-                return jsonObject;
+                Constructor<? extends JsonObject> constructor = clazz.getDeclaredConstructor(Object.class);
+                return constructor.newInstance(attribute);
             } catch (Exception e) {
                 logger.error("Cannot build instance", e);
             }

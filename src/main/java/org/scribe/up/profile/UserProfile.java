@@ -32,9 +32,11 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = 5589413454571662464L;
+    private static final long serialVersionUID = 590794176557010470L;
     
     protected transient static AttributesDefinition definition;
+    
+    protected transient static String providerType;
     
     protected static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -62,16 +64,16 @@ public class UserProfile implements Serializable {
                 logger.debug("no conversion => key : {} / value : {} / {}", new Object[] {
                     key, value, value.getClass()
                 });
+                attributes.put(key, value);
             } else {
-                logger.debug("before conversion => key : {} / value : {} / {}", new Object[] {
-                    key, value, value.getClass()
-                });
                 value = definition.convert(key, value);
-                logger.debug("after conversion => key : {} / value : {} / {}", new Object[] {
-                    key, value, value.getClass()
-                });
+                if (value != null) {
+                    logger.debug("converted to => key : {} / value : {} / {}", new Object[] {
+                        key, value, value.getClass()
+                    });
+                    attributes.put(key, value);
+                }
             }
-            attributes.put(key, value);
         }
     }
     
@@ -82,8 +84,13 @@ public class UserProfile implements Serializable {
     }
     
     public void setId(String id) {
-        logger.debug("identifier : {}", id);
-        this.id = id;
+        if (id != null) {
+            if (id.startsWith(providerType + "#")) {
+                id = id.substring(providerType.length() + 1);
+            }
+            logger.debug("identifier : {}", id);
+            this.id = id;
+        }
     }
     
     public String getId() {

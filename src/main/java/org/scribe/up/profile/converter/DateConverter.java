@@ -29,13 +29,13 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class DateConverter implements AttributeConverter<Date> {
+public class DateConverter implements AttributeConverter<Date> {
     
-    private static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
+    protected static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
     
-    private String format;
+    protected String format;
     
-    private Locale locale;
+    protected Locale locale;
     
     public DateConverter(String format) {
         this.format = format;

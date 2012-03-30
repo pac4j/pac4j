@@ -86,10 +86,10 @@ public class TestFacebookProvider extends TestProvider {
         // username
         // third_party_id
         assertEquals(1, profile.getTimezone());
-        assertTrue(profile.getUpdateTime() instanceof Date);
+        assertEquals("2012-02-23T21:55:31CET", profile.getUpdateTime().toString());
         // verified
         assertEquals("A propos de moi", profile.getBio());
-        assertTrue(profile.getBirthday() instanceof Date);
+        assertEquals("03/10/1979", profile.getBirthday().toString());
         List<FacebookEducation> educations = profile.getEducation();
         FacebookEducation education = educations.get(0);
         assertEquals("lycée mixte", education.getSchool().getName());

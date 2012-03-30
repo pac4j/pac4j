@@ -15,32 +15,31 @@
  */
 package org.scribe.up.profile.converter;
 
-import java.util.List;
+import java.util.Date;
+import java.util.Locale;
 
-import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonList;
+import org.scribe.up.profile.FormattedDate;
 
 /**
- * This class converts a json (String or JsonNode) into a list of objects.
+ * This class converts a String (depending on a specified format) into a FormattedDate.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-@SuppressWarnings({
-    "unchecked", "rawtypes"
-})
-public final class JsonListConverter implements AttributeConverter<JsonList> {
+public class FormattedDateConverter extends DateConverter {
     
-    private final Class<? extends Object> clazz;
-    
-    public JsonListConverter(Class<? extends Object> clazz) {
-        this.clazz = clazz;
+    public FormattedDateConverter(String format) {
+        super(format);
     }
     
-    public JsonList convert(Object attribute) {
-        if (attribute != null
-            && (attribute instanceof String || attribute instanceof JsonNode || attribute instanceof List<?>)) {
-            return new JsonList(attribute, clazz);
+    public FormattedDateConverter(String format, Locale locale) {
+        super(format, locale);
+    }
+    
+    public FormattedDate convert(Object attribute) {
+        Object result = super.convert(attribute);
+        if (result != null && result instanceof Date) {
+            return new FormattedDate((Date) result, format, locale);
         }
         return null;
     }

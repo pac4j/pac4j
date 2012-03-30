@@ -68,7 +68,6 @@ public class TestTwitterProvider extends TestProvider {
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
         assertEquals("test scribeUP", profile.getAttributes().get("name"));
-        assertEquals(36, profile.getAttributes().size());
         assertFalse(profile.isContributorsEnabled());
         assertTrue(profile.getCreatedAt() instanceof Date);
         assertTrue(profile.isDefaultProfile());
@@ -107,5 +106,6 @@ public class TestTwitterProvider extends TestProvider {
         assertNull(profile.getUrl());
         assertEquals(3600, profile.getUtcOffset());
         assertFalse(profile.isVerified());
+        assertEquals(35, profile.getAttributes().size());
     }
 }

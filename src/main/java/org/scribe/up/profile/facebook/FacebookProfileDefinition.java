@@ -16,7 +16,7 @@
 package org.scribe.up.profile.facebook;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.converter.DateConverter;
+import org.scribe.up.profile.converter.FormattedDateConverter;
 import org.scribe.up.profile.converter.GenderConverter;
 import org.scribe.up.profile.converter.JsonListConverter;
 import org.scribe.up.profile.converter.JsonObjectConverter;
@@ -77,9 +77,9 @@ public class FacebookProfileDefinition extends AttributesDefinition {
         attributes.add(LOCALE);
         converters.put(LOCALE, localeConverter);
         attributes.add(UPDATED_TIME);
-        converters.put(UPDATED_TIME, new DateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
+        converters.put(UPDATED_TIME, new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
         attributes.add(BIRTHDAY);
-        converters.put(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
+        converters.put(BIRTHDAY, new FormattedDateConverter("MM/dd/yyyy"));
         attributes.add(RELATIONSHIP_STATUS);
         converters.put(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
         JsonListConverter listFacebookObjectConverter = new JsonListConverter(FacebookObject.class);

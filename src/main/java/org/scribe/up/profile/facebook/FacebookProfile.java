@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.provider.impl.FacebookProvider;
 
 /**
  * This class is the user profile for Facebook with appropriate getters.
@@ -36,6 +37,7 @@ public class FacebookProfile extends UserProfile {
     
     static {
         definition = new FacebookProfileDefinition();
+        providerType = FacebookProvider.class.getSimpleName();
     }
     
     public FacebookProfile() {

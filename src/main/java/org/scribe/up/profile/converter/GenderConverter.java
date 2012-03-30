@@ -37,9 +37,9 @@ public final class GenderConverter implements AttributeConverter<Gender> {
     public Gender convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
             String s = ((String) attribute).toLowerCase();
-            if (s.equals(maleText)) {
+            if (s.equals(maleText) || Gender.MALE.toString().toLowerCase().equals(s)) {
                 return Gender.MALE;
-            } else if (s.equals(femaleText)) {
+            } else if (s.equals(femaleText) || Gender.FEMALE.toString().toLowerCase().equals(s)) {
                 return Gender.FEMALE;
             } else {
                 return Gender.UNSPECIFIED;

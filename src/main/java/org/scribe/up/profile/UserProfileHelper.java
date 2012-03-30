@@ -21,9 +21,6 @@ import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.converter.AttributeConverter;
-import org.scribe.up.profile.facebook.FacebookEducation;
-import org.scribe.up.profile.facebook.FacebookObject;
-import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.profile.google.GoogleObject;
 import org.scribe.up.profile.yahoo.YahooAddress;
 import org.scribe.up.profile.yahoo.YahooDisclosure;
@@ -170,12 +167,12 @@ public final class UserProfileHelper {
                 if (clazz == GoogleObject.class) {
                     list.add(new GoogleObject(node));
                     // facebook
-                } else if (clazz == FacebookObject.class) {
-                    list.add(new FacebookObject(node));
-                } else if (clazz == FacebookEducation.class) {
-                    list.add(new FacebookEducation(node.toString()));
-                } else if (clazz == FacebookWork.class) {
-                    list.add(new FacebookWork(node));
+                    /*                } else if (clazz == FacebookObject.class) {
+                                        list.add(new FacebookObject(node));
+                                    } else if (clazz == FacebookEducation.class) {
+                                        list.add(new FacebookEducation(node.toString()));
+                                    } else if (clazz == FacebookWork.class) {
+                                        list.add(new FacebookWork(node));*/
                     // yahoo
                 } else if (clazz == YahooAddress.class) {
                     list.add(new YahooAddress(node));

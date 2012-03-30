@@ -54,16 +54,10 @@ public final class TestFacebookEducation extends TestCase {
     
     public void testBadJson() {
         FacebookEducation facebookEducation = new FacebookEducation(BAD_JSON);
-        FacebookObject facebookObject = facebookEducation.getSchool();
-        assertNull(facebookObject.getId());
-        assertNull(facebookObject.getName());
-        facebookObject = facebookEducation.getDegree();
-        assertNull(facebookObject.getId());
-        assertNull(facebookObject.getName());
-        assertEquals(0, facebookEducation.getConcentration().size());
-        facebookObject = facebookEducation.getYear();
-        assertNull(facebookObject.getId());
-        assertNull(facebookObject.getName());
+        assertNull(facebookEducation.getSchool());
+        assertNull(facebookEducation.getDegree());
+        assertNull(facebookEducation.getYear());
+        assertNull(facebookEducation.getConcentration());
         assertNull(facebookEducation.getType());
     }
     

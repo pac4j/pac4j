@@ -66,7 +66,6 @@ public class TestGitHubProvider extends TestProvider {
         GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
-        assertEquals(20, profile.getAttributes().size());
         assertEquals(0, profile.getDiskUsage());
         assertEquals(0, profile.getTotalPrivateRepoCount());
         assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
@@ -91,5 +90,6 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals(0, plan.getCollaborators());
         assertEquals(307200, plan.getSpace());
         assertEquals(0, plan.getPrivateRepos());
+        assertEquals(19, profile.getAttributes().size());
     }
 }

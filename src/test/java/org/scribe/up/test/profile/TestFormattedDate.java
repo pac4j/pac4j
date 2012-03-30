@@ -13,31 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.profile.converter;
+package org.scribe.up.test.profile;
 
-import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonObject;
+import java.util.Date;
+import java.util.Locale;
+
+import junit.framework.TestCase;
+
+import org.scribe.up.profile.FormattedDate;
 
 /**
- * This class is a mock for JsonObject.
+ * This class tests the {@link org.scribe.up.profile.FormattedDate} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class MockJsonObject extends JsonObject {
+public final class TestFormattedDate extends TestCase {
     
-    private String value;
-    
-    public MockJsonObject(Object json) {
-        super(json);
-    }
-    
-    @Override
-    protected void buildFromJson(JsonNode json) {
-        value = json.getTextValue();
-    }
-    
-    public String getValue() {
-        return value;
+    public void test() {
+        FormattedDate d = new FormattedDate(new Date(0), "EEE MMM dd HH:mm:ss Z yyyy", Locale.FRANCE);
+        assertEquals("jeu. janv. 01 01:00:00 +0100 1970", d.toString());
     }
 }

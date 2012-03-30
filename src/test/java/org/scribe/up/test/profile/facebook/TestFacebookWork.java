@@ -60,23 +60,17 @@ public final class TestFacebookWork extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookWork facebookWork = new FacebookWork(JsonHelper.getFirstNode(BAD_JSON));
-        FacebookObject facebookObject = facebookWork.getEmployer();
-        assertNull(facebookObject.getId());
-        assertNull(facebookObject.getName());
-        facebookObject = facebookWork.getLocation();
-        assertNull(facebookObject.getId());
-        assertNull(facebookObject.getName());
-        facebookObject = facebookWork.getPosition();
-        assertNull(facebookObject.getId());
-        assertNull(facebookObject.getName());
+        FacebookWork facebookWork = new FacebookWork(BAD_JSON);
+        assertNull(facebookWork.getEmployer());
+        assertNull(facebookWork.getLocation());
+        assertNull(facebookWork.getPosition());
         assertNull(facebookWork.getDescription());
         assertNull(facebookWork.getStartDate());
         assertNull(facebookWork.getEndDate());
     }
     
     public void testGoodJson() {
-        FacebookWork facebookWork = new FacebookWork(JsonHelper.getFirstNode(GOOD_JSON));
+        FacebookWork facebookWork = new FacebookWork(GOOD_JSON);
         FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(FACEBOOK_OBJECT));
         assertEquals(facebookObject.toString(), facebookWork.getEmployer().toString());
         assertEquals(facebookObject.toString(), facebookWork.getLocation().toString());

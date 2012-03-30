@@ -28,9 +28,9 @@ import org.scribe.up.profile.converter.GenderConverter;
  */
 public final class TestGenderConverter extends TestCase {
     
-    private static final String MALE = "male";
+    private static final String MALE = "m";
     
-    private static final String FEMALE = "female";
+    private static final String FEMALE = "f";
     
     private static final String UNSPECIFIED = "unspecified";
     
@@ -54,5 +54,17 @@ public final class TestGenderConverter extends TestCase {
     
     public void testUnspecified() {
         assertEquals(Gender.UNSPECIFIED, converter.convert(UNSPECIFIED));
+    }
+    
+    public void testMaleEnum() {
+        assertEquals(Gender.MALE, converter.convert(Gender.MALE.toString()));
+    }
+    
+    public void testFemaleEnum() {
+        assertEquals(Gender.FEMALE, converter.convert(Gender.FEMALE.toString()));
+    }
+    
+    public void testUnspecifiedEnum() {
+        assertEquals(Gender.UNSPECIFIED, converter.convert(Gender.UNSPECIFIED.toString()));
     }
 }

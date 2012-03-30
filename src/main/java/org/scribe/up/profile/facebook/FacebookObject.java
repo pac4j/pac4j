@@ -37,9 +37,6 @@ public final class FacebookObject extends JsonObject implements Serializable {
     
     private String name;
     
-    public FacebookObject() {
-    }
-    
     public FacebookObject(Object json) {
         super(json);
     }

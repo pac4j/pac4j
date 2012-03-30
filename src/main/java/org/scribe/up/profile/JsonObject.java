@@ -27,14 +27,11 @@ public abstract class JsonObject {
     
     protected String json = "";
     
-    public JsonObject() {
-    }
-    
     public JsonObject(Object json) {
         buildFrom(json);
     }
     
-    public final void buildFrom(Object json) {
+    protected final void buildFrom(Object json) {
         if (json != null) {
             if (json instanceof String) {
                 String s = (String) json;

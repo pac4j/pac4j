@@ -15,6 +15,9 @@
  */
 package org.scribe.up.test.profile.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.scribe.up.profile.JsonHelper;
@@ -87,5 +90,18 @@ public final class TestJsonListConverter extends TestCase {
         @SuppressWarnings("unchecked")
         JsonList<String> list = (JsonList<String>) object;
         assertEquals(0, list.size());
+    }
+    
+    public void testList() {
+        List<String> list = new ArrayList<String>();
+        list.add(ELEMENT1);
+        list.add(ELEMENT2);
+        Object object = converterForString.convert(list);
+        assertEquals(JsonList.class, object.getClass());
+        @SuppressWarnings("unchecked")
+        JsonList<String> jsonList = (JsonList<String>) object;
+        assertEquals(2, jsonList.size());
+        assertEquals(ELEMENT1, jsonList.get(0));
+        assertEquals(ELEMENT2, jsonList.get(1));
     }
 }
