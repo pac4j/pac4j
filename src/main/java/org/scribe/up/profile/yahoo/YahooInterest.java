@@ -15,12 +15,13 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.UserProfileHelper;
+import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.converter.Converters;
+import org.scribe.up.profile.converter.JsonListConverter;
 
 /**
  * This class represents an interest for Yahoo.
@@ -28,19 +29,25 @@ import org.scribe.up.profile.UserProfileHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooInterest {
+public final class YahooInterest extends JsonObject implements Serializable {
     
-    private List<String> declaredInterests = new ArrayList<String>();
+    private static final long serialVersionUID = -2899124153425975409L;
+    
+    private final static transient JsonListConverter listStringConverter = new JsonListConverter(String.class);
+    
+    private List<String> declaredInterests;
     
     private String interestCategory;
     
+    public YahooInterest(Object json) {
+        super(json);
+    }
+    
     @SuppressWarnings("unchecked")
-    public YahooInterest(JsonNode json) {
-        if (json != null) {
-            this.interestCategory = JsonHelper.getTextValue(json, "interestCategory");
-            json = json.get("declaredInterests");
-            this.declaredInterests = (List<String>) UserProfileHelper.getListObject(json, String.class);
-        }
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.interestCategory = Converters.stringConverter.convertFromJson(json, "interestCategory");
+        this.declaredInterests = listStringConverter.convertFromJson(json, "declaredInterests");
     }
     
     public List<String> getDeclaredInterests() {
@@ -49,10 +56,5 @@ public final class YahooInterest {
     
     public String getInterestCategory() {
         return interestCategory;
-    }
-    
-    @Override
-    public String toString() {
-        return "YahooInterest(declaredInterests:" + declaredInterests + ",interestCategory:" + interestCategory + ")";
     }
 }

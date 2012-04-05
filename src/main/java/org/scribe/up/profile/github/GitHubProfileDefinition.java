@@ -16,6 +16,7 @@
 package org.scribe.up.profile.github;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.converter.Converters;
 import org.scribe.up.profile.converter.FormattedDateConverter;
 import org.scribe.up.profile.converter.JsonObjectConverter;
 
@@ -54,7 +55,7 @@ public class GitHubProfileDefinition extends AttributesDefinition {
         };
         for (String name : names) {
             attributes.add(name);
-            converters.put(name, stringConverter);
+            converters.put(name, Converters.stringConverter);
         }
         names = new String[] {
             FOLLOWING_COUNT, PUBLIC_REPO_COUNT, PUBLIC_GIST_COUNT, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPO_COUNT,
@@ -62,7 +63,7 @@ public class GitHubProfileDefinition extends AttributesDefinition {
         };
         for (String name : names) {
             attributes.add(name);
-            converters.put(name, integerConverter);
+            converters.put(name, Converters.integerConverter);
         }
         attributes.add(CREATED_AT);
         converters.put(CREATED_AT, new FormattedDateConverter("yyyy/MM/dd HH:mm:ss z"));

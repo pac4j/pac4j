@@ -16,13 +16,13 @@
 package org.scribe.up.test.provider.impl;
 
 import java.awt.Color;
-import java.util.Date;
 import java.util.Locale;
 
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.TwitterProvider;
+import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -67,24 +67,46 @@ public class TestTwitterProvider extends TestProvider {
         TwitterProfile profile = (TwitterProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
-        assertEquals("test scribeUP", profile.getAttributes().get("name"));
+        /*
+        public static final String PROTECTED = "protected";
+        public static final String SCREEN_NAME = "screen_name";
+        public static final String SHOW_ALL_INLINE_MEDIA = "show_all_inline_media";
+        public static final String STATUSES_COUNT = "statuses_count";
+        public static final String TIME_ZONE = "time_zone";
+        public static final String URL = "url";
+        public static final String UTC_OFFSET = "utc_offset";
+        public static final String VERIFIED = "verified";
+        */
         assertFalse(profile.isContributorsEnabled());
-        assertTrue(profile.getCreatedAt() instanceof Date);
+        assertTrue(profile.isContributorsEnabledDefined());
+        assertEquals(CommonHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
+            .getCreatedAt().toString());
         assertTrue(profile.isDefaultProfile());
+        assertTrue(profile.isDefaultProfileDefined());
         assertTrue(profile.isDefaultProfileImage());
+        assertTrue(profile.isDefaultProfileImageDefined());
         assertEquals("biographie", profile.getDescription());
         assertEquals(0, profile.getFavouritesCount());
+        assertTrue(profile.isFavouritesCountDefined());
         assertFalse(profile.isFollowRequestSent());
+        assertTrue(profile.isFollowRequestSentDefined());
         assertEquals(0, profile.getFollowersCount());
+        assertTrue(profile.isFollowersCountDefined());
         assertFalse(profile.isFollowing());
+        assertTrue(profile.isFollowingDefined());
         assertEquals(0, profile.getFriendsCount());
+        assertTrue(profile.isFriendsCountDefined());
         assertFalse(profile.isGeoEnabled());
+        assertTrue(profile.isGeoEnabledDefined());
         assertFalse(profile.isTranslator());
+        assertTrue(profile.isTranslatorDefined());
         assertEquals(Locale.FRENCH, profile.getLang());
         assertEquals(0, profile.getListedCount());
+        assertTrue(profile.isListedCountDefined());
         assertEquals("New York", profile.getLocation());
         assertEquals("test scribeUP", profile.getName());
         assertFalse(profile.isNotifications());
+        assertTrue(profile.isNotificationsDefined());
         assertTrue(profile.getProfileBackgroundColor() instanceof Color);
         assertEquals("http://a0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrl());
         assertEquals("https://si0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrlHttps());
@@ -98,14 +120,19 @@ public class TestTwitterProvider extends TestProvider {
         assertTrue(profile.getProfileSidebarFillColor() instanceof Color);
         assertTrue(profile.getProfileTextColor() instanceof Color);
         assertTrue(profile.isProfileUseBackgroundImage());
+        assertTrue(profile.isProfileUseBackgroundImageDefined());
         assertTrue(profile.isProtected());
+        assertTrue(profile.isProtectedDefined());
         assertEquals("testscribeUP", profile.getScreenName());
         assertFalse(profile.isShowAllInlineMedia());
+        assertTrue(profile.isShowAllInlineMediaDefined());
         assertEquals(0, profile.getStatusesCount());
+        assertTrue(profile.isStatusesCountDefined());
         assertEquals("Amsterdam", profile.getTimeZone());
         assertNull(profile.getUrl());
         assertEquals(3600, profile.getUtcOffset());
         assertFalse(profile.isVerified());
+        assertTrue(profile.isVerifiedDefined());
         assertEquals(35, profile.getAttributes().size());
     }
 }

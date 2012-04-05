@@ -13,21 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.profile;
-
-import org.scribe.up.profile.converter.AttributeConverter;
+package org.scribe.up.profile.converter;
 
 /**
- * This mock has a specific conversion behaviour for test.
+ * This class defines the default converters.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.1.0
  */
-public final class MockAttributeConverter implements AttributeConverter<String> {
+public final class Converters {
     
-    public static final String CONVERTED_VALUE = "convertedValue";
+    public final static LocaleConverter localeConverter = new LocaleConverter();
     
-    public String convert(Object attribute) {
-        return CONVERTED_VALUE;
-    }
+    public final static StringConverter stringConverter = new StringConverter();
+    
+    public final static BooleanConverter booleanConverter = new BooleanConverter();
+    
+    public final static IntegerConverter integerConverter = new IntegerConverter();
+    
+    public final static ColorConverter colorConverter = new ColorConverter();
 }

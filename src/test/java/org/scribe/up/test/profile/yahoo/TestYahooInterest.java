@@ -40,13 +40,13 @@ public final class TestYahooInterest extends TestCase {
     
     public void testNull() {
         YahooInterest yahooInterest = new YahooInterest(null);
-        assertEquals(0, yahooInterest.getDeclaredInterests().size());
+        assertNull(yahooInterest.getDeclaredInterests());
         assertNull(yahooInterest.getInterestCategory());
     }
     
     public void testBadJson() {
         YahooInterest yahooInterest = new YahooInterest(JsonHelper.getFirstNode(BAD_JSON));
-        assertEquals(0, yahooInterest.getDeclaredInterests().size());
+        assertNull(yahooInterest.getDeclaredInterests());
         assertNull(yahooInterest.getInterestCategory());
     }
     

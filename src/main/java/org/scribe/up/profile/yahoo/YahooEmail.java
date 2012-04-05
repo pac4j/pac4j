@@ -15,9 +15,11 @@
  */
 package org.scribe.up.profile.yahoo;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class represents an email for Yahoo.
@@ -25,32 +27,44 @@ import org.scribe.up.util.ObjectHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooEmail {
+public final class YahooEmail extends JsonObject implements Serializable {
     
-    private int id;
+    private static final long serialVersionUID = 5391584886778738641L;
     
-    private boolean primary;
+    private Integer id;
+    
+    private Boolean primary;
     
     private String handle;
     
     private String type;
     
-    public YahooEmail(JsonNode json) {
-        if (json != null) {
-            this.id = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json, "id"), new Integer(0));
-            this.primary = (Boolean) ObjectHelper.getDefaultIfNull(JsonHelper.getBooleanValue(json, "primary"),
-                                                                   Boolean.FALSE);
-            this.handle = JsonHelper.getTextValue(json, "handle");
-            this.type = JsonHelper.getTextValue(json, "type");
-        }
+    public YahooEmail(Object json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.id = Converters.integerConverter.convertFromJson(json, "id");
+        this.primary = Converters.booleanConverter.convertFromJson(json, "primary");
+        this.handle = Converters.stringConverter.convertFromJson(json, "handle");
+        this.type = Converters.stringConverter.convertFromJson(json, "type");
     }
     
     public int getId() {
-        return id;
+        return id != null ? id : 0;
+    }
+    
+    public boolean isIdDefined() {
+        return id != null;
     }
     
     public boolean isPrimary() {
-        return primary;
+        return primary != null ? primary : false;
+    }
+    
+    public boolean isPrimaryDefined() {
+        return primary != null;
     }
     
     public String getHandle() {
@@ -59,10 +73,5 @@ public final class YahooEmail {
     
     public String getType() {
         return type;
-    }
-    
-    @Override
-    public String toString() {
-        return "YahooEmail(id:" + id + ",primary:" + primary + ",handle:" + handle + ",type:" + type + ")";
     }
 }

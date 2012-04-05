@@ -69,15 +69,15 @@ public class TestGoogleProvider extends TestProvider {
         GoogleProfile profile = (GoogleProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(9, profile.getAttributes().size());
-        assertEquals("test ScribeUP", profile.getDisplayName());
         assertEquals("", profile.getProfileUrl());
-        assertEquals(true, profile.isViewer());
+        assertTrue(profile.isViewer());
+        assertTrue(profile.isViewerDefined());
         assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
                      profile.getThumbnailUrl());
         assertEquals("test ScribeUP", profile.getFormatted());
         assertEquals("ScribeUP", profile.getFamilyName());
         assertEquals("test", profile.getGivenName());
+        assertEquals("test ScribeUP", profile.getDisplayName());
         List<GoogleObject> urls = profile.getUrls();
         GoogleObject url = urls.get(0);
         assertEquals("", url.getValue());
@@ -87,5 +87,6 @@ public class TestGoogleProvider extends TestProvider {
         assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
                      photo.getValue());
         assertEquals("thumbnail", photo.getType());
+        assertEquals(9, profile.getAttributes().size());
     }
 }

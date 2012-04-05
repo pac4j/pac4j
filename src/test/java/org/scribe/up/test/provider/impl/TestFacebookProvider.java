@@ -28,6 +28,7 @@ import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
 import org.scribe.up.profile.facebook.FacebookWork;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.FacebookProvider;
+import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -76,18 +77,20 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("100003571536393", profile.getId());
         assertEquals("Jerome Testscribeup", profile.getName());
         assertEquals("jerome", profile.getFirstName());
-        // middle_name
+        assertNull(profile.getMiddleName());
         assertEquals("Testscribeup", profile.getLastName());
         assertEquals(Gender.MALE, profile.getGender());
         assertEquals(Locale.FRANCE, profile.getLocale());
         List<FacebookObject> languages = profile.getLanguages();
         assertEquals("Français", languages.get(0).getName());
         assertEquals("http://www.facebook.com/profile.php?id=100003571536393", profile.getLink());
-        // username
-        // third_party_id
+        assertNull(profile.getUsername());
+        assertNull(profile.getThirdPartyId());
         assertEquals(1, profile.getTimezone());
-        assertEquals("2012-02-23T21:55:31CET", profile.getUpdateTime().toString());
-        // verified
+        assertEquals(CommonHelper.getFormattedDate(1330030531000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
+            .getUpdateTime().toString());
+        assertFalse(profile.isVerified());
+        assertFalse(profile.isVerifiedDefined());
         assertEquals("A propos de moi", profile.getBio());
         assertEquals("03/10/1979", profile.getBirthday().toString());
         List<FacebookEducation> educations = profile.getEducation();
@@ -109,7 +112,7 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("citation", profile.getQuotes());
         assertEquals(FacebookRelationshipStatus.MARRIED, profile.getRelationshipStatus());
         assertEquals("Athéisme (desc)", profile.getReligion());
-        // significant_other
+        assertNull(profile.getSignificantOther());
         assertEquals("web site", profile.getWebsite());
         List<FacebookWork> works = profile.getWork();
         FacebookWork work = works.get(0);

@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.scribe.model.OAuthRequest;
@@ -25,8 +24,6 @@ import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.converter.AttributeConverter;
-import org.scribe.up.profile.converter.LocaleConverter;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.session.UserSession;
 import org.slf4j.Logger;
@@ -47,8 +44,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     protected static final String ERROR_DESCRIPTION = "error_description";
     
-    protected static final LocaleConverter localeConverter = new LocaleConverter();
-    
     protected OAuthService service;
     
     protected String key;
@@ -56,8 +51,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected String secret;
     
     protected String callbackUrl;
-    
-    protected Map<String, AttributeConverter<? extends Object>> mainAttributes = new HashMap<String, AttributeConverter<? extends Object>>();
     
     protected String scope;
     

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class DateConverter implements AttributeConverter<Date> {
+public class DateConverter extends BaseConverter<Date> {
     
     protected static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
     
@@ -46,6 +46,7 @@ public class DateConverter implements AttributeConverter<Date> {
         this.locale = locale;
     }
     
+    @Override
     public Date convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
             SimpleDateFormat simpleDateFormat;

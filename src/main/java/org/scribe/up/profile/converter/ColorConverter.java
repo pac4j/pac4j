@@ -26,10 +26,11 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class ColorConverter implements AttributeConverter<Color> {
+public final class ColorConverter extends BaseConverter<Color> {
     
     private static final Logger logger = LoggerFactory.getLogger(ColorConverter.class);
     
+    @Override
     public Color convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
             String s = (String) attribute;

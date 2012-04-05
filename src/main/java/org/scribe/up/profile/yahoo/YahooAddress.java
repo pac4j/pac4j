@@ -15,12 +15,12 @@
  */
 package org.scribe.up.profile.yahoo;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.converter.LocaleConverter;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class represents an address object for Yahoo.
@@ -28,13 +28,13 @@ import org.scribe.up.util.ObjectHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooAddress {
+public final class YahooAddress extends JsonObject implements Serializable {
     
-    private static final LocaleConverter localeConverter = new LocaleConverter();
+    private static final long serialVersionUID = 5153219758684696414L;
     
-    private int id;
+    private Integer id;
     
-    private boolean current;
+    private Boolean current;
     
     private Locale country;
     
@@ -48,26 +48,36 @@ public final class YahooAddress {
     
     private String type;
     
-    public YahooAddress(JsonNode json) {
-        if (json != null) {
-            this.id = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json, "id"), new Integer(0));
-            this.current = (Boolean) ObjectHelper.getDefaultIfNull(JsonHelper.getBooleanValue(json, "current"),
-                                                                   Boolean.FALSE);
-            this.country = localeConverter.convert(JsonHelper.getTextValue(json, "country"));
-            this.state = JsonHelper.getTextValue(json, "state");
-            this.city = JsonHelper.getTextValue(json, "city");
-            this.postalCode = JsonHelper.getTextValue(json, "postalCode");
-            this.street = JsonHelper.getTextValue(json, "street");
-            this.type = JsonHelper.getTextValue(json, "type");
-        }
+    public YahooAddress(Object json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.id = Converters.integerConverter.convertFromJson(json, "id");
+        this.current = Converters.booleanConverter.convertFromJson(json, "current");
+        this.country = Converters.localeConverter.convertFromJson(json, "country");
+        this.state = Converters.stringConverter.convertFromJson(json, "state");
+        this.city = Converters.stringConverter.convertFromJson(json, "city");
+        this.postalCode = Converters.stringConverter.convertFromJson(json, "postalCode");
+        this.street = Converters.stringConverter.convertFromJson(json, "street");
+        this.type = Converters.stringConverter.convertFromJson(json, "type");
     }
     
     public int getId() {
-        return id;
+        return id != null ? id : 0;
+    }
+    
+    public boolean isIdDefined() {
+        return id != null;
     }
     
     public boolean isCurrent() {
-        return current;
+        return current != null ? current : false;
+    }
+    
+    public boolean isCurrentDefined() {
+        return current != null;
     }
     
     public Locale getCountry() {
@@ -92,11 +102,5 @@ public final class YahooAddress {
     
     public String getType() {
         return type;
-    }
-    
-    @Override
-    public String toString() {
-        return "YahooAddress(id:" + id + ",current:" + current + ",country:" + country + ",state:" + state + ",city:"
-               + city + ",postalCode:" + postalCode + ",street:" + street + ",type:" + type + ")";
     }
 }

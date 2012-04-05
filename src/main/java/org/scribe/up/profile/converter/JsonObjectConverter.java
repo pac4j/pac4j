@@ -23,12 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class converts a json (String or JsonNode) into an JSON object.
+ * This class converts a JSON (String or JsonNode) into an JSON object.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class JsonObjectConverter implements AttributeConverter<JsonObject> {
+public final class JsonObjectConverter extends BaseConverter<JsonObject> {
     
     private static final Logger logger = LoggerFactory.getLogger(JsonObjectConverter.class);
     
@@ -38,6 +38,7 @@ public final class JsonObjectConverter implements AttributeConverter<JsonObject>
         this.clazz = clazz;
     }
     
+    @Override
     public JsonObject convert(Object attribute) {
         if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
             try {

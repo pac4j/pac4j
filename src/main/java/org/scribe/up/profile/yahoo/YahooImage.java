@@ -15,9 +15,11 @@
  */
 package org.scribe.up.profile.yahoo;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class represents an image for Yahoo.
@@ -25,25 +27,28 @@ import org.scribe.up.util.ObjectHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooImage {
+public final class YahooImage extends JsonObject implements Serializable {
+    
+    private static final long serialVersionUID = -575900983247925283L;
     
     private String imageUrl;
     
-    private int width;
+    private Integer width;
     
-    private int height;
+    private Integer height;
     
     private String size;
     
-    public YahooImage(JsonNode json) {
-        if (json != null) {
-            this.imageUrl = JsonHelper.getTextValue(json, "imageUrl");
-            this.width = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json, "width"),
-                                                                 new Integer(0));
-            this.height = (Integer) ObjectHelper.getDefaultIfNull(JsonHelper.getNumberValue(json, "height"),
-                                                                  new Integer(0));
-            this.size = JsonHelper.getTextValue(json, "size");
-        }
+    public YahooImage(Object json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.imageUrl = Converters.stringConverter.convertFromJson(json, "imageUrl");
+        this.width = Converters.integerConverter.convertFromJson(json, "width");
+        this.height = Converters.integerConverter.convertFromJson(json, "height");
+        this.size = Converters.stringConverter.convertFromJson(json, "size");
     }
     
     public String getImageUrl() {
@@ -51,19 +56,22 @@ public final class YahooImage {
     }
     
     public int getWidth() {
-        return width;
+        return width != null ? width : 0;
+    }
+    
+    public boolean isWidthDefined() {
+        return width != null;
     }
     
     public int getHeight() {
-        return height;
+        return height != null ? height : 0;
+    }
+    
+    public boolean isHeightDefined() {
+        return height != null;
     }
     
     public String getSize() {
         return size;
-    }
-    
-    @Override
-    public String toString() {
-        return "YahooImage(imageUrl:" + imageUrl + ",width:" + width + ",height:" + height + ",size:" + size + ")";
     }
 }

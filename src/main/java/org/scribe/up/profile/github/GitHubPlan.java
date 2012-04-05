@@ -18,8 +18,8 @@ package org.scribe.up.profile.github;
 import java.io.Serializable;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class represents a GitHub plan.
@@ -29,9 +29,7 @@ import org.scribe.up.profile.JsonObject;
  */
 public final class GitHubPlan extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = 5048074846912710504L;
-    
-    private transient final static AttributesDefinition definition = new GitHubPlanDefinition();
+    private static final long serialVersionUID = -7255094058683970785L;
     
     private String name;
     
@@ -39,7 +37,7 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     
     private Integer space;
     
-    private Integer private_repos;
+    private Integer privateRepos;
     
     public GitHubPlan(Object json) {
         super(json);
@@ -47,10 +45,10 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     
     @Override
     protected void buildFromJson(JsonNode json) {
-        this.name = (String) definition.convert(json, GitHubPlanDefinition.NAME);
-        this.collaborators = (Integer) definition.convert(json, GitHubPlanDefinition.COLLABORATORS);
-        this.space = (Integer) definition.convert(json, GitHubPlanDefinition.SPACE);
-        this.private_repos = (Integer) definition.convert(json, GitHubPlanDefinition.PRIVATE_REPOS);
+        this.name = Converters.stringConverter.convertFromJson(json, "name");
+        this.collaborators = Converters.integerConverter.convertFromJson(json, "collaborators");
+        this.space = Converters.integerConverter.convertFromJson(json, "space");
+        this.privateRepos = Converters.integerConverter.convertFromJson(json, "private_repos");
     }
     
     public String getName() {
@@ -74,10 +72,10 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     }
     
     public int getPrivateRepos() {
-        return private_repos != null ? private_repos : 0;
+        return privateRepos != null ? privateRepos : 0;
     }
     
     public boolean isPrivateReposDefined() {
-        return private_repos != null;
+        return privateRepos != null;
     }
 }

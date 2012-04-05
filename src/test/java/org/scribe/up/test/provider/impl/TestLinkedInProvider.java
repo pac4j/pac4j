@@ -62,12 +62,12 @@ public class TestLinkedInProvider extends TestProvider {
     protected void verifyProfile(UserProfile userProfile) {
         LinkedInProfile profile = (LinkedInProfile) userProfile;
         logger.debug("userProfile : {}", profile);
-        assertEquals(4, profile.getAttributes().size());
         assertEquals("167439971", profile.getId());
-        assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());
         assertEquals("test", profile.getFirstName());
         assertEquals("scribeUp", profile.getLastName());
+        assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());
         assertEquals("http://www.linkedin.com/profile?viewProfile=&amp;key=167439971&amp;authToken=_IWF&amp;authType=name&amp;trk=api*a167383*s175634*",
                      profile.getUrl());
+        assertEquals(4, profile.getAttributes().size());
     }
 }

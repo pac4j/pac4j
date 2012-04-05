@@ -23,7 +23,7 @@ import org.scribe.up.util.StringHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class StringReplaceConverter implements AttributeConverter<String> {
+public final class StringReplaceConverter extends BaseConverter<String> {
     
     private String regex;
     
@@ -34,6 +34,7 @@ public final class StringReplaceConverter implements AttributeConverter<String> 
         this.replacement = replacement;
     }
     
+    @Override
     public String convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
             String s = (String) attribute;

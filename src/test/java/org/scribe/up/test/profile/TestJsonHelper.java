@@ -49,42 +49,6 @@ public final class TestJsonHelper extends TestCase {
         assertNull(JsonHelper.getFirstNode(BAD_JSON));
     }
     
-    public void testGetTextValueNull() {
-        assertNull(JsonHelper.getTextValue(null, KEY));
-    }
-    
-    public void testGetTextValueBadKey() {
-        assertNull(JsonHelper.getTextValue(JsonHelper.getFirstNode(GOOD_TEXT_JSON), "bad" + KEY));
-    }
-    
-    public void testGetTextValueOk() {
-        assertEquals(TEXT_VALUE, JsonHelper.getTextValue(JsonHelper.getFirstNode(GOOD_TEXT_JSON), KEY));
-    }
-    
-    public void testGetNumberValueNull() {
-        assertNull(JsonHelper.getNumberValue(null, KEY));
-    }
-    
-    public void testGetNumberValueBadKey() {
-        assertNull(JsonHelper.getNumberValue(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), "bad" + KEY));
-    }
-    
-    public void testGetNumberValueOk() {
-        assertEquals(1, JsonHelper.getNumberValue(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), KEY));
-    }
-    
-    public void testGetBooleanValueNull() {
-        assertNull(JsonHelper.getBooleanValue(null, KEY));
-    }
-    
-    public void testGetBooleanValueBadKey() {
-        assertNull(JsonHelper.getBooleanValue(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), "bad" + KEY));
-    }
-    
-    public void testGetBooleanValueOk() {
-        assertEquals(Boolean.TRUE, JsonHelper.getBooleanValue(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), KEY));
-    }
-    
     public void testGetText() {
         assertEquals(TEXT_VALUE, JsonHelper.get(JsonHelper.getFirstNode(GOOD_TEXT_JSON), KEY));
     }

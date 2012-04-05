@@ -29,6 +29,7 @@ import org.scribe.up.profile.yahoo.YahooInterest;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.YahooProvider;
+import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -76,25 +77,8 @@ public class TestYahooProvider extends TestProvider {
     protected void verifyProfile(UserProfile userProfile) {
         YahooProfile profile = (YahooProfile) userProfile;
         logger.debug("userProfile : {}", profile);
-        assertEquals(22, profile.getAttributes().size());
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
-        assertTrue(profile.getMemberSince() instanceof Date);
-        assertEquals(1976, profile.getBirthYear());
-        assertEquals(36, profile.getDisplayAge());
-        assertEquals("Chatou, Ile-de-France", profile.getLocation());
-        assertEquals("Test", profile.getNickname());
-        assertEquals("ScribeUP", profile.getFamilyName());
-        assertEquals("Europe/Paris", profile.getTimeZone());
-        assertEquals("Test", profile.getGivenName());
-        assertEquals(Locale.FRANCE, profile.getLang());
-        assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
         assertEquals("my profile", profile.getAboutMe());
-        assertEquals("http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getProfileUrl());
-        assertTrue(profile.getUpdated() instanceof Date);
-        assertTrue(profile.getCreated() instanceof Date);
-        assertTrue(profile.isConnected());
-        assertTrue(profile.getBirthdate() instanceof Date);
-        assertEquals(Gender.MALE, profile.getGender());
         List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());
         YahooAddress address = addresses.get(0);
@@ -106,6 +90,11 @@ public class TestYahooProvider extends TestProvider {
         assertEquals("78400", address.getPostalCode());
         assertEquals("", address.getStreet());
         assertEquals("HOME", address.getType());
+        assertEquals(1976, profile.getBirthYear());
+        assertEquals(CommonHelper.getFormattedDate(5871600000L, "MM/dd", null), profile.getBirthdate().toString());
+        assertEquals(CommonHelper.getFormattedDate(1328528803000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
+            .getCreated().toString());
+        assertEquals(36, profile.getDisplayAge());
         List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
         YahooDisclosure disclosure = disclosures.get(0);
@@ -120,6 +109,9 @@ public class TestYahooProvider extends TestProvider {
         assertTrue(email.isPrimary());
         assertEquals("testscribeup@yahoo.fr", email.getHandle());
         assertEquals("HOME", email.getType());
+        assertEquals("ScribeUP", profile.getFamilyName());
+        assertEquals(Gender.MALE, profile.getGender());
+        assertEquals("Test", profile.getGivenName());
         YahooImage image = profile.getImage();
         assertEquals("http://avatars.zenfs.com/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png", image.getImageUrl());
         assertEquals(150, image.getWidth());
@@ -130,5 +122,18 @@ public class TestYahooProvider extends TestProvider {
         YahooInterest interest = interests.get(0);
         assertEquals("basic interest", interest.getDeclaredInterests().get(0));
         assertEquals("prfFavHobbies", interest.getInterestCategory());
+        assertTrue(profile.isConnected());
+        assertTrue(profile.isConnectedDefined());
+        assertEquals(Locale.FRANCE, profile.getLang());
+        assertEquals("Chatou, Ile-de-France", profile.getLocation());
+        assertEquals(CommonHelper.getFormattedDate(1328528796000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
+            .getMemberSince().toString());
+        assertEquals("Test", profile.getNickname());
+        assertEquals("http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getProfileUrl());
+        assertEquals("Europe/Paris", profile.getTimeZone());
+        assertEquals(CommonHelper.getFormattedDate(1330953985000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
+            .getUpdated().toString());
+        assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
+        assertEquals(22, profile.getAttributes().size());
     }
 }

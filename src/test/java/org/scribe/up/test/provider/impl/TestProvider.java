@@ -22,8 +22,8 @@ import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.session.UserSession;
+import org.scribe.up.test.util.CommonHelper;
 import org.scribe.up.test.util.SingleUserSession;
-import org.scribe.up.test.util.WebHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public abstract class TestProvider extends TestCase {
         OAuthProvider provider = getProvider();
         
         SingleUserSession session = new SingleUserSession();
-        WebClient webClient = WebHelper.newClient();
+        WebClient webClient = CommonHelper.newWebClient();
         
         HtmlPage authorizationPage = getAuhtorizationPage(webClient, provider, session);
         
@@ -68,14 +68,13 @@ public abstract class TestProvider extends TestCase {
     protected abstract String getCallbackUrl(HtmlPage authorizationPage) throws Exception;
     
     protected UserProfile getProfile(OAuthProvider provider, UserSession session, String callbackUrl) {
-        OAuthCredential credential = provider.getCredential(session, WebHelper.getParametersFromUrl(callbackUrl));
+        OAuthCredential credential = provider.getCredential(session, CommonHelper.getParametersFromUrl(callbackUrl));
         logger.debug("credential : {}", credential);
         
         Token accessToken = provider.getAccessToken(credential);
         logger.debug("accessToken : {}", accessToken);
         
         UserProfile profile = provider.getUserProfile(accessToken);
-        logger.debug("profile : {}", profile);
         return profile;
     }
     

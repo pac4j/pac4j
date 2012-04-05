@@ -21,8 +21,9 @@ package org.scribe.up.profile.converter;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class IntegerConverter implements AttributeConverter<Integer> {
+public final class IntegerConverter extends BaseConverter<Integer> {
     
+    @Override
     public Integer convert(Object attribute) {
         if (attribute != null) {
             if (attribute instanceof Integer) {

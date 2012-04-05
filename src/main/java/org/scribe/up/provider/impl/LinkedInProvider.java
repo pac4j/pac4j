@@ -18,8 +18,8 @@ package org.scribe.up.provider.impl;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
 import org.scribe.up.profile.linkedin.LinkedInProfile;
+import org.scribe.up.profile.linkedin.LinkedInProfileDefinition;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.util.StringHelper;
 
@@ -34,14 +34,12 @@ import org.scribe.up.util.StringHelper;
  */
 public class LinkedInProvider extends BaseOAuth10Provider {
     
+    public final static String TYPE = LinkedInProvider.class.getSimpleName();
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(LinkedInApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
-        mainAttributes.put(LinkedInProfile.FIRST_NAME, null);
-        mainAttributes.put(LinkedInProfile.LAST_NAME, null);
-        mainAttributes.put(LinkedInProfile.HEADLINE, null);
-        mainAttributes.put(LinkedInProfile.URL, null);
     }
     
     @Override
@@ -52,12 +50,12 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         LinkedInProfile profile = new LinkedInProfile();
-        for (String attribute : mainAttributes.keySet()) {
+        for (String attribute : LinkedInProfile.getAttributesDefinition().getAttributes()) {
             String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
-            UserProfileHelper.addAttribute(profile, attribute, value, mainAttributes.get(attribute));
-            if (LinkedInProfile.URL.equals(attribute)) {
+            profile.addAttribute(attribute, value);
+            if (LinkedInProfileDefinition.URL.equals(attribute)) {
                 String id = StringHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
-                UserProfileHelper.addIdentifier(profile, id);
+                profile.setId(id);
             }
         }
         return profile;

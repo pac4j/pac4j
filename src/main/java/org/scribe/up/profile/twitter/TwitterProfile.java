@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.provider.impl.TwitterProvider;
 
 /**
  * This class is the user profile for Twitter with appropriate getters.
@@ -31,43 +31,12 @@ import org.scribe.up.util.ObjectHelper;
  */
 public class TwitterProfile extends UserProfile {
     
-    public static final String ID = "id";
-    public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
-    public static final String CREATED_AT = "created_at";
-    public static final String DEFAULT_PROFILE = "default_profile";
-    public static final String DEFAULT_PROFILE_IMAGE = "default_profile_image";
-    public static final String DESCRIPTION = "description";
-    public static final String FAVOURITES_COUNT = "favourites_count";
-    public static final String FOLLOW_REQUEST_SENT = "follow_request_sent";
-    public static final String FOLLOWERS_COUNT = "followers_count";
-    public static final String FOLLOWING = "following";
-    public static final String FRIENDS_COUNT = "friends_count";
-    public static final String GEO_ENABLED = "geo_enabled";
-    public static final String IS_TRANSLATOR = "is_translator";
-    public static final String LANG = "lang";
-    public static final String LISTED_COUNT = "listed_count";
-    public static final String LOCATION = "location";
-    public static final String NAME = "name";
-    public static final String NOTIFICATIONS = "notifications";
-    public static final String PROFILE_BACKGROUND_COLOR = "profile_background_color";
-    public static final String PROFILE_BACKGROUND_IMAGE_URL = "profile_background_image_url";
-    public static final String PROFILE_BACKGROUND_IMAGE_URL_HTTPS = "profile_background_image_url_https";
-    public static final String PROFILE_BACKGROUND_TILE = "profile_background_tile";
-    public static final String PROFILE_IMAGE_URL = "profile_image_url";
-    public static final String PROFILE_IMAGE_URL_HTTPS = "profile_image_url_https";
-    public static final String PROFILE_LINK_COLOR = "profile_link_color";
-    public static final String PROFILE_SIDEBAR_BORDER_COLOR = "profile_sidebar_border_color";
-    public static final String PROFILE_SIDEBAR_FILL_COLOR = "profile_sidebar_fill_color";
-    public static final String PROFILE_TEXT_COLOR = "profile_text_color";
-    public static final String PROFILE_USE_BACKGROUND_IMAGE = "profile_use_background_image";
-    public static final String PROTECTED = "protected";
-    public static final String SCREEN_NAME = "screen_name";
-    public static final String SHOW_ALL_INLINE_MEDIA = "show_all_inline_media";
-    public static final String STATUSES_COUNT = "statuses_count";
-    public static final String TIME_ZONE = "time_zone";
-    public static final String URL = "url";
-    public static final String UTC_OFFSET = "utc_offset";
-    public static final String VERIFIED = "verified";
+    private static final long serialVersionUID = 1875058433035755467L;
+    
+    static {
+        definition = new TwitterProfileDefinition();
+        providerType = TwitterProvider.TYPE;
+    }
     
     public TwitterProfile() {
         super();
@@ -82,146 +51,222 @@ public class TwitterProfile extends UserProfile {
     }
     
     public boolean isContributorsEnabled() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(CONTRIBUTORS_ENABLED), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.CONTRIBUTORS_ENABLED));
+    }
+    
+    public boolean isContributorsEnabledDefined() {
+        return attributes.get(TwitterProfileDefinition.CONTRIBUTORS_ENABLED) != null;
     }
     
     public Date getCreatedAt() {
-        return (Date) attributes.get(CREATED_AT);
+        return (Date) attributes.get(TwitterProfileDefinition.CREATED_AT);
     }
     
     public boolean isDefaultProfile() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(DEFAULT_PROFILE), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE));
+    }
+    
+    public boolean isDefaultProfileDefined() {
+        return attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE) != null;
     }
     
     public boolean isDefaultProfileImage() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(DEFAULT_PROFILE_IMAGE), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE_IMAGE));
+    }
+    
+    public boolean isDefaultProfileImageDefined() {
+        return attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE_IMAGE) != null;
     }
     
     public String getDescription() {
-        return (String) attributes.get(DESCRIPTION);
+        return (String) attributes.get(TwitterProfileDefinition.DESCRIPTION);
     }
     
     public int getFavouritesCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(FAVOURITES_COUNT), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.FAVOURITES_COUNT));
+    }
+    
+    public boolean isFavouritesCountDefined() {
+        return attributes.get(TwitterProfileDefinition.FAVOURITES_COUNT) != null;
     }
     
     public boolean isFollowRequestSent() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(FOLLOW_REQUEST_SENT), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.FOLLOW_REQUEST_SENT));
+    }
+    
+    public boolean isFollowRequestSentDefined() {
+        return attributes.get(TwitterProfileDefinition.FOLLOW_REQUEST_SENT) != null;
     }
     
     public int getFollowersCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(FOLLOWERS_COUNT), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.FOLLOWERS_COUNT));
+    }
+    
+    public boolean isFollowersCountDefined() {
+        return attributes.get(TwitterProfileDefinition.FOLLOWERS_COUNT) != null;
     }
     
     public boolean isFollowing() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(FOLLOWING), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.FOLLOWING));
+    }
+    
+    public boolean isFollowingDefined() {
+        return attributes.get(TwitterProfileDefinition.FOLLOWING) != null;
     }
     
     public int getFriendsCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(FRIENDS_COUNT), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.FRIENDS_COUNT));
+    }
+    
+    public boolean isFriendsCountDefined() {
+        return attributes.get(TwitterProfileDefinition.FRIENDS_COUNT) != null;
     }
     
     public boolean isGeoEnabled() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(GEO_ENABLED), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.GEO_ENABLED));
+    }
+    
+    public boolean isGeoEnabledDefined() {
+        return attributes.get(TwitterProfileDefinition.GEO_ENABLED) != null;
     }
     
     public boolean isTranslator() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(IS_TRANSLATOR), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.IS_TRANSLATOR));
+    }
+    
+    public boolean isTranslatorDefined() {
+        return attributes.get(TwitterProfileDefinition.IS_TRANSLATOR) != null;
     }
     
     public Locale getLang() {
-        return (Locale) attributes.get(LANG);
+        return (Locale) attributes.get(TwitterProfileDefinition.LANG);
     }
     
     public int getListedCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(LISTED_COUNT), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.LISTED_COUNT));
+    }
+    
+    public boolean isListedCountDefined() {
+        return attributes.get(TwitterProfileDefinition.LISTED_COUNT) != null;
     }
     
     public String getLocation() {
-        return (String) attributes.get(LOCATION);
+        return (String) attributes.get(TwitterProfileDefinition.LOCATION);
     }
     
     public String getName() {
-        return (String) attributes.get(NAME);
+        return (String) attributes.get(TwitterProfileDefinition.NAME);
     }
     
     public boolean isNotifications() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(NOTIFICATIONS), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.NOTIFICATIONS));
+    }
+    
+    public boolean isNotificationsDefined() {
+        return attributes.get(TwitterProfileDefinition.NOTIFICATIONS) != null;
     }
     
     public Color getProfileBackgroundColor() {
-        return (Color) attributes.get(PROFILE_BACKGROUND_COLOR);
+        return (Color) attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_COLOR);
     }
     
     public String getProfileBackgroundImageUrl() {
-        return (String) attributes.get(PROFILE_BACKGROUND_IMAGE_URL);
+        return (String) attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_IMAGE_URL);
     }
     
     public String getProfileBackgroundImageUrlHttps() {
-        return (String) attributes.get(PROFILE_BACKGROUND_IMAGE_URL_HTTPS);
+        return (String) attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_IMAGE_URL_HTTPS);
     }
     
     public boolean isProfileBackgroundTile() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(PROFILE_BACKGROUND_TILE), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_TILE));
+    }
+    
+    public boolean isProfileBackgroundTileDefined() {
+        return attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_TILE) != null;
     }
     
     public String getProfileImageUrl() {
-        return (String) attributes.get(PROFILE_IMAGE_URL);
+        return (String) attributes.get(TwitterProfileDefinition.PROFILE_IMAGE_URL);
     }
     
     public String getProfileImageUrlHttps() {
-        return (String) attributes.get(PROFILE_IMAGE_URL_HTTPS);
+        return (String) attributes.get(TwitterProfileDefinition.PROFILE_IMAGE_URL_HTTPS);
     }
     
     public Color getProfileLinkColor() {
-        return (Color) attributes.get(PROFILE_LINK_COLOR);
+        return (Color) attributes.get(TwitterProfileDefinition.PROFILE_LINK_COLOR);
     }
     
     public Color getProfileSidebarBorderColor() {
-        return (Color) attributes.get(PROFILE_SIDEBAR_BORDER_COLOR);
+        return (Color) attributes.get(TwitterProfileDefinition.PROFILE_SIDEBAR_BORDER_COLOR);
     }
     
     public Color getProfileSidebarFillColor() {
-        return (Color) attributes.get(PROFILE_SIDEBAR_FILL_COLOR);
+        return (Color) attributes.get(TwitterProfileDefinition.PROFILE_SIDEBAR_FILL_COLOR);
     }
     
     public Color getProfileTextColor() {
-        return (Color) attributes.get(PROFILE_TEXT_COLOR);
+        return (Color) attributes.get(TwitterProfileDefinition.PROFILE_TEXT_COLOR);
     }
     
     public boolean isProfileUseBackgroundImage() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(PROFILE_USE_BACKGROUND_IMAGE), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.PROFILE_USE_BACKGROUND_IMAGE));
+    }
+    
+    public boolean isProfileUseBackgroundImageDefined() {
+        return attributes.get(TwitterProfileDefinition.PROFILE_USE_BACKGROUND_IMAGE) != null;
     }
     
     public boolean isProtected() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(PROTECTED), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.PROTECTED));
+    }
+    
+    public boolean isProtectedDefined() {
+        return attributes.get(TwitterProfileDefinition.PROTECTED) != null;
     }
     
     public String getScreenName() {
-        return (String) attributes.get(SCREEN_NAME);
+        return (String) attributes.get(TwitterProfileDefinition.SCREEN_NAME);
     }
     
     public boolean isShowAllInlineMedia() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(SHOW_ALL_INLINE_MEDIA), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.SHOW_ALL_INLINE_MEDIA));
+    }
+    
+    public boolean isShowAllInlineMediaDefined() {
+        return attributes.get(TwitterProfileDefinition.SHOW_ALL_INLINE_MEDIA) != null;
     }
     
     public int getStatusesCount() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(STATUSES_COUNT), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.STATUSES_COUNT));
+    }
+    
+    public boolean isStatusesCountDefined() {
+        return attributes.get(TwitterProfileDefinition.STATUSES_COUNT) != null;
     }
     
     public String getTimeZone() {
-        return (String) attributes.get(TIME_ZONE);
+        return (String) attributes.get(TwitterProfileDefinition.TIME_ZONE);
     }
     
     public String getUrl() {
-        return (String) attributes.get(URL);
+        return (String) attributes.get(TwitterProfileDefinition.URL);
     }
     
     public int getUtcOffset() {
-        return (Integer) ObjectHelper.getDefaultIfNull(attributes.get(UTC_OFFSET), new Integer(0));
+        return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.UTC_OFFSET));
+    }
+    
+    public boolean isUtcOffsetDefined() {
+        return attributes.get(TwitterProfileDefinition.UTC_OFFSET) != null;
     }
     
     public boolean isVerified() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(VERIFIED), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.VERIFIED));
+    }
+    
+    public boolean isVerifiedDefined() {
+        return attributes.get(TwitterProfileDefinition.VERIFIED) != null;
     }
 }

@@ -13,25 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.util;
+package org.scribe.up.profile.converter;
 
-import junit.framework.TestCase;
-
-import org.scribe.up.util.ObjectHelper;
+import org.codehaus.jackson.JsonNode;
+import org.scribe.up.profile.JsonHelper;
 
 /**
- * This class tests the {@link org.scribe.up.util.ObjectHelper} class.
+ * This class defines a base converter which can convert from JSON.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class TestObjectHelper extends TestCase {
+public abstract class BaseConverter<T> implements AttributeConverter<T> {
     
-    public void testObjectNull() {
-        assertEquals(Boolean.TRUE, ObjectHelper.getDefaultIfNull(null, Boolean.TRUE));
-    }
+    public abstract T convert(Object attribute);
     
-    public void testObjectNotNull() {
-        assertEquals(Boolean.FALSE, ObjectHelper.getDefaultIfNull(Boolean.FALSE, Boolean.TRUE));
+    public T convertFromJson(JsonNode json, String name) {
+        return convert(JsonHelper.get(json, name));
     }
 }

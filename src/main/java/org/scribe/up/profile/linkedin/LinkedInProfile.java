@@ -18,6 +18,7 @@ package org.scribe.up.profile.linkedin;
 import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.provider.impl.LinkedInProvider;
 
 /**
  * This class is the user profile for LinkedIn with appropriate getters.
@@ -27,10 +28,12 @@ import org.scribe.up.profile.UserProfile;
  */
 public class LinkedInProfile extends UserProfile {
     
-    public static final String FIRST_NAME = "first-name";
-    public static final String LAST_NAME = "last-name";
-    public static final String HEADLINE = "headline";
-    public static final String URL = "url";
+    private static final long serialVersionUID = 3851925555529459576L;
+    
+    static {
+        definition = new LinkedInProfileDefinition();
+        providerType = LinkedInProvider.TYPE;
+    }
     
     public LinkedInProfile() {
         super();
@@ -45,18 +48,18 @@ public class LinkedInProfile extends UserProfile {
     }
     
     public String getFirstName() {
-        return (String) attributes.get(FIRST_NAME);
+        return (String) attributes.get(LinkedInProfileDefinition.FIRST_NAME);
     }
     
     public String getLastName() {
-        return (String) attributes.get(LAST_NAME);
+        return (String) attributes.get(LinkedInProfileDefinition.LAST_NAME);
     }
     
     public String getHeadline() {
-        return (String) attributes.get(HEADLINE);
+        return (String) attributes.get(LinkedInProfileDefinition.HEADLINE);
     }
     
     public String getUrl() {
-        return (String) attributes.get(URL);
+        return (String) attributes.get(LinkedInProfileDefinition.URL);
     }
 }

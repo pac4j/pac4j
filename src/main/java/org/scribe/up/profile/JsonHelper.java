@@ -59,57 +59,6 @@ public final class JsonHelper {
     }
     
     /**
-     * Get the text value of the JSON node with name.
-     * 
-     * @param json
-     * @param name
-     * @return the text value of the node.
-     */
-    public static String getTextValue(JsonNode json, String name) {
-        if (json != null) {
-            JsonNode node = json.get(name);
-            if (node != null) {
-                return node.getTextValue();
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Get the number value of the JSON node with name.
-     * 
-     * @param json
-     * @param name
-     * @return the number value of the node.
-     */
-    public static Number getNumberValue(JsonNode json, String name) {
-        if (json != null) {
-            JsonNode node = json.get(name);
-            if (node != null) {
-                return node.getNumberValue();
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Get the boolean value of the JSON node with name.
-     * 
-     * @param json
-     * @param name
-     * @return the boolean value of the node.
-     */
-    public static Boolean getBooleanValue(JsonNode json, String name) {
-        if (json != null) {
-            JsonNode node = json.get(name);
-            if (node != null) {
-                return node.getBooleanValue();
-            }
-        }
-        return null;
-    }
-    
-    /**
      * Return the field with name in JSON (a string, a boolean, a number or a node).
      * 
      * @param json

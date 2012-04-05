@@ -27,15 +27,17 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  * This class is the OAuth provider to authenticate user in GitHub. Scope is not used. Attributes are defined at
  * http://develop.github.com/p/general.html.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.github.GitHubProfile} : company (String), name (String), following_count
- * (Integer), blog (String), public_repo_count (Integer), public_gist_count (Integer), disk_usage (Integer), collaborators (Integer), plan (
- * {@link org.scribe.up.profile.github.GitHubPlan}), owned_private_repo_count (Integer), total_private_repo_count (Integer),
- * private_gist_count (Integer), login (String), followers_count (Integer), created_at ({@link org.scribe.up.profile.FormattedDate}), email
- * (String), location (String), type (String), permission (String) and gravatar_id (String)
+ * (Integer), blog (String), public_repo_count (Integer), public_gist_count (Integer), disk_usage (Integer), collaborators (Integer), plan
+ * (GitHubPlan), owned_private_repo_count (Integer), total_private_repo_count (Integer), private_gist_count (Integer), login (String),
+ * followers_count (Integer), created_at (FormattedDate), email (String), location (String), type (String), permission (String) and
+ * gravatar_id (String)
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class GitHubProvider extends BaseOAuth20Provider {
+    
+    public final static String TYPE = GitHubProvider.class.getSimpleName();
     
     @Override
     protected void internalInit() {

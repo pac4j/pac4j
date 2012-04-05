@@ -6,12 +6,17 @@ import junit.framework.TestCase;
 
 import org.scribe.up.profile.FormattedDate;
 import org.scribe.up.profile.converter.FormattedDateConverter;
+import org.scribe.up.test.util.CommonHelper;
 
 public final class TestFormattedDateConverter extends TestCase {
     
-    private FormattedDateConverter converter = new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.FRANCE);
+    private final static String FORMAT = "EEE MMM dd HH:mm:ss Z yyyy";
     
-    private final static String DATE = "jeu. janv. 01 01:00:00 +0100 1970";
+    private final static Locale LOCALE = Locale.FRANCE;
+    
+    private FormattedDateConverter converter = new FormattedDateConverter(FORMAT, LOCALE);
+    
+    private final static String DATE = CommonHelper.getFormattedDate(0, FORMAT, LOCALE);
     
     public void testNull() {
         assertNull(converter.convert(null));
@@ -22,7 +27,7 @@ public final class TestFormattedDateConverter extends TestCase {
     }
     
     public void testDate() {
-        FormattedDate d = (FormattedDate) converter.convert(DATE);
+        FormattedDate d = converter.convert(DATE);
         assertEquals(DATE, d.toString());
     }
 }

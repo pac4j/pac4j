@@ -15,8 +15,11 @@
  */
 package org.scribe.up.profile.google;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class represents a common Google object (value + type).
@@ -24,17 +27,22 @@ import org.scribe.up.profile.JsonHelper;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class GoogleObject {
+public final class GoogleObject extends JsonObject implements Serializable {
+    
+    private static final long serialVersionUID = -7723176838931594789L;
     
     private String value;
     
     private String type;
     
-    public GoogleObject(JsonNode json) {
-        if (json != null) {
-            this.value = JsonHelper.getTextValue(json, "value");
-            this.type = JsonHelper.getTextValue(json, "type");
-        }
+    public GoogleObject(Object json) {
+        super(json);
+    }
+    
+    @Override
+    protected void buildFromJson(JsonNode json) {
+        this.value = Converters.stringConverter.convertFromJson(json, "value");
+        this.type = Converters.stringConverter.convertFromJson(json, "type");
     }
     
     public String getValue() {
@@ -43,10 +51,5 @@ public final class GoogleObject {
     
     public String getType() {
         return type;
-    }
-    
-    @Override
-    public String toString() {
-        return "GoogleObject(value:" + value + ",type:" + type + ")";
     }
 }

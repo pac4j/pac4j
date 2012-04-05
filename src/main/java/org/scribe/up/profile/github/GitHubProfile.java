@@ -33,7 +33,7 @@ public class GitHubProfile extends UserProfile {
     
     static {
         definition = new GitHubProfileDefinition();
-        providerType = GitHubProvider.class.getSimpleName();
+        providerType = GitHubProvider.TYPE;
     }
     
     public GitHubProfile() {

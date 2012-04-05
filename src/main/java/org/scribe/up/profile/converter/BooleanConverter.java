@@ -21,8 +21,9 @@ package org.scribe.up.profile.converter;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class BooleanConverter implements AttributeConverter<Boolean> {
+public final class BooleanConverter extends BaseConverter<Boolean> {
     
+    @Override
     public Boolean convert(Object attribute) {
         if (attribute != null) {
             if (attribute instanceof Boolean) {

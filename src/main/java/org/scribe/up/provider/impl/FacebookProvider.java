@@ -28,23 +28,19 @@ import org.scribe.up.util.StringHelper;
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and attributes are defined at
  * http://developers.facebook.com/docs/reference/api/user/.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
- * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages ({@link org.scribe.up.profile.JsonList}&lt;
- * {@link org.scribe.up.profile.facebook.FacebookObject}&gt;), link (String), username (String), third_party_id (String), timezone
- * (Integer), updated_time ({@link org.scribe.up.profile.FormattedDate}), verified (Boolean), bio (String), birthday (
- * {@link org.scribe.up.profile.FormattedDate}), education ( {@link org.scribe.up.profile.JsonList}&lt;
- * {@link org.scribe.up.profile.facebook.FacebookEducation}&gt;), email (String), hometown (
- * {@link org.scribe.up.profile.facebook.FacebookObject}), interested_in ({@link org.scribe.up.profile.JsonList}&lt;String&gt;), location (
- * {@link org.scribe.up.profile.facebook.FacebookObject}), political (String), favorite_athletes ({@link org.scribe.up.profile.JsonList}&lt;
- * {@link org.scribe.up.profile.facebook.FacebookObject}&gt;), favorite_teams ({@link org.scribe.up.profile.JsonList}&lt;
- * {@link org.scribe.up.profile.facebook.FacebookObject} &gt;), quotes (String), relationship_status (
- * {@link org.scribe.up.profile.facebook.FacebookRelationshipStatus}), religion (String), significant_other (
- * {@link org.scribe.up.profile.facebook.FacebookObject}), website (String) and work ({@link org.scribe.up.profile.JsonList}&lt;
- * {@link org.scribe.up.profile.facebook.FacebookWork}&gt;).
+ * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (JsonList&lt;FacebookObject&gt;), link (String),
+ * username (String), third_party_id (String), timezone (Integer), updated_time (FormattedDate), verified (Boolean), bio (String), birthday
+ * (FormattedDate), education (JsonList&lt;FacebookEducation&gt;), email (String), hometown (FacebookObject), interested_in
+ * (JsonList&lt;String&gt;), location (FacebookObject), political (String), favorite_athletes (JsonList&lt;FacebookObject&gt;),
+ * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
+ * significant_other (FacebookObject), website (String) and work (JsonList&lt;FacebookWork&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class FacebookProvider extends BaseOAuth20Provider {
+    
+    public final static String TYPE = FacebookProvider.class.getSimpleName();
     
     @Override
     protected void internalInit() {

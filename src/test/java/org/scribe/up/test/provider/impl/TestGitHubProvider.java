@@ -20,6 +20,7 @@ import org.scribe.up.profile.github.GitHubPlan;
 import org.scribe.up.profile.github.GitHubProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.GitHubProvider;
+import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -64,30 +65,31 @@ public class TestGitHubProvider extends TestProvider {
         GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
-        assertEquals(0, profile.getDiskUsage());
-        assertEquals(0, profile.getTotalPrivateRepoCount());
-        assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
-        assertEquals("Paris", profile.getLocation());
-        assertNull(profile.getPermission());
-        assertEquals(0, profile.getPrivateGistCount());
-        assertEquals("User", profile.getType());
-        assertEquals(0, profile.getFollowingCount());
-        assertEquals("ScribeUp", profile.getBlog());
-        assertEquals(0, profile.getPublicGistCount());
-        assertEquals(0, profile.getCollaborators());
-        assertEquals("testscribeup@gmail.com", profile.getEmail());
         assertEquals("Company", profile.getCompany());
         assertEquals("Test", profile.getName());
-        assertEquals("2012/02/06 14:05:21 CET", profile.getCreatedAt().toString());
-        assertEquals(0, profile.getOwnedPrivateRepoCount());
-        assertEquals("testscribeup", profile.getLogin());
+        assertEquals(0, profile.getFollowingCount());
+        assertEquals("ScribeUp", profile.getBlog());
         assertEquals(0, profile.getPublicRepoCount());
-        assertEquals(0, profile.getFollowersCount());
+        assertEquals(0, profile.getPublicGistCount());
+        assertEquals(0, profile.getDiskUsage());
+        assertEquals(0, profile.getCollaborators());
         GitHubPlan plan = profile.getPlan();
         assertEquals("free", plan.getName());
         assertEquals(0, plan.getCollaborators());
         assertEquals(307200, plan.getSpace());
         assertEquals(0, plan.getPrivateRepos());
+        assertEquals(0, profile.getOwnedPrivateRepoCount());
+        assertEquals(0, profile.getTotalPrivateRepoCount());
+        assertEquals(0, profile.getPrivateGistCount());
+        assertEquals("testscribeup", profile.getLogin());
+        assertEquals(0, profile.getFollowersCount());
+        assertEquals(CommonHelper.getFormattedDate(1328533521000L, "yyyy/MM/dd HH:mm:ss z", null), profile
+            .getCreatedAt().toString());
+        assertEquals("testscribeup@gmail.com", profile.getEmail());
+        assertEquals("Paris", profile.getLocation());
+        assertEquals("User", profile.getType());
+        assertNull(profile.getPermission());
+        assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
         assertEquals(19, profile.getAttributes().size());
     }
 }

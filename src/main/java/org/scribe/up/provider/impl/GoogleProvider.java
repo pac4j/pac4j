@@ -21,9 +21,8 @@ import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
-import org.scribe.up.profile.google.GoogleObject;
 import org.scribe.up.profile.google.GoogleProfile;
+import org.scribe.up.profile.google.GoogleProfileDefinition;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
@@ -31,22 +30,20 @@ import org.scribe.up.session.UserSession;
  * This class is the OAuth provider to authenticate user in Google. Scope is not used. Attributes are defined at
  * http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.google.GoogleProfile} : profileUrl (String), isViewer (Boolean),
- * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls (List&lt;
- * {@link org.scribe.up.profile.google.GoogleObject}&gt;) and photos (List&lt;{@link org.scribe.up.profile.google.GoogleObject}&gt;).
+ * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls
+ * (JsonList&lt;GoogleObject&gt;) and photos (JsonList&lt;GoogleObject&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class GoogleProvider extends BaseOAuth10Provider {
     
+    public final static String TYPE = GoogleProvider.class.getSimpleName();
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(GoogleApi.class).apiKey(key).apiSecret(secret)
             .scope("http://www-opensocial.googleusercontent.com/api/people/").callback(callbackUrl).build();
-        mainAttributes.put(GoogleProfile.PROFILE_URL, null);
-        mainAttributes.put(GoogleProfile.THUMBNAIL_URL, null);
-        mainAttributes.put(GoogleProfile.IS_VIEWER, null);
-        mainAttributes.put(GoogleProfile.DISPLAY_NAME, null);
     }
     
     @Override
@@ -71,29 +68,25 @@ public class GoogleProvider extends BaseOAuth10Provider {
         GoogleProfile profile = new GoogleProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            json = json.get(GoogleProfile.ENTRY);
+            json = json.get("entry");
             if (json != null) {
-                UserProfileHelper.addIdentifier(profile, json, GoogleProfile.ID);
-                for (String attribute : mainAttributes.keySet()) {
-                    UserProfileHelper.addAttribute(profile, json, attribute, mainAttributes.get(attribute));
+                profile.setId((String) JsonHelper.get(json, "id"));
+                String[] attributes = new String[] {
+                    GoogleProfileDefinition.PROFILE_URL, GoogleProfileDefinition.IS_VIEWER,
+                    GoogleProfileDefinition.THUMBNAIL_URL, GoogleProfileDefinition.DISPLAY_NAME,
+                    GoogleProfileDefinition.URLS, GoogleProfileDefinition.PHOTOS
+                };
+                for (String attribute : attributes) {
+                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
-                JsonNode subJson = json.get(GoogleProfile.NAME);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, subJson, GoogleProfile.FORMATTED, null);
-                    UserProfileHelper.addAttribute(profile, subJson, GoogleProfile.FAMILY_NAME, null);
-                    UserProfileHelper.addAttribute(profile, subJson, GoogleProfile.GIVEN_NAME, null);
-                }
-                // urls
-                subJson = json.get(GoogleProfile.URLS);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, GoogleProfile.URLS,
-                                                   UserProfileHelper.getListObject(subJson, GoogleObject.class));
-                }
-                // photos
-                subJson = json.get(GoogleProfile.PHOTOS);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, GoogleProfile.PHOTOS,
-                                                   UserProfileHelper.getListObject(subJson, GoogleObject.class));
+                json = json.get("name");
+                if (json != null) {
+                    profile.addAttribute(GoogleProfileDefinition.FORMATTED,
+                                         JsonHelper.get(json, GoogleProfileDefinition.FORMATTED));
+                    profile.addAttribute(GoogleProfileDefinition.FAMILY_NAME,
+                                         JsonHelper.get(json, GoogleProfileDefinition.FAMILY_NAME));
+                    profile.addAttribute(GoogleProfileDefinition.GIVEN_NAME,
+                                         JsonHelper.get(json, GoogleProfileDefinition.GIVEN_NAME));
                 }
             }
         }

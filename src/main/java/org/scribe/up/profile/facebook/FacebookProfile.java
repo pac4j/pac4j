@@ -37,7 +37,7 @@ public class FacebookProfile extends UserProfile {
     
     static {
         definition = new FacebookProfileDefinition();
-        providerType = FacebookProvider.class.getSimpleName();
+        providerType = FacebookProvider.TYPE;
     }
     
     public FacebookProfile() {

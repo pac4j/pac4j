@@ -23,7 +23,7 @@ import org.scribe.up.profile.Gender;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class GenderConverter implements AttributeConverter<Gender> {
+public final class GenderConverter extends BaseConverter<Gender> {
     
     private String maleText;
     
@@ -34,6 +34,7 @@ public final class GenderConverter implements AttributeConverter<Gender> {
         this.femaleText = femaleText;
     }
     
+    @Override
     public Gender convert(Object attribute) {
         if (attribute != null && attribute instanceof String) {
             String s = ((String) attribute).toLowerCase();

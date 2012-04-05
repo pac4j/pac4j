@@ -16,6 +16,7 @@
 package org.scribe.up.profile.facebook;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.converter.Converters;
 import org.scribe.up.profile.converter.FormattedDateConverter;
 import org.scribe.up.profile.converter.GenderConverter;
 import org.scribe.up.profile.converter.JsonListConverter;
@@ -66,16 +67,16 @@ public class FacebookProfileDefinition extends AttributesDefinition {
         };
         for (String name : names) {
             attributes.add(name);
-            converters.put(name, stringConverter);
+            converters.put(name, Converters.stringConverter);
         }
         attributes.add(TIMEZONE);
-        converters.put(TIMEZONE, integerConverter);
+        converters.put(TIMEZONE, Converters.integerConverter);
         attributes.add(VERIFIED);
-        converters.put(VERIFIED, booleanConverter);
+        converters.put(VERIFIED, Converters.booleanConverter);
         attributes.add(GENDER);
         converters.put(GENDER, new GenderConverter("male", "female"));
         attributes.add(LOCALE);
-        converters.put(LOCALE, localeConverter);
+        converters.put(LOCALE, Converters.localeConverter);
         attributes.add(UPDATED_TIME);
         converters.put(UPDATED_TIME, new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
         attributes.add(BIRTHDAY);

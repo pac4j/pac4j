@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.util.ObjectHelper;
+import org.scribe.up.provider.impl.GoogleProvider;
 
 /**
  * This class is the user profile for Google with appropriate getters.
@@ -30,18 +30,12 @@ import org.scribe.up.util.ObjectHelper;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends UserProfile {
     
-    public static final String ENTRY = "entry";
-    public static final String ID = "id";
-    public static final String PROFILE_URL = "profileUrl";
-    public static final String IS_VIEWER = "isViewer";
-    public static final String THUMBNAIL_URL = "thumbnailUrl";
-    public static final String NAME = "name";
-    public static final String FORMATTED = "formatted";
-    public static final String FAMILY_NAME = "familyName";
-    public static final String GIVEN_NAME = "givenName";
-    public static final String DISPLAY_NAME = "displayName";
-    public static final String URLS = "urls";
-    public static final String PHOTOS = "photos";
+    private static final long serialVersionUID = -6422742096853740209L;
+    
+    static {
+        definition = new GoogleProfileDefinition();
+        providerType = GoogleProvider.TYPE;
+    }
     
     public GoogleProfile() {
         super();
@@ -56,38 +50,42 @@ public class GoogleProfile extends UserProfile {
     }
     
     public String getProfileUrl() {
-        return (String) attributes.get(PROFILE_URL);
+        return (String) attributes.get(GoogleProfileDefinition.PROFILE_URL);
     }
     
     public boolean isViewer() {
-        return (Boolean) ObjectHelper.getDefaultIfNull(attributes.get(IS_VIEWER), Boolean.FALSE);
+        return getSafeBoolean((Boolean) attributes.get(GoogleProfileDefinition.IS_VIEWER));
+    }
+    
+    public boolean isViewerDefined() {
+        return attributes.get(GoogleProfileDefinition.IS_VIEWER) != null;
     }
     
     public String getThumbnailUrl() {
-        return (String) attributes.get(THUMBNAIL_URL);
+        return (String) attributes.get(GoogleProfileDefinition.THUMBNAIL_URL);
     }
     
     public String getFormatted() {
-        return (String) attributes.get(FORMATTED);
+        return (String) attributes.get(GoogleProfileDefinition.FORMATTED);
     }
     
     public String getFamilyName() {
-        return (String) attributes.get(FAMILY_NAME);
+        return (String) attributes.get(GoogleProfileDefinition.FAMILY_NAME);
     }
     
     public String getGivenName() {
-        return (String) attributes.get(GIVEN_NAME);
+        return (String) attributes.get(GoogleProfileDefinition.GIVEN_NAME);
     }
     
     public String getDisplayName() {
-        return (String) attributes.get(DISPLAY_NAME);
+        return (String) attributes.get(GoogleProfileDefinition.DISPLAY_NAME);
     }
     
     public List<GoogleObject> getUrls() {
-        return (List<GoogleObject>) attributes.get(URLS);
+        return (List<GoogleObject>) attributes.get(GoogleProfileDefinition.URLS);
     }
     
     public List<GoogleObject> getPhotos() {
-        return (List<GoogleObject>) attributes.get(PHOTOS);
+        return (List<GoogleObject>) attributes.get(GoogleProfileDefinition.PHOTOS);
     }
 }

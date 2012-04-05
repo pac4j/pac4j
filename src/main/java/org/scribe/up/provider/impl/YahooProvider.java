@@ -21,53 +21,29 @@ import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.UserProfileHelper;
-import org.scribe.up.profile.converter.DateConverter;
-import org.scribe.up.profile.converter.GenderConverter;
-import org.scribe.up.profile.yahoo.YahooAddress;
-import org.scribe.up.profile.yahoo.YahooDisclosure;
-import org.scribe.up.profile.yahoo.YahooEmail;
-import org.scribe.up.profile.yahoo.YahooImage;
-import org.scribe.up.profile.yahoo.YahooInterest;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.util.StringHelper;
 
 /**
  * This class is the OAuth provider to authenticate user in Yahoo. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.yahoo.YahooProfile} : aboutMe (String), addresses (List&lt;
- * {@link org.scribe.up.profile.yahoo.YahooAddress}&gt;), birthYear (Integer), birthdate (Date), created (Date), displayAge (Integer),
- * disclosures (List&lt;{@link org.scribe.up.profile.yahoo.YahooDisclosure}&gt;), emails (List&lt;
- * {@link org.scribe.up.profile.yahoo.YahooEmail}&gt;), familyName (String), gender (Gender), givenName (String), image (
- * {@link org.scribe.up.profile.yahoo.YahooImage}), interests (List&lt;{@link org.scribe.up.profile.yahoo.YahooInterest}&gt;), isConnected
- * (Boolean), lang (Locale), location (String), memberSince (Date), nickname (String), profileUrl (String), timeZone (String), updated
- * (Date) and uri (String)
+ * Attributes (Java type) available in {@link org.scribe.up.profile.yahoo.YahooProfile} : aboutMe (String), addresses
+ * (JsonList&lt;YahooAddress&gt;), birthYear (Integer), birthdate (FormattedDate), created (FormattedDate), displayAge (Integer),
+ * disclosures (JsonList&lt;YahooDisclosure&gt;), emails (JsonList&lt;YahooEmail&gt;), familyName (String), gender (Gender), givenName
+ * (String), image (YahooImage), interests (JsonList&lt;YahooInterest&gt;), isConnected (Boolean), lang (Locale), location (String),
+ * memberSince (FormattedDate), nickname (String), profileUrl (String), timeZone (String), updated (FormattedDate) and uri (String)
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class YahooProvider extends BaseOAuth10Provider {
     
+    public final static String TYPE = YahooProvider.class.getSimpleName();
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(YahooApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
             .build();
-        // sounds partially obsolete : http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
-        String[] names = new String[] {
-            YahooProfile.BIRTH_YEAR, YahooProfile.ABOUT_ME, YahooProfile.DISPLAY_AGE, YahooProfile.FAMILY_NAME,
-            YahooProfile.GIVEN_NAME, YahooProfile.IS_CONNECTED, YahooProfile.LOCATION, YahooProfile.NICKNAME,
-            YahooProfile.PROFILE_URL, YahooProfile.TIME_ZONE, YahooProfile.URI
-        };
-        for (String name : names) {
-            mainAttributes.put(name, null);
-        }
-        mainAttributes.put(YahooProfile.BIRTHDATE, new DateConverter("MM/dd"));
-        mainAttributes.put(YahooProfile.GENDER, new GenderConverter("m", "f"));
-        DateConverter dateConverter = new DateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        mainAttributes.put(YahooProfile.CREATED, dateConverter);
-        mainAttributes.put(YahooProfile.MEMBER_SINCE, dateConverter);
-        mainAttributes.put(YahooProfile.UPDATED, dateConverter);
-        mainAttributes.put(YahooProfile.LANG, localeConverter);
     }
     
     @Override
@@ -100,40 +76,11 @@ public class YahooProvider extends BaseOAuth10Provider {
         YahooProfile profile = new YahooProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            json = json.get(YahooProfile.PROFILE);
+            json = json.get("profile");
             if (json != null) {
-                UserProfileHelper.addIdentifier(profile, json, YahooProfile.GUID);
-                for (String attribute : mainAttributes.keySet()) {
-                    UserProfileHelper.addAttribute(profile, json, attribute, mainAttributes.get(attribute));
-                }
-                // addresses
-                JsonNode subJson = json.get(YahooProfile.ADDRESSES);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, YahooProfile.ADDRESSES,
-                                                   UserProfileHelper.getListObject(subJson, YahooAddress.class));
-                }
-                // disclosures
-                subJson = json.get(YahooProfile.DISCLOSURES);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, YahooProfile.DISCLOSURES,
-                                                   UserProfileHelper.getListObject(subJson, YahooDisclosure.class));
-                }
-                // emails
-                subJson = json.get(YahooProfile.EMAILS);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, YahooProfile.EMAILS,
-                                                   UserProfileHelper.getListObject(subJson, YahooEmail.class));
-                }
-                // image
-                subJson = json.get(YahooProfile.IMAGE);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, YahooProfile.IMAGE, new YahooImage(subJson));
-                }
-                // interests
-                subJson = json.get(YahooProfile.INTERESTS);
-                if (subJson != null) {
-                    UserProfileHelper.addAttribute(profile, YahooProfile.INTERESTS,
-                                                   UserProfileHelper.getListObject(subJson, YahooInterest.class));
+                profile.setId((String) JsonHelper.get(json, "guid"));
+                for (String attribute : YahooProfile.getAttributesDefinition().getAttributes()) {
+                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }
         }

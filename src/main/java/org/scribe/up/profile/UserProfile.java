@@ -106,17 +106,11 @@ public class UserProfile implements Serializable {
     }
     
     protected boolean getSafeBoolean(Boolean b) {
-        if (b != null) {
-            return b;
-        }
-        return false;
+        return b != null ? b : false;
     }
     
     protected int getSafeInteger(Integer i) {
-        if (i != null) {
-            return i;
-        }
-        return 0;
+        return i != null ? i : 0;
     }
     
     @Override

@@ -20,13 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.converter.AttributeConverter;
-import org.scribe.up.profile.converter.BooleanConverter;
-import org.scribe.up.profile.converter.ColorConverter;
-import org.scribe.up.profile.converter.IntegerConverter;
-import org.scribe.up.profile.converter.LocaleConverter;
-import org.scribe.up.profile.converter.StringConverter;
 
 /**
  * This class is the definition of the attributes.
@@ -40,13 +34,6 @@ public class AttributesDefinition {
     
     protected Map<String, AttributeConverter<? extends Object>> converters = new HashMap<String, AttributeConverter<? extends Object>>();
     
-    // default converters
-    protected static LocaleConverter localeConverter = new LocaleConverter();
-    protected static StringConverter stringConverter = new StringConverter();
-    protected static BooleanConverter booleanConverter = new BooleanConverter();
-    protected static IntegerConverter integerConverter = new IntegerConverter();
-    protected static ColorConverter colorConverter = new ColorConverter();
-    
     public List<String> getAttributes() {
         return attributes;
     }
@@ -58,9 +45,5 @@ public class AttributesDefinition {
         } else {
             return value;
         }
-    }
-    
-    public Object convert(JsonNode json, String name) {
-        return convert(name, JsonHelper.get(json, name));
     }
 }

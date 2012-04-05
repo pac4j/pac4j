@@ -21,7 +21,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonList;
 
 /**
- * This class converts a json (String or JsonNode) into a list of objects.
+ * This class converts a JSON (String or JsonNode) into a list of objects.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -29,7 +29,7 @@ import org.scribe.up.profile.JsonList;
 @SuppressWarnings({
     "unchecked", "rawtypes"
 })
-public final class JsonListConverter implements AttributeConverter<JsonList> {
+public final class JsonListConverter extends BaseConverter<JsonList> {
     
     private final Class<? extends Object> clazz;
     
@@ -37,6 +37,7 @@ public final class JsonListConverter implements AttributeConverter<JsonList> {
         this.clazz = clazz;
     }
     
+    @Override
     public JsonList convert(Object attribute) {
         if (attribute != null
             && (attribute instanceof String || attribute instanceof JsonNode || attribute instanceof List<?>)) {
