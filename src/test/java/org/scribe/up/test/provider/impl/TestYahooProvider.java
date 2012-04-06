@@ -29,7 +29,6 @@ import org.scribe.up.profile.yahoo.YahooInterest;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.YahooProvider;
-import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -91,9 +90,8 @@ public class TestYahooProvider extends TestProvider {
         assertEquals("", address.getStreet());
         assertEquals("HOME", address.getType());
         assertEquals(1976, profile.getBirthYear());
-        assertNotNull(profile.getBirthdate());
-        assertEquals(CommonHelper.getFormattedDate(1328528803000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
-            .getCreated().toString());
+        assertEquals("03/10", profile.getBirthdate().toString());
+        assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
         assertEquals(36, profile.getDisplayAge());
         List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
@@ -126,13 +124,11 @@ public class TestYahooProvider extends TestProvider {
         assertTrue(profile.isConnectedDefined());
         assertEquals(Locale.FRANCE, profile.getLang());
         assertEquals("Chatou, Ile-de-France", profile.getLocation());
-        assertEquals(CommonHelper.getFormattedDate(1328528796000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
-            .getMemberSince().toString());
+        assertEquals("2012-02-06T12:46:36Z", profile.getMemberSince().toString());
         assertEquals("Test", profile.getNickname());
         assertEquals("http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getProfileUrl());
         assertEquals("Europe/Paris", profile.getTimeZone());
-        assertEquals(CommonHelper.getFormattedDate(1330953985000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
-            .getUpdated().toString());
+        assertEquals("2012-03-05T14:26:25Z", profile.getUpdated().toString());
         assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
         assertEquals(22, profile.getAttributes().size());
     }

@@ -67,16 +67,6 @@ public class TestTwitterProvider extends TestProvider {
         TwitterProfile profile = (TwitterProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
-        /*
-        public static final String PROTECTED = "protected";
-        public static final String SCREEN_NAME = "screen_name";
-        public static final String SHOW_ALL_INLINE_MEDIA = "show_all_inline_media";
-        public static final String STATUSES_COUNT = "statuses_count";
-        public static final String TIME_ZONE = "time_zone";
-        public static final String URL = "url";
-        public static final String UTC_OFFSET = "utc_offset";
-        public static final String VERIFIED = "verified";
-        */
         assertFalse(profile.isContributorsEnabled());
         assertTrue(profile.isContributorsEnabledDefined());
         assertEquals(CommonHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
