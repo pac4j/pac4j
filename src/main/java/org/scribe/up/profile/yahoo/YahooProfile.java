@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.YahooProvider;
 
@@ -33,11 +35,14 @@ import org.scribe.up.provider.impl.YahooProvider;
 @SuppressWarnings("unchecked")
 public class YahooProfile extends UserProfile {
     
-    private static final long serialVersionUID = 3013465327908250073L;
+    private static final long serialVersionUID = 7522476163307556257L;
     
-    static {
-        definition = new YahooProfileDefinition();
-        providerType = YahooProvider.TYPE;
+    protected AttributesDefinition getAttributesDefinition() {
+        return ProfileDefinitions.yahooDefinition;
+    }
+    
+    protected String getProviderType() {
+        return YahooProvider.TYPE;
     }
     
     public YahooProfile() {

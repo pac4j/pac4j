@@ -17,6 +17,8 @@ package org.scribe.up.profile.linkedin;
 
 import java.util.Map;
 
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.LinkedInProvider;
 
@@ -28,11 +30,14 @@ import org.scribe.up.provider.impl.LinkedInProvider;
  */
 public class LinkedInProfile extends UserProfile {
     
-    private static final long serialVersionUID = 8796163062014674638L;
+    private static final long serialVersionUID = 6502082351173525371L;
     
-    static {
-        definition = new LinkedInProfileDefinition();
-        providerType = LinkedInProvider.TYPE;
+    protected AttributesDefinition getAttributesDefinition() {
+        return ProfileDefinitions.linkedinDefinition;
+    }
+    
+    protected String getProviderType() {
+        return LinkedInProvider.TYPE;
     }
     
     public LinkedInProfile() {

@@ -18,6 +18,8 @@ package org.scribe.up.profile.google;
 import java.util.List;
 import java.util.Map;
 
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
 
@@ -30,11 +32,14 @@ import org.scribe.up.provider.impl.GoogleProvider;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends UserProfile {
     
-    private static final long serialVersionUID = -8441712133913422500L;
+    private static final long serialVersionUID = -5193919871020348740L;
     
-    static {
-        definition = new GoogleProfileDefinition();
-        providerType = GoogleProvider.TYPE;
+    protected AttributesDefinition getAttributesDefinition() {
+        return ProfileDefinitions.googleDefinition;
+    }
+    
+    protected String getProviderType() {
+        return GoogleProvider.TYPE;
     }
     
     public GoogleProfile() {

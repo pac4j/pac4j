@@ -19,6 +19,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
@@ -60,7 +61,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : TwitterProfile.getAttributesDefinition().getAttributes()) {
+            for (String attribute : ProfileDefinitions.twitterDefinition.getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

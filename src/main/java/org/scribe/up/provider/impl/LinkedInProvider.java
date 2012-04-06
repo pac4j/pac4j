@@ -17,6 +17,7 @@ package org.scribe.up.provider.impl;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.linkedin.LinkedInProfile;
 import org.scribe.up.profile.linkedin.LinkedInProfileDefinition;
@@ -50,7 +51,7 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         LinkedInProfile profile = new LinkedInProfile();
-        for (String attribute : LinkedInProfile.getAttributesDefinition().getAttributes()) {
+        for (String attribute : ProfileDefinitions.linkedinDefinition.getAttributes()) {
             String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             profile.addAttribute(attribute, value);
             if (LinkedInProfileDefinition.URL.equals(attribute)) {

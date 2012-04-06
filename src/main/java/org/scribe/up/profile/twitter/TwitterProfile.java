@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.TwitterProvider;
 
@@ -31,11 +33,14 @@ import org.scribe.up.provider.impl.TwitterProvider;
  */
 public class TwitterProfile extends UserProfile {
     
-    private static final long serialVersionUID = -4852224052623004408L;
+    private static final long serialVersionUID = 9025708214771996106L;
     
-    static {
-        definition = new TwitterProfileDefinition();
-        providerType = TwitterProvider.TYPE;
+    protected AttributesDefinition getAttributesDefinition() {
+        return ProfileDefinitions.twitterDefinition;
+    }
+    
+    protected String getProviderType() {
+        return TwitterProvider.TYPE;
     }
     
     public TwitterProfile() {

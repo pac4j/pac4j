@@ -18,6 +18,7 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookProfile;
@@ -64,7 +65,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : FacebookProfile.getAttributesDefinition().getAttributes()) {
+            for (String attribute : ProfileDefinitions.facebookDefinition.getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

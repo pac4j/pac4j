@@ -20,6 +20,7 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
@@ -79,7 +80,7 @@ public class YahooProvider extends BaseOAuth10Provider {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "guid"));
-                for (String attribute : YahooProfile.getAttributesDefinition().getAttributes()) {
+                for (String attribute : ProfileDefinitions.yahooDefinition.getAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

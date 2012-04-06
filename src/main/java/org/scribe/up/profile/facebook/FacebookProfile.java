@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.FacebookProvider;
 
@@ -33,11 +35,14 @@ import org.scribe.up.provider.impl.FacebookProvider;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    private static final long serialVersionUID = 1034405039044925842L;
+    private static final long serialVersionUID = -3971298986127237207L;
     
-    static {
-        definition = new FacebookProfileDefinition();
-        providerType = FacebookProvider.TYPE;
+    protected AttributesDefinition getAttributesDefinition() {
+        return ProfileDefinitions.facebookDefinition;
+    }
+    
+    protected String getProviderType() {
+        return FacebookProvider.TYPE;
     }
     
     public FacebookProfile() {

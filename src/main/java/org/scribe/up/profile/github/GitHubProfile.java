@@ -18,6 +18,8 @@ package org.scribe.up.profile.github;
 import java.util.Date;
 import java.util.Map;
 
+import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GitHubProvider;
 
@@ -29,11 +31,14 @@ import org.scribe.up.provider.impl.GitHubProvider;
  */
 public class GitHubProfile extends UserProfile {
     
-    private static final long serialVersionUID = 2383888629913550182L;
+    private static final long serialVersionUID = 2822736791978830730L;
     
-    static {
-        definition = new GitHubProfileDefinition();
-        providerType = GitHubProvider.TYPE;
+    protected AttributesDefinition getAttributesDefinition() {
+        return ProfileDefinitions.githubDefinition;
+    }
+    
+    protected String getProviderType() {
+        return GitHubProvider.TYPE;
     }
     
     public GitHubProfile() {

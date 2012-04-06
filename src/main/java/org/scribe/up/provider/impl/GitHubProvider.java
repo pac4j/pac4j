@@ -19,6 +19,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.builder.api.GitHubApi;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
@@ -58,7 +59,7 @@ public class GitHubProvider extends BaseOAuth20Provider {
             json = json.get("user");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
-                for (String attribute : GitHubProfile.getAttributesDefinition().getAttributes()) {
+                for (String attribute : ProfileDefinitions.githubDefinition.getAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

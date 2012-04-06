@@ -32,11 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = 590794176557010470L;
-    
-    protected transient static AttributesDefinition definition;
-    
-    protected transient static String providerType;
+    private static final long serialVersionUID = 5403360229247469734L;
     
     protected static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -54,6 +50,10 @@ public class UserProfile implements Serializable {
     public UserProfile(Object id, Map<String, Object> attributes) {
         setId(id);
         addAttributes(attributes);
+    }
+    
+    protected AttributesDefinition getAttributesDefinition() {
+        return null;
     }
     
     public void addAttribute(String key, Object value) {
@@ -83,10 +83,15 @@ public class UserProfile implements Serializable {
         }
     }
     
+    protected String getProviderType() {
+        return null;
+    }
+    
     public void setId(Object id) {
         if (id != null) {
             String sId = id.toString();
-            if (sId.startsWith(providerType + "#")) {
+            String providerType = getProviderType();
+            if (providerType != null && sId.startsWith(providerType + "#")) {
                 sId = sId.substring(providerType.length() + 1);
             }
             logger.debug("identifier : {}", sId);
@@ -100,10 +105,6 @@ public class UserProfile implements Serializable {
     
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
-    }
-    
-    public static AttributesDefinition getAttributesDefinition() {
-        return definition;
     }
     
     protected boolean getSafeBoolean(Boolean b) {
