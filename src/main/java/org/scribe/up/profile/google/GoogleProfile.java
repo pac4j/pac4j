@@ -30,7 +30,7 @@ import org.scribe.up.provider.impl.GoogleProvider;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends UserProfile {
     
-    private static final long serialVersionUID = -6422742096853740209L;
+    private static final long serialVersionUID = -8441712133913422500L;
     
     static {
         definition = new GoogleProfileDefinition();
@@ -41,11 +41,11 @@ public class GoogleProfile extends UserProfile {
         super();
     }
     
-    public GoogleProfile(String id) {
+    public GoogleProfile(Object id) {
         super(id);
     }
     
-    public GoogleProfile(String id, Map<String, Object> attributes) {
+    public GoogleProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
     }
     

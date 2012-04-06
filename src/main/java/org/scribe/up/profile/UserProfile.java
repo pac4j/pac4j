@@ -47,11 +47,11 @@ public class UserProfile implements Serializable {
     public UserProfile() {
     }
     
-    public UserProfile(String id) {
+    public UserProfile(Object id) {
         setId(id);
     }
     
-    public UserProfile(String id, Map<String, Object> attributes) {
+    public UserProfile(Object id, Map<String, Object> attributes) {
         setId(id);
         addAttributes(attributes);
     }
@@ -83,13 +83,14 @@ public class UserProfile implements Serializable {
         }
     }
     
-    public void setId(String id) {
+    public void setId(Object id) {
         if (id != null) {
-            if (id.startsWith(providerType + "#")) {
-                id = id.substring(providerType.length() + 1);
+            String sId = id.toString();
+            if (sId.startsWith(providerType + "#")) {
+                sId = sId.substring(providerType.length() + 1);
             }
-            logger.debug("identifier : {}", id);
-            this.id = id;
+            logger.debug("identifier : {}", sId);
+            this.id = sId;
         }
     }
     

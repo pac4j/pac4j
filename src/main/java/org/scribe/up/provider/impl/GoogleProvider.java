@@ -70,7 +70,7 @@ public class GoogleProvider extends BaseOAuth10Provider {
         if (json != null) {
             json = json.get("entry");
             if (json != null) {
-                profile.setId((String) JsonHelper.get(json, "id"));
+                profile.setId(JsonHelper.get(json, "id"));
                 String[] attributes = new String[] {
                     GoogleProfileDefinition.PROFILE_URL, GoogleProfileDefinition.IS_VIEWER,
                     GoogleProfileDefinition.THUMBNAIL_URL, GoogleProfileDefinition.DISPLAY_NAME,

@@ -57,7 +57,7 @@ public class GitHubProvider extends BaseOAuth20Provider {
         if (json != null) {
             json = json.get("user");
             if (json != null) {
-                profile.setId("" + JsonHelper.get(json, "id"));
+                profile.setId(JsonHelper.get(json, "id"));
                 for (String attribute : GitHubProfile.getAttributesDefinition().getAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }

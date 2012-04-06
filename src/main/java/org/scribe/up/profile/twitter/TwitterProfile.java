@@ -31,7 +31,7 @@ import org.scribe.up.provider.impl.TwitterProvider;
  */
 public class TwitterProfile extends UserProfile {
     
-    private static final long serialVersionUID = 1875058433035755467L;
+    private static final long serialVersionUID = -4852224052623004408L;
     
     static {
         definition = new TwitterProfileDefinition();
@@ -42,11 +42,11 @@ public class TwitterProfile extends UserProfile {
         super();
     }
     
-    public TwitterProfile(String id) {
+    public TwitterProfile(Object id) {
         super(id);
     }
     
-    public TwitterProfile(String id, Map<String, Object> attributes) {
+    public TwitterProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
     }
     

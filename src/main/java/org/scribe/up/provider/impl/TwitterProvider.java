@@ -59,7 +59,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
         TwitterProfile profile = new TwitterProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId("" + JsonHelper.get(json, "id"));
+            profile.setId(JsonHelper.get(json, "id"));
             for (String attribute : TwitterProfile.getAttributesDefinition().getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }

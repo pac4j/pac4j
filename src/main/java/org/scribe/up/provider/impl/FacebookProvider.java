@@ -63,7 +63,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         FacebookProfile profile = new FacebookProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId((String) JsonHelper.get(json, "id"));
+            profile.setId(JsonHelper.get(json, "id"));
             for (String attribute : FacebookProfile.getAttributesDefinition().getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }

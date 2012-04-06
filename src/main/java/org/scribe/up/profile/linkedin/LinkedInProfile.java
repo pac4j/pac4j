@@ -28,7 +28,7 @@ import org.scribe.up.provider.impl.LinkedInProvider;
  */
 public class LinkedInProfile extends UserProfile {
     
-    private static final long serialVersionUID = 3851925555529459576L;
+    private static final long serialVersionUID = 8796163062014674638L;
     
     static {
         definition = new LinkedInProfileDefinition();
@@ -39,11 +39,11 @@ public class LinkedInProfile extends UserProfile {
         super();
     }
     
-    public LinkedInProfile(String id) {
+    public LinkedInProfile(Object id) {
         super(id);
     }
     
-    public LinkedInProfile(String id, Map<String, Object> attributes) {
+    public LinkedInProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
     }
     
