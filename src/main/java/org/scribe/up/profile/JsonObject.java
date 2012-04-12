@@ -15,6 +15,8 @@
  */
 package org.scribe.up.profile;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.JsonNode;
 
 /**
@@ -23,7 +25,9 @@ import org.codehaus.jackson.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public abstract class JsonObject {
+public abstract class JsonObject implements Serializable {
+    
+    private static final long serialVersionUID = -7382108665149321395L;
     
     protected String json = "";
     
@@ -31,6 +35,11 @@ public abstract class JsonObject {
         buildFrom(json);
     }
     
+    /**
+     * Build an object from JSON (String or JsonNode).
+     * 
+     * @param json
+     */
     protected final void buildFrom(Object json) {
         if (json != null) {
             if (json instanceof String) {
@@ -47,6 +56,11 @@ public abstract class JsonObject {
         }
     }
     
+    /**
+     * Build an object from a JsonNode.
+     * 
+     * @param json
+     */
     protected abstract void buildFromJson(JsonNode json);
     
     @Override

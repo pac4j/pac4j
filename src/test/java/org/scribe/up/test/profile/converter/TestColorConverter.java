@@ -59,4 +59,12 @@ public final class TestColorConverter extends TestCase {
         assertEquals(0, color.getGreen());
         assertEquals(5, color.getBlue());
     }
+    
+    public void testColorToString() {
+        Color color = new Color(10, 20, 30);
+        Color color2 = converter.convert(color.toString());
+        assertEquals(color.getRed(), color2.getRed());
+        assertEquals(color.getGreen(), color2.getGreen());
+        assertEquals(color.getBlue(), color2.getBlue());
+    }
 }

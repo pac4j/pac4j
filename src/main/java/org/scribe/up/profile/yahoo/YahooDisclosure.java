@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
 import org.scribe.up.profile.converter.DateConverter;
 
 /**
- * This class represents a disclosure for Yahoo.
+ * This class represents a Yahoo disclosure.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

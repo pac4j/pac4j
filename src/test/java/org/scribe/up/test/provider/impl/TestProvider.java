@@ -53,6 +53,11 @@ public abstract class TestProvider extends TestCase {
         UserProfile profile = getProfile(provider, session, callbackUrl);
         
         verifyProfile(profile);
+        
+        byte[] bytes = CommonHelper.serialize(profile);
+        UserProfile profile2 = (UserProfile) CommonHelper.unserialize(bytes);
+        
+        verifyProfile(profile2);
     }
     
     protected abstract OAuthProvider getProvider();

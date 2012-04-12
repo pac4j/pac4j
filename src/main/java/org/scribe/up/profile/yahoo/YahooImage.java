@@ -22,7 +22,7 @@ import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
 
 /**
- * This class represents an image for Yahoo.
+ * This class represents a Yahoo image.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

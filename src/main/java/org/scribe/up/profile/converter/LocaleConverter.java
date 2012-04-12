@@ -18,7 +18,7 @@ package org.scribe.up.profile.converter;
 import java.util.Locale;
 
 /**
- * This class is the converter of a String to a Locale.
+ * This class converts a String to a Locale.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

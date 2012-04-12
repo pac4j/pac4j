@@ -26,7 +26,6 @@ import org.scribe.up.profile.yahoo.YahooInterest;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-
 public final class TestYahooInterest extends TestCase {
     
     private final static String DECLARED_INTERESTS = "declaredInterests";

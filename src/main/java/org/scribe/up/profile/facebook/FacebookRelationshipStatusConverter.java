@@ -18,7 +18,7 @@ package org.scribe.up.profile.facebook;
 import org.scribe.up.profile.converter.AttributeConverter;
 
 /**
- * This class is the converter of a String to a FacebookRelationshipStatus.
+ * This class converts a String into a FacebookRelationshipStatus.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

@@ -15,6 +15,11 @@
  */
 package org.scribe.up.test.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,15 +27,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
- * This class is an helper to get a basic web client, parameters from an url and formatted date.
+ * This class is an helper to get a basic web client, parameters from an url, a formatted date or to serialize and deserialize objects.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class CommonHelper {
+    
+    private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
     
     private CommonHelper() {
     }
@@ -69,5 +79,49 @@ public final class CommonHelper {
             simpleDateFormat = new SimpleDateFormat(format, locale);
         }
         return simpleDateFormat.format(d);
+    }
+    
+    public static byte[] serialize(Object o) {
+        byte[] bytes = null;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            try {
+                oos.writeObject(o);
+                oos.flush();
+                bytes = baos.toByteArray();
+            } finally {
+                try {
+                    oos.close();
+                } finally {
+                    baos.close();
+                }
+            }
+        } catch (IOException e) {
+            logger.warn("cannot serialize object", e);
+        }
+        return bytes;
+    }
+    
+    public static Object unserialize(byte[] bytes) {
+        Object o = null;
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            try {
+                o = ois.readObject();
+            } finally {
+                try {
+                    ois.close();
+                } finally {
+                    bais.close();
+                }
+            }
+        } catch (IOException e) {
+            logger.warn("cannot deserialize object", e);
+        } catch (ClassNotFoundException e) {
+            logger.warn("cannot deserialize object", e);
+        }
+        return o;
     }
 }

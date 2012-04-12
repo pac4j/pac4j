@@ -15,6 +15,7 @@
  */
 package org.scribe.up.profile;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,9 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public final class JsonList<T extends Object> extends JsonObject implements List<T> {
+public final class JsonList<T extends Object> extends JsonObject implements List<T>, Serializable {
+    
+    private static final long serialVersionUID = -2308482062004321664L;
     
     private static final Logger logger = LoggerFactory.getLogger(JsonList.class);
     
@@ -41,6 +44,12 @@ public final class JsonList<T extends Object> extends JsonObject implements List
     
     private Class<T> clazz;
     
+    /**
+     * Create a list of JsonObject from various inputs.
+     * 
+     * @param o
+     * @param clazz
+     */
     public JsonList(Object o, Class<T> clazz) {
         super(null);
         this.clazz = clazz;
@@ -89,6 +98,11 @@ public final class JsonList<T extends Object> extends JsonObject implements List
         }
     }
     
+    /**
+     * Add a single node to the JsonList.
+     * 
+     * @param node
+     */
     private void buildSingleNode(JsonNode node) {
         if (clazz == String.class) {
             list.add((T) node.getTextValue());

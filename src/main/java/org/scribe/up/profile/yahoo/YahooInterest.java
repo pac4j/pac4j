@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
 import org.scribe.up.profile.converter.JsonListConverter;
 
 /**
- * This class represents an interest for Yahoo.
+ * This class represents a Yahoo interest.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

@@ -18,7 +18,7 @@ package org.scribe.up.profile.converter;
 import org.scribe.up.profile.Gender;
 
 /**
- * This class is the converter of a String to a Gender.
+ * This class converts a String to a Gender.
  * 
  * @author Jerome Leleu
  * @since 1.0.0

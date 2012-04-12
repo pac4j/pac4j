@@ -56,6 +56,12 @@ public class UserProfile implements Serializable {
         return null;
     }
     
+    /**
+     * Add an attribute and perform conversion if necessary.
+     * 
+     * @param key
+     * @param value
+     */
     public void addAttribute(String key, Object value) {
         if (value != null) {
             AttributesDefinition definition = getAttributesDefinition();
@@ -77,6 +83,11 @@ public class UserProfile implements Serializable {
         }
     }
     
+    /**
+     * Add attributes.
+     * 
+     * @param attributes
+     */
     public void addAttributes(Map<String, Object> attributes) {
         for (String key : attributes.keySet()) {
             addAttribute(key, attributes.get(key));
@@ -87,6 +98,11 @@ public class UserProfile implements Serializable {
         return null;
     }
     
+    /**
+     * Set the identifier and convert it if necessary.
+     * 
+     * @param id
+     */
     public void setId(Object id) {
         if (id != null) {
             String sId = id.toString();
@@ -103,6 +119,11 @@ public class UserProfile implements Serializable {
         return id;
     }
     
+    /**
+     * Get attributes as immutable map.
+     * 
+     * @return the immutable attributes.
+     */
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }

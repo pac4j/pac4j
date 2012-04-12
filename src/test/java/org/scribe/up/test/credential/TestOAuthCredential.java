@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
+import org.scribe.up.test.util.CommonHelper;
 
 /**
  * This class tests the {@link org.scribe.up.credential.OAuthCredential} class.
@@ -46,5 +47,12 @@ public final class TestOAuthCredential extends TestCase {
         Token requestToken = credential.getRequestToken();
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getSecret());
+        // test serialization
+        byte[] bytes = CommonHelper.serialize(credential);
+        OAuthCredential credential2 = (OAuthCredential) CommonHelper.unserialize(bytes);
+        assertEquals(credential.getRequestToken().toString(), credential2.getRequestToken().toString());
+        assertEquals(credential.getToken(), credential2.getToken());
+        assertEquals(credential.getVerifier(), credential2.getVerifier());
+        assertEquals(credential.getProviderType(), credential2.getProviderType());
     }
 }

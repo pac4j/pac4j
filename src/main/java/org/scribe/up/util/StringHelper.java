@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is an helper to work on strings.
+ * This class is an helper to work with strings.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

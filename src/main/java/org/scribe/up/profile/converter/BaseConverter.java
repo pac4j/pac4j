@@ -19,7 +19,7 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
 
 /**
- * This class defines a base converter which can convert from JSON.
+ * This class defines a base converter which can also convert from JSON.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -28,6 +28,13 @@ public abstract class BaseConverter<T> implements AttributeConverter<T> {
     
     public abstract T convert(Object attribute);
     
+    /**
+     * Convert an attribute from JSON.
+     * 
+     * @param json
+     * @param name
+     * @return the converted attribute.
+     */
     public T convertFromJson(JsonNode json, String name) {
         return convert(JsonHelper.get(json, name));
     }

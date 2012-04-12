@@ -38,12 +38,19 @@ public class AttributesDefinition {
         return attributes;
     }
     
+    /**
+     * Convert an attribute into the right type.
+     * 
+     * @param name
+     * @param value
+     * @return the converted attribute.
+     */
     public Object convert(String name, Object value) {
         AttributeConverter<? extends Object> converter = converters.get(name);
-        if (converter != null) {
+        if (converter != null && value != null) {
             return converter.convert(value);
         } else {
-            return value;
+            return null;
         }
     }
 }

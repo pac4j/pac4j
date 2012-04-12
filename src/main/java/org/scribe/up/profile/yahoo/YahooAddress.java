@@ -23,7 +23,7 @@ import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
 
 /**
- * This class represents an address object for Yahoo.
+ * This class represents a Yahoo address.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

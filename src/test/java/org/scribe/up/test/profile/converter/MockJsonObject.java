@@ -24,7 +24,9 @@ import org.scribe.up.profile.JsonObject;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class MockJsonObject extends JsonObject {
+public final class MockJsonObject extends JsonObject {
+    
+    private static final long serialVersionUID = 2551743059012070843L;
     
     private String value;
     

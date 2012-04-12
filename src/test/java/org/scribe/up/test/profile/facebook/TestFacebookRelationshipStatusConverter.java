@@ -21,7 +21,7 @@ import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter;
 
 /**
- * This class test the {@link org.scribe.up.profile.facebook.FacebookRelationshipStatus} class.
+ * This class test the {@link org.scribe.up.profile.facebook.FacebookRelationshipStatusConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
