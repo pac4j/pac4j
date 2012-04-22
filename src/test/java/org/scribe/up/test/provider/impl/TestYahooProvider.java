@@ -77,6 +77,8 @@ public class TestYahooProvider extends TestProvider {
         YahooProfile profile = (YahooProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
+        assertEquals("YahooProvider#PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getTypedId());
+        assertTrue(YahooProfile.isTypedIdOf(profile.getTypedId()));
         assertEquals("my profile", profile.getAboutMe());
         List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());

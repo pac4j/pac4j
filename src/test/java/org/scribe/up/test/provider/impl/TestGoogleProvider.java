@@ -69,6 +69,8 @@ public class TestGoogleProvider extends TestProvider {
         GoogleProfile profile = (GoogleProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("113675986756217860428", profile.getId());
+        assertEquals(GoogleProvider.TYPE + UserProfile.SEPARATOR + "113675986756217860428", profile.getTypedId());
+        assertTrue(GoogleProfile.isTypedIdOf(profile.getTypedId()));
         assertEquals("", profile.getProfileUrl());
         assertTrue(profile.isViewer());
         assertTrue(profile.isViewerDefined());

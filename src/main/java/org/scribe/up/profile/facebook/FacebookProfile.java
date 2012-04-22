@@ -35,7 +35,7 @@ import org.scribe.up.provider.impl.FacebookProvider;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    private static final long serialVersionUID = -3971298986127237207L;
+    private static final long serialVersionUID = -3831971276548245217L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return ProfileDefinitions.facebookDefinition;
@@ -55,6 +55,14 @@ public class FacebookProfile extends UserProfile {
     
     public FacebookProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
+    }
+    
+    public static boolean isTypedIdOf(String id) {
+        if (id != null && id.startsWith(FacebookProvider.TYPE + SEPARATOR)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getName() {

@@ -31,7 +31,7 @@ import org.scribe.up.provider.impl.GitHubProvider;
  */
 public class GitHubProfile extends UserProfile {
     
-    private static final long serialVersionUID = 2822736791978830730L;
+    private static final long serialVersionUID = -7024887450473712689L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return ProfileDefinitions.githubDefinition;
@@ -51,6 +51,14 @@ public class GitHubProfile extends UserProfile {
     
     public GitHubProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
+    }
+    
+    public static boolean isTypedIdOf(String id) {
+        if (id != null && id.startsWith(GitHubProvider.TYPE + SEPARATOR)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getCompany() {

@@ -32,7 +32,7 @@ import org.scribe.up.provider.impl.GoogleProvider;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends UserProfile {
     
-    private static final long serialVersionUID = -5193919871020348740L;
+    private static final long serialVersionUID = 5043627498801644731L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return ProfileDefinitions.googleDefinition;
@@ -52,6 +52,14 @@ public class GoogleProfile extends UserProfile {
     
     public GoogleProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
+    }
+    
+    public static boolean isTypedIdOf(String id) {
+        if (id != null && id.startsWith(GoogleProvider.TYPE + SEPARATOR)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getProfileUrl() {

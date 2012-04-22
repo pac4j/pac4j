@@ -65,6 +65,8 @@ public class TestGitHubProvider extends TestProvider {
         GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
+        assertEquals(GitHubProvider.TYPE + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
+        assertTrue(GitHubProfile.isTypedIdOf(profile.getTypedId()));
         assertEquals("Company", profile.getCompany());
         assertEquals("Test", profile.getName());
         assertEquals(0, profile.getFollowingCount());

@@ -35,7 +35,7 @@ import org.scribe.up.provider.impl.YahooProvider;
 @SuppressWarnings("unchecked")
 public class YahooProfile extends UserProfile {
     
-    private static final long serialVersionUID = 7522476163307556257L;
+    private static final long serialVersionUID = -6832062183539648599L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return ProfileDefinitions.yahooDefinition;
@@ -55,6 +55,14 @@ public class YahooProfile extends UserProfile {
     
     public YahooProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
+    }
+    
+    public static boolean isTypedIdOf(String id) {
+        if (id != null && id.startsWith(YahooProvider.TYPE + SEPARATOR)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getAboutMe() {

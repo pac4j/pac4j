@@ -63,6 +63,8 @@ public class TestLinkedInProvider extends TestProvider {
         LinkedInProfile profile = (LinkedInProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("167439971", profile.getId());
+        assertEquals(LinkedInProvider.TYPE + UserProfile.SEPARATOR + "167439971", profile.getTypedId());
+        assertTrue(LinkedInProfile.isTypedIdOf(profile.getTypedId()));
         assertEquals("test", profile.getFirstName());
         assertEquals("scribeUp", profile.getLastName());
         assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());

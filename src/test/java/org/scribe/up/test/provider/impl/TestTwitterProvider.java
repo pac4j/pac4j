@@ -67,6 +67,8 @@ public class TestTwitterProvider extends TestProvider {
         TwitterProfile profile = (TwitterProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
+        assertEquals(TwitterProvider.TYPE + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
+        assertTrue(TwitterProfile.isTypedIdOf(profile.getTypedId()));
         assertFalse(profile.isContributorsEnabled());
         assertTrue(profile.isContributorsEnabledDefined());
         assertEquals(CommonHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile

@@ -30,7 +30,7 @@ import org.scribe.up.provider.impl.LinkedInProvider;
  */
 public class LinkedInProfile extends UserProfile {
     
-    private static final long serialVersionUID = 6502082351173525371L;
+    private static final long serialVersionUID = 4557343108526456560L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return ProfileDefinitions.linkedinDefinition;
@@ -50,6 +50,14 @@ public class LinkedInProfile extends UserProfile {
     
     public LinkedInProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
+    }
+    
+    public static boolean isTypedIdOf(String id) {
+        if (id != null && id.startsWith(LinkedInProvider.TYPE + SEPARATOR)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public String getFirstName() {

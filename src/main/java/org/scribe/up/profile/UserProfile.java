@@ -25,20 +25,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from an OAuth provider after authentication : it's an identifier (string) and attributes
- * (objects).
+ * (objects). The attributes (profile) definition and the associated provider type are null (generic profile), they must be defined in
+ * subclasses.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = 5403360229247469734L;
+    private static final long serialVersionUID = 3240837328687495139L;
     
-    protected static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
+    protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
     protected String id;
     
     protected Map<String, Object> attributes = new HashMap<String, Object>();
+    
+    public transient static final String SEPARATOR = "#";
     
     public UserProfile() {
     }
@@ -52,6 +55,11 @@ public class UserProfile implements Serializable {
         addAttributes(attributes);
     }
     
+    /**
+     * Return the attributes (profile) definition for this user profile. Null for this (generic) user profile.
+     * 
+     * @return the attributes (profile) definition
+     */
     protected AttributesDefinition getAttributesDefinition() {
         return null;
     }
@@ -94,6 +102,11 @@ public class UserProfile implements Serializable {
         }
     }
     
+    /**
+     * Return the associated provider type for this user profile. Null for this (generic) user profile.
+     * 
+     * @return the associated provider type
+     */
     protected String getProviderType() {
         return null;
     }
@@ -107,37 +120,68 @@ public class UserProfile implements Serializable {
         if (id != null) {
             String sId = id.toString();
             String providerType = getProviderType();
-            if (providerType != null && sId.startsWith(providerType + "#")) {
-                sId = sId.substring(providerType.length() + 1);
+            if (providerType != null && sId.startsWith(providerType + SEPARATOR)) {
+                sId = sId.substring(providerType.length() + SEPARATOR.length());
             }
             logger.debug("identifier : {}", sId);
             this.id = sId;
         }
     }
     
+    /**
+     * Get the user identifier.
+     * 
+     * @return the user identifier
+     */
     public String getId() {
         return id;
     }
     
     /**
+     * Get the user identifier with a prefix which is the provider type.
+     * 
+     * @return the typed user identifier
+     */
+    public String getTypedId() {
+        String providerType = getProviderType();
+        if (providerType != null) {
+            return providerType + SEPARATOR + id;
+        } else {
+            return id;
+        }
+    }
+    
+    /**
      * Get attributes as immutable map.
      * 
-     * @return the immutable attributes.
+     * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
     
+    /**
+     * Return the primitive value or false if null.
+     * 
+     * @param b
+     * @return the primitive value or false if null
+     */
     protected boolean getSafeBoolean(Boolean b) {
         return b != null ? b : false;
     }
     
+    /**
+     * Return the primitive value or 0 if null.
+     * 
+     * @param i
+     * @return the primitive value or 0 if null
+     */
     protected int getSafeInteger(Integer i) {
         return i != null ? i : 0;
     }
     
     @Override
     public String toString() {
-        return "UserProfile(id:" + id + ",attributes:" + attributes + ")";
+        return this.getClass().getSimpleName() + "{id:" + id + ",attributes:" + attributes + "}";
     }
 }

@@ -62,7 +62,7 @@ public class OAuthCredential implements Serializable {
     
     @Override
     public String toString() {
-        return "OAuthCredential(requestToken:" + requestToken + ",token:" + token + ",verifier:" + verifier
-               + ",providerType:" + providerType + ")";
+        return "OAuthCredential{requestToken:" + requestToken + ",token:" + token + ",verifier:" + verifier
+               + ",providerType:" + providerType + "}";
     }
 }
