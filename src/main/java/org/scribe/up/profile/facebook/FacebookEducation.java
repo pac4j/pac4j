@@ -21,8 +21,6 @@ import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.JsonListConverter;
-import org.scribe.up.profile.converter.JsonObjectConverter;
 
 /**
  * This class represents an education object for Facebook.
@@ -32,13 +30,7 @@ import org.scribe.up.profile.converter.JsonObjectConverter;
  */
 public final class FacebookEducation extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = -8349031473955546433L;
-    
-    private transient final static JsonObjectConverter facebookObjectConverter = new JsonObjectConverter(
-                                                                                                         FacebookObject.class);
-    
-    private transient final static JsonListConverter listFacebookObjectConverter = new JsonListConverter(
-                                                                                                         FacebookObject.class);
+    private static final long serialVersionUID = 4486758898462027596L;
     
     private FacebookObject school;
     
@@ -57,10 +49,10 @@ public final class FacebookEducation extends JsonObject implements Serializable 
     @SuppressWarnings("unchecked")
     @Override
     protected void buildFromJson(JsonNode json) {
-        this.school = (FacebookObject) facebookObjectConverter.convertFromJson(json, "school");
-        this.degree = (FacebookObject) facebookObjectConverter.convertFromJson(json, "degree");
-        this.year = (FacebookObject) facebookObjectConverter.convertFromJson(json, "year");
-        this.concentration = listFacebookObjectConverter.convertFromJson(json, "concentration");
+        this.school = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "school");
+        this.degree = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "degree");
+        this.year = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "year");
+        this.concentration = FacebookConverters.listObjectConverter.convertFromJson(json, "concentration");
         this.type = Converters.stringConverter.convertFromJson(json, "type");
     }
     

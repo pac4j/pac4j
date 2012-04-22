@@ -17,10 +17,6 @@ package org.scribe.up.profile.facebook;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.FormattedDateConverter;
-import org.scribe.up.profile.converter.GenderConverter;
-import org.scribe.up.profile.converter.JsonListConverter;
-import org.scribe.up.profile.converter.JsonObjectConverter;
 
 /**
  * This class defines the attributes of the Facebook profile.
@@ -74,36 +70,32 @@ public class FacebookProfileDefinition extends AttributesDefinition {
         attributes.add(VERIFIED);
         converters.put(VERIFIED, Converters.booleanConverter);
         attributes.add(GENDER);
-        converters.put(GENDER, new GenderConverter("male", "female"));
+        converters.put(GENDER, FacebookConverters.genderConverter);
         attributes.add(LOCALE);
         converters.put(LOCALE, Converters.localeConverter);
         attributes.add(UPDATED_TIME);
-        converters.put(UPDATED_TIME, new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz"));
+        converters.put(UPDATED_TIME, FacebookConverters.updateTimeConverter);
         attributes.add(BIRTHDAY);
-        converters.put(BIRTHDAY, new FormattedDateConverter("MM/dd/yyyy"));
+        converters.put(BIRTHDAY, FacebookConverters.birthdayConverter);
         attributes.add(RELATIONSHIP_STATUS);
-        converters.put(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
-        JsonListConverter listFacebookObjectConverter = new JsonListConverter(FacebookObject.class);
+        converters.put(RELATIONSHIP_STATUS, FacebookConverters.relationshipStatusConverter);
         attributes.add(LANGUAGES);
-        converters.put(LANGUAGES, listFacebookObjectConverter);
-        // installed
+        converters.put(LANGUAGES, FacebookConverters.listObjectConverter);
         attributes.add(EDUCATION);
-        converters.put(EDUCATION, new JsonListConverter(FacebookEducation.class));
-        JsonObjectConverter facebookObjectConverter = new JsonObjectConverter(FacebookObject.class);
+        converters.put(EDUCATION, FacebookConverters.listEducationConverter);
         attributes.add(HOMETOWN);
-        converters.put(HOMETOWN, facebookObjectConverter);
+        converters.put(HOMETOWN, FacebookConverters.objectConverter);
         attributes.add(INTERESTED_IN);
-        converters.put(INTERESTED_IN, new JsonListConverter(String.class));
+        converters.put(INTERESTED_IN, Converters.listStringConverter);
         attributes.add(LOCATION);
-        converters.put(LOCATION, facebookObjectConverter);
+        converters.put(LOCATION, FacebookConverters.objectConverter);
         attributes.add(FAVORITE_ATHLETES);
-        converters.put(FAVORITE_ATHLETES, listFacebookObjectConverter);
+        converters.put(FAVORITE_ATHLETES, FacebookConverters.listObjectConverter);
         attributes.add(FAVORITE_TEAMS);
-        converters.put(FAVORITE_TEAMS, listFacebookObjectConverter);
+        converters.put(FAVORITE_TEAMS, FacebookConverters.listObjectConverter);
         attributes.add(SIGNIFICANT_OTHER);
-        converters.put(SIGNIFICANT_OTHER, facebookObjectConverter);
-        // video_upload_limits
+        converters.put(SIGNIFICANT_OTHER, FacebookConverters.objectConverter);
         attributes.add(WORK);
-        converters.put(WORK, new JsonListConverter(FacebookWork.class));
+        converters.put(WORK, FacebookConverters.listWorkConverter);
     }
 }

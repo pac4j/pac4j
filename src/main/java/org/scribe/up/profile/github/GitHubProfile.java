@@ -53,6 +53,12 @@ public class GitHubProfile extends UserProfile {
         super(id, attributes);
     }
     
+    /**
+     * Indicate if the user identifier matches this kind of profile.
+     * 
+     * @param id
+     * @return if the user identifier matches this kind of profile
+     */
     public static boolean isTypedIdOf(String id) {
         if (id != null && id.startsWith(GitHubProvider.TYPE + SEPARATOR)) {
             return true;
@@ -73,6 +79,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.FOLLOWING_COUNT));
     }
     
+    /**
+     * Indicate if the following_count attribute exists.
+     * 
+     * @return if the following_count attribute exists
+     */
     public boolean isFollowingCountDefined() {
         return attributes.get(GitHubProfileDefinition.FOLLOWING_COUNT) != null;
     }
@@ -85,6 +96,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.PUBLIC_REPO_COUNT));
     }
     
+    /**
+     * Indicate if the public_repo_count attribute exists.
+     * 
+     * @return if the public_repo_count attribute exists
+     */
     public boolean isPublicRepoCountDefined() {
         return attributes.get(GitHubProfileDefinition.PUBLIC_REPO_COUNT) != null;
     }
@@ -93,6 +109,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.PUBLIC_GIST_COUNT));
     }
     
+    /**
+     * Indicate if the public_gist_count attribute exists.
+     * 
+     * @return if the public_gist_count attribute exists
+     */
     public boolean isPublicGistCountDefined() {
         return attributes.get(GitHubProfileDefinition.PUBLIC_GIST_COUNT) != null;
     }
@@ -101,6 +122,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.DISK_USAGE));
     }
     
+    /**
+     * Indicate if the disk_usage attribute exists.
+     * 
+     * @return if the disk_usage attribute exists
+     */
     public boolean isDiskUsageDefined() {
         return attributes.get(GitHubProfileDefinition.DISK_USAGE) != null;
     }
@@ -109,6 +135,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.COLLABORATORS));
     }
     
+    /**
+     * Indicate if the collaborators attribute exists.
+     * 
+     * @return if the collaborators attribute exists
+     */
     public boolean isCollaboratorsDefined() {
         return attributes.get(GitHubProfileDefinition.COLLABORATORS) != null;
     }
@@ -121,6 +152,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.OWNED_PRIVATE_REPO_COUNT));
     }
     
+    /**
+     * Indicate if the owned_private_repo_count attribute exists.
+     * 
+     * @return if the owned_private_repo_count attribute exists
+     */
     public boolean isOwnedPrivateRepoCountDefined() {
         return attributes.get(GitHubProfileDefinition.OWNED_PRIVATE_REPO_COUNT) != null;
     }
@@ -129,6 +165,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.TOTAL_PRIVATE_REPO_COUNT));
     }
     
+    /**
+     * Indicate if the total_private_repo_count attribute exists.
+     * 
+     * @return if the total_private_repo_count attribute exists
+     */
     public boolean isTotalPrivateRepoCountDefined() {
         return attributes.get(GitHubProfileDefinition.TOTAL_PRIVATE_REPO_COUNT) != null;
     }
@@ -137,6 +178,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.PRIVATE_GIST_COUNT));
     }
     
+    /**
+     * Indicate if the private_gist_count attribute exists.
+     * 
+     * @return if the private_gist_count attribute exists
+     */
     public boolean isPrivateGistCountDefined() {
         return attributes.get(GitHubProfileDefinition.PRIVATE_GIST_COUNT) != null;
     }
@@ -149,6 +195,11 @@ public class GitHubProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(GitHubProfileDefinition.FOLLOWERS_COUNT));
     }
     
+    /**
+     * Indicate if the followers_count attribute exists.
+     * 
+     * @return if the followers_count attribute exists
+     */
     public boolean isFollowersCountDefined() {
         return attributes.get(GitHubProfileDefinition.FOLLOWERS_COUNT) != null;
     }

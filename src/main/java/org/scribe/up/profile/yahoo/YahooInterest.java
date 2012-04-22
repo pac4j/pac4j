@@ -21,7 +21,6 @@ import java.util.List;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.JsonListConverter;
 
 /**
  * This class represents a Yahoo interest.
@@ -31,9 +30,7 @@ import org.scribe.up.profile.converter.JsonListConverter;
  */
 public final class YahooInterest extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = -2899124153425975409L;
-    
-    private final static transient JsonListConverter listStringConverter = new JsonListConverter(String.class);
+    private static final long serialVersionUID = 5209182421635736262L;
     
     private List<String> declaredInterests;
     
@@ -47,7 +44,7 @@ public final class YahooInterest extends JsonObject implements Serializable {
     @Override
     protected void buildFromJson(JsonNode json) {
         this.interestCategory = Converters.stringConverter.convertFromJson(json, "interestCategory");
-        this.declaredInterests = listStringConverter.convertFromJson(json, "declaredInterests");
+        this.declaredInterests = Converters.listStringConverter.convertFromJson(json, "declaredInterests");
     }
     
     public List<String> getDeclaredInterests() {

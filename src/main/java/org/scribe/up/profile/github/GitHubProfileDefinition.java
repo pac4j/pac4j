@@ -17,8 +17,6 @@ package org.scribe.up.profile.github;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.FormattedDateConverter;
-import org.scribe.up.profile.converter.JsonObjectConverter;
 
 /**
  * This class defines the attributes of the GitHub profile.
@@ -66,8 +64,8 @@ public class GitHubProfileDefinition extends AttributesDefinition {
             converters.put(name, Converters.integerConverter);
         }
         attributes.add(CREATED_AT);
-        converters.put(CREATED_AT, new FormattedDateConverter("yyyy/MM/dd HH:mm:ss z"));
+        converters.put(CREATED_AT, GitHubConverters.dateConverter);
         attributes.add(PLAN);
-        converters.put(PLAN, new JsonObjectConverter(GitHubPlan.class));
+        converters.put(PLAN, GitHubConverters.planConverter);
     }
 }

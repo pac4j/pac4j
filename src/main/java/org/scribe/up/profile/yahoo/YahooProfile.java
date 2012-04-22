@@ -57,6 +57,12 @@ public class YahooProfile extends UserProfile {
         super(id, attributes);
     }
     
+    /**
+     * Indicate if the user identifier matches this kind of profile.
+     * 
+     * @param id
+     * @return if the user identifier matches this kind of profile
+     */
     public static boolean isTypedIdOf(String id) {
         if (id != null && id.startsWith(YahooProvider.TYPE + SEPARATOR)) {
             return true;
@@ -77,6 +83,11 @@ public class YahooProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(YahooProfileDefinition.BIRTH_YEAR));
     }
     
+    /**
+     * Indicate if the birthYear attribute exists.
+     * 
+     * @return if the birthYear attribute exists
+     */
     public boolean isBirthYearDefined() {
         return attributes.get(YahooProfileDefinition.BIRTH_YEAR) != null;
     }
@@ -93,6 +104,11 @@ public class YahooProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(YahooProfileDefinition.DISPLAY_AGE));
     }
     
+    /**
+     * Indicate if the displayAge attribute exists.
+     * 
+     * @return if the displayAge attribute exists
+     */
     public boolean isDisplayAgeDefined() {
         return attributes.get(YahooProfileDefinition.DISPLAY_AGE) != null;
     }
@@ -129,6 +145,11 @@ public class YahooProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(YahooProfileDefinition.IS_CONNECTED));
     }
     
+    /**
+     * Indicate if the isConnected attribute exists.
+     * 
+     * @return if the isConnected attribute exists
+     */
     public boolean isConnectedDefined() {
         return attributes.get(YahooProfileDefinition.IS_CONNECTED) != null;
     }

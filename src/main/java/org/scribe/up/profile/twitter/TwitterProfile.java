@@ -55,6 +55,12 @@ public class TwitterProfile extends UserProfile {
         super(id, attributes);
     }
     
+    /**
+     * Indicate if the user identifier matches this kind of profile.
+     * 
+     * @param id
+     * @return if the user identifier matches this kind of profile
+     */
     public static boolean isTypedIdOf(String id) {
         if (id != null && id.startsWith(TwitterProvider.TYPE + SEPARATOR)) {
             return true;
@@ -67,6 +73,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.CONTRIBUTORS_ENABLED));
     }
     
+    /**
+     * Indicate if the contributors_enabled attribute exists.
+     * 
+     * @return if the contributors_enabled attribute exists
+     */
     public boolean isContributorsEnabledDefined() {
         return attributes.get(TwitterProfileDefinition.CONTRIBUTORS_ENABLED) != null;
     }
@@ -79,6 +90,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE));
     }
     
+    /**
+     * Indicate if the default_profile attribute exists.
+     * 
+     * @return if the default_profile attribute exists
+     */
     public boolean isDefaultProfileDefined() {
         return attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE) != null;
     }
@@ -87,6 +103,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE_IMAGE));
     }
     
+    /**
+     * Indicate if the default_profile_image attribute exists.
+     * 
+     * @return if the default_profile_image attribute exists
+     */
     public boolean isDefaultProfileImageDefined() {
         return attributes.get(TwitterProfileDefinition.DEFAULT_PROFILE_IMAGE) != null;
     }
@@ -99,6 +120,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.FAVOURITES_COUNT));
     }
     
+    /**
+     * Indicate if the favourites_count attribute exists.
+     * 
+     * @return if the favourites_count attribute exists
+     */
     public boolean isFavouritesCountDefined() {
         return attributes.get(TwitterProfileDefinition.FAVOURITES_COUNT) != null;
     }
@@ -107,6 +133,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.FOLLOW_REQUEST_SENT));
     }
     
+    /**
+     * Indicate if the follow_request_sent attribute exists.
+     * 
+     * @return if the follow_request_sent attribute exists
+     */
     public boolean isFollowRequestSentDefined() {
         return attributes.get(TwitterProfileDefinition.FOLLOW_REQUEST_SENT) != null;
     }
@@ -115,6 +146,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.FOLLOWERS_COUNT));
     }
     
+    /**
+     * Indicate if the followers_count attribute exists.
+     * 
+     * @return if the followers_count attribute exists
+     */
     public boolean isFollowersCountDefined() {
         return attributes.get(TwitterProfileDefinition.FOLLOWERS_COUNT) != null;
     }
@@ -123,6 +159,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.FOLLOWING));
     }
     
+    /**
+     * Indicate if the following attribute exists.
+     * 
+     * @return if the following attribute exists
+     */
     public boolean isFollowingDefined() {
         return attributes.get(TwitterProfileDefinition.FOLLOWING) != null;
     }
@@ -131,6 +172,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.FRIENDS_COUNT));
     }
     
+    /**
+     * Indicate if the friends_count attribute exists.
+     * 
+     * @return if the friends_count attribute exists
+     */
     public boolean isFriendsCountDefined() {
         return attributes.get(TwitterProfileDefinition.FRIENDS_COUNT) != null;
     }
@@ -139,6 +185,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.GEO_ENABLED));
     }
     
+    /**
+     * Indicate if the geo_enabled attribute exists.
+     * 
+     * @return if the geo_enabled attribute exists
+     */
     public boolean isGeoEnabledDefined() {
         return attributes.get(TwitterProfileDefinition.GEO_ENABLED) != null;
     }
@@ -147,6 +198,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.IS_TRANSLATOR));
     }
     
+    /**
+     * Indicate if the is_translator attribute exists.
+     * 
+     * @return if the is_translator attribute exists
+     */
     public boolean isTranslatorDefined() {
         return attributes.get(TwitterProfileDefinition.IS_TRANSLATOR) != null;
     }
@@ -159,6 +215,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.LISTED_COUNT));
     }
     
+    /**
+     * Indicate if the listed_count attribute exists.
+     * 
+     * @return if the listed_count attribute exists
+     */
     public boolean isListedCountDefined() {
         return attributes.get(TwitterProfileDefinition.LISTED_COUNT) != null;
     }
@@ -175,6 +236,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.NOTIFICATIONS));
     }
     
+    /**
+     * Indicate if the notifications attribute exists.
+     * 
+     * @return if the notifications attribute exists
+     */
     public boolean isNotificationsDefined() {
         return attributes.get(TwitterProfileDefinition.NOTIFICATIONS) != null;
     }
@@ -195,6 +261,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_TILE));
     }
     
+    /**
+     * Indicate if the profile_background_tile attribute exists.
+     * 
+     * @return if the profile_background_tile attribute exists
+     */
     public boolean isProfileBackgroundTileDefined() {
         return attributes.get(TwitterProfileDefinition.PROFILE_BACKGROUND_TILE) != null;
     }
@@ -227,6 +298,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.PROFILE_USE_BACKGROUND_IMAGE));
     }
     
+    /**
+     * Indicate if the profile_use_background_image attribute exists.
+     * 
+     * @return if the profile_use_background_image attribute exists
+     */
     public boolean isProfileUseBackgroundImageDefined() {
         return attributes.get(TwitterProfileDefinition.PROFILE_USE_BACKGROUND_IMAGE) != null;
     }
@@ -235,6 +311,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.PROTECTED));
     }
     
+    /**
+     * Indicate if the protected attribute exists.
+     * 
+     * @return if the protected attribute exists
+     */
     public boolean isProtectedDefined() {
         return attributes.get(TwitterProfileDefinition.PROTECTED) != null;
     }
@@ -247,6 +328,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.SHOW_ALL_INLINE_MEDIA));
     }
     
+    /**
+     * Indicate if the show_all_inline_media attribute exists.
+     * 
+     * @return if the show_all_inline_media attribute exists
+     */
     public boolean isShowAllInlineMediaDefined() {
         return attributes.get(TwitterProfileDefinition.SHOW_ALL_INLINE_MEDIA) != null;
     }
@@ -255,6 +341,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.STATUSES_COUNT));
     }
     
+    /**
+     * Indicate if the statuses_count attribute exists.
+     * 
+     * @return if the statuses_count attribute exists
+     */
     public boolean isStatusesCountDefined() {
         return attributes.get(TwitterProfileDefinition.STATUSES_COUNT) != null;
     }
@@ -271,6 +362,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(TwitterProfileDefinition.UTC_OFFSET));
     }
     
+    /**
+     * Indicate if the utf_offset attribute exists.
+     * 
+     * @return if the utf_offset attribute exists
+     */
     public boolean isUtcOffsetDefined() {
         return attributes.get(TwitterProfileDefinition.UTC_OFFSET) != null;
     }
@@ -279,6 +375,11 @@ public class TwitterProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(TwitterProfileDefinition.VERIFIED));
     }
     
+    /**
+     * Indicate if the verified attribute exists.
+     * 
+     * @return if the verified attribute exists
+     */
     public boolean isVerifiedDefined() {
         return attributes.get(TwitterProfileDefinition.VERIFIED) != null;
     }

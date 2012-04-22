@@ -21,8 +21,6 @@ import java.util.Date;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.DateConverter;
-import org.scribe.up.profile.converter.JsonObjectConverter;
 
 /**
  * This class represents a Facebook work.
@@ -32,11 +30,7 @@ import org.scribe.up.profile.converter.JsonObjectConverter;
  */
 public final class FacebookWork extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = -4398476232898674635L;
-    
-    private transient final static JsonObjectConverter facebookObjectConverter = new JsonObjectConverter(
-                                                                                                         FacebookObject.class);
-    private transient final static DateConverter dateConverter = new DateConverter("yyyy-MM");
+    private static final long serialVersionUID = -3975097979349300403L;
     
     private FacebookObject employer;
     
@@ -56,12 +50,12 @@ public final class FacebookWork extends JsonObject implements Serializable {
     
     @Override
     protected void buildFromJson(JsonNode json) {
-        this.employer = (FacebookObject) facebookObjectConverter.convertFromJson(json, "employer");
-        this.location = (FacebookObject) facebookObjectConverter.convertFromJson(json, "location");
-        this.position = (FacebookObject) facebookObjectConverter.convertFromJson(json, "position");
+        this.employer = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "employer");
+        this.location = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "location");
+        this.position = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "position");
         this.description = Converters.stringConverter.convertFromJson(json, "description");
-        this.startDate = dateConverter.convertFromJson(json, "start_date");
-        this.endDate = dateConverter.convertFromJson(json, "end_date");
+        this.startDate = FacebookConverters.workDateConverter.convertFromJson(json, "start_date");
+        this.endDate = FacebookConverters.workDateConverter.convertFromJson(json, "end_date");
     }
     
     public FacebookObject getEmployer() {

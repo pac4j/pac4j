@@ -15,12 +15,8 @@
  */
 package org.scribe.up.profile.twitter;
 
-import java.util.Locale;
-
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.FormattedDateConverter;
-import org.scribe.up.profile.converter.StringReplaceConverter;
 
 /**
  * This class defines the attributes of the Twitter profile.
@@ -71,7 +67,7 @@ public class TwitterProfileDefinition extends AttributesDefinition {
         attributes.add(CONTRIBUTORS_ENABLED);
         converters.put(CONTRIBUTORS_ENABLED, Converters.booleanConverter);
         attributes.add(CREATED_AT);
-        converters.put(CREATED_AT, new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
+        converters.put(CREATED_AT, TwitterConverters.dateConverter);
         attributes.add(DEFAULT_PROFILE);
         converters.put(DEFAULT_PROFILE, Converters.booleanConverter);
         attributes.add(DEFAULT_PROFILE_IMAGE);
@@ -104,17 +100,16 @@ public class TwitterProfileDefinition extends AttributesDefinition {
         converters.put(NOTIFICATIONS, Converters.booleanConverter);
         attributes.add(PROFILE_BACKGROUND_COLOR);
         converters.put(PROFILE_BACKGROUND_COLOR, Converters.colorConverter);
-        StringReplaceConverter urlConverter = new StringReplaceConverter("\\/", "/");
         attributes.add(PROFILE_BACKGROUND_IMAGE_URL);
-        converters.put(PROFILE_BACKGROUND_IMAGE_URL, urlConverter);
+        converters.put(PROFILE_BACKGROUND_IMAGE_URL, TwitterConverters.urlConverter);
         attributes.add(PROFILE_BACKGROUND_IMAGE_URL_HTTPS);
-        converters.put(PROFILE_BACKGROUND_IMAGE_URL_HTTPS, urlConverter);
+        converters.put(PROFILE_BACKGROUND_IMAGE_URL_HTTPS, TwitterConverters.urlConverter);
         attributes.add(PROFILE_BACKGROUND_TILE);
         converters.put(PROFILE_BACKGROUND_TILE, Converters.booleanConverter);
         attributes.add(PROFILE_IMAGE_URL);
-        converters.put(PROFILE_IMAGE_URL, urlConverter);
+        converters.put(PROFILE_IMAGE_URL, TwitterConverters.urlConverter);
         attributes.add(PROFILE_IMAGE_URL_HTTPS);
-        converters.put(PROFILE_IMAGE_URL_HTTPS, urlConverter);
+        converters.put(PROFILE_IMAGE_URL_HTTPS, TwitterConverters.urlConverter);
         attributes.add(PROFILE_LINK_COLOR);
         converters.put(PROFILE_LINK_COLOR, Converters.colorConverter);
         attributes.add(PROFILE_SIDEBAR_BORDER_COLOR);

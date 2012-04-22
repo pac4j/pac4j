@@ -23,7 +23,7 @@ import java.util.Map;
 import org.scribe.up.profile.converter.AttributeConverter;
 
 /**
- * This class is the definition of the attributes.
+ * This class is the definition of the attributes of a profile.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -39,11 +39,12 @@ public class AttributesDefinition {
     }
     
     /**
-     * Convert an attribute into the right type.
+     * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is ignored and null is
+     * returned.
      * 
      * @param name
      * @param value
-     * @return the converted attribute.
+     * @return the converted attribute or null if no converter exists for this attribute name
      */
     public Object convert(String name, Object value) {
         AttributeConverter<? extends Object> converter = converters.get(name);

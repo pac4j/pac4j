@@ -57,6 +57,12 @@ public class FacebookProfile extends UserProfile {
         super(id, attributes);
     }
     
+    /**
+     * Indicate if the user identifier matches this kind of profile.
+     * 
+     * @param id
+     * @return if the user identifier matches this kind of profile
+     */
     public static boolean isTypedIdOf(String id) {
         if (id != null && id.startsWith(FacebookProvider.TYPE + SEPARATOR)) {
             return true;
@@ -109,6 +115,11 @@ public class FacebookProfile extends UserProfile {
         return getSafeInteger((Integer) attributes.get(FacebookProfileDefinition.TIMEZONE));
     }
     
+    /**
+     * Indicate if the timezone attribute exists.
+     * 
+     * @return if the timezone attribute exists
+     */
     public boolean isTimezoneDefined() {
         return attributes.get(FacebookProfileDefinition.TIMEZONE) != null;
     }
@@ -121,6 +132,11 @@ public class FacebookProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(FacebookProfileDefinition.VERIFIED));
     }
     
+    /**
+     * Indicate if the verified attribute exists.
+     * 
+     * @return if the verified attribute exists
+     */
     public boolean isVerifiedDefined() {
         return attributes.get(FacebookProfileDefinition.VERIFIED) != null;
     }

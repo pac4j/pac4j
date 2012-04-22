@@ -43,13 +43,27 @@ public class UserProfile implements Serializable {
     
     public transient static final String SEPARATOR = "#";
     
+    /**
+     * Build an empty profile.
+     */
     public UserProfile() {
     }
     
+    /**
+     * Build a profile from a user identifier.
+     * 
+     * @param id
+     */
     public UserProfile(Object id) {
         setId(id);
     }
     
+    /**
+     * Build a profile from user identifier and attributes.
+     * 
+     * @param id
+     * @param attributes
+     */
     public UserProfile(Object id, Map<String, Object> attributes) {
         setId(id);
         addAttributes(attributes);

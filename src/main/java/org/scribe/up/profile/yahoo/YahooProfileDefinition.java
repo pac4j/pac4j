@@ -17,11 +17,6 @@ package org.scribe.up.profile.yahoo;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.DateConverter;
-import org.scribe.up.profile.converter.FormattedDateConverter;
-import org.scribe.up.profile.converter.GenderConverter;
-import org.scribe.up.profile.converter.JsonListConverter;
-import org.scribe.up.profile.converter.JsonObjectConverter;
 
 /**
  * This class defines the attributes of the Yahoo profile.
@@ -58,30 +53,29 @@ public class YahooProfileDefinition extends AttributesDefinition {
         attributes.add(ABOUT_ME);
         converters.put(ABOUT_ME, Converters.stringConverter);
         attributes.add(ADDRESSES);
-        converters.put(ADDRESSES, new JsonListConverter(YahooAddress.class));
+        converters.put(ADDRESSES, YahooConverters.listAddressConverter);
         attributes.add(BIRTH_YEAR);
         converters.put(BIRTH_YEAR, Converters.integerConverter);
         attributes.add(BIRTHDATE);
-        converters.put(BIRTHDATE, new FormattedDateConverter("MM/dd"));
-        DateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        converters.put(BIRTHDATE, YahooConverters.birthdateConverter);
         attributes.add(CREATED);
-        converters.put(CREATED, dateConverter);
+        converters.put(CREATED, YahooConverters.dateConverter);
         attributes.add(DISPLAY_AGE);
         converters.put(DISPLAY_AGE, Converters.integerConverter);
         attributes.add(DISCLOSURES);
-        converters.put(DISCLOSURES, new JsonListConverter(YahooDisclosure.class));
+        converters.put(DISCLOSURES, YahooConverters.listDisclosureConverter);
         attributes.add(EMAILS);
-        converters.put(EMAILS, new JsonListConverter(YahooEmail.class));
+        converters.put(EMAILS, YahooConverters.listEmailConverter);
         attributes.add(FAMILY_NAME);
         converters.put(FAMILY_NAME, Converters.stringConverter);
         attributes.add(GENDER);
-        converters.put(GENDER, new GenderConverter("m", "f"));
+        converters.put(GENDER, YahooConverters.genderConverter);
         attributes.add(GIVEN_NAME);
         converters.put(GIVEN_NAME, Converters.stringConverter);
         attributes.add(IMAGE);
-        converters.put(IMAGE, new JsonObjectConverter(YahooImage.class));
+        converters.put(IMAGE, YahooConverters.imageConverter);
         attributes.add(INTERESTS);
-        converters.put(INTERESTS, new JsonListConverter(YahooInterest.class));
+        converters.put(INTERESTS, YahooConverters.listInterestConverter);
         attributes.add(IS_CONNECTED);
         converters.put(IS_CONNECTED, Converters.booleanConverter);
         attributes.add(LANG);
@@ -89,7 +83,7 @@ public class YahooProfileDefinition extends AttributesDefinition {
         attributes.add(LOCATION);
         converters.put(LOCATION, Converters.stringConverter);
         attributes.add(MEMBER_SINCE);
-        converters.put(MEMBER_SINCE, dateConverter);
+        converters.put(MEMBER_SINCE, YahooConverters.dateConverter);
         attributes.add(NICKNAME);
         converters.put(NICKNAME, Converters.stringConverter);
         attributes.add(PROFILE_URL);
@@ -97,7 +91,7 @@ public class YahooProfileDefinition extends AttributesDefinition {
         attributes.add(TIME_ZONE);
         converters.put(TIME_ZONE, Converters.stringConverter);
         attributes.add(UPDATED);
-        converters.put(UPDATED, dateConverter);
+        converters.put(UPDATED, YahooConverters.dateConverter);
         attributes.add(URI);
         converters.put(URI, Converters.stringConverter);
     }

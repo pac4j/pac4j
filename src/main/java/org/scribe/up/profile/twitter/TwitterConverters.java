@@ -13,25 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.converter;
+package org.scribe.up.profile.twitter;
+
+import java.util.Locale;
+
+import org.scribe.up.profile.converter.FormattedDateConverter;
+import org.scribe.up.profile.converter.StringReplaceConverter;
 
 /**
- * This class defines the default converters.
+ * This class defines all the converters specific to Twitter.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class Converters {
+public final class TwitterConverters {
     
-    public final static LocaleConverter localeConverter = new LocaleConverter();
+    public final static FormattedDateConverter dateConverter = new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy",
+                                                                                          Locale.US);
     
-    public final static StringConverter stringConverter = new StringConverter();
-    
-    public final static BooleanConverter booleanConverter = new BooleanConverter();
-    
-    public final static IntegerConverter integerConverter = new IntegerConverter();
-    
-    public final static ColorConverter colorConverter = new ColorConverter();
-    
-    public final static JsonListConverter listStringConverter = new JsonListConverter(String.class);
+    public final static StringReplaceConverter urlConverter = new StringReplaceConverter("\\/", "/");
 }

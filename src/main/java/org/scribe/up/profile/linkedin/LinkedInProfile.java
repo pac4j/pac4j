@@ -52,6 +52,12 @@ public class LinkedInProfile extends UserProfile {
         super(id, attributes);
     }
     
+    /**
+     * Indicate if the user identifier matches this kind of profile.
+     * 
+     * @param id
+     * @return if the user identifier matches this kind of profile
+     */
     public static boolean isTypedIdOf(String id) {
         if (id != null && id.startsWith(LinkedInProvider.TYPE + SEPARATOR)) {
             return true;

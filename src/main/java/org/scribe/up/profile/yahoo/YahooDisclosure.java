@@ -21,7 +21,6 @@ import java.util.Date;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.DateConverter;
 
 /**
  * This class represents a Yahoo disclosure.
@@ -31,9 +30,7 @@ import org.scribe.up.profile.converter.DateConverter;
  */
 public final class YahooDisclosure extends JsonObject implements Serializable {
     
-    private static final long serialVersionUID = -6351842638493685791L;
-    
-    private transient static final DateConverter dateConverter = new DateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private static final long serialVersionUID = -647313418790889785L;
     
     private String acceptance;
     
@@ -51,7 +48,7 @@ public final class YahooDisclosure extends JsonObject implements Serializable {
     protected void buildFromJson(JsonNode json) {
         this.acceptance = Converters.stringConverter.convertFromJson(json, "acceptance");
         this.name = Converters.stringConverter.convertFromJson(json, "name");
-        this.seen = dateConverter.convertFromJson(json, "seen");
+        this.seen = YahooConverters.dateConverter.convertFromJson(json, "seen");
         this.version = Converters.stringConverter.convertFromJson(json, "version");
     }
     

@@ -17,7 +17,6 @@ package org.scribe.up.profile.google;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
-import org.scribe.up.profile.converter.JsonListConverter;
 
 /**
  * This class defines the attributes of the Google profile.
@@ -52,10 +51,9 @@ public class GoogleProfileDefinition extends AttributesDefinition {
         converters.put(GIVEN_NAME, Converters.stringConverter);
         attributes.add(DISPLAY_NAME);
         converters.put(DISPLAY_NAME, Converters.stringConverter);
-        JsonListConverter listGoogleObjectConverter = new JsonListConverter(GoogleObject.class);
         attributes.add(URLS);
-        converters.put(URLS, listGoogleObjectConverter);
+        converters.put(URLS, GoogleConverters.listObjectConverter);
         attributes.add(PHOTOS);
-        converters.put(PHOTOS, listGoogleObjectConverter);
+        converters.put(PHOTOS, GoogleConverters.listObjectConverter);
     }
 }

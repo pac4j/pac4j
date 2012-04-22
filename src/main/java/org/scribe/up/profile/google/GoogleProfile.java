@@ -54,6 +54,12 @@ public class GoogleProfile extends UserProfile {
         super(id, attributes);
     }
     
+    /**
+     * Indicate if the user identifier matches this kind of profile.
+     * 
+     * @param id
+     * @return if the user identifier matches this kind of profile
+     */
     public static boolean isTypedIdOf(String id) {
         if (id != null && id.startsWith(GoogleProvider.TYPE + SEPARATOR)) {
             return true;
@@ -70,6 +76,11 @@ public class GoogleProfile extends UserProfile {
         return getSafeBoolean((Boolean) attributes.get(GoogleProfileDefinition.IS_VIEWER));
     }
     
+    /**
+     * Indicate if the isViewer attribute exists.
+     * 
+     * @return if the isViewer attribute exists
+     */
     public boolean isViewerDefined() {
         return attributes.get(GoogleProfileDefinition.IS_VIEWER) != null;
     }
