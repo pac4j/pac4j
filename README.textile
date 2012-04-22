@@ -10,7 +10,7 @@ h2. OAuth providers supported
 h2. Who can use ScribeUP ?
 
 Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
-However, the library was created to be the foundation of the cas-server-support-oauth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (planned very soon on version 3.5.0).
+However, the library was created to be the foundation of the cas-server-support-oauth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (version 3.5.0).
 
 h2. Versions
 
@@ -20,7 +20,7 @@ Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 
-ScribeUP is tested by 117 unit tests and also 6 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
+ScribeUP is tested by 143 unit tests and also 6 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
 
 h2. Contact
 
