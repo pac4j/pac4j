@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterProfileDefinition extends AttributesDefinition {
+public class TwitterAttributesDefinition extends AttributesDefinition {
     
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";
@@ -63,7 +63,7 @@ public class TwitterProfileDefinition extends AttributesDefinition {
     public static final String UTC_OFFSET = "utc_offset";
     public static final String VERIFIED = "verified";
     
-    public TwitterProfileDefinition() {
+    public TwitterAttributesDefinition() {
         attributes.add(CONTRIBUTORS_ENABLED);
         converters.put(CONTRIBUTORS_ENABLED, Converters.booleanConverter);
         attributes.add(CREATED_AT);

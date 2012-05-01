@@ -18,7 +18,7 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
-import org.scribe.up.profile.ProfileDefinitions;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookProfile;
@@ -26,8 +26,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and attributes are defined at
- * http://developers.facebook.com/docs/reference/api/user/.<br />
+ * This class is the OAuth provider to authenticate user in Facebook. Specific scopes can be defined to get more attributes.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
  * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (JsonList&lt;FacebookObject&gt;), link (String),
  * username (String), third_party_id (String), timezone (Integer), updated_time (FormattedDate), verified (Boolean), bio (String), birthday
@@ -38,6 +37,7 @@ import org.scribe.up.util.StringHelper;
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @see http://developers.facebook.com/docs/reference/api/user/
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
@@ -65,7 +65,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : ProfileDefinitions.facebookDefinition.getAttributes()) {
+            for (String attribute : AttributesDefinitions.facebookDefinition.getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

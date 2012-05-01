@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubProfileDefinition extends AttributesDefinition {
+public class GitHubAttributesDefinition extends AttributesDefinition {
     
     public static final String COMPANY = "company";
     public static final String NAME = "name";
@@ -47,7 +47,7 @@ public class GitHubProfileDefinition extends AttributesDefinition {
     public static final String PERMISSION = "permission";
     public static final String GRAVATAR_ID = "gravatar_id";
     
-    public GitHubProfileDefinition() {
+    public GitHubAttributesDefinition() {
         String[] names = new String[] {
             COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, PERMISSION, GRAVATAR_ID
         };

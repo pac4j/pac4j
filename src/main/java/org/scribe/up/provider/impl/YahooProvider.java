@@ -19,8 +19,8 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
@@ -36,6 +36,7 @@ import org.scribe.up.util.StringHelper;
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @see http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
  */
 public class YahooProvider extends BaseOAuth10Provider {
     
@@ -80,7 +81,7 @@ public class YahooProvider extends BaseOAuth10Provider {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "guid"));
-                for (String attribute : ProfileDefinitions.yahooDefinition.getAttributes()) {
+                for (String attribute : AttributesDefinitions.yahooDefinition.getAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

@@ -24,14 +24,14 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LinkedInProfileDefinition extends AttributesDefinition {
+public class LinkedInAttributesDefinition extends AttributesDefinition {
     
     public static final String FIRST_NAME = "first-name";
     public static final String LAST_NAME = "last-name";
     public static final String HEADLINE = "headline";
     public static final String URL = "url";
     
-    public LinkedInProfileDefinition() {
+    public LinkedInAttributesDefinition() {
         attributes.add(FIRST_NAME);
         converters.put(FIRST_NAME, Converters.stringConverter);
         attributes.add(LAST_NAME);

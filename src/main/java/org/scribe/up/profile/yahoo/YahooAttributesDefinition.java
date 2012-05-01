@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class YahooProfileDefinition extends AttributesDefinition {
+public class YahooAttributesDefinition extends AttributesDefinition {
     
     public static final String ABOUT_ME = "aboutMe";
     public static final String ADDRESSES = "addresses";
@@ -49,7 +49,7 @@ public class YahooProfileDefinition extends AttributesDefinition {
     public static final String UPDATED = "updated";
     public static final String URI = "uri";
     
-    public YahooProfileDefinition() {
+    public YahooAttributesDefinition() {
         attributes.add(ABOUT_ME);
         converters.put(ABOUT_ME, Converters.stringConverter);
         attributes.add(ADDRESSES);

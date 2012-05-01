@@ -17,21 +17,21 @@ package org.scribe.up.provider.impl;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
-import org.scribe.up.profile.ProfileDefinitions;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.linkedin.LinkedInAttributesDefinition;
 import org.scribe.up.profile.linkedin.LinkedInProfile;
-import org.scribe.up.profile.linkedin.LinkedInProfileDefinition;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class is the OAuth provider to authenticate user in LinkedIn. Scope is not used. Attributes are defined at
- * https://developer.linkedin.com/documents/profile-api.<br />
+ * This class is the OAuth provider to authenticate user in LinkedIn. Scope is not used.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.linkedin.LinkedInProfile} : first-name (String), last-name (String),
  * headline (String) and url (String).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @see https://developer.linkedin.com/documents/profile-api
  */
 public class LinkedInProvider extends BaseOAuth10Provider {
     
@@ -51,10 +51,10 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         LinkedInProfile profile = new LinkedInProfile();
-        for (String attribute : ProfileDefinitions.linkedinDefinition.getAttributes()) {
+        for (String attribute : AttributesDefinitions.linkedinDefinition.getAttributes()) {
             String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             profile.addAttribute(attribute, value);
-            if (LinkedInProfileDefinition.URL.equals(attribute)) {
+            if (LinkedInAttributesDefinition.URL.equals(attribute)) {
                 String id = StringHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
                 profile.setId(id);
             }

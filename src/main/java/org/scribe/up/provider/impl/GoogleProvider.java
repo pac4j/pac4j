@@ -21,20 +21,20 @@ import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.google.GoogleAttributesDefinition;
 import org.scribe.up.profile.google.GoogleProfile;
-import org.scribe.up.profile.google.GoogleProfileDefinition;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
 
 /**
- * This class is the OAuth provider to authenticate user in Google. Scope is not used. Attributes are defined at
- * http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html.<br />
+ * This class is the OAuth provider to authenticate user in Google. Scope is not used.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.google.GoogleProfile} : profileUrl (String), isViewer (Boolean),
  * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls
  * (JsonList&lt;GoogleObject&gt;) and photos (JsonList&lt;GoogleObject&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @see http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html
  */
 public class GoogleProvider extends BaseOAuth10Provider {
     
@@ -72,21 +72,21 @@ public class GoogleProvider extends BaseOAuth10Provider {
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
                 String[] attributes = new String[] {
-                    GoogleProfileDefinition.PROFILE_URL, GoogleProfileDefinition.IS_VIEWER,
-                    GoogleProfileDefinition.THUMBNAIL_URL, GoogleProfileDefinition.DISPLAY_NAME,
-                    GoogleProfileDefinition.URLS, GoogleProfileDefinition.PHOTOS
+                    GoogleAttributesDefinition.PROFILE_URL, GoogleAttributesDefinition.IS_VIEWER,
+                    GoogleAttributesDefinition.THUMBNAIL_URL, GoogleAttributesDefinition.DISPLAY_NAME,
+                    GoogleAttributesDefinition.URLS, GoogleAttributesDefinition.PHOTOS
                 };
                 for (String attribute : attributes) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
                 json = json.get("name");
                 if (json != null) {
-                    profile.addAttribute(GoogleProfileDefinition.FORMATTED,
-                                         JsonHelper.get(json, GoogleProfileDefinition.FORMATTED));
-                    profile.addAttribute(GoogleProfileDefinition.FAMILY_NAME,
-                                         JsonHelper.get(json, GoogleProfileDefinition.FAMILY_NAME));
-                    profile.addAttribute(GoogleProfileDefinition.GIVEN_NAME,
-                                         JsonHelper.get(json, GoogleProfileDefinition.GIVEN_NAME));
+                    profile.addAttribute(GoogleAttributesDefinition.FORMATTED,
+                                         JsonHelper.get(json, GoogleAttributesDefinition.FORMATTED));
+                    profile.addAttribute(GoogleAttributesDefinition.FAMILY_NAME,
+                                         JsonHelper.get(json, GoogleAttributesDefinition.FAMILY_NAME));
+                    profile.addAttribute(GoogleAttributesDefinition.GIVEN_NAME,
+                                         JsonHelper.get(json, GoogleAttributesDefinition.GIVEN_NAME));
                 }
             }
         }

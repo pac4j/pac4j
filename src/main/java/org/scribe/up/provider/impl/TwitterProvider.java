@@ -18,15 +18,14 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 
 /**
- * This class is the OAuth provider to authenticate user in Twitter. Scope is not used. Attributes are defined at
- * https://dev.twitter.com/docs/api/1/get/account/verify_credentials.<br />
+ * This class is the OAuth provider to authenticate user in Twitter. Scope is not used.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.twitter.TwitterProfile} : contributors_enabled (Boolean), created_at
  * (FormattedDate), default_profile (Boolean), default_profile_image (Boolean), description (String), favourites_count (Integer),
  * follow_request_sent (Boolean), followers_count (Integer), following (Boolean), friends_count (Integer), geo_enabled (Boolean),
@@ -39,6 +38,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @see https://dev.twitter.com/docs/api/1/get/account/verify_credentials
  */
 public class TwitterProvider extends BaseOAuth10Provider {
     
@@ -61,7 +61,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : ProfileDefinitions.twitterDefinition.getAttributes()) {
+            for (String attribute : AttributesDefinitions.twitterDefinition.getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

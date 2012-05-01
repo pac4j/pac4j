@@ -18,15 +18,14 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.builder.api.GitHubApi;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
- * This class is the OAuth provider to authenticate user in GitHub. Scope is not used. Attributes are defined at
- * http://develop.github.com/p/general.html.<br />
+ * This class is the OAuth provider to authenticate user in GitHub. Scope is not used.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.github.GitHubProfile} : company (String), name (String), following_count
  * (Integer), blog (String), public_repo_count (Integer), public_gist_count (Integer), disk_usage (Integer), collaborators (Integer), plan
  * (GitHubPlan), owned_private_repo_count (Integer), total_private_repo_count (Integer), private_gist_count (Integer), login (String),
@@ -35,6 +34,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @see http://develop.github.com/p/general.html
  */
 public class GitHubProvider extends BaseOAuth20Provider {
     
@@ -59,7 +59,7 @@ public class GitHubProvider extends BaseOAuth20Provider {
             json = json.get("user");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
-                for (String attribute : ProfileDefinitions.githubDefinition.getAttributes()) {
+                for (String attribute : AttributesDefinitions.githubDefinition.getAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

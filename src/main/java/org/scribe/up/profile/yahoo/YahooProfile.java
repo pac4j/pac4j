@@ -21,8 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.Gender;
-import org.scribe.up.profile.ProfileDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.YahooProvider;
 
@@ -38,7 +38,7 @@ public class YahooProfile extends UserProfile {
     private static final long serialVersionUID = -6832062183539648599L;
     
     protected AttributesDefinition getAttributesDefinition() {
-        return ProfileDefinitions.yahooDefinition;
+        return AttributesDefinitions.yahooDefinition;
     }
     
     protected String getProviderType() {
@@ -72,15 +72,15 @@ public class YahooProfile extends UserProfile {
     }
     
     public String getAboutMe() {
-        return (String) attributes.get(YahooProfileDefinition.ABOUT_ME);
+        return (String) attributes.get(YahooAttributesDefinition.ABOUT_ME);
     }
     
     public List<YahooAddress> getAddresses() {
-        return (List<YahooAddress>) attributes.get(YahooProfileDefinition.ADDRESSES);
+        return (List<YahooAddress>) attributes.get(YahooAttributesDefinition.ADDRESSES);
     }
     
     public int getBirthYear() {
-        return getSafeInteger((Integer) attributes.get(YahooProfileDefinition.BIRTH_YEAR));
+        return getSafeInteger((Integer) attributes.get(YahooAttributesDefinition.BIRTH_YEAR));
     }
     
     /**
@@ -89,19 +89,19 @@ public class YahooProfile extends UserProfile {
      * @return if the birthYear attribute exists
      */
     public boolean isBirthYearDefined() {
-        return attributes.get(YahooProfileDefinition.BIRTH_YEAR) != null;
+        return attributes.get(YahooAttributesDefinition.BIRTH_YEAR) != null;
     }
     
     public Date getBirthdate() {
-        return (Date) attributes.get(YahooProfileDefinition.BIRTHDATE);
+        return (Date) attributes.get(YahooAttributesDefinition.BIRTHDATE);
     }
     
     public Date getCreated() {
-        return (Date) attributes.get(YahooProfileDefinition.CREATED);
+        return (Date) attributes.get(YahooAttributesDefinition.CREATED);
     }
     
     public int getDisplayAge() {
-        return getSafeInteger((Integer) attributes.get(YahooProfileDefinition.DISPLAY_AGE));
+        return getSafeInteger((Integer) attributes.get(YahooAttributesDefinition.DISPLAY_AGE));
     }
     
     /**
@@ -110,39 +110,39 @@ public class YahooProfile extends UserProfile {
      * @return if the displayAge attribute exists
      */
     public boolean isDisplayAgeDefined() {
-        return attributes.get(YahooProfileDefinition.DISPLAY_AGE) != null;
+        return attributes.get(YahooAttributesDefinition.DISPLAY_AGE) != null;
     }
     
     public List<YahooDisclosure> getDisclosures() {
-        return (List<YahooDisclosure>) attributes.get(YahooProfileDefinition.DISCLOSURES);
+        return (List<YahooDisclosure>) attributes.get(YahooAttributesDefinition.DISCLOSURES);
     }
     
     public List<YahooEmail> getEmails() {
-        return (List<YahooEmail>) attributes.get(YahooProfileDefinition.EMAILS);
+        return (List<YahooEmail>) attributes.get(YahooAttributesDefinition.EMAILS);
     }
     
     public String getFamilyName() {
-        return (String) attributes.get(YahooProfileDefinition.FAMILY_NAME);
+        return (String) attributes.get(YahooAttributesDefinition.FAMILY_NAME);
     }
     
     public Gender getGender() {
-        return (Gender) attributes.get(YahooProfileDefinition.GENDER);
+        return (Gender) attributes.get(YahooAttributesDefinition.GENDER);
     }
     
     public String getGivenName() {
-        return (String) attributes.get(YahooProfileDefinition.GIVEN_NAME);
+        return (String) attributes.get(YahooAttributesDefinition.GIVEN_NAME);
     }
     
     public YahooImage getImage() {
-        return (YahooImage) attributes.get(YahooProfileDefinition.IMAGE);
+        return (YahooImage) attributes.get(YahooAttributesDefinition.IMAGE);
     }
     
     public List<YahooInterest> getInterests() {
-        return (List<YahooInterest>) attributes.get(YahooProfileDefinition.INTERESTS);
+        return (List<YahooInterest>) attributes.get(YahooAttributesDefinition.INTERESTS);
     }
     
     public boolean isConnected() {
-        return getSafeBoolean((Boolean) attributes.get(YahooProfileDefinition.IS_CONNECTED));
+        return getSafeBoolean((Boolean) attributes.get(YahooAttributesDefinition.IS_CONNECTED));
     }
     
     /**
@@ -151,38 +151,38 @@ public class YahooProfile extends UserProfile {
      * @return if the isConnected attribute exists
      */
     public boolean isConnectedDefined() {
-        return attributes.get(YahooProfileDefinition.IS_CONNECTED) != null;
+        return attributes.get(YahooAttributesDefinition.IS_CONNECTED) != null;
     }
     
     public Locale getLang() {
-        return (Locale) attributes.get(YahooProfileDefinition.LANG);
+        return (Locale) attributes.get(YahooAttributesDefinition.LANG);
     }
     
     public String getLocation() {
-        return (String) attributes.get(YahooProfileDefinition.LOCATION);
+        return (String) attributes.get(YahooAttributesDefinition.LOCATION);
     }
     
     public Date getMemberSince() {
-        return (Date) attributes.get(YahooProfileDefinition.MEMBER_SINCE);
+        return (Date) attributes.get(YahooAttributesDefinition.MEMBER_SINCE);
     }
     
     public String getNickname() {
-        return (String) attributes.get(YahooProfileDefinition.NICKNAME);
+        return (String) attributes.get(YahooAttributesDefinition.NICKNAME);
     }
     
     public String getProfileUrl() {
-        return (String) attributes.get(YahooProfileDefinition.PROFILE_URL);
+        return (String) attributes.get(YahooAttributesDefinition.PROFILE_URL);
     }
     
     public String getTimeZone() {
-        return (String) attributes.get(YahooProfileDefinition.TIME_ZONE);
+        return (String) attributes.get(YahooAttributesDefinition.TIME_ZONE);
     }
     
     public Date getUpdated() {
-        return (Date) attributes.get(YahooProfileDefinition.UPDATED);
+        return (Date) attributes.get(YahooAttributesDefinition.UPDATED);
     }
     
     public String getUri() {
-        return (String) attributes.get(YahooProfileDefinition.URI);
+        return (String) attributes.get(YahooAttributesDefinition.URI);
     }
 }

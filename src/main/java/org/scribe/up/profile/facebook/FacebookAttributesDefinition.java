@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookProfileDefinition extends AttributesDefinition {
+public class FacebookAttributesDefinition extends AttributesDefinition {
     
     public static final String NAME = "name";
     public static final String FIRST_NAME = "first_name";
@@ -56,7 +56,7 @@ public class FacebookProfileDefinition extends AttributesDefinition {
     public static final String WEBSITE = "website";
     public static final String WORK = "work";
     
-    public FacebookProfileDefinition() {
+    public FacebookAttributesDefinition() {
         String[] names = new String[] {
             NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, USERNAME, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
             RELIGION, WEBSITE

@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from an OAuth provider after authentication : it's an identifier (string) and attributes
- * (objects). The attributes (profile) definition and the associated provider type are null (generic profile), they must be defined in
- * subclasses.
+ * (objects). The attributes definition and the associated provider type are null (generic profile), they must be defined in subclasses.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -70,9 +69,9 @@ public class UserProfile implements Serializable {
     }
     
     /**
-     * Return the attributes (profile) definition for this user profile. Null for this (generic) user profile.
+     * Return the attributes definition for this user profile. Null for this (generic) user profile.
      * 
-     * @return the attributes (profile) definition
+     * @return the attributes definition
      */
     protected AttributesDefinition getAttributesDefinition() {
         return null;

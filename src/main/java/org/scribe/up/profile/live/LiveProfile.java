@@ -13,42 +13,45 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.linkedin;
+package org.scribe.up.profile.live;
 
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.LinkedInProvider;
+import org.scribe.up.provider.impl.LiveProvider;
 
 /**
- * This class is the user profile for LinkedIn with appropriate getters.
+ * This class is the user profile for Windows Live with appropriate getters.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LinkedInProfile extends UserProfile {
+public class LiveProfile extends UserProfile {
     
-    private static final long serialVersionUID = 4557343108526456560L;
+    private static final long serialVersionUID = 4957023145113094752L;
     
     protected AttributesDefinition getAttributesDefinition() {
-        return AttributesDefinitions.linkedinDefinition;
+        return AttributesDefinitions.liveDefinition;
     }
     
     protected String getProviderType() {
-        return LinkedInProvider.TYPE;
+        return LiveProvider.TYPE;
     }
     
-    public LinkedInProfile() {
+    public LiveProfile() {
         super();
     }
     
-    public LinkedInProfile(Object id) {
+    public LiveProfile(Object id) {
         super(id);
     }
     
-    public LinkedInProfile(Object id, Map<String, Object> attributes) {
+    public LiveProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
     }
     
@@ -59,26 +62,38 @@ public class LinkedInProfile extends UserProfile {
      * @return if the user identifier matches this kind of profile
      */
     public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(LinkedInProvider.TYPE + SEPARATOR)) {
+        if (id != null && id.startsWith(LiveProvider.TYPE + SEPARATOR)) {
             return true;
         } else {
             return false;
         }
     }
     
+    public String getName() {
+        return (String) attributes.get(LiveAttributesDefinition.NAME);
+    }
+    
     public String getFirstName() {
-        return (String) attributes.get(LinkedInAttributesDefinition.FIRST_NAME);
+        return (String) attributes.get(LiveAttributesDefinition.FIRST_NAME);
     }
     
     public String getLastName() {
-        return (String) attributes.get(LinkedInAttributesDefinition.LAST_NAME);
+        return (String) attributes.get(LiveAttributesDefinition.LAST_NAME);
     }
     
-    public String getHeadline() {
-        return (String) attributes.get(LinkedInAttributesDefinition.HEADLINE);
+    public String getLink() {
+        return (String) attributes.get(LiveAttributesDefinition.LINK);
     }
     
-    public String getUrl() {
-        return (String) attributes.get(LinkedInAttributesDefinition.URL);
+    public Gender getGender() {
+        return (Gender) attributes.get(LiveAttributesDefinition.GENDER);
+    }
+    
+    public Locale getLocale() {
+        return (Locale) attributes.get(LiveAttributesDefinition.LOCALE);
+    }
+    
+    public Date getUpdatedTime() {
+        return (Date) attributes.get(LiveAttributesDefinition.UPDATED_TIME);
     }
 }

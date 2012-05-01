@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GoogleProfileDefinition extends AttributesDefinition {
+public class GoogleAttributesDefinition extends AttributesDefinition {
     
     public static final String PROFILE_URL = "profileUrl";
     public static final String IS_VIEWER = "isViewer";
@@ -36,7 +36,7 @@ public class GoogleProfileDefinition extends AttributesDefinition {
     public static final String URLS = "urls";
     public static final String PHOTOS = "photos";
     
-    public GoogleProfileDefinition() {
+    public GoogleAttributesDefinition() {
         attributes.add(PROFILE_URL);
         converters.put(PROFILE_URL, Converters.stringConverter);
         attributes.add(IS_VIEWER);

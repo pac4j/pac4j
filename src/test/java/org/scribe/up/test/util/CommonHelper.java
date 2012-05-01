@@ -45,11 +45,11 @@ public final class CommonHelper {
     private CommonHelper() {
     }
     
-    public static WebClient newWebClient() {
+    public static WebClient newWebClient(boolean isJavascriptEnabled) {
         WebClient webClient = new WebClient();
         webClient.setRedirectEnabled(true);
         webClient.setCssEnabled(false);
-        webClient.setJavaScriptEnabled(false);
+        webClient.setJavaScriptEnabled(isJavascriptEnabled);
         return webClient;
     }
     

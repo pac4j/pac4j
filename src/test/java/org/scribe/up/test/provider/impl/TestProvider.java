@@ -40,11 +40,15 @@ public abstract class TestProvider extends TestCase {
     
     protected static final Logger logger = LoggerFactory.getLogger(TestProvider.class);
     
+    protected boolean isJavascriptEnabled() {
+        return false;
+    }
+    
     public void testProvider() throws Exception {
         OAuthProvider provider = getProvider();
         
         SingleUserSession session = new SingleUserSession();
-        WebClient webClient = CommonHelper.newWebClient();
+        WebClient webClient = CommonHelper.newWebClient(isJavascriptEnabled());
         
         HtmlPage authorizationPage = getAuhtorizationPage(webClient, provider, session);
         

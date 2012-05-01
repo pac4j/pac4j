@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.ProfileDefinitions;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
 
@@ -35,7 +35,7 @@ public class GoogleProfile extends UserProfile {
     private static final long serialVersionUID = 5043627498801644731L;
     
     protected AttributesDefinition getAttributesDefinition() {
-        return ProfileDefinitions.googleDefinition;
+        return AttributesDefinitions.googleDefinition;
     }
     
     protected String getProviderType() {
@@ -69,11 +69,11 @@ public class GoogleProfile extends UserProfile {
     }
     
     public String getProfileUrl() {
-        return (String) attributes.get(GoogleProfileDefinition.PROFILE_URL);
+        return (String) attributes.get(GoogleAttributesDefinition.PROFILE_URL);
     }
     
     public boolean isViewer() {
-        return getSafeBoolean((Boolean) attributes.get(GoogleProfileDefinition.IS_VIEWER));
+        return getSafeBoolean((Boolean) attributes.get(GoogleAttributesDefinition.IS_VIEWER));
     }
     
     /**
@@ -82,34 +82,34 @@ public class GoogleProfile extends UserProfile {
      * @return if the isViewer attribute exists
      */
     public boolean isViewerDefined() {
-        return attributes.get(GoogleProfileDefinition.IS_VIEWER) != null;
+        return attributes.get(GoogleAttributesDefinition.IS_VIEWER) != null;
     }
     
     public String getThumbnailUrl() {
-        return (String) attributes.get(GoogleProfileDefinition.THUMBNAIL_URL);
+        return (String) attributes.get(GoogleAttributesDefinition.THUMBNAIL_URL);
     }
     
     public String getFormatted() {
-        return (String) attributes.get(GoogleProfileDefinition.FORMATTED);
+        return (String) attributes.get(GoogleAttributesDefinition.FORMATTED);
     }
     
     public String getFamilyName() {
-        return (String) attributes.get(GoogleProfileDefinition.FAMILY_NAME);
+        return (String) attributes.get(GoogleAttributesDefinition.FAMILY_NAME);
     }
     
     public String getGivenName() {
-        return (String) attributes.get(GoogleProfileDefinition.GIVEN_NAME);
+        return (String) attributes.get(GoogleAttributesDefinition.GIVEN_NAME);
     }
     
     public String getDisplayName() {
-        return (String) attributes.get(GoogleProfileDefinition.DISPLAY_NAME);
+        return (String) attributes.get(GoogleAttributesDefinition.DISPLAY_NAME);
     }
     
     public List<GoogleObject> getUrls() {
-        return (List<GoogleObject>) attributes.get(GoogleProfileDefinition.URLS);
+        return (List<GoogleObject>) attributes.get(GoogleAttributesDefinition.URLS);
     }
     
     public List<GoogleObject> getPhotos() {
-        return (List<GoogleObject>) attributes.get(GoogleProfileDefinition.PHOTOS);
+        return (List<GoogleObject>) attributes.get(GoogleAttributesDefinition.PHOTOS);
     }
 }
