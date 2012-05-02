@@ -44,10 +44,10 @@ public class LiveAttributesDefinition extends AttributesDefinition {
         attributes.add(LINK);
         converters.put(LINK, Converters.stringConverter);
         attributes.add(GENDER);
-        converters.put(GENDER, LiveConverters.genderConverter);
+        converters.put(GENDER, Converters.genderConverter);
         attributes.add(LOCALE);
         converters.put(LOCALE, Converters.localeConverter);
         attributes.add(UPDATED_TIME);
-        converters.put(UPDATED_TIME, LiveConverters.dateConverter);
+        converters.put(UPDATED_TIME, Converters.dateConverter);
     }
 }

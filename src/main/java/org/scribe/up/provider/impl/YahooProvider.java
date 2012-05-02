@@ -32,7 +32,7 @@ import org.scribe.up.util.StringHelper;
  * (JsonList&lt;YahooAddress&gt;), birthYear (Integer), birthdate (FormattedDate), created (FormattedDate), displayAge (Integer),
  * disclosures (JsonList&lt;YahooDisclosure&gt;), emails (JsonList&lt;YahooEmail&gt;), familyName (String), gender (Gender), givenName
  * (String), image (YahooImage), interests (JsonList&lt;YahooInterest&gt;), isConnected (Boolean), lang (Locale), location (String),
- * memberSince (FormattedDate), nickname (String), profileUrl (String), timeZone (String), updated (FormattedDate) and uri (String)
+ * memberSince (FormattedDate), nickname (String), profileUrl (String), timeZone (String), updated (FormattedDate) and uri (String).
  * 
  * @author Jerome Leleu
  * @since 1.0.0

@@ -17,7 +17,6 @@ package org.scribe.up.profile.facebook;
 
 import org.scribe.up.profile.converter.DateConverter;
 import org.scribe.up.profile.converter.FormattedDateConverter;
-import org.scribe.up.profile.converter.GenderConverter;
 import org.scribe.up.profile.converter.JsonListConverter;
 import org.scribe.up.profile.converter.JsonObjectConverter;
 
@@ -29,19 +28,13 @@ import org.scribe.up.profile.converter.JsonObjectConverter;
  */
 public final class FacebookConverters {
     
-    public final static GenderConverter genderConverter = new GenderConverter("male", "female");
-    
-    public final static FormattedDateConverter updateTimeConverter = new FormattedDateConverter(
-                                                                                                "yyyy-MM-dd'T'HH:mm:ssz");
-    
     public final static FormattedDateConverter birthdayConverter = new FormattedDateConverter("MM/dd/yyyy");
     
     public final static FacebookRelationshipStatusConverter relationshipStatusConverter = new FacebookRelationshipStatusConverter();
     
     public final static JsonListConverter listObjectConverter = new JsonListConverter(FacebookObject.class);
     
-    public final static JsonListConverter listEducationConverter = new JsonListConverter(
-                                                                                                 FacebookEducation.class);
+    public final static JsonListConverter listEducationConverter = new JsonListConverter(FacebookEducation.class);
     
     public final static JsonObjectConverter objectConverter = new JsonObjectConverter(FacebookObject.class);
     

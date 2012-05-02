@@ -34,4 +34,8 @@ public final class Converters {
     public final static ColorConverter colorConverter = new ColorConverter();
     
     public final static JsonListConverter listStringConverter = new JsonListConverter(String.class);
+    
+    public final static GenderConverter genderConverter = new GenderConverter("male", "female");
+    
+    public final static FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz");
 }

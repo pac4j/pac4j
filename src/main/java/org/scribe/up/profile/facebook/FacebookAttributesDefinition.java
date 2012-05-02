@@ -70,11 +70,11 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
         attributes.add(VERIFIED);
         converters.put(VERIFIED, Converters.booleanConverter);
         attributes.add(GENDER);
-        converters.put(GENDER, FacebookConverters.genderConverter);
+        converters.put(GENDER, Converters.genderConverter);
         attributes.add(LOCALE);
         converters.put(LOCALE, Converters.localeConverter);
         attributes.add(UPDATED_TIME);
-        converters.put(UPDATED_TIME, FacebookConverters.updateTimeConverter);
+        converters.put(UPDATED_TIME, Converters.dateConverter);
         attributes.add(BIRTHDAY);
         converters.put(BIRTHDAY, FacebookConverters.birthdayConverter);
         attributes.add(RELATIONSHIP_STATUS);
