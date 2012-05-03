@@ -35,7 +35,7 @@ import org.scribe.up.provider.impl.FacebookProvider;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    private static final long serialVersionUID = -3831971276548245217L;
+    private static final long serialVersionUID = 7253451061309558741L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.facebookDefinition;
@@ -203,5 +203,25 @@ public class FacebookProfile extends UserProfile {
     
     public List<FacebookWork> getWork() {
         return (List<FacebookWork>) attributes.get(FacebookAttributesDefinition.WORK);
+    }
+    
+    public List<FacebookObject> getFriends() {
+        return (List<FacebookObject>) attributes.get(FacebookAttributesDefinition.FRIENDS);
+    }
+    
+    public List<FacebookInfo> getMovies() {
+        return (List<FacebookInfo>) attributes.get(FacebookAttributesDefinition.MOVIES);
+    }
+    
+    public List<FacebookInfo> getMusic() {
+        return (List<FacebookInfo>) attributes.get(FacebookAttributesDefinition.MUSIC);
+    }
+    
+    public List<FacebookInfo> getBooks() {
+        return (List<FacebookInfo>) attributes.get(FacebookAttributesDefinition.BOOKS);
+    }
+    
+    public List<FacebookInfo> getLikes() {
+        return (List<FacebookInfo>) attributes.get(FacebookAttributesDefinition.LIKES);
     }
 }

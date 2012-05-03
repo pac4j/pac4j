@@ -69,7 +69,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected abstract void internalInit();
     
     public UserProfile getUserProfile(Token accessToken) {
-        String body = sendRequestForProfile(accessToken, getProfileUrl());
+        String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
@@ -84,15 +84,15 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected abstract String getProfileUrl();
     
     /**
-     * Make a request to get the profile of the authenticated user for this provider.
+     * Make a request to get the data of the authenticated user for this provider.
      * 
      * @param accessToken
-     * @param profileUrl
-     * @return the user profile response
+     * @param dataUrl
+     * @return the user data response
      */
-    protected String sendRequestForProfile(Token accessToken, String profileUrl) {
-        logger.debug("accessToken : {} / profileUrl : {}", accessToken, profileUrl);
-        OAuthRequest request = new OAuthRequest(Verb.GET, profileUrl);
+    protected String sendRequestForData(Token accessToken, String dataUrl) {
+        logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
+        OAuthRequest request = new OAuthRequest(Verb.GET, dataUrl);
         service.signRequest(accessToken, request);
         // for Google
         if (this instanceof GoogleProvider) {
@@ -103,7 +103,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
         String body = response.getBody();
         logger.debug("response code : {} / response body : {}", code, body);
         if (code != 200) {
-            logger.error("Get the user profile failed, code : " + code + " / body : " + body);
+            logger.error("Failed to get user data, code : " + code + " / body : " + body);
             return null;
         }
         return body;

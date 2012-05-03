@@ -55,6 +55,11 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String SIGNIFICANT_OTHER = "significant_other";
     public static final String WEBSITE = "website";
     public static final String WORK = "work";
+    public static final String FRIENDS = "friends";
+    public static final String MOVIES = "movies";
+    public static final String MUSIC = "music";
+    public static final String BOOKS = "books";
+    public static final String LIKES = "likes";
     
     public FacebookAttributesDefinition() {
         String[] names = new String[] {
@@ -62,40 +67,28 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
             RELIGION, WEBSITE
         };
         for (String name : names) {
-            attributes.add(name);
-            converters.put(name, Converters.stringConverter);
+            addAttribute(name, Converters.stringConverter);
         }
-        attributes.add(TIMEZONE);
-        converters.put(TIMEZONE, Converters.integerConverter);
-        attributes.add(VERIFIED);
-        converters.put(VERIFIED, Converters.booleanConverter);
-        attributes.add(GENDER);
-        converters.put(GENDER, Converters.genderConverter);
-        attributes.add(LOCALE);
-        converters.put(LOCALE, Converters.localeConverter);
-        attributes.add(UPDATED_TIME);
-        converters.put(UPDATED_TIME, Converters.dateConverter);
-        attributes.add(BIRTHDAY);
-        converters.put(BIRTHDAY, FacebookConverters.birthdayConverter);
-        attributes.add(RELATIONSHIP_STATUS);
-        converters.put(RELATIONSHIP_STATUS, FacebookConverters.relationshipStatusConverter);
-        attributes.add(LANGUAGES);
-        converters.put(LANGUAGES, FacebookConverters.listObjectConverter);
-        attributes.add(EDUCATION);
-        converters.put(EDUCATION, FacebookConverters.listEducationConverter);
-        attributes.add(HOMETOWN);
-        converters.put(HOMETOWN, FacebookConverters.objectConverter);
-        attributes.add(INTERESTED_IN);
-        converters.put(INTERESTED_IN, Converters.listStringConverter);
-        attributes.add(LOCATION);
-        converters.put(LOCATION, FacebookConverters.objectConverter);
-        attributes.add(FAVORITE_ATHLETES);
-        converters.put(FAVORITE_ATHLETES, FacebookConverters.listObjectConverter);
-        attributes.add(FAVORITE_TEAMS);
-        converters.put(FAVORITE_TEAMS, FacebookConverters.listObjectConverter);
-        attributes.add(SIGNIFICANT_OTHER);
-        converters.put(SIGNIFICANT_OTHER, FacebookConverters.objectConverter);
-        attributes.add(WORK);
-        converters.put(WORK, FacebookConverters.listWorkConverter);
+        addAttribute(TIMEZONE, Converters.integerConverter);
+        addAttribute(VERIFIED, Converters.booleanConverter);
+        addAttribute(GENDER, Converters.genderConverter);
+        addAttribute(LOCALE, Converters.localeConverter);
+        addAttribute(UPDATED_TIME, Converters.dateConverter);
+        addAttribute(BIRTHDAY, FacebookConverters.birthdayConverter);
+        addAttribute(RELATIONSHIP_STATUS, FacebookConverters.relationshipStatusConverter);
+        addAttribute(LANGUAGES, FacebookConverters.listObjectConverter);
+        addAttribute(EDUCATION, FacebookConverters.listEducationConverter);
+        addAttribute(HOMETOWN, FacebookConverters.objectConverter);
+        addAttribute(INTERESTED_IN, Converters.listStringConverter);
+        addAttribute(LOCATION, FacebookConverters.objectConverter);
+        addAttribute(FAVORITE_ATHLETES, FacebookConverters.listObjectConverter);
+        addAttribute(FAVORITE_TEAMS, FacebookConverters.listObjectConverter);
+        addAttribute(SIGNIFICANT_OTHER, FacebookConverters.objectConverter);
+        addAttribute(WORK, FacebookConverters.listWorkConverter);
+        addAttribute(FRIENDS, FacebookConverters.listObjectConverter, false);
+        addAttribute(MOVIES, FacebookConverters.listInfoConverter, false);
+        addAttribute(MUSIC, FacebookConverters.listInfoConverter, false);
+        addAttribute(BOOKS, FacebookConverters.listInfoConverter, false);
+        addAttribute(LIKES, FacebookConverters.listInfoConverter, false);
     }
 }

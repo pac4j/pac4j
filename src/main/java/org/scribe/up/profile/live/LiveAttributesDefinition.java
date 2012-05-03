@@ -35,19 +35,12 @@ public class LiveAttributesDefinition extends AttributesDefinition {
     public static final String UPDATED_TIME = "updated_time";
     
     public LiveAttributesDefinition() {
-        attributes.add(NAME);
-        converters.put(NAME, Converters.stringConverter);
-        attributes.add(FIRST_NAME);
-        converters.put(FIRST_NAME, Converters.stringConverter);
-        attributes.add(LAST_NAME);
-        converters.put(LAST_NAME, Converters.stringConverter);
-        attributes.add(LINK);
-        converters.put(LINK, Converters.stringConverter);
-        attributes.add(GENDER);
-        converters.put(GENDER, Converters.genderConverter);
-        attributes.add(LOCALE);
-        converters.put(LOCALE, Converters.localeConverter);
-        attributes.add(UPDATED_TIME);
-        converters.put(UPDATED_TIME, Converters.dateConverter);
+        addAttribute(NAME, Converters.stringConverter);
+        addAttribute(FIRST_NAME, Converters.stringConverter);
+        addAttribute(LAST_NAME, Converters.stringConverter);
+        addAttribute(LINK, Converters.stringConverter);
+        addAttribute(GENDER, Converters.genderConverter);
+        addAttribute(LOCALE, Converters.localeConverter);
+        addAttribute(UPDATED_TIME, Converters.dateConverter);
     }
 }

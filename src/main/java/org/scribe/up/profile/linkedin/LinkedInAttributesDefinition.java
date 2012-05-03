@@ -32,13 +32,9 @@ public class LinkedInAttributesDefinition extends AttributesDefinition {
     public static final String URL = "url";
     
     public LinkedInAttributesDefinition() {
-        attributes.add(FIRST_NAME);
-        converters.put(FIRST_NAME, Converters.stringConverter);
-        attributes.add(LAST_NAME);
-        converters.put(LAST_NAME, Converters.stringConverter);
-        attributes.add(HEADLINE);
-        converters.put(HEADLINE, Converters.stringConverter);
-        attributes.add(URL);
-        converters.put(URL, Converters.stringConverter);
+        addAttribute(FIRST_NAME, Converters.stringConverter);
+        addAttribute(LAST_NAME, Converters.stringConverter);
+        addAttribute(HEADLINE, Converters.stringConverter);
+        addAttribute(URL, Converters.stringConverter);
     }
 }

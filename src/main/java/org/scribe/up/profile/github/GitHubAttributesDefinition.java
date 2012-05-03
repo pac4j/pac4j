@@ -52,20 +52,16 @@ public class GitHubAttributesDefinition extends AttributesDefinition {
             COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, PERMISSION, GRAVATAR_ID
         };
         for (String name : names) {
-            attributes.add(name);
-            converters.put(name, Converters.stringConverter);
+            addAttribute(name, Converters.stringConverter);
         }
         names = new String[] {
             FOLLOWING_COUNT, PUBLIC_REPO_COUNT, PUBLIC_GIST_COUNT, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPO_COUNT,
             TOTAL_PRIVATE_REPO_COUNT, PRIVATE_GIST_COUNT, FOLLOWERS_COUNT
         };
         for (String name : names) {
-            attributes.add(name);
-            converters.put(name, Converters.integerConverter);
+            addAttribute(name, Converters.integerConverter);
         }
-        attributes.add(CREATED_AT);
-        converters.put(CREATED_AT, GitHubConverters.dateConverter);
-        attributes.add(PLAN);
-        converters.put(PLAN, GitHubConverters.planConverter);
+        addAttribute(CREATED_AT, GitHubConverters.dateConverter);
+        addAttribute(PLAN, GitHubConverters.planConverter);
     }
 }

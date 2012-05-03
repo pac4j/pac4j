@@ -30,12 +30,51 @@ import org.scribe.up.profile.converter.AttributeConverter;
  */
 public class AttributesDefinition {
     
-    protected List<String> attributes = new ArrayList<String>();
+    protected List<String> attributesNames = new ArrayList<String>();
     
-    protected Map<String, AttributeConverter<? extends Object>> converters = new HashMap<String, AttributeConverter<? extends Object>>();
+    protected Map<String, AttributeConverter<? extends Object>> attributesConverters = new HashMap<String, AttributeConverter<? extends Object>>();
+    
+    protected Map<String, Boolean> attributesTypes = new HashMap<String, Boolean>();
     
     public List<String> getAttributes() {
-        return attributes;
+        return attributesNames;
+    }
+    
+    /**
+     * Add an attribute as a primary one and its converter to this attributes definition.
+     * 
+     * @param name
+     * @param converter
+     */
+    protected void addAttribute(String name, AttributeConverter<? extends Object> converter) {
+        addAttribute(name, converter, true);
+    }
+    
+    /**
+     * Add an attribute, its primary aspect and its converter to this attributes definition.
+     * 
+     * @param name
+     * @param converter
+     * @param primary
+     */
+    protected void addAttribute(String name, AttributeConverter<? extends Object> converter, boolean primary) {
+        attributesNames.add(name);
+        attributesConverters.put(name, converter);
+        attributesTypes.put(name, primary);
+    }
+    
+    /**
+     * Return if the attribute is primary.
+     * 
+     * @param name
+     * @return if the attribute is primary
+     */
+    public boolean isPrimary(String name) {
+        Boolean b = attributesTypes.get(name);
+        if (b == null) {
+            return false;
+        }
+        return (boolean) b;
     }
     
     /**
@@ -47,7 +86,7 @@ public class AttributesDefinition {
      * @return the converted attribute or null if no converter exists for this attribute name
      */
     public Object convert(String name, Object value) {
-        AttributeConverter<? extends Object> converter = converters.get(name);
+        AttributeConverter<? extends Object> converter = attributesConverters.get(name);
         if (converter != null && value != null) {
             return converter.convert(value);
         } else {

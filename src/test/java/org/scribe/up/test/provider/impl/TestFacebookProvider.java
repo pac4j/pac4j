@@ -22,6 +22,7 @@ import java.util.Locale;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookEducation;
+import org.scribe.up.profile.facebook.FacebookInfo;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
@@ -52,6 +53,11 @@ public class TestFacebookProvider extends TestProvider {
         facebookProvider.setCallbackUrl("http://www.google.com/");
         facebookProvider
             .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website");
+        facebookProvider.setFriendsReturned(true);
+        facebookProvider.setMoviesReturned(true);
+        facebookProvider.setMusicReturned(true);
+        facebookProvider.setBooksReturned(true);
+        facebookProvider.setLikesReturned(true);
         facebookProvider.init();
         return facebookProvider;
     }
@@ -88,7 +94,7 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("http://www.facebook.com/profile.php?id=100003571536393", profile.getLink());
         assertNull(profile.getUsername());
         assertNull(profile.getThirdPartyId());
-        assertEquals(1, profile.getTimezone());
+        assertEquals(2, profile.getTimezone());
         assertEquals(CommonHelper.getFormattedDate(1330030531000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
         assertFalse(profile.isVerified());
@@ -124,6 +130,39 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("Description", work.getDescription());
         assertTrue(work.getStartDate() instanceof Date);
         assertNull(work.getEndDate());
-        assertEquals(24, profile.getAttributes().size());
+        List<FacebookObject> friends = profile.getFriends();
+        assertEquals(1, friends.size());
+        FacebookObject friend = friends.get(0);
+        assertEquals("Jérôme Leleu", friend.getName());
+        assertEquals("100002406067613", friend.getId());
+        List<FacebookInfo> movies = profile.getMovies();
+        assertEquals(1, movies.size());
+        FacebookInfo movie = movies.get(0);
+        assertEquals("Jean-Claude Van Damme", movie.getName());
+        assertEquals("21497365045", movie.getId());
+        assertEquals("Actor/director", movie.getCategory());
+        assertEquals(1330030350000L, movie.getCreatedTime().getTime());
+        List<FacebookInfo> musics = profile.getMusic();
+        assertEquals(1, musics.size());
+        FacebookInfo music = musics.get(0);
+        assertEquals("Hard rock", music.getName());
+        assertEquals("112175695466436", music.getId());
+        assertEquals("Musical genre", music.getCategory());
+        assertEquals(1330030350000L, music.getCreatedTime().getTime());
+        List<FacebookInfo> books = profile.getBooks();
+        assertEquals(1, books.size());
+        FacebookInfo book = books.get(0);
+        assertEquals("Science fiction", book.getName());
+        assertEquals("108157509212483", book.getId());
+        assertEquals("Book genre", book.getCategory());
+        assertEquals(1330030350000L, book.getCreatedTime().getTime());
+        List<FacebookInfo> likes = profile.getLikes();
+        assertEquals(9, likes.size());
+        FacebookInfo like = likes.get(0);
+        assertEquals("Surfing", like.getName());
+        assertEquals("112392265454714", like.getId());
+        assertEquals("Sport", like.getCategory());
+        assertEquals(1330030467000L, like.getCreatedTime().getTime());
+        assertEquals(29, profile.getAttributes().size());
     }
 }

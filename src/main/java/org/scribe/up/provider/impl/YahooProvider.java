@@ -56,7 +56,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     @Override
     public UserProfile getUserProfile(Token accessToken) {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
-        String body = sendRequestForProfile(accessToken, getProfileUrl());
+        String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
@@ -64,7 +64,7 @@ public class YahooProvider extends BaseOAuth10Provider {
         logger.debug("guid : {}", guid);
         // then the profile with the guid
         if (StringHelper.isNotBlank(guid)) {
-            body = sendRequestForProfile(accessToken, "http://social.yahooapis.com/v1/user/" + guid
+            body = sendRequestForData(accessToken, "http://social.yahooapis.com/v1/user/" + guid
                                                       + "/profile?format=json");
             if (body == null) {
                 return null;

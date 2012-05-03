@@ -19,9 +19,9 @@ import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
+import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.google.GoogleAttributesDefinition;
 import org.scribe.up.profile.google.GoogleProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
@@ -71,22 +71,18 @@ public class GoogleProvider extends BaseOAuth10Provider {
             json = json.get("entry");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
-                String[] attributes = new String[] {
-                    GoogleAttributesDefinition.PROFILE_URL, GoogleAttributesDefinition.IS_VIEWER,
-                    GoogleAttributesDefinition.THUMBNAIL_URL, GoogleAttributesDefinition.DISPLAY_NAME,
-                    GoogleAttributesDefinition.URLS, GoogleAttributesDefinition.PHOTOS
-                };
-                for (String attribute : attributes) {
-                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                for (String attribute : AttributesDefinitions.googleDefinition.getAttributes()) {
+                    if (AttributesDefinitions.googleDefinition.isPrimary(attribute)) {
+                        profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                    }
                 }
                 json = json.get("name");
                 if (json != null) {
-                    profile.addAttribute(GoogleAttributesDefinition.FORMATTED,
-                                         JsonHelper.get(json, GoogleAttributesDefinition.FORMATTED));
-                    profile.addAttribute(GoogleAttributesDefinition.FAMILY_NAME,
-                                         JsonHelper.get(json, GoogleAttributesDefinition.FAMILY_NAME));
-                    profile.addAttribute(GoogleAttributesDefinition.GIVEN_NAME,
-                                         JsonHelper.get(json, GoogleAttributesDefinition.GIVEN_NAME));
+                    for (String attribute : AttributesDefinitions.googleDefinition.getAttributes()) {
+                        if (!AttributesDefinitions.googleDefinition.isPrimary(attribute)) {
+                            profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                        }
+                    }
                 }
             }
         }

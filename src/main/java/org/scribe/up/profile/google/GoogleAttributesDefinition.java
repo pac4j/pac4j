@@ -37,23 +37,14 @@ public class GoogleAttributesDefinition extends AttributesDefinition {
     public static final String PHOTOS = "photos";
     
     public GoogleAttributesDefinition() {
-        attributes.add(PROFILE_URL);
-        converters.put(PROFILE_URL, Converters.stringConverter);
-        attributes.add(IS_VIEWER);
-        converters.put(IS_VIEWER, Converters.booleanConverter);
-        attributes.add(THUMBNAIL_URL);
-        converters.put(THUMBNAIL_URL, Converters.stringConverter);
-        attributes.add(FORMATTED);
-        converters.put(FORMATTED, Converters.stringConverter);
-        attributes.add(FAMILY_NAME);
-        converters.put(FAMILY_NAME, Converters.stringConverter);
-        attributes.add(GIVEN_NAME);
-        converters.put(GIVEN_NAME, Converters.stringConverter);
-        attributes.add(DISPLAY_NAME);
-        converters.put(DISPLAY_NAME, Converters.stringConverter);
-        attributes.add(URLS);
-        converters.put(URLS, GoogleConverters.listObjectConverter);
-        attributes.add(PHOTOS);
-        converters.put(PHOTOS, GoogleConverters.listObjectConverter);
+        addAttribute(PROFILE_URL, Converters.stringConverter);
+        addAttribute(IS_VIEWER, Converters.booleanConverter);
+        addAttribute(THUMBNAIL_URL, Converters.stringConverter);
+        addAttribute(FORMATTED, Converters.stringConverter, false);
+        addAttribute(FAMILY_NAME, Converters.stringConverter, false);
+        addAttribute(GIVEN_NAME, Converters.stringConverter, false);
+        addAttribute(DISPLAY_NAME, Converters.stringConverter);
+        addAttribute(URLS, GoogleConverters.listObjectConverter);
+        addAttribute(PHOTOS, GoogleConverters.listObjectConverter);
     }
 }

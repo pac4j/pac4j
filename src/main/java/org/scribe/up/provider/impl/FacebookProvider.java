@@ -18,22 +18,27 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
+import org.scribe.model.Token;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class is the OAuth provider to authenticate user in Facebook. Specific scopes can be defined to get more attributes.<br />
+ * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and parameters (friendsReturned, moviesReturned,
+ * musicReturned) can be defined to get more attributes.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
  * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (JsonList&lt;FacebookObject&gt;), link (String),
  * username (String), third_party_id (String), timezone (Integer), updated_time (FormattedDate), verified (Boolean), bio (String), birthday
  * (FormattedDate), education (JsonList&lt;FacebookEducation&gt;), email (String), hometown (FacebookObject), interested_in
  * (JsonList&lt;String&gt;), location (FacebookObject), political (String), favorite_athletes (JsonList&lt;FacebookObject&gt;),
  * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
- * significant_other (FacebookObject), website (String) and work (JsonList&lt;FacebookWork&gt;).
+ * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
+ * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;) and likes
+ * (JsonList&lt;FacebookInfo&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -42,6 +47,18 @@ import org.scribe.up.util.StringHelper;
 public class FacebookProvider extends BaseOAuth20Provider {
     
     public final static String TYPE = FacebookProvider.class.getSimpleName();
+    
+    protected final static String BASE_URL = "https://graph.facebook.com/me";
+    
+    protected boolean friendsReturned = false;
+    
+    protected boolean moviesReturned = false;
+    
+    protected boolean musicReturned = false;
+    
+    protected boolean booksReturned = false;
+    
+    protected boolean likesReturned = false;
     
     @Override
     protected void internalInit() {
@@ -56,7 +73,34 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     @Override
     protected String getProfileUrl() {
-        return "https://graph.facebook.com/me";
+        return BASE_URL;
+    }
+    
+    @Override
+    public UserProfile getUserProfile(Token accessToken) {
+        String body = sendRequestForData(accessToken, getProfileUrl());
+        if (body == null) {
+            return null;
+        }
+        FacebookProfile profile = (FacebookProfile) extractUserProfile(body);
+        getData(friendsReturned, accessToken, profile, FacebookAttributesDefinition.FRIENDS, BASE_URL + "/friends");
+        getData(moviesReturned, accessToken, profile, FacebookAttributesDefinition.MOVIES, BASE_URL + "/movies");
+        getData(musicReturned, accessToken, profile, FacebookAttributesDefinition.MUSIC, BASE_URL + "/music");
+        getData(booksReturned, accessToken, profile, FacebookAttributesDefinition.BOOKS, BASE_URL + "/books");
+        getData(likesReturned, accessToken, profile, FacebookAttributesDefinition.LIKES, BASE_URL + "/likes");
+        return profile;
+    }
+    
+    private void getData(boolean dataReturned, Token accessToken, FacebookProfile profile, String attribute, String url) {
+        if (dataReturned) {
+            String body = sendRequestForData(accessToken, url);
+            if (body != null) {
+                JsonNode json = JsonHelper.getFirstNode(body);
+                if (json != null) {
+                    profile.addAttribute(attribute, JsonHelper.get(json, "data"));
+                }
+            }
+        }
     }
     
     @Override
@@ -70,5 +114,45 @@ public class FacebookProvider extends BaseOAuth20Provider {
             }
         }
         return profile;
+    }
+    
+    public boolean isFriendsReturned() {
+        return friendsReturned;
+    }
+    
+    public void setFriendsReturned(boolean friendsReturned) {
+        this.friendsReturned = friendsReturned;
+    }
+    
+    public boolean isMoviesReturned() {
+        return moviesReturned;
+    }
+    
+    public void setMoviesReturned(boolean moviesReturned) {
+        this.moviesReturned = moviesReturned;
+    }
+    
+    public boolean isMusicReturned() {
+        return musicReturned;
+    }
+    
+    public void setMusicReturned(boolean musicReturned) {
+        this.musicReturned = musicReturned;
+    }
+    
+    public boolean isBooksReturned() {
+        return booksReturned;
+    }
+    
+    public void setBooksReturned(boolean booksReturned) {
+        this.booksReturned = booksReturned;
+    }
+    
+    public boolean isLikesReturned() {
+        return likesReturned;
+    }
+    
+    public void setLikesReturned(boolean likesReturned) {
+        this.likesReturned = likesReturned;
     }
 }
