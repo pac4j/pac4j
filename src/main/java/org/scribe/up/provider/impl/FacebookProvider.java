@@ -29,7 +29,7 @@ import org.scribe.up.util.StringHelper;
 
 /**
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and parameters (friendsReturned, moviesReturned,
- * musicReturned) can be defined to get more attributes.<br />
+ * musicReturned, booksReturned, likesReturned) can be defined to get more attributes.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
  * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (JsonList&lt;FacebookObject&gt;), link (String),
  * username (String), third_party_id (String), timezone (Integer), updated_time (FormattedDate), verified (Boolean), bio (String), birthday
