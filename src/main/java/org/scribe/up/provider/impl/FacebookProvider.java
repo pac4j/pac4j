@@ -78,10 +78,12 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     @Override
     public UserProfile getUserProfile(Token accessToken) {
+        // get the profile
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
+        // get additionnal data if requested
         FacebookProfile profile = (FacebookProfile) extractUserProfile(body);
         getData(friendsReturned, accessToken, profile, FacebookAttributesDefinition.FRIENDS, BASE_URL + "/friends");
         getData(moviesReturned, accessToken, profile, FacebookAttributesDefinition.MOVIES, BASE_URL + "/movies");
@@ -120,6 +122,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
         return friendsReturned;
     }
     
+    /**
+     * Define if the friends data should be returned in Facebook profile.
+     * 
+     * @param friendsReturned
+     */
     public void setFriendsReturned(boolean friendsReturned) {
         this.friendsReturned = friendsReturned;
     }
@@ -128,6 +135,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
         return moviesReturned;
     }
     
+    /**
+     * Define if the movies data should be returned in Facebook profile.
+     * 
+     * @param moviesReturned
+     */
     public void setMoviesReturned(boolean moviesReturned) {
         this.moviesReturned = moviesReturned;
     }
@@ -136,6 +148,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
         return musicReturned;
     }
     
+    /**
+     * Define if the music data should be returned in Facebook profile.
+     * 
+     * @param musicReturned
+     */
     public void setMusicReturned(boolean musicReturned) {
         this.musicReturned = musicReturned;
     }
@@ -144,6 +161,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
         return booksReturned;
     }
     
+    /**
+     * Define if the books data should be returned in Facebook profile.
+     * 
+     * @param booksReturned
+     */
     public void setBooksReturned(boolean booksReturned) {
         this.booksReturned = booksReturned;
     }
@@ -152,6 +174,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
         return likesReturned;
     }
     
+    /**
+     * Define if the likes data should be returned in Facebook profile.
+     * 
+     * @param likesReturned
+     */
     public void setLikesReturned(boolean likesReturned) {
         this.likesReturned = likesReturned;
     }
