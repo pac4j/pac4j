@@ -7,7 +7,7 @@ h2. OAuth providers supported
 
 | Facebook | Github | Google | LinkedIn | Twitter | Windows Live | Yahoo |
 
-Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles.
+Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles. Follow the guide to "extend or add a new provider":https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider.
 
 h2. Who can use ScribeUP ?
 
@@ -26,4 +26,4 @@ ScribeUP is tested by 143 unit tests and also 7 integration tests on OAuth provi
 
 h2. Contact
 
-Find me on "LinkedIn":http://www.linkedin.com/in/jleleu or by email : leleuj at gmail.com
+Find me on "LinkedIn":http://www.linkedin.com/in/jleleu or by email : leleuj@gmail.com
