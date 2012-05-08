@@ -38,7 +38,7 @@ import org.scribe.up.util.StringHelper;
  * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
  * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
- * (JsonList&lt;FacebookInfo&gt;) and albums (JsonList&lt;FacebookPhoto&gt;).
+ * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;) and events (JsonList&lt;FacebookEvent&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -61,6 +61,8 @@ public class FacebookProvider extends BaseOAuth20Provider {
     protected boolean likesReturned = false;
     
     protected boolean albumsReturned = false;
+    
+    protected boolean eventsReturned = false;
     
     @Override
     protected void internalInit() {
@@ -93,6 +95,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         getData(booksReturned, accessToken, profile, FacebookAttributesDefinition.BOOKS, BASE_URL + "/books");
         getData(likesReturned, accessToken, profile, FacebookAttributesDefinition.LIKES, BASE_URL + "/likes");
         getData(albumsReturned, accessToken, profile, FacebookAttributesDefinition.ALBUMS, BASE_URL + "/albums");
+        getData(eventsReturned, accessToken, profile, FacebookAttributesDefinition.EVENTS, BASE_URL + "/events");
         return profile;
     }
     
@@ -197,5 +200,18 @@ public class FacebookProvider extends BaseOAuth20Provider {
      */
     public void setAlbumsReturned(boolean albumsReturned) {
         this.albumsReturned = albumsReturned;
+    }
+    
+    public boolean isEventsReturned() {
+        return eventsReturned;
+    }
+    
+    /**
+     * Define if the events should be returned in Facebook profile.
+     * 
+     * @param eventsReturned
+     */
+    public void setEventsReturned(boolean eventsReturned) {
+        this.eventsReturned = eventsReturned;
     }
 }

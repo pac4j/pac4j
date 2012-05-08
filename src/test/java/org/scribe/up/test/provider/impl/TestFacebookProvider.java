@@ -22,6 +22,7 @@ import java.util.Locale;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookEducation;
+import org.scribe.up.profile.facebook.FacebookEvent;
 import org.scribe.up.profile.facebook.FacebookInfo;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookPhoto;
@@ -53,13 +54,14 @@ public class TestFacebookProvider extends TestProvider {
         facebookProvider.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
         facebookProvider.setCallbackUrl("http://www.google.com/");
         facebookProvider
-            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos");
+            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events");
         facebookProvider.setFriendsReturned(true);
         facebookProvider.setMoviesReturned(true);
         facebookProvider.setMusicReturned(true);
         facebookProvider.setBooksReturned(true);
         facebookProvider.setLikesReturned(true);
         facebookProvider.setAlbumsReturned(true);
+        facebookProvider.setEventsReturned(true);
         facebookProvider.init();
         return facebookProvider;
     }
@@ -184,6 +186,15 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals(1336472660000L, album.getUpdatedTime().getTime());
         assertFalse(album.isCanUpload());
         assertTrue(album.isCanUploadDefined());
-        assertEquals(30, profile.getAttributes().size());
+        List<FacebookEvent> events = profile.getEvents();
+        assertEquals(1, events.size());
+        FacebookEvent event = events.get(0);
+        assertEquals("Couronnement", event.getName());
+        assertEquals("345620802168108", event.getId());
+        assertEquals("Paris, France", event.getLocation());
+        assertEquals("attending", event.getRsvpStatus());
+        assertEquals(1336348800000L, event.getStartTime().getTime());
+        assertEquals(1336359600000L, event.getEndTime().getTime());
+        assertEquals(31, profile.getAttributes().size());
     }
 }
