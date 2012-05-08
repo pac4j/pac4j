@@ -18,7 +18,7 @@ package org.scribe.up.test.profile.facebook;
 import junit.framework.TestCase;
 
 import org.scribe.up.profile.JsonHelper;
-import org.scribe.up.profile.converter.DateConverter;
+import org.scribe.up.profile.facebook.FacebookConverters;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookWork;
 
@@ -29,8 +29,6 @@ import org.scribe.up.profile.facebook.FacebookWork;
  * @since 1.0.0
  */
 public final class TestFacebookWork extends TestCase {
-    
-    private static DateConverter dateConverter = new DateConverter("yyyy-MM");
     
     private static final String ID = "12345";
     
@@ -76,7 +74,7 @@ public final class TestFacebookWork extends TestCase {
         assertEquals(facebookObject.toString(), facebookWork.getLocation().toString());
         assertEquals(facebookObject.toString(), facebookWork.getPosition().toString());
         assertEquals(DESCRIPTION, facebookWork.getDescription());
-        String d = dateConverter.convert(DATE).toString();
+        String d = FacebookConverters.workDateConverter.convert(DATE).toString();
         assertEquals(d, facebookWork.getStartDate().toString());
         assertEquals(d, facebookWork.getEndDate().toString());
     }

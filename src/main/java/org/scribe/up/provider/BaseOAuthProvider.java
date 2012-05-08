@@ -92,6 +92,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      */
     protected String sendRequestForData(Token accessToken, String dataUrl) {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
+        long t0 = System.currentTimeMillis();
         OAuthRequest request = new OAuthRequest(Verb.GET, dataUrl);
         service.signRequest(accessToken, request);
         // for Google
@@ -101,6 +102,8 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
         Response response = request.send();
         int code = response.getCode();
         String body = response.getBody();
+        long t1 = System.currentTimeMillis();
+        logger.debug("Request took : " + (t1 - t0) + " ms for : " + dataUrl);
         logger.debug("response code : {} / response body : {}", code, body);
         if (code != 200) {
             logger.error("Failed to get user data, code : " + code + " / body : " + body);

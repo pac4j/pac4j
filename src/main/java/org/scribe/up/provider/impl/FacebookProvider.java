@@ -37,8 +37,8 @@ import org.scribe.up.util.StringHelper;
  * (JsonList&lt;String&gt;), location (FacebookObject), political (String), favorite_athletes (JsonList&lt;FacebookObject&gt;),
  * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
- * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;) and likes
- * (JsonList&lt;FacebookInfo&gt;).
+ * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
+ * (JsonList&lt;FacebookInfo&gt;) and albums (JsonList&lt;FacebookPhoto&gt;).
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -59,6 +59,8 @@ public class FacebookProvider extends BaseOAuth20Provider {
     protected boolean booksReturned = false;
     
     protected boolean likesReturned = false;
+    
+    protected boolean albumsReturned = false;
     
     @Override
     protected void internalInit() {
@@ -90,6 +92,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         getData(musicReturned, accessToken, profile, FacebookAttributesDefinition.MUSIC, BASE_URL + "/music");
         getData(booksReturned, accessToken, profile, FacebookAttributesDefinition.BOOKS, BASE_URL + "/books");
         getData(likesReturned, accessToken, profile, FacebookAttributesDefinition.LIKES, BASE_URL + "/likes");
+        getData(albumsReturned, accessToken, profile, FacebookAttributesDefinition.ALBUMS, BASE_URL + "/albums");
         return profile;
     }
     
@@ -181,5 +184,18 @@ public class FacebookProvider extends BaseOAuth20Provider {
      */
     public void setLikesReturned(boolean likesReturned) {
         this.likesReturned = likesReturned;
+    }
+    
+    public boolean isAlbumsReturned() {
+        return albumsReturned;
+    }
+    
+    /**
+     * Define if the photo albums should be returned in Facebook profile.
+     * 
+     * @param albumsReturned
+     */
+    public void setAlbumsReturned(boolean albumsReturned) {
+        this.albumsReturned = albumsReturned;
     }
 }

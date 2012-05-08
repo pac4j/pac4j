@@ -35,7 +35,7 @@ import org.scribe.up.provider.impl.FacebookProvider;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    private static final long serialVersionUID = 7253451061309558741L;
+    private static final long serialVersionUID = 7434716541253819363L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.facebookDefinition;
@@ -223,5 +223,9 @@ public class FacebookProfile extends UserProfile {
     
     public List<FacebookInfo> getLikes() {
         return (List<FacebookInfo>) attributes.get(FacebookAttributesDefinition.LIKES);
+    }
+    
+    public List<FacebookPhoto> getAlbums() {
+        return (List<FacebookPhoto>) attributes.get(FacebookAttributesDefinition.ALBUMS);
     }
 }

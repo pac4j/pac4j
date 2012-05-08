@@ -43,4 +43,6 @@ public final class FacebookConverters {
     public final static DateConverter workDateConverter = new DateConverter("yyyy-MM");
     
     public final static JsonListConverter listInfoConverter = new JsonListConverter(FacebookInfo.class);
+    
+    public final static JsonListConverter listPhotoConverter = new JsonListConverter(FacebookPhoto.class);
 }

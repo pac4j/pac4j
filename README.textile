@@ -22,7 +22,7 @@ Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 
-ScribeUP is tested by 143 unit tests and also 7 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
+ScribeUP is tested by 149 unit tests and also 7 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
 
 h2. Contact
 

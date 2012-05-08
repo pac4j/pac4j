@@ -24,6 +24,7 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookInfo;
 import org.scribe.up.profile.facebook.FacebookObject;
+import org.scribe.up.profile.facebook.FacebookPhoto;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
 import org.scribe.up.profile.facebook.FacebookWork;
@@ -52,12 +53,13 @@ public class TestFacebookProvider extends TestProvider {
         facebookProvider.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
         facebookProvider.setCallbackUrl("http://www.google.com/");
         facebookProvider
-            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website");
+            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos");
         facebookProvider.setFriendsReturned(true);
         facebookProvider.setMoviesReturned(true);
         facebookProvider.setMusicReturned(true);
         facebookProvider.setBooksReturned(true);
         facebookProvider.setLikesReturned(true);
+        facebookProvider.setAlbumsReturned(true);
         facebookProvider.init();
         return facebookProvider;
     }
@@ -95,7 +97,7 @@ public class TestFacebookProvider extends TestProvider {
         assertNull(profile.getUsername());
         assertNull(profile.getThirdPartyId());
         assertEquals(2, profile.getTimezone());
-        assertEquals(CommonHelper.getFormattedDate(1330030531000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
+        assertEquals(CommonHelper.getFormattedDate(1336472661000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
         assertFalse(profile.isVerified());
         assertFalse(profile.isVerifiedDefined());
@@ -163,6 +165,25 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("112392265454714", like.getId());
         assertEquals("Sport", like.getCategory());
         assertEquals(1330030467000L, like.getCreatedTime().getTime());
-        assertEquals(29, profile.getAttributes().size());
+        List<FacebookPhoto> albums = profile.getAlbums();
+        assertEquals(2, albums.size());
+        FacebookPhoto album = albums.get(0);
+        assertEquals("168023009993416", album.getId());
+        FacebookObject from = album.getFrom();
+        assertEquals("100003571536393", from.getId());
+        assertEquals("Jerome Testscribeup", from.getName());
+        assertEquals("Profile Pictures", album.getName());
+        assertEquals("http://www.facebook.com/album.php?fbid=168023009993416&id=100003571536393&aid=34144",
+                     album.getLink());
+        assertEquals("168023156660068", album.getCoverPhoto());
+        assertEquals("friends", album.getPrivacy());
+        assertEquals(1, album.getCount());
+        assertTrue(album.isCountDefined());
+        assertEquals("profile", album.getType());
+        assertEquals(1336472634000L, album.getCreatedTime().getTime());
+        assertEquals(1336472660000L, album.getUpdatedTime().getTime());
+        assertFalse(album.isCanUpload());
+        assertTrue(album.isCanUploadDefined());
+        assertEquals(30, profile.getAttributes().size());
     }
 }
