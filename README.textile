@@ -12,7 +12,7 @@ Look at the "description of the providers and profiles":https://github.com/leleu
 h2. Who can use ScribeUP ?
 
 Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
-However, the library was created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuths module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (version 3.5.0).
+However, the library was created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (version 3.5.0).
 
 h2. Versions
 
