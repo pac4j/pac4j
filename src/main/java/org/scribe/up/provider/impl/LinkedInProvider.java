@@ -27,11 +27,11 @@ import org.scribe.up.util.StringHelper;
 /**
  * This class is the OAuth provider to authenticate user in LinkedIn. Scope is not used.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.linkedin.LinkedInProfile} : first-name (String), last-name (String),
- * headline (String) and url (String).
+ * headline (String) and url (String).<br />
+ * More information at https://developer.linkedin.com/documents/profile-api
  * 
  * @author Jerome Leleu
  * @since 1.0.0
- * @see https://developer.linkedin.com/documents/profile-api
  */
 public class LinkedInProvider extends BaseOAuth10Provider {
     

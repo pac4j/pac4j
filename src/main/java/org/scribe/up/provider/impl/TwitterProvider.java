@@ -34,11 +34,11 @@ import org.scribe.up.provider.BaseOAuth10Provider;
  * profile_background_tile (Boolean), profile_image_url (String), profile_image_url_https (String), profile_link_color (Color),
  * profile_sidebar_border_color (Color), profile_sidebar_fill_color (Color), profile_text_color (Color), profile_use_background_image
  * (Boolean), protected (Boolean), screen_name (String), show_all_inline_media (Boolean), statuses_count (Integer), time_zone (String), url
- * (String), utc_offset (Integer) and verified (Boolean).
+ * (String), utc_offset (Integer) and verified (Boolean).<br />
+ * More information at https://dev.twitter.com/docs/api/1/get/account/verify_credentials
  * 
  * @author Jerome Leleu
  * @since 1.0.0
- * @see https://dev.twitter.com/docs/api/1/get/account/verify_credentials
  */
 public class TwitterProvider extends BaseOAuth10Provider {
     

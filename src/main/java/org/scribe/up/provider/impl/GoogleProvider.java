@@ -30,11 +30,11 @@ import org.scribe.up.session.UserSession;
  * This class is the OAuth provider to authenticate user in Google. Scope is not used.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.google.GoogleProfile} : profileUrl (String), isViewer (Boolean),
  * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls
- * (JsonList&lt;GoogleObject&gt;) and photos (JsonList&lt;GoogleObject&gt;).
+ * (JsonList&lt;GoogleObject&gt;) and photos (JsonList&lt;GoogleObject&gt;).<br />
+ * More information at http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html
  * 
  * @author Jerome Leleu
  * @since 1.0.0
- * @see http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html
  */
 public class GoogleProvider extends BaseOAuth10Provider {
     

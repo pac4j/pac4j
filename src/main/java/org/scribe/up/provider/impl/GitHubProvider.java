@@ -30,11 +30,11 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  * (Integer), blog (String), public_repo_count (Integer), public_gist_count (Integer), disk_usage (Integer), collaborators (Integer), plan
  * (GitHubPlan), owned_private_repo_count (Integer), total_private_repo_count (Integer), private_gist_count (Integer), login (String),
  * followers_count (Integer), created_at (FormattedDate), email (String), location (String), type (String), permission (String) and
- * gravatar_id (String).
+ * gravatar_id (String).<br />
+ * More information at http://develop.github.com/p/general.html
  * 
  * @author Jerome Leleu
  * @since 1.0.0
- * @see http://develop.github.com/p/general.html
  */
 public class GitHubProvider extends BaseOAuth20Provider {
     

@@ -38,11 +38,11 @@ import org.scribe.up.util.StringHelper;
  * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
  * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
- * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;) and events (JsonList&lt;FacebookEvent&gt;).
+ * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;) and events (JsonList&lt;FacebookEvent&gt;).<br />
+ * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
  * @author Jerome Leleu
  * @since 1.0.0
- * @see http://developers.facebook.com/docs/reference/api/user/
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     

@@ -32,11 +32,11 @@ import org.scribe.up.util.StringHelper;
  * (JsonList&lt;YahooAddress&gt;), birthYear (Integer), birthdate (FormattedDate), created (FormattedDate), displayAge (Integer),
  * disclosures (JsonList&lt;YahooDisclosure&gt;), emails (JsonList&lt;YahooEmail&gt;), familyName (String), gender (Gender), givenName
  * (String), image (YahooImage), interests (JsonList&lt;YahooInterest&gt;), isConnected (Boolean), lang (Locale), location (String),
- * memberSince (FormattedDate), nickname (String), profileUrl (String), timeZone (String), updated (FormattedDate) and uri (String).
+ * memberSince (FormattedDate), nickname (String), profileUrl (String), timeZone (String), updated (FormattedDate) and uri (String).<br />
+ * More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
  * 
  * @author Jerome Leleu
  * @since 1.0.0
- * @see http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
  */
 public class YahooProvider extends BaseOAuth10Provider {
     
@@ -65,7 +65,7 @@ public class YahooProvider extends BaseOAuth10Provider {
         // then the profile with the guid
         if (StringHelper.isNotBlank(guid)) {
             body = sendRequestForData(accessToken, "http://social.yahooapis.com/v1/user/" + guid
-                                                      + "/profile?format=json");
+                                                   + "/profile?format=json");
             if (body == null) {
                 return null;
             }
