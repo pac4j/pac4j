@@ -35,8 +35,6 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class LiveProvider extends BaseOAuth20Provider {
     
-    public final static String TYPE = LiveProvider.class.getSimpleName();
-    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(LiveApi.class).apiKey(key).apiSecret(secret).scope("wl.basic")

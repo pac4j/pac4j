@@ -18,6 +18,7 @@ package org.scribe.up.test.provider.impl;
 import java.util.Locale;
 
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.live.LiveProfile;
 import org.scribe.up.provider.OAuthProvider;
@@ -69,8 +70,9 @@ public class TestLiveProvider extends TestProvider {
         LiveProfile profile = (LiveProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("416c383b220392d8", profile.getId());
-        assertEquals(LiveProvider.TYPE + UserProfile.SEPARATOR + "416c383b220392d8", profile.getTypedId());
-        assertTrue(LiveProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(LiveProfile.class.getSimpleName() + UserProfile.SEPARATOR + "416c383b220392d8",
+                     profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), LiveProfile.class));
         assertEquals("Test ScribeUP", profile.getName());
         assertEquals("Test", profile.getFirstName());
         assertEquals("ScribeUP", profile.getLastName());

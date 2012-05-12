@@ -21,7 +21,6 @@ import java.util.Map;
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.GitHubProvider;
 
 /**
  * This class is the user profile for GitHub with appropriate getters.
@@ -31,14 +30,10 @@ import org.scribe.up.provider.impl.GitHubProvider;
  */
 public class GitHubProfile extends UserProfile {
     
-    private static final long serialVersionUID = -7024887450473712689L;
+    private static final long serialVersionUID = 8379965156774379395L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.githubDefinition;
-    }
-    
-    protected String getProviderType() {
-        return GitHubProvider.TYPE;
     }
     
     public GitHubProfile() {
@@ -53,20 +48,6 @@ public class GitHubProfile extends UserProfile {
         super(id, attributes);
     }
     
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(GitHubProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
     public String getCompany() {
         return (String) attributes.get(GitHubAttributesDefinition.COMPANY);
     }
@@ -76,7 +57,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getFollowingCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWING_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWING_COUNT));
     }
     
     /**
@@ -93,7 +74,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getPublicRepoCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_REPO_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_REPO_COUNT));
     }
     
     /**
@@ -106,7 +87,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getPublicGistCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_GIST_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_GIST_COUNT));
     }
     
     /**
@@ -119,7 +100,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getDiskUsage() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.DISK_USAGE));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.DISK_USAGE));
     }
     
     /**
@@ -132,7 +113,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getCollaborators() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.COLLABORATORS));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.COLLABORATORS));
     }
     
     /**
@@ -149,7 +130,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getOwnedPrivateRepoCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPO_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPO_COUNT));
     }
     
     /**
@@ -162,7 +143,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getTotalPrivateRepoCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPO_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPO_COUNT));
     }
     
     /**
@@ -175,7 +156,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getPrivateGistCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.PRIVATE_GIST_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PRIVATE_GIST_COUNT));
     }
     
     /**
@@ -192,7 +173,7 @@ public class GitHubProfile extends UserProfile {
     }
     
     public int getFollowersCount() {
-        return getSafeInteger((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWERS_COUNT));
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWERS_COUNT));
     }
     
     /**

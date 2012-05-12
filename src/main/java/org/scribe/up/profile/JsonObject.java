@@ -25,7 +25,7 @@ import org.codehaus.jackson.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public abstract class JsonObject implements Serializable {
+public abstract class JsonObject extends SafeGetterObject implements Serializable {
     
     private static final long serialVersionUID = -7382108665149321395L;
     

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooAddress;
 import org.scribe.up.profile.yahoo.YahooDisclosure;
@@ -77,8 +78,9 @@ public class TestYahooProvider extends TestProvider {
         YahooProfile profile = (YahooProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
-        assertEquals("YahooProvider#PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getTypedId());
-        assertTrue(YahooProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(YahooProfile.class.getSimpleName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
+                     profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
         assertEquals("my profile", profile.getAboutMe());
         List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());

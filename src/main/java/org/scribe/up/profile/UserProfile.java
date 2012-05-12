@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from an OAuth provider after authentication : it's an identifier (string) and attributes
- * (objects). The attributes definition and the associated provider type are null (generic profile), they must be defined in subclasses.
+ * (objects). The attributes definition is null (generic profile), it must be defined in subclasses.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile implements Serializable {
+public class UserProfile extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = 3240837328687495139L;
+    private static final long serialVersionUID = -3467912340712401596L;
     
     protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -116,15 +116,6 @@ public class UserProfile implements Serializable {
     }
     
     /**
-     * Return the associated provider type for this user profile. Null for this (generic) user profile.
-     * 
-     * @return the associated provider type
-     */
-    protected String getProviderType() {
-        return null;
-    }
-    
-    /**
      * Set the identifier and convert it if necessary.
      * 
      * @param id
@@ -132,9 +123,9 @@ public class UserProfile implements Serializable {
     public void setId(Object id) {
         if (id != null) {
             String sId = id.toString();
-            String providerType = getProviderType();
-            if (providerType != null && sId.startsWith(providerType + SEPARATOR)) {
-                sId = sId.substring(providerType.length() + SEPARATOR.length());
+            String type = this.getClass().getSimpleName();
+            if (type != null && sId.startsWith(type + SEPARATOR)) {
+                sId = sId.substring(type.length() + SEPARATOR.length());
             }
             logger.debug("identifier : {}", sId);
             this.id = sId;
@@ -151,14 +142,14 @@ public class UserProfile implements Serializable {
     }
     
     /**
-     * Get the user identifier with a prefix which is the provider type.
+     * Get the user identifier with a prefix which is the profile type.
      * 
      * @return the typed user identifier
      */
     public String getTypedId() {
-        String providerType = getProviderType();
-        if (providerType != null) {
-            return providerType + SEPARATOR + id;
+        String type = this.getClass().getSimpleName();
+        if (type != null) {
+            return type + SEPARATOR + id;
         } else {
             return id;
         }
@@ -171,26 +162,6 @@ public class UserProfile implements Serializable {
      */
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
-    }
-    
-    /**
-     * Return the primitive value or false if null.
-     * 
-     * @param b
-     * @return the primitive value or false if null
-     */
-    protected boolean getSafeBoolean(Boolean b) {
-        return b != null ? b : false;
-    }
-    
-    /**
-     * Return the primitive value or 0 if null.
-     * 
-     * @param i
-     * @return the primitive value or 0 if null
-     */
-    protected int getSafeInteger(Integer i) {
-        return i != null ? i : 0;
     }
     
     @Override

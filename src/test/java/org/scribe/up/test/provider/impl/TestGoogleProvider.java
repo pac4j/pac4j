@@ -17,6 +17,7 @@ package org.scribe.up.test.provider.impl;
 
 import java.util.List;
 
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.google.GoogleObject;
 import org.scribe.up.profile.google.GoogleProfile;
@@ -69,8 +70,9 @@ public class TestGoogleProvider extends TestProvider {
         GoogleProfile profile = (GoogleProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(GoogleProvider.TYPE + UserProfile.SEPARATOR + "113675986756217860428", profile.getTypedId());
-        assertTrue(GoogleProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(GoogleProfile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
+                     profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleProfile.class));
         assertEquals("", profile.getProfileUrl());
         assertTrue(profile.isViewer());
         assertTrue(profile.isViewerDefined());

@@ -20,7 +20,6 @@ import java.util.Map;
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.LinkedInProvider;
 
 /**
  * This class is the user profile for LinkedIn with appropriate getters.
@@ -30,14 +29,10 @@ import org.scribe.up.provider.impl.LinkedInProvider;
  */
 public class LinkedInProfile extends UserProfile {
     
-    private static final long serialVersionUID = 4557343108526456560L;
+    private static final long serialVersionUID = -7604139363853064552L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.linkedinDefinition;
-    }
-    
-    protected String getProviderType() {
-        return LinkedInProvider.TYPE;
     }
     
     public LinkedInProfile() {
@@ -50,20 +45,6 @@ public class LinkedInProfile extends UserProfile {
     
     public LinkedInProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
-    }
-    
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(LinkedInProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
     }
     
     public String getFirstName() {

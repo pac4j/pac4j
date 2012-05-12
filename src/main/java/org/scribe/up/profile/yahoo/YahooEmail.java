@@ -52,7 +52,7 @@ public final class YahooEmail extends JsonObject implements Serializable {
     }
     
     public int getId() {
-        return id != null ? id : 0;
+        return getSafeInt(id);
     }
     
     public boolean isIdDefined() {
@@ -60,7 +60,7 @@ public final class YahooEmail extends JsonObject implements Serializable {
     }
     
     public boolean isPrimary() {
-        return primary != null ? primary : false;
+        return getSafeBoolean(primary);
     }
     
     public boolean isPrimaryDefined() {

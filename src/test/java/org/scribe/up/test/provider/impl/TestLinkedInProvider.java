@@ -15,6 +15,7 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.linkedin.LinkedInProfile;
 import org.scribe.up.provider.OAuthProvider;
@@ -63,8 +64,8 @@ public class TestLinkedInProvider extends TestProvider {
         LinkedInProfile profile = (LinkedInProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("167439971", profile.getId());
-        assertEquals(LinkedInProvider.TYPE + UserProfile.SEPARATOR + "167439971", profile.getTypedId());
-        assertTrue(LinkedInProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(LinkedInProfile.class.getSimpleName() + UserProfile.SEPARATOR + "167439971", profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), LinkedInProfile.class));
         assertEquals("test", profile.getFirstName());
         assertEquals("scribeUp", profile.getLastName());
         assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());

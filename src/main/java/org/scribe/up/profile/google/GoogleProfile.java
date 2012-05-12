@@ -21,7 +21,6 @@ import java.util.Map;
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.GoogleProvider;
 
 /**
  * This class is the user profile for Google with appropriate getters.
@@ -32,14 +31,10 @@ import org.scribe.up.provider.impl.GoogleProvider;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends UserProfile {
     
-    private static final long serialVersionUID = 5043627498801644731L;
+    private static final long serialVersionUID = -8416978575072383925L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.googleDefinition;
-    }
-    
-    protected String getProviderType() {
-        return GoogleProvider.TYPE;
     }
     
     public GoogleProfile() {
@@ -52,20 +47,6 @@ public class GoogleProfile extends UserProfile {
     
     public GoogleProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
-    }
-    
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(GoogleProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
     }
     
     public String getProfileUrl() {

@@ -15,6 +15,7 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubPlan;
 import org.scribe.up.profile.github.GitHubProfile;
@@ -65,8 +66,8 @@ public class TestGitHubProvider extends TestProvider {
         GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
-        assertEquals(GitHubProvider.TYPE + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
-        assertTrue(GitHubProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(GitHubProfile.class.getSimpleName() + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
         assertEquals("Company", profile.getCompany());
         assertEquals("Test", profile.getName());
         assertEquals(0, profile.getFollowingCount());

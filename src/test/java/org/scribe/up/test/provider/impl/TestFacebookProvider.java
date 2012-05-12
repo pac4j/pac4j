@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookEvent;
@@ -85,8 +86,9 @@ public class TestFacebookProvider extends TestProvider {
         FacebookProfile profile = (FacebookProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("100003571536393", profile.getId());
-        assertEquals(FacebookProvider.TYPE + UserProfile.SEPARATOR + "100003571536393", profile.getTypedId());
-        assertTrue(FacebookProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(FacebookProfile.class.getSimpleName() + UserProfile.SEPARATOR + "100003571536393",
+                     profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertEquals("Jerome Testscribeup", profile.getName());
         assertEquals("jerome", profile.getFirstName());
         assertNull(profile.getMiddleName());

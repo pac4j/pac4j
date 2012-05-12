@@ -42,8 +42,6 @@ import org.scribe.up.provider.BaseOAuth10Provider;
  */
 public class TwitterProvider extends BaseOAuth10Provider {
     
-    public final static String TYPE = TwitterProvider.class.getSimpleName();
-    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(TwitterApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)

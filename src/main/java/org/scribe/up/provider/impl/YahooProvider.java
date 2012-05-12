@@ -40,8 +40,6 @@ import org.scribe.up.util.StringHelper;
  */
 public class YahooProvider extends BaseOAuth10Provider {
     
-    public final static String TYPE = YahooProvider.class.getSimpleName();
-    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(YahooApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)

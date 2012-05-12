@@ -23,7 +23,6 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.LiveProvider;
 
 /**
  * This class is the user profile for Windows Live with appropriate getters.
@@ -33,14 +32,10 @@ import org.scribe.up.provider.impl.LiveProvider;
  */
 public class LiveProfile extends UserProfile {
     
-    private static final long serialVersionUID = 4957023145113094752L;
+    private static final long serialVersionUID = 6664886440481423579L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.liveDefinition;
-    }
-    
-    protected String getProviderType() {
-        return LiveProvider.TYPE;
     }
     
     public LiveProfile() {
@@ -53,20 +48,6 @@ public class LiveProfile extends UserProfile {
     
     public LiveProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
-    }
-    
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(LiveProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
     }
     
     public String getName() {

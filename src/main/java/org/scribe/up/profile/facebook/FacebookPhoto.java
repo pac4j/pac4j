@@ -98,7 +98,7 @@ public class FacebookPhoto extends JsonObject implements Serializable {
     }
     
     public int getCount() {
-        return count != null ? count : 0;
+        return getSafeInt(count);
     }
     
     public boolean isCountDefined() {
@@ -118,7 +118,7 @@ public class FacebookPhoto extends JsonObject implements Serializable {
     }
     
     public boolean isCanUpload() {
-        return canUpload != null ? canUpload : false;
+        return getSafeBoolean(canUpload);
     }
     
     public boolean isCanUploadDefined() {

@@ -56,7 +56,7 @@ public final class YahooImage extends JsonObject implements Serializable {
     }
     
     public int getWidth() {
-        return width != null ? width : 0;
+        return getSafeInt(width);
     }
     
     public boolean isWidthDefined() {
@@ -64,7 +64,7 @@ public final class YahooImage extends JsonObject implements Serializable {
     }
     
     public int getHeight() {
-        return height != null ? height : 0;
+        return getSafeInt(height);
     }
     
     public boolean isHeightDefined() {

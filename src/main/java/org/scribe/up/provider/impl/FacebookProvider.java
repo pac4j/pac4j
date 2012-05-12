@@ -46,8 +46,6 @@ import org.scribe.up.util.StringHelper;
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
-    public final static String TYPE = FacebookProvider.class.getSimpleName();
-    
     protected final static String BASE_URL = "https://graph.facebook.com/me";
     
     protected boolean friendsReturned = false;

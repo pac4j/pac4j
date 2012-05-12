@@ -56,7 +56,7 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     }
     
     public int getCollaborators() {
-        return collaborators != null ? collaborators : 0;
+        return getSafeInt(collaborators);
     }
     
     public boolean isCollaboratorsDefined() {
@@ -64,7 +64,7 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     }
     
     public int getSpace() {
-        return space != null ? space : 0;
+        return getSafeInt(space);
     }
     
     public boolean isSpaceDefined() {
@@ -72,7 +72,7 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     }
     
     public int getPrivateRepos() {
-        return privateRepos != null ? privateRepos : 0;
+        return getSafeInt(privateRepos);
     }
     
     public boolean isPrivateReposDefined() {

@@ -24,7 +24,6 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.YahooProvider;
 
 /**
  * This class is the user profile for Yahoo with appropriate getters.
@@ -35,14 +34,10 @@ import org.scribe.up.provider.impl.YahooProvider;
 @SuppressWarnings("unchecked")
 public class YahooProfile extends UserProfile {
     
-    private static final long serialVersionUID = -6832062183539648599L;
+    private static final long serialVersionUID = 8396796531584556563L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.yahooDefinition;
-    }
-    
-    protected String getProviderType() {
-        return YahooProvider.TYPE;
     }
     
     public YahooProfile() {
@@ -57,20 +52,6 @@ public class YahooProfile extends UserProfile {
         super(id, attributes);
     }
     
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(YahooProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
     public String getAboutMe() {
         return (String) attributes.get(YahooAttributesDefinition.ABOUT_ME);
     }
@@ -80,7 +61,7 @@ public class YahooProfile extends UserProfile {
     }
     
     public int getBirthYear() {
-        return getSafeInteger((Integer) attributes.get(YahooAttributesDefinition.BIRTH_YEAR));
+        return getSafeInt((Integer) attributes.get(YahooAttributesDefinition.BIRTH_YEAR));
     }
     
     /**
@@ -101,7 +82,7 @@ public class YahooProfile extends UserProfile {
     }
     
     public int getDisplayAge() {
-        return getSafeInteger((Integer) attributes.get(YahooAttributesDefinition.DISPLAY_AGE));
+        return getSafeInt((Integer) attributes.get(YahooAttributesDefinition.DISPLAY_AGE));
     }
     
     /**

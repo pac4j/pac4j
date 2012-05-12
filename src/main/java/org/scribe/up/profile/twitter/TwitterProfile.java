@@ -23,7 +23,6 @@ import java.util.Map;
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.TwitterProvider;
 
 /**
  * This class is the user profile for Twitter with appropriate getters.
@@ -33,14 +32,10 @@ import org.scribe.up.provider.impl.TwitterProvider;
  */
 public class TwitterProfile extends UserProfile {
     
-    private static final long serialVersionUID = -6665446348249419048L;
+    private static final long serialVersionUID = 2251556061407014735L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.twitterDefinition;
-    }
-    
-    protected String getProviderType() {
-        return TwitterProvider.TYPE;
     }
     
     public TwitterProfile() {
@@ -53,20 +48,6 @@ public class TwitterProfile extends UserProfile {
     
     public TwitterProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
-    }
-    
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(TwitterProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
     }
     
     public boolean isContributorsEnabled() {
@@ -117,7 +98,7 @@ public class TwitterProfile extends UserProfile {
     }
     
     public int getFavouritesCount() {
-        return getSafeInteger((Integer) attributes.get(TwitterAttributesDefinition.FAVOURITES_COUNT));
+        return getSafeInt((Integer) attributes.get(TwitterAttributesDefinition.FAVOURITES_COUNT));
     }
     
     /**
@@ -143,7 +124,7 @@ public class TwitterProfile extends UserProfile {
     }
     
     public int getFollowersCount() {
-        return getSafeInteger((Integer) attributes.get(TwitterAttributesDefinition.FOLLOWERS_COUNT));
+        return getSafeInt((Integer) attributes.get(TwitterAttributesDefinition.FOLLOWERS_COUNT));
     }
     
     /**
@@ -169,7 +150,7 @@ public class TwitterProfile extends UserProfile {
     }
     
     public int getFriendsCount() {
-        return getSafeInteger((Integer) attributes.get(TwitterAttributesDefinition.FRIENDS_COUNT));
+        return getSafeInt((Integer) attributes.get(TwitterAttributesDefinition.FRIENDS_COUNT));
     }
     
     /**
@@ -212,7 +193,7 @@ public class TwitterProfile extends UserProfile {
     }
     
     public int getListedCount() {
-        return getSafeInteger((Integer) attributes.get(TwitterAttributesDefinition.LISTED_COUNT));
+        return getSafeInt((Integer) attributes.get(TwitterAttributesDefinition.LISTED_COUNT));
     }
     
     /**
@@ -338,7 +319,7 @@ public class TwitterProfile extends UserProfile {
     }
     
     public int getStatusesCount() {
-        return getSafeInteger((Integer) attributes.get(TwitterAttributesDefinition.STATUSES_COUNT));
+        return getSafeInt((Integer) attributes.get(TwitterAttributesDefinition.STATUSES_COUNT));
     }
     
     /**
@@ -359,7 +340,7 @@ public class TwitterProfile extends UserProfile {
     }
     
     public int getUtcOffset() {
-        return getSafeInteger((Integer) attributes.get(TwitterAttributesDefinition.UTC_OFFSET));
+        return getSafeInt((Integer) attributes.get(TwitterAttributesDefinition.UTC_OFFSET));
     }
     
     /**

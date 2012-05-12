@@ -65,7 +65,7 @@ public final class YahooAddress extends JsonObject implements Serializable {
     }
     
     public int getId() {
-        return id != null ? id : 0;
+        return getSafeInt(id);
     }
     
     public boolean isIdDefined() {
@@ -73,7 +73,7 @@ public final class YahooAddress extends JsonObject implements Serializable {
     }
     
     public boolean isCurrent() {
-        return current != null ? current : false;
+        return getSafeBoolean(current);
     }
     
     public boolean isCurrentDefined() {

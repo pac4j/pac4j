@@ -38,8 +38,6 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class GitHubProvider extends BaseOAuth20Provider {
     
-    public final static String TYPE = GitHubProvider.class.getSimpleName();
-    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(GitHubApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)

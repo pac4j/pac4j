@@ -24,7 +24,6 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.provider.impl.FacebookProvider;
 
 /**
  * This class is the user profile for Facebook with appropriate getters.
@@ -35,14 +34,10 @@ import org.scribe.up.provider.impl.FacebookProvider;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    private static final long serialVersionUID = 7961104546646391758L;
+    private static final long serialVersionUID = 165025537180852846L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.facebookDefinition;
-    }
-    
-    protected String getProviderType() {
-        return FacebookProvider.TYPE;
     }
     
     public FacebookProfile() {
@@ -55,20 +50,6 @@ public class FacebookProfile extends UserProfile {
     
     public FacebookProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
-    }
-    
-    /**
-     * Indicate if the user identifier matches this kind of profile.
-     * 
-     * @param id
-     * @return if the user identifier matches this kind of profile
-     */
-    public static boolean isTypedIdOf(String id) {
-        if (id != null && id.startsWith(FacebookProvider.TYPE + SEPARATOR)) {
-            return true;
-        } else {
-            return false;
-        }
     }
     
     public String getName() {
@@ -112,7 +93,7 @@ public class FacebookProfile extends UserProfile {
     }
     
     public int getTimezone() {
-        return getSafeInteger((Integer) attributes.get(FacebookAttributesDefinition.TIMEZONE));
+        return getSafeInt((Integer) attributes.get(FacebookAttributesDefinition.TIMEZONE));
     }
     
     /**

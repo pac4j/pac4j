@@ -18,6 +18,7 @@ package org.scribe.up.test.provider.impl;
 import java.awt.Color;
 import java.util.Locale;
 
+import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.OAuthProvider;
@@ -67,8 +68,8 @@ public class TestTwitterProvider extends TestProvider {
         TwitterProfile profile = (TwitterProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
-        assertEquals(TwitterProvider.TYPE + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
-        assertTrue(TwitterProfile.isTypedIdOf(profile.getTypedId()));
+        assertEquals(TwitterProfile.class.getSimpleName() + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
         assertFalse(profile.isContributorsEnabled());
         assertTrue(profile.isContributorsEnabledDefined());
         assertEquals(CommonHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
