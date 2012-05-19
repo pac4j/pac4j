@@ -21,19 +21,19 @@ import org.scribe.builder.api.LiveApi;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.live.LiveProfile;
+import org.scribe.up.profile.windowslive.WindowsLiveProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
  * This class is the OAuth provider to authenticate user in Windows Live (SkyDrive, Hotmail and Messenger). Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.live.LiveProfile} : name (String), first_name (String), last_name
+ * Attributes (Java type) available in {@link org.scribe.up.profile.windowslive.WindowsLiveProfile} : name (String), first_name (String), last_name
  * (String), link (String), gender (Gender), locale (Locale) and updated_time (FormattedDate).<br />
  * More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LiveProvider extends BaseOAuth20Provider {
+public class WindowsLiveProvider extends BaseOAuth20Provider {
     
     @Override
     protected void internalInit() {
@@ -48,11 +48,11 @@ public class LiveProvider extends BaseOAuth20Provider {
     
     @Override
     protected UserProfile extractUserProfile(String body) {
-        LiveProfile profile = new LiveProfile();
+        WindowsLiveProfile profile = new WindowsLiveProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : AttributesDefinitions.liveDefinition.getAttributes()) {
+            for (String attribute : AttributesDefinitions.windowsLiveDefinition.getAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

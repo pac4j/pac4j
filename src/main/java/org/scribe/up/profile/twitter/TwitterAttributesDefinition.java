@@ -82,11 +82,11 @@ public class TwitterAttributesDefinition extends AttributesDefinition {
         addAttribute(NAME, Converters.stringConverter);
         addAttribute(NOTIFICATIONS, Converters.booleanConverter);
         addAttribute(PROFILE_BACKGROUND_COLOR, Converters.colorConverter);
-        addAttribute(PROFILE_BACKGROUND_IMAGE_URL, TwitterConverters.urlConverter);
-        addAttribute(PROFILE_BACKGROUND_IMAGE_URL_HTTPS, TwitterConverters.urlConverter);
+        addAttribute(PROFILE_BACKGROUND_IMAGE_URL, Converters.urlConverter);
+        addAttribute(PROFILE_BACKGROUND_IMAGE_URL_HTTPS, Converters.urlConverter);
         addAttribute(PROFILE_BACKGROUND_TILE, Converters.booleanConverter);
-        addAttribute(PROFILE_IMAGE_URL, TwitterConverters.urlConverter);
-        addAttribute(PROFILE_IMAGE_URL_HTTPS, TwitterConverters.urlConverter);
+        addAttribute(PROFILE_IMAGE_URL, Converters.urlConverter);
+        addAttribute(PROFILE_IMAGE_URL_HTTPS, Converters.urlConverter);
         addAttribute(PROFILE_LINK_COLOR, Converters.colorConverter);
         addAttribute(PROFILE_SIDEBAR_BORDER_COLOR, Converters.colorConverter);
         addAttribute(PROFILE_SIDEBAR_FILL_COLOR, Converters.colorConverter);

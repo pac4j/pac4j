@@ -38,4 +38,6 @@ public final class Converters {
     public final static GenderConverter genderConverter = new GenderConverter("male", "female");
     
     public final static FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz");
+    
+    public final static StringReplaceConverter urlConverter = new StringReplaceConverter("\\/", "/");
 }

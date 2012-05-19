@@ -19,8 +19,9 @@ import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.github.GitHubAttributesDefinition;
 import org.scribe.up.profile.google.GoogleAttributesDefinition;
 import org.scribe.up.profile.linkedin.LinkedInAttributesDefinition;
-import org.scribe.up.profile.live.LiveAttributesDefinition;
 import org.scribe.up.profile.twitter.TwitterAttributesDefinition;
+import org.scribe.up.profile.windowslive.WindowsLiveAttributesDefinition;
+import org.scribe.up.profile.wordpress.WordPressAttributesDefinition;
 import org.scribe.up.profile.yahoo.YahooAttributesDefinition;
 
 /**
@@ -43,5 +44,7 @@ public final class AttributesDefinitions {
     
     public final static AttributesDefinition yahooDefinition = new YahooAttributesDefinition();
     
-    public final static AttributesDefinition liveDefinition = new LiveAttributesDefinition();
+    public final static AttributesDefinition windowsLiveDefinition = new WindowsLiveAttributesDefinition();
+    
+    public final static AttributesDefinition wordPressDefinition = new WordPressAttributesDefinition();
 }

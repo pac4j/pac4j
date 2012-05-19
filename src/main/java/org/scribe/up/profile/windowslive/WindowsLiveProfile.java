@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.live;
+package org.scribe.up.profile.windowslive;
 
 import java.util.Date;
 import java.util.Locale;
@@ -30,51 +30,51 @@ import org.scribe.up.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LiveProfile extends UserProfile {
+public class WindowsLiveProfile extends UserProfile {
     
-    private static final long serialVersionUID = 6664886440481423579L;
+    private static final long serialVersionUID = 4835657443547427620L;
     
     protected AttributesDefinition getAttributesDefinition() {
-        return AttributesDefinitions.liveDefinition;
+        return AttributesDefinitions.windowsLiveDefinition;
     }
     
-    public LiveProfile() {
+    public WindowsLiveProfile() {
         super();
     }
     
-    public LiveProfile(Object id) {
+    public WindowsLiveProfile(Object id) {
         super(id);
     }
     
-    public LiveProfile(Object id, Map<String, Object> attributes) {
+    public WindowsLiveProfile(Object id, Map<String, Object> attributes) {
         super(id, attributes);
     }
     
     public String getName() {
-        return (String) attributes.get(LiveAttributesDefinition.NAME);
+        return (String) attributes.get(WindowsLiveAttributesDefinition.NAME);
     }
     
     public String getFirstName() {
-        return (String) attributes.get(LiveAttributesDefinition.FIRST_NAME);
+        return (String) attributes.get(WindowsLiveAttributesDefinition.FIRST_NAME);
     }
     
     public String getLastName() {
-        return (String) attributes.get(LiveAttributesDefinition.LAST_NAME);
+        return (String) attributes.get(WindowsLiveAttributesDefinition.LAST_NAME);
     }
     
     public String getLink() {
-        return (String) attributes.get(LiveAttributesDefinition.LINK);
+        return (String) attributes.get(WindowsLiveAttributesDefinition.LINK);
     }
     
     public Gender getGender() {
-        return (Gender) attributes.get(LiveAttributesDefinition.GENDER);
+        return (Gender) attributes.get(WindowsLiveAttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) attributes.get(LiveAttributesDefinition.LOCALE);
+        return (Locale) attributes.get(WindowsLiveAttributesDefinition.LOCALE);
     }
     
     public Date getUpdatedTime() {
-        return (Date) attributes.get(LiveAttributesDefinition.UPDATED_TIME);
+        return (Date) attributes.get(WindowsLiveAttributesDefinition.UPDATED_TIME);
     }
 }

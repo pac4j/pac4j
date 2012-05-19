@@ -63,9 +63,11 @@ public final class CommonHelper {
         while (st.hasMoreTokens()) {
             String keyValue = st.nextToken();
             String[] parts = keyValue.split("=");
-            String[] values = new String[1];
-            values[0] = parts[1];
-            parameters.put(parts[0], values);
+            if (parts != null && parts.length >= 2) {
+                String[] values = new String[1];
+                values[0] = parts[1];
+                parameters.put(parts[0], values);
+            }
         }
         return parameters;
     }

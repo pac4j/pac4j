@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.live;
+package org.scribe.up.profile.windowslive;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LiveAttributesDefinition extends AttributesDefinition {
+public class WindowsLiveAttributesDefinition extends AttributesDefinition {
     
     public static final String NAME = "name";
     public static final String FIRST_NAME = "first_name";
@@ -34,7 +34,7 @@ public class LiveAttributesDefinition extends AttributesDefinition {
     public static final String LOCALE = "locale";
     public static final String UPDATED_TIME = "updated_time";
     
-    public LiveAttributesDefinition() {
+    public WindowsLiveAttributesDefinition() {
         addAttribute(NAME, Converters.stringConverter);
         addAttribute(FIRST_NAME, Converters.stringConverter);
         addAttribute(LAST_NAME, Converters.stringConverter);

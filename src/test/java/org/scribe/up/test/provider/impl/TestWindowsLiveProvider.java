@@ -20,9 +20,9 @@ import java.util.Locale;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.live.LiveProfile;
+import org.scribe.up.profile.windowslive.WindowsLiveProfile;
 import org.scribe.up.provider.OAuthProvider;
-import org.scribe.up.provider.impl.LiveProvider;
+import org.scribe.up.provider.impl.WindowsLiveProvider;
 import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -31,12 +31,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the {@link org.scribe.up.provider.impl.LiveProvider} class by simulating a complete authentication.
+ * This class tests the {@link org.scribe.up.provider.impl.WindowsLiveProvider} class by simulating a complete authentication.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TestLiveProvider extends TestProvider {
+public class TestWindowsLiveProvider extends TestProvider {
     
     protected boolean isJavascriptEnabled() {
         return true;
@@ -44,7 +44,7 @@ public class TestLiveProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        LiveProvider liveProvider = new LiveProvider();
+        WindowsLiveProvider liveProvider = new WindowsLiveProvider();
         liveProvider.setKey("00000000400BFE75");
         liveProvider.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");
         liveProvider.setCallbackUrl("http://javadoc.leleuj.cloudbees.net/");
@@ -67,12 +67,12 @@ public class TestLiveProvider extends TestProvider {
     
     @Override
     protected void verifyProfile(UserProfile userProfile) {
-        LiveProfile profile = (LiveProfile) userProfile;
+        WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("416c383b220392d8", profile.getId());
-        assertEquals(LiveProfile.class.getSimpleName() + UserProfile.SEPARATOR + "416c383b220392d8",
+        assertEquals(WindowsLiveProfile.class.getSimpleName() + UserProfile.SEPARATOR + "416c383b220392d8",
                      profile.getTypedId());
-        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), LiveProfile.class));
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
         assertEquals("Test ScribeUP", profile.getName());
         assertEquals("Test", profile.getFirstName());
         assertEquals("ScribeUP", profile.getLastName());

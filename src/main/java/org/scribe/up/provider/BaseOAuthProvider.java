@@ -25,6 +25,7 @@ import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
+import org.scribe.up.provider.impl.WordPressProvider;
 import org.scribe.up.session.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +99,8 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
         // for Google
         if (this instanceof GoogleProvider) {
             request.addHeader("GData-Version", "3.0");
+        } else if (this instanceof WordPressProvider) {
+            request.addHeader("Authorization", "Bearer " + accessToken.getToken());
         }
         Response response = request.send();
         int code = response.getCode();

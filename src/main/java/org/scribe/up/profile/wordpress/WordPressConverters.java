@@ -13,20 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.twitter;
+package org.scribe.up.profile.wordpress;
 
-import java.util.Locale;
-
-import org.scribe.up.profile.converter.FormattedDateConverter;
+import org.scribe.up.profile.converter.JsonObjectConverter;
 
 /**
- * This class defines all the converters specific to Twitter.
+ * This class defines all the converters specific to WordPress.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class TwitterConverters {
-    
-    public final static FormattedDateConverter dateConverter = new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy",
-                                                                                          Locale.US);
+public final class WordPressConverters {
+    public final static JsonObjectConverter linksConverter = new JsonObjectConverter(WordPressLinks.class);
 }
