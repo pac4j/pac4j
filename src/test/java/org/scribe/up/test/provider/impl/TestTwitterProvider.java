@@ -126,6 +126,6 @@ public class TestTwitterProvider extends TestProvider {
         assertEquals(3600, profile.getUtcOffset());
         assertFalse(profile.isVerified());
         assertTrue(profile.isVerifiedDefined());
-        assertEquals(35, profile.getAttributes().size());
+        assertEquals(36, profile.getAttributes().size());
     }
 }

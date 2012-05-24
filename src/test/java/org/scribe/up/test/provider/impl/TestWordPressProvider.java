@@ -82,6 +82,6 @@ public class TestWordPressProvider extends TestProvider {
         assertEquals("https://public-api.wordpress.com/rest/v1/me", links.getSelf());
         assertEquals("https://public-api.wordpress.com/rest/v1/me/help", links.getHelp());
         assertEquals("https://public-api.wordpress.com/rest/v1/sites/36224958", links.getSite());
-        assertEquals(7, profile.getAttributes().size());
+        assertEquals(8, profile.getAttributes().size());
     }
 }

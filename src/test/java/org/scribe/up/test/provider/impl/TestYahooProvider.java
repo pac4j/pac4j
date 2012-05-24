@@ -134,6 +134,6 @@ public class TestYahooProvider extends TestProvider {
         assertEquals("Europe/Paris", profile.getTimeZone());
         assertEquals("2012-03-05T14:26:25Z", profile.getUpdated().toString());
         assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
-        assertEquals(22, profile.getAttributes().size());
+        assertEquals(23, profile.getAttributes().size());
     }
 }

@@ -72,6 +72,6 @@ public class TestLinkedInProvider extends TestProvider {
         assertTrue(profile
             .getUrl()
             .startsWith("http://www.linkedin.com/profile?viewProfile=&amp;key=167439971&amp;authToken=_IWF&amp;authType=name&amp;trk=api*"));
-        assertEquals(4, profile.getAttributes().size());
+        assertEquals(5, profile.getAttributes().size());
     }
 }

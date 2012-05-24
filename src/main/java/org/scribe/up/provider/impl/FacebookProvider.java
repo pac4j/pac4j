@@ -94,6 +94,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         getData(likesReturned, accessToken, profile, FacebookAttributesDefinition.LIKES, BASE_URL + "/likes");
         getData(albumsReturned, accessToken, profile, FacebookAttributesDefinition.ALBUMS, BASE_URL + "/albums");
         getData(eventsReturned, accessToken, profile, FacebookAttributesDefinition.EVENTS, BASE_URL + "/events");
+        addAccessTokenToProfile(profile, accessToken);
         return profile;
     }
     

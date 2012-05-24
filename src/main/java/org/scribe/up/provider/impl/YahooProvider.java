@@ -68,7 +68,9 @@ public class YahooProvider extends BaseOAuth10Provider {
                 return null;
             }
         }
-        return extractUserProfile(body);
+        UserProfile profile = extractUserProfile(body);
+        addAccessTokenToProfile(profile, accessToken);
+        return profile;
     }
     
     @Override

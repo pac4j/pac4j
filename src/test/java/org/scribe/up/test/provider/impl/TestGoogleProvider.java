@@ -91,6 +91,6 @@ public class TestGoogleProvider extends TestProvider {
         assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
                      photo.getValue());
         assertEquals("thumbnail", photo.getType());
-        assertEquals(9, profile.getAttributes().size());
+        assertEquals(10, profile.getAttributes().size());
     }
 }

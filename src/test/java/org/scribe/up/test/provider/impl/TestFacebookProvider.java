@@ -197,6 +197,6 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("attending", event.getRsvpStatus());
         assertNotNull(event.getStartTime());
         assertNotNull(event.getEndTime());
-        assertEquals(31, profile.getAttributes().size());
+        assertEquals(32, profile.getAttributes().size());
     }
 }

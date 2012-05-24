@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfile extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = -3467912340712401596L;
+    private static final long serialVersionUID = 1886431580845863372L;
     
     protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -41,6 +41,8 @@ public class UserProfile extends SafeGetterObject implements Serializable {
     protected Map<String, Object> attributes = new HashMap<String, Object>();
     
     public transient static final String SEPARATOR = "#";
+    
+    private transient static final String ACCESS_TOKEN = "access_token";
     
     /**
      * Build an empty profile.
@@ -162,6 +164,24 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      */
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(attributes);
+    }
+    
+    /**
+     * Set the access token
+     * 
+     * @param accessToken
+     */
+    public void setAccessToken(String accessToken) {
+        attributes.put(ACCESS_TOKEN, accessToken);
+    }
+    
+    /**
+     * Return the access token.
+     * 
+     * @return the access token
+     */
+    public String getAccessToken() {
+        return (String) attributes.get(ACCESS_TOKEN);
     }
     
     @Override

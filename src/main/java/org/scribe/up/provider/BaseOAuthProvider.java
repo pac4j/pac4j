@@ -74,7 +74,23 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
         if (body == null) {
             return null;
         }
-        return extractUserProfile(body);
+        UserProfile profile = extractUserProfile(body);
+        addAccessTokenToProfile(profile, accessToken);
+        return profile;
+    }
+    
+    /**
+     * Add the access token to the profile (as an attribute).
+     * 
+     * @param profile
+     * @param accessToken
+     */
+    protected void addAccessTokenToProfile(UserProfile profile, Token accessToken) {
+        if (profile != null) {
+            String token = accessToken.getToken();
+            logger.debug("add access_token : {} to profile", token);
+            profile.setAccessToken(token);
+        }
     }
     
     /**

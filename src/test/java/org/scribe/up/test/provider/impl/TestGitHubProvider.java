@@ -93,6 +93,6 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals("User", profile.getType());
         assertNull(profile.getPermission());
         assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
-        assertEquals(19, profile.getAttributes().size());
+        assertEquals(20, profile.getAttributes().size());
     }
 }

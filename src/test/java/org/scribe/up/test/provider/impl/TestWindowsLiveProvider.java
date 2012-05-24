@@ -81,6 +81,6 @@ public class TestWindowsLiveProvider extends TestProvider {
         assertEquals(Locale.FRANCE, profile.getLocale());
         assertEquals(CommonHelper.getFormattedDate(1335878042000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdatedTime().toString());
-        assertEquals(7, profile.getAttributes().size());
+        assertEquals(8, profile.getAttributes().size());
     }
 }

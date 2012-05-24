@@ -17,6 +17,7 @@ package org.scribe.up.test.provider.impl;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.StringUtils;
 import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
@@ -56,6 +57,7 @@ public abstract class TestProvider extends TestCase {
         
         UserProfile profile = getProfile(provider, session, callbackUrl);
         
+        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         verifyProfile(profile);
         
         byte[] bytes = CommonHelper.serialize(profile);
