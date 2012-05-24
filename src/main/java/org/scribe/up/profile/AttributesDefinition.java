@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribe.up.profile.converter.AttributeConverter;
+import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class is the definition of the attributes of a profile.
@@ -38,6 +39,13 @@ public class AttributesDefinition {
     
     public List<String> getAttributes() {
         return attributesNames;
+    }
+    
+    /**
+     * Default constructor which adds the access token by default.
+     */
+    public AttributesDefinition() {
+        addAttribute(UserProfile.ACCESS_TOKEN, Converters.stringConverter, false);
     }
     
     /**
