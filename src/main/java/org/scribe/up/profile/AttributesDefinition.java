@@ -37,6 +37,8 @@ public class AttributesDefinition {
     
     protected Map<String, Boolean> attributesTypes = new HashMap<String, Boolean>();
     
+    public transient static final String ACCESS_TOKEN = "access_token";
+    
     public List<String> getAttributes() {
         return attributesNames;
     }
@@ -45,7 +47,7 @@ public class AttributesDefinition {
      * Default constructor which adds the access token by default.
      */
     public AttributesDefinition() {
-        addAttribute(UserProfile.ACCESS_TOKEN, Converters.stringConverter, false);
+        addAttribute(ACCESS_TOKEN, Converters.stringConverter, false);
     }
     
     /**
