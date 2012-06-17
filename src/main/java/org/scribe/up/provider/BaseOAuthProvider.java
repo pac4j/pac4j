@@ -41,9 +41,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthProvider.class);
     
-    protected static final String ERROR_REASON = "error_reason";
-    
-    protected static final String ERROR_DESCRIPTION = "error_description";
+    public static final String[] ERROR_PARAMETERS = {
+        "error", "error_reason", "error_description", "error_uri"
+    };
     
     protected OAuthService service;
     
@@ -140,18 +140,17 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected abstract UserProfile extractUserProfile(String body);
     
     public OAuthCredential getCredential(UserSession session, Map<String, String[]> parameters) {
-        String[] error_reasons = parameters.get(ERROR_REASON);
-        String error_reason = null;
-        String[] error_descriptions = parameters.get(ERROR_DESCRIPTION);
-        String error_description = null;
-        if (error_reasons != null && error_reasons.length > 0) {
-            error_reason = error_reasons[0];
+        boolean errorFound = false;
+        String errorMessage = "";
+        for (String key : ERROR_PARAMETERS) {
+            String[] values = parameters.get(key);
+            if (values != null && values.length > 0) {
+                errorFound = true;
+                errorMessage += key + " : '" + values[0] + "'; ";
+            }
         }
-        if (error_descriptions != null && error_descriptions.length > 0) {
-            error_description = error_descriptions[0];
-        }
-        if (error_reason != null || error_description != null) {
-            logger.error("Error reason : {} / description : {}", error_reason, error_description);
+        if (errorFound) {
+            logger.error(errorMessage);
             return null;
         } else {
             return extractCredentialFromParameters(session, parameters);

@@ -15,9 +15,16 @@
  */
 package org.scribe.up.test.provider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
+import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.provider.BaseOAuth10Provider;
+import org.scribe.up.provider.BaseOAuth20Provider;
+import org.scribe.up.provider.BaseOAuthProvider;
+import org.scribe.up.provider.impl.FacebookProvider;
 import org.scribe.up.provider.impl.YahooProvider;
 
 /**
@@ -28,8 +35,37 @@ import org.scribe.up.provider.impl.YahooProvider;
  */
 public final class TestBaseOAuthProvider extends TestCase {
     
+    private static final String FAKE_VALUE = "fakeValue";
+    
     public void testType() {
         BaseOAuth10Provider provider = new YahooProvider();
         assertEquals("YahooProvider", provider.getType());
+    }
+    
+    private void addSingledValueParameter(Map<String, String[]> parameters, String key, String value) {
+        String[] values = new String[1];
+        values[0] = value;
+        parameters.put(key, values);
+    }
+    
+    private Map<String, String[]> createParameters(String key, String value) {
+        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        addSingledValueParameter(parameters, BaseOAuth20Provider.OAUTH_CODE, FAKE_VALUE);
+        addSingledValueParameter(parameters, key, value);
+        return parameters;
+    }
+    
+    public void testGetCredentialOK() {
+        BaseOAuthProvider provider = new FacebookProvider();
+        Map<String, String[]> parameters = createParameters(null, null);
+        assertTrue(provider.getCredential(null, parameters) instanceof OAuthCredential);
+    }
+    
+    public void testGetCredentialError() {
+        BaseOAuthProvider provider = new FacebookProvider();
+        for (String key : BaseOAuthProvider.ERROR_PARAMETERS) {
+            Map<String, String[]> parameters = createParameters(key, FAKE_VALUE);
+            assertNull(provider.getCredential(null, parameters));
+        }
     }
 }

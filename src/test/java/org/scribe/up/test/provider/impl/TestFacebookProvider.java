@@ -97,11 +97,11 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals(Locale.FRANCE, profile.getLocale());
         List<FacebookObject> languages = profile.getLanguages();
         assertEquals("Français", languages.get(0).getName());
-        assertEquals("http://www.facebook.com/profile.php?id=100003571536393", profile.getLink());
-        assertNull(profile.getUsername());
+        assertEquals("http://www.facebook.com/jerome.testscribeup", profile.getLink());
+        assertEquals("jerome.testscribeup", profile.getUsername());
         assertNull(profile.getThirdPartyId());
         assertEquals(2, profile.getTimezone());
-        assertEquals(CommonHelper.getFormattedDate(1336472661000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
+        assertEquals(CommonHelper.getFormattedDate(1339215273000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
         assertFalse(profile.isVerified());
         assertFalse(profile.isVerifiedDefined());
@@ -197,6 +197,6 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("attending", event.getRsvpStatus());
         assertNotNull(event.getStartTime());
         assertNotNull(event.getEndTime());
-        assertEquals(32, profile.getAttributes().size());
+        assertEquals(33, profile.getAttributes().size());
     }
 }
