@@ -18,7 +18,6 @@ package org.scribe.up.test.provider.impl;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
-import org.scribe.model.Token;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.OAuthProvider;
@@ -82,10 +81,7 @@ public abstract class TestProvider extends TestCase {
         OAuthCredential credential = provider.getCredential(session, CommonHelper.getParametersFromUrl(callbackUrl));
         logger.debug("credential : {}", credential);
         
-        Token accessToken = provider.getAccessToken(credential);
-        logger.debug("accessToken : {}", accessToken);
-        
-        UserProfile profile = provider.getUserProfile(accessToken);
+        UserProfile profile = provider.getUserProfile(credential);
         return profile;
     }
     

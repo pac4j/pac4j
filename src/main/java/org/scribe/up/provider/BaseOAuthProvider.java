@@ -84,6 +84,25 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
      */
     protected abstract void internalInit();
     
+    public UserProfile getUserProfile(OAuthCredential credential) {
+        Token accessToken = getAccessToken(credential);
+        return getUserProfile(accessToken);
+    }
+    
+    /**
+     * Retrieve the access token from OAuth credential.
+     * 
+     * @param credential
+     * @return the access token
+     */
+    public abstract Token getAccessToken(OAuthCredential credential);
+    
+    /**
+     * Retrieve the user profile from the access token.
+     * 
+     * @param accessToken
+     * @return the user profile object
+     */
     public UserProfile getUserProfile(Token accessToken) {
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
