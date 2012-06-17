@@ -9,12 +9,12 @@ h2. OAuth providers supported
 
 Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles. Follow the guide to "extend or add a new provider":https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider.
 
-h2. Who can use ScribeUP ?
+h2. Who uses ScribeUP ?
 
-Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
-However, the library was created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (version 3.5.0).
-ScribeUP is also used to propose a shiro-oauth module to add OAuth client support to the "Shiro project":http://shiro.apache.org : the "JIRA ticket":https://issues.apache.org/jira/browse/SHIRO-119 and the "associated discussion":http://shiro-developer.582600.n2.nabble.com/Add-OAuth-support-for-Shiro-td7240738.html.
-The library is also integrated in my "Spring Security OAuth client library":https://github.com/leleuj/spring-security-oauth-client which adds OAuth client support to Spring Security.
+* Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
+* However, the library was created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (version 3.5.0). A demo is available at : "https://github.com/leleuj/cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0.
+* ScribeUP is also used to propose a shiro-oauth module to add OAuth client support to the "Shiro project":http://shiro.apache.org : the "JIRA ticket":https://issues.apache.org/jira/browse/SHIRO-119 and the "associated discussion":http://shiro-developer.582600.n2.nabble.com/Add-OAuth-support-for-Shiro-td7240738.html. A demo is available at : "https://github.com/leleuj/scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo.
+* The library is also integrated in my "Spring Security OAuth client library":https://github.com/leleuj/spring-security-oauth-client which adds OAuth client support to Spring Security. A demo is available at : "https://github.com/leleuj/spring-security-oauth-client-demo":https://github.com/leleuj/spring-security-oauth-client-demo.
 
 h2. Versions
 
