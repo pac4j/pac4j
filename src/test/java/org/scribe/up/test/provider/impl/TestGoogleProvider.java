@@ -44,7 +44,6 @@ public class TestGoogleProvider extends TestProvider {
         googleProvider.setKey("anonymous");
         googleProvider.setSecret("anonymous");
         googleProvider.setCallbackUrl("http://www.google.com/");
-        googleProvider.init();
         return googleProvider;
     }
     

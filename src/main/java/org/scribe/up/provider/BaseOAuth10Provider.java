@@ -52,6 +52,7 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
     }
     
     public String getAuthorizationUrl(UserSession session) {
+        init();
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in user session

@@ -48,7 +48,6 @@ public class TestWindowsLiveProvider extends TestProvider {
         liveProvider.setKey("00000000400BFE75");
         liveProvider.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");
         liveProvider.setCallbackUrl("http://javadoc.leleuj.cloudbees.net/");
-        liveProvider.init();
         return liveProvider;
     }
     

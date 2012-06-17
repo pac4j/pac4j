@@ -45,7 +45,6 @@ public class TestTwitterProvider extends TestProvider {
         twitterProvider.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterProvider.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
         twitterProvider.setCallbackUrl("http://www.google.com/");
-        twitterProvider.init();
         return twitterProvider;
     }
     

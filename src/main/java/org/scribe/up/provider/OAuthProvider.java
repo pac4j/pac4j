@@ -25,8 +25,8 @@ import org.scribe.up.session.UserSession;
 /**
  * This interface represents a provider using OAuth protocol. It's the main contract of the project.<br />
  * <br />
- * A provider has a type accessible by the <i>getType()</i> method and could be initialized through the <i>init()</i> method.<br />
- * A provider supports off course the OAuth authentication process through the <i>getAuthorizationUrl(UserSession session)</i>,
+ * A provider has a type accessible by the <i>getType()</i> method.<br />
+ * A provider supports of course the OAuth authentication process through the <i>getAuthorizationUrl(UserSession session)</i>,
  * <i>getCredential(UserSession session, Map&lt;String, String[]&gt; parameters)</i> and <i>getAccessToken(OAuthCredential credential)</i>
  * methods, {@link org.scribe.up.session.UserSession} is the session of the current user, {@link org.scribe.up.credential.OAuthCredential}
  * is the OAuth credential.<br />
@@ -36,11 +36,6 @@ import org.scribe.up.session.UserSession;
  * @since 1.0.0
  */
 public interface OAuthProvider {
-    
-    /**
-     * Initialize the provider.
-     */
-    public void init();
     
     /**
      * Get the type of the provider.

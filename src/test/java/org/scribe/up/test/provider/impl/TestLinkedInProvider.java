@@ -41,7 +41,6 @@ public class TestLinkedInProvider extends TestProvider {
         linkedinProvider.setKey("gsqj8dn56ayn");
         linkedinProvider.setSecret("kUFAZ2oYvwMQ6HFl");
         linkedinProvider.setCallbackUrl("http://www.google.com/");
-        linkedinProvider.init();
         return linkedinProvider;
     }
     

@@ -46,6 +46,7 @@ public class GoogleProvider extends BaseOAuth10Provider {
     
     @Override
     public String getAuthorizationUrl(UserSession session) {
+        init();
         Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in session

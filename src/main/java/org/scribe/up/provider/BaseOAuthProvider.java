@@ -57,11 +57,26 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     private boolean initialized = false;
     
-    public synchronized void init() {
+    /**
+     * Initialize the provider : it's not necessarily to call this method as it's implicitly called by the provider at the first use.
+     */
+    public void init() {
         if (!initialized) {
-            internalInit();
-            initialized = true;
+            synchronized (this) {
+                if (!initialized) {
+                    internalInit();
+                    initialized = true;
+                }
+            }
         }
+    }
+    
+    /**
+     * Force (again) the initialization of the provider.
+     */
+    public synchronized void reinit() {
+        internalInit();
+        initialized = true;
     }
     
     /**

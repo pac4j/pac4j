@@ -63,7 +63,6 @@ public class TestFacebookProvider extends TestProvider {
         facebookProvider.setLikesReturned(true);
         facebookProvider.setAlbumsReturned(true);
         facebookProvider.setEventsReturned(true);
-        facebookProvider.init();
         return facebookProvider;
     }
     

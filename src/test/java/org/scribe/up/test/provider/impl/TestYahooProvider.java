@@ -52,7 +52,6 @@ public class TestYahooProvider extends TestProvider {
             .setKey("dj0yJmk9QUlLcTVINlBpdm5VJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PTJm");
         yahooProvider.setSecret("95220809156c027c0a10c959a04b099da5510b66");
         yahooProvider.setCallbackUrl("http://www.google.com/");
-        yahooProvider.init();
         return yahooProvider;
     }
     

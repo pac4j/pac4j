@@ -38,6 +38,7 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
     public static final String OAUTH_CODE = "code";
     
     public String getAuthorizationUrl(UserSession session) {
+        init();
         // no requestToken for OAuth 2.0 -> no need to save it in the user session
         String authorizationUrl = service.getAuthorizationUrl(null);
         logger.debug("authorizationUrl : {}", authorizationUrl);

@@ -42,7 +42,6 @@ public class TestWordPressProvider extends TestProvider {
         wordPressProvider.setKey("209");
         wordPressProvider.setSecret("xJBXMRVvKrvHqyvM6BpzkenJVMIdQrIWKjPJsezjGYu71y7sDgt8ibz6s9IFLqU8");
         wordPressProvider.setCallbackUrl("http://www.google.com/");
-        wordPressProvider.init();
         return wordPressProvider;
     }
     

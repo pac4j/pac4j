@@ -43,7 +43,6 @@ public class TestGitHubProvider extends TestProvider {
         githubProvider.setKey("62374f5573a89a8f9900");
         githubProvider.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
         githubProvider.setCallbackUrl("http://www.google.com/");
-        githubProvider.init();
         return githubProvider;
     }
     
