@@ -63,7 +63,7 @@ public interface OAuthProvider {
     /**
      * Retrieve the user profile from OAuth credential.
      * 
-     * @param accessToken
+     * @param credential
      * @return the user profile object
      */
     public UserProfile getUserProfile(OAuthCredential credential);
