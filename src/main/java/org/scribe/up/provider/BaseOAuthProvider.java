@@ -16,6 +16,7 @@
 package org.scribe.up.provider;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -54,6 +55,12 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected String callbackUrl;
     
     protected String scope;
+    
+    // 0,5 second
+    protected int connectTimeout = 500;
+    
+    // 3 seconds
+    protected int readTimeout = 3000;
     
     private boolean initialized = false;
     
@@ -145,6 +152,12 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
         long t0 = System.currentTimeMillis();
         OAuthRequest request = new OAuthRequest(Verb.GET, dataUrl);
+        if (connectTimeout != 0) {
+            request.setConnectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        }
+        if (readTimeout != 0) {
+            request.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        }
         service.signRequest(accessToken, request);
         // for Google
         if (this instanceof GoogleProvider) {
@@ -213,6 +226,14 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
         this.callbackUrl = callbackUrl;
     }
     
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+    
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+    
     public String getType() {
         return this.getClass().getSimpleName();
     }
@@ -235,5 +256,13 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     public void setScope(String scope) {
         this.scope = scope;
+    }
+    
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+    
+    public int getReadTimeout() {
+        return readTimeout;
     }
 }
