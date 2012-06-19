@@ -21,7 +21,6 @@ import org.scribe.up.profile.github.GitHubPlan;
 import org.scribe.up.profile.github.GitHubProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.GitHubProvider;
-import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -94,8 +93,7 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals("Java developper", profile.getBio());
         assertEquals(0, profile.getTotalPrivateRepos());
         assertTrue(profile.isTotalPrivateReposDefined());
-        assertEquals(CommonHelper.getFormattedDate(1328529921000L, "yyyy-MM-dd'T'HH:mm:ss'Z'", null), profile
-            .getCreatedAt().toString());
+        assertEquals("2012-02-06T13:05:21Z", profile.getCreatedAt().toString());
         assertEquals("Test", profile.getName());
         assertEquals(0, profile.getDiskUsage());
         assertTrue(profile.isDiskUsageDefined());
