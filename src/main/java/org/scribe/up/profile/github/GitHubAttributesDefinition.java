@@ -26,41 +26,46 @@ import org.scribe.up.profile.converter.Converters;
  */
 public class GitHubAttributesDefinition extends AttributesDefinition {
     
-    public static final String COMPANY = "company";
-    public static final String NAME = "name";
-    public static final String FOLLOWING_COUNT = "following_count";
-    public static final String BLOG = "blog";
-    public static final String PUBLIC_REPO_COUNT = "public_repo_count";
-    public static final String PUBLIC_GIST_COUNT = "public_gist_count";
-    public static final String DISK_USAGE = "disk_usage";
-    public static final String COLLABORATORS = "collaborators";
-    public static final String PLAN = "plan";
-    public static final String OWNED_PRIVATE_REPO_COUNT = "owned_private_repo_count";
-    public static final String TOTAL_PRIVATE_REPO_COUNT = "total_private_repo_count";
-    public static final String PRIVATE_GIST_COUNT = "private_gist_count";
-    public static final String LOGIN = "login";
-    public static final String FOLLOWERS_COUNT = "followers_count";
-    public static final String CREATED_AT = "created_at";
-    public static final String EMAIL = "email";
-    public static final String LOCATION = "location";
     public static final String TYPE = "type";
-    public static final String PERMISSION = "permission";
+    public static final String BLOG = "blog";
+    public static final String URL = "url";
+    public static final String PUBLIC_GISTS = "public_gists";
+    public static final String FOLLOWING = "following";
+    public static final String PRIVATE_GISTS = "private_gists";
+    public static final String PUBLIC_REPOS = "public_repos";
     public static final String GRAVATAR_ID = "gravatar_id";
+    public static final String AVATAR_URL = "avatar_url";
+    public static final String FOLLOWERS = "followers";
+    public static final String LOGIN = "login";
+    public static final String COMPANY = "company";
+    public static final String EMAIL = "email";
+    public static final String HIREABLE = "hireable";
+    public static final String COLLABORATORS = "collaborators";
+    public static final String HTML_URL = "html_url";
+    public static final String BIO = "bio";
+    public static final String TOTAL_PRIVATE_REPOS = "total_private_repos";
+    public static final String CREATED_AT = "created_at";
+    public static final String NAME = "name";
+    public static final String DISK_USAGE = "disk_usage";
+    public static final String PLAN = "plan";
+    public static final String OWNED_PRIVATE_REPOS = "owned_private_repos";
+    public static final String LOCATION = "location";
     
     public GitHubAttributesDefinition() {
         String[] names = new String[] {
-            COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, PERMISSION, GRAVATAR_ID
+            URL, COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, GRAVATAR_ID, AVATAR_URL, HTML_URL, BIO
         };
         for (String name : names) {
             addAttribute(name, Converters.stringConverter);
         }
         names = new String[] {
-            FOLLOWING_COUNT, PUBLIC_REPO_COUNT, PUBLIC_GIST_COUNT, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPO_COUNT,
-            TOTAL_PRIVATE_REPO_COUNT, PRIVATE_GIST_COUNT, FOLLOWERS_COUNT
+            FOLLOWING, PUBLIC_REPOS, PUBLIC_GISTS, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPOS, TOTAL_PRIVATE_REPOS,
+            PRIVATE_GISTS, FOLLOWERS
         };
         for (String name : names) {
             addAttribute(name, Converters.integerConverter);
         }
+        addAttribute(HIREABLE, Converters.booleanConverter);
         addAttribute(CREATED_AT, GitHubConverters.dateConverter);
         addAttribute(PLAN, GitHubConverters.planConverter);
     }

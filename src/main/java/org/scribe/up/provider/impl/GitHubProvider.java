@@ -31,7 +31,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  * (GitHubPlan), owned_private_repo_count (Integer), total_private_repo_count (Integer), private_gist_count (Integer), login (String),
  * followers_count (Integer), created_at (FormattedDate), email (String), location (String), type (String), permission (String) and
  * gravatar_id (String).<br />
- * More information at http://develop.github.com/p/general.html
+ * More information at http://developer.github.com/v3/users/
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -46,7 +46,7 @@ public class GitHubProvider extends BaseOAuth20Provider {
     
     @Override
     protected String getProfileUrl() {
-        return "https://github.com/api/v2/json/user/show";
+        return "https://api.github.com/user";
     }
     
     @Override
@@ -54,12 +54,9 @@ public class GitHubProvider extends BaseOAuth20Provider {
         GitHubProfile profile = new GitHubProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            json = json.get("user");
-            if (json != null) {
-                profile.setId(JsonHelper.get(json, "id"));
-                for (String attribute : AttributesDefinitions.githubDefinition.getAttributes()) {
-                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
-                }
+            profile.setId(JsonHelper.get(json, "id"));
+            for (String attribute : AttributesDefinitions.githubDefinition.getAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }
         return profile;

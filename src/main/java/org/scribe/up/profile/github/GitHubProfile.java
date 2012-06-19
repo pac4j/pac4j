@@ -30,7 +30,7 @@ import org.scribe.up.profile.UserProfile;
  */
 public class GitHubProfile extends UserProfile {
     
-    private static final long serialVersionUID = 8379965156774379395L;
+    private static final long serialVersionUID = 3108552818323199961L;
     
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.githubDefinition;
@@ -56,47 +56,47 @@ public class GitHubProfile extends UserProfile {
         return (String) attributes.get(GitHubAttributesDefinition.NAME);
     }
     
-    public int getFollowingCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWING_COUNT));
+    public int getFollowing() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWING));
     }
     
     /**
-     * Indicate if the following_count attribute exists.
+     * Indicate if the following attribute exists.
      * 
-     * @return if the following_count attribute exists
+     * @return if the following attribute exists
      */
-    public boolean isFollowingCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.FOLLOWING_COUNT) != null;
+    public boolean isFollowingDefined() {
+        return attributes.get(GitHubAttributesDefinition.FOLLOWING) != null;
     }
     
     public String getBlog() {
         return (String) attributes.get(GitHubAttributesDefinition.BLOG);
     }
     
-    public int getPublicRepoCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_REPO_COUNT));
+    public int getPublicRepos() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_REPOS));
     }
     
     /**
-     * Indicate if the public_repo_count attribute exists.
+     * Indicate if the public_repos attribute exists.
      * 
-     * @return if the public_repo_count attribute exists
+     * @return if the public_repos attribute exists
      */
-    public boolean isPublicRepoCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.PUBLIC_REPO_COUNT) != null;
+    public boolean isPublicReposDefined() {
+        return attributes.get(GitHubAttributesDefinition.PUBLIC_REPOS) != null;
     }
     
-    public int getPublicGistCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_GIST_COUNT));
+    public int getPublicGists() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PUBLIC_GISTS));
     }
     
     /**
-     * Indicate if the public_gist_count attribute exists.
+     * Indicate if the public_gists attribute exists.
      * 
-     * @return if the public_gist_count attribute exists
+     * @return if the public_gists attribute exists
      */
-    public boolean isPublicGistCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.PUBLIC_GIST_COUNT) != null;
+    public boolean isPublicGistsDefined() {
+        return attributes.get(GitHubAttributesDefinition.PUBLIC_GISTS) != null;
     }
     
     public int getDiskUsage() {
@@ -129,60 +129,60 @@ public class GitHubProfile extends UserProfile {
         return (GitHubPlan) attributes.get(GitHubAttributesDefinition.PLAN);
     }
     
-    public int getOwnedPrivateRepoCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPO_COUNT));
+    public int getOwnedPrivateRepos() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPOS));
     }
     
     /**
-     * Indicate if the owned_private_repo_count attribute exists.
+     * Indicate if the owned_private_repos attribute exists.
      * 
-     * @return if the owned_private_repo_count attribute exists
+     * @return if the owned_private_repos attribute exists
      */
-    public boolean isOwnedPrivateRepoCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPO_COUNT) != null;
+    public boolean isOwnedPrivateReposDefined() {
+        return attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPOS) != null;
     }
     
-    public int getTotalPrivateRepoCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPO_COUNT));
+    public int getTotalPrivateRepos() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPOS));
     }
     
     /**
-     * Indicate if the total_private_repo_count attribute exists.
+     * Indicate if the total_private_repos attribute exists.
      * 
-     * @return if the total_private_repo_count attribute exists
+     * @return if the total_private_repos attribute exists
      */
-    public boolean isTotalPrivateRepoCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPO_COUNT) != null;
+    public boolean isTotalPrivateReposDefined() {
+        return attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPOS) != null;
     }
     
-    public int getPrivateGistCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PRIVATE_GIST_COUNT));
+    public int getPrivateGists() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.PRIVATE_GISTS));
     }
     
     /**
-     * Indicate if the private_gist_count attribute exists.
+     * Indicate if the private_gists attribute exists.
      * 
-     * @return if the private_gist_count attribute exists
+     * @return if the private_gists attribute exists
      */
-    public boolean isPrivateGistCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.PRIVATE_GIST_COUNT) != null;
+    public boolean isPrivateGistsDefined() {
+        return attributes.get(GitHubAttributesDefinition.PRIVATE_GISTS) != null;
     }
     
     public String getLogin() {
         return (String) attributes.get(GitHubAttributesDefinition.LOGIN);
     }
     
-    public int getFollowersCount() {
-        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWERS_COUNT));
+    public int getFollowers() {
+        return getSafeInt((Integer) attributes.get(GitHubAttributesDefinition.FOLLOWERS));
     }
     
     /**
-     * Indicate if the followers_count attribute exists.
+     * Indicate if the followers attribute exists.
      * 
-     * @return if the followers_count attribute exists
+     * @return if the followers attribute exists
      */
-    public boolean isFollowersCountDefined() {
-        return attributes.get(GitHubAttributesDefinition.FOLLOWERS_COUNT) != null;
+    public boolean isFollowersDefined() {
+        return attributes.get(GitHubAttributesDefinition.FOLLOWERS) != null;
     }
     
     public Date getCreatedAt() {
@@ -201,11 +201,36 @@ public class GitHubProfile extends UserProfile {
         return (String) attributes.get(GitHubAttributesDefinition.TYPE);
     }
     
-    public String getPermission() {
-        return (String) attributes.get(GitHubAttributesDefinition.PERMISSION);
-    }
-    
     public String getGravatarId() {
         return (String) attributes.get(GitHubAttributesDefinition.GRAVATAR_ID);
+    }
+    
+    public String getUrl() {
+        return (String) attributes.get(GitHubAttributesDefinition.URL);
+    }
+    
+    public String getAvatarUrl() {
+        return (String) attributes.get(GitHubAttributesDefinition.AVATAR_URL);
+    }
+    
+    public boolean isHireable() {
+        return getSafeBoolean((Boolean) attributes.get(GitHubAttributesDefinition.HIREABLE));
+    }
+    
+    /**
+     * Indicate if the hireable attribute exists.
+     * 
+     * @return if the hireable attribute exists
+     */
+    public boolean isHireableDefined() {
+        return attributes.get(GitHubAttributesDefinition.HIREABLE) != null;
+    }
+    
+    public String getHtmlUrl() {
+        return (String) attributes.get(GitHubAttributesDefinition.HTML_URL);
+    }
+    
+    public String getBio() {
+        return (String) attributes.get(GitHubAttributesDefinition.BIO);
     }
 }

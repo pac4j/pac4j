@@ -26,8 +26,7 @@ import org.scribe.up.profile.converter.JsonObjectConverter;
  */
 public final class GitHubConverters {
     
-    public final static FormattedDateConverter dateConverter = new FormattedDateConverter(
-                                                                                                   "yyyy/MM/dd HH:mm:ss z");
+    public final static FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
     
     public final static JsonObjectConverter planConverter = new JsonObjectConverter(GitHubPlan.class);
 }
