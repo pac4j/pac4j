@@ -26,11 +26,11 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
  * This class is the OAuth provider to authenticate user in GitHub. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.github.GitHubProfile} : company (String), name (String), following_count
- * (Integer), blog (String), public_repo_count (Integer), public_gist_count (Integer), disk_usage (Integer), collaborators (Integer), plan
- * (GitHubPlan), owned_private_repo_count (Integer), total_private_repo_count (Integer), private_gist_count (Integer), login (String),
- * followers_count (Integer), created_at (FormattedDate), email (String), location (String), type (String), permission (String) and
- * gravatar_id (String).<br />
+ * Attributes (Java type) available in {@link org.scribe.up.profile.github.GitHubProfile} : type (String), blog (String), url (String),
+ * public_gists (Integer), following (Integer), private_gists (Integer), public_repos (Integer), gravatar_id (String), avatar_url (String),
+ * followers (Integer), login (String), company (String), email (String), hireable (Boolean), collaborators (Integer), html_url (String),
+ * bio (String), total_private_repos (Integer), created_at (FormattedDate), name (String), disk_usage (Integer), plan (GitHubPlan),
+ * owned_private_repos (Integer) and location (String).<br />
  * More information at http://developer.github.com/v3/users/
  * 
  * @author Jerome Leleu
