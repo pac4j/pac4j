@@ -74,8 +74,8 @@ public class TestWordPressProvider extends TestProvider {
         assertEquals("testscribeup@gmail.com", profile.getEmail());
         assertEquals(36224958, profile.getPrimaryBlog());
         assertTrue(profile.isPrimaryBlogDefined());
-        assertEquals("http://2.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",
-                     profile.getAvatarUrl());
+        assertTrue(profile.getAvatarUrl()
+            .indexOf(".gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G") >= 0);
         assertEquals("http://en.gravatar.com/testscribeup", profile.getProfileUrl());
         WordPressLinks links = profile.getLinks();
         assertEquals("https://public-api.wordpress.com/rest/v1/me", links.getSelf());
