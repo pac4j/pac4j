@@ -12,8 +12,8 @@ Look at the "description of the providers and profiles":https://github.com/leleu
 h2. Who uses ScribeUP ?
 
 * Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
-* However, the library was created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas (version 3.5.0). A demo is available at : "https://github.com/leleuj/cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0.
-* ScribeUP is also used to propose a shiro-oauth module to add OAuth client support to the "Shiro project":http://shiro.apache.org : the "JIRA ticket":https://issues.apache.org/jira/browse/SHIRO-119 and the "associated discussion":http://shiro-developer.582600.n2.nabble.com/Add-OAuth-support-for-Shiro-td7240738.html. A demo is available at : "https://github.com/leleuj/scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo.
+* However, the library was first created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas. CAS OAuth module 3.5.0 is based on ScribeUP 1.0.0 (a demo is available at : "https://github.com/leleuj/cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0 ) whereas CAS OAuth module 3.5.1 is based on ScribeUP 1.1.0. (a demo is available at "https://github.com/leleuj/cas-oauth-demo":https://github.com/leleuj/cas-oauth-demo ).
+* ScribeUP is also used to propose to add OAuth client support to the "Shiro project":http://shiro.apache.org : the Shiro OAuth module is available at : "https://github.com/bujiio/buji-oauth":https://github.com/bujiio/buji-oauth. A demo is available at : "https://github.com/leleuj/scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo.
 * The library is also integrated in my "Spring Security OAuth client library":https://github.com/leleuj/spring-security-oauth-client which adds OAuth client support to Spring Security. A demo is available at : "https://github.com/leleuj/spring-security-oauth-client-demo":https://github.com/leleuj/spring-security-oauth-client-demo.
 
 h2. Versions
@@ -21,11 +21,11 @@ h2. Versions
 <pre><code><dependency>
    <groupId>org.scribe</groupId>
    <artifactId>scribe-up</artifactId>
-   <version>1.1.0-SNAPSHOT</version>
+   <version>1.2.0-SNAPSHOT</version>
 </dependency>
 </code></pre>
-The version 1.0.0 has been released.
-The current version : 1.1.0-SNAPSHOT is under development. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
+The last release version is 1.1.0.
+The current version : 1.2.0-SNAPSHOT is under development. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
 Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
