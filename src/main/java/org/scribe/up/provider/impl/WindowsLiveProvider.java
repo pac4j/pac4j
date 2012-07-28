@@ -26,8 +26,8 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 
 /**
  * This class is the OAuth provider to authenticate user in Windows Live (SkyDrive, Hotmail and Messenger). Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.windowslive.WindowsLiveProfile} : name (String), first_name (String), last_name
- * (String), link (String), gender (Gender), locale (Locale) and updated_time (FormattedDate).<br />
+ * Attributes (Java type) available in {@link org.scribe.up.profile.windowslive.WindowsLiveProfile} : name (String), first_name (String),
+ * last_name (String), link (String), gender (Gender), locale (Locale) and updated_time (FormattedDate).<br />
  * More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx
  * 
  * @author Jerome Leleu
@@ -52,7 +52,7 @@ public class WindowsLiveProvider extends BaseOAuth20Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : AttributesDefinitions.windowsLiveDefinition.getAttributes()) {
+            for (String attribute : AttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

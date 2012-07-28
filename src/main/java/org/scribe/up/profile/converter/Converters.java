@@ -31,6 +31,8 @@ public final class Converters {
     
     public final static IntegerConverter integerConverter = new IntegerConverter();
     
+    public final static LongConverter longConverter = new LongConverter();
+    
     public final static ColorConverter colorConverter = new ColorConverter();
     
     public final static JsonListConverter listStringConverter = new JsonListConverter(String.class);

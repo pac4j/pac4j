@@ -49,7 +49,7 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     @Override
     protected UserProfile extractUserProfile(String body) {
         LinkedInProfile profile = new LinkedInProfile();
-        for (String attribute : AttributesDefinitions.linkedinDefinition.getAttributes()) {
+        for (String attribute : AttributesDefinitions.linkedinDefinition.getAllAttributes()) {
             String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             profile.addAttribute(attribute, value);
             if (LinkedInAttributesDefinition.URL.equals(attribute)) {

@@ -53,10 +53,8 @@ public class WordPressProvider extends BaseOAuth20Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "ID"));
-            for (String attribute : AttributesDefinitions.wordPressDefinition.getAttributes()) {
-                if (AttributesDefinitions.wordPressDefinition.isPrimary(attribute)) {
-                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
-                }
+            for (String attribute : AttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             json = json.get("meta");
             if (json != null) {

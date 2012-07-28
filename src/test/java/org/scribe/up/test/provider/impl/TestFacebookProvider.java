@@ -89,7 +89,7 @@ public class TestFacebookProvider extends TestProvider {
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertEquals("Jerome Testscribeup", profile.getName());
-        assertEquals("jerome", profile.getFirstName());
+        assertEquals("Jerome", profile.getFirstName());
         assertNull(profile.getMiddleName());
         assertEquals("Testscribeup", profile.getLastName());
         assertEquals(Gender.MALE, profile.getGender());
@@ -100,7 +100,7 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("jerome.testscribeup", profile.getUsername());
         assertNull(profile.getThirdPartyId());
         assertEquals(2, profile.getTimezone());
-        assertEquals(CommonHelper.getFormattedDate(1339215273000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
+        assertEquals(CommonHelper.getFormattedDate(1343375150000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
         assertFalse(profile.isVerified());
         assertFalse(profile.isVerifiedDefined());
@@ -192,7 +192,7 @@ public class TestFacebookProvider extends TestProvider {
         FacebookEvent event = events.get(0);
         assertEquals("Couronnement", event.getName());
         assertEquals("301212149963131", event.getId());
-        assertEquals("Paris, France", event.getLocation());
+        assertEquals("Paris, Ile-de-France", event.getLocation());
         assertEquals("attending", event.getRsvpStatus());
         assertNotNull(event.getStartTime());
         assertNotNull(event.getEndTime());

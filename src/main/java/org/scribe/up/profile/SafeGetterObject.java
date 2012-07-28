@@ -42,4 +42,14 @@ public abstract class SafeGetterObject {
     protected int getSafeInt(Integer i) {
         return i != null ? i : 0;
     }
+    
+    /**
+     * Return the primitive value or 0 if null.
+     * 
+     * @param l
+     * @return the primitive value or 0 if null
+     */
+    protected long getSafeLong(Long l) {
+        return l != null ? l : 0;
+    }
 }

@@ -15,6 +15,7 @@
  */
 package org.scribe.up.profile;
 
+import org.scribe.up.profile.dropbox.DropBoxAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.github.GitHubAttributesDefinition;
 import org.scribe.up.profile.google.GoogleAttributesDefinition;
@@ -47,4 +48,6 @@ public final class AttributesDefinitions {
     public final static AttributesDefinition windowsLiveDefinition = new WindowsLiveAttributesDefinition();
     
     public final static AttributesDefinition wordPressDefinition = new WordPressAttributesDefinition();
+    
+    public final static AttributesDefinition dropBoxDefinition = new DropBoxAttributesDefinition();
 }

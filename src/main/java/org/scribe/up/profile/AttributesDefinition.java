@@ -31,23 +31,48 @@ import org.scribe.up.profile.converter.Converters;
  */
 public class AttributesDefinition {
     
-    protected List<String> attributesNames = new ArrayList<String>();
+    protected List<String> allAttributesNames = new ArrayList<String>();
+    
+    protected List<String> principalAttributesNames = new ArrayList<String>();
+    
+    protected List<String> otherAttributesNames = new ArrayList<String>();
     
     protected Map<String, AttributeConverter<? extends Object>> attributesConverters = new HashMap<String, AttributeConverter<? extends Object>>();
     
-    protected Map<String, Boolean> attributesTypes = new HashMap<String, Boolean>();
-    
     public transient static final String ACCESS_TOKEN = "access_token";
-    
-    public List<String> getAttributes() {
-        return attributesNames;
-    }
     
     /**
      * Default constructor which adds the access token by default.
      */
     public AttributesDefinition() {
         addAttribute(ACCESS_TOKEN, Converters.stringConverter, false);
+    }
+    
+    /**
+     * Return all the attributes names.
+     * 
+     * @return all the attributes names
+     */
+    public List<String> getAllAttributes() {
+        return allAttributesNames;
+    }
+    
+    /**
+     * Return the principal attributes names.
+     * 
+     * @return the principal attributes names
+     */
+    public List<String> getPrincipalAttributes() {
+        return principalAttributesNames;
+    }
+    
+    /**
+     * Return the other attributes names.
+     * 
+     * @return the other attributes names
+     */
+    public List<String> getOtherAttributes() {
+        return otherAttributesNames;
     }
     
     /**
@@ -65,26 +90,16 @@ public class AttributesDefinition {
      * 
      * @param name
      * @param converter
-     * @param primary
+     * @param principal
      */
-    protected void addAttribute(String name, AttributeConverter<? extends Object> converter, boolean primary) {
-        attributesNames.add(name);
+    protected void addAttribute(String name, AttributeConverter<? extends Object> converter, boolean principal) {
+        allAttributesNames.add(name);
         attributesConverters.put(name, converter);
-        attributesTypes.put(name, primary);
-    }
-    
-    /**
-     * Return if the attribute is primary.
-     * 
-     * @param name
-     * @return if the attribute is primary
-     */
-    public boolean isPrimary(String name) {
-        Boolean b = attributesTypes.get(name);
-        if (b == null) {
-            return false;
+        if (principal) {
+            principalAttributesNames.add(name);
+        } else {
+            otherAttributesNames.add(name);
         }
-        return (boolean) b;
     }
     
     /**

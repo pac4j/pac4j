@@ -70,17 +70,13 @@ public class GoogleProvider extends BaseOAuth10Provider {
             json = json.get("entry");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
-                for (String attribute : AttributesDefinitions.googleDefinition.getAttributes()) {
-                    if (AttributesDefinitions.googleDefinition.isPrimary(attribute)) {
-                        profile.addAttribute(attribute, JsonHelper.get(json, attribute));
-                    }
+                for (String attribute : AttributesDefinitions.googleDefinition.getPrincipalAttributes()) {
+                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
                 json = json.get("name");
                 if (json != null) {
-                    for (String attribute : AttributesDefinitions.googleDefinition.getAttributes()) {
-                        if (!AttributesDefinitions.googleDefinition.isPrimary(attribute)) {
-                            profile.addAttribute(attribute, JsonHelper.get(json, attribute));
-                        }
+                    for (String attribute : AttributesDefinitions.googleDefinition.getOtherAttributes()) {
+                        profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                     }
                 }
             }

@@ -81,7 +81,7 @@ public class YahooProvider extends BaseOAuth10Provider {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "guid"));
-                for (String attribute : AttributesDefinitions.yahooDefinition.getAttributes()) {
+                for (String attribute : AttributesDefinitions.yahooDefinition.getAllAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

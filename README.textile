@@ -5,7 +5,7 @@ Take a look at the "technical description of the project":https://github.com/lel
 
 h2. OAuth providers supported
 
-| Facebook | Github | Google | LinkedIn | Twitter | Windows Live | WordPress | Yahoo |
+| DropBox | Facebook | Github | Google | LinkedIn | Twitter | Windows Live | WordPress | Yahoo |
 
 Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles. Follow the guide to "extend or add a new provider":https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider.
 
@@ -30,7 +30,7 @@ Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 
-ScribeUP is tested by 154 unit tests and also 8 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
+ScribeUP is tested by 158 unit tests and also 9 integration tests on OAuth providers by simulating complete authentication processes (using the "HtmlUnit":http://htmlunit.sourceforge.net/ library).
 
 h2. Contact
 
