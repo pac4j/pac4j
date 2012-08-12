@@ -40,6 +40,10 @@ import org.scribe.up.session.UserSession;
  */
 public class DropBoxProvider extends BaseOAuth10Provider {
     
+    protected DropBoxProvider newProvider() {
+        return new DropBoxProvider();
+    }
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(DropBoxApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)

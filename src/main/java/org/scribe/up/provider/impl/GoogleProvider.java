@@ -38,6 +38,10 @@ import org.scribe.up.session.UserSession;
  */
 public class GoogleProvider extends BaseOAuth10Provider {
     
+    protected GoogleProvider newProvider() {
+        return new GoogleProvider();
+    }
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(GoogleApi.class).apiKey(key).apiSecret(secret)

@@ -62,6 +62,18 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     protected boolean eventsReturned = false;
     
+    protected FacebookProvider newProvider() {
+        FacebookProvider newProvider = new FacebookProvider();
+        newProvider.setFriendsReturned(friendsReturned);
+        newProvider.setMoviesReturned(moviesReturned);
+        newProvider.setMusicReturned(musicReturned);
+        newProvider.setBooksReturned(booksReturned);
+        newProvider.setLikesReturned(likesReturned);
+        newProvider.setAlbumsReturned(albumsReturned);
+        newProvider.setEventsReturned(eventsReturned);
+        return newProvider;
+    }
+    
     @Override
     protected void internalInit() {
         if (StringHelper.isNotBlank(scope)) {

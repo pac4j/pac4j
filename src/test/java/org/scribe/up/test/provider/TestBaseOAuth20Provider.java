@@ -32,15 +32,21 @@ import org.scribe.up.provider.impl.FacebookProvider;
  */
 public final class TestBaseOAuth20Provider extends TestCase {
     
-    private BaseOAuth20Provider provider = new FacebookProvider();
-    
     private static final String CODE = "code";
     
     private static final String CODE2 = "code2";
     
+    private BaseOAuth20Provider getProvider() {
+        FacebookProvider provider = new FacebookProvider();
+        provider.setKey("key");
+        provider.setSecret("secret");
+        provider.setCallbackUrl("callbackUrl");
+        return provider;
+    }
+    
     public void testNoCode() {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        assertNull(provider.getCredential(null, parameters));
+        assertNull(getProvider().getCredential(null, parameters));
     }
     
     public void testOk() {
@@ -49,7 +55,7 @@ public final class TestBaseOAuth20Provider extends TestCase {
             CODE
         };
         parameters.put(BaseOAuth20Provider.OAUTH_CODE, codes);
-        OAuthCredential oauthCredential = provider.getCredential(null, parameters);
+        OAuthCredential oauthCredential = getProvider().getCredential(null, parameters);
         assertNotNull(oauthCredential);
         assertEquals(CODE, oauthCredential.getVerifier());
     }
@@ -60,6 +66,6 @@ public final class TestBaseOAuth20Provider extends TestCase {
             CODE, CODE2
         };
         parameters.put(BaseOAuth20Provider.OAUTH_CODE, codes);
-        assertNull(provider.getCredential(null, parameters));
+        assertNull(getProvider().getCredential(null, parameters));
     }
 }

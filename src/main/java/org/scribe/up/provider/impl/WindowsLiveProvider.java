@@ -35,6 +35,10 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class WindowsLiveProvider extends BaseOAuth20Provider {
     
+    protected WindowsLiveProvider newProvider() {
+        return new WindowsLiveProvider();
+    }
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(LiveApi.class).apiKey(key).apiSecret(secret).scope("wl.basic")

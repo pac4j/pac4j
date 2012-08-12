@@ -35,6 +35,10 @@ import org.scribe.up.util.StringHelper;
  */
 public class LinkedInProvider extends BaseOAuth10Provider {
     
+    protected LinkedInProvider newProvider() {
+        return new LinkedInProvider();
+    }
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(LinkedInApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)

@@ -24,7 +24,14 @@ import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.provider.BaseOAuthProvider;
+import org.scribe.up.provider.impl.DropBoxProvider;
 import org.scribe.up.provider.impl.FacebookProvider;
+import org.scribe.up.provider.impl.GitHubProvider;
+import org.scribe.up.provider.impl.GoogleProvider;
+import org.scribe.up.provider.impl.LinkedInProvider;
+import org.scribe.up.provider.impl.TwitterProvider;
+import org.scribe.up.provider.impl.WindowsLiveProvider;
+import org.scribe.up.provider.impl.WordPressProvider;
 import org.scribe.up.provider.impl.YahooProvider;
 
 /**
@@ -36,6 +43,18 @@ import org.scribe.up.provider.impl.YahooProvider;
 public final class TestBaseOAuthProvider extends TestCase {
     
     private static final String FAKE_VALUE = "fakeValue";
+    
+    private static final String KEY = "key";
+    
+    private static final String SECRET = "secret";
+    
+    private static final String CALLBACK_URL = "callback_url";
+    
+    private static final String SCOPE = "scope";
+    
+    private static final int CONNECT_TIMEOUT = 135;
+    
+    private static final int READ_TIMEOUT = 2896;
     
     public void testType() {
         BaseOAuth10Provider provider = new YahooProvider();
@@ -57,15 +76,89 @@ public final class TestBaseOAuthProvider extends TestCase {
     
     public void testGetCredentialOK() {
         BaseOAuthProvider provider = new FacebookProvider();
+        provider.setKey(KEY);
+        provider.setSecret(SECRET);
+        provider.setCallbackUrl(CALLBACK_URL);
         Map<String, String[]> parameters = createParameters(null, null);
         assertTrue(provider.getCredential(null, parameters) instanceof OAuthCredential);
     }
     
     public void testGetCredentialError() {
         BaseOAuthProvider provider = new FacebookProvider();
+        provider.setKey(KEY);
+        provider.setSecret(SECRET);
+        provider.setCallbackUrl(CALLBACK_URL);
         for (String key : BaseOAuthProvider.ERROR_PARAMETERS) {
             Map<String, String[]> parameters = createParameters(key, FAKE_VALUE);
             assertNull(provider.getCredential(null, parameters));
         }
+    }
+    
+    private BaseOAuthProvider internalTestCloneBaseOAuthProvider(BaseOAuthProvider oldProvider) {
+        oldProvider.setKey(KEY);
+        oldProvider.setSecret(SECRET);
+        oldProvider.setCallbackUrl(CALLBACK_URL);
+        oldProvider.setScope(SCOPE);
+        oldProvider.setConnectTimeout(CONNECT_TIMEOUT);
+        oldProvider.setReadTimeout(READ_TIMEOUT);
+        BaseOAuthProvider provider = oldProvider.clone();
+        assertEquals(oldProvider.getKey(), provider.getKey());
+        assertEquals(oldProvider.getSecret(), provider.getSecret());
+        assertEquals(oldProvider.getCallbackUrl(), provider.getCallbackUrl());
+        assertEquals(oldProvider.getScope(), provider.getScope());
+        assertEquals(oldProvider.getConnectTimeout(), provider.getConnectTimeout());
+        assertEquals(oldProvider.getReadTimeout(), provider.getReadTimeout());
+        return provider;
+    }
+    
+    public void testCloneDropBoxProvider() {
+        internalTestCloneBaseOAuthProvider(new DropBoxProvider());
+    }
+    
+    public void testCloneFacebookProvider() {
+        FacebookProvider oldProvider = new FacebookProvider();
+        oldProvider.setFriendsReturned(true);
+        oldProvider.setMoviesReturned(true);
+        oldProvider.setMusicReturned(true);
+        oldProvider.setBooksReturned(true);
+        oldProvider.setLikesReturned(true);
+        oldProvider.setAlbumsReturned(true);
+        oldProvider.setEventsReturned(true);
+        FacebookProvider provider = (FacebookProvider) internalTestCloneBaseOAuthProvider(oldProvider);
+        assertEquals(oldProvider.isFriendsReturned(), provider.isFriendsReturned());
+        assertEquals(oldProvider.isMoviesReturned(), provider.isMoviesReturned());
+        assertEquals(oldProvider.isMusicReturned(), provider.isMusicReturned());
+        assertEquals(oldProvider.isBooksReturned(), provider.isBooksReturned());
+        assertEquals(oldProvider.isLikesReturned(), provider.isLikesReturned());
+        assertEquals(oldProvider.isAlbumsReturned(), provider.isAlbumsReturned());
+        assertEquals(oldProvider.isEventsReturned(), provider.isEventsReturned());
+    }
+    
+    public void testCloneGitHubProvider() {
+        internalTestCloneBaseOAuthProvider(new GitHubProvider());
+    }
+    
+    public void testCloneGoogleProvider() {
+        internalTestCloneBaseOAuthProvider(new GoogleProvider());
+    }
+    
+    public void testCloneLinkedInProvider() {
+        internalTestCloneBaseOAuthProvider(new LinkedInProvider());
+    }
+    
+    public void testCloneTwitterProvider() {
+        internalTestCloneBaseOAuthProvider(new TwitterProvider());
+    }
+    
+    public void testCloneWindowsLiveProvider() {
+        internalTestCloneBaseOAuthProvider(new WindowsLiveProvider());
+    }
+    
+    public void testCloneWordPressProvider() {
+        internalTestCloneBaseOAuthProvider(new WordPressProvider());
+    }
+    
+    public void testCloneYahooProvider() {
+        internalTestCloneBaseOAuthProvider(new YahooProvider());
     }
 }

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuthProvider implements OAuthProvider {
+public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthProvider.class);
     
@@ -64,8 +64,27 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     
     private boolean initialized = false;
     
+    public BaseOAuthProvider clone() {
+        BaseOAuthProvider newProvider = newProvider();
+        newProvider.setKey(key);
+        newProvider.setSecret(secret);
+        newProvider.setCallbackUrl(callbackUrl);
+        newProvider.setScope(scope);
+        newProvider.setConnectTimeout(connectTimeout);
+        newProvider.setReadTimeout(readTimeout);
+        return newProvider;
+    }
+    
     /**
-     * Initialize the provider : it's not necessarily to call this method as it's implicitly called by the provider at the first use.
+     * Create a new instance of the provider.
+     * 
+     * @return A new instance of the provider
+     */
+    protected abstract BaseOAuthProvider newProvider();
+    
+    /**
+     * Initialize the provider : it's not necessarily to call this method as it's implicitly called by the provider for the main methods of
+     * the {@link OAuthProvider} interface.
      */
     public void init() {
         if (!initialized) {
@@ -92,6 +111,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected abstract void internalInit();
     
     public UserProfile getUserProfile(OAuthCredential credential) {
+        init();
         Token accessToken = getAccessToken(credential);
         return getUserProfile(accessToken);
     }
@@ -187,6 +207,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider {
     protected abstract UserProfile extractUserProfile(String body);
     
     public OAuthCredential getCredential(UserSession session, Map<String, String[]> parameters) {
+        init();
         boolean errorFound = false;
         String errorMessage = "";
         for (String key : ERROR_PARAMETERS) {

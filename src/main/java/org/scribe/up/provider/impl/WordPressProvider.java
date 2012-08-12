@@ -36,6 +36,10 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class WordPressProvider extends BaseOAuth20Provider {
     
+    protected WordPressProvider newProvider() {
+        return new WordPressProvider();
+    }
+    
     @Override
     protected void internalInit() {
         service = new ServiceBuilder().provider(WordPressApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
