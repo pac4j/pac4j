@@ -38,7 +38,7 @@ public class TestGitHubProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        GitHubProvider githubProvider = new GitHubProvider();
+        final GitHubProvider githubProvider = new GitHubProvider();
         githubProvider.setKey("62374f5573a89a8f9900");
         githubProvider.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
         githubProvider.setCallbackUrl("http://www.google.com/");
@@ -46,22 +46,22 @@ public class TestGitHubProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
-        HtmlForm form = authorizationPage.getForms().get(0);
-        HtmlTextInput login = form.getInputByName("login");
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+        final HtmlForm form = authorizationPage.getForms().get(0);
+        final HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
-        HtmlPasswordInput password = form.getInputByName("password");
+        final HtmlPasswordInput password = form.getInputByName("password");
         password.setValueAttribute("testpwdscribeup1");
-        HtmlSubmitInput submit = form.getInputByName("commit");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlSubmitInput submit = form.getInputByName("commit");
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        GitHubProfile profile = (GitHubProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
         assertEquals(GitHubProfile.class.getSimpleName() + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
@@ -78,8 +78,9 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals(0, profile.getPublicRepos());
         assertTrue(profile.isPublicReposDefined());
         assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
-        assertEquals("https://secure.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png",
-                     profile.getAvatarUrl());
+        assertTrue(profile
+            .getAvatarUrl()
+            .startsWith("https://secure.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars"));
         assertEquals(0, profile.getFollowers());
         assertTrue(profile.isFollowersDefined());
         assertEquals("testscribeup", profile.getLogin());
@@ -100,7 +101,7 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals(0, profile.getOwnedPrivateRepos());
         assertTrue(profile.isOwnedPrivateReposDefined());
         assertEquals("Paris", profile.getLocation());
-        GitHubPlan plan = profile.getPlan();
+        final GitHubPlan plan = profile.getPlan();
         assertEquals("free", plan.getName());
         assertEquals(0, plan.getCollaborators());
         assertEquals(307200, plan.getSpace());

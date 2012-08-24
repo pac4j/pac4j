@@ -52,56 +52,69 @@ public final class TestBaseOAuthProvider extends TestCase {
     
     private static final String SCOPE = "scope";
     
+    private static final String TYPE = "specific_type";
+    
     private static final int CONNECT_TIMEOUT = 135;
     
     private static final int READ_TIMEOUT = 2896;
     
-    public void testType() {
-        BaseOAuth10Provider provider = new YahooProvider();
+    public void testDefaultType10() {
+        final BaseOAuth10Provider provider = new YahooProvider();
         assertEquals("YahooProvider", provider.getType());
     }
     
-    private void addSingledValueParameter(Map<String, String[]> parameters, String key, String value) {
-        String[] values = new String[1];
+    public void testDefaultType20() {
+        final BaseOAuth20Provider provider = new FacebookProvider();
+        assertEquals("FacebookProvider", provider.getType());
+    }
+    
+    public void testDefinedType() {
+        final BaseOAuth20Provider provider = new FacebookProvider();
+        provider.setType(TYPE);
+        assertEquals(TYPE, provider.getType());
+    }
+    
+    private void addSingledValueParameter(final Map<String, String[]> parameters, final String key, final String value) {
+        final String[] values = new String[1];
         values[0] = value;
         parameters.put(key, values);
     }
     
-    private Map<String, String[]> createParameters(String key, String value) {
-        Map<String, String[]> parameters = new HashMap<String, String[]>();
+    private Map<String, String[]> createParameters(final String key, final String value) {
+        final Map<String, String[]> parameters = new HashMap<String, String[]>();
         addSingledValueParameter(parameters, BaseOAuth20Provider.OAUTH_CODE, FAKE_VALUE);
         addSingledValueParameter(parameters, key, value);
         return parameters;
     }
     
     public void testGetCredentialOK() {
-        BaseOAuthProvider provider = new FacebookProvider();
+        final BaseOAuthProvider provider = new FacebookProvider();
         provider.setKey(KEY);
         provider.setSecret(SECRET);
         provider.setCallbackUrl(CALLBACK_URL);
-        Map<String, String[]> parameters = createParameters(null, null);
+        final Map<String, String[]> parameters = createParameters(null, null);
         assertTrue(provider.getCredential(null, parameters) instanceof OAuthCredential);
     }
     
     public void testGetCredentialError() {
-        BaseOAuthProvider provider = new FacebookProvider();
+        final BaseOAuthProvider provider = new FacebookProvider();
         provider.setKey(KEY);
         provider.setSecret(SECRET);
         provider.setCallbackUrl(CALLBACK_URL);
-        for (String key : BaseOAuthProvider.ERROR_PARAMETERS) {
-            Map<String, String[]> parameters = createParameters(key, FAKE_VALUE);
+        for (final String key : BaseOAuthProvider.ERROR_PARAMETERS) {
+            final Map<String, String[]> parameters = createParameters(key, FAKE_VALUE);
             assertNull(provider.getCredential(null, parameters));
         }
     }
     
-    private BaseOAuthProvider internalTestCloneBaseOAuthProvider(BaseOAuthProvider oldProvider) {
+    private BaseOAuthProvider internalTestCloneBaseOAuthProvider(final BaseOAuthProvider oldProvider) {
         oldProvider.setKey(KEY);
         oldProvider.setSecret(SECRET);
         oldProvider.setCallbackUrl(CALLBACK_URL);
         oldProvider.setScope(SCOPE);
         oldProvider.setConnectTimeout(CONNECT_TIMEOUT);
         oldProvider.setReadTimeout(READ_TIMEOUT);
-        BaseOAuthProvider provider = oldProvider.clone();
+        final BaseOAuthProvider provider = oldProvider.clone();
         assertEquals(oldProvider.getKey(), provider.getKey());
         assertEquals(oldProvider.getSecret(), provider.getSecret());
         assertEquals(oldProvider.getCallbackUrl(), provider.getCallbackUrl());
@@ -116,7 +129,7 @@ public final class TestBaseOAuthProvider extends TestCase {
     }
     
     public void testCloneFacebookProvider() {
-        FacebookProvider oldProvider = new FacebookProvider();
+        final FacebookProvider oldProvider = new FacebookProvider();
         oldProvider.setFriendsReturned(true);
         oldProvider.setMoviesReturned(true);
         oldProvider.setMusicReturned(true);
@@ -124,7 +137,7 @@ public final class TestBaseOAuthProvider extends TestCase {
         oldProvider.setLikesReturned(true);
         oldProvider.setAlbumsReturned(true);
         oldProvider.setEventsReturned(true);
-        FacebookProvider provider = (FacebookProvider) internalTestCloneBaseOAuthProvider(oldProvider);
+        final FacebookProvider provider = (FacebookProvider) internalTestCloneBaseOAuthProvider(oldProvider);
         assertEquals(oldProvider.isFriendsReturned(), provider.isFriendsReturned());
         assertEquals(oldProvider.isMoviesReturned(), provider.isMoviesReturned());
         assertEquals(oldProvider.isMusicReturned(), provider.isMusicReturned());

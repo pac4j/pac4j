@@ -28,6 +28,7 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.provider.impl.WordPressProvider;
 import org.scribe.up.session.UserSession;
+import org.scribe.up.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +57,8 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     
     protected String scope;
     
+    private String type;
+    
     // 0,5 second
     protected int connectTimeout = 500;
     
@@ -64,8 +67,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     
     private boolean initialized = false;
     
+    @Override
     public BaseOAuthProvider clone() {
-        BaseOAuthProvider newProvider = newProvider();
+        final BaseOAuthProvider newProvider = newProvider();
         newProvider.setKey(key);
         newProvider.setSecret(secret);
         newProvider.setCallbackUrl(callbackUrl);
@@ -110,9 +114,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      */
     protected abstract void internalInit();
     
-    public UserProfile getUserProfile(OAuthCredential credential) {
+    public UserProfile getUserProfile(final OAuthCredential credential) {
         init();
-        Token accessToken = getAccessToken(credential);
+        final Token accessToken = getAccessToken(credential);
         return getUserProfile(accessToken);
     }
     
@@ -130,12 +134,12 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @param accessToken
      * @return the user profile object
      */
-    public UserProfile getUserProfile(Token accessToken) {
-        String body = sendRequestForData(accessToken, getProfileUrl());
+    public UserProfile getUserProfile(final Token accessToken) {
+        final String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
-        UserProfile profile = extractUserProfile(body);
+        final UserProfile profile = extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         return profile;
     }
@@ -146,9 +150,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @param profile
      * @param accessToken
      */
-    protected void addAccessTokenToProfile(UserProfile profile, Token accessToken) {
+    protected void addAccessTokenToProfile(final UserProfile profile, final Token accessToken) {
         if (profile != null) {
-            String token = accessToken.getToken();
+            final String token = accessToken.getToken();
             logger.debug("add access_token : {} to profile", token);
             profile.setAccessToken(token);
         }
@@ -168,10 +172,10 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @param dataUrl
      * @return the user data response
      */
-    protected String sendRequestForData(Token accessToken, String dataUrl) {
+    protected String sendRequestForData(final Token accessToken, final String dataUrl) {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
-        long t0 = System.currentTimeMillis();
-        OAuthRequest request = new OAuthRequest(Verb.GET, dataUrl);
+        final long t0 = System.currentTimeMillis();
+        final OAuthRequest request = new OAuthRequest(Verb.GET, dataUrl);
         if (connectTimeout != 0) {
             request.setConnectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
         }
@@ -185,10 +189,10 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         } else if (this instanceof WordPressProvider) {
             request.addHeader("Authorization", "Bearer " + accessToken.getToken());
         }
-        Response response = request.send();
-        int code = response.getCode();
-        String body = response.getBody();
-        long t1 = System.currentTimeMillis();
+        final Response response = request.send();
+        final int code = response.getCode();
+        final String body = response.getBody();
+        final long t1 = System.currentTimeMillis();
         logger.debug("Request took : " + (t1 - t0) + " ms for : " + dataUrl);
         logger.debug("response code : {} / response body : {}", code, body);
         if (code != 200) {
@@ -206,12 +210,12 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      */
     protected abstract UserProfile extractUserProfile(String body);
     
-    public OAuthCredential getCredential(UserSession session, Map<String, String[]> parameters) {
+    public OAuthCredential getCredential(final UserSession session, final Map<String, String[]> parameters) {
         init();
         boolean errorFound = false;
         String errorMessage = "";
-        for (String key : ERROR_PARAMETERS) {
-            String[] values = parameters.get(key);
+        for (final String key : ERROR_PARAMETERS) {
+            final String[] values = parameters.get(key);
             if (values != null && values.length > 0) {
                 errorFound = true;
                 errorMessage += key + " : '" + values[0] + "'; ";
@@ -235,28 +239,35 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     protected abstract OAuthCredential extractCredentialFromParameters(UserSession session,
                                                                        Map<String, String[]> parameters);
     
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
     
-    public void setSecret(String secret) {
+    public void setSecret(final String secret) {
         this.secret = secret;
     }
     
-    public void setCallbackUrl(String callbackUrl) {
+    public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
     
-    public void setConnectTimeout(int connectTimeout) {
+    public void setConnectTimeout(final int connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
     
-    public void setReadTimeout(int readTimeout) {
+    public void setReadTimeout(final int readTimeout) {
         this.readTimeout = readTimeout;
     }
     
+    public void setType(final String type) {
+        this.type = type;
+    }
+    
     public String getType() {
-        return this.getClass().getSimpleName();
+        if (StringHelper.isBlank(type)) {
+            return this.getClass().getSimpleName();
+        }
+        return type;
     }
     
     public String getKey() {
@@ -275,7 +286,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         return scope;
     }
     
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = scope;
     }
     
