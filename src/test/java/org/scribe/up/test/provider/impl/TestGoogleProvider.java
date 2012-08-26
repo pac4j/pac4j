@@ -40,7 +40,7 @@ public class TestGoogleProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        GoogleProvider googleProvider = new GoogleProvider();
+        final GoogleProvider googleProvider = new GoogleProvider();
         googleProvider.setKey("anonymous");
         googleProvider.setSecret("anonymous");
         googleProvider.setCallbackUrl("http://www.google.com/");
@@ -48,45 +48,45 @@ public class TestGoogleProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getForms().get(0);
-        HtmlTextInput email = form.getInputByName("Email");
+        final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
-        HtmlPasswordInput passwd = form.getInputByName("Passwd");
+        final HtmlPasswordInput passwd = form.getInputByName("Passwd");
         passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName("signIn");
-        HtmlPage confirmPage = submit.click();
+        final HtmlPage confirmPage = submit.click();
         form = confirmPage.getForms().get(0);
         submit = form.getInputByName("allow");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        GoogleProfile profile = (GoogleProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final GoogleProfile profile = (GoogleProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(GoogleProfile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleProfile.class));
-        assertEquals("", profile.getProfileUrl());
+        assertEquals("https://plus.google.com/113675986756217860428", profile.getProfileUrl());
         assertTrue(profile.isViewer());
         assertTrue(profile.isViewerDefined());
         assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
                      profile.getThumbnailUrl());
-        assertEquals("test ScribeUP", profile.getFormatted());
+        assertEquals("Jérôme ScribeUP", profile.getFormatted());
         assertEquals("ScribeUP", profile.getFamilyName());
-        assertEquals("test", profile.getGivenName());
-        assertEquals("test ScribeUP", profile.getDisplayName());
-        List<GoogleObject> urls = profile.getUrls();
-        GoogleObject url = urls.get(0);
-        assertEquals("", url.getValue());
+        assertEquals("Jérôme", profile.getGivenName());
+        assertEquals("Jérôme ScribeUP", profile.getDisplayName());
+        final List<GoogleObject> urls = profile.getUrls();
+        final GoogleObject url = urls.get(0);
+        assertEquals("https://plus.google.com/113675986756217860428", url.getValue());
         assertEquals("profile", url.getType());
-        List<GoogleObject> photos = profile.getPhotos();
-        GoogleObject photo = photos.get(0);
+        final List<GoogleObject> photos = profile.getPhotos();
+        final GoogleObject photo = photos.get(0);
         assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
                      photo.getValue());
         assertEquals("thumbnail", photo.getType());

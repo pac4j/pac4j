@@ -18,6 +18,7 @@ package org.scribe.up.profile;
 import org.scribe.up.profile.dropbox.DropBoxAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.github.GitHubAttributesDefinition;
+import org.scribe.up.profile.google.Google2AttributesDefinition;
 import org.scribe.up.profile.google.GoogleAttributesDefinition;
 import org.scribe.up.profile.linkedin.LinkedInAttributesDefinition;
 import org.scribe.up.profile.twitter.TwitterAttributesDefinition;
@@ -38,6 +39,8 @@ public final class AttributesDefinitions {
     public final static AttributesDefinition githubDefinition = new GitHubAttributesDefinition();
     
     public final static AttributesDefinition googleDefinition = new GoogleAttributesDefinition();
+    
+    public final static AttributesDefinition google2Definition = new Google2AttributesDefinition();
     
     public final static AttributesDefinition linkedinDefinition = new LinkedInAttributesDefinition();
     

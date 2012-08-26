@@ -62,8 +62,12 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     protected boolean eventsReturned = false;
     
+    protected String scope;
+    
+    @Override
     protected FacebookProvider newProvider() {
-        FacebookProvider newProvider = new FacebookProvider();
+        final FacebookProvider newProvider = new FacebookProvider();
+        newProvider.setScope(scope);
         newProvider.setFriendsReturned(friendsReturned);
         newProvider.setMoviesReturned(moviesReturned);
         newProvider.setMusicReturned(musicReturned);
@@ -91,14 +95,14 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     @Override
-    public UserProfile getUserProfile(Token accessToken) {
+    public UserProfile getUserProfile(final Token accessToken) {
         // get the profile
-        String body = sendRequestForData(accessToken, getProfileUrl());
+        final String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
         // get additionnal data if requested
-        FacebookProfile profile = (FacebookProfile) extractUserProfile(body);
+        final FacebookProfile profile = (FacebookProfile) extractUserProfile(body);
         getData(friendsReturned, accessToken, profile, FacebookAttributesDefinition.FRIENDS, BASE_URL + "/friends");
         getData(moviesReturned, accessToken, profile, FacebookAttributesDefinition.MOVIES, BASE_URL + "/movies");
         getData(musicReturned, accessToken, profile, FacebookAttributesDefinition.MUSIC, BASE_URL + "/music");
@@ -110,11 +114,12 @@ public class FacebookProvider extends BaseOAuth20Provider {
         return profile;
     }
     
-    private void getData(boolean dataReturned, Token accessToken, FacebookProfile profile, String attribute, String url) {
+    private void getData(final boolean dataReturned, final Token accessToken, final FacebookProfile profile,
+                         final String attribute, final String url) {
         if (dataReturned) {
-            String body = sendRequestForData(accessToken, url);
+            final String body = sendRequestForData(accessToken, url);
             if (body != null) {
-                JsonNode json = JsonHelper.getFirstNode(body);
+                final JsonNode json = JsonHelper.getFirstNode(body);
                 if (json != null) {
                     profile.addAttribute(attribute, JsonHelper.get(json, "data"));
                 }
@@ -123,16 +128,24 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
-        FacebookProfile profile = new FacebookProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+    protected UserProfile extractUserProfile(final String body) {
+        final FacebookProfile profile = new FacebookProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
+            for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }
         return profile;
+    }
+    
+    public String getScope() {
+        return scope;
+    }
+    
+    public void setScope(final String scope) {
+        this.scope = scope;
     }
     
     public boolean isFriendsReturned() {
@@ -144,7 +157,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param friendsReturned
      */
-    public void setFriendsReturned(boolean friendsReturned) {
+    public void setFriendsReturned(final boolean friendsReturned) {
         this.friendsReturned = friendsReturned;
     }
     
@@ -157,7 +170,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param moviesReturned
      */
-    public void setMoviesReturned(boolean moviesReturned) {
+    public void setMoviesReturned(final boolean moviesReturned) {
         this.moviesReturned = moviesReturned;
     }
     
@@ -170,7 +183,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param musicReturned
      */
-    public void setMusicReturned(boolean musicReturned) {
+    public void setMusicReturned(final boolean musicReturned) {
         this.musicReturned = musicReturned;
     }
     
@@ -183,7 +196,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param booksReturned
      */
-    public void setBooksReturned(boolean booksReturned) {
+    public void setBooksReturned(final boolean booksReturned) {
         this.booksReturned = booksReturned;
     }
     
@@ -196,7 +209,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param likesReturned
      */
-    public void setLikesReturned(boolean likesReturned) {
+    public void setLikesReturned(final boolean likesReturned) {
         this.likesReturned = likesReturned;
     }
     
@@ -209,7 +222,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param albumsReturned
      */
-    public void setAlbumsReturned(boolean albumsReturned) {
+    public void setAlbumsReturned(final boolean albumsReturned) {
         this.albumsReturned = albumsReturned;
     }
     
@@ -222,7 +235,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
      * 
      * @param eventsReturned
      */
-    public void setEventsReturned(boolean eventsReturned) {
+    public void setEventsReturned(final boolean eventsReturned) {
         this.eventsReturned = eventsReturned;
     }
 }

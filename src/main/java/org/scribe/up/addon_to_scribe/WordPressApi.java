@@ -41,7 +41,7 @@ public final class WordPressApi extends DefaultApi20 {
     }
     
     @Override
-    public String getAuthorizationUrl(OAuthConfig config) {
+    public String getAuthorizationUrl(final OAuthConfig config) {
         Preconditions.checkValidUrl(config.getCallback(),
                                     "Must provide a valid url as callback. WordPress does not support OOB");
         
@@ -58,7 +58,8 @@ public final class WordPressApi extends DefaultApi20 {
         return new JsonTokenExtractor();
     }
     
-    public OAuthService createService(OAuthConfig config) {
-        return new WordPressService(this, config);
+    @Override
+    public OAuthService createService(final OAuthConfig config) {
+        return new ExtendedOAuthService20(this, config);
     }
 }

@@ -36,8 +36,10 @@ import org.scribe.up.session.UserSession;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@Deprecated
 public class GoogleProvider extends BaseOAuth10Provider {
     
+    @Override
     protected GoogleProvider newProvider() {
         return new GoogleProvider();
     }
@@ -49,14 +51,14 @@ public class GoogleProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    public String getAuthorizationUrl(UserSession session) {
+    public String getAuthorizationUrl(final UserSession session) {
         init();
-        Token requestToken = service.getRequestToken();
+        final Token requestToken = service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in session
         session.setAttribute(getRequestTokenSessionAttributeName(), requestToken);
-        String authorizationUrl = "https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token="
-                                  + requestToken.getToken();
+        final String authorizationUrl = "https://www.google.com/accounts/OAuthAuthorizeToken?oauth_token="
+                                        + requestToken.getToken();
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
     }
@@ -67,19 +69,19 @@ public class GoogleProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
-        GoogleProfile profile = new GoogleProfile();
+    protected UserProfile extractUserProfile(final String body) {
+        final GoogleProfile profile = new GoogleProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("entry");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
-                for (String attribute : AttributesDefinitions.googleDefinition.getPrincipalAttributes()) {
+                for (final String attribute : AttributesDefinitions.googleDefinition.getPrincipalAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
                 json = json.get("name");
                 if (json != null) {
-                    for (String attribute : AttributesDefinitions.googleDefinition.getOtherAttributes()) {
+                    for (final String attribute : AttributesDefinitions.googleDefinition.getOtherAttributes()) {
                         profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                     }
                 }

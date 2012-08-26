@@ -27,6 +27,8 @@ import org.scribe.up.provider.BaseOAuthProvider;
 import org.scribe.up.provider.impl.DropBoxProvider;
 import org.scribe.up.provider.impl.FacebookProvider;
 import org.scribe.up.provider.impl.GitHubProvider;
+import org.scribe.up.provider.impl.Google2Provider;
+import org.scribe.up.provider.impl.Google2Provider.Google2Scope;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.provider.impl.LinkedInProvider;
 import org.scribe.up.provider.impl.TwitterProvider;
@@ -111,14 +113,12 @@ public final class TestBaseOAuthProvider extends TestCase {
         oldProvider.setKey(KEY);
         oldProvider.setSecret(SECRET);
         oldProvider.setCallbackUrl(CALLBACK_URL);
-        oldProvider.setScope(SCOPE);
         oldProvider.setConnectTimeout(CONNECT_TIMEOUT);
         oldProvider.setReadTimeout(READ_TIMEOUT);
         final BaseOAuthProvider provider = oldProvider.clone();
         assertEquals(oldProvider.getKey(), provider.getKey());
         assertEquals(oldProvider.getSecret(), provider.getSecret());
         assertEquals(oldProvider.getCallbackUrl(), provider.getCallbackUrl());
-        assertEquals(oldProvider.getScope(), provider.getScope());
         assertEquals(oldProvider.getConnectTimeout(), provider.getConnectTimeout());
         assertEquals(oldProvider.getReadTimeout(), provider.getReadTimeout());
         return provider;
@@ -130,6 +130,7 @@ public final class TestBaseOAuthProvider extends TestCase {
     
     public void testCloneFacebookProvider() {
         final FacebookProvider oldProvider = new FacebookProvider();
+        oldProvider.setScope(SCOPE);
         oldProvider.setFriendsReturned(true);
         oldProvider.setMoviesReturned(true);
         oldProvider.setMusicReturned(true);
@@ -138,6 +139,7 @@ public final class TestBaseOAuthProvider extends TestCase {
         oldProvider.setAlbumsReturned(true);
         oldProvider.setEventsReturned(true);
         final FacebookProvider provider = (FacebookProvider) internalTestCloneBaseOAuthProvider(oldProvider);
+        assertEquals(oldProvider.getScope(), provider.getScope());
         assertEquals(oldProvider.isFriendsReturned(), provider.isFriendsReturned());
         assertEquals(oldProvider.isMoviesReturned(), provider.isMoviesReturned());
         assertEquals(oldProvider.isMusicReturned(), provider.isMusicReturned());
@@ -153,6 +155,13 @@ public final class TestBaseOAuthProvider extends TestCase {
     
     public void testCloneGoogleProvider() {
         internalTestCloneBaseOAuthProvider(new GoogleProvider());
+    }
+    
+    public void testCloneGoogle2Provider() {
+        final Google2Provider oldProvider = new Google2Provider();
+        oldProvider.setScope(Google2Scope.EMAIL_AND_PROFILE);
+        final Google2Provider provider = (Google2Provider) internalTestCloneBaseOAuthProvider(oldProvider);
+        assertEquals(oldProvider.getScope(), provider.getScope());
     }
     
     public void testCloneLinkedInProvider() {

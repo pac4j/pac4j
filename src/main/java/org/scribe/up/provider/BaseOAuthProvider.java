@@ -55,8 +55,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     
     protected String callbackUrl;
     
-    protected String scope;
-    
     private String type;
     
     // 0,5 second
@@ -73,7 +71,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         newProvider.setKey(key);
         newProvider.setSecret(secret);
         newProvider.setCallbackUrl(callbackUrl);
-        newProvider.setScope(scope);
         newProvider.setConnectTimeout(connectTimeout);
         newProvider.setReadTimeout(readTimeout);
         return newProvider;
@@ -280,14 +277,6 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     
     public String getCallbackUrl() {
         return callbackUrl;
-    }
-    
-    public String getScope() {
-        return scope;
-    }
-    
-    public void setScope(final String scope) {
-        this.scope = scope;
     }
     
     public int getConnectTimeout() {
