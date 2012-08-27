@@ -24,6 +24,7 @@ import org.scribe.up.profile.google.Google2Profile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.Google2Provider;
 import org.scribe.up.provider.impl.Google2Provider.Google2Scope;
+import org.scribe.up.test.util.CommonHelper;
 
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -85,6 +86,8 @@ public class TestGoogle2Provider extends TestProvider {
                      profile.getPicture());
         assertEquals(Gender.MALE, profile.getGender());
         assertEquals(Locale.ENGLISH, profile.getLocale());
-        assertEquals(10, profile.getAttributes().size());
+        assertEquals(CommonHelper.getFormattedDate(-62161434000000L, "yyyy-MM-dd", null), profile.getBirthday()
+            .toString());
+        assertEquals(11, profile.getAttributes().size());
     }
 }

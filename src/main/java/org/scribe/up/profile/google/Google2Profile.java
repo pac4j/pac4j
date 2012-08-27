@@ -15,6 +15,7 @@
  */
 package org.scribe.up.profile.google;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ import org.scribe.up.profile.UserProfile;
  */
 public class Google2Profile extends UserProfile {
     
-    private static final long serialVersionUID = 2308680174911185443L;
+    private static final long serialVersionUID = -7650790367512919156L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -93,5 +94,9 @@ public class Google2Profile extends UserProfile {
     
     public Locale getLocale() {
         return (Locale) attributes.get(Google2AttributesDefinition.LOCALE);
+    }
+    
+    public Date getBirthday() {
+        return (Date) attributes.get(Google2AttributesDefinition.BIRTHDAY);
     }
 }

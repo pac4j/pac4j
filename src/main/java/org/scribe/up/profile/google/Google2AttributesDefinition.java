@@ -35,6 +35,7 @@ public class Google2AttributesDefinition extends AttributesDefinition {
     public static final String PICTURE = "picture";
     public static final String GENDER = "gender";
     public static final String LOCALE = "locale";
+    public static final String BIRTHDAY = "birthday";
     
     public Google2AttributesDefinition() {
         addAttribute(EMAIL, Converters.stringConverter);
@@ -46,5 +47,6 @@ public class Google2AttributesDefinition extends AttributesDefinition {
         addAttribute(PICTURE, Converters.stringConverter);
         addAttribute(GENDER, Converters.genderConverter);
         addAttribute(LOCALE, Converters.localeConverter);
+        addAttribute(BIRTHDAY, Google2Converters.dateConverter);
     }
 }
