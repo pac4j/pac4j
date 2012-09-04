@@ -34,8 +34,9 @@ import org.scribe.up.profile.UserProfile;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends UserProfile {
     
-    private static final long serialVersionUID = 165025537180852846L;
+    private static final long serialVersionUID = -2666839423218971934L;
     
+    @Override
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.facebookDefinition;
     }
@@ -44,11 +45,11 @@ public class FacebookProfile extends UserProfile {
         super();
     }
     
-    public FacebookProfile(Object id) {
+    public FacebookProfile(final Object id) {
         super(id);
     }
     
-    public FacebookProfile(Object id, Map<String, Object> attributes) {
+    public FacebookProfile(final Object id, final Map<String, Object> attributes) {
         super(id, attributes);
     }
     
@@ -212,5 +213,9 @@ public class FacebookProfile extends UserProfile {
     
     public List<FacebookEvent> getEvents() {
         return (List<FacebookEvent>) attributes.get(FacebookAttributesDefinition.EVENTS);
+    }
+    
+    public List<FacebookGroup> getGroups() {
+        return (List<FacebookGroup>) attributes.get(FacebookAttributesDefinition.GROUPS);
     }
 }

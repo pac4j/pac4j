@@ -18,7 +18,6 @@ package org.scribe.up.provider.impl;
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
-import org.scribe.model.Token;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
@@ -28,8 +27,8 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.util.StringHelper;
 
 /**
- * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and parameters (friendsReturned, moviesReturned,
- * musicReturned, booksReturned, likesReturned) can be defined to get more attributes.<br />
+ * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and fields can be requested to get more attributes and
+ * the number of results can be limited.<br />
  * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
  * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (JsonList&lt;FacebookObject&gt;), link (String),
  * username (String), third_party_id (String), timezone (Integer), updated_time (FormattedDate), verified (Boolean), bio (String), birthday
@@ -38,7 +37,8 @@ import org.scribe.up.util.StringHelper;
  * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
  * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
- * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;) and events (JsonList&lt;FacebookEvent&gt;).<br />
+ * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;), events (JsonList&lt;FacebookEvent&gt;) and groups
+ * (JsonList&lt;FacebookGroup&gt;).<br />
  * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
  * @author Jerome Leleu
@@ -46,35 +46,24 @@ import org.scribe.up.util.StringHelper;
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
+    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
+    
     protected final static String BASE_URL = "https://graph.facebook.com/me";
     
-    protected boolean friendsReturned = false;
-    
-    protected boolean moviesReturned = false;
-    
-    protected boolean musicReturned = false;
-    
-    protected boolean booksReturned = false;
-    
-    protected boolean likesReturned = false;
-    
-    protected boolean albumsReturned = false;
-    
-    protected boolean eventsReturned = false;
+    protected String fields = DEFAULT_FIELDS;
     
     protected String scope;
+    
+    public final static int DEFAULT_LIMIT = 0;
+    
+    protected int limit = DEFAULT_LIMIT;
     
     @Override
     protected FacebookProvider newProvider() {
         final FacebookProvider newProvider = new FacebookProvider();
         newProvider.setScope(scope);
-        newProvider.setFriendsReturned(friendsReturned);
-        newProvider.setMoviesReturned(moviesReturned);
-        newProvider.setMusicReturned(musicReturned);
-        newProvider.setBooksReturned(booksReturned);
-        newProvider.setLikesReturned(likesReturned);
-        newProvider.setAlbumsReturned(albumsReturned);
-        newProvider.setEventsReturned(eventsReturned);
+        newProvider.setFields(fields);
+        newProvider.setLimit(limit);
         return newProvider;
     }
     
@@ -91,40 +80,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     @Override
     protected String getProfileUrl() {
-        return BASE_URL;
-    }
-    
-    @Override
-    public UserProfile getUserProfile(final Token accessToken) {
-        // get the profile
-        final String body = sendRequestForData(accessToken, getProfileUrl());
-        if (body == null) {
-            return null;
+        String url = BASE_URL + "?fields=" + fields;
+        if (limit > DEFAULT_LIMIT) {
+            url += "&limit=" + limit;
         }
-        // get additionnal data if requested
-        final FacebookProfile profile = (FacebookProfile) extractUserProfile(body);
-        getData(friendsReturned, accessToken, profile, FacebookAttributesDefinition.FRIENDS, BASE_URL + "/friends");
-        getData(moviesReturned, accessToken, profile, FacebookAttributesDefinition.MOVIES, BASE_URL + "/movies");
-        getData(musicReturned, accessToken, profile, FacebookAttributesDefinition.MUSIC, BASE_URL + "/music");
-        getData(booksReturned, accessToken, profile, FacebookAttributesDefinition.BOOKS, BASE_URL + "/books");
-        getData(likesReturned, accessToken, profile, FacebookAttributesDefinition.LIKES, BASE_URL + "/likes");
-        getData(albumsReturned, accessToken, profile, FacebookAttributesDefinition.ALBUMS, BASE_URL + "/albums");
-        getData(eventsReturned, accessToken, profile, FacebookAttributesDefinition.EVENTS, BASE_URL + "/events");
-        addAccessTokenToProfile(profile, accessToken);
-        return profile;
-    }
-    
-    private void getData(final boolean dataReturned, final Token accessToken, final FacebookProfile profile,
-                         final String attribute, final String url) {
-        if (dataReturned) {
-            final String body = sendRequestForData(accessToken, url);
-            if (body != null) {
-                final JsonNode json = JsonHelper.getFirstNode(body);
-                if (json != null) {
-                    profile.addAttribute(attribute, JsonHelper.get(json, "data"));
-                }
-            }
-        }
+        return url;
     }
     
     @Override
@@ -136,8 +96,23 @@ public class FacebookProvider extends BaseOAuth20Provider {
             for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
+            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
+            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
+            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
+            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
+            extractData(profile, json, FacebookAttributesDefinition.LIKES);
+            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
+            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
+            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
         }
         return profile;
+    }
+    
+    protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
+        final JsonNode data = (JsonNode) JsonHelper.get(json, name);
+        if (data != null) {
+            profile.addAttribute(name, JsonHelper.get(data, "data"));
+        }
     }
     
     public String getScope() {
@@ -148,94 +123,19 @@ public class FacebookProvider extends BaseOAuth20Provider {
         this.scope = scope;
     }
     
-    public boolean isFriendsReturned() {
-        return friendsReturned;
+    public String getFields() {
+        return fields;
     }
     
-    /**
-     * Define if the friends data should be returned in Facebook profile.
-     * 
-     * @param friendsReturned
-     */
-    public void setFriendsReturned(final boolean friendsReturned) {
-        this.friendsReturned = friendsReturned;
+    public void setFields(final String fields) {
+        this.fields = fields;
     }
     
-    public boolean isMoviesReturned() {
-        return moviesReturned;
+    public int getLimit() {
+        return limit;
     }
     
-    /**
-     * Define if the movies data should be returned in Facebook profile.
-     * 
-     * @param moviesReturned
-     */
-    public void setMoviesReturned(final boolean moviesReturned) {
-        this.moviesReturned = moviesReturned;
-    }
-    
-    public boolean isMusicReturned() {
-        return musicReturned;
-    }
-    
-    /**
-     * Define if the music data should be returned in Facebook profile.
-     * 
-     * @param musicReturned
-     */
-    public void setMusicReturned(final boolean musicReturned) {
-        this.musicReturned = musicReturned;
-    }
-    
-    public boolean isBooksReturned() {
-        return booksReturned;
-    }
-    
-    /**
-     * Define if the books data should be returned in Facebook profile.
-     * 
-     * @param booksReturned
-     */
-    public void setBooksReturned(final boolean booksReturned) {
-        this.booksReturned = booksReturned;
-    }
-    
-    public boolean isLikesReturned() {
-        return likesReturned;
-    }
-    
-    /**
-     * Define if the likes data should be returned in Facebook profile.
-     * 
-     * @param likesReturned
-     */
-    public void setLikesReturned(final boolean likesReturned) {
-        this.likesReturned = likesReturned;
-    }
-    
-    public boolean isAlbumsReturned() {
-        return albumsReturned;
-    }
-    
-    /**
-     * Define if the photo albums should be returned in Facebook profile.
-     * 
-     * @param albumsReturned
-     */
-    public void setAlbumsReturned(final boolean albumsReturned) {
-        this.albumsReturned = albumsReturned;
-    }
-    
-    public boolean isEventsReturned() {
-        return eventsReturned;
-    }
-    
-    /**
-     * Define if the events should be returned in Facebook profile.
-     * 
-     * @param eventsReturned
-     */
-    public void setEventsReturned(final boolean eventsReturned) {
-        this.eventsReturned = eventsReturned;
+    public void setLimit(final int limit) {
+        this.limit = limit;
     }
 }

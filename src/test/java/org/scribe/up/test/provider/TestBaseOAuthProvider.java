@@ -54,7 +54,11 @@ public final class TestBaseOAuthProvider extends TestCase {
     
     private static final String SCOPE = "scope";
     
+    private static final String FIELDS = "fields";
+    
     private static final String TYPE = "specific_type";
+    
+    private static final int LIMIT = 112;
     
     private static final int CONNECT_TIMEOUT = 135;
     
@@ -131,22 +135,12 @@ public final class TestBaseOAuthProvider extends TestCase {
     public void testCloneFacebookProvider() {
         final FacebookProvider oldProvider = new FacebookProvider();
         oldProvider.setScope(SCOPE);
-        oldProvider.setFriendsReturned(true);
-        oldProvider.setMoviesReturned(true);
-        oldProvider.setMusicReturned(true);
-        oldProvider.setBooksReturned(true);
-        oldProvider.setLikesReturned(true);
-        oldProvider.setAlbumsReturned(true);
-        oldProvider.setEventsReturned(true);
+        oldProvider.setFields(FIELDS);
+        oldProvider.setLimit(LIMIT);
         final FacebookProvider provider = (FacebookProvider) internalTestCloneBaseOAuthProvider(oldProvider);
         assertEquals(oldProvider.getScope(), provider.getScope());
-        assertEquals(oldProvider.isFriendsReturned(), provider.isFriendsReturned());
-        assertEquals(oldProvider.isMoviesReturned(), provider.isMoviesReturned());
-        assertEquals(oldProvider.isMusicReturned(), provider.isMusicReturned());
-        assertEquals(oldProvider.isBooksReturned(), provider.isBooksReturned());
-        assertEquals(oldProvider.isLikesReturned(), provider.isLikesReturned());
-        assertEquals(oldProvider.isAlbumsReturned(), provider.isAlbumsReturned());
-        assertEquals(oldProvider.isEventsReturned(), provider.isEventsReturned());
+        assertEquals(oldProvider.getFields(), provider.getFields());
+        assertEquals(oldProvider.getLimit(), provider.getLimit());
     }
     
     public void testCloneGitHubProvider() {

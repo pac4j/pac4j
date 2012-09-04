@@ -62,13 +62,14 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String LIKES = "likes";
     public static final String ALBUMS = "albums";
     public static final String EVENTS = "events";
+    public static final String GROUPS = "groups";
     
     public FacebookAttributesDefinition() {
-        String[] names = new String[] {
+        final String[] names = new String[] {
             NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, USERNAME, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
             RELIGION, WEBSITE
         };
-        for (String name : names) {
+        for (final String name : names) {
             addAttribute(name, Converters.stringConverter);
         }
         addAttribute(TIMEZONE, Converters.integerConverter);
@@ -94,5 +95,6 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
         addAttribute(LIKES, FacebookConverters.listInfoConverter, false);
         addAttribute(ALBUMS, FacebookConverters.listPhotoConverter, false);
         addAttribute(EVENTS, FacebookConverters.listEventConverter, false);
+        addAttribute(GROUPS, FacebookConverters.listGroupConverter, false);
     }
 }
