@@ -55,12 +55,9 @@ public class TestGoogle2Provider extends TestProvider {
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup");
+        passwd.setValueAttribute("testpwdscribeup12");
         final HtmlSubmitInput submit = form.getInputByName("signIn");
         final HtmlPage callbackPage = submit.click();
-        /*form = confirmPage.getForms().get(0);
-        final HtmlButton button = (HtmlButton) form.getElementById("submit_approve_access");
-        final HtmlPage callbackPage = button.click();*/
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;

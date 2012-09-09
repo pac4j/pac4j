@@ -189,7 +189,7 @@ public class TestFacebookProvider extends TestProvider {
         final FacebookEvent event = events.get(0);
         assertEquals("Couronnement", event.getName());
         assertEquals("301212149963131", event.getId());
-        assertEquals("Paris, Ile-de-France", event.getLocation());
+        assertTrue(event.getLocation().startsWith("Paris"));
         assertEquals("attending", event.getRsvpStatus());
         assertNotNull(event.getStartTime());
         assertNotNull(event.getEndTime());
