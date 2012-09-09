@@ -15,7 +15,7 @@
  */
 package org.scribe.up.test.profile.converter;
 
-import java.awt.Color;
+import org.scribe.up.profile.Color;
 
 import junit.framework.TestCase;
 
