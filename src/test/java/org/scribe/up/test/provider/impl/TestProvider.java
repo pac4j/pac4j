@@ -17,7 +17,7 @@ package org.scribe.up.test.provider.impl;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.OAuthProvider;
@@ -45,43 +45,44 @@ public abstract class TestProvider extends TestCase {
     }
     
     public void testProvider() throws Exception {
-        OAuthProvider provider = getProvider();
+        final OAuthProvider provider = getProvider();
         
-        SingleUserSession session = new SingleUserSession();
-        WebClient webClient = CommonHelper.newWebClient(isJavascriptEnabled());
+        final SingleUserSession session = new SingleUserSession();
+        final WebClient webClient = CommonHelper.newWebClient(isJavascriptEnabled());
         
-        HtmlPage authorizationPage = getAuhtorizationPage(webClient, provider, session);
+        final HtmlPage authorizationPage = getAuhtorizationPage(webClient, provider, session);
         
-        String callbackUrl = getCallbackUrl(authorizationPage);
+        final String callbackUrl = getCallbackUrl(authorizationPage);
         
-        UserProfile profile = getProfile(provider, session, callbackUrl);
+        final UserProfile profile = getProfile(provider, session, callbackUrl);
         
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         verifyProfile(profile);
         
-        byte[] bytes = CommonHelper.serialize(profile);
-        UserProfile profile2 = (UserProfile) CommonHelper.unserialize(bytes);
+        final byte[] bytes = CommonHelper.serialize(profile);
+        final UserProfile profile2 = (UserProfile) CommonHelper.unserialize(bytes);
         
         verifyProfile(profile2);
     }
     
     protected abstract OAuthProvider getProvider();
     
-    protected HtmlPage getAuhtorizationPage(WebClient webClient, OAuthProvider provider, UserSession session)
-        throws Exception {
-        String authorizationUrl = provider.getAuthorizationUrl(session);
+    protected HtmlPage getAuhtorizationPage(final WebClient webClient, final OAuthProvider provider,
+                                            final UserSession session) throws Exception {
+        final String authorizationUrl = provider.getAuthorizationUrl(session);
         logger.debug("authorizationUrl : {}", authorizationUrl);
-        HtmlPage loginPage = webClient.getPage(authorizationUrl);
+        final HtmlPage loginPage = webClient.getPage(authorizationUrl);
         return loginPage;
     }
     
     protected abstract String getCallbackUrl(HtmlPage authorizationPage) throws Exception;
     
-    protected UserProfile getProfile(OAuthProvider provider, UserSession session, String callbackUrl) {
-        OAuthCredential credential = provider.getCredential(session, CommonHelper.getParametersFromUrl(callbackUrl));
+    protected UserProfile getProfile(final OAuthProvider provider, final UserSession session, final String callbackUrl) {
+        final OAuthCredential credential = provider.getCredential(session,
+                                                                  CommonHelper.getParametersFromUrl(callbackUrl));
         logger.debug("credential : {}", credential);
         
-        UserProfile profile = provider.getUserProfile(credential);
+        final UserProfile profile = provider.getUserProfile(credential);
         return profile;
     }
     
