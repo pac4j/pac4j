@@ -15,7 +15,7 @@
  */
 package org.scribe.up.test.provider.impl;
 
-import java.awt.Color;
+import org.scribe.up.profile.Color;
 import java.util.Locale;
 
 import org.scribe.up.profile.ProfileHelper;
