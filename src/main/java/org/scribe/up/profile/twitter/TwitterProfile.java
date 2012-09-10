@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.twitter;
 
-import java.awt.Color;
+import org.scribe.up.profile.Color;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
