@@ -25,19 +25,20 @@ import org.scribe.model.Token;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class OAuthCredential implements Serializable {
+public class OAuthCredential implements Serializable {
     
-    private static final long serialVersionUID = 7551963741090457321L;
+    private static final long serialVersionUID = -3590688958662634837L;
     
-    private Token requestToken;
+    private final Token requestToken;
     
-    private String token;
+    private final String token;
     
-    private String verifier;
+    private final String verifier;
     
-    private String providerType;
+    private final String providerType;
     
-    public OAuthCredential(Token requestToken, String token, String verifier, String providerType) {
+    public OAuthCredential(final Token requestToken, final String token, final String verifier,
+                           final String providerType) {
         this.requestToken = requestToken;
         this.token = token;
         this.verifier = verifier;
@@ -62,7 +63,7 @@ public final class OAuthCredential implements Serializable {
     
     @Override
     public String toString() {
-        return "OAuthCredential{requestToken:" + requestToken + ",token:" + token + ",verifier:" + verifier
-               + ",providerType:" + providerType + "}";
+        return "OAuthCredential{requestToken:" + this.requestToken + ",token:" + this.token + ",verifier:"
+               + this.verifier + ",providerType:" + this.providerType + "}";
     }
 }
