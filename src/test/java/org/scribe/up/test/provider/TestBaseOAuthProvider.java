@@ -64,6 +64,10 @@ public final class TestBaseOAuthProvider extends TestCase {
     
     private static final int READ_TIMEOUT = 2896;
     
+    private static final String PROXY_HOST = "proxyHost";
+    
+    private static final int PROXY_PORT = 12345;
+    
     public void testDefaultType10() {
         final BaseOAuth10Provider provider = new YahooProvider();
         assertEquals("YahooProvider", provider.getType());
@@ -119,12 +123,16 @@ public final class TestBaseOAuthProvider extends TestCase {
         oldProvider.setCallbackUrl(CALLBACK_URL);
         oldProvider.setConnectTimeout(CONNECT_TIMEOUT);
         oldProvider.setReadTimeout(READ_TIMEOUT);
+        oldProvider.setProxyHost(PROXY_HOST);
+        oldProvider.setProxyPort(PROXY_PORT);
         final BaseOAuthProvider provider = oldProvider.clone();
         assertEquals(oldProvider.getKey(), provider.getKey());
         assertEquals(oldProvider.getSecret(), provider.getSecret());
         assertEquals(oldProvider.getCallbackUrl(), provider.getCallbackUrl());
         assertEquals(oldProvider.getConnectTimeout(), provider.getConnectTimeout());
         assertEquals(oldProvider.getReadTimeout(), provider.getReadTimeout());
+        assertEquals(oldProvider.getProxyHost(), provider.getProxyHost());
+        assertEquals(oldProvider.getProxyPort(), provider.getProxyPort());
         return provider;
     }
     

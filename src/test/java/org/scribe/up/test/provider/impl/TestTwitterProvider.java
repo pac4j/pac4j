@@ -15,9 +15,9 @@
  */
 package org.scribe.up.test.provider.impl;
 
-import org.scribe.up.profile.Color;
 import java.util.Locale;
 
+import org.scribe.up.profile.Color;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
@@ -41,7 +41,7 @@ public class TestTwitterProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        TwitterProvider twitterProvider = new TwitterProvider();
+        final TwitterProvider twitterProvider = new TwitterProvider();
         twitterProvider.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterProvider.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
         twitterProvider.setCallbackUrl("http://www.google.com/");
@@ -49,22 +49,22 @@ public class TestTwitterProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
-        HtmlForm form = authorizationPage.getForms().get(0);
-        HtmlTextInput sessionUsernameOrEmail = form.getInputByName("session[username_or_email]");
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+        final HtmlForm form = authorizationPage.getForms().get(0);
+        final HtmlTextInput sessionUsernameOrEmail = form.getInputByName("session[username_or_email]");
         sessionUsernameOrEmail.setValueAttribute("testscribeup@gmail.com");
-        HtmlPasswordInput sessionPassword = form.getInputByName("session[password]");
+        final HtmlPasswordInput sessionPassword = form.getInputByName("session[password]");
         sessionPassword.setValueAttribute("testpwdscribeup");
-        HtmlSubmitInput submit = form.getElementById("allow");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlSubmitInput submit = form.getElementById("allow");
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        TwitterProfile profile = (TwitterProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final TwitterProfile profile = (TwitterProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getSimpleName() + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
@@ -117,7 +117,7 @@ public class TestTwitterProvider extends TestProvider {
         assertTrue(profile.isProtectedDefined());
         assertEquals("testscribeUP", profile.getScreenName());
         assertFalse(profile.isShowAllInlineMedia());
-        assertTrue(profile.isShowAllInlineMediaDefined());
+        assertFalse(profile.isShowAllInlineMediaDefined());
         assertEquals(0, profile.getStatusesCount());
         assertTrue(profile.isStatusesCountDefined());
         assertEquals("Amsterdam", profile.getTimeZone());
@@ -125,6 +125,6 @@ public class TestTwitterProvider extends TestProvider {
         assertEquals(3600, profile.getUtcOffset());
         assertFalse(profile.isVerified());
         assertTrue(profile.isVerifiedDefined());
-        assertEquals(36, profile.getAttributes().size());
+        assertEquals(35, profile.getAttributes().size());
     }
 }

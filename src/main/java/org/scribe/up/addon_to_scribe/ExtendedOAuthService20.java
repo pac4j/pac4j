@@ -1,3 +1,18 @@
+/*
+  Copyright 2012 Jerome Leleu
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.scribe.up.addon_to_scribe;
 
 import org.scribe.builder.api.DefaultApi20;
@@ -37,18 +52,18 @@ public class ExtendedOAuthService20 implements OAuthService {
      * {@inheritDoc}
      */
     public Token getAccessToken(final Token requestToken, final Verifier verifier) {
-        final OAuthRequest request = new OAuthRequest(api.getAccessTokenVerb(), api.getAccessTokenEndpoint());
+        final OAuthRequest request = new OAuthRequest(this.api.getAccessTokenVerb(), this.api.getAccessTokenEndpoint());
         // PATCH : body parameters instead of request parameters
-        request.addBodyParameter(OAuthConstants.CLIENT_ID, config.getApiKey());
-        request.addBodyParameter(OAuthConstants.CLIENT_SECRET, config.getApiSecret());
+        request.addBodyParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
+        request.addBodyParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());
         request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
-        request.addBodyParameter(OAuthConstants.REDIRECT_URI, config.getCallback());
-        if (config.hasScope())
-            request.addBodyParameter(OAuthConstants.SCOPE, config.getScope());
+        request.addBodyParameter(OAuthConstants.REDIRECT_URI, this.config.getCallback());
+        if (this.config.hasScope())
+            request.addBodyParameter(OAuthConstants.SCOPE, this.config.getScope());
         // PATCH : + grant_type parameter
         request.addBodyParameter("grant_type", "authorization_code");
         final Response response = request.send();
-        return api.getAccessTokenExtractor().extract(response.getBody());
+        return this.api.getAccessTokenExtractor().extract(response.getBody());
     }
     
     /**
@@ -77,7 +92,7 @@ public class ExtendedOAuthService20 implements OAuthService {
      * {@inheritDoc}
      */
     public String getAuthorizationUrl(final Token requestToken) {
-        return api.getAuthorizationUrl(config);
+        return this.api.getAuthorizationUrl(this.config);
     }
     
 }

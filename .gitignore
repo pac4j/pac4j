@@ -13,6 +13,7 @@ local.properties
 .settings/
 .loadpath
 target/
+test-output/
 
 # External tool builders
 .externalToolBuilders/

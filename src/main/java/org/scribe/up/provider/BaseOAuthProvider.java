@@ -18,7 +18,7 @@ package org.scribe.up.provider;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.scribe.model.OAuthRequest;
+import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
@@ -63,16 +63,22 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     // 3 seconds
     protected int readTimeout = 3000;
     
+    protected String proxyHost = null;
+    
+    protected int proxyPort = 8080;
+    
     private boolean initialized = false;
     
     @Override
     public BaseOAuthProvider clone() {
         final BaseOAuthProvider newProvider = newProvider();
-        newProvider.setKey(key);
-        newProvider.setSecret(secret);
-        newProvider.setCallbackUrl(callbackUrl);
-        newProvider.setConnectTimeout(connectTimeout);
-        newProvider.setReadTimeout(readTimeout);
+        newProvider.setKey(this.key);
+        newProvider.setSecret(this.secret);
+        newProvider.setCallbackUrl(this.callbackUrl);
+        newProvider.setConnectTimeout(this.connectTimeout);
+        newProvider.setReadTimeout(this.readTimeout);
+        newProvider.setProxyHost(this.proxyHost);
+        newProvider.setProxyPort(this.proxyPort);
         return newProvider;
     }
     
@@ -88,11 +94,11 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * the {@link OAuthProvider} interface.
      */
     public void init() {
-        if (!initialized) {
+        if (!this.initialized) {
             synchronized (this) {
-                if (!initialized) {
+                if (!this.initialized) {
                     internalInit();
-                    initialized = true;
+                    this.initialized = true;
                 }
             }
         }
@@ -103,7 +109,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      */
     public synchronized void reinit() {
         internalInit();
-        initialized = true;
+        this.initialized = true;
     }
     
     /**
@@ -172,14 +178,14 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     protected String sendRequestForData(final Token accessToken, final String dataUrl) {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
-        final OAuthRequest request = new OAuthRequest(Verb.GET, dataUrl);
-        if (connectTimeout != 0) {
-            request.setConnectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, dataUrl, this.proxyHost, this.proxyPort);
+        if (this.connectTimeout != 0) {
+            request.setConnectTimeout(this.connectTimeout, TimeUnit.MILLISECONDS);
         }
-        if (readTimeout != 0) {
-            request.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        if (this.readTimeout != 0) {
+            request.setReadTimeout(this.readTimeout, TimeUnit.MILLISECONDS);
         }
-        service.signRequest(accessToken, request);
+        this.service.signRequest(accessToken, request);
         // for Google
         if (this instanceof GoogleProvider) {
             request.addHeader("GData-Version", "3.0");
@@ -261,29 +267,45 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     }
     
     public String getType() {
-        if (StringHelper.isBlank(type)) {
+        if (StringHelper.isBlank(this.type)) {
             return this.getClass().getSimpleName();
         }
-        return type;
+        return this.type;
     }
     
     public String getKey() {
-        return key;
+        return this.key;
     }
     
     public String getSecret() {
-        return secret;
+        return this.secret;
     }
     
     public String getCallbackUrl() {
-        return callbackUrl;
+        return this.callbackUrl;
     }
     
     public int getConnectTimeout() {
-        return connectTimeout;
+        return this.connectTimeout;
     }
     
     public int getReadTimeout() {
-        return readTimeout;
+        return this.readTimeout;
+    }
+    
+    public String getProxyHost() {
+        return this.proxyHost;
+    }
+    
+    public void setProxyHost(final String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+    
+    public int getProxyPort() {
+        return this.proxyPort;
+    }
+    
+    public void setProxyPort(final int proxyPort) {
+        this.proxyPort = proxyPort;
     }
 }
