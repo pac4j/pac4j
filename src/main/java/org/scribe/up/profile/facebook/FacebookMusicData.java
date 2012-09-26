@@ -20,35 +20,48 @@ import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
 
 /**
- * This class represents a common Facebook object (id + name).
+ * This class represents a Facebook music data : song, musician or radio_station.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.2.0
  */
-public class FacebookObject extends JsonObject {
+public class FacebookMusicData extends JsonObject {
     
-    private static final long serialVersionUID = -8917241612368898157L;
+    private static final long serialVersionUID = 331676644031080454L;
     
     private String id;
     
-    private String name;
+    private String url;
     
-    public FacebookObject(final Object json) {
+    private String type;
+    
+    private String title;
+    
+    public FacebookMusicData(final Object json) {
         super(json);
     }
     
     @Override
     protected void buildFromJson(final JsonNode json) {
         this.id = Converters.stringConverter.convertFromJson(json, "id");
-        this.name = Converters.stringConverter.convertFromJson(json, "name");
-        
+        this.url = Converters.stringConverter.convertFromJson(json, "url");
+        this.type = Converters.stringConverter.convertFromJson(json, "type");
+        this.title = Converters.stringConverter.convertFromJson(json, "title");
     }
     
     public String getId() {
         return id;
     }
     
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public String getTitle() {
+        return title;
     }
 }

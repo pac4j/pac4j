@@ -16,39 +16,31 @@
 package org.scribe.up.profile.facebook;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
 
 /**
- * This class represents a common Facebook object (id + name).
+ * This class represents a Facebook application.
  * 
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.2.0
  */
-public class FacebookObject extends JsonObject {
+public final class FacebookApplication extends FacebookObject {
     
-    private static final long serialVersionUID = -8917241612368898157L;
+    private static final long serialVersionUID = -2704985540417732739L;
     
-    private String id;
+    private String namespace;
     
-    private String name;
-    
-    public FacebookObject(final Object json) {
+    public FacebookApplication(final Object json) {
         super(json);
     }
     
     @Override
     protected void buildFromJson(final JsonNode json) {
-        this.id = Converters.stringConverter.convertFromJson(json, "id");
-        this.name = Converters.stringConverter.convertFromJson(json, "name");
-        
+        super.buildFromJson(json);
+        this.namespace = Converters.stringConverter.convertFromJson(json, "namespace");
     }
     
-    public String getId() {
-        return id;
-    }
-    
-    public String getName() {
-        return name;
+    public String getNamespace() {
+        return namespace;
     }
 }

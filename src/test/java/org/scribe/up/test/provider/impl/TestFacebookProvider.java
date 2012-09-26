@@ -56,9 +56,9 @@ public class TestFacebookProvider extends TestProvider {
         facebookProvider.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
         facebookProvider.setCallbackUrl("http://www.google.com/");
         facebookProvider
-            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups");
+            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups,user_actions.music");
         facebookProvider.setFields(FacebookProvider.DEFAULT_FIELDS
-                                   + ",friends,movies,music,books,likes,albums,events,groups");
+                                   + ",friends,movies,music,books,likes,albums,events,groups,music.listens");
         facebookProvider.setLimit(100);
         return facebookProvider;
     }
