@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo email.
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class YahooEmail extends JsonObject {
     
-    private static final long serialVersionUID = -8696500370764758110L;
+    private static final long serialVersionUID = 8273986408286688203L;
     
     private Integer id;
     

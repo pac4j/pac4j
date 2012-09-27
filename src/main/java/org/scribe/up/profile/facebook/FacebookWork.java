@@ -17,9 +17,10 @@ package org.scribe.up.profile.facebook;
 
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook work.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookWork extends JsonObject {
     
-    private static final long serialVersionUID = 8481151870430190829L;
+    private static final long serialVersionUID = -5698634125512204910L;
     
     private FacebookObject employer;
     

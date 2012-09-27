@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.facebook;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook group.
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookGroup extends JsonObject {
     
-    private static final long serialVersionUID = -7950171511046910707L;
+    private static final long serialVersionUID = 6817033467124962401L;
     
     private Integer version;
     

@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.addon_to_scribe.WordPressApi;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -24,6 +23,8 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.wordpress.WordPressAttributesDefinition;
 import org.scribe.up.profile.wordpress.WordPressProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in WordPress. Scope is not used.<br />
@@ -36,6 +37,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class WordPressProvider extends BaseOAuth20Provider {
     
+    @Override
     protected WordPressProvider newProvider() {
         return new WordPressProvider();
     }
@@ -52,7 +54,7 @@ public class WordPressProvider extends BaseOAuth20Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         WordPressProfile profile = new WordPressProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

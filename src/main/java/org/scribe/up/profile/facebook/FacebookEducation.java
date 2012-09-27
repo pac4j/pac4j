@@ -17,9 +17,10 @@ package org.scribe.up.profile.facebook;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents an education object for Facebook.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookEducation extends JsonObject {
     
-    private static final long serialVersionUID = -4519046820724537979L;
+    private static final long serialVersionUID = 3587603107957633824L;
     
     private FacebookObject school;
     

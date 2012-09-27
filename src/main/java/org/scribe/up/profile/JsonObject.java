@@ -17,7 +17,7 @@ package org.scribe.up.profile;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is an object which can build from JSON.
@@ -27,7 +27,7 @@ import org.codehaus.jackson.JsonNode;
  */
 public abstract class JsonObject extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = 2097185598809648930L;
+    private static final long serialVersionUID = 2300984913280001378L;
     
     protected String json = "";
     

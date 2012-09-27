@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -23,6 +22,8 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Twitter. Scope is not used.<br />
@@ -42,6 +43,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
  */
 public class TwitterProvider extends BaseOAuth10Provider {
     
+    @Override
     protected TwitterProvider newProvider() {
         return new TwitterProvider();
     }
@@ -58,7 +60,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         TwitterProfile profile = new TwitterProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

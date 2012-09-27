@@ -17,7 +17,6 @@ package org.scribe.up.provider.impl;
 
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.DropBoxApi;
 import org.scribe.model.Token;
@@ -28,6 +27,8 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.dropbox.DropBoxProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in DropBox. Scope is not used.<br />
@@ -40,6 +41,7 @@ import org.scribe.up.session.UserSession;
  */
 public class DropBoxProvider extends BaseOAuth10Provider {
     
+    @Override
     protected DropBoxProvider newProvider() {
         return new DropBoxProvider();
     }
@@ -56,7 +58,8 @@ public class DropBoxProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
+    public OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                           final Map<String, String[]> parameters) {
         // get tokenRequest from user session
         Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
         logger.debug("tokenRequest : {}", tokenRequest);
@@ -68,7 +71,7 @@ public class DropBoxProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         DropBoxProfile profile = new DropBoxProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

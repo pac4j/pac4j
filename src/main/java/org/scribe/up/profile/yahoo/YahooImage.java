@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo image.
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class YahooImage extends JsonObject {
     
-    private static final long serialVersionUID = -4703800296993701787L;
+    private static final long serialVersionUID = 1532391469660371676L;
     
     private String imageUrl;
     

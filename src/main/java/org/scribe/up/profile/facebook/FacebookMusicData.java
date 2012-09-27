@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.facebook;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook music data : song, musician or radio_station.
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookMusicData extends JsonObject {
     
-    private static final long serialVersionUID = 167919577472714404L;
+    private static final long serialVersionUID = 7221203529595022102L;
     
     private String id;
     

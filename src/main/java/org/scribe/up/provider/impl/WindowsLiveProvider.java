@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LiveApi;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -23,6 +22,8 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.windowslive.WindowsLiveProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Windows Live (SkyDrive, Hotmail and Messenger). Scope is not used.<br />
@@ -35,6 +36,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class WindowsLiveProvider extends BaseOAuth20Provider {
     
+    @Override
     protected WindowsLiveProvider newProvider() {
         return new WindowsLiveProvider();
     }
@@ -51,7 +53,7 @@ public class WindowsLiveProvider extends BaseOAuth20Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         WindowsLiveProfile profile = new WindowsLiveProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

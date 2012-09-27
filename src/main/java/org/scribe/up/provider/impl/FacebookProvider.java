@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -25,6 +24,8 @@ import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.util.StringHelper;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and fields can be requested to get more attributes and

@@ -17,12 +17,13 @@ package org.scribe.up.profile;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class is an helper to work with JSON.
@@ -45,7 +46,7 @@ public final class JsonHelper {
      * @param text
      * @return the first node of the JSON response or null if exception is thrown
      */
-    public static JsonNode getFirstNode(String text) {
+    public static JsonNode getFirstNode(final String text) {
         try {
             return mapper.readValue(text, JsonNode.class);
         } catch (JsonParseException e) {
@@ -65,16 +66,16 @@ public final class JsonHelper {
      * @param name
      * @return the field
      */
-    public static Object get(JsonNode json, String name) {
+    public static Object get(final JsonNode json, final String name) {
         if (json != null) {
             JsonNode node = json.get(name);
             if (node != null) {
                 if (node.isNumber()) {
-                    return node.getNumberValue();
+                    return node.intValue();
                 } else if (node.isBoolean()) {
-                    return node.getBooleanValue();
+                    return node.booleanValue();
                 } else if (node.isTextual()) {
-                    return node.getTextValue();
+                    return node.textValue();
                 } else {
                     return node;
                 }

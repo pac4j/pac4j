@@ -17,8 +17,9 @@ package org.scribe.up.profile.converter;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonList;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class converts a JSON (String or JsonNode) into a list of objects.
@@ -33,12 +34,12 @@ public final class JsonListConverter extends BaseConverter<JsonList> {
     
     private final Class<? extends Object> clazz;
     
-    public JsonListConverter(Class<? extends Object> clazz) {
+    public JsonListConverter(final Class<? extends Object> clazz) {
         this.clazz = clazz;
     }
     
     @Override
-    public JsonList convert(Object attribute) {
+    public JsonList convert(final Object attribute) {
         if (attribute != null
             && (attribute instanceof String || attribute instanceof JsonNode || attribute instanceof List<?>)) {
             return new JsonList(attribute, clazz);

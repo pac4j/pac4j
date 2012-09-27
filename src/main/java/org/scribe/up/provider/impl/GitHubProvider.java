@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.addon_to_scribe.GitHubApi;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -23,6 +22,8 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in GitHub. Scope is not used.<br />
@@ -38,6 +39,7 @@ import org.scribe.up.provider.BaseOAuth20Provider;
  */
 public class GitHubProvider extends BaseOAuth20Provider {
     
+    @Override
     protected GitHubProvider newProvider() {
         return new GitHubProvider();
     }
@@ -54,7 +56,7 @@ public class GitHubProvider extends BaseOAuth20Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         GitHubProfile profile = new GitHubProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

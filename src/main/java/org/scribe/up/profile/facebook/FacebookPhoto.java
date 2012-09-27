@@ -17,9 +17,10 @@ package org.scribe.up.profile.facebook;
 
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook photo.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookPhoto extends JsonObject {
     
-    private static final long serialVersionUID = -464224163362463799L;
+    private static final long serialVersionUID = -6992253083477744419L;
     
     private String id;
     

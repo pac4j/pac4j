@@ -17,9 +17,10 @@ package org.scribe.up.profile.yahoo;
 
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo disclosure.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class YahooDisclosure extends JsonObject {
     
-    private static final long serialVersionUID = -3766377948756747833L;
+    private static final long serialVersionUID = 7230528097873004424L;
     
     private String acceptance;
     

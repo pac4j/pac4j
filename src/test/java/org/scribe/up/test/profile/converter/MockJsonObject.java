@@ -15,8 +15,9 @@
  */
 package org.scribe.up.test.profile.converter;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is a mock for JsonObject.
@@ -32,7 +33,7 @@ public final class MockJsonObject extends JsonObject {
     
     @Override
     protected void buildFromJson(final JsonNode json) {
-        this.value = json.getTextValue();
+        this.value = json.textValue();
     }
     
     public String getValue() {
