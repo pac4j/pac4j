@@ -62,7 +62,8 @@ public final class TestFacebookPhoto extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookPhoto facebookPhoto = new FacebookPhoto(null);
+        final FacebookPhoto facebookPhoto = new FacebookPhoto();
+        facebookPhoto.buildFrom(null);
         assertNull(facebookPhoto.getId());
         assertNull(facebookPhoto.getFrom());
         assertNull(facebookPhoto.getName());
@@ -79,7 +80,8 @@ public final class TestFacebookPhoto extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookPhoto facebookPhoto = new FacebookPhoto(BAD_JSON);
+        final FacebookPhoto facebookPhoto = new FacebookPhoto();
+        facebookPhoto.buildFrom(BAD_JSON);
         assertNull(facebookPhoto.getId());
         assertNull(facebookPhoto.getFrom());
         assertNull(facebookPhoto.getName());
@@ -96,8 +98,10 @@ public final class TestFacebookPhoto extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookPhoto facebookPhoto = new FacebookPhoto(GOOD_JSON);
-        FacebookObject fromObject = new FacebookObject(JsonHelper.getFirstNode(FROM));
+        final FacebookPhoto facebookPhoto = new FacebookPhoto();
+        facebookPhoto.buildFrom(GOOD_JSON);
+        final FacebookObject fromObject = new FacebookObject();
+        fromObject.buildFrom(JsonHelper.getFirstNode(FROM));
         assertEquals(ID, facebookPhoto.getId());
         assertEquals(fromObject.toString(), facebookPhoto.getFrom().toString());
         assertEquals(NAME, facebookPhoto.getName());

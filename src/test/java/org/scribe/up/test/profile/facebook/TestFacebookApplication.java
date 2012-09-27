@@ -39,21 +39,24 @@ public final class TestFacebookApplication extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookApplication facebookApplication = new FacebookApplication(null);
+        final FacebookApplication facebookApplication = new FacebookApplication();
+        facebookApplication.buildFrom(null);
         assertNull(facebookApplication.getId());
         assertNull(facebookApplication.getName());
         assertNull(facebookApplication.getNamespace());
     }
     
     public void testBadJson() {
-        FacebookApplication facebookApplication = new FacebookApplication(BAD_JSON);
+        final FacebookApplication facebookApplication = new FacebookApplication();
+        facebookApplication.buildFrom(BAD_JSON);
         assertNull(facebookApplication.getId());
         assertNull(facebookApplication.getName());
         assertNull(facebookApplication.getNamespace());
     }
     
     public void testGoodJson() {
-        FacebookApplication facebookApplication = new FacebookApplication(GOOD_JSON);
+        final FacebookApplication facebookApplication = new FacebookApplication();
+        facebookApplication.buildFrom(GOOD_JSON);
         assertEquals(ID, facebookApplication.getId());
         assertEquals(NAME, facebookApplication.getName());
         assertEquals(NAMESPACE, facebookApplication.getNamespace());

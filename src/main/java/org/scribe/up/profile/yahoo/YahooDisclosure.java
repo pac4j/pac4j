@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +27,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooDisclosure extends JsonObject implements Serializable {
+public final class YahooDisclosure extends JsonObject {
     
-    private static final long serialVersionUID = -647313418790889785L;
+    private static final long serialVersionUID = -3766377948756747833L;
     
     private String acceptance;
     
@@ -40,12 +39,8 @@ public final class YahooDisclosure extends JsonObject implements Serializable {
     
     private String version;
     
-    public YahooDisclosure(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.acceptance = Converters.stringConverter.convertFromJson(json, "acceptance");
         this.name = Converters.stringConverter.convertFromJson(json, "name");
         this.seen = YahooConverters.dateConverter.convertFromJson(json, "seen");
@@ -53,18 +48,18 @@ public final class YahooDisclosure extends JsonObject implements Serializable {
     }
     
     public String getAcceptance() {
-        return acceptance;
+        return this.acceptance;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public Date getSeen() {
-        return seen;
+        return this.seen;
     }
     
     public String getVersion() {
-        return version;
+        return this.version;
     }
 }

@@ -42,7 +42,8 @@ public final class TestYahooDisclosure extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        YahooDisclosure yahooDisclosure = new YahooDisclosure(null);
+        final YahooDisclosure yahooDisclosure = new YahooDisclosure();
+        yahooDisclosure.buildFrom(null);
         assertNull(yahooDisclosure.getAcceptance());
         assertNull(yahooDisclosure.getName());
         assertNull(yahooDisclosure.getSeen());
@@ -50,7 +51,8 @@ public final class TestYahooDisclosure extends TestCase {
     }
     
     public void testBadJson() {
-        YahooDisclosure yahooDisclosure = new YahooDisclosure(JsonHelper.getFirstNode(BAD_JSON));
+        final YahooDisclosure yahooDisclosure = new YahooDisclosure();
+        yahooDisclosure.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(yahooDisclosure.getAcceptance());
         assertNull(yahooDisclosure.getName());
         assertNull(yahooDisclosure.getSeen());
@@ -58,7 +60,8 @@ public final class TestYahooDisclosure extends TestCase {
     }
     
     public void testGoodJson() {
-        YahooDisclosure yahooDisclosure = new YahooDisclosure(JsonHelper.getFirstNode(GOOD_JSON));
+        final YahooDisclosure yahooDisclosure = new YahooDisclosure();
+        yahooDisclosure.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(ACCEPTANCE, yahooDisclosure.getAcceptance());
         assertEquals(NAME, yahooDisclosure.getName());
         assertNotNull(yahooDisclosure.getSeen());

@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
@@ -27,9 +25,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooEmail extends JsonObject implements Serializable {
+public final class YahooEmail extends JsonObject {
     
-    private static final long serialVersionUID = 5391584886778738641L;
+    private static final long serialVersionUID = -8696500370764758110L;
     
     private Integer id;
     
@@ -39,12 +37,8 @@ public final class YahooEmail extends JsonObject implements Serializable {
     
     private String type;
     
-    public YahooEmail(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.id = Converters.integerConverter.convertFromJson(json, "id");
         this.primary = Converters.booleanConverter.convertFromJson(json, "primary");
         this.handle = Converters.stringConverter.convertFromJson(json, "handle");
@@ -52,26 +46,26 @@ public final class YahooEmail extends JsonObject implements Serializable {
     }
     
     public int getId() {
-        return getSafeInt(id);
+        return getSafeInt(this.id);
     }
     
     public boolean isIdDefined() {
-        return id != null;
+        return this.id != null;
     }
     
     public boolean isPrimary() {
-        return getSafeBoolean(primary);
+        return getSafeBoolean(this.primary);
     }
     
     public boolean isPrimaryDefined() {
-        return primary != null;
+        return this.primary != null;
     }
     
     public String getHandle() {
-        return handle;
+        return this.handle;
     }
     
     public String getType() {
-        return type;
+        return this.type;
     }
 }

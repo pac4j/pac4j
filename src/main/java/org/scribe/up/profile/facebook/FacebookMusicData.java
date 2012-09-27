@@ -25,9 +25,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class FacebookMusicData extends JsonObject {
+public final class FacebookMusicData extends JsonObject {
     
-    private static final long serialVersionUID = 331676644031080454L;
+    private static final long serialVersionUID = 167919577472714404L;
     
     private String id;
     
@@ -36,10 +36,6 @@ public class FacebookMusicData extends JsonObject {
     private String type;
     
     private String title;
-    
-    public FacebookMusicData(final Object json) {
-        super(json);
-    }
     
     @Override
     protected void buildFromJson(final JsonNode json) {
@@ -50,18 +46,18 @@ public class FacebookMusicData extends JsonObject {
     }
     
     public String getId() {
-        return id;
+        return this.id;
     }
     
     public String getUrl() {
-        return url;
+        return this.url;
     }
     
     public String getType() {
-        return type;
+        return this.type;
     }
     
     public String getTitle() {
-        return title;
+        return this.title;
     }
 }

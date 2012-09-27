@@ -36,19 +36,22 @@ public final class TestFacebookObject extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookObject facebookObject = new FacebookObject(null);
+        final FacebookObject facebookObject = new FacebookObject();
+        facebookObject.buildFrom(null);
         assertNull(facebookObject.getId());
         assertNull(facebookObject.getName());
     }
     
     public void testBadJson() {
-        FacebookObject facebookObject = new FacebookObject(BAD_JSON);
+        final FacebookObject facebookObject = new FacebookObject();
+        facebookObject.buildFrom(BAD_JSON);
         assertNull(facebookObject.getId());
         assertNull(facebookObject.getName());
     }
     
     public void testGoodJson() {
-        FacebookObject facebookObject = new FacebookObject(GOOD_JSON);
+        final FacebookObject facebookObject = new FacebookObject();
+        facebookObject.buildFrom(GOOD_JSON);
         assertEquals(ID, facebookObject.getId());
         assertEquals(NAME, facebookObject.getName());
     }

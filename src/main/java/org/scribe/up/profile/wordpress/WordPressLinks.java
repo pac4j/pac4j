@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile.wordpress;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
@@ -27,9 +25,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressLinks extends JsonObject implements Serializable {
+public final class WordPressLinks extends JsonObject {
     
-    private static final long serialVersionUID = -6237109518285832256L;
+    private static final long serialVersionUID = -8571476794317232555L;
     
     private String self;
     
@@ -37,26 +35,22 @@ public class WordPressLinks extends JsonObject implements Serializable {
     
     private String site;
     
-    public WordPressLinks(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.self = Converters.urlConverter.convertFromJson(json, "self");
         this.help = Converters.urlConverter.convertFromJson(json, "help");
         this.site = Converters.urlConverter.convertFromJson(json, "site");
     }
     
     public String getSelf() {
-        return self;
+        return this.self;
     }
     
     public String getHelp() {
-        return help;
+        return this.help;
     }
     
     public String getSite() {
-        return site;
+        return this.site;
     }
 }

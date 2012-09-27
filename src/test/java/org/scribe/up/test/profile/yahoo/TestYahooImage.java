@@ -42,7 +42,8 @@ public final class TestYahooImage extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        YahooImage yahooImage = new YahooImage(null);
+        final YahooImage yahooImage = new YahooImage();
+        yahooImage.buildFrom(null);
         assertNull(yahooImage.getImageUrl());
         assertEquals(0, yahooImage.getWidth());
         assertEquals(0, yahooImage.getHeight());
@@ -50,7 +51,8 @@ public final class TestYahooImage extends TestCase {
     }
     
     public void testBadJson() {
-        YahooImage yahooImage = new YahooImage(JsonHelper.getFirstNode(BAD_JSON));
+        final YahooImage yahooImage = new YahooImage();
+        yahooImage.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(yahooImage.getImageUrl());
         assertEquals(0, yahooImage.getWidth());
         assertEquals(0, yahooImage.getHeight());
@@ -58,7 +60,8 @@ public final class TestYahooImage extends TestCase {
     }
     
     public void testGoodJson() {
-        YahooImage yahooImage = new YahooImage(JsonHelper.getFirstNode(GOOD_JSON));
+        final YahooImage yahooImage = new YahooImage();
+        yahooImage.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(IMAGE_URL, yahooImage.getImageUrl());
         assertEquals(WIDTH, yahooImage.getWidth());
         assertEquals(HEIGHT, yahooImage.getHeight());

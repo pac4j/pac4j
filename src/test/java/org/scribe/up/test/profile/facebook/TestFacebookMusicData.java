@@ -41,7 +41,8 @@ public final class TestFacebookMusicData extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookMusicData facebookMusicData = new FacebookMusicData(null);
+        final FacebookMusicData facebookMusicData = new FacebookMusicData();
+        facebookMusicData.buildFrom(null);
         assertNull(facebookMusicData.getId());
         assertNull(facebookMusicData.getUrl());
         assertNull(facebookMusicData.getType());
@@ -49,7 +50,8 @@ public final class TestFacebookMusicData extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookMusicData facebookMusicData = new FacebookMusicData(BAD_JSON);
+        final FacebookMusicData facebookMusicData = new FacebookMusicData();
+        facebookMusicData.buildFrom(BAD_JSON);
         assertNull(facebookMusicData.getId());
         assertNull(facebookMusicData.getUrl());
         assertNull(facebookMusicData.getType());
@@ -57,7 +59,8 @@ public final class TestFacebookMusicData extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookMusicData facebookMusicData = new FacebookMusicData(GOOD_JSON);
+        final FacebookMusicData facebookMusicData = new FacebookMusicData();
+        facebookMusicData.buildFrom(GOOD_JSON);
         assertEquals(ID, facebookMusicData.getId());
         assertEquals(URL, facebookMusicData.getUrl());
         assertEquals(TYPE, facebookMusicData.getType());

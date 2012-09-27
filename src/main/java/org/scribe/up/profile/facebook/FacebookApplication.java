@@ -26,13 +26,9 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookApplication extends FacebookObject {
     
-    private static final long serialVersionUID = -2704985540417732739L;
+    private static final long serialVersionUID = 2104537444757108527L;
     
     private String namespace;
-    
-    public FacebookApplication(final Object json) {
-        super(json);
-    }
     
     @Override
     protected void buildFromJson(final JsonNode json) {
@@ -41,6 +37,6 @@ public final class FacebookApplication extends FacebookObject {
     }
     
     public String getNamespace() {
-        return namespace;
+        return this.namespace;
     }
 }

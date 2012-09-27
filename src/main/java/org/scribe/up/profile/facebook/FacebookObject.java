@@ -27,15 +27,11 @@ import org.scribe.up.profile.converter.Converters;
  */
 public class FacebookObject extends JsonObject {
     
-    private static final long serialVersionUID = -8917241612368898157L;
+    private static final long serialVersionUID = -5018527030174357571L;
     
     private String id;
     
     private String name;
-    
-    public FacebookObject(final Object json) {
-        super(json);
-    }
     
     @Override
     protected void buildFromJson(final JsonNode json) {
@@ -45,10 +41,10 @@ public class FacebookObject extends JsonObject {
     }
     
     public String getId() {
-        return id;
+        return this.id;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
 }

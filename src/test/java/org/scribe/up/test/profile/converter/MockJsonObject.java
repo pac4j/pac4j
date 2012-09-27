@@ -26,20 +26,16 @@ import org.scribe.up.profile.JsonObject;
  */
 public final class MockJsonObject extends JsonObject {
     
-    private static final long serialVersionUID = 2551743059012070843L;
+    private static final long serialVersionUID = -5424325226224232822L;
     
     private String value;
     
-    public MockJsonObject(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
-        value = json.getTextValue();
+    protected void buildFromJson(final JsonNode json) {
+        this.value = json.getTextValue();
     }
     
     public String getValue() {
-        return value;
+        return this.value;
     }
 }

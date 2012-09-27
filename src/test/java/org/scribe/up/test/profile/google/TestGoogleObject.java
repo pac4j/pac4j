@@ -37,19 +37,22 @@ public final class TestGoogleObject extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        GoogleObject googleObject = new GoogleObject(null);
+        final GoogleObject googleObject = new GoogleObject();
+        googleObject.buildFrom(null);
         assertNull(googleObject.getValue());
         assertNull(googleObject.getType());
     }
     
     public void testBadJson() {
-        GoogleObject googleObject = new GoogleObject(JsonHelper.getFirstNode(BAD_JSON));
+        final GoogleObject googleObject = new GoogleObject();
+        googleObject.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(googleObject.getValue());
         assertNull(googleObject.getType());
     }
     
     public void testGoodJson() {
-        GoogleObject googleObject = new GoogleObject(JsonHelper.getFirstNode(GOOD_JSON));
+        final GoogleObject googleObject = new GoogleObject();
+        googleObject.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(VALUE, googleObject.getValue());
         assertEquals(TYPE, googleObject.getType());
     }
