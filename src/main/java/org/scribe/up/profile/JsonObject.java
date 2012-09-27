@@ -27,9 +27,14 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public abstract class JsonObject extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = 2300984913280001378L;
+    private static final long serialVersionUID = -8029160999433691578L;
     
     protected String json = "";
+    
+    /**
+     * Whether the input JSON should be stored in object to be restored for CAS serialization when toString() is called. Save memory also.
+     */
+    private static boolean keepRawData = true;
     
     /**
      * Build an object from JSON (String or JsonNode).
@@ -43,8 +48,9 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
                 buildFromJson(JsonHelper.getFirstNode(s));
             } else if (json instanceof JsonNode) {
                 final JsonNode jsonNode = (JsonNode) json;
-                // should be used only on CAS server side
-                this.json = jsonNode.toString();
+                if (keepRawData) {
+                    this.json = jsonNode.toString();
+                }
                 buildFromJson(jsonNode);
             } else {
                 throw new IllegalArgumentException(json.getClass() + " not supported");
@@ -58,6 +64,14 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
      * @param json
      */
     protected abstract void buildFromJson(JsonNode json);
+    
+    public static boolean isKeepRawData() {
+        return keepRawData;
+    }
+    
+    public static void setKeepRawData(final boolean keepRawData) {
+        JsonObject.keepRawData = keepRawData;
+    }
     
     @Override
     public String toString() {

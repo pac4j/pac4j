@@ -46,6 +46,7 @@ public final class BenchProviders extends TestCase {
     
     @SuppressWarnings("unused")
     public void testProfileFacebookCreation() {
+        // JsonObject.setKeepRawData(false);
         final long t0 = System.currentTimeMillis();
         for (int i = 0; i < MAX_FACEBOOK; i++) {
             final FacebookProfile facebookProfile = benchFacebookProvider.createProfile(FACEBOOK_RESPONSE);
