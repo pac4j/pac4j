@@ -55,4 +55,6 @@ public final class FacebookConverters {
     public final static JsonObjectConverter applicationConverter = new JsonObjectConverter(FacebookApplication.class);
     
     public final static JsonObjectConverter musicDataConverter = new JsonObjectConverter(FacebookMusicData.class);
+    
+    public final static JsonListConverter listMusicListensConverter = new JsonListConverter(FacebookMusicListen.class);
 }

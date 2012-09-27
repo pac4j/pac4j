@@ -37,8 +37,8 @@ import org.scribe.up.util.StringHelper;
  * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
  * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
- * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;), events (JsonList&lt;FacebookEvent&gt;) and groups
- * (JsonList&lt;FacebookGroup&gt;).<br />
+ * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;), events (JsonList&lt;FacebookEvent&gt;), groups
+ * (JsonList&lt;FacebookGroup&gt;) and music.listens (JsonList&lt;FacebookMusicListenGroup&gt;).<br />
  * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
  * @author Jerome Leleu
@@ -61,28 +61,28 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected FacebookProvider newProvider() {
         final FacebookProvider newProvider = new FacebookProvider();
-        newProvider.setScope(scope);
-        newProvider.setFields(fields);
-        newProvider.setLimit(limit);
+        newProvider.setScope(this.scope);
+        newProvider.setFields(this.fields);
+        newProvider.setLimit(this.limit);
         return newProvider;
     }
     
     @Override
     protected void internalInit() {
-        if (StringHelper.isNotBlank(scope)) {
-            service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret)
-                .callback(callbackUrl).scope(scope).build();
+        if (StringHelper.isNotBlank(this.scope)) {
+            this.service = new ServiceBuilder().provider(FacebookApi.class).apiKey(this.key).apiSecret(this.secret)
+                .callback(this.callbackUrl).scope(this.scope).build();
         } else {
-            service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret)
-                .callback(callbackUrl).build();
+            this.service = new ServiceBuilder().provider(FacebookApi.class).apiKey(this.key).apiSecret(this.secret)
+                .callback(this.callbackUrl).build();
         }
     }
     
     @Override
     protected String getProfileUrl() {
-        String url = BASE_URL + "?fields=" + fields;
-        if (limit > DEFAULT_LIMIT) {
-            url += "&limit=" + limit;
+        String url = BASE_URL + "?fields=" + this.fields;
+        if (this.limit > DEFAULT_LIMIT) {
+            url += "&limit=" + this.limit;
         }
         return url;
     }
@@ -104,6 +104,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
             extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
             extractData(profile, json, FacebookAttributesDefinition.EVENTS);
             extractData(profile, json, FacebookAttributesDefinition.GROUPS);
+            extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
         }
         return profile;
     }
@@ -116,7 +117,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     public String getScope() {
-        return scope;
+        return this.scope;
     }
     
     public void setScope(final String scope) {
@@ -124,7 +125,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     public String getFields() {
-        return fields;
+        return this.fields;
     }
     
     public void setFields(final String fields) {
@@ -132,7 +133,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     public int getLimit() {
-        return limit;
+        return this.limit;
     }
     
     public void setLimit(final int limit) {

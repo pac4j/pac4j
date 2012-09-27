@@ -26,6 +26,7 @@ import org.scribe.up.profile.facebook.FacebookEducation;
 import org.scribe.up.profile.facebook.FacebookEvent;
 import org.scribe.up.profile.facebook.FacebookGroup;
 import org.scribe.up.profile.facebook.FacebookInfo;
+import org.scribe.up.profile.facebook.FacebookMusicListen;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookPhoto;
 import org.scribe.up.profile.facebook.FacebookProfile;
@@ -203,6 +204,8 @@ public class TestFacebookProvider extends TestProvider {
         assertTrue(group.isAdministratorDefined());
         assertEquals(1, group.getBookmarkOrder());
         assertTrue(group.isBookmarkOrderDefined());
-        assertEquals(35, profile.getAttributes().size());
+        final List<FacebookMusicListen> musicListens = profile.getMusicListens();
+        assertEquals(4, musicListens.size());
+        assertEquals(36, profile.getAttributes().size());
     }
 }
