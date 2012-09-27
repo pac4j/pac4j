@@ -1,5 +1,5 @@
-<!--
-   Copyright 2012 Jerome Leleu
+/*
+  Copyright 2012 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -12,17 +12,21 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
--->
-<configuration>
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>scribe-up %d{HH:mm:ss} [%thread] %-5level %logger{10} - %msg%n%ex{short}</pattern>
-		</encoder>
-	</appender>
-	
-	<!-- logger name="org.scribe.up" level="DEBUG"/-->
-	
-	<root level="WARN">
-		<appender-ref ref="STDOUT" />
-	</root>
-</configuration>
+ */
+package org.scribe.up.test.provider.impl;
+
+import org.scribe.up.profile.facebook.FacebookProfile;
+import org.scribe.up.provider.impl.FacebookProvider;
+
+/**
+ * This class is the Facebook provider for benching.
+ * 
+ * @author Jerome Leleu
+ * @since 1.2.0
+ */
+public final class BenchFacebookProvider extends FacebookProvider {
+    
+    public FacebookProfile createProfile(final String body) {
+        return (FacebookProfile) extractUserProfile(body);
+    }
+}
