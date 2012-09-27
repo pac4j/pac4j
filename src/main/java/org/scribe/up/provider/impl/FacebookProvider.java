@@ -15,16 +15,23 @@
  */
 package org.scribe.up.provider.impl;
 
+import java.util.Map;
+
 import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
+import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
+import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
+import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
+import org.scribe.up.session.UserSession;
 import org.scribe.up.util.StringHelper;
+import org.scribe.utils.OAuthEncoder;
 
 /**
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and fields can be requested to get more attributes and
@@ -46,6 +53,8 @@ import org.scribe.up.util.StringHelper;
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
+    protected static final String FACEBOOK_STATE = "state";
+    
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
     
     protected final static String BASE_URL = "https://graph.facebook.com/me";
@@ -54,6 +63,8 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     protected String scope;
     
+    protected String state;
+    
     public final static int DEFAULT_LIMIT = 0;
     
     protected int limit = DEFAULT_LIMIT;
@@ -61,28 +72,40 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected FacebookProvider newProvider() {
         final FacebookProvider newProvider = new FacebookProvider();
-        newProvider.setScope(scope);
-        newProvider.setFields(fields);
-        newProvider.setLimit(limit);
+        newProvider.setScope(this.scope);
+        newProvider.setFields(this.fields);
+        newProvider.setLimit(this.limit);
+        newProvider.setState(this.state);
         return newProvider;
     }
     
     @Override
     protected void internalInit() {
-        if (StringHelper.isNotBlank(scope)) {
-            service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret)
-                .callback(callbackUrl).scope(scope).build();
+        if (StringHelper.isNotBlank(this.state)) {
+            if (StringHelper.isNotBlank(this.scope)) {
+                this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
+                    .apiSecret(this.secret).callback(this.callbackUrl).scope(this.scope).build();
+            } else {
+                this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
+                    .apiSecret(this.secret).callback(this.callbackUrl).build();
+            }
+            
         } else {
-            service = new ServiceBuilder().provider(FacebookApi.class).apiKey(key).apiSecret(secret)
-                .callback(callbackUrl).build();
+            if (StringHelper.isNotBlank(this.scope)) {
+                this.service = new ServiceBuilder().provider(FacebookApi.class).apiKey(this.key).apiSecret(this.secret)
+                    .callback(this.callbackUrl).scope(this.scope).build();
+            } else {
+                this.service = new ServiceBuilder().provider(FacebookApi.class).apiKey(this.key).apiSecret(this.secret)
+                    .callback(this.callbackUrl).build();
+            }
         }
     }
     
     @Override
     protected String getProfileUrl() {
-        String url = BASE_URL + "?fields=" + fields;
-        if (limit > DEFAULT_LIMIT) {
-            url += "&limit=" + limit;
+        String url = BASE_URL + "?fields=" + this.fields;
+        if (this.limit > DEFAULT_LIMIT) {
+            url += "&limit=" + this.limit;
         }
         return url;
     }
@@ -96,14 +119,14 @@ public class FacebookProvider extends BaseOAuth20Provider {
             for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
-            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
-            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
-            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
-            extractData(profile, json, FacebookAttributesDefinition.LIKES);
-            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
-            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
-            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
+            this.extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
+            this.extractData(profile, json, FacebookAttributesDefinition.MOVIES);
+            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC);
+            this.extractData(profile, json, FacebookAttributesDefinition.BOOKS);
+            this.extractData(profile, json, FacebookAttributesDefinition.LIKES);
+            this.extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
+            this.extractData(profile, json, FacebookAttributesDefinition.EVENTS);
+            this.extractData(profile, json, FacebookAttributesDefinition.GROUPS);
         }
         return profile;
     }
@@ -115,8 +138,48 @@ public class FacebookProvider extends BaseOAuth20Provider {
         }
     }
     
+    @Override
+    public String getAuthorizationUrl(final UserSession session) {
+        String authorizationUrl = null;
+        if (StringHelper.isNotBlank(this.state)) {
+            this.init();
+            authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(this.state);
+        } else {
+            final String userSessionFacebookState = (String) session.getAttribute(FACEBOOK_STATE);
+            if (StringHelper.isNotBlank(userSessionFacebookState)) {
+                this.state = userSessionFacebookState;
+                this.init();
+                authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(this.state);
+            } else {
+                this.init();
+                // no requestToken for OAuth 2.0 -> no need to save it in the user session
+                authorizationUrl = this.service.getAuthorizationUrl(null);
+            }
+        }
+        logger.debug("authorizationUrl : {}", authorizationUrl);
+        return authorizationUrl;
+    }
+    
+    @Override
+    public OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                           final Map<String, String[]> parameters) {
+        final String[] stateVerifiers = parameters.get(FACEBOOK_STATE);
+        if (stateVerifiers != null && stateVerifiers.length == 1) {
+            final String stateVerifier = OAuthEncoder.decode(stateVerifiers[0]);
+            logger.debug("stateVerifier : {}", stateVerifier);
+            if (stateVerifier.equals(this.state)) {
+                return super.extractCredentialFromParameters(session, parameters);
+            } else {
+                logger.error("Possible threat of Cross-site Request Forgery.");
+                return null;
+            }
+        } else {
+            return super.extractCredentialFromParameters(session, parameters);
+        }
+    }
+    
     public String getScope() {
-        return scope;
+        return this.scope;
     }
     
     public void setScope(final String scope) {
@@ -124,7 +187,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     public String getFields() {
-        return fields;
+        return this.fields;
     }
     
     public void setFields(final String fields) {
@@ -132,10 +195,19 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     public int getLimit() {
-        return limit;
+        return this.limit;
     }
     
     public void setLimit(final int limit) {
         this.limit = limit;
     }
+    
+    public String getState() {
+        return this.state;
+    }
+    
+    public void setState(final String state) {
+        this.state = state;
+    }
+    
 }
