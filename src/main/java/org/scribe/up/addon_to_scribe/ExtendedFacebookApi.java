@@ -6,6 +6,12 @@ import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
 
+/**
+ * This class allow to add the Facebook state parameter to authorization URL through the overloaded method getAuthorizationUrl
+ * 
+ * @author Mehdi BEN HAJ ABBES
+ * @since 1.2.1
+ */
 public class ExtendedFacebookApi extends FacebookApi {
     
     private static final String AUTHORIZE_URL_WITH_STATE = "https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&state=%s";

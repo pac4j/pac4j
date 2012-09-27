@@ -50,14 +50,17 @@ import org.scribe.utils.OAuthEncoder;
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @author Mehdi BEN HAJ ABBES
+ * @since 1.2.1
  */
 public class FacebookProvider extends BaseOAuth20Provider {
-    
-    protected static final String FACEBOOK_STATE = "state";
     
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
     
     protected final static String BASE_URL = "https://graph.facebook.com/me";
+    
+    // Used as UserSession attribute and request parameter attribute for the the returned callbackUrl
+    protected static final String FACEBOOK_STATE = "state";
     
     protected String fields = DEFAULT_FIELDS;
     
@@ -82,6 +85,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected void internalInit() {
         if (StringHelper.isNotBlank(this.state)) {
+            // When a Facebook state parameter has been specified
             if (StringHelper.isNotBlank(this.scope)) {
                 this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
                     .apiSecret(this.secret).callback(this.callbackUrl).scope(this.scope).build();
@@ -142,15 +146,18 @@ public class FacebookProvider extends BaseOAuth20Provider {
     public String getAuthorizationUrl(final UserSession session) {
         String authorizationUrl = null;
         if (StringHelper.isNotBlank(this.state)) {
+            // when the Facebook state parameter is stored in the state attribute at FacebookProvider creation
             this.init();
             authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(this.state);
         } else {
+            // when the Facebook state parameter is stored in the UserSession under 'state' attribute
             final String userSessionFacebookState = (String) session.getAttribute(FACEBOOK_STATE);
             if (StringHelper.isNotBlank(userSessionFacebookState)) {
                 this.state = userSessionFacebookState;
                 this.init();
                 authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(this.state);
             } else {
+                // when no Facebook state parameter is passed
                 this.init();
                 // no requestToken for OAuth 2.0 -> no need to save it in the user session
                 authorizationUrl = this.service.getAuthorizationUrl(null);
@@ -163,6 +170,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     public OAuthCredential extractCredentialFromParameters(final UserSession session,
                                                            final Map<String, String[]> parameters) {
+        // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
         final String[] stateVerifiers = parameters.get(FACEBOOK_STATE);
         if (stateVerifiers != null && stateVerifiers.length == 1) {
             final String stateVerifier = OAuthEncoder.decode(stateVerifiers[0]);
@@ -174,6 +182,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
                 return null;
             }
         } else {
+            // there was no Facebook state parameter in the callbackUrl returned by Facebook after authentication
             return super.extractCredentialFromParameters(session, parameters);
         }
     }

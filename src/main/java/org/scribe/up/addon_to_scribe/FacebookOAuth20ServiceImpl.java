@@ -9,9 +9,14 @@ import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+/**
+ * This class overload getAuthorizationUrl method to allow to add the Facebook state parameter to authorization URL
+ * 
+ * @author Mehdi BEN HAJ ABBES
+ * @since 1.2.1
+ */
 public class FacebookOAuth20ServiceImpl implements OAuthService {
     
-    // I don't know what is used for
     private static final String VERSION = "2.0";
     
     private final DefaultApi20 api;
