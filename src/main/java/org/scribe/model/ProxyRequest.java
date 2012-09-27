@@ -90,7 +90,9 @@ class ProxyRequest {
     private void createConnection() throws IOException {
         final String completeUrl = getCompleteUrl();
         if (this.connection == null) {
-            System.setProperty("http.keepAlive", this.connectionKeepAlive ? "true" : "false");
+            if (connectionKeepAlive) {
+                connection.setRequestProperty("Connection", "keep-alive");
+            }
             if (StringHelper.isNotBlank(this.proxyHost)) {
                 final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(this.proxyHost, this.proxyPort));
                 this.connection = (HttpURLConnection) new URL(completeUrl).openConnection(proxy);
