@@ -13,37 +13,30 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.google;
+package org.scribe.up.profile.facebook;
 
 import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
 
 /**
- * This class represents a common Google object (value + type).
+ * This class represents a Facebook application.
  * 
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.2.0
  */
-public final class GoogleObject extends JsonObject {
+public final class FacebookApplication extends FacebookObject {
     
-    private static final long serialVersionUID = -8910536314073330251L;
+    private static final long serialVersionUID = 2104537444757108527L;
     
-    private String value;
-    
-    private String type;
+    private String namespace;
     
     @Override
     protected void buildFromJson(final JsonNode json) {
-        this.value = Converters.stringConverter.convertFromJson(json, "value");
-        this.type = Converters.stringConverter.convertFromJson(json, "type");
+        super.buildFromJson(json);
+        this.namespace = Converters.stringConverter.convertFromJson(json, "namespace");
     }
     
-    public String getValue() {
-        return this.value;
-    }
-    
-    public String getType() {
-        return this.type;
+    public String getNamespace() {
+        return this.namespace;
     }
 }

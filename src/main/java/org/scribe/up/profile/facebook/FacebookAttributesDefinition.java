@@ -63,6 +63,7 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String ALBUMS = "albums";
     public static final String EVENTS = "events";
     public static final String GROUPS = "groups";
+    public static final String MUSIC_LISTENS = "music.listens";
     
     public FacebookAttributesDefinition() {
         final String[] names = new String[] {
@@ -96,5 +97,6 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
         addAttribute(ALBUMS, FacebookConverters.listPhotoConverter, false);
         addAttribute(EVENTS, FacebookConverters.listEventConverter, false);
         addAttribute(GROUPS, FacebookConverters.listGroupConverter, false);
+        addAttribute(MUSIC_LISTENS, FacebookConverters.listMusicListensConverter, false);
     }
 }

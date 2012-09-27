@@ -42,7 +42,8 @@ public final class TestYahooEmail extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        YahooEmail yahooEmail = new YahooEmail(null);
+        final YahooEmail yahooEmail = new YahooEmail();
+        yahooEmail.buildFrom(null);
         assertEquals(0, yahooEmail.getId());
         assertFalse(yahooEmail.isPrimary());
         assertNull(yahooEmail.getHandle());
@@ -50,7 +51,8 @@ public final class TestYahooEmail extends TestCase {
     }
     
     public void testBadJson() {
-        YahooEmail yahooEmail = new YahooEmail(JsonHelper.getFirstNode(BAD_JSON));
+        final YahooEmail yahooEmail = new YahooEmail();
+        yahooEmail.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertEquals(0, yahooEmail.getId());
         assertFalse(yahooEmail.isPrimary());
         assertNull(yahooEmail.getHandle());
@@ -58,7 +60,8 @@ public final class TestYahooEmail extends TestCase {
     }
     
     public void testGoodJson() {
-        YahooEmail yahooEmail = new YahooEmail(JsonHelper.getFirstNode(GOOD_JSON));
+        final YahooEmail yahooEmail = new YahooEmail();
+        yahooEmail.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(ID, yahooEmail.getId());
         assertTrue(yahooEmail.isPrimary());
         assertEquals(HANDLE, yahooEmail.getHandle());

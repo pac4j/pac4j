@@ -53,7 +53,7 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * 
      * @param id
      */
-    public UserProfile(Object id) {
+    public UserProfile(final Object id) {
         setId(id);
     }
     
@@ -63,7 +63,7 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * @param id
      * @param attributes
      */
-    public UserProfile(Object id, Map<String, Object> attributes) {
+    public UserProfile(final Object id, final Map<String, Object> attributes) {
         setId(id);
         addAttributes(attributes);
     }
@@ -83,22 +83,22 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * @param key
      * @param value
      */
-    public void addAttribute(String key, Object value) {
+    public void addAttribute(final String key, Object value) {
         if (value != null) {
-            AttributesDefinition definition = getAttributesDefinition();
+            final AttributesDefinition definition = getAttributesDefinition();
             // no attributes definition -> no conversion
             if (definition == null) {
                 logger.debug("no conversion => key : {} / value : {} / {}", new Object[] {
                     key, value, value.getClass()
                 });
-                attributes.put(key, value);
+                this.attributes.put(key, value);
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
                     logger.debug("converted to => key : {} / value : {} / {}", new Object[] {
                         key, value, value.getClass()
                     });
-                    attributes.put(key, value);
+                    this.attributes.put(key, value);
                 }
             }
         }
@@ -109,8 +109,8 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * 
      * @param attributes
      */
-    public void addAttributes(Map<String, Object> attributes) {
-        for (String key : attributes.keySet()) {
+    public void addAttributes(final Map<String, Object> attributes) {
+        for (final String key : attributes.keySet()) {
             addAttribute(key, attributes.get(key));
         }
     }
@@ -120,10 +120,10 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * 
      * @param id
      */
-    public void setId(Object id) {
+    public void setId(final Object id) {
         if (id != null) {
             String sId = id.toString();
-            String type = this.getClass().getSimpleName();
+            final String type = this.getClass().getSimpleName();
             if (type != null && sId.startsWith(type + SEPARATOR)) {
                 sId = sId.substring(type.length() + SEPARATOR.length());
             }
@@ -138,7 +138,7 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * @return the user identifier
      */
     public String getId() {
-        return id;
+        return this.id;
     }
     
     /**
@@ -147,12 +147,7 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * @return the typed user identifier
      */
     public String getTypedId() {
-        String type = this.getClass().getSimpleName();
-        if (type != null) {
-            return type + SEPARATOR + id;
-        } else {
-            return id;
-        }
+        return this.getClass().getSimpleName() + SEPARATOR + this.id;
     }
     
     /**
@@ -161,7 +156,7 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
+        return Collections.unmodifiableMap(this.attributes);
     }
     
     /**
@@ -169,7 +164,7 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * 
      * @param accessToken
      */
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(final String accessToken) {
         addAttribute(AttributesDefinition.ACCESS_TOKEN, accessToken);
     }
     
@@ -179,11 +174,11 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      * @return the access token
      */
     public String getAccessToken() {
-        return (String) attributes.get(AttributesDefinition.ACCESS_TOKEN);
+        return (String) this.attributes.get(AttributesDefinition.ACCESS_TOKEN);
     }
     
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "{id:" + id + ",attributes:" + attributes + "}";
+        return this.getClass().getSimpleName() + "{id:" + this.id + ",attributes:" + this.attributes + "}";
     }
 }

@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile.facebook;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
@@ -27,9 +25,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class FacebookGroup extends JsonObject implements Serializable {
+public final class FacebookGroup extends JsonObject {
     
-    private static final long serialVersionUID = -6991638200716861367L;
+    private static final long serialVersionUID = -7950171511046910707L;
     
     private Integer version;
     
@@ -41,10 +39,6 @@ public final class FacebookGroup extends JsonObject implements Serializable {
     
     private Integer bookmarkOrder;
     
-    public FacebookGroup(final Object json) {
-        super(json);
-    }
-    
     @Override
     protected void buildFromJson(final JsonNode json) {
         this.version = Converters.integerConverter.convertFromJson(json, "version");
@@ -55,34 +49,34 @@ public final class FacebookGroup extends JsonObject implements Serializable {
     }
     
     public int getVersion() {
-        return getSafeInt(version);
+        return getSafeInt(this.version);
     }
     
     public boolean isVersionDefined() {
-        return version != null;
+        return this.version != null;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public String getId() {
-        return id;
+        return this.id;
     }
     
     public boolean isAdministrator() {
-        return getSafeBoolean(administrator);
+        return getSafeBoolean(this.administrator);
     }
     
     public boolean isAdministratorDefined() {
-        return administrator != null;
+        return this.administrator != null;
     }
     
     public int getBookmarkOrder() {
-        return getSafeInt(bookmarkOrder);
+        return getSafeInt(this.bookmarkOrder);
     }
     
     public boolean isBookmarkOrderDefined() {
-        return bookmarkOrder != null;
+        return this.bookmarkOrder != null;
     }
 }

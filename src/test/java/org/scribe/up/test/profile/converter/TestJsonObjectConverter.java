@@ -28,32 +28,32 @@ import org.scribe.up.profile.converter.JsonObjectConverter;
  */
 public final class TestJsonObjectConverter extends TestCase {
     
-    private JsonObjectConverter converter = new JsonObjectConverter(MockJsonObject.class);
+    private final JsonObjectConverter converter = new JsonObjectConverter(MockJsonObject.class);
     
     private static final String ELEMENT = "element";
     
     private final static String EMPTY_JSON = "\"" + ELEMENT + "\"";
     
     public void testNull() {
-        assertNull(converter.convert(null));
+        assertNull(this.converter.convert(null));
     }
     
     public void testNotAStringNotAJsonNode() {
-        assertNull(converter.convert(1));
+        assertNull(this.converter.convert(1));
     }
     
     public void testJsonString() {
-        Object object = converter.convert(EMPTY_JSON);
+        final Object object = this.converter.convert(EMPTY_JSON);
         assertEquals(MockJsonObject.class, object.getClass());
-        MockJsonObject mock = (MockJsonObject) object;
+        final MockJsonObject mock = (MockJsonObject) object;
         assertEquals(ELEMENT, mock.getValue());
-        assertEquals(EMPTY_JSON, mock.toString());
+        assertEquals("", mock.toString());
     }
     
     public void testJsonNode() {
-        Object object = converter.convert(JsonHelper.getFirstNode(EMPTY_JSON));
+        final Object object = this.converter.convert(JsonHelper.getFirstNode(EMPTY_JSON));
         assertEquals(MockJsonObject.class, object.getClass());
-        MockJsonObject mock = (MockJsonObject) object;
+        final MockJsonObject mock = (MockJsonObject) object;
         assertEquals(ELEMENT, mock.getValue());
         assertEquals(EMPTY_JSON, mock.toString());
     }

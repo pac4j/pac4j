@@ -27,31 +27,27 @@ import org.codehaus.jackson.JsonNode;
  */
 public abstract class JsonObject extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = -7382108665149321395L;
+    private static final long serialVersionUID = 2097185598809648930L;
     
     protected String json = "";
-    
-    public JsonObject(Object json) {
-        buildFrom(json);
-    }
     
     /**
      * Build an object from JSON (String or JsonNode).
      * 
      * @param json
      */
-    protected final void buildFrom(Object json) {
+    public final void buildFrom(final Object json) {
         if (json != null) {
             if (json instanceof String) {
-                String s = (String) json;
-                this.json = s;
+                final String s = (String) json;
                 buildFromJson(JsonHelper.getFirstNode(s));
             } else if (json instanceof JsonNode) {
-                JsonNode jsonNode = (JsonNode) json;
+                final JsonNode jsonNode = (JsonNode) json;
+                // should be used only on CAS server side
                 this.json = jsonNode.toString();
                 buildFromJson(jsonNode);
             } else {
-                throw new IllegalArgumentException(json + " not supported");
+                throw new IllegalArgumentException(json.getClass() + " not supported");
             }
         }
     }
@@ -65,6 +61,6 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
     
     @Override
     public String toString() {
-        return json;
+        return this.json;
     }
 }

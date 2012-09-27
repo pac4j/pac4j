@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
@@ -27,9 +25,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooImage extends JsonObject implements Serializable {
+public final class YahooImage extends JsonObject {
     
-    private static final long serialVersionUID = -575900983247925283L;
+    private static final long serialVersionUID = -4703800296993701787L;
     
     private String imageUrl;
     
@@ -39,12 +37,8 @@ public final class YahooImage extends JsonObject implements Serializable {
     
     private String size;
     
-    public YahooImage(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.imageUrl = Converters.stringConverter.convertFromJson(json, "imageUrl");
         this.width = Converters.integerConverter.convertFromJson(json, "width");
         this.height = Converters.integerConverter.convertFromJson(json, "height");
@@ -52,26 +46,26 @@ public final class YahooImage extends JsonObject implements Serializable {
     }
     
     public String getImageUrl() {
-        return imageUrl;
+        return this.imageUrl;
     }
     
     public int getWidth() {
-        return getSafeInt(width);
+        return getSafeInt(this.width);
     }
     
     public boolean isWidthDefined() {
-        return width != null;
+        return this.width != null;
     }
     
     public int getHeight() {
-        return getSafeInt(height);
+        return getSafeInt(this.height);
     }
     
     public boolean isHeightDefined() {
-        return height != null;
+        return this.height != null;
     }
     
     public String getSize() {
-        return size;
+        return this.size;
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.facebook;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +27,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookEvent extends JsonObject implements Serializable {
+public final class FacebookEvent extends JsonObject {
     
-    private static final long serialVersionUID = -1757110718480085979L;
+    private static final long serialVersionUID = -8787722859073899424L;
     
     private String id;
     
@@ -44,41 +43,37 @@ public class FacebookEvent extends JsonObject implements Serializable {
     
     private String rsvpStatus;
     
-    public FacebookEvent(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
-        this.id = (String) Converters.stringConverter.convertFromJson(json, "id");
-        this.name = (String) Converters.stringConverter.convertFromJson(json, "name");
-        this.startTime = (Date) FacebookConverters.eventDateConverter.convertFromJson(json, "start_time");
-        this.endTime = (Date) FacebookConverters.eventDateConverter.convertFromJson(json, "end_time");
-        this.location = (String) Converters.stringConverter.convertFromJson(json, "location");
-        this.rsvpStatus = (String) Converters.stringConverter.convertFromJson(json, "rsvp_status");
+    protected void buildFromJson(final JsonNode json) {
+        this.id = Converters.stringConverter.convertFromJson(json, "id");
+        this.name = Converters.stringConverter.convertFromJson(json, "name");
+        this.startTime = FacebookConverters.eventDateConverter.convertFromJson(json, "start_time");
+        this.endTime = FacebookConverters.eventDateConverter.convertFromJson(json, "end_time");
+        this.location = Converters.stringConverter.convertFromJson(json, "location");
+        this.rsvpStatus = Converters.stringConverter.convertFromJson(json, "rsvp_status");
     }
     
     public String getId() {
-        return id;
+        return this.id;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public Date getStartTime() {
-        return startTime;
+        return this.startTime;
     }
     
     public Date getEndTime() {
-        return endTime;
+        return this.endTime;
     }
     
     public String getLocation() {
-        return location;
+        return this.location;
     }
     
     public String getRsvpStatus() {
-        return rsvpStatus;
+        return this.rsvpStatus;
     }
 }

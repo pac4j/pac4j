@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.facebook;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +27,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookPhoto extends JsonObject implements Serializable {
+public final class FacebookPhoto extends JsonObject {
     
-    private static final long serialVersionUID = 3874957568929857021L;
+    private static final long serialVersionUID = -464224163362463799L;
     
     private String id;
     
@@ -54,74 +53,70 @@ public class FacebookPhoto extends JsonObject implements Serializable {
     
     private Boolean canUpload;
     
-    public FacebookPhoto(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
-        this.id = (String) Converters.stringConverter.convertFromJson(json, "id");
+    protected void buildFromJson(final JsonNode json) {
+        this.id = Converters.stringConverter.convertFromJson(json, "id");
         this.from = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "from");
-        this.name = (String) Converters.stringConverter.convertFromJson(json, "name");
-        this.link = (String) Converters.stringConverter.convertFromJson(json, "link");
-        this.coverPhoto = (String) Converters.stringConverter.convertFromJson(json, "cover_photo");
-        this.privacy = (String) Converters.stringConverter.convertFromJson(json, "privacy");
-        this.count = (Integer) Converters.integerConverter.convertFromJson(json, "count");
-        this.type = (String) Converters.stringConverter.convertFromJson(json, "type");
-        this.createdTime = (Date) Converters.dateConverter.convertFromJson(json, "created_time");
-        this.updatedTime = (Date) Converters.dateConverter.convertFromJson(json, "updated_time");
-        this.canUpload = (Boolean) Converters.booleanConverter.convertFromJson(json, "can_upload");
+        this.name = Converters.stringConverter.convertFromJson(json, "name");
+        this.link = Converters.stringConverter.convertFromJson(json, "link");
+        this.coverPhoto = Converters.stringConverter.convertFromJson(json, "cover_photo");
+        this.privacy = Converters.stringConverter.convertFromJson(json, "privacy");
+        this.count = Converters.integerConverter.convertFromJson(json, "count");
+        this.type = Converters.stringConverter.convertFromJson(json, "type");
+        this.createdTime = Converters.dateConverter.convertFromJson(json, "created_time");
+        this.updatedTime = Converters.dateConverter.convertFromJson(json, "updated_time");
+        this.canUpload = Converters.booleanConverter.convertFromJson(json, "can_upload");
     }
     
     public String getId() {
-        return id;
+        return this.id;
     }
     
     public FacebookObject getFrom() {
-        return from;
+        return this.from;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public String getLink() {
-        return link;
+        return this.link;
     }
     
     public String getCoverPhoto() {
-        return coverPhoto;
+        return this.coverPhoto;
     }
     
     public String getPrivacy() {
-        return privacy;
+        return this.privacy;
     }
     
     public int getCount() {
-        return getSafeInt(count);
+        return getSafeInt(this.count);
     }
     
     public boolean isCountDefined() {
-        return count != null;
+        return this.count != null;
     }
     
     public String getType() {
-        return type;
+        return this.type;
     }
     
     public Date getCreatedTime() {
-        return createdTime;
+        return this.createdTime;
     }
     
     public Date getUpdatedTime() {
-        return updatedTime;
+        return this.updatedTime;
     }
     
     public boolean isCanUpload() {
-        return getSafeBoolean(canUpload);
+        return getSafeBoolean(this.canUpload);
     }
     
     public boolean isCanUploadDefined() {
-        return canUpload != null;
+        return this.canUpload != null;
     }
 }

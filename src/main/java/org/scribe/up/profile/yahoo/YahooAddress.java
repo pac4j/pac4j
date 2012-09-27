@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +27,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooAddress extends JsonObject implements Serializable {
+public final class YahooAddress extends JsonObject {
     
-    private static final long serialVersionUID = 5153219758684696414L;
+    private static final long serialVersionUID = -3178498630494820877L;
     
     private Integer id;
     
@@ -48,12 +47,8 @@ public final class YahooAddress extends JsonObject implements Serializable {
     
     private String type;
     
-    public YahooAddress(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.id = Converters.integerConverter.convertFromJson(json, "id");
         this.current = Converters.booleanConverter.convertFromJson(json, "current");
         this.country = Converters.localeConverter.convertFromJson(json, "country");
@@ -65,42 +60,42 @@ public final class YahooAddress extends JsonObject implements Serializable {
     }
     
     public int getId() {
-        return getSafeInt(id);
+        return getSafeInt(this.id);
     }
     
     public boolean isIdDefined() {
-        return id != null;
+        return this.id != null;
     }
     
     public boolean isCurrent() {
-        return getSafeBoolean(current);
+        return getSafeBoolean(this.current);
     }
     
     public boolean isCurrentDefined() {
-        return current != null;
+        return this.current != null;
     }
     
     public Locale getCountry() {
-        return country;
+        return this.country;
     }
     
     public String getState() {
-        return state;
+        return this.state;
     }
     
     public String getCity() {
-        return city;
+        return this.city;
     }
     
     public String getPostalCode() {
-        return postalCode;
+        return this.postalCode;
     }
     
     public String getStreet() {
-        return street;
+        return this.street;
     }
     
     public String getType() {
-        return type;
+        return this.type;
     }
 }

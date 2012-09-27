@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile.facebook;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
@@ -27,30 +25,26 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookObject extends JsonObject implements Serializable {
+public class FacebookObject extends JsonObject {
     
-    private static final long serialVersionUID = 6689394127082786157L;
+    private static final long serialVersionUID = -5018527030174357571L;
     
     private String id;
     
     private String name;
     
-    public FacebookObject(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.id = Converters.stringConverter.convertFromJson(json, "id");
         this.name = Converters.stringConverter.convertFromJson(json, "name");
         
     }
     
     public String getId() {
-        return id;
+        return this.id;
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
 }

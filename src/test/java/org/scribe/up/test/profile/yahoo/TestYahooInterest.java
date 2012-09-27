@@ -38,19 +38,22 @@ public final class TestYahooInterest extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        YahooInterest yahooInterest = new YahooInterest(null);
+        final YahooInterest yahooInterest = new YahooInterest();
+        yahooInterest.buildFrom(null);
         assertNull(yahooInterest.getDeclaredInterests());
         assertNull(yahooInterest.getInterestCategory());
     }
     
     public void testBadJson() {
-        YahooInterest yahooInterest = new YahooInterest(JsonHelper.getFirstNode(BAD_JSON));
+        final YahooInterest yahooInterest = new YahooInterest();
+        yahooInterest.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(yahooInterest.getDeclaredInterests());
         assertNull(yahooInterest.getInterestCategory());
     }
     
     public void testGoodJson() {
-        YahooInterest yahooInterest = new YahooInterest(JsonHelper.getFirstNode(GOOD_JSON));
+        final YahooInterest yahooInterest = new YahooInterest();
+        yahooInterest.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(DECLARED_INTERESTS, yahooInterest.getDeclaredInterests().get(0));
         assertEquals(INTEREST_CATEGORY, yahooInterest.getInterestCategory());
     }

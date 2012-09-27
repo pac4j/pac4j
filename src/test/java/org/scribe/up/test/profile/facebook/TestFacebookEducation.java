@@ -44,7 +44,8 @@ public final class TestFacebookEducation extends TestCase {
                                             + FACEBOOK_OBJECT + "],\"type\": \"" + TYPE + "\" }";
     
     public void testNull() {
-        FacebookEducation facebookEducation = new FacebookEducation(null);
+        final FacebookEducation facebookEducation = new FacebookEducation();
+        facebookEducation.buildFrom(null);
         assertNull(facebookEducation.getSchool());
         assertNull(facebookEducation.getDegree());
         assertNull(facebookEducation.getYear());
@@ -53,7 +54,8 @@ public final class TestFacebookEducation extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookEducation facebookEducation = new FacebookEducation(BAD_JSON);
+        final FacebookEducation facebookEducation = new FacebookEducation();
+        facebookEducation.buildFrom(BAD_JSON);
         assertNull(facebookEducation.getSchool());
         assertNull(facebookEducation.getDegree());
         assertNull(facebookEducation.getYear());
@@ -62,8 +64,10 @@ public final class TestFacebookEducation extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookEducation facebookEducation = new FacebookEducation(GOOD_JSON);
-        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(FACEBOOK_OBJECT));
+        final FacebookEducation facebookEducation = new FacebookEducation();
+        facebookEducation.buildFrom(GOOD_JSON);
+        final FacebookObject facebookObject = new FacebookObject();
+        facebookObject.buildFrom(JsonHelper.getFirstNode(FACEBOOK_OBJECT));
         assertEquals(facebookObject.toString(), facebookEducation.getSchool().toString());
         assertEquals(facebookObject.toString(), facebookEducation.getDegree().toString());
         assertEquals(facebookObject.toString(), facebookEducation.getConcentration().get(0).toString());

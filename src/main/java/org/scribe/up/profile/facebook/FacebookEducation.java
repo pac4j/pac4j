@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.facebook;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +27,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookEducation extends JsonObject implements Serializable {
+public final class FacebookEducation extends JsonObject {
     
-    private static final long serialVersionUID = 4486758898462027596L;
+    private static final long serialVersionUID = -4519046820724537979L;
     
     private FacebookObject school;
     
@@ -42,13 +41,9 @@ public final class FacebookEducation extends JsonObject implements Serializable 
     
     private String type;
     
-    public FacebookEducation(Object json) {
-        super(json);
-    }
-    
     @SuppressWarnings("unchecked")
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.school = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "school");
         this.degree = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "degree");
         this.year = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "year");
@@ -57,22 +52,22 @@ public final class FacebookEducation extends JsonObject implements Serializable 
     }
     
     public FacebookObject getSchool() {
-        return school;
+        return this.school;
     }
     
     public FacebookObject getDegree() {
-        return degree;
+        return this.degree;
     }
     
     public FacebookObject getYear() {
-        return year;
+        return this.year;
     }
     
     public List<FacebookObject> getConcentration() {
-        return concentration;
+        return this.concentration;
     }
     
     public String getType() {
-        return type;
+        return this.type;
     }
 }

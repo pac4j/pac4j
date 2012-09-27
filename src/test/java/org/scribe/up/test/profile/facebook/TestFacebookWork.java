@@ -48,7 +48,8 @@ public final class TestFacebookWork extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookWork facebookWork = new FacebookWork(null);
+        final FacebookWork facebookWork = new FacebookWork();
+        facebookWork.buildFrom(null);
         assertNull(facebookWork.getEmployer());
         assertNull(facebookWork.getLocation());
         assertNull(facebookWork.getPosition());
@@ -58,7 +59,8 @@ public final class TestFacebookWork extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookWork facebookWork = new FacebookWork(BAD_JSON);
+        final FacebookWork facebookWork = new FacebookWork();
+        facebookWork.buildFrom(BAD_JSON);
         assertNull(facebookWork.getEmployer());
         assertNull(facebookWork.getLocation());
         assertNull(facebookWork.getPosition());
@@ -68,13 +70,15 @@ public final class TestFacebookWork extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookWork facebookWork = new FacebookWork(GOOD_JSON);
-        FacebookObject facebookObject = new FacebookObject(JsonHelper.getFirstNode(FACEBOOK_OBJECT));
+        final FacebookWork facebookWork = new FacebookWork();
+        facebookWork.buildFrom(GOOD_JSON);
+        final FacebookObject facebookObject = new FacebookObject();
+        facebookObject.buildFrom(JsonHelper.getFirstNode(FACEBOOK_OBJECT));
         assertEquals(facebookObject.toString(), facebookWork.getEmployer().toString());
         assertEquals(facebookObject.toString(), facebookWork.getLocation().toString());
         assertEquals(facebookObject.toString(), facebookWork.getPosition().toString());
         assertEquals(DESCRIPTION, facebookWork.getDescription());
-        String d = FacebookConverters.workDateConverter.convert(DATE).toString();
+        final String d = FacebookConverters.workDateConverter.convert(DATE).toString();
         assertEquals(d, facebookWork.getStartDate().toString());
         assertEquals(d, facebookWork.getEndDate().toString());
     }

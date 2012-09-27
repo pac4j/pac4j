@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile.github;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
@@ -27,9 +25,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class GitHubPlan extends JsonObject implements Serializable {
+public final class GitHubPlan extends JsonObject {
     
-    private static final long serialVersionUID = -7255094058683970785L;
+    private static final long serialVersionUID = 8832663456728716458L;
     
     private String name;
     
@@ -39,12 +37,8 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     
     private Integer privateRepos;
     
-    public GitHubPlan(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.name = Converters.stringConverter.convertFromJson(json, "name");
         this.collaborators = Converters.integerConverter.convertFromJson(json, "collaborators");
         this.space = Converters.integerConverter.convertFromJson(json, "space");
@@ -52,30 +46,30 @@ public final class GitHubPlan extends JsonObject implements Serializable {
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public int getCollaborators() {
-        return getSafeInt(collaborators);
+        return getSafeInt(this.collaborators);
     }
     
     public boolean isCollaboratorsDefined() {
-        return collaborators != null;
+        return this.collaborators != null;
     }
     
     public int getSpace() {
-        return getSafeInt(space);
+        return getSafeInt(this.space);
     }
     
     public boolean isSpaceDefined() {
-        return space != null;
+        return this.space != null;
     }
     
     public int getPrivateRepos() {
-        return getSafeInt(privateRepos);
+        return getSafeInt(this.privateRepos);
     }
     
     public boolean isPrivateReposDefined() {
-        return privateRepos != null;
+        return this.privateRepos != null;
     }
 }

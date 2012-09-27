@@ -10,7 +10,7 @@ import org.scribe.utils.Preconditions;
  * This class allow to add the Facebook state parameter to authorization URL through the overloaded method getAuthorizationUrl
  * 
  * @author Mehdi BEN HAJ ABBES
- * @since 1.2.1
+ * @since 1.2.0
  */
 public class ExtendedFacebookApi extends FacebookApi {
     

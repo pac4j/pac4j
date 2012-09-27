@@ -48,7 +48,8 @@ public final class TestFacebookEvent extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookEvent facebookEvent = new FacebookEvent(null);
+        final FacebookEvent facebookEvent = new FacebookEvent();
+        facebookEvent.buildFrom(null);
         assertNull(facebookEvent.getId());
         assertNull(facebookEvent.getName());
         assertNull(facebookEvent.getLocation());
@@ -58,7 +59,8 @@ public final class TestFacebookEvent extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookEvent facebookEvent = new FacebookEvent(BAD_JSON);
+        final FacebookEvent facebookEvent = new FacebookEvent();
+        facebookEvent.buildFrom(BAD_JSON);
         assertNull(facebookEvent.getId());
         assertNull(facebookEvent.getName());
         assertNull(facebookEvent.getLocation());
@@ -68,7 +70,8 @@ public final class TestFacebookEvent extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookEvent facebookEvent = new FacebookEvent(GOOD_JSON);
+        final FacebookEvent facebookEvent = new FacebookEvent();
+        facebookEvent.buildFrom(GOOD_JSON);
         assertEquals(ID, facebookEvent.getId());
         assertEquals(NAME, facebookEvent.getName());
         assertEquals(LOCATION, facebookEvent.getLocation());

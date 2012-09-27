@@ -44,7 +44,8 @@ public final class TestFacebookGroup extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        final FacebookGroup facebookGroup = new FacebookGroup(null);
+        final FacebookGroup facebookGroup = new FacebookGroup();
+        facebookGroup.buildFrom(null);
         assertEquals(0, facebookGroup.getVersion());
         assertFalse(facebookGroup.isVersionDefined());
         assertNull(facebookGroup.getName());
@@ -56,7 +57,8 @@ public final class TestFacebookGroup extends TestCase {
     }
     
     public void testBadJson() {
-        final FacebookGroup facebookGroup = new FacebookGroup(BAD_JSON);
+        final FacebookGroup facebookGroup = new FacebookGroup();
+        facebookGroup.buildFrom(BAD_JSON);
         assertEquals(0, facebookGroup.getVersion());
         assertFalse(facebookGroup.isVersionDefined());
         assertNull(facebookGroup.getName());
@@ -68,7 +70,8 @@ public final class TestFacebookGroup extends TestCase {
     }
     
     public void testGoodJson() {
-        final FacebookGroup facebookGroup = new FacebookGroup(GOOD_JSON);
+        final FacebookGroup facebookGroup = new FacebookGroup();
+        facebookGroup.buildFrom(GOOD_JSON);
         assertEquals(VERSION, facebookGroup.getVersion());
         assertTrue(facebookGroup.isVersionDefined());
         assertEquals(NAME, facebookGroup.getName());

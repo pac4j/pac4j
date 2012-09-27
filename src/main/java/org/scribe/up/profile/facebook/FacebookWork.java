@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.facebook;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +27,9 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookWork extends JsonObject implements Serializable {
+public final class FacebookWork extends JsonObject {
     
-    private static final long serialVersionUID = -3975097979349300403L;
+    private static final long serialVersionUID = 8481151870430190829L;
     
     private FacebookObject employer;
     
@@ -44,12 +43,8 @@ public final class FacebookWork extends JsonObject implements Serializable {
     
     private Date endDate;
     
-    public FacebookWork(Object json) {
-        super(json);
-    }
-    
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.employer = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "employer");
         this.location = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "location");
         this.position = (FacebookObject) FacebookConverters.objectConverter.convertFromJson(json, "position");
@@ -59,26 +54,26 @@ public final class FacebookWork extends JsonObject implements Serializable {
     }
     
     public FacebookObject getEmployer() {
-        return employer;
+        return this.employer;
     }
     
     public FacebookObject getLocation() {
-        return location;
+        return this.location;
     }
     
     public FacebookObject getPosition() {
-        return position;
+        return this.position;
     }
     
     public String getDescription() {
-        return description;
+        return this.description;
     }
     
     public Date getStartDate() {
-        return startDate;
+        return this.startDate;
     }
     
     public Date getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 }

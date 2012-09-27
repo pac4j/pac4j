@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,15 +33,15 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public final class JsonList<T extends Object> extends JsonObject implements List<T>, Serializable {
+public final class JsonList<T> extends JsonObject implements List<T> {
     
-    private static final long serialVersionUID = -2308482062004321664L;
+    private static final long serialVersionUID = 3559774931136678769L;
     
     private static final Logger logger = LoggerFactory.getLogger(JsonList.class);
     
-    private List<T> list = new ArrayList<T>();
+    private final List<T> list = new ArrayList<T>();
     
-    private Class<T> clazz;
+    private final Class<T> clazz;
     
     /**
      * Create a list of JsonObject from various inputs.
@@ -50,11 +49,10 @@ public final class JsonList<T extends Object> extends JsonObject implements List
      * @param o
      * @param clazz
      */
-    public JsonList(Object o, Class<T> clazz) {
-        super(null);
+    public JsonList(Object o, final Class<T> clazz) {
         this.clazz = clazz;
         if (o instanceof List) {
-            List<String> elements = (List<String>) o;
+            final List<String> elements = (List<String>) o;
             for (String element : elements) {
                 // expect JSON element : "x"
                 if (clazz == String.class && element != null && !element.startsWith("\"")) {
@@ -88,11 +86,11 @@ public final class JsonList<T extends Object> extends JsonObject implements List
     }
     
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         if (json != null) {
-            Iterator<JsonNode> jsonIterator = json.getElements();
+            final Iterator<JsonNode> jsonIterator = json.getElements();
             while (jsonIterator.hasNext()) {
-                JsonNode node = jsonIterator.next();
+                final JsonNode node = jsonIterator.next();
                 buildSingleNode(node);
             }
         }
@@ -103,111 +101,112 @@ public final class JsonList<T extends Object> extends JsonObject implements List
      * 
      * @param node
      */
-    private void buildSingleNode(JsonNode node) {
-        if (clazz == String.class) {
-            list.add((T) node.getTextValue());
-        } else if (JsonObject.class.isAssignableFrom(clazz)) {
+    private void buildSingleNode(final JsonNode node) {
+        if (this.clazz == String.class) {
+            this.list.add((T) node.getTextValue());
+        } else if (JsonObject.class.isAssignableFrom(this.clazz)) {
             try {
-                Constructor<T> constructor = clazz.getDeclaredConstructor(Object.class);
-                T jsonObject = constructor.newInstance(node);
-                list.add(jsonObject);
-            } catch (Exception e) {
+                final Constructor<T> constructor = this.clazz.getDeclaredConstructor();
+                final T object = constructor.newInstance();
+                ((JsonObject) object).buildFrom(node);
+                this.list.add(object);
+            } catch (final Exception e) {
                 logger.error("Cannot build object", e);
             }
         }
     }
     
-    public boolean add(T e) {
-        return list.add(e);
+    public boolean add(final T e) {
+        return this.list.add(e);
     }
     
-    public void add(int index, T element) {
-        list.add(index, element);
+    public void add(final int index, final T element) {
+        this.list.add(index, element);
     }
     
-    public boolean addAll(Collection<? extends T> c) {
-        return list.addAll(c);
+    public boolean addAll(final Collection<? extends T> c) {
+        return this.list.addAll(c);
     }
     
-    public boolean addAll(int index, Collection<? extends T> c) {
-        return list.addAll(index, c);
+    public boolean addAll(final int index, final Collection<? extends T> c) {
+        return this.list.addAll(index, c);
     }
     
     public void clear() {
-        list.clear();
+        this.list.clear();
         
     }
     
-    public boolean contains(Object o) {
-        return list.contains(o);
+    public boolean contains(final Object o) {
+        return this.list.contains(o);
     }
     
-    public boolean containsAll(Collection<?> c) {
-        return list.containsAll(c);
+    public boolean containsAll(final Collection<?> c) {
+        return this.list.containsAll(c);
     }
     
-    public T get(int index) {
-        return list.get(index);
+    public T get(final int index) {
+        return this.list.get(index);
     }
     
-    public int indexOf(Object o) {
-        return list.indexOf(o);
+    public int indexOf(final Object o) {
+        return this.list.indexOf(o);
     }
     
     public boolean isEmpty() {
-        return list.isEmpty();
+        return this.list.isEmpty();
     }
     
     public Iterator<T> iterator() {
-        return list.iterator();
+        return this.list.iterator();
     }
     
-    public int lastIndexOf(Object o) {
-        return list.lastIndexOf(o);
+    public int lastIndexOf(final Object o) {
+        return this.list.lastIndexOf(o);
     }
     
     public ListIterator<T> listIterator() {
-        return list.listIterator();
+        return this.list.listIterator();
     }
     
-    public ListIterator<T> listIterator(int index) {
-        return list.listIterator(index);
+    public ListIterator<T> listIterator(final int index) {
+        return this.list.listIterator(index);
     }
     
-    public boolean remove(Object o) {
-        return list.remove(o);
+    public boolean remove(final Object o) {
+        return this.list.remove(o);
     }
     
-    public T remove(int index) {
-        return list.remove(index);
+    public T remove(final int index) {
+        return this.list.remove(index);
     }
     
-    public boolean removeAll(Collection<?> c) {
-        return list.removeAll(c);
+    public boolean removeAll(final Collection<?> c) {
+        return this.list.removeAll(c);
     }
     
-    public boolean retainAll(Collection<?> c) {
-        return list.retainAll(c);
+    public boolean retainAll(final Collection<?> c) {
+        return this.list.retainAll(c);
     }
     
-    public T set(int index, T element) {
-        return list.set(index, element);
+    public T set(final int index, final T element) {
+        return this.list.set(index, element);
     }
     
     public int size() {
-        return list.size();
+        return this.list.size();
     }
     
-    public List<T> subList(int fromIndex, int toIndex) {
-        return list.subList(fromIndex, toIndex);
+    public List<T> subList(final int fromIndex, final int toIndex) {
+        return this.list.subList(fromIndex, toIndex);
     }
     
     public Object[] toArray() {
-        return list.toArray();
+        return this.list.toArray();
     }
     
     @SuppressWarnings("hiding")
-    public <T> T[] toArray(T[] a) {
-        return list.toArray(a);
+    public <T> T[] toArray(final T[] a) {
+        return this.list.toArray(a);
     }
 }

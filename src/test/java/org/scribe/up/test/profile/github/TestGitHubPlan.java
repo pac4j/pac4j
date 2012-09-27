@@ -42,7 +42,8 @@ public final class TestGitHubPlan extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        GitHubPlan gitHubPlan = new GitHubPlan(null);
+        final GitHubPlan gitHubPlan = new GitHubPlan();
+        gitHubPlan.buildFrom(null);
         assertNull(gitHubPlan.getName());
         assertEquals(0, gitHubPlan.getCollaborators());
         assertEquals(0, gitHubPlan.getSpace());
@@ -50,7 +51,8 @@ public final class TestGitHubPlan extends TestCase {
     }
     
     public void testBadJson() {
-        GitHubPlan gitHubPlan = new GitHubPlan(JsonHelper.getFirstNode(BAD_JSON));
+        final GitHubPlan gitHubPlan = new GitHubPlan();
+        gitHubPlan.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(gitHubPlan.getName());
         assertEquals(0, gitHubPlan.getCollaborators());
         assertEquals(0, gitHubPlan.getSpace());
@@ -58,7 +60,8 @@ public final class TestGitHubPlan extends TestCase {
     }
     
     public void testGoodJson() {
-        GitHubPlan gitHubPlan = new GitHubPlan(JsonHelper.getFirstNode(GOOD_JSON));
+        final GitHubPlan gitHubPlan = new GitHubPlan();
+        gitHubPlan.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(NAME, gitHubPlan.getName());
         assertEquals(COLLABORATORS, gitHubPlan.getCollaborators());
         assertEquals(SPACE, gitHubPlan.getSpace());

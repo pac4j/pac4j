@@ -13,37 +13,51 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.google;
+package org.scribe.up.profile.facebook;
 
 import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
 
 /**
- * This class represents a common Google object (value + type).
+ * This class represents a Facebook music data : song, musician or radio_station.
  * 
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.2.0
  */
-public final class GoogleObject extends JsonObject {
+public final class FacebookMusicData extends JsonObject {
     
-    private static final long serialVersionUID = -8910536314073330251L;
+    private static final long serialVersionUID = 167919577472714404L;
     
-    private String value;
+    private String id;
+    
+    private String url;
     
     private String type;
     
+    private String title;
+    
     @Override
     protected void buildFromJson(final JsonNode json) {
-        this.value = Converters.stringConverter.convertFromJson(json, "value");
+        this.id = Converters.stringConverter.convertFromJson(json, "id");
+        this.url = Converters.stringConverter.convertFromJson(json, "url");
         this.type = Converters.stringConverter.convertFromJson(json, "type");
+        this.title = Converters.stringConverter.convertFromJson(json, "title");
     }
     
-    public String getValue() {
-        return this.value;
+    public String getId() {
+        return this.id;
+    }
+    
+    public String getUrl() {
+        return this.url;
     }
     
     public String getType() {
         return this.type;
+    }
+    
+    public String getTitle() {
+        return this.title;
     }
 }

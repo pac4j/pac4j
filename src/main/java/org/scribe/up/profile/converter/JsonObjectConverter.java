@@ -34,17 +34,19 @@ public final class JsonObjectConverter extends BaseConverter<JsonObject> {
     
     private final Class<? extends JsonObject> clazz;
     
-    public JsonObjectConverter(Class<? extends JsonObject> clazz) {
+    public JsonObjectConverter(final Class<? extends JsonObject> clazz) {
         this.clazz = clazz;
     }
     
     @Override
-    public JsonObject convert(Object attribute) {
+    public JsonObject convert(final Object attribute) {
         if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
             try {
-                Constructor<? extends JsonObject> constructor = clazz.getDeclaredConstructor(Object.class);
-                return constructor.newInstance(attribute);
-            } catch (Exception e) {
+                final Constructor<? extends JsonObject> constructor = this.clazz.getDeclaredConstructor();
+                final JsonObject jsonObject = constructor.newInstance();
+                jsonObject.buildFrom(attribute);
+                return jsonObject;
+            } catch (final Exception e) {
                 logger.error("Cannot build instance", e);
             }
         }

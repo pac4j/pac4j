@@ -15,7 +15,6 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
@@ -28,30 +27,26 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooInterest extends JsonObject implements Serializable {
+public final class YahooInterest extends JsonObject {
     
-    private static final long serialVersionUID = 5209182421635736262L;
+    private static final long serialVersionUID = 2267816192264007418L;
     
     private List<String> declaredInterests;
     
     private String interestCategory;
     
-    public YahooInterest(Object json) {
-        super(json);
-    }
-    
     @SuppressWarnings("unchecked")
     @Override
-    protected void buildFromJson(JsonNode json) {
+    protected void buildFromJson(final JsonNode json) {
         this.interestCategory = Converters.stringConverter.convertFromJson(json, "interestCategory");
         this.declaredInterests = Converters.listStringConverter.convertFromJson(json, "declaredInterests");
     }
     
     public List<String> getDeclaredInterests() {
-        return declaredInterests;
+        return this.declaredInterests;
     }
     
     public String getInterestCategory() {
-        return interestCategory;
+        return this.interestCategory;
     }
 }

@@ -42,7 +42,8 @@ public final class TestFacebookInfo extends TestCase {
     private static final String BAD_JSON = "{ }";
     
     public void testNull() {
-        FacebookInfo facebookInfo = new FacebookInfo(null);
+        final FacebookInfo facebookInfo = new FacebookInfo();
+        facebookInfo.buildFrom(null);
         assertNull(facebookInfo.getId());
         assertNull(facebookInfo.getCategory());
         assertNull(facebookInfo.getName());
@@ -50,7 +51,8 @@ public final class TestFacebookInfo extends TestCase {
     }
     
     public void testBadJson() {
-        FacebookInfo facebookInfo = new FacebookInfo(BAD_JSON);
+        final FacebookInfo facebookInfo = new FacebookInfo();
+        facebookInfo.buildFrom(BAD_JSON);
         assertNull(facebookInfo.getId());
         assertNull(facebookInfo.getCategory());
         assertNull(facebookInfo.getName());
@@ -58,7 +60,8 @@ public final class TestFacebookInfo extends TestCase {
     }
     
     public void testGoodJson() {
-        FacebookInfo facebookInfo = new FacebookInfo(GOOD_JSON);
+        final FacebookInfo facebookInfo = new FacebookInfo();
+        facebookInfo.buildFrom(GOOD_JSON);
         assertEquals(ID, facebookInfo.getId());
         assertEquals(CATEGORY, facebookInfo.getCategory());
         assertEquals(NAME, facebookInfo.getName());

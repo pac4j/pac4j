@@ -13,29 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.test.profile.converter;
+package org.scribe.up.test.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
-import org.scribe.up.profile.JsonObject;
+import org.scribe.up.profile.facebook.FacebookProfile;
+import org.scribe.up.provider.impl.FacebookProvider;
 
 /**
- * This class is a mock for JsonObject.
+ * This class is the Facebook provider for benching.
  * 
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.2.0
  */
-public final class MockJsonObject extends JsonObject {
+public final class BenchFacebookProvider extends FacebookProvider {
     
-    private static final long serialVersionUID = -5424325226224232822L;
-    
-    private String value;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.value = json.getTextValue();
-    }
-    
-    public String getValue() {
-        return this.value;
+    public FacebookProfile createProfile(final String body) {
+        return (FacebookProfile) extractUserProfile(body);
     }
 }
