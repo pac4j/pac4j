@@ -27,13 +27,10 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public abstract class JsonObject extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = -8029160999433691578L;
+    private static final long serialVersionUID = 6273960512140343497L;
     
     protected String json = "";
     
-    /**
-     * Whether the input JSON should be stored in object to be restored for CAS serialization when toString() is called. Save memory also.
-     */
     private static boolean keepRawData = true;
     
     /**
@@ -65,11 +62,7 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
      */
     protected abstract void buildFromJson(JsonNode json);
     
-    public static boolean isKeepRawData() {
-        return keepRawData;
-    }
-    
-    public static void setKeepRawData(final boolean keepRawData) {
+    static void setKeepRawData(final boolean keepRawData) {
         JsonObject.keepRawData = keepRawData;
     }
     

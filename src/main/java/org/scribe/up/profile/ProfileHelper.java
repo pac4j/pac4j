@@ -30,11 +30,21 @@ public final class ProfileHelper {
      * @param clazz
      * @return if the user identifier matches this kind of profile
      */
-    public static boolean isTypedIdOf(String id, Class<? extends UserProfile> clazz) {
+    public static boolean isTypedIdOf(final String id, final Class<? extends UserProfile> clazz) {
         if (id != null && id.startsWith(clazz.getSimpleName() + UserProfile.SEPARATOR)) {
             return true;
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Set whether the input data should be stored in object to be restored for CAS serialization when toString() is called. Save memory
+     * also.
+     * 
+     * @param rawData
+     */
+    public static void setKeepRawData(final boolean keepRawData) {
+        JsonObject.setKeepRawData(keepRawData);
     }
 }
