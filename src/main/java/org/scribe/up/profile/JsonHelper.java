@@ -71,7 +71,7 @@ public final class JsonHelper {
             JsonNode node = json.get(name);
             if (node != null) {
                 if (node.isNumber()) {
-                    return node.intValue();
+                    return node.numberValue();
                 } else if (node.isBoolean()) {
                     return node.booleanValue();
                 } else if (node.isTextual()) {
