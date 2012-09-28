@@ -49,9 +49,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
  * @author Jerome Leleu
- * @since 1.0.0
  * @author Mehdi BEN HAJ ABBES
- * @since 1.2.0
+ * @since 1.0.0
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
@@ -135,7 +134,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         String authorizationUrl = null;
         // Generating a random Facebook state parameter and storing it in the UserSession under 'state' attribute
         final String randomFacebookState = StringHelper.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
-        logger.debug("Facebook state parameter: [{}].", randomFacebookState);
+        logger.debug("Facebook state parameter: [{}]", randomFacebookState);
         session.setAttribute(FACEBOOK_STATE, randomFacebookState);
         this.init();
         authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(randomFacebookState);
