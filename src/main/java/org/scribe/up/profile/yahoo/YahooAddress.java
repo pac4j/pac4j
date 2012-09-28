@@ -17,9 +17,10 @@ package org.scribe.up.profile.yahoo;
 
 import java.util.Locale;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo address.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class YahooAddress extends JsonObject {
     
-    private static final long serialVersionUID = -3178498630494820877L;
+    private static final long serialVersionUID = -3709364858127649679L;
     
     private Integer id;
     

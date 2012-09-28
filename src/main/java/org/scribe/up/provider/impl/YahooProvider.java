@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
@@ -25,6 +24,8 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.util.StringHelper;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Yahoo. Scope is not used.<br />
@@ -40,6 +41,7 @@ import org.scribe.up.util.StringHelper;
  */
 public class YahooProvider extends BaseOAuth10Provider {
     
+    @Override
     protected YahooProvider newProvider() {
         return new YahooProvider();
     }
@@ -56,7 +58,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    public UserProfile getUserProfile(Token accessToken) {
+    public UserProfile getUserProfile(final Token accessToken) {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
@@ -78,7 +80,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         YahooProfile profile = new YahooProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

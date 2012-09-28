@@ -17,9 +17,10 @@ package org.scribe.up.profile.facebook;
 
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook info (id + name + category + created_time).
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookInfo extends JsonObject {
     
-    private static final long serialVersionUID = 4185233961478612831L;
+    private static final long serialVersionUID = -6023752317085418350L;
     
     private String id;
     

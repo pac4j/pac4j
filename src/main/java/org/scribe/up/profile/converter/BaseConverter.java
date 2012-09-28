@@ -15,8 +15,9 @@
  */
 package org.scribe.up.profile.converter;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class defines a base converter which can also convert from JSON.
@@ -35,7 +36,7 @@ public abstract class BaseConverter<T> implements AttributeConverter<T> {
      * @param name
      * @return the converted attribute.
      */
-    public T convertFromJson(JsonNode json, String name) {
+    public T convertFromJson(final JsonNode json, final String name) {
         return convert(JsonHelper.get(json, name));
     }
 }

@@ -17,9 +17,10 @@ package org.scribe.up.profile.yahoo;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo interest.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class YahooInterest extends JsonObject {
     
-    private static final long serialVersionUID = 2267816192264007418L;
+    private static final long serialVersionUID = 981983035171794262L;
     
     private List<String> declaredInterests;
     

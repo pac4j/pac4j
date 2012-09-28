@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.wordpress;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents the links in WordPress.
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class WordPressLinks extends JsonObject {
     
-    private static final long serialVersionUID = -8571476794317232555L;
+    private static final long serialVersionUID = 650184033370922722L;
     
     private String self;
     

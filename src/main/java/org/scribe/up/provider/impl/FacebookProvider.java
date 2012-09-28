@@ -17,7 +17,6 @@ package org.scribe.up.provider.impl;
 
 import java.util.Map;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
 import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
@@ -31,6 +30,8 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.session.UserSession;
 import org.scribe.up.util.StringHelper;
 import org.scribe.utils.OAuthEncoder;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and fields can be requested to get more attributes and

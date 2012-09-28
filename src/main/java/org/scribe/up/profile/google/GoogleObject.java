@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.google;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a common Google object (value + type).
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class GoogleObject extends JsonObject {
     
-    private static final long serialVersionUID = -8910536314073330251L;
+    private static final long serialVersionUID = -7068363744738485038L;
     
     private String value;
     

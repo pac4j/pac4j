@@ -17,7 +17,7 @@ package org.scribe.up.profile;
 
 import java.io.Serializable;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is an object which can build from JSON.
@@ -27,9 +27,11 @@ import org.codehaus.jackson.JsonNode;
  */
 public abstract class JsonObject extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = 2097185598809648930L;
+    private static final long serialVersionUID = 6273960512140343497L;
     
     protected String json = "";
+    
+    private static boolean keepRawData = true;
     
     /**
      * Build an object from JSON (String or JsonNode).
@@ -43,8 +45,9 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
                 buildFromJson(JsonHelper.getFirstNode(s));
             } else if (json instanceof JsonNode) {
                 final JsonNode jsonNode = (JsonNode) json;
-                // should be used only on CAS server side
-                this.json = jsonNode.toString();
+                if (keepRawData) {
+                    this.json = jsonNode.toString();
+                }
                 buildFromJson(jsonNode);
             } else {
                 throw new IllegalArgumentException(json.getClass() + " not supported");
@@ -58,6 +61,10 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
      * @param json
      */
     protected abstract void buildFromJson(JsonNode json);
+    
+    static void setKeepRawData(final boolean keepRawData) {
+        JsonObject.keepRawData = keepRawData;
+    }
     
     @Override
     public String toString() {

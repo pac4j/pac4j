@@ -17,10 +17,11 @@ package org.scribe.up.profile.converter;
 
 import java.lang.reflect.Constructor;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class converts a JSON (String or JsonNode) into an JSON object.

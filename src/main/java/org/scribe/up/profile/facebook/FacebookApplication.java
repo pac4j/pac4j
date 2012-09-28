@@ -15,8 +15,9 @@
  */
 package org.scribe.up.profile.facebook;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook application.
@@ -26,7 +27,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookApplication extends FacebookObject {
     
-    private static final long serialVersionUID = 2104537444757108527L;
+    private static final long serialVersionUID = 2931580603565785300L;
     
     private String namespace;
     

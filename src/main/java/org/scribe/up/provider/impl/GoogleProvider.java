@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GoogleApi;
 import org.scribe.model.Token;
@@ -25,6 +24,8 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.google.GoogleProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.session.UserSession;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Google. Scope is not used.<br />

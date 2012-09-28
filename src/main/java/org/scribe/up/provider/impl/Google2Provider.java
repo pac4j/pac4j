@@ -15,7 +15,6 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.addon_to_scribe.GoogleApi20;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -23,6 +22,8 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.google.Google2Profile;
 import org.scribe.up.provider.BaseOAuth20Provider;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class is the OAuth provider to authenticate user in Google using OAuth protocol version 2.0. Scope is used to retrieve email,

@@ -17,9 +17,10 @@ package org.scribe.up.profile.facebook;
 
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook event.
@@ -29,7 +30,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookEvent extends JsonObject {
     
-    private static final long serialVersionUID = -8787722859073899424L;
+    private static final long serialVersionUID = 1790651609769453424L;
     
     private String id;
     

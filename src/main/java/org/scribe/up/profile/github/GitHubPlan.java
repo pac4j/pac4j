@@ -15,9 +15,10 @@
  */
 package org.scribe.up.profile.github;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a GitHub plan.
@@ -27,7 +28,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class GitHubPlan extends JsonObject {
     
-    private static final long serialVersionUID = 8832663456728716458L;
+    private static final long serialVersionUID = -5333740286682038068L;
     
     private String name;
     

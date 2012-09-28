@@ -22,9 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class creates a list of objects (buildable from JSON).
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public final class JsonList<T> extends JsonObject implements List<T> {
     
-    private static final long serialVersionUID = 3559774931136678769L;
+    private static final long serialVersionUID = -7830749088983904494L;
     
     private static final Logger logger = LoggerFactory.getLogger(JsonList.class);
     
@@ -88,7 +89,7 @@ public final class JsonList<T> extends JsonObject implements List<T> {
     @Override
     protected void buildFromJson(final JsonNode json) {
         if (json != null) {
-            final Iterator<JsonNode> jsonIterator = json.getElements();
+            final Iterator<JsonNode> jsonIterator = json.elements();
             while (jsonIterator.hasNext()) {
                 final JsonNode node = jsonIterator.next();
                 buildSingleNode(node);
@@ -103,7 +104,7 @@ public final class JsonList<T> extends JsonObject implements List<T> {
      */
     private void buildSingleNode(final JsonNode node) {
         if (this.clazz == String.class) {
-            this.list.add((T) node.getTextValue());
+            this.list.add((T) node.textValue());
         } else if (JsonObject.class.isAssignableFrom(this.clazz)) {
             try {
                 final Constructor<T> constructor = this.clazz.getDeclaredConstructor();

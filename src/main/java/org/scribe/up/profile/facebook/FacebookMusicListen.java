@@ -17,10 +17,11 @@ package org.scribe.up.profile.facebook;
 
 import java.util.Date;
 
-import org.codehaus.jackson.JsonNode;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.JsonObject;
 import org.scribe.up.profile.converter.Converters;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook music listened.
@@ -30,7 +31,7 @@ import org.scribe.up.profile.converter.Converters;
  */
 public final class FacebookMusicListen extends JsonObject {
     
-    private static final long serialVersionUID = 7573078523719964867L;
+    private static final long serialVersionUID = 2332802656010217804L;
     
     private String id;
     
