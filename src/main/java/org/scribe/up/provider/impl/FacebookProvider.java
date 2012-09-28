@@ -15,15 +15,21 @@
  */
 package org.scribe.up.provider.impl;
 
+import java.util.Map;
+
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.FacebookApi;
+import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
+import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
+import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
+import org.scribe.up.session.UserSession;
 import org.scribe.up.util.StringHelper;
+import org.scribe.utils.OAuthEncoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -44,12 +50,19 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Jerome Leleu
  * @since 1.0.0
+ * @author Mehdi BEN HAJ ABBES
+ * @since 1.2.0
  */
 public class FacebookProvider extends BaseOAuth20Provider {
     
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
     
     protected final static String BASE_URL = "https://graph.facebook.com/me";
+    
+    // Used as UserSession attribute and request parameter attribute for the the returned callbackUrl
+    protected static final String FACEBOOK_STATE = "state";
+    
+    protected static final int RANDOM_STRING_LENGTH_10 = 10;
     
     protected String fields = DEFAULT_FIELDS;
     
@@ -71,11 +84,11 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected void internalInit() {
         if (StringHelper.isNotBlank(this.scope)) {
-            this.service = new ServiceBuilder().provider(FacebookApi.class).apiKey(this.key).apiSecret(this.secret)
-                .callback(this.callbackUrl).scope(this.scope).build();
+            this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
+                .apiSecret(this.secret).callback(this.callbackUrl).scope(this.scope).build();
         } else {
-            this.service = new ServiceBuilder().provider(FacebookApi.class).apiKey(this.key).apiSecret(this.secret)
-                .callback(this.callbackUrl).build();
+            this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
+                .apiSecret(this.secret).callback(this.callbackUrl).build();
         }
     }
     
@@ -97,15 +110,15 @@ public class FacebookProvider extends BaseOAuth20Provider {
             for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
-            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
-            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
-            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
-            extractData(profile, json, FacebookAttributesDefinition.LIKES);
-            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
-            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
-            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
+            this.extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
+            this.extractData(profile, json, FacebookAttributesDefinition.MOVIES);
+            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC);
+            this.extractData(profile, json, FacebookAttributesDefinition.BOOKS);
+            this.extractData(profile, json, FacebookAttributesDefinition.LIKES);
+            this.extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
+            this.extractData(profile, json, FacebookAttributesDefinition.EVENTS);
+            this.extractData(profile, json, FacebookAttributesDefinition.GROUPS);
+            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
         }
         return profile;
     }
@@ -115,6 +128,36 @@ public class FacebookProvider extends BaseOAuth20Provider {
         if (data != null) {
             profile.addAttribute(name, JsonHelper.get(data, "data"));
         }
+    }
+    
+    @Override
+    public String getAuthorizationUrl(final UserSession session) {
+        String authorizationUrl = null;
+        // Generating a random Facebook state parameter and storing it in the UserSession under 'state' attribute
+        final String randomFacebookState = StringHelper.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
+        logger.debug("Facebook state parameter: [{}].", randomFacebookState);
+        session.setAttribute(FACEBOOK_STATE, randomFacebookState);
+        this.init();
+        authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(randomFacebookState);
+        logger.debug("authorizationUrl : {}", authorizationUrl);
+        return authorizationUrl;
+    }
+    
+    @Override
+    public OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                           final Map<String, String[]> parameters) {
+        // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
+        final String userSessionFacebookState = (String) session.getAttribute(FACEBOOK_STATE);
+        final String[] stateVerifiers = parameters.get(FACEBOOK_STATE);
+        if (stateVerifiers != null && stateVerifiers.length == 1) {
+            final String stateVerifier = OAuthEncoder.decode(stateVerifiers[0]);
+            logger.debug("stateVerifier : {}", stateVerifier);
+            if (stateVerifier.equals(userSessionFacebookState)) {
+                return super.extractCredentialFromParameters(session, parameters);
+            }
+        }
+        logger.error("Possible threat of Cross-site Request Forgery.");
+        return null;
     }
     
     public String getScope() {
@@ -140,4 +183,5 @@ public class FacebookProvider extends BaseOAuth20Provider {
     public void setLimit(final int limit) {
         this.limit = limit;
     }
+    
 }
