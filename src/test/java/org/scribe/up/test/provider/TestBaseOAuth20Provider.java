@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.provider.BaseOAuth20Provider;
-import org.scribe.up.provider.impl.FacebookProvider;
+import org.scribe.up.provider.impl.GitHubProvider;
 
 /**
  * This class tests the OAuth credential retrieval in the {@link org.scribe.up.provider.BaseOAuth20Provider} class.
@@ -37,7 +37,7 @@ public final class TestBaseOAuth20Provider extends TestCase {
     private static final String CODE2 = "code2";
     
     private BaseOAuth20Provider getProvider() {
-        FacebookProvider provider = new FacebookProvider();
+        GitHubProvider provider = new GitHubProvider();
         provider.setKey("key");
         provider.setSecret("secret");
         provider.setCallbackUrl("callbackUrl");

@@ -18,6 +18,7 @@ package org.scribe.up.provider;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -28,7 +29,6 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.provider.impl.WordPressProvider;
 import org.scribe.up.session.UserSession;
-import org.scribe.up.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -267,7 +267,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     }
     
     public String getType() {
-        if (StringHelper.isBlank(this.type)) {
+        if (StringUtils.isBlank(this.type)) {
             return this.getClass().getSimpleName();
         }
         return this.type;

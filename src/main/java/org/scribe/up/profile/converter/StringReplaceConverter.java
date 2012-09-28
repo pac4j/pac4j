@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.converter;
 
-import org.scribe.up.util.StringHelper;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class makes replacements in a String.
@@ -25,20 +25,20 @@ import org.scribe.up.util.StringHelper;
  */
 public final class StringReplaceConverter extends BaseConverter<String> {
     
-    private String regex;
+    private final String regex;
     
-    private String replacement;
+    private final String replacement;
     
-    public StringReplaceConverter(String regex, String replacement) {
+    public StringReplaceConverter(final String regex, final String replacement) {
         this.regex = regex;
         this.replacement = replacement;
     }
     
     @Override
-    public String convert(Object attribute) {
+    public String convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             String s = (String) attribute;
-            if (StringHelper.isNotBlank(s) && StringHelper.isNotBlank(regex) && StringHelper.isNotBlank(replacement)) {
+            if (StringUtils.isNotBlank(s) && StringUtils.isNotBlank(regex) && StringUtils.isNotBlank(replacement)) {
                 return s.replaceAll(regex, replacement);
             }
         }

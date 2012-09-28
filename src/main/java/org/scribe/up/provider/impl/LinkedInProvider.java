@@ -15,6 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.up.profile.AttributesDefinitions;
@@ -22,7 +23,6 @@ import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.linkedin.LinkedInAttributesDefinition;
 import org.scribe.up.profile.linkedin.LinkedInProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
-import org.scribe.up.util.StringHelper;
 
 /**
  * This class is the OAuth provider to authenticate user in LinkedIn. Scope is not used.<br />
@@ -35,6 +35,7 @@ import org.scribe.up.util.StringHelper;
  */
 public class LinkedInProvider extends BaseOAuth10Provider {
     
+    @Override
     protected LinkedInProvider newProvider() {
         return new LinkedInProvider();
     }
@@ -51,13 +52,13 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    protected UserProfile extractUserProfile(String body) {
+    protected UserProfile extractUserProfile(final String body) {
         LinkedInProfile profile = new LinkedInProfile();
         for (String attribute : AttributesDefinitions.linkedinDefinition.getAllAttributes()) {
-            String value = StringHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
+            String value = StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             profile.addAttribute(attribute, value);
             if (LinkedInAttributesDefinition.URL.equals(attribute)) {
-                String id = StringHelper.substringBetween(value, "&amp;key=", "&amp;authToken=");
+                String id = StringUtils.substringBetween(value, "&amp;key=", "&amp;authToken=");
                 profile.setId(id);
             }
         }

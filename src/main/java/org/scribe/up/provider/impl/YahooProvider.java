@@ -15,6 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
 import org.scribe.model.Token;
@@ -23,7 +24,6 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
-import org.scribe.up.util.StringHelper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -64,10 +64,10 @@ public class YahooProvider extends BaseOAuth10Provider {
         if (body == null) {
             return null;
         }
-        String guid = StringHelper.substringBetween(body, "<value>", "</value>");
+        String guid = StringUtils.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         // then the profile with the guid
-        if (StringHelper.isNotBlank(guid)) {
+        if (StringUtils.isNotBlank(guid)) {
             body = sendRequestForData(accessToken, "http://social.yahooapis.com/v1/user/" + guid
                                                    + "/profile?format=json");
             if (body == null) {

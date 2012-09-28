@@ -17,6 +17,8 @@ package org.scribe.up.provider.impl;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
 import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
@@ -28,7 +30,6 @@ import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.session.UserSession;
-import org.scribe.up.util.StringHelper;
 import org.scribe.utils.OAuthEncoder;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,7 +83,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     @Override
     protected void internalInit() {
-        if (StringHelper.isNotBlank(this.scope)) {
+        if (StringUtils.isNotBlank(this.scope)) {
             this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
                 .apiSecret(this.secret).callback(this.callbackUrl).scope(this.scope).build();
         } else {
@@ -133,7 +134,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     public String getAuthorizationUrl(final UserSession session) {
         String authorizationUrl = null;
         // Generating a random Facebook state parameter and storing it in the UserSession under 'state' attribute
-        final String randomFacebookState = StringHelper.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
+        final String randomFacebookState = RandomStringUtils.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
         logger.debug("Facebook state parameter: [{}]", randomFacebookState);
         session.setAttribute(FACEBOOK_STATE, randomFacebookState);
         this.init();

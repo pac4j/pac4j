@@ -98,7 +98,7 @@ public final class TestBaseOAuthProvider extends TestCase {
     }
     
     public void testGetCredentialOK() {
-        final BaseOAuthProvider provider = new FacebookProvider();
+        final BaseOAuthProvider provider = new GitHubProvider();
         provider.setKey(KEY);
         provider.setSecret(SECRET);
         provider.setCallbackUrl(CALLBACK_URL);
@@ -107,7 +107,7 @@ public final class TestBaseOAuthProvider extends TestCase {
     }
     
     public void testGetCredentialError() {
-        final BaseOAuthProvider provider = new FacebookProvider();
+        final BaseOAuthProvider provider = new GitHubProvider();
         provider.setKey(KEY);
         provider.setSecret(SECRET);
         provider.setCallbackUrl(CALLBACK_URL);

@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.exceptions.OAuthConnectionException;
 import org.scribe.exceptions.OAuthException;
-import org.scribe.up.util.StringHelper;
 
 /**
  * This class represents a Scribe {@link org.scribe.model.Request} with proxy capabilities. It should be implemented natively in Scribe in
@@ -93,7 +93,7 @@ class ProxyRequest {
             if (connectionKeepAlive) {
                 connection.setRequestProperty("Connection", "keep-alive");
             }
-            if (StringHelper.isNotBlank(this.proxyHost)) {
+            if (StringUtils.isNotBlank(this.proxyHost)) {
                 final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(this.proxyHost, this.proxyPort));
                 this.connection = (HttpURLConnection) new URL(completeUrl).openConnection(proxy);
             } else {
