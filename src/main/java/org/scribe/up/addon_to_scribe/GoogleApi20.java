@@ -20,6 +20,7 @@ import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
+import org.scribe.utils.OAuthEncoder;
 
 /**
  * This class represents the OAuth API implementation for Google using OAuth protocol version 2. It should be implemented natively in Scribe
@@ -33,7 +34,8 @@ public class GoogleApi20 extends DefaultApi20 {
     
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
-        return String.format(AUTHORIZATION_URL, config.getApiKey(), config.getCallback(), config.getScope());
+        return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
+                             OAuthEncoder.encode(config.getScope()));
     }
     
     @Override
