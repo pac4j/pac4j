@@ -143,7 +143,7 @@ public class TestFacebookProvider extends TestProvider {
         final FacebookInfo movie = movies.get(0);
         assertEquals("Jean-Claude Van Damme", movie.getName());
         assertEquals("21497365045", movie.getId());
-        assertEquals("Actor/director", movie.getCategory());
+        assertTrue(movie.getCategory().indexOf("actor") >= 0);
         assertEquals(1330030350000L, movie.getCreatedTime().getTime());
         final List<FacebookInfo> musics = profile.getMusic();
         assertEquals(1, musics.size());
@@ -190,7 +190,7 @@ public class TestFacebookProvider extends TestProvider {
         final FacebookEvent event = events.get(0);
         assertEquals("Couronnement", event.getName());
         assertEquals("301212149963131", event.getId());
-        assertTrue(event.getLocation().startsWith("Paris"));
+        assertTrue(event.getLocation().indexOf("Paris") >= 0);
         assertEquals("attending", event.getRsvpStatus());
         assertNotNull(event.getStartTime());
         assertNotNull(event.getEndTime());
