@@ -19,10 +19,10 @@ import org.scribe.builder.api.DefaultApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.OAuthRequest;
+import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
 
 /**
  * This class represents a specific OAuth service for Google using OAuth 2.0 protocol and WordPress. It should be implemented natively in
@@ -31,28 +31,18 @@ import org.scribe.oauth.OAuthService;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class ExtendedOAuthService20 implements OAuthService {
-    private static final String VERSION = "2.0";
+public class ExtendedOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl {
     
-    private final DefaultApi20 api;
-    private final OAuthConfig config;
-    
-    /**
-     * Default constructor
-     * 
-     * @param api OAuth2.0 api information
-     * @param config OAuth 2.0 configuration param object
-     */
-    public ExtendedOAuthService20(final DefaultApi20 api, final OAuthConfig config) {
-        this.api = api;
-        this.config = config;
+    public ExtendedOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final String proxyHost,
+                                  final int proxyPort) {
+        super(api, config, proxyHost, proxyPort);
     }
     
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Token getAccessToken(final Token requestToken, final Verifier verifier) {
-        final OAuthRequest request = new OAuthRequest(this.api.getAccessTokenVerb(), this.api.getAccessTokenEndpoint());
+        final OAuthRequest request = new ProxyOAuthRequest(this.api.getAccessTokenVerb(),
+                                                           this.api.getAccessTokenEndpoint(), this.proxyHost,
+                                                           this.proxyPort);
         // PATCH : body parameters instead of request parameters
         request.addBodyParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
         request.addBodyParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());
@@ -65,34 +55,4 @@ public class ExtendedOAuthService20 implements OAuthService {
         final Response response = request.send();
         return this.api.getAccessTokenExtractor().extract(response.getBody());
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Token getRequestToken() {
-        throw new UnsupportedOperationException(
-                                                "Unsupported operation, please use 'getAuthorizationUrl' and redirect your users there");
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getVersion() {
-        return VERSION;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void signRequest(final Token accessToken, final OAuthRequest request) {
-        request.addQuerystringParameter(OAuthConstants.ACCESS_TOKEN, accessToken.getToken());
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getAuthorizationUrl(final Token requestToken) {
-        return this.api.getAuthorizationUrl(this.config);
-    }
-    
 }

@@ -15,8 +15,10 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
+import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
@@ -50,8 +52,10 @@ public class TwitterProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(TwitterApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
-            .build();
+        this.service = new ProxyOAuth10aServiceImpl(new TwitterApi(),
+                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                    SignatureType.Header, null, null), this.proxyHost,
+                                                    this.proxyPort);
     }
     
     @Override
@@ -61,11 +65,11 @@ public class TwitterProvider extends BaseOAuth10Provider {
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        TwitterProfile profile = new TwitterProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final TwitterProfile profile = new TwitterProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : AttributesDefinitions.twitterDefinition.getAllAttributes()) {
+            for (final String attribute : AttributesDefinitions.twitterDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

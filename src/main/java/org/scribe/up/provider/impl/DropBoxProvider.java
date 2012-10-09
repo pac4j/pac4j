@@ -17,9 +17,11 @@ package org.scribe.up.provider.impl;
 
 import java.util.Map;
 
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.DropBoxApi;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
+import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
@@ -48,8 +50,10 @@ public class DropBoxProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(DropBoxApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
-            .build();
+        this.service = new ProxyOAuth10aServiceImpl(new DropBoxApi(),
+                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                    SignatureType.Header, null, null), this.proxyHost,
+                                                    this.proxyPort);
     }
     
     @Override
@@ -61,27 +65,27 @@ public class DropBoxProvider extends BaseOAuth10Provider {
     public OAuthCredential extractCredentialFromParameters(final UserSession session,
                                                            final Map<String, String[]> parameters) {
         // get tokenRequest from user session
-        Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
+        final Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
         logger.debug("tokenRequest : {}", tokenRequest);
         // don't get parameters from url
         // token and verifier are equals and extracted from saved request token
-        String token = tokenRequest.getToken();
+        final String token = tokenRequest.getToken();
         logger.debug("token = verifier : {}", token);
         return new OAuthCredential(tokenRequest, token, token, getType());
     }
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        DropBoxProfile profile = new DropBoxProfile();
+        final DropBoxProfile profile = new DropBoxProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "uid"));
-            for (String attribute : AttributesDefinitions.dropBoxDefinition.getPrincipalAttributes()) {
+            for (final String attribute : AttributesDefinitions.dropBoxDefinition.getPrincipalAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             json = (JsonNode) JsonHelper.get(json, "quota_info");
             if (json != null) {
-                for (String attribute : AttributesDefinitions.dropBoxDefinition.getOtherAttributes()) {
+                for (final String attribute : AttributesDefinitions.dropBoxDefinition.getOtherAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

@@ -15,7 +15,9 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
+import org.scribe.up.addon_to_scribe.ExtendedOAuth20ServiceImpl;
 import org.scribe.up.addon_to_scribe.WordPressApi;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
@@ -44,8 +46,11 @@ public class WordPressProvider extends BaseOAuth20Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(WordPressApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
-            .build();
+        this.service = new ExtendedOAuth20ServiceImpl(new WordPressApi(), new OAuthConfig(this.key, this.secret,
+                                                                                          this.callbackUrl,
+                                                                                          SignatureType.Header, null,
+                                                                                          null), this.proxyHost,
+                                                      this.proxyPort);
     }
     
     @Override
@@ -55,16 +60,16 @@ public class WordPressProvider extends BaseOAuth20Provider {
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        WordPressProfile profile = new WordPressProfile();
+        final WordPressProfile profile = new WordPressProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "ID"));
-            for (String attribute : AttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
+            for (final String attribute : AttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             json = json.get("meta");
             if (json != null) {
-                String attribute = WordPressAttributesDefinition.LINKS;
+                final String attribute = WordPressAttributesDefinition.LINKS;
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

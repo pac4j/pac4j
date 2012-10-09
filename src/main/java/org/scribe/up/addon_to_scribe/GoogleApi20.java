@@ -19,7 +19,6 @@ import org.scribe.builder.api.DefaultApi20;
 import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 
 /**
@@ -51,10 +50,5 @@ public class GoogleApi20 extends DefaultApi20 {
     @Override
     public AccessTokenExtractor getAccessTokenExtractor() {
         return new Google2JsonExtractor();
-    }
-    
-    @Override
-    public OAuthService createService(final OAuthConfig config) {
-        return new ExtendedOAuthService20(this, config);
     }
 }

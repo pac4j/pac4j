@@ -19,7 +19,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
 import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
 import org.scribe.up.credential.OAuthCredential;
@@ -84,11 +85,15 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected void internalInit() {
         if (StringUtils.isNotBlank(this.scope)) {
-            this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
-                .apiSecret(this.secret).callback(this.callbackUrl).scope(this.scope).build();
+            this.service = new FacebookOAuth20ServiceImpl(new ExtendedFacebookApi(),
+                                                          new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                          SignatureType.Header, this.scope, null),
+                                                          this.proxyHost, this.proxyPort);
         } else {
-            this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
-                .apiSecret(this.secret).callback(this.callbackUrl).build();
+            this.service = new FacebookOAuth20ServiceImpl(new ExtendedFacebookApi(),
+                                                          new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                          SignatureType.Header, null, null),
+                                                          this.proxyHost, this.proxyPort);
         }
     }
     
@@ -110,15 +115,15 @@ public class FacebookProvider extends BaseOAuth20Provider {
             for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
-            this.extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
-            this.extractData(profile, json, FacebookAttributesDefinition.MOVIES);
-            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC);
-            this.extractData(profile, json, FacebookAttributesDefinition.BOOKS);
-            this.extractData(profile, json, FacebookAttributesDefinition.LIKES);
-            this.extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
-            this.extractData(profile, json, FacebookAttributesDefinition.EVENTS);
-            this.extractData(profile, json, FacebookAttributesDefinition.GROUPS);
-            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
+            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
+            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
+            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
+            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
+            extractData(profile, json, FacebookAttributesDefinition.LIKES);
+            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
+            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
+            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
+            extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
         }
         return profile;
     }
@@ -137,7 +142,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         final String randomFacebookState = RandomStringUtils.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
         logger.debug("Facebook state parameter: [{}]", randomFacebookState);
         session.setAttribute(FACEBOOK_STATE, randomFacebookState);
-        this.init();
+        init();
         authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(randomFacebookState);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;

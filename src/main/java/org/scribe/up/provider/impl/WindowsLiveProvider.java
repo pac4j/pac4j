@@ -15,8 +15,10 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LiveApi;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
+import org.scribe.up.addon_to_scribe.ProxyOAuth20ServiceImpl;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
@@ -43,8 +45,10 @@ public class WindowsLiveProvider extends BaseOAuth20Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(LiveApi.class).apiKey(key).apiSecret(secret).scope("wl.basic")
-            .callback(callbackUrl).build();
+        this.service = new ProxyOAuth20ServiceImpl(new LiveApi(), new OAuthConfig(this.key, this.secret,
+                                                                                  this.callbackUrl,
+                                                                                  SignatureType.Header, "wl.basic",
+                                                                                  null), this.proxyHost, this.proxyPort);
     }
     
     @Override
@@ -54,11 +58,11 @@ public class WindowsLiveProvider extends BaseOAuth20Provider {
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        WindowsLiveProfile profile = new WindowsLiveProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final WindowsLiveProfile profile = new WindowsLiveProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : AttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
+            for (final String attribute : AttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }
