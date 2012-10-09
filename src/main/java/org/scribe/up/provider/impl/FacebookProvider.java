@@ -149,8 +149,8 @@ public class FacebookProvider extends BaseOAuth20Provider {
     }
     
     @Override
-    public OAuthCredential extractCredentialFromParameters(final UserSession session,
-                                                           final Map<String, String[]> parameters) {
+    protected OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                              final Map<String, String[]> parameters) {
         // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
         final String userSessionFacebookState = (String) session.getAttribute(FACEBOOK_STATE);
         final String[] stateVerifiers = parameters.get(FACEBOOK_STATE);
@@ -188,5 +188,4 @@ public class FacebookProvider extends BaseOAuth20Provider {
     public void setLimit(final int limit) {
         this.limit = limit;
     }
-    
 }

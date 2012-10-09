@@ -37,29 +37,31 @@ public abstract class BaseOAuth20Provider extends BaseOAuthProvider {
     
     public static final String OAUTH_CODE = "code";
     
-    public String getAuthorizationUrl(UserSession session) {
+    public String getAuthorizationUrl(final UserSession session) {
         init();
         // no requestToken for OAuth 2.0 -> no need to save it in the user session
-        String authorizationUrl = service.getAuthorizationUrl(null);
+        final String authorizationUrl = this.service.getAuthorizationUrl(null);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
     }
     
-    public Token getAccessToken(OAuthCredential credential) {
+    @Override
+    protected Token getAccessToken(final OAuthCredential credential) {
         // no request token saved in user session and no token (OAuth v2.0)
-        String verifier = credential.getVerifier();
+        final String verifier = credential.getVerifier();
         logger.debug("verifier : {}", verifier);
-        Verifier providerVerifier = new Verifier(verifier);
-        Token accessToken = service.getAccessToken(null, providerVerifier);
+        final Verifier providerVerifier = new Verifier(verifier);
+        final Token accessToken = this.service.getAccessToken(null, providerVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
     }
     
     @Override
-    public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
-        String[] verifiers = parameters.get(OAUTH_CODE);
+    protected OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                              final Map<String, String[]> parameters) {
+        final String[] verifiers = parameters.get(OAUTH_CODE);
         if (verifiers != null && verifiers.length == 1) {
-            String verifier = OAuthEncoder.decode(verifiers[0]);
+            final String verifier = OAuthEncoder.decode(verifiers[0]);
             logger.debug("verifier : {}", verifier);
             return new OAuthCredential(null, null, verifier, getType());
         } else {

@@ -62,8 +62,8 @@ public class DropBoxProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    public OAuthCredential extractCredentialFromParameters(final UserSession session,
-                                                           final Map<String, String[]> parameters) {
+    protected OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                              final Map<String, String[]> parameters) {
         // get tokenRequest from user session
         final Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
         logger.debug("tokenRequest : {}", tokenRequest);

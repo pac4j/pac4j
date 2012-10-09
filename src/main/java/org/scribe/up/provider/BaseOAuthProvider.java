@@ -129,7 +129,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @param credential
      * @return the access token
      */
-    public abstract Token getAccessToken(OAuthCredential credential);
+    protected abstract Token getAccessToken(OAuthCredential credential);
     
     /**
      * Retrieve the user profile from the access token.
@@ -137,7 +137,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @param accessToken
      * @return the user profile object
      */
-    public UserProfile getUserProfile(final Token accessToken) {
+    protected UserProfile getUserProfile(final Token accessToken) {
         final String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;

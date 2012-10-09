@@ -62,7 +62,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    public UserProfile getUserProfile(final Token accessToken) {
+    protected UserProfile getUserProfile(final Token accessToken) {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
