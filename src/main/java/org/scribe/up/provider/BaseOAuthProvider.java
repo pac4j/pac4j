@@ -124,6 +124,18 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     }
     
     /**
+     * Retrieve the user profile from the access token (as String).
+     * 
+     * @param accessToken
+     * @return the user profile object
+     */
+    public UserProfile getUserProfile(final String accessToken) {
+        init();
+        final Token token = new Token(accessToken, "");
+        return getUserProfile(token);
+    }
+    
+    /**
      * Retrieve the access token from OAuth credential.
      * 
      * @param credential
