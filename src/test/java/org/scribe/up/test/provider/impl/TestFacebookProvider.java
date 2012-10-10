@@ -29,6 +29,7 @@ import org.scribe.up.profile.facebook.FacebookInfo;
 import org.scribe.up.profile.facebook.FacebookMusicListen;
 import org.scribe.up.profile.facebook.FacebookObject;
 import org.scribe.up.profile.facebook.FacebookPhoto;
+import org.scribe.up.profile.facebook.FacebookPicture;
 import org.scribe.up.profile.facebook.FacebookProfile;
 import org.scribe.up.profile.facebook.FacebookRelationshipStatus;
 import org.scribe.up.profile.facebook.FacebookWork;
@@ -59,7 +60,7 @@ public class TestFacebookProvider extends TestProvider {
         facebookProvider
             .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups,user_actions.music");
         facebookProvider.setFields(FacebookProvider.DEFAULT_FIELDS
-                                   + ",friends,movies,music,books,likes,albums,events,groups,music.listens");
+                                   + ",friends,movies,music,books,likes,albums,events,groups,music.listens,picture");
         facebookProvider.setLimit(100);
         return facebookProvider;
     }
@@ -206,6 +207,11 @@ public class TestFacebookProvider extends TestProvider {
         assertTrue(group.isBookmarkOrderDefined());
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
         assertEquals(4, musicListens.size());
-        assertEquals(36, profile.getAttributes().size());
+        final FacebookPicture picture = profile.getPicture();
+        assertEquals("http://profile.ak.fbcdn.net/hprofile-ak-ash3/157632_100003571536393_1742338663_q.jpg",
+                     picture.getUrl());
+        assertFalse(picture.isSilhouette());
+        assertTrue(picture.isSilhouetteDefined());
+        assertEquals(37, profile.getAttributes().size());
     }
 }

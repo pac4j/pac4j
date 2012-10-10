@@ -47,7 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
  * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
  * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;), events (JsonList&lt;FacebookEvent&gt;), groups
- * (JsonList&lt;FacebookGroup&gt;) and music.listens (JsonList&lt;FacebookMusicListenGroup&gt;).<br />
+ * (JsonList&lt;FacebookGroup&gt;), music.listens (JsonList&lt;FacebookMusicListenGroup&gt;) and picture (FacebookPicture).<br />
  * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
  * @author Jerome Leleu
@@ -124,6 +124,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
             extractData(profile, json, FacebookAttributesDefinition.EVENTS);
             extractData(profile, json, FacebookAttributesDefinition.GROUPS);
             extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
+            extractData(profile, json, FacebookAttributesDefinition.PICTURE);
         }
         return profile;
     }
