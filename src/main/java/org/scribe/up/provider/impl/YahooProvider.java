@@ -16,9 +16,11 @@
 package org.scribe.up.provider.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.YahooApi;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
+import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
@@ -48,8 +50,10 @@ public class YahooProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(YahooApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
-            .build();
+        this.service = new ProxyOAuth10aServiceImpl(new YahooApi(), new OAuthConfig(this.key, this.secret,
+                                                                                    this.callbackUrl,
+                                                                                    SignatureType.Header, null, null),
+                                                    this.proxyHost, this.proxyPort);
     }
     
     @Override
@@ -58,13 +62,13 @@ public class YahooProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    public UserProfile getUserProfile(final Token accessToken) {
+    protected UserProfile getUserProfile(final Token accessToken) {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
         }
-        String guid = StringUtils.substringBetween(body, "<value>", "</value>");
+        final String guid = StringUtils.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         // then the profile with the guid
         if (StringUtils.isNotBlank(guid)) {
@@ -74,20 +78,20 @@ public class YahooProvider extends BaseOAuth10Provider {
                 return null;
             }
         }
-        UserProfile profile = extractUserProfile(body);
+        final UserProfile profile = extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         return profile;
     }
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        YahooProfile profile = new YahooProfile();
+        final YahooProfile profile = new YahooProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "guid"));
-                for (String attribute : AttributesDefinitions.yahooDefinition.getAllAttributes()) {
+                for (final String attribute : AttributesDefinitions.yahooDefinition.getAllAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

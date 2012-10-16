@@ -19,7 +19,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
 import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
 import org.scribe.up.credential.OAuthCredential;
@@ -46,7 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
  * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
  * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;), events (JsonList&lt;FacebookEvent&gt;), groups
- * (JsonList&lt;FacebookGroup&gt;) and music.listens (JsonList&lt;FacebookMusicListenGroup&gt;).<br />
+ * (JsonList&lt;FacebookGroup&gt;), music.listens (JsonList&lt;FacebookMusicListenGroup&gt;) and picture (FacebookPicture).<br />
  * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
  * @author Jerome Leleu
@@ -84,11 +85,15 @@ public class FacebookProvider extends BaseOAuth20Provider {
     @Override
     protected void internalInit() {
         if (StringUtils.isNotBlank(this.scope)) {
-            this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
-                .apiSecret(this.secret).callback(this.callbackUrl).scope(this.scope).build();
+            this.service = new FacebookOAuth20ServiceImpl(new ExtendedFacebookApi(),
+                                                          new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                          SignatureType.Header, this.scope, null),
+                                                          this.proxyHost, this.proxyPort);
         } else {
-            this.service = new ServiceBuilder().provider(ExtendedFacebookApi.class).apiKey(this.key)
-                .apiSecret(this.secret).callback(this.callbackUrl).build();
+            this.service = new FacebookOAuth20ServiceImpl(new ExtendedFacebookApi(),
+                                                          new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                          SignatureType.Header, null, null),
+                                                          this.proxyHost, this.proxyPort);
         }
     }
     
@@ -110,15 +115,16 @@ public class FacebookProvider extends BaseOAuth20Provider {
             for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
-            this.extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
-            this.extractData(profile, json, FacebookAttributesDefinition.MOVIES);
-            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC);
-            this.extractData(profile, json, FacebookAttributesDefinition.BOOKS);
-            this.extractData(profile, json, FacebookAttributesDefinition.LIKES);
-            this.extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
-            this.extractData(profile, json, FacebookAttributesDefinition.EVENTS);
-            this.extractData(profile, json, FacebookAttributesDefinition.GROUPS);
-            this.extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
+            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
+            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
+            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
+            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
+            extractData(profile, json, FacebookAttributesDefinition.LIKES);
+            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
+            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
+            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
+            extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
+            extractData(profile, json, FacebookAttributesDefinition.PICTURE);
         }
         return profile;
     }
@@ -137,15 +143,15 @@ public class FacebookProvider extends BaseOAuth20Provider {
         final String randomFacebookState = RandomStringUtils.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
         logger.debug("Facebook state parameter: [{}]", randomFacebookState);
         session.setAttribute(FACEBOOK_STATE, randomFacebookState);
-        this.init();
+        init();
         authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service).getAuthorizationUrl(randomFacebookState);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
     }
     
     @Override
-    public OAuthCredential extractCredentialFromParameters(final UserSession session,
-                                                           final Map<String, String[]> parameters) {
+    protected OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                              final Map<String, String[]> parameters) {
         // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
         final String userSessionFacebookState = (String) session.getAttribute(FACEBOOK_STATE);
         final String[] stateVerifiers = parameters.get(FACEBOOK_STATE);
@@ -183,5 +189,4 @@ public class FacebookProvider extends BaseOAuth20Provider {
     public void setLimit(final int limit) {
         this.limit = limit;
     }
-    
 }

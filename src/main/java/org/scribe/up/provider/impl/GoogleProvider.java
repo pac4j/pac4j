@@ -15,9 +15,11 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.GoogleApi;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
+import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
@@ -47,14 +49,21 @@ public class GoogleProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(GoogleApi.class).apiKey(key).apiSecret(secret)
-            .scope("http://www-opensocial.googleusercontent.com/api/people/").callback(callbackUrl).build();
+        this.service = new ProxyOAuth10aServiceImpl(
+                                                    new GoogleApi(),
+                                                    new OAuthConfig(
+                                                                    this.key,
+                                                                    this.secret,
+                                                                    this.callbackUrl,
+                                                                    SignatureType.Header,
+                                                                    "http://www-opensocial.googleusercontent.com/api/people/",
+                                                                    null), this.proxyHost, this.proxyPort);
     }
     
     @Override
     public String getAuthorizationUrl(final UserSession session) {
         init();
-        final Token requestToken = service.getRequestToken();
+        final Token requestToken = this.service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in session
         session.setAttribute(getRequestTokenSessionAttributeName(), requestToken);

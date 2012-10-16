@@ -15,8 +15,10 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.GitHubApi;
+import org.scribe.up.addon_to_scribe.ProxyOAuth20ServiceImpl;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
@@ -46,8 +48,10 @@ public class GitHubProvider extends BaseOAuth20Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(GitHubApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
-            .scope("user").build();
+        this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(),
+                                                   new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                   SignatureType.Header, "user", null), this.proxyHost,
+                                                   this.proxyPort);
     }
     
     @Override
@@ -57,11 +61,11 @@ public class GitHubProvider extends BaseOAuth20Provider {
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        GitHubProfile profile = new GitHubProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
+        final GitHubProfile profile = new GitHubProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (String attribute : AttributesDefinitions.githubDefinition.getAllAttributes()) {
+            for (final String attribute : AttributesDefinitions.githubDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }
