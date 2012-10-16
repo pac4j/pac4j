@@ -16,8 +16,10 @@
 package org.scribe.up.provider.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
+import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.linkedin.LinkedInAttributesDefinition;
@@ -42,8 +44,10 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(LinkedInApi.class).apiKey(key).apiSecret(secret).callback(callbackUrl)
-            .build();
+        this.service = new ProxyOAuth10aServiceImpl(new LinkedInApi(),
+                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                    SignatureType.Header, null, null), this.proxyHost,
+                                                    this.proxyPort);
     }
     
     @Override
@@ -53,12 +57,12 @@ public class LinkedInProvider extends BaseOAuth10Provider {
     
     @Override
     protected UserProfile extractUserProfile(final String body) {
-        LinkedInProfile profile = new LinkedInProfile();
-        for (String attribute : AttributesDefinitions.linkedinDefinition.getAllAttributes()) {
-            String value = StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
+        final LinkedInProfile profile = new LinkedInProfile();
+        for (final String attribute : AttributesDefinitions.linkedinDefinition.getAllAttributes()) {
+            final String value = StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             profile.addAttribute(attribute, value);
             if (LinkedInAttributesDefinition.URL.equals(attribute)) {
-                String id = StringUtils.substringBetween(value, "&amp;key=", "&amp;authToken=");
+                final String id = StringUtils.substringBetween(value, "&amp;key=", "&amp;authToken=");
                 profile.setId(id);
             }
         }

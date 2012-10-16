@@ -15,7 +15,9 @@
  */
 package org.scribe.up.provider.impl;
 
-import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthConfig;
+import org.scribe.model.SignatureType;
+import org.scribe.up.addon_to_scribe.ExtendedOAuth20ServiceImpl;
 import org.scribe.up.addon_to_scribe.GoogleApi20;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
@@ -54,14 +56,17 @@ public class Google2Provider extends BaseOAuth20Provider {
     @Override
     protected Google2Provider newProvider() {
         final Google2Provider newProvider = new Google2Provider();
-        newProvider.setScope(scope);
+        newProvider.setScope(this.scope);
         return newProvider;
     }
     
     @Override
     protected void internalInit() {
-        service = new ServiceBuilder().provider(GoogleApi20.class).apiKey(key).apiSecret(secret).scope(scopeValue)
-            .callback(callbackUrl).build();
+        this.service = new ExtendedOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
+                                                                                         this.callbackUrl,
+                                                                                         SignatureType.Header,
+                                                                                         this.scopeValue, null),
+                                                      this.proxyHost, this.proxyPort);
     }
     
     @Override
@@ -83,17 +88,17 @@ public class Google2Provider extends BaseOAuth20Provider {
     }
     
     public Google2Scope getScope() {
-        return scope;
+        return this.scope;
     }
     
     public void setScope(final Google2Scope scope) {
         this.scope = scope;
         if (scope == Google2Scope.EMAIL) {
-            scopeValue = EMAIL_SCOPE;
+            this.scopeValue = this.EMAIL_SCOPE;
         } else if (scope == Google2Scope.PROFILE) {
-            scopeValue = PROFILE_SCOPE;
+            this.scopeValue = this.PROFILE_SCOPE;
         } else {
-            scopeValue = PROFILE_SCOPE + " " + EMAIL_SCOPE;
+            this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
     }
 }

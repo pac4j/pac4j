@@ -51,48 +51,50 @@ public abstract class BaseOAuth10Provider extends BaseOAuthProvider {
         return getType() + "#" + REQUEST_TOKEN;
     }
     
-    public String getAuthorizationUrl(UserSession session) {
+    public String getAuthorizationUrl(final UserSession session) {
         init();
-        Token requestToken = service.getRequestToken();
+        final Token requestToken = this.service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in user session
         session.setAttribute(getRequestTokenSessionAttributeName(), requestToken);
-        String authorizationUrl = service.getAuthorizationUrl(requestToken);
+        final String authorizationUrl = this.service.getAuthorizationUrl(requestToken);
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
     }
     
-    public Token getAccessToken(OAuthCredential credential) {
-        Token tokenRequest = credential.getRequestToken();
-        String token = credential.getToken();
-        String verifier = credential.getVerifier();
+    @Override
+    protected Token getAccessToken(final OAuthCredential credential) {
+        final Token tokenRequest = credential.getRequestToken();
+        final String token = credential.getToken();
+        final String verifier = credential.getVerifier();
         logger.debug("tokenRequest : {}", tokenRequest);
         logger.debug("token : {}", token);
         logger.debug("verifier : {}", verifier);
         if (tokenRequest == null) {
             throw new OAuthException("Token request expired");
         }
-        String savedToken = tokenRequest.getToken();
+        final String savedToken = tokenRequest.getToken();
         logger.debug("savedToken : {}", savedToken);
         if (savedToken == null || !savedToken.equals(token)) {
             throw new OAuthException("Token received : " + token + " is different from saved token : " + savedToken);
         }
-        Verifier providerVerifier = new Verifier(verifier);
-        Token accessToken = service.getAccessToken(tokenRequest, providerVerifier);
+        final Verifier providerVerifier = new Verifier(verifier);
+        final Token accessToken = this.service.getAccessToken(tokenRequest, providerVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
     }
     
     @Override
-    public OAuthCredential extractCredentialFromParameters(UserSession session, Map<String, String[]> parameters) {
-        String[] tokens = parameters.get(OAUTH_TOKEN);
-        String[] verifiers = parameters.get(OAUTH_VERIFIER);
+    protected OAuthCredential extractCredentialFromParameters(final UserSession session,
+                                                              final Map<String, String[]> parameters) {
+        final String[] tokens = parameters.get(OAUTH_TOKEN);
+        final String[] verifiers = parameters.get(OAUTH_VERIFIER);
         if (tokens != null && tokens.length == 1 && verifiers != null && verifiers.length == 1) {
             // get tokenRequest from user session
-            Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
+            final Token tokenRequest = (Token) session.getAttribute(getRequestTokenSessionAttributeName());
             logger.debug("tokenRequest : {}", tokenRequest);
-            String token = OAuthEncoder.decode(tokens[0]);
-            String verifier = OAuthEncoder.decode(verifiers[0]);
+            final String token = OAuthEncoder.decode(tokens[0]);
+            final String verifier = OAuthEncoder.decode(verifiers[0]);
             logger.debug("token : {} / verifier : {}", token, verifier);
             return new OAuthCredential(tokenRequest, token, verifier, getType());
         } else {

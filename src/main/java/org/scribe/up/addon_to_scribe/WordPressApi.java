@@ -20,7 +20,6 @@ import org.scribe.extractors.AccessTokenExtractor;
 import org.scribe.extractors.JsonTokenExtractor;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
 
@@ -56,10 +55,5 @@ public final class WordPressApi extends DefaultApi20 {
     @Override
     public AccessTokenExtractor getAccessTokenExtractor() {
         return new JsonTokenExtractor();
-    }
-    
-    @Override
-    public OAuthService createService(final OAuthConfig config) {
-        return new ExtendedOAuthService20(this, config);
     }
 }
