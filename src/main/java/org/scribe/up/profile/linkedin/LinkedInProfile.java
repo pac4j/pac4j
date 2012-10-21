@@ -22,7 +22,7 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
-import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.OAuthProfile;
 
 /**
  * This class is the user profile for LinkedIn with appropriate getters.<br />
@@ -89,7 +89,7 @@ import org.scribe.up.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LinkedInProfile extends UserProfile implements CommonProfile {
+public class LinkedInProfile extends OAuthProfile implements CommonProfile {
     
     private static final long serialVersionUID = -6023307001155850927L;
     

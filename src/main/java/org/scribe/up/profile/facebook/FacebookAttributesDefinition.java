@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.facebook;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookAttributesDefinition extends AttributesDefinition {
+public class FacebookAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String NAME = "name";
     public static final String FIRST_NAME = "first_name";

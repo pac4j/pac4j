@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.google;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2AttributesDefinition extends AttributesDefinition {
+public class Google2AttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String EMAIL = "email";
     public static final String VERIFIED_EMAIL = "verified_email";

@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.twitter;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterAttributesDefinition extends AttributesDefinition {
+public class TwitterAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";

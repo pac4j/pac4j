@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.wordpress;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressAttributesDefinition extends AttributesDefinition {
+public class WordPressAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String DISPLAY_NAME = "display_name";
     public static final String USERNAME = "username";

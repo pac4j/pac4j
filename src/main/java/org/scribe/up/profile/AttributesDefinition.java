@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.scribe.up.profile.converter.AttributeConverter;
-import org.scribe.up.profile.converter.Converters;
 
 /**
  * This class is the definition of the attributes of a profile.
@@ -38,15 +37,6 @@ public class AttributesDefinition {
     protected List<String> otherAttributesNames = new ArrayList<String>();
     
     protected Map<String, AttributeConverter<? extends Object>> attributesConverters = new HashMap<String, AttributeConverter<? extends Object>>();
-    
-    public transient static final String ACCESS_TOKEN = "access_token";
-    
-    /**
-     * Default constructor which adds the access token by default.
-     */
-    public AttributesDefinition() {
-        addAttribute(ACCESS_TOKEN, Converters.stringConverter, false);
-    }
     
     /**
      * Return all the attributes names.
@@ -81,7 +71,7 @@ public class AttributesDefinition {
      * @param name
      * @param converter
      */
-    protected void addAttribute(String name, AttributeConverter<? extends Object> converter) {
+    protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter) {
         addAttribute(name, converter, true);
     }
     
@@ -92,7 +82,8 @@ public class AttributesDefinition {
      * @param converter
      * @param principal
      */
-    protected void addAttribute(String name, AttributeConverter<? extends Object> converter, boolean principal) {
+    protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter,
+                                final boolean principal) {
         allAttributesNames.add(name);
         attributesConverters.put(name, converter);
         if (principal) {
@@ -110,7 +101,7 @@ public class AttributesDefinition {
      * @param value
      * @return the converted attribute or null if no converter exists for this attribute name
      */
-    public Object convert(String name, Object value) {
+    public Object convert(final String name, final Object value) {
         AttributeConverter<? extends Object> converter = attributesConverters.get(name);
         if (converter != null && value != null) {
             return converter.convert(value);

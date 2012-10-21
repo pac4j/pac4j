@@ -26,9 +26,7 @@ response.sendRedirect(provider.getAuthorizationUrl(new HttpUserSession(session))
 OAuthCredential credential = provider.getCredential(new HttpUserSession(request), request.getParameterMap());
 // or get a facebook profile if the user has been authenticated by Facebook
 FacebookProfile facebookProfile = (FacebookProfile) provider.getUserProfile(credential);
-System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>
-<pre><code>// get a common profile if the user can be authenticated by several OAuth providers
-CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
+System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>If he user can be authenticated by several OAuth providers, use the common profile instead : <pre><code>CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
 System.out.println("Hello : " + commonProfile.getDisplayName() + " at " + commonProfile.getEmail());</code></pre>
 
 For a better understanding of *scribe-up*, take a look at the "technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description or browse the "Javadoc":http://javadoc.leleuj.cloudbees.net/.

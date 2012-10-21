@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.google;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GoogleAttributesDefinition extends AttributesDefinition {
+public class GoogleAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String PROFILE_URL = "profileUrl";
     public static final String IS_VIEWER = "isViewer";

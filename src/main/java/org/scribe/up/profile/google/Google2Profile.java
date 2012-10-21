@@ -23,7 +23,7 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
-import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.OAuthProfile;
 
 /**
  * This class is the user profile for Google (using OAuth protocol version 2) with appropriate getters.<br />
@@ -98,7 +98,7 @@ import org.scribe.up.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2Profile extends UserProfile implements CommonProfile {
+public class Google2Profile extends OAuthProfile implements CommonProfile {
     
     private static final long serialVersionUID = -8841460519492214152L;
     

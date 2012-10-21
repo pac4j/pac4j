@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.yahoo;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class YahooAttributesDefinition extends AttributesDefinition {
+public class YahooAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String ABOUT_ME = "aboutMe";
     public static final String ADDRESSES = "addresses";

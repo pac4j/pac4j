@@ -24,7 +24,7 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
-import org.scribe.up.profile.UserProfile;
+import org.scribe.up.profile.OAuthProfile;
 
 /**
  * This class is the user profile for Facebook with appropriate getters.<br />
@@ -220,7 +220,7 @@ import org.scribe.up.profile.UserProfile;
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public class FacebookProfile extends UserProfile implements CommonProfile {
+public class FacebookProfile extends OAuthProfile implements CommonProfile {
     
     private static final long serialVersionUID = 6121799311142318271L;
     

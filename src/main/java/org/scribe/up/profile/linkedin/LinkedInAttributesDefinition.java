@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.linkedin;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LinkedInAttributesDefinition extends AttributesDefinition {
+public class LinkedInAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String FIRST_NAME = "first-name";
     public static final String LAST_NAME = "last-name";

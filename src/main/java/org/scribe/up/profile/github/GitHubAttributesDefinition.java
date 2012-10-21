@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.github;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubAttributesDefinition extends AttributesDefinition {
+public class GitHubAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String TYPE = "type";
     public static final String BLOG = "blog";

@@ -15,7 +15,7 @@
  */
 package org.scribe.up.profile.dropbox;
 
-import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.OAuthAttributesDefinition;
 import org.scribe.up.profile.converter.Converters;
 
 /**
@@ -24,7 +24,7 @@ import org.scribe.up.profile.converter.Converters;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxAttributesDefinition extends AttributesDefinition {
+public class DropBoxAttributesDefinition extends OAuthAttributesDefinition {
     
     public static final String REFERRAL_LINK = "referral_link";
     public static final String DISPLAY_NAME = "display_name";
