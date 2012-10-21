@@ -26,7 +26,7 @@ response.sendRedirect(provider.getAuthorizationUrl(new HttpUserSession(session))
 OAuthCredential credential = provider.getCredential(new HttpUserSession(request), request.getParameterMap());
 // or get a facebook profile if the user has been authenticated by Facebook
 FacebookProfile facebookProfile = (FacebookProfile) provider.getUserProfile(credential);
-System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>If he user can be authenticated by several OAuth providers, use the common profile instead : <pre><code>CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
+System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>If the user can be authenticated by several OAuth providers, use the common profile instead : <pre><code>CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
 System.out.println("Hello : " + commonProfile.getDisplayName() + " at " + commonProfile.getEmail());</code></pre>
 
 For a better understanding of *scribe-up*, take a look at the "technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description or browse the "Javadoc":http://javadoc.leleuj.cloudbees.net/.
@@ -47,10 +47,10 @@ Even if you can use *scribe-up* on its own, this library was created to be the f
 h2. Versions
 
 The current version : 1.3.0-SNAPSHOT is under development, it's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/org/scribe/scribe-up/ :<pre><code><dependency>
-  <groupId>org.scribe</groupId>
-  <artifactId>scribe-up</artifactId>
-  <version>1.3.0-SNAPSHOT</version></dependency></code></pre>
-The last release version is 1.2.0-RC1. Learn more about the "different versions":https://github.com/leleuj/scribe-up/wiki/Versions.
+ <groupId>org.scribe</groupId>
+ <artifactId>scribe-up</artifactId>
+ <version>1.3.0-SNAPSHOT</version>
+</dependency></code></pre>The last release version is 1.2.0-RC1. Learn more about the "different versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 
