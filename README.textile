@@ -24,10 +24,10 @@ provider.setCallbackUrl("http://myserver/myapp/callbackUrl");
 response.sendRedirect(provider.getAuthorizationUrl(new HttpUserSession(session)));
 </code></pre>...after successfull authentication, on the callback url for Facebook...<pre><code>// get OAuth credentials :
 OAuthCredential credential = provider.getCredential(new HttpUserSession(request), request.getParameterMap());
-// get a common profile if you don't know from which provider the user has been authenticated
+// get a common profile whatever the provider was used to authenticate the user
 CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
 System.out.println("Hello : " + commonProfile.getDisplayName() + " at " + commonProfile.getEmail());
-// or get a specific profile if you know from which OAuth provider the user has been authenticated (Facebook here)
+// or get a facebook profile if the user has been authenticated by Facebook
 FacebookProfile facebookProfile = (FacebookProfile) provider.getUserProfile(credential);
 System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>
 
@@ -42,7 +42,7 @@ Even if you can use *scribe-up* on its own, this library was created to be the f
 
 
 
-|_.Library|_.Based on *scribe-up* version|_.Demo webapp|
+|_.Library|_.Based on scribe-up version|_.Demo webapp|
 |cas-server-support-oauth 3.5.0|1.0.0|"cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0|
 |cas-server-support-oauth 3.5.1|1.1.0|"cas-oauth-demo":https://github.com/leleuj/cas-oauth-demo|
 |buji-oauth 1.0.0|1.2.0|"scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo|
