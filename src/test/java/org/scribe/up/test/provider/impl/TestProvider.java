@@ -15,10 +15,14 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.lang3.StringUtils;
 import org.scribe.up.credential.OAuthCredential;
+import org.scribe.up.profile.CommonProfile;
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.session.UserSession;
@@ -87,4 +91,29 @@ public abstract class TestProvider extends TestCase {
     }
     
     protected abstract void verifyProfile(UserProfile userProfile);
+    
+    protected void assertCommonProfile(final UserProfile userProfile, final String email, final String firstName,
+                                       final String familyName, final String displayName, final String username,
+                                       final Gender gender, final Locale locale, final String pictureUrl,
+                                       final String profileUrl, final String location) {
+        final CommonProfile profile = (CommonProfile) userProfile;
+        assertEquals(email, profile.getEmail());
+        assertEquals(firstName, profile.getFirstName());
+        assertEquals(familyName, profile.getFamilyName());
+        assertEquals(displayName, profile.getDisplayName());
+        assertEquals(username, profile.getUsername());
+        assertEquals(gender, profile.getGender());
+        assertEquals(locale, profile.getLocale());
+        if (pictureUrl == null) {
+            assertNull(profile.getPictureUrl());
+        } else {
+            assertTrue(profile.getPictureUrl().startsWith(pictureUrl));
+        }
+        if (profileUrl == null) {
+            assertNull(profile.getProfileUrl());
+        } else {
+            assertTrue(profile.getProfileUrl().startsWith(profileUrl));
+        }
+        assertEquals(location, profile.getLocation());
+    }
 }

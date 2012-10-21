@@ -21,19 +21,80 @@ import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 
 /**
- * This class is the user profile for Windows Live with appropriate getters.
+ * This class is the user profile for Windows Live with appropriate getters.<br />
+ * It is returned by the {@link org.scribe.up.provider.impl.WindowsLiveProvider}.
+ * <p />
+ * <table border="1" cellspacing="2px">
+ * <tr>
+ * <th>Method :</th>
+ * <th>From the JSON profile response :</th>
+ * </tr>
+ * <tr>
+ * <th colspan="2">The attributes of the {@link org.scribe.up.profile.CommonProfile}</th>
+ * </tr>
+ * <tr>
+ * <td>String getEmail()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>String getFirstName()</td>
+ * <td>the <i>first_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getFamilyName()</td>
+ * <td>the <i>last_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getDisplayName()</td>
+ * <td>the <i>name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getUsername()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>Gender getGender()</td>
+ * <td>the <i>gender</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>Locale getLocale()</td>
+ * <td>the <i>locale</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getPictureUrl()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>String getProfileUrl()</td>
+ * <td>the <i>link</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getLocation()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <th colspan="2">More specific attributes</th>
+ * </tr>
+ * <tr>
+ * <td>Date getUpdatedTime()</td>
+ * <td>the <i>updated_time</i> attribute</td>
+ * </tr>
+ * </table>
  * 
+ * @see org.scribe.up.provider.impl.WindowsLiveProvider
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WindowsLiveProfile extends UserProfile {
+public class WindowsLiveProfile extends UserProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 4835657443547427620L;
+    private static final long serialVersionUID = -8762020349040523374L;
     
+    @Override
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.windowsLiveDefinition;
     }
@@ -42,39 +103,55 @@ public class WindowsLiveProfile extends UserProfile {
         super();
     }
     
-    public WindowsLiveProfile(Object id) {
+    public WindowsLiveProfile(final Object id) {
         super(id);
     }
     
-    public WindowsLiveProfile(Object id, Map<String, Object> attributes) {
+    public WindowsLiveProfile(final Object id, final Map<String, Object> attributes) {
         super(id, attributes);
     }
     
-    public String getName() {
-        return (String) attributes.get(WindowsLiveAttributesDefinition.NAME);
+    public String getEmail() {
+        return null;
     }
     
     public String getFirstName() {
-        return (String) attributes.get(WindowsLiveAttributesDefinition.FIRST_NAME);
+        return (String) this.attributes.get(WindowsLiveAttributesDefinition.FIRST_NAME);
     }
     
-    public String getLastName() {
-        return (String) attributes.get(WindowsLiveAttributesDefinition.LAST_NAME);
+    public String getFamilyName() {
+        return (String) this.attributes.get(WindowsLiveAttributesDefinition.LAST_NAME);
     }
     
-    public String getLink() {
-        return (String) attributes.get(WindowsLiveAttributesDefinition.LINK);
+    public String getDisplayName() {
+        return (String) this.attributes.get(WindowsLiveAttributesDefinition.NAME);
+    }
+    
+    public String getUsername() {
+        return null;
     }
     
     public Gender getGender() {
-        return (Gender) attributes.get(WindowsLiveAttributesDefinition.GENDER);
+        return (Gender) this.attributes.get(WindowsLiveAttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) attributes.get(WindowsLiveAttributesDefinition.LOCALE);
+        return (Locale) this.attributes.get(WindowsLiveAttributesDefinition.LOCALE);
+    }
+    
+    public String getPictureUrl() {
+        return null;
+    }
+    
+    public String getProfileUrl() {
+        return (String) this.attributes.get(WindowsLiveAttributesDefinition.LINK);
+    }
+    
+    public String getLocation() {
+        return null;
     }
     
     public Date getUpdatedTime() {
-        return (Date) attributes.get(WindowsLiveAttributesDefinition.UPDATED_TIME);
+        return (Date) this.attributes.get(WindowsLiveAttributesDefinition.UPDATED_TIME);
     }
 }

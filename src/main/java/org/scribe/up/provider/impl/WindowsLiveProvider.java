@@ -28,11 +28,13 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in Windows Live (SkyDrive, Hotmail and Messenger). Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.windowslive.WindowsLiveProfile} : name (String), first_name (String),
- * last_name (String), link (String), gender (Gender), locale (Locale) and updated_time (FormattedDate).<br />
+ * This class is the OAuth provider to authenticate user in Windows Live (SkyDrive, Hotmail and Messenger).
+ * <p />
+ * It returns a {@link org.scribe.up.profile.windowslive.WindowsLiveProfile}.
+ * <p />
  * More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx
  * 
+ * @see org.scribe.up.profile.windowslive.WindowsLiveProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */

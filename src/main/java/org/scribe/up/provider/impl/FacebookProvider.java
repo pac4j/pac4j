@@ -36,20 +36,25 @@ import org.scribe.utils.OAuthEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in Facebook. Specific scopes and fields can be requested to get more attributes and
- * the number of results can be limited.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.facebook.FacebookProfile} : name (String), first_name (String),
- * middle_name (String), last_name (String), gender (Gender), locale (Locale), languages (JsonList&lt;FacebookObject&gt;), link (String),
- * username (String), third_party_id (String), timezone (Integer), updated_time (FormattedDate), verified (Boolean), bio (String), birthday
- * (FormattedDate), education (JsonList&lt;FacebookEducation&gt;), email (String), hometown (FacebookObject), interested_in
- * (JsonList&lt;String&gt;), location (FacebookObject), political (String), favorite_athletes (JsonList&lt;FacebookObject&gt;),
- * favorite_teams (JsonList&lt;FacebookObject&gt;), quotes (String), relationship_status (FacebookRelationshipStatus), religion (String),
- * significant_other (FacebookObject), website (String), work (JsonList&lt;FacebookWork&gt;), friends (JsonList&lt;FacebookObject&gt;),
- * movies (JsonList&lt;FacebookInfo&gt;), music (JsonList&lt;FacebookInfo&gt;), books (JsonList&lt;FacebookInfo&gt;), likes
- * (JsonList&lt;FacebookInfo&gt;), albums (JsonList&lt;FacebookPhoto&gt;), events (JsonList&lt;FacebookEvent&gt;), groups
- * (JsonList&lt;FacebookGroup&gt;), music.listens (JsonList&lt;FacebookMusicListenGroup&gt;) and picture (FacebookPicture).<br />
+ * This class is the OAuth provider to authenticate user in Facebook.
+ * <p />
+ * By default, the following <i>scope</i> is requested to Facebook : user_likes, user_about_me, user_birthday, user_education_history,
+ * email, user_hometown, user_relationship_details, user_location, user_religion_politics, user_relationships, user_website and
+ * user_work_history.<br />
+ * The <i>scope</i> can be defined to require permissions from the user and retrieve fields from Facebook, by using the
+ * {@link #setScope(String)} method.<br />
+ * By default, the following <i>fields</i> are requested to Facebook : id, name, first_name, middle_name, last_name, gender, locale,
+ * languages, link, username, third_party_id, timezone, updated_time, verified, bio, birthday, education, email, hometown, interested_in,
+ * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.<br />
+ * The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.
+ * <p />
+ * The number of results can be limited by using the {@link #setLimit(int)} method.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.facebook.FacebookProfile}.
+ * <p />
  * More information at http://developers.facebook.com/docs/reference/api/user/
  * 
+ * @see org.scribe.up.profile.facebook.FacebookProfile
  * @author Jerome Leleu
  * @author Mehdi BEN HAJ ABBES
  * @since 1.0.0
@@ -67,7 +72,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
     
     protected String fields = DEFAULT_FIELDS;
     
-    protected String scope;
+    protected String scope = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
     
     public final static int DEFAULT_LIMIT = 0;
     

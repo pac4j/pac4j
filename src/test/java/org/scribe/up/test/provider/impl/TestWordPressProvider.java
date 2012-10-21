@@ -15,6 +15,7 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.wordpress.WordPressLinks;
@@ -38,7 +39,7 @@ public class TestWordPressProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        WordPressProvider wordPressProvider = new WordPressProvider();
+        final WordPressProvider wordPressProvider = new WordPressProvider();
         wordPressProvider.setKey("209");
         wordPressProvider.setSecret("xJBXMRVvKrvHqyvM6BpzkenJVMIdQrIWKjPJsezjGYu71y7sDgt8ibz6s9IFLqU8");
         wordPressProvider.setCallbackUrl("http://www.google.com/");
@@ -46,38 +47,36 @@ public class TestWordPressProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getFormByName("loginform");
-        HtmlTextInput login = form.getInputByName("log");
+        final HtmlTextInput login = form.getInputByName("log");
         login.setValueAttribute("testscribeup");
-        HtmlPasswordInput passwd = form.getInputByName("pwd");
+        final HtmlPasswordInput passwd = form.getInputByName("pwd");
         passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName("wp-submit");
-        HtmlPage confirmPage = submit.click();
+        final HtmlPage confirmPage = submit.click();
         form = confirmPage.getFormByName("loginform");
         submit = form.getInputByName("wp-submit");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        WordPressProfile profile = (WordPressProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final WordPressProfile profile = (WordPressProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("35944437", profile.getId());
         assertEquals(WordPressProfile.class.getSimpleName() + UserProfile.SEPARATOR + "35944437", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WordPressProfile.class));
-        assertEquals("testscribeup", profile.getDisplayName());
-        assertEquals("testscribeup", profile.getUsername());
-        assertEquals("testscribeup@gmail.com", profile.getEmail());
+        assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "testscribeup", "testscribeup",
+                            Gender.UNSPECIFIED, null,
+                            "http://0.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",
+                            "http://en.gravatar.com/testscribeup", null);
         assertEquals(36224958, profile.getPrimaryBlog());
         assertTrue(profile.isPrimaryBlogDefined());
-        assertTrue(profile.getAvatarUrl()
-            .indexOf(".gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G") >= 0);
-        assertEquals("http://en.gravatar.com/testscribeup", profile.getProfileUrl());
-        WordPressLinks links = profile.getLinks();
+        final WordPressLinks links = profile.getLinks();
         assertEquals("https://public-api.wordpress.com/rest/v1/me", links.getSelf());
         assertEquals("https://public-api.wordpress.com/rest/v1/me/help", links.getHelp());
         assertEquals("https://public-api.wordpress.com/rest/v1/sites/36224958", links.getSite());

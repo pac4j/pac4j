@@ -87,16 +87,13 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals(FacebookProfile.class.getSimpleName() + UserProfile.SEPARATOR + "100003571536393",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
-        assertEquals("Jerome Testscribeup", profile.getName());
-        assertEquals("Jerome", profile.getFirstName());
+        assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jerome", "Testscribeup", "Jerome Testscribeup",
+                            "jerome.testscribeup", Gender.MALE, Locale.FRANCE,
+                            "http://profile.ak.fbcdn.net/hprofile-ak-ash3/157632_100003571536393_1742338663_q.jpg",
+                            "http://www.facebook.com/jerome.testscribeup", "New York, New York");
         assertNull(profile.getMiddleName());
-        assertEquals("Testscribeup", profile.getLastName());
-        assertEquals(Gender.MALE, profile.getGender());
-        assertEquals(Locale.FRANCE, profile.getLocale());
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
-        assertEquals("http://www.facebook.com/jerome.testscribeup", profile.getLink());
-        assertEquals("jerome.testscribeup", profile.getUsername());
         assertEquals("mFoMgGkdK90l07Mw9TtR6NgVXsI", profile.getThirdPartyId());
         assertEquals(2, profile.getTimezone());
         assertEquals(CommonHelper.getFormattedDate(1343375150000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
@@ -115,7 +112,7 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("testscribeup@gmail.com", profile.getEmail());
         assertEquals("San Francisco, California", (profile.getHometown()).getName());
         assertEquals("female", (profile.getInterestedIn()).get(0));
-        assertEquals("New York, New York", (profile.getLocation()).getName());
+        assertEquals("New York, New York", (profile.getLocationObject()).getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
         final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
         assertEquals("Surfing", favoriteAthletes.get(0).getName());

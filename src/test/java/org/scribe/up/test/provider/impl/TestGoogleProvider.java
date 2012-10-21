@@ -17,6 +17,7 @@ package org.scribe.up.test.provider.impl;
 
 import java.util.List;
 
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.google.GoogleObject;
@@ -72,15 +73,19 @@ public class TestGoogleProvider extends TestProvider {
         assertEquals(GoogleProfile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleProfile.class));
-        assertEquals("https://plus.google.com/113675986756217860428", profile.getProfileUrl());
+        assertCommonProfile(userProfile,
+                            null,
+                            "Jérôme",
+                            "ScribeUP",
+                            "Jérôme ScribeUP",
+                            null,
+                            Gender.UNSPECIFIED,
+                            null,
+                            "http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
+                            "https://plus.google.com/113675986756217860428", null);
         assertTrue(profile.isViewer());
         assertTrue(profile.isViewerDefined());
-        assertEquals("http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
-                     profile.getThumbnailUrl());
         assertEquals("Jérôme ScribeUP", profile.getFormatted());
-        assertEquals("ScribeUP", profile.getFamilyName());
-        assertEquals("Jérôme", profile.getGivenName());
-        assertEquals("Jérôme ScribeUP", profile.getDisplayName());
         final List<GoogleObject> urls = profile.getUrls();
         final GoogleObject url = urls.get(0);
         assertEquals("https://plus.google.com/113675986756217860428", url.getValue());

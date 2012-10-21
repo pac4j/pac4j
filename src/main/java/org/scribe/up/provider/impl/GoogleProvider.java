@@ -30,12 +30,13 @@ import org.scribe.up.session.UserSession;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in Google. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.google.GoogleProfile} : profileUrl (String), isViewer (Boolean),
- * thumbnailUrl (String), formatted (String), familyName (String), givenName (String), displayName (String), urls
- * (JsonList&lt;GoogleObject&gt;) and photos (JsonList&lt;GoogleObject&gt;).<br />
+ * This class is the OAuth provider to authenticate user in Google using OAuth protocol version 1.0.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.google.GoogleProfile}.
+ * <p />
  * More information at http://code.google.com/intl/fr-FR/apis/contacts/docs/poco/1.0/developers_guide.html
  * 
+ * @see org.scribe.up.profile.google.GoogleProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */

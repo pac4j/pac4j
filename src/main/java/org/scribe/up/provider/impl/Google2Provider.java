@@ -28,12 +28,16 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in Google using OAuth protocol version 2.0. Scope is used to retrieve email,
- * profile or both (default).<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.google.Google2Profile} : email (String), verified_email (Boolean), name
- * (String), given_name (String), family_name (String), link (String), picture (String), gender (Gender) and locale (Locale).<br />
+ * This class is the OAuth provider to authenticate user in Google using OAuth protocol version 2.0.
+ * <p />
+ * The <i>scope</i> is by default : {@link Google2Scope#EMAIL}, but it can also but set to : {@link Google2Scope#PROFILE} or
+ * {@link Google2Scope#EMAIL_AND_PROFILE}.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.google.Google2Profile}.
+ * <p />
  * More information at https://developers.google.com/accounts/docs/OAuth2Login
  * 
+ * @see org.scribe.up.profile.google.Google2Profile
  * @author Jerome Leleu
  * @since 1.2.0
  */

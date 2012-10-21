@@ -30,14 +30,13 @@ import org.scribe.up.provider.BaseOAuth10Provider;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in Yahoo. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.yahoo.YahooProfile} : aboutMe (String), addresses
- * (JsonList&lt;YahooAddress&gt;), birthYear (Integer), birthdate (FormattedDate), created (FormattedDate), displayAge (Integer),
- * disclosures (JsonList&lt;YahooDisclosure&gt;), emails (JsonList&lt;YahooEmail&gt;), familyName (String), gender (Gender), givenName
- * (String), image (YahooImage), interests (JsonList&lt;YahooInterest&gt;), isConnected (Boolean), lang (Locale), location (String),
- * memberSince (FormattedDate), nickname (String), profileUrl (String), timeZone (String), updated (FormattedDate) and uri (String).<br />
+ * This class is the OAuth provider to authenticate user in Yahoo.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.yahoo.YahooProfile}.
+ * <p />
  * More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
  * 
+ * @see org.scribe.up.profile.yahoo.YahooProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */

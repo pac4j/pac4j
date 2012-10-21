@@ -17,6 +17,7 @@ package org.scribe.up.test.provider.impl;
 
 import java.util.Locale;
 
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.dropbox.DropBoxProfile;
@@ -39,7 +40,7 @@ public class TestDropBoxProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        DropBoxProvider dropBoxProvider = new DropBoxProvider();
+        final DropBoxProvider dropBoxProvider = new DropBoxProvider();
         dropBoxProvider.setKey("0194c6m79qll0ia");
         dropBoxProvider.setSecret("a0ylze9a0bhsvxv");
         dropBoxProvider.setCallbackUrl("http://www.google.com/");
@@ -47,32 +48,31 @@ public class TestDropBoxProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getForms().get(1);
-        HtmlTextInput login = form.getInputByName("login_email");
+        final HtmlTextInput login = form.getInputByName("login_email");
         login.setValueAttribute("testscribeup@gmail.com");
-        HtmlPasswordInput passwd = form.getInputByName("login_password");
+        final HtmlPasswordInput passwd = form.getInputByName("login_password");
         passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName("login_submit");
-        HtmlPage confirmPage = submit.click();
+        final HtmlPage confirmPage = submit.click();
         form = confirmPage.getForms().get(1);
         submit = form.getInputByName("allow_access");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        DropBoxProfile profile = (DropBoxProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final DropBoxProfile profile = (DropBoxProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("75206624", profile.getId());
         assertEquals(DropBoxProfile.class.getSimpleName() + UserProfile.SEPARATOR + "75206624", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
-        assertEquals("https://www.dropbox.com/referrals/NTc1MjA2NjI0OQ", profile.getReferralLink());
-        assertEquals("Test ScribeUP", profile.getDisplayName());
-        assertEquals(Locale.FRENCH, profile.getCountry());
+        assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
+                            null, "https://www.dropbox.com/referrals/NTc1MjA2NjI0OQ", null);
         assertEquals(0L, profile.getShared());
         assertEquals(1410412L, profile.getNormal());
         assertEquals(2147483648L, profile.getQuota());

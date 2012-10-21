@@ -29,11 +29,13 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in WordPress. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.wordpress.WordPressProfile} : display_name (String), username (String),
- * email (String), primary_blog (Integer), avatar_URL (String), profile_URL (String) and links (WordPressLinks).<br />
+ * This class is the OAuth provider to authenticate user in WordPress.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.wordpress.WordPressProfile}.
+ * <p />
  * More information at http://developer.wordpress.com/docs/oauth2/
  * 
+ * @see org.scribe.up.profile.wordpress.WordPressProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */

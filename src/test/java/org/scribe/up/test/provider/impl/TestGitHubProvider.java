@@ -15,6 +15,7 @@
  */
 package org.scribe.up.test.provider.impl;
 
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.github.GitHubPlan;
@@ -66,6 +67,16 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals("1412558", profile.getId());
         assertEquals(GitHubProfile.class.getSimpleName() + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
+        assertCommonProfile(userProfile,
+                            "testscribeup@gmail.com",
+                            null,
+                            null,
+                            "Test",
+                            "testscribeup",
+                            Gender.UNSPECIFIED,
+                            null,
+                            "https://secure.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars",
+                            "https://github.com/testscribeup", "Paris");
         assertEquals("User", profile.getType());
         assertEquals("ScribeUp", profile.getBlog());
         assertEquals("https://api.github.com/users/testscribeup", profile.getUrl());
@@ -78,29 +89,21 @@ public class TestGitHubProvider extends TestProvider {
         assertEquals(0, profile.getPublicRepos());
         assertTrue(profile.isPublicReposDefined());
         assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
-        assertTrue(profile
-            .getAvatarUrl()
-            .startsWith("https://secure.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars"));
         assertEquals(0, profile.getFollowers());
         assertTrue(profile.isFollowersDefined());
-        assertEquals("testscribeup", profile.getLogin());
         assertEquals("Company", profile.getCompany());
-        assertEquals("testscribeup@gmail.com", profile.getEmail());
         assertFalse(profile.isHireable());
         assertTrue(profile.isHireableDefined());
         assertEquals(0, profile.getCollaborators());
         assertTrue(profile.isCollaboratorsDefined());
-        assertEquals("https://github.com/testscribeup", profile.getHtmlUrl());
         assertEquals("Java developper", profile.getBio());
         assertEquals(0, profile.getTotalPrivateRepos());
         assertTrue(profile.isTotalPrivateReposDefined());
         assertEquals("2012-02-06T13:05:21Z", profile.getCreatedAt().toString());
-        assertEquals("Test", profile.getName());
         assertEquals(0, profile.getDiskUsage());
         assertTrue(profile.isDiskUsageDefined());
         assertEquals(0, profile.getOwnedPrivateRepos());
         assertTrue(profile.isOwnedPrivateReposDefined());
-        assertEquals("Paris", profile.getLocation());
         final GitHubPlan plan = profile.getPlan();
         assertEquals("free", plan.getName());
         assertEquals(0, plan.getCollaborators());

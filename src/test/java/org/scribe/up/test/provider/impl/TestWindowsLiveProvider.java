@@ -38,13 +38,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class TestWindowsLiveProvider extends TestProvider {
     
+    @Override
     protected boolean isJavascriptEnabled() {
         return true;
     }
     
     @Override
     protected OAuthProvider getProvider() {
-        WindowsLiveProvider liveProvider = new WindowsLiveProvider();
+        final WindowsLiveProvider liveProvider = new WindowsLiveProvider();
         liveProvider.setKey("00000000400BFE75");
         liveProvider.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");
         liveProvider.setCallbackUrl("http://javadoc.leleuj.cloudbees.net/");
@@ -52,32 +53,28 @@ public class TestWindowsLiveProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
-        HtmlTextInput login = authorizationPage.getElementByName("login");
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+        final HtmlTextInput login = authorizationPage.getElementByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
-        HtmlPasswordInput password = authorizationPage.getElementByName("passwd");
+        final HtmlPasswordInput password = authorizationPage.getElementByName("passwd");
         password.setValueAttribute("testpwdscribeup");
-        HtmlSubmitInput submit = authorizationPage.getElementByName("SI");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlSubmitInput submit = authorizationPage.getElementByName("SI");
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("416c383b220392d8", profile.getId());
         assertEquals(WindowsLiveProfile.class.getSimpleName() + UserProfile.SEPARATOR + "416c383b220392d8",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
-        assertEquals("Test ScribeUP", profile.getName());
-        assertEquals("Test", profile.getFirstName());
-        assertEquals("ScribeUP", profile.getLastName());
-        assertEquals("http://profile.live.com/cid-416c383b220392d8/", profile.getLink());
-        assertEquals(Gender.MALE, profile.getGender());
-        assertEquals(Locale.FRANCE, profile.getLocale());
+        assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, Gender.MALE, Locale.FRANCE,
+                            null, "http://profile.live.com/cid-416c383b220392d8/", null);
         assertEquals(CommonHelper.getFormattedDate(1335878042000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdatedTime().toString());
         assertEquals(8, profile.getAttributes().size());

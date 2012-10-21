@@ -71,17 +71,18 @@ public class TestGoogle2Provider extends TestProvider {
         assertEquals(Google2Profile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), Google2Profile.class));
-        assertEquals("testscribeup@gmail.com", profile.getEmail());
+        assertCommonProfile(userProfile,
+                            "testscribeup@gmail.com",
+                            "Jérôme",
+                            "ScribeUP",
+                            "Jérôme ScribeUP",
+                            null,
+                            Gender.MALE,
+                            Locale.ENGLISH,
+                            "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
+                            "https://plus.google.com/113675986756217860428", null);
         assertTrue(profile.isVerifiedEmail());
         assertTrue(profile.isVerifiedEmailDefined());
-        assertEquals("Jérôme ScribeUP", profile.getName());
-        assertEquals("Jérôme", profile.getGivenName());
-        assertEquals("ScribeUP", profile.getFamilyName());
-        assertEquals("https://plus.google.com/113675986756217860428", profile.getLink());
-        assertEquals("https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
-                     profile.getPicture());
-        assertEquals(Gender.MALE, profile.getGender());
-        assertEquals(Locale.ENGLISH, profile.getLocale());
         assertEquals("0001-03-10", profile.getBirthday().toString());
         assertEquals(11, profile.getAttributes().size());
     }

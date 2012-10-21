@@ -21,18 +21,86 @@ import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 
 /**
- * This class is the user profile for Google (using OAuth protocol version 2) with appropriate getters.
+ * This class is the user profile for Google (using OAuth protocol version 2) with appropriate getters.<br />
+ * It is returned by the {@link org.scribe.up.provider.impl.Google2Provider}.
+ * <p />
+ * <table border="1" cellspacing="2px">
+ * <tr>
+ * <th>Method :</th>
+ * <th>From the JSON profile response :</th>
+ * </tr>
+ * <tr>
+ * <th colspan="2">The attributes of the {@link org.scribe.up.profile.CommonProfile}</th>
+ * </tr>
+ * <tr>
+ * <td>String getEmail()</td>
+ * <td>the <i>email</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getFirstName()</td>
+ * <td>the <i>given_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getFamilyName()</td>
+ * <td>the <i>family_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getDisplayName()</td>
+ * <td>the <i>name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getUsername()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>Gender getGender()</td>
+ * <td>the <i>gender</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>Locale getLocale()</td>
+ * <td>the <i>locale</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getPictureUrl()</td>
+ * <td>the <i>picture</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getProfileUrl()</td>
+ * <td>the <i>link</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getLocation()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <th colspan="2">More specific attributes</th>
+ * </tr>
+ * <tr>
+ * <td>boolean isVerifiedEmail()</td>
+ * <td>the <i>verified_email</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isVerifiedEmailDefined()</td>
+ * <td>if the <i>verified_email</i> attribute exists</td>
+ * </tr>
+ * <tr>
+ * <td>Date getBirthday()</td>
+ * <td>the <i>birthday</i> attribute</td>
+ * </tr>
+ * </table>
  * 
+ * @see org.scribe.up.provider.impl.Google2Provider
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2Profile extends UserProfile {
+public class Google2Profile extends UserProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -7650790367512919156L;
+    private static final long serialVersionUID = -8841460519492214152L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -52,51 +120,54 @@ public class Google2Profile extends UserProfile {
     }
     
     public String getEmail() {
-        return (String) attributes.get(Google2AttributesDefinition.EMAIL);
+        return (String) this.attributes.get(Google2AttributesDefinition.EMAIL);
     }
     
-    public boolean isVerifiedEmail() {
-        return getSafeBoolean((Boolean) attributes.get(Google2AttributesDefinition.VERIFIED_EMAIL));
-    }
-    
-    /**
-     * Indicate if the verified_email attribute exists.
-     * 
-     * @return if the verified_email attribute exists
-     */
-    public boolean isVerifiedEmailDefined() {
-        return attributes.get(Google2AttributesDefinition.VERIFIED_EMAIL) != null;
-    }
-    
-    public String getName() {
-        return (String) attributes.get(Google2AttributesDefinition.NAME);
-    }
-    
-    public String getGivenName() {
-        return (String) attributes.get(Google2AttributesDefinition.GIVEN_NAME);
+    public String getFirstName() {
+        return (String) this.attributes.get(Google2AttributesDefinition.GIVEN_NAME);
     }
     
     public String getFamilyName() {
-        return (String) attributes.get(Google2AttributesDefinition.FAMILY_NAME);
+        return (String) this.attributes.get(Google2AttributesDefinition.FAMILY_NAME);
     }
     
-    public String getLink() {
-        return (String) attributes.get(Google2AttributesDefinition.LINK);
+    public String getDisplayName() {
+        return (String) this.attributes.get(Google2AttributesDefinition.NAME);
     }
     
-    public String getPicture() {
-        return (String) attributes.get(Google2AttributesDefinition.PICTURE);
+    public String getUsername() {
+        return null;
     }
     
     public Gender getGender() {
-        return (Gender) attributes.get(Google2AttributesDefinition.GENDER);
+        return (Gender) this.attributes.get(Google2AttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) attributes.get(Google2AttributesDefinition.LOCALE);
+        return (Locale) this.attributes.get(Google2AttributesDefinition.LOCALE);
+    }
+    
+    public String getPictureUrl() {
+        return (String) this.attributes.get(Google2AttributesDefinition.PICTURE);
+    }
+    
+    public String getProfileUrl() {
+        return (String) this.attributes.get(Google2AttributesDefinition.LINK);
+    }
+    
+    public String getLocation() {
+        return null;
+    }
+    
+    public boolean isVerifiedEmail() {
+        return getSafeBoolean((Boolean) this.attributes.get(Google2AttributesDefinition.VERIFIED_EMAIL));
+    }
+    
+    public boolean isVerifiedEmailDefined() {
+        return this.attributes.get(Google2AttributesDefinition.VERIFIED_EMAIL) != null;
     }
     
     public Date getBirthday() {
-        return (Date) attributes.get(Google2AttributesDefinition.BIRTHDAY);
+        return (Date) this.attributes.get(Google2AttributesDefinition.BIRTHDAY);
     }
 }

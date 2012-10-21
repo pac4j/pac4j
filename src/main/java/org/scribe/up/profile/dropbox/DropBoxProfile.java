@@ -20,18 +20,100 @@ import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.CommonProfile;
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 
 /**
- * This class is the user profile for DropBox with appropriate getters.
+ * This class is the user profile for DropBox with appropriate getters.<br />
+ * It is returned by the {@link org.scribe.up.provider.impl.DropBoxProvider}.
+ * <p />
+ * <table border="1" cellspacing="2px">
+ * <tr>
+ * <th>Method :</th>
+ * <th>From the JSON profile response :</th>
+ * </tr>
+ * <tr>
+ * <th colspan="2">The attributes of the {@link org.scribe.up.profile.CommonProfile}</th>
+ * </tr>
+ * <tr>
+ * <td>String getEmail()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>String getFirstName()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>String getFamilyName()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>String getDisplayName()</td>
+ * <td>the <i>display_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getUsername()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>Gender getGender()</td>
+ * <td>{@link org.scribe.up.profile.Gender#UNSPECIFIED}</td>
+ * </tr>
+ * <tr>
+ * <td>Locale getLocale()</td>
+ * <td>the <i>country</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getPictureUrl()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>String getProfileUrl()</td>
+ * <td>the <i>referral_link</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getLocation()</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <th colspan="2">More specific attributes</th>
+ * </tr>
+ * <tr>
+ * <td>long getNormal()</td>
+ * <td>the <i>normal</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isNormalDefined()</td>
+ * <td>if the <i>normal</i> attribute exists</td>
+ * </tr>
+ * <tr>
+ * <td>long getQuota()</td>
+ * <td>the <i>quota</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isQuotaDefined()</td>
+ * <td>if the <i>quota</i> attribute exists</td>
+ * </tr>
+ * <tr>
+ * <td>long getShared()</td>
+ * <td>the <i>shared</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isSharedDefined()</td>
+ * <td>if the <i>shared</i> attribute exists</td>
+ * </tr>
+ * </table>
  * 
+ * @see org.scribe.up.provider.impl.DropBoxProvider
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxProfile extends UserProfile {
+public class DropBoxProfile extends UserProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 3593309519711828560L;
+    private static final long serialVersionUID = -4548990715767552938L;
     
+    @Override
     protected AttributesDefinition getAttributesDefinition() {
         return AttributesDefinitions.dropBoxDefinition;
     }
@@ -40,62 +122,75 @@ public class DropBoxProfile extends UserProfile {
         super();
     }
     
-    public DropBoxProfile(Object id) {
+    public DropBoxProfile(final Object id) {
         super(id);
     }
     
-    public DropBoxProfile(Object id, Map<String, Object> attributes) {
+    public DropBoxProfile(final Object id, final Map<String, Object> attributes) {
         super(id, attributes);
     }
     
-    public String getReferralLink() {
-        return (String) attributes.get(DropBoxAttributesDefinition.REFERRAL_LINK);
+    public String getEmail() {
+        return null;
+    }
+    
+    public String getFirstName() {
+        return null;
+    }
+    
+    public String getFamilyName() {
+        return null;
     }
     
     public String getDisplayName() {
-        return (String) attributes.get(DropBoxAttributesDefinition.DISPLAY_NAME);
+        return (String) this.attributes.get(DropBoxAttributesDefinition.DISPLAY_NAME);
     }
     
-    public Locale getCountry() {
-        return (Locale) attributes.get(DropBoxAttributesDefinition.COUNTRY);
+    public String getUsername() {
+        return null;
+    }
+    
+    public Gender getGender() {
+        return Gender.UNSPECIFIED;
+    }
+    
+    public Locale getLocale() {
+        return (Locale) this.attributes.get(DropBoxAttributesDefinition.COUNTRY);
+    }
+    
+    public String getPictureUrl() {
+        return null;
+    }
+    
+    public String getProfileUrl() {
+        return (String) this.attributes.get(DropBoxAttributesDefinition.REFERRAL_LINK);
+    }
+    
+    public String getLocation() {
+        return null;
     }
     
     public long getNormal() {
-        return getSafeLong((Long) attributes.get(DropBoxAttributesDefinition.NORMAL));
+        return getSafeLong((Long) this.attributes.get(DropBoxAttributesDefinition.NORMAL));
     }
     
-    /**
-     * Indicate if the normal attribute exists.
-     * 
-     * @return if the normal attribute exists
-     */
     public boolean isNormalDefined() {
-        return attributes.get(DropBoxAttributesDefinition.NORMAL) != null;
+        return this.attributes.get(DropBoxAttributesDefinition.NORMAL) != null;
     }
     
     public long getQuota() {
-        return getSafeLong((Long) attributes.get(DropBoxAttributesDefinition.QUOTA));
+        return getSafeLong((Long) this.attributes.get(DropBoxAttributesDefinition.QUOTA));
     }
     
-    /**
-     * Indicate if the quota attribute exists.
-     * 
-     * @return if the quota attribute exists
-     */
     public boolean isQuotaDefined() {
-        return attributes.get(DropBoxAttributesDefinition.QUOTA) != null;
+        return this.attributes.get(DropBoxAttributesDefinition.QUOTA) != null;
     }
     
     public long getShared() {
-        return getSafeLong((Long) attributes.get(DropBoxAttributesDefinition.SHARED));
+        return getSafeLong((Long) this.attributes.get(DropBoxAttributesDefinition.SHARED));
     }
     
-    /**
-     * Indicate if the shared attribute exists.
-     * 
-     * @return if the shared attribute exists
-     */
     public boolean isSharedDefined() {
-        return attributes.get(DropBoxAttributesDefinition.SHARED) != null;
+        return this.attributes.get(DropBoxAttributesDefinition.SHARED) != null;
     }
 }

@@ -47,7 +47,7 @@ public class TestYahooProvider extends TestProvider {
     
     @Override
     protected OAuthProvider getProvider() {
-        YahooProvider yahooProvider = new YahooProvider();
+        final YahooProvider yahooProvider = new YahooProvider();
         yahooProvider
             .setKey("dj0yJmk9QUlLcTVINlBpdm5VJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PTJm");
         yahooProvider.setSecret("95220809156c027c0a10c959a04b099da5510b66");
@@ -56,34 +56,38 @@ public class TestYahooProvider extends TestProvider {
     }
     
     @Override
-    protected String getCallbackUrl(HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getFormByName("login_form");
-        HtmlTextInput login = form.getInputByName("login");
+        final HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@yahoo.fr");
-        HtmlPasswordInput passwd = form.getInputByName("passwd");
+        final HtmlPasswordInput passwd = form.getInputByName("passwd");
         passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName(".save");
-        HtmlPage confirmPage = submit.click();
+        final HtmlPage confirmPage = submit.click();
         form = confirmPage.getFormByName("rcForm");
         submit = form.getInputByName("agree");
-        HtmlPage callbackPage = submit.click();
-        String callbackUrl = callbackPage.getUrl().toString();
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
     
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        YahooProfile profile = (YahooProfile) userProfile;
+    protected void verifyProfile(final UserProfile userProfile) {
+        final YahooProfile profile = (YahooProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
         assertEquals(YahooProfile.class.getSimpleName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
+        assertCommonProfile(userProfile, "testscribeup@yahoo.fr", "Test", "ScribeUP", "Test ScribeUP", "Test",
+                            Gender.MALE, Locale.FRANCE,
+                            "http://avatars.zenfs.com/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",
+                            "http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", "Chatou, Ile-de-France");
         assertEquals("my profile", profile.getAboutMe());
-        List<YahooAddress> addresses = profile.getAddresses();
+        final List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());
-        YahooAddress address = addresses.get(0);
+        final YahooAddress address = addresses.get(0);
         assertEquals(3, address.getId());
         assertTrue(address.isCurrent());
         assertEquals(Locale.FRENCH, address.getCountry());
@@ -96,40 +100,34 @@ public class TestYahooProvider extends TestProvider {
         assertEquals("03/10", profile.getBirthdate().toString());
         assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
         assertEquals(36, profile.getDisplayAge());
-        List<YahooDisclosure> disclosures = profile.getDisclosures();
+        final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
-        YahooDisclosure disclosure = disclosures.get(0);
+        final YahooDisclosure disclosure = disclosures.get(0);
         assertEquals("1", disclosure.getAcceptance());
         assertEquals("bd", disclosure.getName());
         assertTrue(disclosure.getSeen() instanceof Date);
         assertEquals("1", disclosure.getVersion());
-        List<YahooEmail> emails = profile.getEmails();
+        final List<YahooEmail> emails = profile.getEmails();
         assertEquals(2, emails.size());
-        YahooEmail email = emails.get(1);
+        final YahooEmail email = emails.get(1);
         assertEquals(2, email.getId());
         assertTrue(email.isPrimary());
         assertEquals("testscribeup@yahoo.fr", email.getHandle());
         assertEquals("HOME", email.getType());
-        assertEquals("ScribeUP", profile.getFamilyName());
         assertEquals(Gender.MALE, profile.getGender());
-        assertEquals("Test", profile.getGivenName());
-        YahooImage image = profile.getImage();
+        final YahooImage image = profile.getImage();
         assertEquals("http://avatars.zenfs.com/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png", image.getImageUrl());
         assertEquals(150, image.getWidth());
         assertEquals(225, image.getHeight());
         assertEquals("150x225", image.getSize());
-        List<YahooInterest> interests = profile.getInterests();
+        final List<YahooInterest> interests = profile.getInterests();
         assertEquals(11, interests.size());
-        YahooInterest interest = interests.get(0);
+        final YahooInterest interest = interests.get(0);
         assertEquals("basic interest", interest.getDeclaredInterests().get(0));
         assertEquals("prfFavHobbies", interest.getInterestCategory());
         assertTrue(profile.isConnected());
         assertTrue(profile.isConnectedDefined());
-        assertEquals(Locale.FRANCE, profile.getLang());
-        assertEquals("Chatou, Ile-de-France", profile.getLocation());
         assertEquals("2012-02-06T12:46:36Z", profile.getMemberSince().toString());
-        assertEquals("Test", profile.getNickname());
-        assertEquals("http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getProfileUrl());
         assertEquals("Europe/Paris", profile.getTimeZone());
         assertEquals("2012-03-05T14:26:25Z", profile.getUpdated().toString());
         assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());

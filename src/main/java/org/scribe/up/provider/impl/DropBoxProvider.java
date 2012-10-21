@@ -33,11 +33,13 @@ import org.scribe.up.session.UserSession;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in DropBox. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.dropbox.DropBoxProfile} : referral_link (String), display_name (String),
- * country (Locale), shared (Integer), quota (Integer) and normal (Integer).<br />
+ * This class is the OAuth provider to authenticate user in DropBox.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.dropbox.DropBoxProfile}.
+ * <p />
  * More information at https://www.dropbox.com/developers/reference/api#account-info
  * 
+ * @see org.scribe.up.profile.dropbox.DropBoxProfile
  * @author Jerome Leleu
  * @since 1.2.0
  */

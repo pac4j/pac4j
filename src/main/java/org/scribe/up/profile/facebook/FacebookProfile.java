@@ -22,19 +22,207 @@ import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.UserProfile;
 
 /**
- * This class is the user profile for Facebook with appropriate getters.
+ * This class is the user profile for Facebook with appropriate getters.<br />
+ * It is returned by the {@link org.scribe.up.provider.impl.FacebookProvider}.
+ * <p />
+ * <table border="1" cellspacing="2px">
+ * <tr>
+ * <th>Method :</th>
+ * <th>From the JSON profile response :</th>
+ * </tr>
+ * <tr>
+ * <th colspan="2">The attributes of the {@link org.scribe.up.profile.CommonProfile}</th>
+ * </tr>
+ * <tr>
+ * <td>String getEmail()</td>
+ * <td>the <i>email</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getFirstName()</td>
+ * <td>the <i>first_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getFamilyName()</td>
+ * <td>the <i>last_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getDisplayName()</td>
+ * <td>the <i>name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getUsername()</td>
+ * <td>the <i>username</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>Gender getGender()</td>
+ * <td>the <i>gender</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>Locale getLocale()</td>
+ * <td>the <i>locale</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getPictureUrl()</td>
+ * <td>the <i>url</i> sub-attribute of the <i>picture</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getProfileUrl()</td>
+ * <td>the <i>link</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getLocation()</td>
+ * <td>the <i>name</i> sub-attribute of the <i>location</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <th colspan="2">More specific attributes</th>
+ * </tr>
+ * <tr>
+ * <td>String getMiddleName()</td>
+ * <td>the <i>middle_name</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookObject&gt; getLanguages()</td>
+ * <td>the <i>languages</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getThirdPartyId()</td>
+ * <td>the <i>third_party_id</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>int getTimezone()</td>
+ * <td>the <i>timezone</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isTimezoneDefined()</td>
+ * <td>if the <i>timezone</i> attribute exists</td>
+ * </tr>
+ * <tr>
+ * <td>Date getUpdateTime()</td>
+ * <td>the <i>updated_time</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isVerified()</td>
+ * <td>the <i>verified</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>boolean isVerifiedDefined()</td>
+ * <td>if the <i>verified</i> attribute exists</td>
+ * </tr>
+ * <tr>
+ * <td>String getBio()</td>
+ * <td>the <i>bio</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>Date getBirthday()</td>
+ * <td>the <i>birthday</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookEducation&gt; getEducation()</td>
+ * <td>the <i>education</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>FacebookObject getHometown()</td>
+ * <td>the <i>hometown</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;String&gt; getInterestedIn()</td>
+ * <td>the <i>interested_in</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>FacebookObject getLocationObject()</td>
+ * <td>the <i>locatiion</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getPolitical()</td>
+ * <td>the <i>political</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookObject&gt; getFavoriteAthletes()</td>
+ * <td>the <i>favorite_athletes</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookObject&gt; getFavoriteTeams()</td>
+ * <td>the <i>favorite_teams</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getQuotes()</td>
+ * <td>the <i>quotes</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>FacebookRelationshipStatus getRelationshipStatus()</td>
+ * <td>the <i>relationship_status</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getReligion()</td>
+ * <td>the <i>religion</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>FacebookObject getSignificantOther()</td>
+ * <td>the <i>significant_other</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>String getWebsite()</td>
+ * <td>the <i>website</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookWork&gt; getWork()</td>
+ * <td>the <i>work</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookObject&gt; getFriends()</td>
+ * <td>the <i>friends</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookInfo&gt; getMovies()</td>
+ * <td>the <i>movies</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookInfo&gt; getMusic()</td>
+ * <td>the <i>music</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookInfo&gt; getBooks()</td>
+ * <td>the <i>books</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookInfo&gt; getLikes()</td>
+ * <td>the <i>likes</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookPhoto&gt; getAlbums()</td>
+ * <td>the <i>albums</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookEvent&gt; getEvents()</td>
+ * <td>the <i>events</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookGroup&gt; getGroups()</td>
+ * <td>the <i>groups</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>List&lt;FacebookMusicListen&gt; getMusicListens()</td>
+ * <td>the <i>music.listens</i> attribute</td>
+ * </tr>
+ * <tr>
+ * <td>FacebookPicture getPicture()</td>
+ * <td>the <i>picture</i> attribute</td>
+ * </tr>
+ * </table>
  * 
+ * @see org.scribe.up.provider.impl.FacebookProvider
  * @author Jerome Leleu
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public class FacebookProfile extends UserProfile {
+public class FacebookProfile extends UserProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -5264597920376457831L;
+    private static final long serialVersionUID = 6121799311142318271L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -53,20 +241,24 @@ public class FacebookProfile extends UserProfile {
         super(id, attributes);
     }
     
-    public String getName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.NAME);
+    public String getEmail() {
+        return (String) this.attributes.get(FacebookAttributesDefinition.EMAIL);
     }
     
     public String getFirstName() {
         return (String) this.attributes.get(FacebookAttributesDefinition.FIRST_NAME);
     }
     
-    public String getMiddleName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.MIDDLE_NAME);
+    public String getFamilyName() {
+        return (String) this.attributes.get(FacebookAttributesDefinition.LAST_NAME);
     }
     
-    public String getLastName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.LAST_NAME);
+    public String getDisplayName() {
+        return (String) this.attributes.get(FacebookAttributesDefinition.NAME);
+    }
+    
+    public String getUsername() {
+        return (String) this.attributes.get(FacebookAttributesDefinition.USERNAME);
     }
     
     public Gender getGender() {
@@ -77,16 +269,32 @@ public class FacebookProfile extends UserProfile {
         return (Locale) this.attributes.get(FacebookAttributesDefinition.LOCALE);
     }
     
-    public List<FacebookObject> getLanguages() {
-        return (List<FacebookObject>) this.attributes.get(FacebookAttributesDefinition.LANGUAGES);
+    public String getPictureUrl() {
+        final FacebookPicture picture = (FacebookPicture) this.attributes.get(FacebookAttributesDefinition.PICTURE);
+        if (picture != null) {
+            return picture.getUrl();
+        }
+        return null;
     }
     
-    public String getLink() {
+    public String getProfileUrl() {
         return (String) this.attributes.get(FacebookAttributesDefinition.LINK);
     }
     
-    public String getUsername() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.USERNAME);
+    public String getLocation() {
+        final FacebookObject location = (FacebookObject) this.attributes.get(FacebookAttributesDefinition.LOCATION);
+        if (location != null) {
+            return location.getName();
+        }
+        return null;
+    }
+    
+    public String getMiddleName() {
+        return (String) this.attributes.get(FacebookAttributesDefinition.MIDDLE_NAME);
+    }
+    
+    public List<FacebookObject> getLanguages() {
+        return (List<FacebookObject>) this.attributes.get(FacebookAttributesDefinition.LANGUAGES);
     }
     
     public String getThirdPartyId() {
@@ -97,11 +305,6 @@ public class FacebookProfile extends UserProfile {
         return getSafeInt((Integer) this.attributes.get(FacebookAttributesDefinition.TIMEZONE));
     }
     
-    /**
-     * Indicate if the timezone attribute exists.
-     * 
-     * @return if the timezone attribute exists
-     */
     public boolean isTimezoneDefined() {
         return this.attributes.get(FacebookAttributesDefinition.TIMEZONE) != null;
     }
@@ -114,11 +317,6 @@ public class FacebookProfile extends UserProfile {
         return getSafeBoolean((Boolean) this.attributes.get(FacebookAttributesDefinition.VERIFIED));
     }
     
-    /**
-     * Indicate if the verified attribute exists.
-     * 
-     * @return if the verified attribute exists
-     */
     public boolean isVerifiedDefined() {
         return this.attributes.get(FacebookAttributesDefinition.VERIFIED) != null;
     }
@@ -135,10 +333,6 @@ public class FacebookProfile extends UserProfile {
         return (List<FacebookEducation>) this.attributes.get(FacebookAttributesDefinition.EDUCATION);
     }
     
-    public String getEmail() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.EMAIL);
-    }
-    
     public FacebookObject getHometown() {
         return (FacebookObject) this.attributes.get(FacebookAttributesDefinition.HOMETOWN);
     }
@@ -147,7 +341,7 @@ public class FacebookProfile extends UserProfile {
         return (List<String>) this.attributes.get(FacebookAttributesDefinition.INTERESTED_IN);
     }
     
-    public FacebookObject getLocation() {
+    public FacebookObject getLocationObject() {
         return (FacebookObject) this.attributes.get(FacebookAttributesDefinition.LOCATION);
     }
     

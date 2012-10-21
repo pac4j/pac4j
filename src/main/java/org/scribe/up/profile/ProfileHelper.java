@@ -42,7 +42,7 @@ public final class ProfileHelper {
      * Set whether the input data should be stored in object to be restored for CAS serialization when toString() is called. Save memory
      * also.
      * 
-     * @param rawData
+     * @param keepRawData
      */
     public static void setKeepRawData(final boolean keepRawData) {
         JsonObject.setKeepRawData(keepRawData);

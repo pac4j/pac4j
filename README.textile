@@ -1,32 +1,60 @@
-h2. What is ScribeUP ?
+h2. What is scribe-up ?
 
-ScribeUP (for Scribe User Profile) is a web library to retrieve the profile of a user after this user has been authenticated by an OAuth provider. It's based on "Scribe":http://wiki.github.com/fernandezpablo85/scribe-java and available under the Apache 2 license.
-Take a look at the "technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description. Browse the "Javadoc":http://javadoc.leleuj.cloudbees.net/.
+*scribe-up* (up for User Profile) is a web OAuth client to :
+# delegate authentication and permissions at an OAuth provider
+# retrieve the profile of the authorized user after successfull authentication and permissions acceptation.
+It's available under the Apache 2 license and based on : "scribe-java":http://wiki.github.com/fernandezpablo85/scribe-java (for OAuth protocol) and "Jackson":https://github.com/FasterXML/jackson-core (for JSON parsing).
 
 h2. OAuth providers supported
 
-| DropBox | Facebook | Github | Google (OAuth 1.0 & 2.0) | LinkedIn | Twitter | Windows Live | WordPress | Yahoo |
+| DropBox (OAuth 1.0) | Facebook (OAuth 2.0) | Github (OAuth 2.0) | Google (OAuth 1.0 & 2.0) | LinkedIn (OAuth 1.0) | Twitter (OAuth 1.0) | Windows Live (OAuth 2.0) | WordPress (OAuth 2.0) | Yahoo (OAuth 1.0) |
 
 Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles. Follow the guide to "extend or add a new provider":https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider.
 
-h2. Who uses ScribeUP ?
+h2. Code sample
 
-* Everybody can use ScribeUP by following the "sample":https://github.com/leleuj/scribe-up/wiki/Sample.
-* However, the library was first created to be the foundation of the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module, which adds OAuth support to the "CAS server":http://www.jasig.org/cas. CAS OAuth module 3.5.0 is based on ScribeUP 1.0.0 (a demo is available at : "https://github.com/leleuj/cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0 ) whereas CAS OAuth module 3.5.1 is based on ScribeUP 1.1.0. (a demo is available at "https://github.com/leleuj/cas-oauth-demo":https://github.com/leleuj/cas-oauth-demo ).
-* ScribeUP is also used to propose to add OAuth client support to the "Shiro project":http://shiro.apache.org : the Shiro OAuth module is available at : "https://github.com/bujiio/buji-oauth":https://github.com/bujiio/buji-oauth. A demo is available at : "https://github.com/leleuj/scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo.
-* The library is also integrated in my "Spring Security OAuth client library":https://github.com/leleuj/spring-security-oauth-client which adds OAuth client support to Spring Security. A demo is available at : "https://github.com/leleuj/spring-security-oauth-client-demo":https://github.com/leleuj/spring-security-oauth-client-demo.
+Suppose you want to authenticate and get the user profile from Facebook :
+<pre><code>// declare the provider (use default scope and fields)
+FacebookProvider provider = new FacebookProvider();
+provider.setKey(MY_KEY);
+provider.setSecret(MY_SECRET);
+provider.setCallbackUrl("http://myserver/myapp/callbackUrl");
+// send the user to Facebook for authentication and permissions
+response.sendRedirect(provider.getAuthorizationUrl(new HttpUserSession(session)));
+</code></pre>...<pre><code>// after successfull authentication, on the callback url for Facebook
+// get OAuth credentials :
+OAuthCredential credential = provider.getCredential(new HttpUserSession(request), request.getParameterMap());
+// get a common profile if you don't know from which provider the user has been authenticated
+CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
+System.out.println("Hello : " + commonProfile.getDisplayName() + " at " + commonProfile.getEmail());
+// or get a specific profile if you know from which OAuth provider the user has been authenticated (Facebook here)
+FacebookProfile facebookProfile = (FacebookProfile) provider.getUserProfile(credential);
+System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>
+
+For a better understanding of *scribe-up*, take a look at the "technical description of the project":https://github.com/leleuj/scribe-up/wiki/Technical-description or browse the "Javadoc":http://javadoc.leleuj.cloudbees.net/.
+
+h2. Libraries built on scribe-up
+
+Even if you can use *scribe-up* on its own, this library was created to be the foundation of :
+# the "cas-server-support-oauth":https://wiki.jasig.org/display/CASUM/OAuth module to add OAuth client and server support to the "CAS server":http://www.jasig.org/cas
+# the "buji-oauth":https://github.com/bujiio/buji-oauth library to add OAuth client support to the "Apache Shiro project":http://shiro.apache.org
+# the "spring-security-oauth-client":https://github.com/leleuj/spring-security-oauth-client library to add OAuth client support to "Spring Security":http://static.springsource.org/spring-security/site/.
+
+|Library|Based on *scribe-up* version|Demo webapp|
+|cas-server-support-oauth 3.5.0|1.0.0|"cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0|
+|cas-server-support-oauth 3.5.1|1.1.0|"cas-oauth-demo":https://github.com/leleuj/cas-oauth-demo|
+|buji-oauth 1.0.0|1.2.0|"scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo|
+|spring-security-oauth-client 1.0.0|1.2.0|"spring-security-oauth-client-demo":https://github.com/leleuj/spring-security-oauth-client-demo|
 
 h2. Versions
 
-<pre><code><dependency>
+The current version : 1.3.0-SNAPSHOT is under development, it's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/ :<pre><code><dependency>
    <groupId>org.scribe</groupId>
    <artifactId>scribe-up</artifactId>
    <version>1.3.0-SNAPSHOT</version>
 </dependency>
 </code></pre>
-The last release version is 1.2.0-RC1.
-The current version : 1.3.0-SNAPSHOT is under development. It's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/.
-Learn more about "versions":https://github.com/leleuj/scribe-up/wiki/Versions.
+The last release version is 1.2.0-RC1. Learn more about the "different versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
 

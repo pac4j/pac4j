@@ -28,14 +28,13 @@ import org.scribe.up.provider.BaseOAuth20Provider;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth provider to authenticate user in GitHub. Scope is not used.<br />
- * Attributes (Java type) available in {@link org.scribe.up.profile.github.GitHubProfile} : type (String), blog (String), url (String),
- * public_gists (Integer), following (Integer), private_gists (Integer), public_repos (Integer), gravatar_id (String), avatar_url (String),
- * followers (Integer), login (String), company (String), email (String), hireable (Boolean), collaborators (Integer), html_url (String),
- * bio (String), total_private_repos (Integer), created_at (FormattedDate), name (String), disk_usage (Integer), plan (GitHubPlan),
- * owned_private_repos (Integer) and location (String).<br />
+ * This class is the OAuth provider to authenticate user in GitHub.
+ * <p />
+ * It returns a {@link org.scribe.up.profile.github.GitHubProfile}.
+ * <p />
  * More information at http://developer.github.com/v3/users/
  * 
+ * @see org.scribe.up.profile.github.GitHubProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */

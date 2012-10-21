@@ -18,6 +18,7 @@ package org.scribe.up.test.provider.impl;
 import java.util.Locale;
 
 import org.scribe.up.profile.Color;
+import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
@@ -69,6 +70,10 @@ public class TestTwitterProvider extends TestProvider {
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getSimpleName() + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
+        assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,
+                            Locale.FRENCH,
+                            "http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                            "http://github.com/leleuj", "New York");
         assertFalse(profile.isContributorsEnabled());
         assertTrue(profile.isContributorsEnabledDefined());
         assertEquals(CommonHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
@@ -92,19 +97,14 @@ public class TestTwitterProvider extends TestProvider {
         assertTrue(profile.isGeoEnabledDefined());
         assertFalse(profile.isTranslator());
         assertTrue(profile.isTranslatorDefined());
-        assertEquals(Locale.FRENCH, profile.getLang());
         assertEquals(0, profile.getListedCount());
         assertTrue(profile.isListedCountDefined());
-        assertEquals("New York", profile.getLocation());
-        assertEquals("test scribeUP", profile.getName());
         assertFalse(profile.isNotifications());
         assertTrue(profile.isNotificationsDefined());
         assertTrue(profile.getProfileBackgroundColor() instanceof Color);
         assertEquals("http://a0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrl());
         assertEquals("https://si0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrlHttps());
         assertFalse(profile.isProfileBackgroundTile());
-        assertEquals("http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
-                     profile.getProfileImageUrl());
         assertEquals("https://si0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                      profile.getProfileImageUrlHttps());
         assertTrue(profile.getProfileLinkColor() instanceof Color);
@@ -115,16 +115,14 @@ public class TestTwitterProvider extends TestProvider {
         assertTrue(profile.isProfileUseBackgroundImageDefined());
         assertTrue(profile.isProtected());
         assertTrue(profile.isProtectedDefined());
-        assertEquals("testscribeUP", profile.getScreenName());
         assertFalse(profile.isShowAllInlineMedia());
         assertFalse(profile.isShowAllInlineMediaDefined());
         assertEquals(0, profile.getStatusesCount());
         assertTrue(profile.isStatusesCountDefined());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertNull(profile.getUrl());
         assertEquals(3600, profile.getUtcOffset());
         assertFalse(profile.isVerified());
         assertTrue(profile.isVerifiedDefined());
-        assertEquals(35, profile.getAttributes().size());
+        assertEquals(36, profile.getAttributes().size());
     }
 }
