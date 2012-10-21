@@ -41,7 +41,8 @@ Even if you can use *scribe-up* on its own, this library was created to be the f
 # the "spring-security-oauth-client":https://github.com/leleuj/spring-security-oauth-client library to add OAuth client support to "Spring Security":http://static.springsource.org/spring-security/site/.
 
 
-|Library|Based on *scribe-up* version|Demo webapp|
+
+|_.Library|_.Based on *scribe-up* version|_.Demo webapp|
 |cas-server-support-oauth 3.5.0|1.0.0|"cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0|
 |cas-server-support-oauth 3.5.1|1.1.0|"cas-oauth-demo":https://github.com/leleuj/cas-oauth-demo|
 |buji-oauth 1.0.0|1.2.0|"scribe-up-shiro-demo":https://github.com/leleuj/scribe-up-shiro-demo|
