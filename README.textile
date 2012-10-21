@@ -3,13 +3,14 @@ h2. What is scribe-up ?
 *scribe-up* (up for User Profile) is a web OAuth client to :
 # delegate authentication and permissions at an OAuth provider
 # retrieve the profile of the authorized user after successfull authentication and permissions acceptation.
-It's available under the Apache 2 license and based on : "scribe-java":http://wiki.github.com/fernandezpablo85/scribe-java (for OAuth protocol) and "Jackson":https://github.com/FasterXML/jackson-core (for JSON parsing).
+
+It's available under the Apache 2 license and based on : "scribe-java":https://github.com/fernandezpablo85/scribe-java (for OAuth protocol) and "Jackson":https://github.com/FasterXML/jackson-core (for JSON parsing).
 
 h2. OAuth providers supported
 
 | DropBox (OAuth 1.0) | Facebook (OAuth 2.0) | Github (OAuth 2.0) | Google (OAuth 1.0 & 2.0) | LinkedIn (OAuth 1.0) | Twitter (OAuth 1.0) | Windows Live (OAuth 2.0) | WordPress (OAuth 2.0) | Yahoo (OAuth 1.0) |
 
-Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles. Follow the guide to "extend or add a new provider":https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider.
+Look at the "description of the providers and profiles":https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles or follow the guide to "extend or add a new provider":https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider.
 
 h2. Code sample
 
@@ -21,8 +22,7 @@ provider.setSecret(MY_SECRET);
 provider.setCallbackUrl("http://myserver/myapp/callbackUrl");
 // send the user to Facebook for authentication and permissions
 response.sendRedirect(provider.getAuthorizationUrl(new HttpUserSession(session)));
-</code></pre>...<pre><code>// after successfull authentication, on the callback url for Facebook
-// get OAuth credentials :
+</code></pre>...after successfull authentication, on the callback url for Facebook...<pre><code>// get OAuth credentials :
 OAuthCredential credential = provider.getCredential(new HttpUserSession(request), request.getParameterMap());
 // get a common profile if you don't know from which provider the user has been authenticated
 CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
@@ -40,6 +40,7 @@ Even if you can use *scribe-up* on its own, this library was created to be the f
 # the "buji-oauth":https://github.com/bujiio/buji-oauth library to add OAuth client support to the "Apache Shiro project":http://shiro.apache.org
 # the "spring-security-oauth-client":https://github.com/leleuj/spring-security-oauth-client library to add OAuth client support to "Spring Security":http://static.springsource.org/spring-security/site/.
 
+
 |Library|Based on *scribe-up* version|Demo webapp|
 |cas-server-support-oauth 3.5.0|1.0.0|"cas-oauth-demo-3.5.0":https://github.com/leleuj/cas-oauth-demo-3.5.0|
 |cas-server-support-oauth 3.5.1|1.1.0|"cas-oauth-demo":https://github.com/leleuj/cas-oauth-demo|
@@ -48,12 +49,11 @@ Even if you can use *scribe-up* on its own, this library was created to be the f
 
 h2. Versions
 
-The current version : 1.3.0-SNAPSHOT is under development, it's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/ :<pre><code><dependency>
+The current version : 1.3.0-SNAPSHOT is under development, it's available on "Sonatype snapshots repository":https://oss.sonatype.org/content/repositories/snapshots/org/scribe/scribe-up/ :<pre><code><dependency>
    <groupId>org.scribe</groupId>
    <artifactId>scribe-up</artifactId>
    <version>1.3.0-SNAPSHOT</version>
-</dependency>
-</code></pre>
+</dependency></code></pre>
 The last release version is 1.2.0-RC1. Learn more about the "different versions":https://github.com/leleuj/scribe-up/wiki/Versions.
 
 h2. Testing
