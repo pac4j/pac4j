@@ -55,7 +55,7 @@ Even if you can use <b>scribe-up</b> on its own, this library was created to be 
 <tr><td>spring-security-oauth-client 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
 </table>
 
-<h2>Versions<h2>
+<h2>Versions</h2>
 
 The current version : <i>1.3.0-SNAPSHOT</i> is under development, it's available on <a href="https://oss.sonatype.org/content/repositories/snapshots/org/scribe/scribe-up/">Sonatype snapshots repository</a> as Maven dependency :
 <pre><code>&lt;dependency&gt;
@@ -65,10 +65,10 @@ The current version : <i>1.3.0-SNAPSHOT</i> is under development, it's available
 &lt;/dependency&gt;</code></pre>
 The last released version is the <b>1.2.0</b>. Learn more about the <a href="https://github.com/leleuj/scribe-up/wiki/Versions">different versions</a>.
 
-<h2>Testing<h2>
+<h2>Testing</h2>
 
 ScribeUP is tested by 181 unit tests and also 10 integration tests on OAuth providers by simulating complete authentication processes (using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
 
-<h2>Contact<h2>
+<h2>Contact</h2>
 
 Find me on <a href="http://www.linkedin.com/in/jleleu">LinkedIn</a> or by email : leleuj@gmail.com
