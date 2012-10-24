@@ -57,11 +57,33 @@ public final class TestProvidersDefinition extends TestCase {
         return yahooProvider;
     }
     
+    public void testMissingProvider() {
+        ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        providersDefinition.setBaseUrl(URL);
+        try {
+            providersDefinition.init();
+            fail("init() cannot succeed");
+        } catch (IllegalArgumentException e) {
+            assertEquals("providers cannot be null", e.getMessage());
+        }
+    }
+    
+    public void testMissingBaseUrl() {
+        ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        List<OAuthProvider> providers = new ArrayList<OAuthProvider>();
+        providers.add(newFacebookProvider());
+        try {
+            providersDefinition.init();
+            fail("init() cannot succeed");
+        } catch (IllegalArgumentException e) {
+            assertEquals("baseUrl cannot be blank", e.getMessage());
+        }
+    }
+    
     public void testOneProvider() {
         FacebookProvider facebookProvider = newFacebookProvider();
+        facebookProvider.setCallbackUrl(URL);
         ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
-        providersDefinition.setBaseUrl(URL);
-        assertNull(facebookProvider.getCallbackUrl());
         providersDefinition.init();
         assertEquals(URL + "?" + PARAMETER + "=" + facebookProvider.getType(), facebookProvider.getCallbackUrl());
         String[] values = new String[] {

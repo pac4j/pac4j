@@ -48,17 +48,25 @@ public final class ProvidersDefinition {
     
     public ProvidersDefinition(final OAuthProvider provider) {
         this.providers = new ArrayList<OAuthProvider>();
-        providers.add(provider);
+        this.providers.add(provider);
+        BaseOAuthProvider baseOAuthProvider = (BaseOAuthProvider) provider;
+        this.baseUrl = baseOAuthProvider.getCallbackUrl();
     }
     
     /**
      * Initialize this providers definition by computing callback urls.
      */
     public void init() {
-        for (final OAuthProvider provider : providers) {
+        if (StringUtils.isBlank(this.baseUrl)) {
+            throw new IllegalArgumentException("baseUrl cannot be blank");
+        }
+        if (this.providers == null) {
+            throw new IllegalArgumentException("providers cannot be null");
+        }
+        for (final OAuthProvider provider : this.providers) {
             final BaseOAuthProvider baseProvider = (BaseOAuthProvider) provider;
             // calculate new callback url by adding the OAuth provider type to the base url
-            baseProvider.setCallbackUrl(addParameter(baseUrl, PARAMETER_NAME, provider.getType()));
+            baseProvider.setCallbackUrl(this.addParameter(this.baseUrl, PARAMETER_NAME, provider.getType()));
         }
     }
     
@@ -72,7 +80,7 @@ public final class ProvidersDefinition {
         String[] values = parameters.get(PARAMETER_NAME);
         if (values != null && values.length == 1) {
             String type = values[0];
-            for (final OAuthProvider provider : providers) {
+            for (final OAuthProvider provider : this.providers) {
                 if (StringUtils.equals(provider.getType(), type)) {
                     return provider;
                 }
