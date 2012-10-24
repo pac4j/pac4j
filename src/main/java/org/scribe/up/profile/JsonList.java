@@ -36,13 +36,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 @SuppressWarnings("unchecked")
 public final class JsonList<T> extends JsonObject implements List<T> {
     
-    private static final long serialVersionUID = -7830749088983904494L;
+    private static final long serialVersionUID = -6244332281326848508L;
     
     private static final Logger logger = LoggerFactory.getLogger(JsonList.class);
     
-    private final List<T> list = new ArrayList<T>();
+    private List<T> list = new ArrayList<T>();
     
-    private final Class<T> clazz;
+    private Class<T> clazz;
+    
+    public JsonList() {
+    }
+    
+    public void setList(final List<T> list) {
+        this.list = list;
+    }
+    
+    public void setClazz(final Class<T> clazz) {
+        this.clazz = clazz;
+    }
     
     /**
      * Create a list of JsonObject from various inputs.

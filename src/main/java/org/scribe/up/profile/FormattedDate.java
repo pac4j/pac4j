@@ -27,28 +27,40 @@ import java.util.Locale;
  */
 public final class FormattedDate extends Date {
     
-    private static final long serialVersionUID = 5801503177871480758L;
+    private static final long serialVersionUID = -279874272436563464L;
     
     private String format;
     
     private Locale locale;
     
-    public FormattedDate(Date date, String format, Locale locale) {
+    public FormattedDate() {
+    }
+    
+    public FormattedDate(final Date date, final String format, final Locale locale) {
         super(date.getTime());
         this.format = format;
         this.locale = locale;
     }
     
     public String getFormat() {
-        return format;
+        return this.format;
     }
     
+    public void setFormat(final String format) {
+        this.format = format;
+    }
+    
+    public void setLocale(final Locale locale) {
+        this.locale = locale;
+    }
+    
+    @Override
     public String toString() {
         SimpleDateFormat simpleDateFormat;
-        if (locale == null) {
-            simpleDateFormat = new SimpleDateFormat(format);
+        if (this.locale == null) {
+            simpleDateFormat = new SimpleDateFormat(this.format);
         } else {
-            simpleDateFormat = new SimpleDateFormat(format, locale);
+            simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
         }
         return simpleDateFormat.format(this);
     }

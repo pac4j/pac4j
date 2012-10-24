@@ -121,10 +121,10 @@ public class TestTwitterProvider extends TestProvider {
         assertEquals(0, profile.getStatusesCount());
         assertTrue(profile.isStatusesCountDefined());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertNull(profile.getUrl());
+        assertEquals("http://github.com/leleuj", profile.getUrl());
         assertEquals(3600, profile.getUtcOffset());
         assertFalse(profile.isVerified());
         assertTrue(profile.isVerifiedDefined());
-        assertEquals(35, profile.getAttributes().size());
+        assertEquals(36, profile.getAttributes().size());
     }
 }
