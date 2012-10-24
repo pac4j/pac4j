@@ -27,7 +27,7 @@
     <artifactId>scribe-up</artifactId>
     <packaging>jar</packaging>
     <name>Scribe UP</name>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
     <description>Get a user profile after OAuth authentication process with Scribe library</description>
     <url>http://github.com/leleuj/scribe-up</url>
 
