@@ -26,6 +26,7 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
+import org.scribe.up.provider.HttpException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -61,7 +62,7 @@ public class YahooProvider extends BaseOAuth10Provider {
     }
     
     @Override
-    protected UserProfile getUserProfile(final Token accessToken) {
+    protected UserProfile retrieveUserProfile(final Token accessToken) throws HttpException {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {

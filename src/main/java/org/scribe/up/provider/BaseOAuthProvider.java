@@ -119,9 +119,24 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     protected abstract void internalInit();
     
     public UserProfile getUserProfile(final OAuthCredential credential) {
+        try {
+            return retrieveUserProfile(credential);
+        } catch (HttpException e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Retrieve the user profile from OAuth credential.
+     * 
+     * @param credential
+     * @return the user profile object
+     * @throws HttpException
+     */
+    public UserProfile retrieveUserProfile(final OAuthCredential credential) throws HttpException {
         init();
         final Token accessToken = getAccessToken(credential);
-        return getUserProfile(accessToken);
+        return retrieveUserProfile(accessToken);
     }
     
     /**
@@ -131,9 +146,24 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @return the user profile object
      */
     public UserProfile getUserProfile(final String accessToken) {
+        try {
+            return retrieveUserProfile(accessToken);
+        } catch (HttpException e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Retrieve the user profile from the access token (as String).
+     * 
+     * @param accessToken
+     * @return the user profile object
+     * @throws HttpException
+     */
+    public UserProfile retrieveUserProfile(final String accessToken) throws HttpException {
         init();
         final Token token = new Token(accessToken, "");
-        return getUserProfile(token);
+        return retrieveUserProfile(token);
     }
     
     /**
@@ -149,8 +179,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * 
      * @param accessToken
      * @return the user profile object
+     * @throws HttpException
      */
-    protected UserProfile getUserProfile(final Token accessToken) {
+    protected UserProfile retrieveUserProfile(final Token accessToken) throws HttpException {
         final String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             return null;
@@ -187,8 +218,9 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
      * @param accessToken
      * @param dataUrl
      * @return the user data response
+     * @throws HttpException
      */
-    protected String sendRequestForData(final Token accessToken, final String dataUrl) {
+    protected String sendRequestForData(final Token accessToken, final String dataUrl) throws HttpException {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, dataUrl, this.proxyHost, this.proxyPort);
@@ -213,7 +245,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         logger.debug("response code : {} / response body : {}", code, body);
         if (code != 200) {
             logger.error("Failed to get user data, code : " + code + " / body : " + body);
-            return null;
+            throw new HttpException(code, body);
         }
         return body;
     }

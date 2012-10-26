@@ -54,7 +54,7 @@ public class TestGoogleProvider extends TestProvider {
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup12");
+        passwd.setValueAttribute("testpwdscribeup34");
         HtmlSubmitInput submit = form.getInputByName("signIn");
         final HtmlPage confirmPage = submit.click();
         form = confirmPage.getForms().get(0);
