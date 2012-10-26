@@ -20,7 +20,7 @@ import java.util.Locale;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.google.Google2Profile;
+import org.scribe.up.profile.google2.Google2Profile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.Google2Provider;
 import org.scribe.up.provider.impl.Google2Provider.Google2Scope;

@@ -22,7 +22,7 @@ import org.scribe.up.addon_to_scribe.GoogleApi20;
 import org.scribe.up.profile.AttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
-import org.scribe.up.profile.google.Google2Profile;
+import org.scribe.up.profile.google2.Google2Profile;
 import org.scribe.up.provider.BaseOAuth20Provider;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,11 +33,11 @@ import com.fasterxml.jackson.databind.JsonNode;
  * The <i>scope</i> is by default : {@link Google2Scope#EMAIL}, but it can also but set to : {@link Google2Scope#PROFILE} or
  * {@link Google2Scope#EMAIL_AND_PROFILE}.
  * <p />
- * It returns a {@link org.scribe.up.profile.google.Google2Profile}.
+ * It returns a {@link org.scribe.up.profile.google2.Google2Profile}.
  * <p />
  * More information at https://developers.google.com/accounts/docs/OAuth2Login
  * 
- * @see org.scribe.up.profile.google.Google2Profile
+ * @see org.scribe.up.profile.google2.Google2Profile
  * @author Jerome Leleu
  * @since 1.2.0
  */

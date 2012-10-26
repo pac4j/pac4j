@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.profile.google;
+package org.scribe.up.profile.google2;
 
 import java.util.Date;
 import java.util.Locale;

@@ -15,13 +15,22 @@
  */
 package org.scribe.up.profile;
 
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * This class is an helper to find the kind of profile regarding the typed id profile.
+ * This class is an helper to find the play with profiles.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public final class ProfileHelper {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
     
     /**
      * Indicate if the user identifier matches this kind of profile.
@@ -31,11 +40,40 @@ public final class ProfileHelper {
      * @return if the user identifier matches this kind of profile
      */
     public static boolean isTypedIdOf(final String id, final Class<? extends UserProfile> clazz) {
-        if (id != null && id.startsWith(clazz.getSimpleName() + UserProfile.SEPARATOR)) {
+        if (id != null && clazz != null && id.startsWith(clazz.getSimpleName() + UserProfile.SEPARATOR)) {
             return true;
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Build a profile from a typed id and a map of attributes.
+     * 
+     * @param typedId
+     * @param attributes
+     * @return the user profile built
+     */
+    public static UserProfile buildProfile(final String typedId, final Map<String, Object> attributes) {
+        if (typedId != null) {
+            String[] values = StringUtils.split(typedId, '#');
+            if (values != null && values.length == 2) {
+                String className = values[0];
+                if (className != null) {
+                    String packageName = StringUtils.lowerCase(StringUtils.left(className, className.length() - 7));
+                    String completeName = "org.scribe.up.profile." + packageName + "." + className;
+                    try {
+                        @SuppressWarnings("unchecked")
+                        final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
+                            .forName(completeName).getDeclaredConstructor(Object.class, Map.class);
+                        return constructor.newInstance(typedId, attributes);
+                    } catch (final Exception e) {
+                        logger.error("Cannot build instance", e);
+                    }
+                }
+            }
+        }
+        return null;
     }
     
     /**
