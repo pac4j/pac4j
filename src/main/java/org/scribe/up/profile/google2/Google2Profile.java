@@ -100,7 +100,7 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class Google2Profile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -8841460519492214152L;
+    private static final long serialVersionUID = 3771564872847526068L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
