@@ -10,9 +10,10 @@ It's available under the Apache 2 license and based on : <a href="https://github
 
 <h2>OAuth providers supported</h2>
 
-<table><tr>
-<td>DropBox (OAuth 1.0)</td><td>Facebook (OAuth 2.0)</td><td>Github (OAuth 2.0)</td><td>Google (OAuth 1.0 & 2.0)</td><td>LinkedIn (OAuth 1.0)</td><td>Twitter (OAuth 1.0)</td><td>Windows Live (OAuth 2.0)</td><td>WordPress (OAuth 2.0)</td><td>Yahoo (OAuth 1.0)</td>
-</tr></table>
+<table>
+<tr><td>DropBox</td><td>Facebook</td><td>Github</td><td>Google</td><td>LinkedIn</td><td>Twitter</td><td>Windows Live</td><td>WordPress</td><td>Yahoo</td></tr>
+<tr><td>OAuth 1.0</td><td>OAuth 2.0</td><td>OAuth 2.0</td><td>OAuth 1.0 & 2.0</td><td>OAuth 1.0</td><td>OAuth 1.0</td><td>OAuth 2.0</td><td>OAuth 2.0</td><td>OAuth 1.0</td></tr>
+</table>
 
 Look at the <a href="https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles">description of the providers and profiles</a> or follow the guide to <a href="https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider">extend or add a new provider</a>.
 

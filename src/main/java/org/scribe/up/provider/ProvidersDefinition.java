@@ -79,11 +79,21 @@ public final class ProvidersDefinition {
     public OAuthProvider findProvider(final Map<String, String[]> parameters) {
         String[] values = parameters.get(PARAMETER_NAME);
         if (values != null && values.length == 1) {
-            String type = values[0];
-            for (final OAuthProvider provider : this.providers) {
-                if (StringUtils.equals(provider.getType(), type)) {
-                    return provider;
-                }
+            return findProvider(values[0]);
+        }
+        return null;
+    }
+    
+    /**
+     * Return the right provider according to the specific type.
+     * 
+     * @param type
+     * @return the right provider
+     */
+    public OAuthProvider findProvider(final String type) {
+        for (final OAuthProvider provider : this.providers) {
+            if (StringUtils.equals(provider.getType(), type)) {
+                return provider;
             }
         }
         return null;

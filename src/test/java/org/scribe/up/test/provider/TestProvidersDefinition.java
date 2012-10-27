@@ -93,6 +93,8 @@ public final class TestProvidersDefinition extends TestCase {
         parameters.put(PARAMETER, values);
         OAuthProvider provider = providersDefinition.findProvider(parameters);
         assertEquals(provider, facebookProvider);
+        provider = providersDefinition.findProvider(facebookProvider.getType());
+        assertEquals(provider, facebookProvider);
     }
     
     public void testTwoProviders() {
@@ -115,6 +117,8 @@ public final class TestProvidersDefinition extends TestCase {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
         parameters.put(PARAMETER, values);
         OAuthProvider provider = providersDefinition.findProvider(parameters);
+        assertEquals(provider, yahooProvider);
+        provider = providersDefinition.findProvider(yahooProvider.getType());
         assertEquals(provider, yahooProvider);
     }
 }
