@@ -30,14 +30,17 @@ import org.scribe.utils.OAuthEncoder;
  * The {@link #init()} method must be called to initialize the callback urls from a base url and a specific parameter to define the OAuth
  * provider targeted.
  * <p />
- * The {@link #findProvider(Map)} method must be called to find the right provider according to the specific parameter on the callback url.
+ * The {@link #findProvider(Map)} or {@link #findProvider(String)} method must be called to find the right provider according to the
+ * specific parameter on the callback url.
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
 public final class ProvidersDefinition {
     
-    private final static String PARAMETER_NAME = "oauth_provider_type";
+    public final static String DEFAULT_PROVIDER_TYPE_PARAMETER = "oauth_provider_type";
+    
+    private String providerTypeParameter = DEFAULT_PROVIDER_TYPE_PARAMETER;
     
     private List<OAuthProvider> providers;
     
@@ -66,7 +69,8 @@ public final class ProvidersDefinition {
         for (final OAuthProvider provider : this.providers) {
             final BaseOAuthProvider baseProvider = (BaseOAuthProvider) provider;
             // calculate new callback url by adding the OAuth provider type to the base url
-            baseProvider.setCallbackUrl(this.addParameter(this.baseUrl, PARAMETER_NAME, provider.getType()));
+            baseProvider
+                .setCallbackUrl(this.addParameter(this.baseUrl, this.providerTypeParameter, provider.getType()));
         }
     }
     
@@ -77,7 +81,7 @@ public final class ProvidersDefinition {
      * @return the right provider
      */
     public OAuthProvider findProvider(final Map<String, String[]> parameters) {
-        String[] values = parameters.get(PARAMETER_NAME);
+        String[] values = parameters.get(this.providerTypeParameter);
         if (values != null && values.length == 1) {
             return findProvider(values[0]);
         }
@@ -119,6 +123,14 @@ public final class ProvidersDefinition {
         sb.append("=");
         sb.append(OAuthEncoder.encode(value));
         return sb.toString();
+    }
+    
+    public void setProviderTypeParameter(final String providerTypeParameter) {
+        this.providerTypeParameter = providerTypeParameter;
+    }
+    
+    public String getProviderTypeParameter() {
+        return this.providerTypeParameter;
     }
     
     public void setBaseUrl(final String baseUrl) {

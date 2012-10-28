@@ -41,7 +41,7 @@ public final class TestProvidersDefinition extends TestCase {
     
     private static final String URL = "http://url";
     
-    private static final String PARAMETER = "oauth_provider_type";
+    private static final String NEW_PARAMETER_NAME = "keepTheTypeOfTheProvider";
     
     private FacebookProvider newFacebookProvider() {
         FacebookProvider facebookProvider = new FacebookProvider();
@@ -85,12 +85,13 @@ public final class TestProvidersDefinition extends TestCase {
         facebookProvider.setCallbackUrl(URL);
         ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
         providersDefinition.init();
-        assertEquals(URL + "?" + PARAMETER + "=" + facebookProvider.getType(), facebookProvider.getCallbackUrl());
+        assertEquals(URL + "?" + ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER + "=" + facebookProvider.getType(),
+                     facebookProvider.getCallbackUrl());
         String[] values = new String[] {
             facebookProvider.getType()
         };
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        parameters.put(PARAMETER, values);
+        parameters.put(ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER, values);
         OAuthProvider provider = providersDefinition.findProvider(parameters);
         assertEquals(provider, facebookProvider);
         provider = providersDefinition.findProvider(facebookProvider.getType());
@@ -104,18 +105,20 @@ public final class TestProvidersDefinition extends TestCase {
         providers.add(facebookProvider);
         providers.add(yahooProvider);
         ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        providersDefinition.setProviderTypeParameter(NEW_PARAMETER_NAME);
         providersDefinition.setProviders(providers);
         providersDefinition.setBaseUrl(URL);
         assertNull(facebookProvider.getCallbackUrl());
         assertNull(yahooProvider.getCallbackUrl());
         providersDefinition.init();
-        assertEquals(URL + "?" + PARAMETER + "=" + facebookProvider.getType(), facebookProvider.getCallbackUrl());
-        assertEquals(URL + "?" + PARAMETER + "=" + yahooProvider.getType(), yahooProvider.getCallbackUrl());
+        assertEquals(URL + "?" + NEW_PARAMETER_NAME + "=" + facebookProvider.getType(),
+                     facebookProvider.getCallbackUrl());
+        assertEquals(URL + "?" + NEW_PARAMETER_NAME + "=" + yahooProvider.getType(), yahooProvider.getCallbackUrl());
         String[] values = new String[] {
             yahooProvider.getType()
         };
         Map<String, String[]> parameters = new HashMap<String, String[]>();
-        parameters.put(PARAMETER, values);
+        parameters.put(NEW_PARAMETER_NAME, values);
         OAuthProvider provider = providersDefinition.findProvider(parameters);
         assertEquals(provider, yahooProvider);
         provider = providersDefinition.findProvider(yahooProvider.getType());
