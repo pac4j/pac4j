@@ -85,6 +85,7 @@ public final class TestProvidersDefinition extends TestCase {
         facebookProvider.setCallbackUrl(URL);
         ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
         providersDefinition.init();
+        providersDefinition.init();
         assertEquals(URL + "?" + ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER + "=" + facebookProvider.getType(),
                      facebookProvider.getCallbackUrl());
         String[] values = new String[] {
@@ -94,7 +95,6 @@ public final class TestProvidersDefinition extends TestCase {
         parameters.put(ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER, values);
         assertEquals(facebookProvider, providersDefinition.findProvider(parameters));
         assertEquals(facebookProvider, providersDefinition.findProvider(facebookProvider.getType()));
-        assertEquals(facebookProvider, providersDefinition.getFirstProvider());
     }
     
     public void testTwoProviders() {
@@ -120,6 +120,5 @@ public final class TestProvidersDefinition extends TestCase {
         parameters.put(NEW_PARAMETER_NAME, values);
         assertEquals(yahooProvider, providersDefinition.findProvider(parameters));
         assertEquals(yahooProvider, providersDefinition.findProvider(yahooProvider.getType()));
-        assertEquals(facebookProvider, providersDefinition.getFirstProvider());
     }
 }

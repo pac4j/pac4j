@@ -46,6 +46,8 @@ public final class ProvidersDefinition {
     
     private String baseUrl;
     
+    private boolean initialized = false;
+    
     public ProvidersDefinition() {
     }
     
@@ -57,9 +59,25 @@ public final class ProvidersDefinition {
     }
     
     /**
-     * Initialize this providers definition by computing callback urls.
+     * Initialize this providers definition.
      */
-    public void init() {
+    public synchronized void init() {
+        if (!this.initialized) {
+            internalInit();
+        }
+    }
+    
+    /**
+     * Re-initialize this providers definition if needed.
+     */
+    public synchronized void reinit() {
+        internalInit();
+    }
+    
+    /**
+     * Internal initialization by computing callback urls.
+     */
+    private void internalInit() {
         if (StringUtils.isBlank(this.baseUrl)) {
             throw new IllegalArgumentException("baseUrl cannot be blank");
         }
@@ -72,6 +90,7 @@ public final class ProvidersDefinition {
             baseProvider
                 .setCallbackUrl(this.addParameter(this.baseUrl, this.providerTypeParameter, provider.getType()));
         }
+        this.initialized = true;
     }
     
     /**
@@ -101,15 +120,6 @@ public final class ProvidersDefinition {
             }
         }
         return null;
-    }
-    
-    /**
-     * Get the first provider.
-     * 
-     * @return the first provider
-     */
-    public OAuthProvider getFirstProvider() {
-        return this.providers.get(0);
     }
     
     /**
