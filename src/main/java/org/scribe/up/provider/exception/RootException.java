@@ -13,32 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.up.provider;
+package org.scribe.up.provider.exception;
 
 /**
- * This class represents an HTTP exception which can happen in network communication (with status code and message body).
+ * This class represents the root exception for the project.
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public class HttpException extends Exception {
+public abstract class RootException extends Exception {
     
-    private static final long serialVersionUID = -2966673332854267637L;
-    
-    private final int code;
-    
-    private final String body;
-    
-    public HttpException(final int code, final String body) {
-        this.code = code;
-        this.body = body;
-    }
-    
-    public int getCode() {
-        return this.code;
-    }
-    
-    public String getBody() {
-        return this.body;
-    }
+    private static final long serialVersionUID = -3032147151159231480L;
 }

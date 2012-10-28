@@ -26,7 +26,7 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
-import org.scribe.up.provider.HttpException;
+import org.scribe.up.provider.exception.HttpException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

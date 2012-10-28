@@ -27,6 +27,8 @@ import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.OAuthProfile;
 import org.scribe.up.profile.UserProfile;
+import org.scribe.up.provider.exception.CredentialException;
+import org.scribe.up.provider.exception.HttpException;
 import org.scribe.up.provider.impl.GoogleProvider;
 import org.scribe.up.provider.impl.WordPressProvider;
 import org.scribe.up.session.UserSession;
@@ -43,10 +45,6 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthProvider.class);
-    
-    public static final String[] ERROR_PARAMETERS = {
-        "error", "error_reason", "error_description", "error_uri"
-    };
     
     protected OAuthService service;
     
@@ -259,19 +257,39 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     protected abstract UserProfile extractUserProfile(String body);
     
     public OAuthCredential getCredential(final UserSession session, final Map<String, String[]> parameters) {
+        try {
+            return retrieveCredential(session, parameters);
+        } catch (CredentialException e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Get the OAuth credential from user session and given parameters.
+     * 
+     * @param session
+     * @param parameters
+     * @return the OAuth credential or null if no credential is found
+     * @throws CredentialException
+     */
+    public OAuthCredential retrieveCredential(final UserSession session, final Map<String, String[]> parameters)
+        throws CredentialException {
         init();
         boolean errorFound = false;
+        CredentialException credentialException = new CredentialException();
         String errorMessage = "";
-        for (final String key : ERROR_PARAMETERS) {
+        for (final String key : CredentialException.ERROR_NAMES) {
             final String[] values = parameters.get(key);
             if (values != null && values.length > 0) {
                 errorFound = true;
-                errorMessage += key + " : '" + values[0] + "'; ";
+                String message = values[0];
+                errorMessage += key + " : '" + message + "'; ";
+                credentialException.setErrorMessage(key, message);
             }
         }
         if (errorFound) {
             logger.error(errorMessage);
-            return null;
+            throw credentialException;
         } else {
             return extractCredentialFromParameters(session, parameters);
         }

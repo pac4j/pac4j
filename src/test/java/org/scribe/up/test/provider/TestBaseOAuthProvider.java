@@ -24,6 +24,7 @@ import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.provider.BaseOAuthProvider;
+import org.scribe.up.provider.exception.CredentialException;
 import org.scribe.up.provider.impl.DropBoxProvider;
 import org.scribe.up.provider.impl.FacebookProvider;
 import org.scribe.up.provider.impl.GitHubProvider;
@@ -111,7 +112,7 @@ public final class TestBaseOAuthProvider extends TestCase {
         provider.setKey(KEY);
         provider.setSecret(SECRET);
         provider.setCallbackUrl(CALLBACK_URL);
-        for (final String key : BaseOAuthProvider.ERROR_PARAMETERS) {
+        for (final String key : CredentialException.ERROR_NAMES) {
             final Map<String, String[]> parameters = createParameters(key, FAKE_VALUE);
             assertNull(provider.getCredential(null, parameters));
         }

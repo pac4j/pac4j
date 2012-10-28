@@ -68,7 +68,7 @@ The last released version is the <b>1.2.0</b>. Learn more about the <a href="htt
 
 <h2>Testing</h2>
 
-ScribeUP is tested by 199 unit tests and also 10 integration tests on OAuth providers by simulating complete authentication processes (using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
+ScribeUP is tested by 200 unit tests and also 10 integration tests on OAuth providers by simulating complete authentication processes (using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
 
 <h2>Contact</h2>
 
