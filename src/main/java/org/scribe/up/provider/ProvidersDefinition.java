@@ -104,6 +104,15 @@ public final class ProvidersDefinition {
     }
     
     /**
+     * Get the first provider.
+     * 
+     * @return the first provider
+     */
+    public OAuthProvider getFirstProvider() {
+        return this.providers.get(0);
+    }
+    
+    /**
      * Add a new parameter to an url.
      * 
      * @param url
