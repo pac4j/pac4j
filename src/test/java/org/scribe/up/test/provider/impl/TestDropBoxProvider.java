@@ -54,7 +54,7 @@ public class TestDropBoxProvider extends TestProvider {
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("login_password");
         passwd.setValueAttribute("testpwdscribeup");
-        HtmlSubmitInput submit = form.getInputByName("login_submit");
+        HtmlSubmitInput submit = form.getInputByName("login_submit_dummy");
         final HtmlPage confirmPage = submit.click();
         form = confirmPage.getForms().get(1);
         submit = form.getInputByName("allow_access");
