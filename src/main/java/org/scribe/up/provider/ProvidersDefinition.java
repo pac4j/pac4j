@@ -140,7 +140,9 @@ public final class ProvidersDefinition {
         }
         sb.append(name);
         sb.append("=");
-        sb.append(OAuthEncoder.encode(value));
+        if (value != null) {
+            sb.append(OAuthEncoder.encode(value));
+        }
         return sb.toString();
     }
     
