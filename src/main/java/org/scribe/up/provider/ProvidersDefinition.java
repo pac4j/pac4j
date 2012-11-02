@@ -86,9 +86,12 @@ public final class ProvidersDefinition {
         }
         for (final OAuthProvider provider : this.providers) {
             final BaseOAuthProvider baseProvider = (BaseOAuthProvider) provider;
-            // calculate new callback url by adding the OAuth provider type to the base url
-            baseProvider
-                .setCallbackUrl(this.addParameter(this.baseUrl, this.providerTypeParameter, provider.getType()));
+            // calculate new callback url by adding the OAuth provider type to the base url if not already added
+            String callbackUrl = baseProvider.getCallbackUrl();
+            if (callbackUrl == null || callbackUrl.indexOf(this.providerTypeParameter + "=") < 0) {
+                baseProvider.setCallbackUrl(this.addParameter(this.baseUrl, this.providerTypeParameter,
+                                                              provider.getType()));
+            }
         }
         this.initialized = true;
     }

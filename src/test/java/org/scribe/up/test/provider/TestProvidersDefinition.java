@@ -121,4 +121,15 @@ public final class TestProvidersDefinition extends TestCase {
         assertEquals(yahooProvider, providersDefinition.findProvider(parameters));
         assertEquals(yahooProvider, providersDefinition.findProvider(yahooProvider.getType()));
     }
+    
+    public void testDoubleInit() {
+        FacebookProvider facebookProvider = newFacebookProvider();
+        facebookProvider.setCallbackUrl(URL);
+        ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
+        providersDefinition.init();
+        ProvidersDefinition providersDefinition2 = new ProvidersDefinition(facebookProvider);
+        providersDefinition2.init();
+        assertEquals(URL + "?" + ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER + "=" + facebookProvider.getType(),
+                     facebookProvider.getCallbackUrl());
+    }
 }
