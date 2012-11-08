@@ -11,11 +11,19 @@ It's available under the Apache 2 license and based on : <a href="https://github
 <h2>OAuth providers supported</h2>
 
 <table>
-<tr><td>DropBox</td><td>Facebook</td><td>Github</td><td>Google</td><td>LinkedIn</td><td>Twitter</td><td>Windows Live</td><td>WordPress</td><td>Yahoo</td></tr>
-<tr><td>OAuth 1.0</td><td>OAuth 2.0</td><td>OAuth 2.0</td><td>OAuth 1.0 & 2.0</td><td>OAuth 1.0</td><td>OAuth 1.0</td><td>OAuth 2.0</td><td>OAuth 2.0</td><td>OAuth 1.0</td></tr>
+<tr><td>Web site</td><td>Protocol</td><td>Provider</td><td>Profile</td></tr>
+<tr><td>DropBox</td><td>OAuth 1.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/DropBoxProvider.html">DropBoxProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/dropbox/DropBoxProfile.html">DropBoxProfile</a></td></tr>
+<tr><td>Facebook</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/FacebookProvider.html">FacebookProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/facebook/FacebookProfile.html">FacebookProfile</a></td></tr>
+<tr><td>Github</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/GitHubProvider.html">GitHubProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/github/GitHubProfile.html">GitHubProfile</a></td></tr>
+<tr><td>Google</td><td>OAuth 1.0 & 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/GoogleProvider.html">GoogleProvider</a> <a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/Google2Provider.html">Google2Provider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/google/GoogleProfile.html">GoogleProfile</a> <a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/google2/Google2Profile.html">Google2Profile</a></td></tr>
+<tr><td>LinkedIn</td><td>OAuth 1.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/LinkedInProvider.html">LinkedInProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/linkedin/LinkedInProfile.html">LinkedInProfile</a></td></tr>
+<tr><td>Twitter</td><td>OAuth 1.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/TwitterProvider.html">TwitterProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/twitter/TwitterProfile.html">TwitterProfile</a></td></tr>
+<tr><td>Windows Live</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/WindowsLiveProvider.html">WindowsLiveProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/windowslive/WindowsLiveProfile.html">WindowsLiveProfile</a></td></tr>
+<tr><td>WordPress</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/WordPressProvider.html">WordPressProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/wordpress/WordPressProfile.html">WordPressProfile</a></td></tr>
+<tr><td>Yahoo</td><td>OAuth 1.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/YahooProvider.html">YahooProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/yahoo/YahooProfile.html">YahooProfile</a></td></tr>
 </table>
 
-Look at the <a href="https://github.com/leleuj/scribe-up/wiki/Description-of-providers-and-profiles">description of the providers and profiles</a> or follow the guide to <a href="https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider">extend or add a new provider</a>.
+Follow the guide to <a href="https://github.com/leleuj/scribe-up/wiki/Extend-or-add-a-new-provider">extend or add a new provider</a>.
 
 <h2>Code sample</h2>
 
@@ -36,6 +44,11 @@ System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " 
 If the user can be authenticated by several OAuth providers, use the common profile instead :
 <pre><code>CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
 System.out.println("Hello : " + commonProfile.getDisplayName() + " at " + commonProfile.getEmail());</code></pre>
+If you want to interact with the OAuth provider, you can retrieve the access token from the (OAuth) profile :
+<pre><code>OAuthProfile oauthProfile = (OAuthProfile) provider.getUserProfile(credential);
+String accessToken = oauthProfile.getAccessToken();
+// or
+String accesstoken = facebookProfile.getAccessToken();</code></pre>
 
 For a better understanding of <b>scribe-up</b>, take a look at the <a href="https://github.com/leleuj/scribe-up/wiki/Technical-description">technical description of the project</a> or browse the <a href="http://javadoc.leleuj.cloudbees.net/">Javadoc</a>.
 
@@ -50,10 +63,11 @@ Even if you can use <b>scribe-up</b> on its own, this library was created to be 
 
 <table>
 <tr><th>Library</th><th>Based on scribe-up version</th><th>Demo webapp</th></tr>
-<tr><td>cas-server-support-oauth 3.5.0</td><td>1.0.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.0">cas-oauth-demo-3.5.0</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.1</td><td>1.1.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo">cas-oauth-demo</a></td></tr>
+<tr><td>cas-server-support-oauth 3.5.0</td><td>1.0.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.0">cas-oauth-demo-3.5.0</a></td></tr>
 <tr><td>buji-oauth 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/scribe-up-shiro-demo">scribe-up-shiro-demo</a></td></tr>
-<tr><td>spring-security-oauth-client 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
+<tr><td>spring-security-oauth-client 1.1.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
+<tr><td>spring-security-oauth-client 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo-1.0.0">spring-security-oauth-client-demo-1.0.0</a></td></tr>
 </table>
 
 <h2>Versions</h2>
