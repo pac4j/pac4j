@@ -2,8 +2,8 @@
 
 <b>scribe-up</b> ("up" for User Profile) is a web OAuth client to :
 <ol>
-<li>delegate authentication and permissions at an OAuth provider</li>
-<li>retrieve the profile of the authorized user after successfull authentication and permissions acceptation.</li>
+<li>delegate authentication and permissions to an OAuth provider (i.e. the user is redirected to the OAuth provider to log in)</li>
+<li>(in the application) retrieve the profile of the authorized user after successfull authentication and permissions acceptation (at the OAuth provider).</li>
 </ol>
 
 It's available under the Apache 2 license and based on : <a href="https://github.com/fernandezpablo85/scribe-java">scribe-java</a> (for OAuth protocol) and <a href="https://github.com/FasterXML/jackson-core">Jackson</a> (for JSON parsing).
@@ -38,14 +38,16 @@ response.sendRedirect(provider.getAuthorizationUrl(new HttpUserSession(session))
 ...after successfull authentication, on the callback url for Facebook...
 <pre><code>// get OAuth credentials
 OAuthCredential credential = provider.getCredential(new HttpUserSession(request), request.getParameterMap());
-// get a facebook profile
-FacebookProfile facebookProfile = (FacebookProfile) provider.getUserProfile(credential);
+// get the user profile
+UserProfile userProfile = provider.getUserProfile(credential);
+// get the facebook profile
+FacebookProfile facebookProfile = (FacebookProfile) userProfile;
 System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>
 If the user can be authenticated by several OAuth providers, use the common profile instead :
-<pre><code>CommonProfile commonProfile = (CommonProfile) provider.getUserProfile(credential);
+<pre><code>CommonProfile commonProfile = (CommonProfile) userProfile;
 System.out.println("Hello : " + commonProfile.getDisplayName() + " at " + commonProfile.getEmail());</code></pre>
 If you want to interact more with the OAuth provider, you can retrieve the access token from the (OAuth) profile :
-<pre><code>OAuthProfile oauthProfile = (OAuthProfile) provider.getUserProfile(credential);
+<pre><code>OAuthProfile oauthProfile = (OAuthProfile) userProfile;
 String accessToken = oauthProfile.getAccessToken();
 // or
 String accesstoken = facebookProfile.getAccessToken();</code></pre>
