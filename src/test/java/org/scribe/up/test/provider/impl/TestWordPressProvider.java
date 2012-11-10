@@ -23,10 +23,10 @@ import org.scribe.up.profile.wordpress.WordPressProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.provider.impl.WordPressProvider;
 
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
@@ -53,11 +53,21 @@ public class TestWordPressProvider extends TestProvider {
         login.setValueAttribute("testscribeup");
         final HtmlPasswordInput passwd = form.getInputByName("pwd");
         passwd.setValueAttribute("testpwdscribeup");
-        HtmlSubmitInput submit = form.getInputByName("wp-submit");
-        final HtmlPage confirmPage = submit.click();
+        
+        HtmlElement button = authorizationPage.createElement("button");
+        button.setAttribute("type", "submit");
+        form.appendChild(button);
+        // HtmlButton button = form.getButtonByName("wp-submit");
+        
+        final HtmlPage confirmPage = button.click();
         form = confirmPage.getFormByName("loginform");
-        submit = form.getInputByName("wp-submit");
-        final HtmlPage callbackPage = submit.click();
+        
+        button = confirmPage.createElement("button");
+        button.setAttribute("type", "submit");
+        form.appendChild(button);
+        // button = form.getButtonByName("wp-submit");
+        
+        final HtmlPage callbackPage = button.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;

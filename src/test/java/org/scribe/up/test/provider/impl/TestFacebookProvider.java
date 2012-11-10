@@ -95,7 +95,7 @@ public class TestFacebookProvider extends TestProvider {
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertEquals("mFoMgGkdK90l07Mw9TtR6NgVXsI", profile.getThirdPartyId());
-        assertEquals(2, profile.getTimezone());
+        assertEquals(1, profile.getTimezone());
         assertEquals(CommonHelper.getFormattedDate(1343375150000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
         assertFalse(profile.isVerified());
@@ -165,8 +165,8 @@ public class TestFacebookProvider extends TestProvider {
         assertEquals("Sport", like.getCategory());
         assertEquals(1330030467000L, like.getCreatedTime().getTime());
         final List<FacebookPhoto> albums = profile.getAlbums();
-        assertEquals(2, albums.size());
-        final FacebookPhoto album = albums.get(0);
+        assertEquals(3, albums.size());
+        final FacebookPhoto album = albums.get(1);
         assertEquals("168023009993416", album.getId());
         final FacebookObject from = album.getFrom();
         assertEquals("100003571536393", from.getId());
