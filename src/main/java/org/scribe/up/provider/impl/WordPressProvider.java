@@ -19,7 +19,7 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ExtendedOAuth20ServiceImpl;
 import org.scribe.up.addon_to_scribe.WordPressApi;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.wordpress.WordPressAttributesDefinition;
@@ -66,7 +66,7 @@ public class WordPressProvider extends BaseOAuth20Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "ID"));
-            for (final String attribute : AttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             json = json.get("meta");

@@ -19,7 +19,7 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ExtendedOAuth20ServiceImpl;
 import org.scribe.up.addon_to_scribe.GoogleApi20;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.google2.Google2Profile;
@@ -84,7 +84,7 @@ public class Google2Provider extends BaseOAuth20Provider {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : AttributesDefinitions.google2Definition.getPrincipalAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.google2Definition.getPrincipalAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

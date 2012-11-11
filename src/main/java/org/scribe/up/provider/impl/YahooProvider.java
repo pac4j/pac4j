@@ -21,7 +21,7 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.yahoo.YahooProfile;
@@ -91,7 +91,7 @@ public class YahooProvider extends BaseOAuth10Provider {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "guid"));
-                for (final String attribute : AttributesDefinitions.yahooDefinition.getAllAttributes()) {
+                for (final String attribute : OAuthAttributesDefinitions.yahooDefinition.getAllAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

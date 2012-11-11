@@ -19,7 +19,7 @@ import org.scribe.builder.api.LiveApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ProxyOAuth20ServiceImpl;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.windowslive.WindowsLiveProfile;
@@ -64,7 +64,7 @@ public class WindowsLiveProvider extends BaseOAuth20Provider {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : AttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

@@ -24,7 +24,7 @@ import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ExtendedFacebookApi;
 import org.scribe.up.addon_to_scribe.FacebookOAuth20ServiceImpl;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.facebook.FacebookAttributesDefinition;
@@ -117,7 +117,7 @@ public class FacebookProvider extends BaseOAuth20Provider {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : AttributesDefinitions.facebookDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.facebookDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             extractData(profile, json, FacebookAttributesDefinition.FRIENDS);

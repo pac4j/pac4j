@@ -19,7 +19,7 @@ import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
@@ -64,7 +64,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : AttributesDefinitions.twitterDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.twitterDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

@@ -23,7 +23,7 @@ import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.dropbox.DropBoxProfile;
@@ -82,12 +82,12 @@ public class DropBoxProvider extends BaseOAuth10Provider {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "uid"));
-            for (final String attribute : AttributesDefinitions.dropBoxDefinition.getPrincipalAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.dropBoxDefinition.getPrincipalAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             json = (JsonNode) JsonHelper.get(json, "quota_info");
             if (json != null) {
-                for (final String attribute : AttributesDefinitions.dropBoxDefinition.getOtherAttributes()) {
+                for (final String attribute : OAuthAttributesDefinitions.dropBoxDefinition.getOtherAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

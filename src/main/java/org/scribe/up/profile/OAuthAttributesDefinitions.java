@@ -32,7 +32,7 @@ import org.scribe.up.profile.yahoo.YahooAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class AttributesDefinitions {
+public final class OAuthAttributesDefinitions {
     
     public final static AttributesDefinition facebookDefinition = new FacebookAttributesDefinition();
     
@@ -53,4 +53,6 @@ public final class AttributesDefinitions {
     public final static AttributesDefinition wordPressDefinition = new WordPressAttributesDefinition();
     
     public final static AttributesDefinition dropBoxDefinition = new DropBoxAttributesDefinition();
+    
+    public final static AttributesDefinition oauthDefinition = new OAuthAttributesDefinition();
 }

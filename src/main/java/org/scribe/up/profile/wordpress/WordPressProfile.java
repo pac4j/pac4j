@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthProfile;
@@ -103,7 +103,7 @@ public class WordPressProfile extends OAuthProfile implements CommonProfile {
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
-        return AttributesDefinitions.wordPressDefinition;
+        return OAuthAttributesDefinitions.wordPressDefinition;
     }
     
     public WordPressProfile() {

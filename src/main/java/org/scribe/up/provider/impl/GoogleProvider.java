@@ -20,7 +20,7 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
-import org.scribe.up.profile.AttributesDefinitions;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.google.GoogleProfile;
@@ -87,12 +87,12 @@ public class GoogleProvider extends BaseOAuth10Provider {
             json = json.get("entry");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "id"));
-                for (final String attribute : AttributesDefinitions.googleDefinition.getPrincipalAttributes()) {
+                for (final String attribute : OAuthAttributesDefinitions.googleDefinition.getPrincipalAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
                 json = json.get("name");
                 if (json != null) {
-                    for (final String attribute : AttributesDefinitions.googleDefinition.getOtherAttributes()) {
+                    for (final String attribute : OAuthAttributesDefinitions.googleDefinition.getOtherAttributes()) {
                         profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                     }
                 }
