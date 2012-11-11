@@ -16,12 +16,11 @@
 package org.scribe.up.profile.dropbox;
 
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -111,23 +110,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class DropBoxProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -4548990715767552938L;
+    private static final long serialVersionUID = -5148553965849104939L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.dropBoxDefinition;
-    }
-    
-    public DropBoxProfile() {
-        super();
-    }
-    
-    public DropBoxProfile(final Object id) {
-        super(id);
-    }
-    
-    public DropBoxProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

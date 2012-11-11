@@ -16,12 +16,11 @@
 package org.scribe.up.profile.linkedin;
 
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -91,23 +90,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class LinkedInProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -6023307001155850927L;
+    private static final long serialVersionUID = 8075261836932071663L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.linkedinDefinition;
-    }
-    
-    public LinkedInProfile() {
-        super();
-    }
-    
-    public LinkedInProfile(final Object id) {
-        super(id);
-    }
-    
-    public LinkedInProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

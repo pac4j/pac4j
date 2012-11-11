@@ -17,12 +17,11 @@ package org.scribe.up.profile.github;
 
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -200,23 +199,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class GitHubProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 7630103875067480874L;
+    private static final long serialVersionUID = -5465364672798687297L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.githubDefinition;
-    }
-    
-    public GitHubProfile() {
-        super();
-    }
-    
-    public GitHubProfile(final Object id) {
-        super(id);
-    }
-    
-    public GitHubProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserProfile extends SafeGetterObject implements Serializable {
     
-    private static final long serialVersionUID = -3467912340712401596L;
+    private static final long serialVersionUID = -9066007858016414486L;
     
     protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -43,27 +43,12 @@ public class UserProfile extends SafeGetterObject implements Serializable {
     public transient static final String SEPARATOR = "#";
     
     /**
-     * Build an empty profile.
-     */
-    public UserProfile() {
-    }
-    
-    /**
-     * Build a profile from a user identifier.
-     * 
-     * @param id
-     */
-    public UserProfile(final Object id) {
-        setId(id);
-    }
-    
-    /**
      * Build a profile from user identifier and attributes.
      * 
      * @param id
      * @param attributes
      */
-    public UserProfile(final Object id, final Map<String, Object> attributes) {
+    public void build(final Object id, final Map<String, Object> attributes) {
         setId(id);
         addAttributes(attributes);
     }

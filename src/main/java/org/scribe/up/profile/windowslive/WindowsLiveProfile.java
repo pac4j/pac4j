@@ -17,12 +17,11 @@ package org.scribe.up.profile.windowslive;
 
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -92,23 +91,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class WindowsLiveProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -8762020349040523374L;
+    private static final long serialVersionUID = 7272212765149980996L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.windowsLiveDefinition;
-    }
-    
-    public WindowsLiveProfile() {
-        super();
-    }
-    
-    public WindowsLiveProfile(final Object id) {
-        super(id);
-    }
-    
-    public WindowsLiveProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

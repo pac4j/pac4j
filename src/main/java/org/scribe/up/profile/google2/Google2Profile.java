@@ -17,12 +17,11 @@ package org.scribe.up.profile.google2;
 
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -100,23 +99,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class Google2Profile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 3771564872847526068L;
+    private static final long serialVersionUID = 6377208928683804391L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.google2Definition;
-    }
-    
-    public Google2Profile() {
-        super();
-    }
-    
-    public Google2Profile(final Object id) {
-        super(id);
-    }
-    
-    public Google2Profile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

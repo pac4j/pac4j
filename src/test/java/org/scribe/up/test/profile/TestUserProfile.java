@@ -43,11 +43,6 @@ public final class TestUserProfile extends TestCase {
         assertEquals(ID, userProfile.getId());
     }
     
-    public void testIdByConstructor() {
-        UserProfile userProfile = new UserProfile(ID);
-        assertEquals(ID, userProfile.getId());
-    }
-    
     public void testAddAttribute() {
         UserProfile userProfile = new UserProfile();
         assertEquals(0, userProfile.getAttributes().size());
@@ -62,14 +57,6 @@ public final class TestUserProfile extends TestCase {
         UserProfile userProfile = new UserProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttributes(attributes);
-        assertEquals(1, userProfile.getAttributes().size());
-        assertEquals(VALUE, userProfile.getAttributes().get(KEY));
-    }
-    
-    public void testAttributesByConstructor() {
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put(KEY, VALUE);
-        UserProfile userProfile = new UserProfile(ID, attributes);
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }

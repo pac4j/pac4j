@@ -18,12 +18,11 @@ package org.scribe.up.profile.yahoo;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -162,23 +161,11 @@ import org.scribe.up.profile.OAuthProfile;
 @SuppressWarnings("unchecked")
 public class YahooProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 6056822671767436144L;
+    private static final long serialVersionUID = -6305173234384994590L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.yahooDefinition;
-    }
-    
-    public YahooProfile() {
-        super();
-    }
-    
-    public YahooProfile(final Object id) {
-        super(id);
-    }
-    
-    public YahooProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

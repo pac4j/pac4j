@@ -15,8 +15,6 @@
  */
 package org.scribe.up.profile;
 
-import java.util.Map;
-
 /**
  * This class is the minimal OAuth profile.
  * 
@@ -25,23 +23,11 @@ import java.util.Map;
  */
 public abstract class OAuthProfile extends UserProfile {
     
-    private static final long serialVersionUID = -2456133666711245607L;
+    private static final long serialVersionUID = -1415317306484459523L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.oauthDefinition;
-    }
-    
-    public OAuthProfile() {
-        super();
-    }
-    
-    public OAuthProfile(final Object id) {
-        super(id);
-    }
-    
-    public OAuthProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     /**

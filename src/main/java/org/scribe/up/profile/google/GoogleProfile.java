@@ -17,12 +17,11 @@ package org.scribe.up.profile.google;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -109,23 +108,11 @@ import org.scribe.up.profile.OAuthProfile;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -4369604033436905187L;
+    private static final long serialVersionUID = 7339888014186855757L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.googleDefinition;
-    }
-    
-    public GoogleProfile() {
-        super();
-    }
-    
-    public GoogleProfile(final Object id) {
-        super(id);
-    }
-    
-    public GoogleProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

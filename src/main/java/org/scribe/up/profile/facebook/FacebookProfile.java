@@ -18,12 +18,11 @@ package org.scribe.up.profile.facebook;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -222,23 +221,11 @@ import org.scribe.up.profile.OAuthProfile;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 6121799311142318271L;
+    private static final long serialVersionUID = 743506441847600518L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.facebookDefinition;
-    }
-    
-    public FacebookProfile() {
-        super();
-    }
-    
-    public FacebookProfile(final Object id) {
-        super(id);
-    }
-    
-    public FacebookProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

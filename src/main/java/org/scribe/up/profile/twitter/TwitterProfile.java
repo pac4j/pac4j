@@ -17,13 +17,12 @@ package org.scribe.up.profile.twitter;
 
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.Color;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -285,23 +284,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class TwitterProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 7687300981847288027L;
+    private static final long serialVersionUID = -6860801091032173469L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.twitterDefinition;
-    }
-    
-    public TwitterProfile() {
-        super();
-    }
-    
-    public TwitterProfile(final Object id) {
-        super(id);
-    }
-    
-    public TwitterProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

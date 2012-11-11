@@ -16,12 +16,11 @@
 package org.scribe.up.profile.wordpress;
 
 import java.util.Locale;
-import java.util.Map;
 
 import org.scribe.up.profile.AttributesDefinition;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.OAuthProfile;
 
 /**
@@ -99,23 +98,11 @@ import org.scribe.up.profile.OAuthProfile;
  */
 public class WordPressProfile extends OAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 5325534468726215038L;
+    private static final long serialVersionUID = 3612911281745606079L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.wordPressDefinition;
-    }
-    
-    public WordPressProfile() {
-        super();
-    }
-    
-    public WordPressProfile(final Object id) {
-        super(id);
-    }
-    
-    public WordPressProfile(final Object id, final Map<String, Object> attributes) {
-        super(id, attributes);
     }
     
     public String getEmail() {

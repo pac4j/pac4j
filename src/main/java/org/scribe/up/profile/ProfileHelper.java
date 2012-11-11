@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is an helper to find the play with profiles.
+ * This class is an helper for profiles.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
@@ -65,8 +65,11 @@ public final class ProfileHelper {
                     try {
                         @SuppressWarnings("unchecked")
                         final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
-                            .forName(completeName).getDeclaredConstructor(Object.class, Map.class);
-                        return constructor.newInstance(typedId, attributes);
+                            .forName(completeName).getDeclaredConstructor();
+                        UserProfile userProfile = constructor.newInstance();
+                        userProfile.build(typedId, attributes);
+                        logger.debug("userProfile built : {}", userProfile);
+                        return userProfile;
                     } catch (final Exception e) {
                         logger.error("Cannot build instance", e);
                     }
