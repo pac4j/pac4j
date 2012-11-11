@@ -20,18 +20,16 @@ import java.io.Serializable;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is an object which can build from JSON.
+ * This class is an object which can be built from JSON.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public abstract class JsonObject extends SafeGetterObject implements Serializable {
+public abstract class JsonObject extends RawDataObject implements Serializable {
     
-    private static final long serialVersionUID = 6273960512140343497L;
+    private static final long serialVersionUID = 2300984913280001378L;
     
     protected String json = "";
-    
-    private static boolean keepRawData = true;
     
     /**
      * Build an object from JSON (String or JsonNode).
@@ -61,10 +59,6 @@ public abstract class JsonObject extends SafeGetterObject implements Serializabl
      * @param json
      */
     protected abstract void buildFromJson(JsonNode json);
-    
-    static void setKeepRawData(final boolean keepRawData) {
-        JsonObject.keepRawData = keepRawData;
-    }
     
     @Override
     public String toString() {

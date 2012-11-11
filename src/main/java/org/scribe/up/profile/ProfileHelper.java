@@ -86,6 +86,6 @@ public final class ProfileHelper {
      * @param keepRawData
      */
     public static void setKeepRawData(final boolean keepRawData) {
-        JsonObject.setKeepRawData(keepRawData);
+        RawDataObject.setKeepRawData(keepRawData);
     }
 }
