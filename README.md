@@ -12,6 +12,7 @@ It's available under the Apache 2 license and based on : <a href="https://github
 
 <table>
 <tr><td>Web site</td><td>Protocol</td><td>Provider</td><td>Profile</td></tr>
+<tr><td>sites using OAuth Wrapper for CAS server</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/CasOAuthWrapperProvider.html">CasOAuthWrapperProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/casoauthwrapper/CasOAuthWrapperProfile.html">CasOAuthWrapperProfile</a></td></tr>
 <tr><td>DropBox</td><td>OAuth 1.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/DropBoxProvider.html">DropBoxProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/dropbox/DropBoxProfile.html">DropBoxProfile</a></td></tr>
 <tr><td>Facebook</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/FacebookProvider.html">FacebookProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/facebook/FacebookProfile.html">FacebookProfile</a></td></tr>
 <tr><td>Github</td><td>OAuth 2.0</td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/provider/impl/GitHubProvider.html">GitHubProvider</a></td><td><a href="http://javadoc.leleuj.cloudbees.net/scribe-up/1.3.0-SNAPSHOT/org/scribe/up/profile/github/GitHubProfile.html">GitHubProfile</a></td></tr>
@@ -56,11 +57,12 @@ For a better understanding of <b>scribe-up</b>, take a look at the <a href="http
 
 <h2>Libraries built on scribe-up</h2>
 
-Even if you can use <b>scribe-up</b> on its own, this library was created to be the foundation of :
+Even if you can use <b>scribe-up</b> on its own, this library is used to be the foundation of :
 <ol>
 <li>the <a href="https://wiki.jasig.org/display/CASUM/OAuth">cas-server-support-oauth</a> module to add OAuth client and server support to the <a href="http://www.jasig.org/cas">CAS server</a></li>
 <li>the <a href="https://github.com/bujiio/buji-oauth">buji-oauth</a> library to add OAuth client support to the <a href="http://shiro.apache.org">Apache Shiro project</a></li>
 <li>the <a href="https://github.com/leleuj/spring-security-oauth-client">spring-security-oauth-client</a> library to add OAuth client support to <a href="http://static.springsource.org/spring-security/site/">Spring Security</a>.</li>
+<li>the <a href="https://github.com/leleuj/play-oauth-client">play-oauth-client</a> library to add OAuth client support to the <a href="http://www.playframework.org/">Play 2.0 framework</a>.</li>
 </ol>
 
 <table>
@@ -70,6 +72,7 @@ Even if you can use <b>scribe-up</b> on its own, this library was created to be 
 <tr><td>buji-oauth 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/scribe-up-shiro-demo">scribe-up-shiro-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.1.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo-1.0.0">spring-security-oauth-client-demo-1.0.0</a></td></tr>
+<tr><td>play-oauth-client 1.0.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/play-oauth-client-demo">play-oauth-client-demo</a></td></tr>
 </table>
 
 <h2>Versions</h2>
@@ -84,7 +87,7 @@ The last released version is the <b>1.2.0</b>. Learn more about the <a href="htt
 
 <h2>Testing</h2>
 
-ScribeUP is tested by 200 unit tests and also 10 integration tests on OAuth providers by simulating complete authentication processes (using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
+scribe-up is tested by 200 unit tests, 2 bench tests and 11 integration tests on OAuth providers by simulating complete authentication processes (using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
 
 <h2>Contact</h2>
 

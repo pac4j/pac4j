@@ -73,6 +73,10 @@ public final class TestProfileHelper extends TestCase {
         assertNull(ProfileHelper.buildProfile("Facebook2Profile#1234", null));
     }
     
+    public void testBuildProfileCasOAuthWrapperProfile() {
+        assertNotNull(ProfileHelper.buildProfile("CasOAuthWrapperProfile#1234", EMPTY_MAP));
+    }
+    
     public void testBuildProfileDropBoxProfile() {
         assertNotNull(ProfileHelper.buildProfile("DropBoxProfile#1234", EMPTY_MAP));
     }
@@ -114,13 +118,13 @@ public final class TestProfileHelper extends TestCase {
     }
     
     public void testBuildProfileOK() {
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(NAME, VALUE);
-        UserProfile userProfile = ProfileHelper.buildProfile(TYPED_ID, attributes);
+        final UserProfile userProfile = ProfileHelper.buildProfile(TYPED_ID, attributes);
         assertNotNull(userProfile);
         assertEquals("1234", userProfile.getId());
         assertEquals(TYPED_ID, userProfile.getTypedId());
-        Map<String, Object> attributesProfile = userProfile.getAttributes();
+        final Map<String, Object> attributesProfile = userProfile.getAttributes();
         assertEquals(1, attributesProfile.size());
         assertEquals(VALUE, attributesProfile.get(NAME));
     }

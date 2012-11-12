@@ -23,7 +23,7 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.OAuthProfile;
+import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Yahoo with appropriate getters.<br />
@@ -159,7 +159,7 @@ import org.scribe.up.profile.OAuthProfile;
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public class YahooProfile extends OAuthProfile implements CommonProfile {
+public class YahooProfile extends BaseOAuthProfile implements CommonProfile {
     
     private static final long serialVersionUID = -6305173234384994590L;
     

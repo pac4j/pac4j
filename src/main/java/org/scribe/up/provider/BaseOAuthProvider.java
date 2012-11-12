@@ -25,7 +25,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.OAuthProfile;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.exception.CredentialException;
 import org.scribe.up.provider.exception.HttpException;
@@ -199,7 +199,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         if (profile != null) {
             final String token = accessToken.getToken();
             logger.debug("add access_token : {} to profile", token);
-            ((OAuthProfile) profile).setAccessToken(token);
+            ((BaseOAuthProfile) profile).setAccessToken(token);
         }
     }
     

@@ -16,14 +16,30 @@
 package org.scribe.up.profile;
 
 /**
- * This interface is the contract an OAuth profile must follow.
+ * This class is the minimal OAuth profile.
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public interface OAuthProfile {
+public abstract class BaseOAuthProfile extends UserProfile implements OAuthProfile {
     
-    public void setAccessToken(final String accessToken);
+    private static final long serialVersionUID = 1837385725534507136L;
     
-    public String getAccessToken();
+    /**
+     * Set the access token
+     * 
+     * @param accessToken
+     */
+    public void setAccessToken(final String accessToken) {
+        addAttribute(OAuthAttributesDefinition.ACCESS_TOKEN, accessToken);
+    }
+    
+    /**
+     * Return the access token.
+     * 
+     * @return the access token
+     */
+    public String getAccessToken() {
+        return (String) this.attributes.get(OAuthAttributesDefinition.ACCESS_TOKEN);
+    }
 }

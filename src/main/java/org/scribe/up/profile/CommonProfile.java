@@ -18,7 +18,7 @@ package org.scribe.up.profile;
 import java.util.Locale;
 
 /**
- * This class gathers the default attribute getters which can be retrieved for most of the profiles.
+ * This interface gathers the default attribute getters which can be retrieved for most of the profiles.
  * 
  * @author Jerome Leleu
  * @since 1.3.0

@@ -23,7 +23,7 @@ import org.scribe.up.profile.Color;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.OAuthProfile;
+import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Twitter with appropriate getters.<br />
@@ -282,7 +282,7 @@ import org.scribe.up.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterProfile extends OAuthProfile implements CommonProfile {
+public class TwitterProfile extends BaseOAuthProfile implements CommonProfile {
     
     private static final long serialVersionUID = -6860801091032173469L;
     

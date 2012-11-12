@@ -21,7 +21,7 @@ import org.scribe.up.profile.AttributesDefinition;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.OAuthProfile;
+import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for WordPress with appropriate getters.<br />
@@ -96,7 +96,7 @@ import org.scribe.up.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressProfile extends OAuthProfile implements CommonProfile {
+public class WordPressProfile extends BaseOAuthProfile implements CommonProfile {
     
     private static final long serialVersionUID = 3612911281745606079L;
     

@@ -25,6 +25,7 @@ import org.scribe.up.provider.BaseOAuth10Provider;
 import org.scribe.up.provider.BaseOAuth20Provider;
 import org.scribe.up.provider.BaseOAuthProvider;
 import org.scribe.up.provider.exception.CredentialException;
+import org.scribe.up.provider.impl.CasOAuthWrapperProvider;
 import org.scribe.up.provider.impl.DropBoxProvider;
 import org.scribe.up.provider.impl.FacebookProvider;
 import org.scribe.up.provider.impl.GitHubProvider;
@@ -68,6 +69,8 @@ public final class TestBaseOAuthProvider extends TestCase {
     private static final String PROXY_HOST = "proxyHost";
     
     private static final int PROXY_PORT = 12345;
+    
+    private static final String CAS_SERVER_URL = "http://casserverurl/oauth2.0";
     
     public void testDefaultType10() {
         final BaseOAuth10Provider provider = new YahooProvider();
@@ -135,6 +138,13 @@ public final class TestBaseOAuthProvider extends TestCase {
         assertEquals(oldProvider.getProxyHost(), provider.getProxyHost());
         assertEquals(oldProvider.getProxyPort(), provider.getProxyPort());
         return provider;
+    }
+    
+    public void testCloneCasOAuthWrapperProvider() {
+        final CasOAuthWrapperProvider oldProvider = new CasOAuthWrapperProvider();
+        oldProvider.setCasServerUrl(CAS_SERVER_URL);
+        final CasOAuthWrapperProvider provider = (CasOAuthWrapperProvider) internalTestCloneBaseOAuthProvider(oldProvider);
+        assertEquals(oldProvider.getCasServerUrl(), provider.getCasServerUrl());
     }
     
     public void testCloneDropBoxProvider() {
