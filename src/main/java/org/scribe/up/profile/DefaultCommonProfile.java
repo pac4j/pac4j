@@ -29,42 +29,42 @@ public abstract class DefaultCommonProfile extends UserProfile implements Common
     private static final long serialVersionUID = 7233145076116494257L;
     
     public String getEmail() {
-        return (String) this.attributes.get("email");
+        return (String) get("email");
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get("first_name");
+        return (String) get("first_name");
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get("family_name");
+        return (String) get("family_name");
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get("display_name");
+        return (String) get("display_name");
     }
     
     public String getUsername() {
-        return (String) this.attributes.get("username");
+        return (String) get("username");
     }
     
     public Gender getGender() {
-        return (Gender) this.attributes.get("gender");
+        return (Gender) get("gender");
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get("locale");
+        return (Locale) get("locale");
     }
     
     public String getPictureUrl() {
-        return (String) this.attributes.get("picture_url");
+        return (String) get("picture_url");
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get("profile_url");
+        return (String) get("profile_url");
     }
     
     public String getLocation() {
-        return (String) this.attributes.get("location");
+        return (String) get("location");
     }
 }

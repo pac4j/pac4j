@@ -84,8 +84,7 @@ public class TestWordPressProvider extends TestProvider {
                             Gender.UNSPECIFIED, null,
                             "http://0.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",
                             "http://en.gravatar.com/testscribeup", null);
-        assertEquals(36224958, profile.getPrimaryBlog());
-        assertTrue(profile.isPrimaryBlogDefined());
+        assertEquals(36224958, profile.getPrimaryBlog().intValue());
         final WordPressLinks links = profile.getLinks();
         assertEquals("https://public-api.wordpress.com/rest/v1/me", links.getSelf());
         assertEquals("https://public-api.wordpress.com/rest/v1/me/help", links.getHelp());

@@ -81,8 +81,7 @@ public class TestGoogle2Provider extends TestProvider {
                             Locale.ENGLISH,
                             "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                             "https://plus.google.com/113675986756217860428", null);
-        assertTrue(profile.isVerifiedEmail());
-        assertTrue(profile.isVerifiedEmailDefined());
+        assertTrue(profile.getVerifiedEmail());
         assertEquals("0001-03-10", profile.getBirthday().toString());
         assertEquals(11, profile.getAttributes().size());
     }

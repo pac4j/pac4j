@@ -45,26 +45,26 @@ public final class TestGitHubPlan extends TestCase {
         final GitHubPlan gitHubPlan = new GitHubPlan();
         gitHubPlan.buildFrom(null);
         assertNull(gitHubPlan.getName());
-        assertEquals(0, gitHubPlan.getCollaborators());
-        assertEquals(0, gitHubPlan.getSpace());
-        assertEquals(0, gitHubPlan.getPrivateRepos());
+        assertNull(gitHubPlan.getCollaborators());
+        assertNull(gitHubPlan.getSpace());
+        assertNull(gitHubPlan.getPrivateRepos());
     }
     
     public void testBadJson() {
         final GitHubPlan gitHubPlan = new GitHubPlan();
         gitHubPlan.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
         assertNull(gitHubPlan.getName());
-        assertEquals(0, gitHubPlan.getCollaborators());
-        assertEquals(0, gitHubPlan.getSpace());
-        assertEquals(0, gitHubPlan.getPrivateRepos());
+        assertNull(gitHubPlan.getCollaborators());
+        assertNull(gitHubPlan.getSpace());
+        assertNull(gitHubPlan.getPrivateRepos());
     }
     
     public void testGoodJson() {
         final GitHubPlan gitHubPlan = new GitHubPlan();
         gitHubPlan.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
         assertEquals(NAME, gitHubPlan.getName());
-        assertEquals(COLLABORATORS, gitHubPlan.getCollaborators());
-        assertEquals(SPACE, gitHubPlan.getSpace());
-        assertEquals(PRIVATE_REPOS, gitHubPlan.getPrivateRepos());
+        assertEquals(COLLABORATORS, gitHubPlan.getCollaborators().intValue());
+        assertEquals(SPACE, gitHubPlan.getSpace().intValue());
+        assertEquals(PRIVATE_REPOS, gitHubPlan.getPrivateRepos().intValue());
     }
 }

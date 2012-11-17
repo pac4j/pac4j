@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class YahooEmail extends JsonObject {
     
-    private static final long serialVersionUID = 8273986408286688203L;
+    private static final long serialVersionUID = 2966102259035141901L;
     
     private Integer id;
     
@@ -46,20 +46,12 @@ public final class YahooEmail extends JsonObject {
         this.type = Converters.stringConverter.convertFromJson(json, "type");
     }
     
-    public int getId() {
-        return getSafeInt(this.id);
+    public Integer getId() {
+        return this.id;
     }
     
-    public boolean isIdDefined() {
-        return this.id != null;
-    }
-    
-    public boolean isPrimary() {
-        return getSafeBoolean(this.primary);
-    }
-    
-    public boolean isPrimaryDefined() {
-        return this.primary != null;
+    public Boolean getPrimary() {
+        return this.primary;
     }
     
     public String getHandle() {

@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class FacebookPhoto extends JsonObject {
     
-    private static final long serialVersionUID = -6992253083477744419L;
+    private static final long serialVersionUID = -1230468571423177489L;
     
     private String id;
     
@@ -93,12 +93,8 @@ public final class FacebookPhoto extends JsonObject {
         return this.privacy;
     }
     
-    public int getCount() {
-        return getSafeInt(this.count);
-    }
-    
-    public boolean isCountDefined() {
-        return this.count != null;
+    public Integer getCount() {
+        return this.count;
     }
     
     public String getType() {
@@ -113,11 +109,7 @@ public final class FacebookPhoto extends JsonObject {
         return this.updatedTime;
     }
     
-    public boolean isCanUpload() {
-        return getSafeBoolean(this.canUpload);
-    }
-    
-    public boolean isCanUploadDefined() {
-        return this.canUpload != null;
+    public Boolean getCanUpload() {
+        return this.canUpload;
     }
 }

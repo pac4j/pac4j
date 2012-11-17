@@ -71,8 +71,7 @@ public final class TestFacebookMusicListen extends TestCase {
         assertNull(facebookMusicListen.getEndTime());
         assertNull(facebookMusicListen.getFrom());
         assertNull(facebookMusicListen.getMusician());
-        assertFalse(facebookMusicListen.getNoFeedStory());
-        assertFalse(facebookMusicListen.isNoFeedStoryDefined());
+        assertNull(facebookMusicListen.getNoFeedStory());
         assertNull(facebookMusicListen.getPublishTime());
         assertNull(facebookMusicListen.getRadioStation());
         assertNull(facebookMusicListen.getSong());
@@ -88,8 +87,7 @@ public final class TestFacebookMusicListen extends TestCase {
         assertNull(facebookMusicListen.getEndTime());
         assertNull(facebookMusicListen.getFrom());
         assertNull(facebookMusicListen.getMusician());
-        assertFalse(facebookMusicListen.getNoFeedStory());
-        assertFalse(facebookMusicListen.isNoFeedStoryDefined());
+        assertNull(facebookMusicListen.getNoFeedStory());
         assertNull(facebookMusicListen.getPublishTime());
         assertNull(facebookMusicListen.getRadioStation());
         assertNull(facebookMusicListen.getSong());
@@ -115,7 +113,6 @@ public final class TestFacebookMusicListen extends TestCase {
         assertData(facebookMusicListen.getRadioStation());
         assertEquals(TYPE, facebookMusicListen.getType());
         assertTrue(facebookMusicListen.getNoFeedStory());
-        assertTrue(facebookMusicListen.isNoFeedStoryDefined());
     }
     
     private void assertData(final FacebookMusicData facebookMusicData) {

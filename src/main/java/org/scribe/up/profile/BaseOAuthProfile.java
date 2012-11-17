@@ -40,6 +40,6 @@ public abstract class BaseOAuthProfile extends UserProfile implements OAuthProfi
      * @return the access token
      */
     public String getAccessToken() {
-        return (String) this.attributes.get(OAuthAttributesDefinition.ACCESS_TOKEN);
+        return (String) get(OAuthAttributesDefinition.ACCESS_TOKEN);
     }
 }

@@ -83,8 +83,7 @@ public class TestGoogleProvider extends TestProvider {
                             null,
                             "http://www.google.com/ig/c/photos/public/AIbEiAIAAABECMziv-rwr7flvQEiC3ZjYXJkX3Bob3RvKig5M2ViZDA5M2FhNmRmMmQ5ODVlZmQzM2Y5ZjYzZmQ1Y2YwMWFjYTM4MAEvKPh0rtxIK4u-apq8WQapWoSgNg",
                             "https://plus.google.com/113675986756217860428", null);
-        assertTrue(profile.isViewer());
-        assertTrue(profile.isViewerDefined());
+        assertTrue(profile.getIsViewer());
         assertEquals("Jérôme ScribeUP", profile.getFormatted());
         final List<GoogleObject> urls = profile.getUrls();
         final GoogleObject url = urls.get(0);

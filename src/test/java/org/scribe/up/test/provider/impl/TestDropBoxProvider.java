@@ -73,9 +73,9 @@ public class TestDropBoxProvider extends TestProvider {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
                             null, "https://www.dropbox.com/referrals/NTc1MjA2NjI0OQ", null);
-        assertEquals(0L, profile.getShared());
-        assertEquals(1410412L, profile.getNormal());
-        assertEquals(2147483648L, profile.getQuota());
+        assertEquals(0L, profile.getShared().longValue());
+        assertEquals(1410412L, profile.getNormal().longValue());
+        assertEquals(2147483648L, profile.getQuota().longValue());
         assertEquals(7, profile.getAttributes().size());
     }
 }

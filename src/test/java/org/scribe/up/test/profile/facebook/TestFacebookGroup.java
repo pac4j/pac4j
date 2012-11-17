@@ -46,39 +46,30 @@ public final class TestFacebookGroup extends TestCase {
     public void testNull() {
         final FacebookGroup facebookGroup = new FacebookGroup();
         facebookGroup.buildFrom(null);
-        assertEquals(0, facebookGroup.getVersion());
-        assertFalse(facebookGroup.isVersionDefined());
+        assertNull(facebookGroup.getVersion());
         assertNull(facebookGroup.getName());
         assertNull(facebookGroup.getId());
-        assertFalse(facebookGroup.isAdministrator());
-        assertFalse(facebookGroup.isAdministratorDefined());
-        assertEquals(0, facebookGroup.getBookmarkOrder());
-        assertFalse(facebookGroup.isBookmarkOrderDefined());
+        assertNull(facebookGroup.getAdministrator());
+        assertNull(facebookGroup.getBookmarkOrder());
     }
     
     public void testBadJson() {
         final FacebookGroup facebookGroup = new FacebookGroup();
         facebookGroup.buildFrom(BAD_JSON);
-        assertEquals(0, facebookGroup.getVersion());
-        assertFalse(facebookGroup.isVersionDefined());
+        assertNull(facebookGroup.getVersion());
         assertNull(facebookGroup.getName());
         assertNull(facebookGroup.getId());
-        assertFalse(facebookGroup.isAdministrator());
-        assertFalse(facebookGroup.isAdministratorDefined());
-        assertEquals(0, facebookGroup.getBookmarkOrder());
-        assertFalse(facebookGroup.isBookmarkOrderDefined());
+        assertNull(facebookGroup.getAdministrator());
+        assertNull(facebookGroup.getBookmarkOrder());
     }
     
     public void testGoodJson() {
         final FacebookGroup facebookGroup = new FacebookGroup();
         facebookGroup.buildFrom(GOOD_JSON);
-        assertEquals(VERSION, facebookGroup.getVersion());
-        assertTrue(facebookGroup.isVersionDefined());
+        assertEquals(VERSION, facebookGroup.getVersion().intValue());
         assertEquals(NAME, facebookGroup.getName());
         assertEquals(ID, facebookGroup.getId());
-        assertTrue(facebookGroup.isAdministrator());
-        assertTrue(facebookGroup.isAdministratorDefined());
-        assertEquals(ORDER, facebookGroup.getBookmarkOrder());
-        assertTrue(facebookGroup.isBookmarkOrderDefined());
+        assertTrue(facebookGroup.getAdministrator());
+        assertEquals(ORDER, facebookGroup.getBookmarkOrder().intValue());
     }
 }

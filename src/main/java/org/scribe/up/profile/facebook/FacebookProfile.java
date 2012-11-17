@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Facebook with appropriate getters.<br />
@@ -93,24 +93,16 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>third_party_id</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getTimezone()</td>
+ * <td>Integer getTimezone()</td>
  * <td>the <i>timezone</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isTimezoneDefined()</td>
- * <td>if the <i>timezone</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Date getUpdateTime()</td>
  * <td>the <i>updated_time</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isVerified()</td>
+ * <td>Boolean getVerified()</td>
  * <td>the <i>verified</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isVerifiedDefined()</td>
- * <td>if the <i>verified</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getBio()</td>
@@ -221,7 +213,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 743506441847600518L;
+    private static final long serialVersionUID = -6594089271854613617L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -229,35 +221,35 @@ public class FacebookProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getEmail() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.EMAIL);
+        return (String) get(FacebookAttributesDefinition.EMAIL);
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.FIRST_NAME);
+        return (String) get(FacebookAttributesDefinition.FIRST_NAME);
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.LAST_NAME);
+        return (String) get(FacebookAttributesDefinition.LAST_NAME);
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.NAME);
+        return (String) get(FacebookAttributesDefinition.NAME);
     }
     
     public String getUsername() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.USERNAME);
+        return (String) get(FacebookAttributesDefinition.USERNAME);
     }
     
     public Gender getGender() {
-        return (Gender) this.attributes.get(FacebookAttributesDefinition.GENDER);
+        return (Gender) get(FacebookAttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get(FacebookAttributesDefinition.LOCALE);
+        return (Locale) get(FacebookAttributesDefinition.LOCALE);
     }
     
     public String getPictureUrl() {
-        final FacebookPicture picture = (FacebookPicture) this.attributes.get(FacebookAttributesDefinition.PICTURE);
+        final FacebookPicture picture = (FacebookPicture) get(FacebookAttributesDefinition.PICTURE);
         if (picture != null) {
             return picture.getUrl();
         }
@@ -265,11 +257,11 @@ public class FacebookProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.LINK);
+        return (String) get(FacebookAttributesDefinition.LINK);
     }
     
     public String getLocation() {
-        final FacebookObject location = (FacebookObject) this.attributes.get(FacebookAttributesDefinition.LOCATION);
+        final FacebookObject location = (FacebookObject) get(FacebookAttributesDefinition.LOCATION);
         if (location != null) {
             return location.getName();
         }
@@ -277,134 +269,126 @@ public class FacebookProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getMiddleName() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.MIDDLE_NAME);
+        return (String) get(FacebookAttributesDefinition.MIDDLE_NAME);
     }
     
     public List<FacebookObject> getLanguages() {
-        return (List<FacebookObject>) this.attributes.get(FacebookAttributesDefinition.LANGUAGES);
+        return (List<FacebookObject>) get(FacebookAttributesDefinition.LANGUAGES);
     }
     
     public String getThirdPartyId() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.THIRD_PARTY_ID);
+        return (String) get(FacebookAttributesDefinition.THIRD_PARTY_ID);
     }
     
-    public int getTimezone() {
-        return getSafeInt((Integer) this.attributes.get(FacebookAttributesDefinition.TIMEZONE));
-    }
-    
-    public boolean isTimezoneDefined() {
-        return this.attributes.get(FacebookAttributesDefinition.TIMEZONE) != null;
+    public Integer getTimezone() {
+        return (Integer) get(FacebookAttributesDefinition.TIMEZONE);
     }
     
     public Date getUpdateTime() {
-        return (Date) this.attributes.get(FacebookAttributesDefinition.UPDATED_TIME);
+        return (Date) get(FacebookAttributesDefinition.UPDATED_TIME);
     }
     
-    public boolean isVerified() {
-        return getSafeBoolean((Boolean) this.attributes.get(FacebookAttributesDefinition.VERIFIED));
-    }
-    
-    public boolean isVerifiedDefined() {
-        return this.attributes.get(FacebookAttributesDefinition.VERIFIED) != null;
+    public Boolean getVerified() {
+        return (Boolean) get(FacebookAttributesDefinition.VERIFIED);
     }
     
     public String getBio() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.BIO);
+        return (String) get(FacebookAttributesDefinition.BIO);
     }
     
     public Date getBirthday() {
-        return (Date) this.attributes.get(FacebookAttributesDefinition.BIRTHDAY);
+        return (Date) get(FacebookAttributesDefinition.BIRTHDAY);
     }
     
     public List<FacebookEducation> getEducation() {
-        return (List<FacebookEducation>) this.attributes.get(FacebookAttributesDefinition.EDUCATION);
+        return (List<FacebookEducation>) get(FacebookAttributesDefinition.EDUCATION);
     }
     
     public FacebookObject getHometown() {
-        return (FacebookObject) this.attributes.get(FacebookAttributesDefinition.HOMETOWN);
+        return (FacebookObject) get(FacebookAttributesDefinition.HOMETOWN);
     }
     
     public List<String> getInterestedIn() {
-        return (List<String>) this.attributes.get(FacebookAttributesDefinition.INTERESTED_IN);
+        return (List<String>) get(FacebookAttributesDefinition.INTERESTED_IN);
     }
     
     public FacebookObject getLocationObject() {
-        return (FacebookObject) this.attributes.get(FacebookAttributesDefinition.LOCATION);
+        return (FacebookObject) get(FacebookAttributesDefinition.LOCATION);
     }
     
     public String getPolitical() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.POLITICAL);
+        return (String) get(FacebookAttributesDefinition.POLITICAL);
     }
     
     public List<FacebookObject> getFavoriteAthletes() {
-        return (List<FacebookObject>) this.attributes.get(FacebookAttributesDefinition.FAVORITE_ATHLETES);
+        return (List<FacebookObject>) get(FacebookAttributesDefinition.FAVORITE_ATHLETES);
     }
     
     public List<FacebookObject> getFavoriteTeams() {
-        return (List<FacebookObject>) this.attributes.get(FacebookAttributesDefinition.FAVORITE_TEAMS);
+        return (List<FacebookObject>) get(FacebookAttributesDefinition.FAVORITE_TEAMS);
     }
     
     public String getQuotes() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.QUOTES);
+        return (String) get(FacebookAttributesDefinition.QUOTES);
     }
     
     public FacebookRelationshipStatus getRelationshipStatus() {
-        return (FacebookRelationshipStatus) this.attributes.get(FacebookAttributesDefinition.RELATIONSHIP_STATUS);
+        return (FacebookRelationshipStatus) get(FacebookAttributesDefinition.RELATIONSHIP_STATUS);
     }
     
     public String getReligion() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.RELIGION);
+        return (String) get(FacebookAttributesDefinition.RELIGION);
     }
     
     public FacebookObject getSignificantOther() {
-        return (FacebookObject) this.attributes.get(FacebookAttributesDefinition.SIGNIFICANT_OTHER);
+        return (FacebookObject) get(FacebookAttributesDefinition.SIGNIFICANT_OTHER);
     }
     
     public String getWebsite() {
-        return (String) this.attributes.get(FacebookAttributesDefinition.WEBSITE);
+        return (String) get(FacebookAttributesDefinition.WEBSITE);
     }
     
     public List<FacebookWork> getWork() {
-        return (List<FacebookWork>) this.attributes.get(FacebookAttributesDefinition.WORK);
+        return (List<FacebookWork>) get(FacebookAttributesDefinition.WORK);
     }
     
     public List<FacebookObject> getFriends() {
-        return (List<FacebookObject>) this.attributes.get(FacebookAttributesDefinition.FRIENDS);
+        return (List<FacebookObject>) get(FacebookAttributesDefinition.FRIENDS);
     }
     
     public List<FacebookInfo> getMovies() {
-        return (List<FacebookInfo>) this.attributes.get(FacebookAttributesDefinition.MOVIES);
+        return (List<FacebookInfo>) get(FacebookAttributesDefinition.MOVIES);
     }
     
     public List<FacebookInfo> getMusic() {
-        return (List<FacebookInfo>) this.attributes.get(FacebookAttributesDefinition.MUSIC);
+        return (List<FacebookInfo>) get(FacebookAttributesDefinition.MUSIC);
     }
     
     public List<FacebookInfo> getBooks() {
-        return (List<FacebookInfo>) this.attributes.get(FacebookAttributesDefinition.BOOKS);
+        return (List<FacebookInfo>) get(FacebookAttributesDefinition.BOOKS);
     }
     
     public List<FacebookInfo> getLikes() {
-        return (List<FacebookInfo>) this.attributes.get(FacebookAttributesDefinition.LIKES);
+        return (List<FacebookInfo>) get(FacebookAttributesDefinition.LIKES);
     }
     
     public List<FacebookPhoto> getAlbums() {
-        return (List<FacebookPhoto>) this.attributes.get(FacebookAttributesDefinition.ALBUMS);
+        return (List<FacebookPhoto>) get(FacebookAttributesDefinition.ALBUMS);
     }
     
     public List<FacebookEvent> getEvents() {
-        return (List<FacebookEvent>) this.attributes.get(FacebookAttributesDefinition.EVENTS);
+        return (List<FacebookEvent>) get(FacebookAttributesDefinition.EVENTS);
     }
     
     public List<FacebookGroup> getGroups() {
-        return (List<FacebookGroup>) this.attributes.get(FacebookAttributesDefinition.GROUPS);
+        return (List<FacebookGroup>) get(FacebookAttributesDefinition.GROUPS);
     }
     
     public List<FacebookMusicListen> getMusicListens() {
-        return (List<FacebookMusicListen>) this.attributes.get(FacebookAttributesDefinition.MUSIC_LISTENS);
+        return (List<FacebookMusicListen>) get(FacebookAttributesDefinition.MUSIC_LISTENS);
     }
     
     public FacebookPicture getPicture() {
-        return (FacebookPicture) this.attributes.get(FacebookAttributesDefinition.PICTURE);
+        return (FacebookPicture) get(FacebookAttributesDefinition.PICTURE);
     }
 }

@@ -39,23 +39,20 @@ public final class TestFacebookPicture extends TestCase {
         final FacebookPicture facebookPicture = new FacebookPicture();
         facebookPicture.buildFrom(null);
         assertNull(facebookPicture.getUrl());
-        assertFalse(facebookPicture.isSilhouette());
-        assertFalse(facebookPicture.isSilhouetteDefined());
+        assertNull(facebookPicture.getIsSilhouette());
     }
     
     public void testBadJson() {
         final FacebookPicture facebookPicture = new FacebookPicture();
         facebookPicture.buildFrom(BAD_JSON);
         assertNull(facebookPicture.getUrl());
-        assertFalse(facebookPicture.isSilhouette());
-        assertFalse(facebookPicture.isSilhouetteDefined());
+        assertNull(facebookPicture.getIsSilhouette());
     }
     
     public void testGoodJson() {
         final FacebookPicture facebookPicture = new FacebookPicture();
         facebookPicture.buildFrom(GOOD_JSON);
         assertEquals(URL, facebookPicture.getUrl());
-        assertEquals(IS_SILHOUETTE, facebookPicture.isSilhouette());
-        assertTrue(facebookPicture.isSilhouetteDefined());
+        assertEquals(IS_SILHOUETTE, facebookPicture.getIsSilhouette().booleanValue());
     }
 }

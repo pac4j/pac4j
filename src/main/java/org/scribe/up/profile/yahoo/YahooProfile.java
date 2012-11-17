@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Yahoo with appropriate getters.<br />
@@ -89,12 +89,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>addresses</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getBirthYear()</td>
+ * <td>Integer getBirthYear()</td>
  * <td>the <i>birthYear</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isBirthYearDefined()</td>
- * <td>if the <i>birthYear</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Date getBirthdate()</td>
@@ -105,12 +101,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>created</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getDisplayAge()</td>
+ * <td>Integer getDisplayAge()</td>
  * <td>the <i>displayAge</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isDisplayAgeDefined()</td>
- * <td>if the <i>displayAge</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>List&lt;YahooDisclosure&gt; getDisclosures()</td>
@@ -129,12 +121,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>interests</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isConnected()</td>
+ * <td>Boolean getIsConnected()</td>
  * <td>the <i>isConnected</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isConnectedDefined()</td>
- * <td>if the <i>isConnected</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Date getMemberSince()</td>
@@ -161,7 +149,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
 @SuppressWarnings("unchecked")
 public class YahooProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -6305173234384994590L;
+    private static final long serialVersionUID = 4488038951978277301L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -172,7 +160,7 @@ public class YahooProfile extends BaseOAuthProfile implements CommonProfile {
         final List<YahooEmail> emails = getEmails();
         if (emails != null) {
             for (final YahooEmail email : emails) {
-                if (email != null && (email.isPrimary() || emails.size() == 1)) {
+                if (email != null && ((email.getPrimary() != null && email.getPrimary()) || emails.size() == 1)) {
                     return email.getHandle();
                 }
             }
@@ -181,11 +169,11 @@ public class YahooProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get(YahooAttributesDefinition.GIVEN_NAME);
+        return (String) get(YahooAttributesDefinition.GIVEN_NAME);
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get(YahooAttributesDefinition.FAMILY_NAME);
+        return (String) get(YahooAttributesDefinition.FAMILY_NAME);
     }
     
     public String getDisplayName() {
@@ -193,19 +181,19 @@ public class YahooProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getUsername() {
-        return (String) this.attributes.get(YahooAttributesDefinition.NICKNAME);
+        return (String) get(YahooAttributesDefinition.NICKNAME);
     }
     
     public Gender getGender() {
-        return (Gender) this.attributes.get(YahooAttributesDefinition.GENDER);
+        return (Gender) get(YahooAttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get(YahooAttributesDefinition.LANG);
+        return (Locale) get(YahooAttributesDefinition.LANG);
     }
     
     public String getPictureUrl() {
-        final YahooImage yahooImage = (YahooImage) this.attributes.get(YahooAttributesDefinition.IMAGE);
+        final YahooImage yahooImage = (YahooImage) get(YahooAttributesDefinition.IMAGE);
         if (yahooImage != null) {
             return yahooImage.getImageUrl();
         }
@@ -213,82 +201,70 @@ public class YahooProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(YahooAttributesDefinition.PROFILE_URL);
+        return (String) get(YahooAttributesDefinition.PROFILE_URL);
     }
     
     public String getLocation() {
-        return (String) this.attributes.get(YahooAttributesDefinition.LOCATION);
+        return (String) get(YahooAttributesDefinition.LOCATION);
     }
     
     public String getAboutMe() {
-        return (String) this.attributes.get(YahooAttributesDefinition.ABOUT_ME);
+        return (String) get(YahooAttributesDefinition.ABOUT_ME);
     }
     
     public List<YahooAddress> getAddresses() {
-        return (List<YahooAddress>) this.attributes.get(YahooAttributesDefinition.ADDRESSES);
+        return (List<YahooAddress>) get(YahooAttributesDefinition.ADDRESSES);
     }
     
-    public int getBirthYear() {
-        return getSafeInt((Integer) this.attributes.get(YahooAttributesDefinition.BIRTH_YEAR));
-    }
-    
-    public boolean isBirthYearDefined() {
-        return this.attributes.get(YahooAttributesDefinition.BIRTH_YEAR) != null;
+    public Integer getBirthYear() {
+        return (Integer) get(YahooAttributesDefinition.BIRTH_YEAR);
     }
     
     public Date getBirthdate() {
-        return (Date) this.attributes.get(YahooAttributesDefinition.BIRTHDATE);
+        return (Date) get(YahooAttributesDefinition.BIRTHDATE);
     }
     
     public Date getCreated() {
-        return (Date) this.attributes.get(YahooAttributesDefinition.CREATED);
+        return (Date) get(YahooAttributesDefinition.CREATED);
     }
     
-    public int getDisplayAge() {
-        return getSafeInt((Integer) this.attributes.get(YahooAttributesDefinition.DISPLAY_AGE));
-    }
-    
-    public boolean isDisplayAgeDefined() {
-        return this.attributes.get(YahooAttributesDefinition.DISPLAY_AGE) != null;
+    public Integer getDisplayAge() {
+        return (Integer) get(YahooAttributesDefinition.DISPLAY_AGE);
     }
     
     public List<YahooDisclosure> getDisclosures() {
-        return (List<YahooDisclosure>) this.attributes.get(YahooAttributesDefinition.DISCLOSURES);
+        return (List<YahooDisclosure>) get(YahooAttributesDefinition.DISCLOSURES);
     }
     
     public List<YahooEmail> getEmails() {
-        return (List<YahooEmail>) this.attributes.get(YahooAttributesDefinition.EMAILS);
+        return (List<YahooEmail>) get(YahooAttributesDefinition.EMAILS);
     }
     
     public YahooImage getImage() {
-        return (YahooImage) this.attributes.get(YahooAttributesDefinition.IMAGE);
+        return (YahooImage) get(YahooAttributesDefinition.IMAGE);
     }
     
     public List<YahooInterest> getInterests() {
-        return (List<YahooInterest>) this.attributes.get(YahooAttributesDefinition.INTERESTS);
+        return (List<YahooInterest>) get(YahooAttributesDefinition.INTERESTS);
     }
     
-    public boolean isConnected() {
-        return getSafeBoolean((Boolean) this.attributes.get(YahooAttributesDefinition.IS_CONNECTED));
-    }
-    
-    public boolean isConnectedDefined() {
-        return this.attributes.get(YahooAttributesDefinition.IS_CONNECTED) != null;
+    public Boolean getIsConnected() {
+        return (Boolean) get(YahooAttributesDefinition.IS_CONNECTED);
     }
     
     public Date getMemberSince() {
-        return (Date) this.attributes.get(YahooAttributesDefinition.MEMBER_SINCE);
+        return (Date) get(YahooAttributesDefinition.MEMBER_SINCE);
     }
     
     public String getTimeZone() {
-        return (String) this.attributes.get(YahooAttributesDefinition.TIME_ZONE);
+        return (String) get(YahooAttributesDefinition.TIME_ZONE);
     }
     
     public Date getUpdated() {
-        return (Date) this.attributes.get(YahooAttributesDefinition.UPDATED);
+        return (Date) get(YahooAttributesDefinition.UPDATED);
     }
     
     public String getUri() {
-        return (String) this.attributes.get(YahooAttributesDefinition.URI);
+        return (String) get(YahooAttributesDefinition.URI);
     }
 }

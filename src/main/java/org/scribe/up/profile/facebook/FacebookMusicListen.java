@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class FacebookMusicListen extends JsonObject {
     
-    private static final long serialVersionUID = 2332802656010217804L;
+    private static final long serialVersionUID = 3904637830042371121L;
     
     private String id;
     
@@ -115,11 +115,7 @@ public final class FacebookMusicListen extends JsonObject {
         return this.type;
     }
     
-    public boolean getNoFeedStory() {
-        return getSafeBoolean(this.noFeedStory);
-    }
-    
-    public boolean isNoFeedStoryDefined() {
-        return this.noFeedStory != null;
+    public Boolean getNoFeedStory() {
+        return this.noFeedStory;
     }
 }

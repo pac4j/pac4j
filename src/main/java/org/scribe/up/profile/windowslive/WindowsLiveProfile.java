@@ -19,10 +19,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Windows Live with appropriate getters.<br />
@@ -103,15 +103,15 @@ public class WindowsLiveProfile extends BaseOAuthProfile implements CommonProfil
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get(WindowsLiveAttributesDefinition.FIRST_NAME);
+        return (String) get(WindowsLiveAttributesDefinition.FIRST_NAME);
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get(WindowsLiveAttributesDefinition.LAST_NAME);
+        return (String) get(WindowsLiveAttributesDefinition.LAST_NAME);
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(WindowsLiveAttributesDefinition.NAME);
+        return (String) get(WindowsLiveAttributesDefinition.NAME);
     }
     
     public String getUsername() {
@@ -119,11 +119,11 @@ public class WindowsLiveProfile extends BaseOAuthProfile implements CommonProfil
     }
     
     public Gender getGender() {
-        return (Gender) this.attributes.get(WindowsLiveAttributesDefinition.GENDER);
+        return (Gender) get(WindowsLiveAttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get(WindowsLiveAttributesDefinition.LOCALE);
+        return (Locale) get(WindowsLiveAttributesDefinition.LOCALE);
     }
     
     public String getPictureUrl() {
@@ -131,7 +131,7 @@ public class WindowsLiveProfile extends BaseOAuthProfile implements CommonProfil
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(WindowsLiveAttributesDefinition.LINK);
+        return (String) get(WindowsLiveAttributesDefinition.LINK);
     }
     
     public String getLocation() {
@@ -139,6 +139,6 @@ public class WindowsLiveProfile extends BaseOAuthProfile implements CommonProfil
     }
     
     public Date getUpdatedTime() {
-        return (Date) this.attributes.get(WindowsLiveAttributesDefinition.UPDATED_TIME);
+        return (Date) get(WindowsLiveAttributesDefinition.UPDATED_TIME);
     }
 }

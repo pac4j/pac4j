@@ -19,11 +19,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.Color;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Twitter with appropriate getters.<br />
@@ -81,108 +81,60 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <th colspan="2">More specific attributes</th>
  * </tr>
  * <tr>
- * <td>boolean isContributorsEnabled()</td>
+ * <td>Boolean getContributorsEnabled()</td>
  * <td>the <i>contributors_enabled</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isContributorsEnabledDefined()</td>
- * <td>if the <i>contributors_enabled</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Date getCreatedAt()</td>
  * <td>the <i>created_at</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isDefaultProfile()</td>
+ * <td>Boolean getDefaultProfile()</td>
  * <td>the <i>default_profile</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isDefaultProfileDefined()</td>
- * <td>if the <i>default_profile</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isDefaultProfileImage()</td>
+ * <td>Boolean getDefaultProfileImage()</td>
  * <td>the <i>default_profile_image</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isDefaultProfileImageDefined()</td>
- * <td>if the <i>default_profile_image</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getDescription()</td>
  * <td>the <i>description</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getFavouritesCount()</td>
+ * <td>Integer getFavouritesCount()</td>
  * <td>the <i>favourites_count</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isFavouritesCountDefined()</td>
- * <td>if the <i>favourites_count</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isFollowRequestSent()</td>
+ * <td>Boolean getFollowRequestSent()</td>
  * <td>the <i>follow_request_sent</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isFollowRequestSentDefined()</td>
- * <td>if the <i>follow_request_sent</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getFollowersCount()</td>
+ * <td>Integer getFollowersCount()</td>
  * <td>the <i>followers_count</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isFollowersCountDefined()</td>
- * <td>if the <i>followers_count</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isFollowing()</td>
+ * <td>Boolean getFollowing()</td>
  * <td>the <i>following</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isFollowingDefined()</td>
- * <td>if the <i>following</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getFriendsCount()</td>
+ * <td>Integer getFriendsCount()</td>
  * <td>the <i>friends_count</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isFriendsCountDefined()</td>
- * <td>if the <i>friends_count</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isGeoEnabled()</td>
+ * <td>Boolean getGeoEnabled()</td>
  * <td>the <i>geo_enabled</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isGeoEnabledDefined()</td>
- * <td>if the <i>geo_enabled</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isTranslator()</td>
+ * <td>Boolean getIsTranslator()</td>
  * <td>the <i>is_translator</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isTranslatorDefined()</td>
- * <td>if the <i>is_translator</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getListedCount()</td>
+ * <td>Integer getListedCount()</td>
  * <td>the <i>listed_count</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isListedCountDefined()</td>
- * <td>if the <i>listed_count</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isNotifications()</td>
+ * <td>Boolean getNotifications()</td>
  * <td>the <i>notifications</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isNotificationsDefined()</td>
- * <td>if the <i>notifications</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Color getProfileBackgroundColor()</td>
@@ -197,12 +149,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>profile_background_image_url_https</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isProfileBackgroundTile()</td>
+ * <td>Boolean getProfileBackgroundTile()</td>
  * <td>the <i>profile_background_tile</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isProfileBackgroundTileDefined()</td>
- * <td>if the <i>profile_background_tile</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getProfileImageUrlHttps()</td>
@@ -225,56 +173,32 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>profile_text_color</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isProfileUseBackgroundImage()</td>
+ * <td>Boolean getProfileUseBackgroundImage()</td>
  * <td>the <i>profile_use_background_image</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isProfileUseBackgroundImageDefined()</td>
- * <td>if the <i>profile_use_background_image</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isProtected()</td>
+ * <td>Boolean getProtected()</td>
  * <td>the <i>protected</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isProtectedDefined()</td>
- * <td>if the <i>protected</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isShowAllInlineMedia()</td>
+ * <td>Boolean getShowAllInlineMedia()</td>
  * <td>the <i>show_all_inline_media</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isShowAllInlineMediaDefined()</td>
- * <td>if the <i>show_all_inline_media</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getStatusesCount()</td>
+ * <td>Integer getStatusesCount()</td>
  * <td>the <i>statuses_count</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isStatusesCountDefined()</td>
- * <td>if the <i>statuses_count</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getTimeZone()</td>
  * <td>the <i>time_zone</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getUtcOffset()</td>
+ * <td>Integer getUtcOffset()</td>
  * <td>the <i>utc_offset</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isUtcOffsetDefined()</td>
- * <td>if the <i>utc_offset</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>boolean isVerified()</td>
+ * <td>Boolean getVerified()</td>
  * <td>the <i>verified</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isVerifiedDefined()</td>
- * <td>if the <i>verified</i> attribute exists</td>
  * </tr>
  * </table>
  * 
@@ -284,7 +208,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
  */
 public class TwitterProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -6860801091032173469L;
+    private static final long serialVersionUID = 3188083558717904310L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -304,11 +228,11 @@ public class TwitterProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.NAME);
+        return (String) get(TwitterAttributesDefinition.NAME);
     }
     
     public String getUsername() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.SCREEN_NAME);
+        return (String) get(TwitterAttributesDefinition.SCREEN_NAME);
     }
     
     public Gender getGender() {
@@ -316,214 +240,138 @@ public class TwitterProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get(TwitterAttributesDefinition.LANG);
+        return (Locale) get(TwitterAttributesDefinition.LANG);
     }
     
     public String getPictureUrl() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.PROFILE_IMAGE_URL);
+        return (String) get(TwitterAttributesDefinition.PROFILE_IMAGE_URL);
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.URL);
+        return (String) get(TwitterAttributesDefinition.URL);
     }
     
     public String getLocation() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.LOCATION);
+        return (String) get(TwitterAttributesDefinition.LOCATION);
     }
     
-    public boolean isContributorsEnabled() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.CONTRIBUTORS_ENABLED));
-    }
-    
-    public boolean isContributorsEnabledDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.CONTRIBUTORS_ENABLED) != null;
+    public Boolean getContributorsEnabled() {
+        return (Boolean) get(TwitterAttributesDefinition.CONTRIBUTORS_ENABLED);
     }
     
     public Date getCreatedAt() {
-        return (Date) this.attributes.get(TwitterAttributesDefinition.CREATED_AT);
+        return (Date) get(TwitterAttributesDefinition.CREATED_AT);
     }
     
-    public boolean isDefaultProfile() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.DEFAULT_PROFILE));
+    public Boolean getDefaultProfile() {
+        return (Boolean) get(TwitterAttributesDefinition.DEFAULT_PROFILE);
     }
     
-    public boolean isDefaultProfileDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.DEFAULT_PROFILE) != null;
-    }
-    
-    public boolean isDefaultProfileImage() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.DEFAULT_PROFILE_IMAGE));
-    }
-    
-    public boolean isDefaultProfileImageDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.DEFAULT_PROFILE_IMAGE) != null;
+    public Boolean getDefaultProfileImage() {
+        return (Boolean) get(TwitterAttributesDefinition.DEFAULT_PROFILE_IMAGE);
     }
     
     public String getDescription() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.DESCRIPTION);
+        return (String) get(TwitterAttributesDefinition.DESCRIPTION);
     }
     
-    public int getFavouritesCount() {
-        return getSafeInt((Integer) this.attributes.get(TwitterAttributesDefinition.FAVOURITES_COUNT));
+    public Integer getFavouritesCount() {
+        return (Integer) get(TwitterAttributesDefinition.FAVOURITES_COUNT);
     }
     
-    public boolean isFavouritesCountDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.FAVOURITES_COUNT) != null;
+    public Boolean getFollowRequestSent() {
+        return (Boolean) get(TwitterAttributesDefinition.FOLLOW_REQUEST_SENT);
     }
     
-    public boolean isFollowRequestSent() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.FOLLOW_REQUEST_SENT));
+    public Integer getFollowersCount() {
+        return (Integer) get(TwitterAttributesDefinition.FOLLOWERS_COUNT);
     }
     
-    public boolean isFollowRequestSentDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.FOLLOW_REQUEST_SENT) != null;
+    public Boolean getFollowing() {
+        return (Boolean) get(TwitterAttributesDefinition.FOLLOWING);
     }
     
-    public int getFollowersCount() {
-        return getSafeInt((Integer) this.attributes.get(TwitterAttributesDefinition.FOLLOWERS_COUNT));
+    public Integer getFriendsCount() {
+        return (Integer) get(TwitterAttributesDefinition.FRIENDS_COUNT);
     }
     
-    public boolean isFollowersCountDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.FOLLOWERS_COUNT) != null;
+    public Boolean getGeoEnabled() {
+        return (Boolean) get(TwitterAttributesDefinition.GEO_ENABLED);
     }
     
-    public boolean isFollowing() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.FOLLOWING));
+    public Boolean getIsTranslator() {
+        return (Boolean) get(TwitterAttributesDefinition.IS_TRANSLATOR);
     }
     
-    public boolean isFollowingDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.FOLLOWING) != null;
+    public Integer getListedCount() {
+        return (Integer) get(TwitterAttributesDefinition.LISTED_COUNT);
     }
     
-    public int getFriendsCount() {
-        return getSafeInt((Integer) this.attributes.get(TwitterAttributesDefinition.FRIENDS_COUNT));
-    }
-    
-    public boolean isFriendsCountDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.FRIENDS_COUNT) != null;
-    }
-    
-    public boolean isGeoEnabled() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.GEO_ENABLED));
-    }
-    
-    public boolean isGeoEnabledDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.GEO_ENABLED) != null;
-    }
-    
-    public boolean isTranslator() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.IS_TRANSLATOR));
-    }
-    
-    public boolean isTranslatorDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.IS_TRANSLATOR) != null;
-    }
-    
-    public int getListedCount() {
-        return getSafeInt((Integer) this.attributes.get(TwitterAttributesDefinition.LISTED_COUNT));
-    }
-    
-    public boolean isListedCountDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.LISTED_COUNT) != null;
-    }
-    
-    public boolean isNotifications() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.NOTIFICATIONS));
-    }
-    
-    public boolean isNotificationsDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.NOTIFICATIONS) != null;
+    public Boolean getNotifications() {
+        return (Boolean) get(TwitterAttributesDefinition.NOTIFICATIONS);
     }
     
     public Color getProfileBackgroundColor() {
-        return (Color) this.attributes.get(TwitterAttributesDefinition.PROFILE_BACKGROUND_COLOR);
+        return (Color) get(TwitterAttributesDefinition.PROFILE_BACKGROUND_COLOR);
     }
     
     public String getProfileBackgroundImageUrl() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.PROFILE_BACKGROUND_IMAGE_URL);
+        return (String) get(TwitterAttributesDefinition.PROFILE_BACKGROUND_IMAGE_URL);
     }
     
     public String getProfileBackgroundImageUrlHttps() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.PROFILE_BACKGROUND_IMAGE_URL_HTTPS);
+        return (String) get(TwitterAttributesDefinition.PROFILE_BACKGROUND_IMAGE_URL_HTTPS);
     }
     
-    public boolean isProfileBackgroundTile() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.PROFILE_BACKGROUND_TILE));
-    }
-    
-    public boolean isProfileBackgroundTileDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.PROFILE_BACKGROUND_TILE) != null;
+    public Boolean getProfileBackgroundTile() {
+        return (Boolean) get(TwitterAttributesDefinition.PROFILE_BACKGROUND_TILE);
     }
     
     public String getProfileImageUrlHttps() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.PROFILE_IMAGE_URL_HTTPS);
+        return (String) get(TwitterAttributesDefinition.PROFILE_IMAGE_URL_HTTPS);
     }
     
     public Color getProfileLinkColor() {
-        return (Color) this.attributes.get(TwitterAttributesDefinition.PROFILE_LINK_COLOR);
+        return (Color) get(TwitterAttributesDefinition.PROFILE_LINK_COLOR);
     }
     
     public Color getProfileSidebarBorderColor() {
-        return (Color) this.attributes.get(TwitterAttributesDefinition.PROFILE_SIDEBAR_BORDER_COLOR);
+        return (Color) get(TwitterAttributesDefinition.PROFILE_SIDEBAR_BORDER_COLOR);
     }
     
     public Color getProfileSidebarFillColor() {
-        return (Color) this.attributes.get(TwitterAttributesDefinition.PROFILE_SIDEBAR_FILL_COLOR);
+        return (Color) get(TwitterAttributesDefinition.PROFILE_SIDEBAR_FILL_COLOR);
     }
     
     public Color getProfileTextColor() {
-        return (Color) this.attributes.get(TwitterAttributesDefinition.PROFILE_TEXT_COLOR);
+        return (Color) get(TwitterAttributesDefinition.PROFILE_TEXT_COLOR);
     }
     
-    public boolean isProfileUseBackgroundImage() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.PROFILE_USE_BACKGROUND_IMAGE));
+    public Boolean getProfileUseBackgroundImage() {
+        return (Boolean) get(TwitterAttributesDefinition.PROFILE_USE_BACKGROUND_IMAGE);
     }
     
-    public boolean isProfileUseBackgroundImageDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.PROFILE_USE_BACKGROUND_IMAGE) != null;
+    public Boolean getProtected() {
+        return (Boolean) get(TwitterAttributesDefinition.PROTECTED);
     }
     
-    public boolean isProtected() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.PROTECTED));
+    public Boolean getShowAllInlineMedia() {
+        return (Boolean) get(TwitterAttributesDefinition.SHOW_ALL_INLINE_MEDIA);
     }
     
-    public boolean isProtectedDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.PROTECTED) != null;
-    }
-    
-    public boolean isShowAllInlineMedia() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.SHOW_ALL_INLINE_MEDIA));
-    }
-    
-    public boolean isShowAllInlineMediaDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.SHOW_ALL_INLINE_MEDIA) != null;
-    }
-    
-    public int getStatusesCount() {
-        return getSafeInt((Integer) this.attributes.get(TwitterAttributesDefinition.STATUSES_COUNT));
-    }
-    
-    public boolean isStatusesCountDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.STATUSES_COUNT) != null;
+    public Integer getStatusesCount() {
+        return (Integer) get(TwitterAttributesDefinition.STATUSES_COUNT);
     }
     
     public String getTimeZone() {
-        return (String) this.attributes.get(TwitterAttributesDefinition.TIME_ZONE);
+        return (String) get(TwitterAttributesDefinition.TIME_ZONE);
     }
     
-    public int getUtcOffset() {
-        return getSafeInt((Integer) this.attributes.get(TwitterAttributesDefinition.UTC_OFFSET));
+    public Integer getUtcOffset() {
+        return (Integer) get(TwitterAttributesDefinition.UTC_OFFSET);
     }
     
-    public boolean isUtcOffsetDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.UTC_OFFSET) != null;
-    }
-    
-    public boolean isVerified() {
-        return getSafeBoolean((Boolean) this.attributes.get(TwitterAttributesDefinition.VERIFIED));
-    }
-    
-    public boolean isVerifiedDefined() {
-        return this.attributes.get(TwitterAttributesDefinition.VERIFIED) != null;
+    public Boolean getVerified() {
+        return (Boolean) get(TwitterAttributesDefinition.VERIFIED);
     }
 }

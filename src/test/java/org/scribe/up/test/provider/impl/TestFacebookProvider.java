@@ -95,11 +95,10 @@ public class TestFacebookProvider extends TestProvider {
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertEquals("mFoMgGkdK90l07Mw9TtR6NgVXsI", profile.getThirdPartyId());
-        assertEquals(1, profile.getTimezone());
+        assertEquals(1, profile.getTimezone().intValue());
         assertEquals(CommonHelper.getFormattedDate(1343375150000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
-        assertFalse(profile.isVerified());
-        assertFalse(profile.isVerifiedDefined());
+        assertNull(profile.getVerified());
         assertEquals("A propos de moi", profile.getBio());
         assertEquals("03/10/1979", profile.getBirthday().toString());
         final List<FacebookEducation> educations = profile.getEducation();
@@ -176,13 +175,11 @@ public class TestFacebookProvider extends TestProvider {
                      album.getLink());
         assertEquals("168023156660068", album.getCoverPhoto());
         assertEquals("everyone", album.getPrivacy());
-        assertEquals(1, album.getCount());
-        assertTrue(album.isCountDefined());
+        assertEquals(1, album.getCount().intValue());
         assertEquals("profile", album.getType());
         assertEquals(1336472634000L, album.getCreatedTime().getTime());
         assertEquals(1336472660000L, album.getUpdatedTime().getTime());
-        assertFalse(album.isCanUpload());
-        assertTrue(album.isCanUploadDefined());
+        assertFalse(album.getCanUpload());
         final List<FacebookEvent> events = profile.getEvents();
         assertEquals(1, events.size());
         final FacebookEvent event = events.get(0);
@@ -194,21 +191,17 @@ public class TestFacebookProvider extends TestProvider {
         assertNotNull(event.getEndTime());
         final List<FacebookGroup> groups = profile.getGroups();
         final FacebookGroup group = groups.get(0);
-        assertEquals(1, group.getVersion());
-        assertTrue(group.isVersionDefined());
+        assertEquals(1, group.getVersion().intValue());
         assertEquals("Dev ScribeUP", group.getName());
         assertEquals("167694120024728", group.getId());
-        assertTrue(group.isAdministrator());
-        assertTrue(group.isAdministratorDefined());
-        assertEquals(1, group.getBookmarkOrder());
-        assertTrue(group.isBookmarkOrderDefined());
+        assertTrue(group.getAdministrator());
+        assertEquals(1, group.getBookmarkOrder().intValue());
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
         assertEquals(4, musicListens.size());
         final FacebookPicture picture = profile.getPicture();
         assertEquals("http://profile.ak.fbcdn.net/hprofile-ak-ash3/157632_100003571536393_1742338663_q.jpg",
                      picture.getUrl());
-        assertFalse(picture.isSilhouette());
-        assertTrue(picture.isSilhouetteDefined());
+        assertFalse(picture.getIsSilhouette());
         assertEquals(37, profile.getAttributes().size());
     }
 }

@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class YahooAddress extends JsonObject {
     
-    private static final long serialVersionUID = -3709364858127649679L;
+    private static final long serialVersionUID = 812876531690531691L;
     
     private Integer id;
     
@@ -60,20 +60,12 @@ public final class YahooAddress extends JsonObject {
         this.type = Converters.stringConverter.convertFromJson(json, "type");
     }
     
-    public int getId() {
-        return getSafeInt(this.id);
+    public Integer getId() {
+        return this.id;
     }
     
-    public boolean isIdDefined() {
-        return this.id != null;
-    }
-    
-    public boolean isCurrent() {
-        return getSafeBoolean(this.current);
-    }
-    
-    public boolean isCurrentDefined() {
-        return this.current != null;
+    public Boolean getCurrent() {
+        return this.current;
     }
     
     public Locale getCountry() {

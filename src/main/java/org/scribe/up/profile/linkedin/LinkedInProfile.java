@@ -18,10 +18,10 @@ package org.scribe.up.profile.linkedin;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for LinkedIn with appropriate getters.<br />
@@ -102,11 +102,11 @@ public class LinkedInProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get(LinkedInAttributesDefinition.FIRST_NAME);
+        return (String) get(LinkedInAttributesDefinition.FIRST_NAME);
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get(LinkedInAttributesDefinition.LAST_NAME);
+        return (String) get(LinkedInAttributesDefinition.LAST_NAME);
     }
     
     public String getDisplayName() {
@@ -130,7 +130,7 @@ public class LinkedInProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(LinkedInAttributesDefinition.URL);
+        return (String) get(LinkedInAttributesDefinition.URL);
     }
     
     public String getLocation() {
@@ -138,6 +138,6 @@ public class LinkedInProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getHeadline() {
-        return (String) this.attributes.get(LinkedInAttributesDefinition.HEADLINE);
+        return (String) get(LinkedInAttributesDefinition.HEADLINE);
     }
 }

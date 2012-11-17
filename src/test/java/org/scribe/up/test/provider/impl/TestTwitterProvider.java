@@ -74,55 +74,38 @@ public class TestTwitterProvider extends TestProvider {
                             Locale.FRENCH,
                             "http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                             "http://github.com/leleuj", "New York");
-        assertFalse(profile.isContributorsEnabled());
-        assertTrue(profile.isContributorsEnabledDefined());
+        assertFalse(profile.getContributorsEnabled());
         assertEquals(CommonHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
             .getCreatedAt().toString());
-        assertTrue(profile.isDefaultProfile());
-        assertTrue(profile.isDefaultProfileDefined());
-        assertTrue(profile.isDefaultProfileImage());
-        assertTrue(profile.isDefaultProfileImageDefined());
+        assertTrue(profile.getDefaultProfile());
+        assertTrue(profile.getDefaultProfileImage());
         assertEquals("biographie", profile.getDescription());
-        assertEquals(0, profile.getFavouritesCount());
-        assertTrue(profile.isFavouritesCountDefined());
-        assertFalse(profile.isFollowRequestSent());
-        assertTrue(profile.isFollowRequestSentDefined());
-        assertEquals(0, profile.getFollowersCount());
-        assertTrue(profile.isFollowersCountDefined());
-        assertFalse(profile.isFollowing());
-        assertTrue(profile.isFollowingDefined());
-        assertEquals(0, profile.getFriendsCount());
-        assertTrue(profile.isFriendsCountDefined());
-        assertFalse(profile.isGeoEnabled());
-        assertTrue(profile.isGeoEnabledDefined());
-        assertFalse(profile.isTranslator());
-        assertTrue(profile.isTranslatorDefined());
-        assertEquals(0, profile.getListedCount());
-        assertTrue(profile.isListedCountDefined());
-        assertFalse(profile.isNotifications());
-        assertTrue(profile.isNotificationsDefined());
+        assertEquals(0, profile.getFavouritesCount().intValue());
+        assertFalse(profile.getFollowRequestSent());
+        assertEquals(0, profile.getFollowersCount().intValue());
+        assertFalse(profile.getFollowing());
+        assertEquals(0, profile.getFriendsCount().intValue());
+        assertFalse(profile.getGeoEnabled());
+        assertFalse(profile.getIsTranslator());
+        assertEquals(0, profile.getListedCount().intValue());
+        assertFalse(profile.getNotifications());
         assertTrue(profile.getProfileBackgroundColor() instanceof Color);
         assertEquals("http://a0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrl());
         assertEquals("https://si0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrlHttps());
-        assertFalse(profile.isProfileBackgroundTile());
+        assertFalse(profile.getProfileBackgroundTile());
         assertEquals("https://si0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                      profile.getProfileImageUrlHttps());
         assertTrue(profile.getProfileLinkColor() instanceof Color);
         assertTrue(profile.getProfileSidebarBorderColor() instanceof Color);
         assertTrue(profile.getProfileSidebarFillColor() instanceof Color);
         assertTrue(profile.getProfileTextColor() instanceof Color);
-        assertTrue(profile.isProfileUseBackgroundImage());
-        assertTrue(profile.isProfileUseBackgroundImageDefined());
-        assertTrue(profile.isProtected());
-        assertTrue(profile.isProtectedDefined());
-        assertFalse(profile.isShowAllInlineMedia());
-        assertFalse(profile.isShowAllInlineMediaDefined());
-        assertEquals(0, profile.getStatusesCount());
-        assertTrue(profile.isStatusesCountDefined());
+        assertTrue(profile.getProfileUseBackgroundImage());
+        assertTrue(profile.getProtected());
+        assertNull(profile.getShowAllInlineMedia());
+        assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(3600, profile.getUtcOffset());
-        assertFalse(profile.isVerified());
-        assertTrue(profile.isVerifiedDefined());
+        assertEquals(3600, profile.getUtcOffset().intValue());
+        assertFalse(profile.getVerified());
         assertEquals(36, profile.getAttributes().size());
     }
 }

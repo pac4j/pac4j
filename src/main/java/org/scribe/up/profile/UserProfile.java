@@ -30,15 +30,15 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile extends SafeGetterObject implements Serializable {
+public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = -9066007858016414486L;
+    private static final long serialVersionUID = 6262068309186516801L;
     
     protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
     protected String id;
     
-    protected Map<String, Object> attributes = new HashMap<String, Object>();
+    protected final Map<String, Object> attributes = new HashMap<String, Object>();
     
     public transient static final String SEPARATOR = "#";
     
@@ -142,6 +142,16 @@ public class UserProfile extends SafeGetterObject implements Serializable {
      */
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(this.attributes);
+    }
+    
+    /**
+     * Return the attribute with name.
+     * 
+     * @param name
+     * @return the attribute with name
+     */
+    protected Object get(final String name) {
+        return this.attributes.get(name);
     }
     
     @Override

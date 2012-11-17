@@ -19,10 +19,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Google (using OAuth protocol version 2) with appropriate getters.<br />
@@ -80,12 +80,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <th colspan="2">More specific attributes</th>
  * </tr>
  * <tr>
- * <td>boolean isVerifiedEmail()</td>
+ * <td>Boolean getVerifiedEmail()</td>
  * <td>the <i>verified_email</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isVerifiedEmailDefined()</td>
- * <td>if the <i>verified_email</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Date getBirthday()</td>
@@ -99,7 +95,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
  */
 public class Google2Profile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 6377208928683804391L;
+    private static final long serialVersionUID = -548478189554708977L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -107,19 +103,19 @@ public class Google2Profile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getEmail() {
-        return (String) this.attributes.get(Google2AttributesDefinition.EMAIL);
+        return (String) get(Google2AttributesDefinition.EMAIL);
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get(Google2AttributesDefinition.GIVEN_NAME);
+        return (String) get(Google2AttributesDefinition.GIVEN_NAME);
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get(Google2AttributesDefinition.FAMILY_NAME);
+        return (String) get(Google2AttributesDefinition.FAMILY_NAME);
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(Google2AttributesDefinition.NAME);
+        return (String) get(Google2AttributesDefinition.NAME);
     }
     
     public String getUsername() {
@@ -127,34 +123,30 @@ public class Google2Profile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public Gender getGender() {
-        return (Gender) this.attributes.get(Google2AttributesDefinition.GENDER);
+        return (Gender) get(Google2AttributesDefinition.GENDER);
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get(Google2AttributesDefinition.LOCALE);
+        return (Locale) get(Google2AttributesDefinition.LOCALE);
     }
     
     public String getPictureUrl() {
-        return (String) this.attributes.get(Google2AttributesDefinition.PICTURE);
+        return (String) get(Google2AttributesDefinition.PICTURE);
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(Google2AttributesDefinition.LINK);
+        return (String) get(Google2AttributesDefinition.LINK);
     }
     
     public String getLocation() {
         return null;
     }
     
-    public boolean isVerifiedEmail() {
-        return getSafeBoolean((Boolean) this.attributes.get(Google2AttributesDefinition.VERIFIED_EMAIL));
-    }
-    
-    public boolean isVerifiedEmailDefined() {
-        return this.attributes.get(Google2AttributesDefinition.VERIFIED_EMAIL) != null;
+    public Boolean getVerifiedEmail() {
+        return (Boolean) get(Google2AttributesDefinition.VERIFIED_EMAIL);
     }
     
     public Date getBirthday() {
-        return (Date) this.attributes.get(Google2AttributesDefinition.BIRTHDAY);
+        return (Date) get(Google2AttributesDefinition.BIRTHDAY);
     }
 }

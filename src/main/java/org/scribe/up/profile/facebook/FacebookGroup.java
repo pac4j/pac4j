@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class FacebookGroup extends JsonObject {
     
-    private static final long serialVersionUID = 6817033467124962401L;
+    private static final long serialVersionUID = -846266834053161809L;
     
     private Integer version;
     
@@ -49,12 +49,8 @@ public final class FacebookGroup extends JsonObject {
         this.bookmarkOrder = Converters.integerConverter.convertFromJson(json, "bookmark_order");
     }
     
-    public int getVersion() {
-        return getSafeInt(this.version);
-    }
-    
-    public boolean isVersionDefined() {
-        return this.version != null;
+    public Integer getVersion() {
+        return this.version;
     }
     
     public String getName() {
@@ -65,19 +61,11 @@ public final class FacebookGroup extends JsonObject {
         return this.id;
     }
     
-    public boolean isAdministrator() {
-        return getSafeBoolean(this.administrator);
+    public Boolean getAdministrator() {
+        return this.administrator;
     }
     
-    public boolean isAdministratorDefined() {
-        return this.administrator != null;
-    }
-    
-    public int getBookmarkOrder() {
-        return getSafeInt(this.bookmarkOrder);
-    }
-    
-    public boolean isBookmarkOrderDefined() {
-        return this.bookmarkOrder != null;
+    public Integer getBookmarkOrder() {
+        return this.bookmarkOrder;
     }
 }

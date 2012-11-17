@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for Google (using OAuth protocol version 1) with appropriate getters.<br />
@@ -80,12 +80,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <th colspan="2">More specific attributes</th>
  * </tr>
  * <tr>
- * <td>boolean isViewer()</td>
+ * <td>Boolean getIsViewer()</td>
  * <td>the <i>isViewer</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isViewerDefined()</td>
- * <td>if the <i>isViewer</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getFormatted()</td>
@@ -108,7 +104,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
 @SuppressWarnings("unchecked")
 public class GoogleProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 7339888014186855757L;
+    private static final long serialVersionUID = 5674515806714296361L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -120,15 +116,15 @@ public class GoogleProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getFirstName() {
-        return (String) this.attributes.get(GoogleAttributesDefinition.GIVEN_NAME);
+        return (String) get(GoogleAttributesDefinition.GIVEN_NAME);
     }
     
     public String getFamilyName() {
-        return (String) this.attributes.get(GoogleAttributesDefinition.FAMILY_NAME);
+        return (String) get(GoogleAttributesDefinition.FAMILY_NAME);
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(GoogleAttributesDefinition.DISPLAY_NAME);
+        return (String) get(GoogleAttributesDefinition.DISPLAY_NAME);
     }
     
     public String getUsername() {
@@ -144,34 +140,30 @@ public class GoogleProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getPictureUrl() {
-        return (String) this.attributes.get(GoogleAttributesDefinition.THUMBNAIL_URL);
+        return (String) get(GoogleAttributesDefinition.THUMBNAIL_URL);
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(GoogleAttributesDefinition.PROFILE_URL);
+        return (String) get(GoogleAttributesDefinition.PROFILE_URL);
     }
     
     public String getLocation() {
         return null;
     }
     
-    public boolean isViewer() {
-        return getSafeBoolean((Boolean) this.attributes.get(GoogleAttributesDefinition.IS_VIEWER));
-    }
-    
-    public boolean isViewerDefined() {
-        return this.attributes.get(GoogleAttributesDefinition.IS_VIEWER) != null;
+    public Boolean getIsViewer() {
+        return (Boolean) get(GoogleAttributesDefinition.IS_VIEWER);
     }
     
     public String getFormatted() {
-        return (String) this.attributes.get(GoogleAttributesDefinition.FORMATTED);
+        return (String) get(GoogleAttributesDefinition.FORMATTED);
     }
     
     public List<GoogleObject> getUrls() {
-        return (List<GoogleObject>) this.attributes.get(GoogleAttributesDefinition.URLS);
+        return (List<GoogleObject>) get(GoogleAttributesDefinition.URLS);
     }
     
     public List<GoogleObject> getPhotos() {
-        return (List<GoogleObject>) this.attributes.get(GoogleAttributesDefinition.PHOTOS);
+        return (List<GoogleObject>) get(GoogleAttributesDefinition.PHOTOS);
     }
 }

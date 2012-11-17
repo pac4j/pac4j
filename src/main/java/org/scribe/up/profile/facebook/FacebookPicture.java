@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class FacebookPicture extends JsonObject {
     
-    private static final long serialVersionUID = -7738310879692712575L;
+    private static final long serialVersionUID = -797546775636792491L;
     
     private String url;
     
@@ -29,11 +29,7 @@ public final class FacebookPicture extends JsonObject {
         return this.url;
     }
     
-    public boolean isSilhouette() {
-        return getSafeBoolean(this.isSilhouette);
-    }
-    
-    public boolean isSilhouetteDefined() {
-        return this.isSilhouette != null;
+    public Boolean getIsSilhouette() {
+        return this.isSilhouette;
     }
 }

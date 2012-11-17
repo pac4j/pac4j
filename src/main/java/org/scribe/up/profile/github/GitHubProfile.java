@@ -19,10 +19,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for GitHub with appropriate getters.<br />
@@ -84,84 +84,48 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>company</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getFollowing()</td>
+ * <td>Integer getFollowing()</td>
  * <td>the <i>following</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isFollowingDefined()</td>
- * <td>if the <i>following</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getBlog()</td>
  * <td>the <i>blog</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getPublicRepos()</td>
+ * <td>Integer getPublicRepos()</td>
  * <td>the <i>public_repos</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isPublicReposDefined()</td>
- * <td>if the <i>public_repos</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getPublicGists()</td>
+ * <td>Integer getPublicGists()</td>
  * <td>the <i>public_gists</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isPublicGistsDefined()</td>
- * <td>if the <i>public_gists</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getDiskUsage()</td>
+ * <td>Integer getDiskUsage()</td>
  * <td>the <i>disk_usage</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isDiskUsageDefined()</td>
- * <td>if the <i>disk_usage</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getCollaborators()</td>
+ * <td>Integer getCollaborators()</td>
  * <td>the <i>collaborators</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isCollaboratorsDefined()</td>
- * <td>if the <i>collaborators</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>GitHubPlan getPlan()</td>
  * <td>the <i>plan</i> attribute</td>
  * </tr>
  * <tr>
- * <td>int getOwnedPrivateRepos()</td>
+ * <td>Integer getOwnedPrivateRepos()</td>
  * <td>the <i>owned_private_repos</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isOwnedPrivateReposDefined()</td>
- * <td>if the <i>owned_private_repos</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getTotalPrivateRepos()</td>
+ * <td>Integer getTotalPrivateRepos()</td>
  * <td>the <i>total_private_repos</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isTotalPrivateReposDefined()</td>
- * <td>if the <i>total_private_repos</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getPrivateGists()</td>
+ * <td>Integer getPrivateGists()</td>
  * <td>the <i>private_gists</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isPrivateGistsDefined()</td>
- * <td>if the <i>private_gists</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>int getFollowers()</td>
+ * <td>Integer getFollowers()</td>
  * <td>the <i>followers</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isFollowersDefined()</td>
- * <td>if the <i>followers</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>Date getCreatedAt()</td>
@@ -180,12 +144,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <td>the <i>url</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isHireable()</td>
+ * <td>Boolean getHireable()</td>
  * <td>the <i>hireable</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isHireableDefined()</td>
- * <td>if the <i>hireable</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>String getBio()</td>
@@ -199,7 +159,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
  */
 public class GitHubProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -5465364672798687297L;
+    private static final long serialVersionUID = -4727966916198223807L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -207,7 +167,7 @@ public class GitHubProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getEmail() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.EMAIL);
+        return (String) get(GitHubAttributesDefinition.EMAIL);
     }
     
     public String getFirstName() {
@@ -219,11 +179,11 @@ public class GitHubProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.NAME);
+        return (String) get(GitHubAttributesDefinition.NAME);
     }
     
     public String getUsername() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.LOGIN);
+        return (String) get(GitHubAttributesDefinition.LOGIN);
     }
     
     public Gender getGender() {
@@ -235,126 +195,86 @@ public class GitHubProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getPictureUrl() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.AVATAR_URL);
+        return (String) get(GitHubAttributesDefinition.AVATAR_URL);
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.HTML_URL);
+        return (String) get(GitHubAttributesDefinition.HTML_URL);
     }
     
     public String getLocation() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.LOCATION);
+        return (String) get(GitHubAttributesDefinition.LOCATION);
     }
     
     public String getCompany() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.COMPANY);
+        return (String) get(GitHubAttributesDefinition.COMPANY);
     }
     
-    public int getFollowing() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.FOLLOWING));
-    }
-    
-    public boolean isFollowingDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.FOLLOWING) != null;
+    public Integer getFollowing() {
+        return (Integer) get(GitHubAttributesDefinition.FOLLOWING);
     }
     
     public String getBlog() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.BLOG);
+        return (String) get(GitHubAttributesDefinition.BLOG);
     }
     
-    public int getPublicRepos() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.PUBLIC_REPOS));
+    public Integer getPublicRepos() {
+        return (Integer) get(GitHubAttributesDefinition.PUBLIC_REPOS);
     }
     
-    public boolean isPublicReposDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.PUBLIC_REPOS) != null;
+    public Integer getPublicGists() {
+        return (Integer) get(GitHubAttributesDefinition.PUBLIC_GISTS);
     }
     
-    public int getPublicGists() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.PUBLIC_GISTS));
+    public Integer getDiskUsage() {
+        return (Integer) get(GitHubAttributesDefinition.DISK_USAGE);
     }
     
-    public boolean isPublicGistsDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.PUBLIC_GISTS) != null;
-    }
-    
-    public int getDiskUsage() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.DISK_USAGE));
-    }
-    
-    public boolean isDiskUsageDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.DISK_USAGE) != null;
-    }
-    
-    public int getCollaborators() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.COLLABORATORS));
-    }
-    
-    public boolean isCollaboratorsDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.COLLABORATORS) != null;
+    public Integer getCollaborators() {
+        return (Integer) get(GitHubAttributesDefinition.COLLABORATORS);
     }
     
     public GitHubPlan getPlan() {
-        return (GitHubPlan) this.attributes.get(GitHubAttributesDefinition.PLAN);
+        return (GitHubPlan) get(GitHubAttributesDefinition.PLAN);
     }
     
-    public int getOwnedPrivateRepos() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPOS));
+    public Integer getOwnedPrivateRepos() {
+        return (Integer) get(GitHubAttributesDefinition.OWNED_PRIVATE_REPOS);
     }
     
-    public boolean isOwnedPrivateReposDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.OWNED_PRIVATE_REPOS) != null;
+    public Integer getTotalPrivateRepos() {
+        return (Integer) get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPOS);
     }
     
-    public int getTotalPrivateRepos() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPOS));
+    public Integer getPrivateGists() {
+        return (Integer) get(GitHubAttributesDefinition.PRIVATE_GISTS);
     }
     
-    public boolean isTotalPrivateReposDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.TOTAL_PRIVATE_REPOS) != null;
-    }
-    
-    public int getPrivateGists() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.PRIVATE_GISTS));
-    }
-    
-    public boolean isPrivateGistsDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.PRIVATE_GISTS) != null;
-    }
-    
-    public int getFollowers() {
-        return getSafeInt((Integer) this.attributes.get(GitHubAttributesDefinition.FOLLOWERS));
-    }
-    
-    public boolean isFollowersDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.FOLLOWERS) != null;
+    public Integer getFollowers() {
+        return (Integer) get(GitHubAttributesDefinition.FOLLOWERS);
     }
     
     public Date getCreatedAt() {
-        return (Date) this.attributes.get(GitHubAttributesDefinition.CREATED_AT);
+        return (Date) get(GitHubAttributesDefinition.CREATED_AT);
     }
     
     public String getType() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.TYPE);
+        return (String) get(GitHubAttributesDefinition.TYPE);
     }
     
     public String getGravatarId() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.GRAVATAR_ID);
+        return (String) get(GitHubAttributesDefinition.GRAVATAR_ID);
     }
     
     public String getUrl() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.URL);
+        return (String) get(GitHubAttributesDefinition.URL);
     }
     
-    public boolean isHireable() {
-        return getSafeBoolean((Boolean) this.attributes.get(GitHubAttributesDefinition.HIREABLE));
-    }
-    
-    public boolean isHireableDefined() {
-        return this.attributes.get(GitHubAttributesDefinition.HIREABLE) != null;
+    public Boolean getHireable() {
+        return (Boolean) get(GitHubAttributesDefinition.HIREABLE);
     }
     
     public String getBio() {
-        return (String) this.attributes.get(GitHubAttributesDefinition.BIO);
+        return (String) get(GitHubAttributesDefinition.BIO);
     }
 }

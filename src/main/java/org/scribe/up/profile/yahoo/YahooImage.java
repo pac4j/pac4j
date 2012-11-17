@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class YahooImage extends JsonObject {
     
-    private static final long serialVersionUID = 1532391469660371676L;
+    private static final long serialVersionUID = -5215170177257029195L;
     
     private String imageUrl;
     
@@ -50,20 +50,12 @@ public final class YahooImage extends JsonObject {
         return this.imageUrl;
     }
     
-    public int getWidth() {
-        return getSafeInt(this.width);
+    public Integer getWidth() {
+        return this.width;
     }
     
-    public boolean isWidthDefined() {
-        return this.width != null;
-    }
-    
-    public int getHeight() {
-        return getSafeInt(this.height);
-    }
-    
-    public boolean isHeightDefined() {
-        return this.height != null;
+    public Integer getHeight() {
+        return this.height;
     }
     
     public String getSize() {

@@ -56,8 +56,8 @@ public final class TestYahooAddress extends TestCase {
     public void testNull() {
         final YahooAddress yahooAddress = new YahooAddress();
         yahooAddress.buildFrom(null);
-        assertEquals(0, yahooAddress.getId());
-        assertFalse(yahooAddress.isCurrent());
+        assertNull(yahooAddress.getId());
+        assertNull(yahooAddress.getCurrent());
         assertNull(yahooAddress.getCountry());
         assertNull(yahooAddress.getState());
         assertNull(yahooAddress.getCity());
@@ -69,8 +69,8 @@ public final class TestYahooAddress extends TestCase {
     public void testBadJson() {
         final YahooAddress yahooAddress = new YahooAddress();
         yahooAddress.buildFrom(JsonHelper.getFirstNode(BAD_JSON));
-        assertEquals(0, yahooAddress.getId());
-        assertFalse(yahooAddress.isCurrent());
+        assertNull(yahooAddress.getId());
+        assertNull(yahooAddress.getCurrent());
         assertNull(yahooAddress.getCountry());
         assertNull(yahooAddress.getState());
         assertNull(yahooAddress.getCity());
@@ -82,8 +82,8 @@ public final class TestYahooAddress extends TestCase {
     public void testGoodJson() {
         final YahooAddress yahooAddress = new YahooAddress();
         yahooAddress.buildFrom(JsonHelper.getFirstNode(GOOD_JSON));
-        assertEquals(ID, yahooAddress.getId());
-        assertTrue(yahooAddress.isCurrent());
+        assertEquals(ID, yahooAddress.getId().intValue());
+        assertTrue(yahooAddress.getCurrent());
         assertEquals(COUNTRY, yahooAddress.getCountry());
         assertEquals(STATE, yahooAddress.getState());
         assertEquals(CITY, yahooAddress.getCity());

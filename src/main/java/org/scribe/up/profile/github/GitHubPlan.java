@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class GitHubPlan extends JsonObject {
     
-    private static final long serialVersionUID = -5333740286682038068L;
+    private static final long serialVersionUID = -4718500186419958716L;
     
     private String name;
     
@@ -50,27 +50,15 @@ public final class GitHubPlan extends JsonObject {
         return this.name;
     }
     
-    public int getCollaborators() {
-        return getSafeInt(this.collaborators);
+    public Integer getCollaborators() {
+        return this.collaborators;
     }
     
-    public boolean isCollaboratorsDefined() {
-        return this.collaborators != null;
+    public Integer getSpace() {
+        return this.space;
     }
     
-    public int getSpace() {
-        return getSafeInt(this.space);
-    }
-    
-    public boolean isSpaceDefined() {
-        return this.space != null;
-    }
-    
-    public int getPrivateRepos() {
-        return getSafeInt(this.privateRepos);
-    }
-    
-    public boolean isPrivateReposDefined() {
-        return this.privateRepos != null;
+    public Integer getPrivateRepos() {
+        return this.privateRepos;
     }
 }

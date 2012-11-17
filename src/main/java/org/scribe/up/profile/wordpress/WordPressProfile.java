@@ -18,10 +18,10 @@ package org.scribe.up.profile.wordpress;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for WordPress with appropriate getters.<br />
@@ -79,12 +79,8 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <th colspan="2">More specific attributes</th>
  * </tr>
  * <tr>
- * <td>int getPrimaryBlog()</td>
+ * <td>Integer getPrimaryBlog()</td>
  * <td>the <i>primary_blog</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isPrimaryBlogDefined()</td>
- * <td>if the <i>primary_blog</i> attribute exists</td>
  * </tr>
  * <tr>
  * <td>WordPressLinks getLinks()</td>
@@ -98,7 +94,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
  */
 public class WordPressProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = 3612911281745606079L;
+    private static final long serialVersionUID = 3032105545033626890L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -106,7 +102,7 @@ public class WordPressProfile extends BaseOAuthProfile implements CommonProfile 
     }
     
     public String getEmail() {
-        return (String) this.attributes.get(WordPressAttributesDefinition.EMAIL);
+        return (String) get(WordPressAttributesDefinition.EMAIL);
     }
     
     public String getFirstName() {
@@ -118,11 +114,11 @@ public class WordPressProfile extends BaseOAuthProfile implements CommonProfile 
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(WordPressAttributesDefinition.DISPLAY_NAME);
+        return (String) get(WordPressAttributesDefinition.DISPLAY_NAME);
     }
     
     public String getUsername() {
-        return (String) this.attributes.get(WordPressAttributesDefinition.USERNAME);
+        return (String) get(WordPressAttributesDefinition.USERNAME);
     }
     
     public Gender getGender() {
@@ -134,26 +130,22 @@ public class WordPressProfile extends BaseOAuthProfile implements CommonProfile 
     }
     
     public String getPictureUrl() {
-        return (String) this.attributes.get(WordPressAttributesDefinition.AVATAR_URL);
+        return (String) get(WordPressAttributesDefinition.AVATAR_URL);
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(WordPressAttributesDefinition.PROFILE_URL);
+        return (String) get(WordPressAttributesDefinition.PROFILE_URL);
     }
     
     public String getLocation() {
         return null;
     }
     
-    public int getPrimaryBlog() {
-        return getSafeInt((Integer) this.attributes.get(WordPressAttributesDefinition.PRIMARY_BLOG));
-    }
-    
-    public boolean isPrimaryBlogDefined() {
-        return this.attributes.get(WordPressAttributesDefinition.PRIMARY_BLOG) != null;
+    public Integer getPrimaryBlog() {
+        return (Integer) get(WordPressAttributesDefinition.PRIMARY_BLOG);
     }
     
     public WordPressLinks getLinks() {
-        return (WordPressLinks) this.attributes.get(WordPressAttributesDefinition.LINKS);
+        return (WordPressLinks) get(WordPressAttributesDefinition.LINKS);
     }
 }

@@ -70,13 +70,11 @@ public final class TestFacebookPhoto extends TestCase {
         assertNull(facebookPhoto.getLink());
         assertNull(facebookPhoto.getCoverPhoto());
         assertNull(facebookPhoto.getPrivacy());
-        assertEquals(0, facebookPhoto.getCount());
-        assertFalse(facebookPhoto.isCountDefined());
+        assertNull(facebookPhoto.getCount());
         assertNull(facebookPhoto.getType());
         assertNull(facebookPhoto.getCreatedTime());
         assertNull(facebookPhoto.getUpdatedTime());
-        assertFalse(facebookPhoto.isCanUpload());
-        assertFalse(facebookPhoto.isCanUploadDefined());
+        assertNull(facebookPhoto.getCanUpload());
     }
     
     public void testBadJson() {
@@ -88,13 +86,11 @@ public final class TestFacebookPhoto extends TestCase {
         assertNull(facebookPhoto.getLink());
         assertNull(facebookPhoto.getCoverPhoto());
         assertNull(facebookPhoto.getPrivacy());
-        assertEquals(0, facebookPhoto.getCount());
-        assertFalse(facebookPhoto.isCountDefined());
+        assertNull(facebookPhoto.getCount());
         assertNull(facebookPhoto.getType());
         assertNull(facebookPhoto.getCreatedTime());
         assertNull(facebookPhoto.getUpdatedTime());
-        assertFalse(facebookPhoto.isCanUpload());
-        assertFalse(facebookPhoto.isCanUploadDefined());
+        assertNull(facebookPhoto.getCanUpload());
     }
     
     public void testGoodJson() {
@@ -108,14 +104,12 @@ public final class TestFacebookPhoto extends TestCase {
         assertEquals(LINK, facebookPhoto.getLink());
         assertEquals(COVER_PHOTO, facebookPhoto.getCoverPhoto());
         assertEquals(PRIVACY, facebookPhoto.getPrivacy());
-        assertEquals(1, facebookPhoto.getCount());
-        assertTrue(facebookPhoto.isCountDefined());
+        assertEquals(1, facebookPhoto.getCount().intValue());
         assertEquals(TYPE, facebookPhoto.getType());
         assertEquals(Converters.dateConverter.convert(CREATED_TIME).toString(), facebookPhoto.getCreatedTime()
             .toString());
         assertEquals(Converters.dateConverter.convert(UPDATED_TIME).toString(), facebookPhoto.getUpdatedTime()
             .toString());
-        assertTrue(facebookPhoto.isCanUpload());
-        assertTrue(facebookPhoto.isCanUploadDefined());
+        assertTrue(facebookPhoto.getCanUpload());
     }
 }

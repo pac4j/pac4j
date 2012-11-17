@@ -88,6 +88,6 @@ public class CasOAuthWrapperProfile extends DefaultCommonProfile implements OAut
     }
     
     public String getAccessToken() {
-        return (String) this.attributes.get(OAuthAttributesDefinition.ACCESS_TOKEN);
+        return (String) get(OAuthAttributesDefinition.ACCESS_TOKEN);
     }
 }

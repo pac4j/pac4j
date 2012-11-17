@@ -18,10 +18,10 @@ package org.scribe.up.profile.dropbox;
 import java.util.Locale;
 
 import org.scribe.up.profile.AttributesDefinition;
+import org.scribe.up.profile.BaseOAuthProfile;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.OAuthAttributesDefinitions;
-import org.scribe.up.profile.BaseOAuthProfile;
 
 /**
  * This class is the user profile for DropBox with appropriate getters.<br />
@@ -79,28 +79,16 @@ import org.scribe.up.profile.BaseOAuthProfile;
  * <th colspan="2">More specific attributes</th>
  * </tr>
  * <tr>
- * <td>long getNormal()</td>
+ * <td>Long getNormal()</td>
  * <td>the <i>normal</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isNormalDefined()</td>
- * <td>if the <i>normal</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>long getQuota()</td>
+ * <td>Long getQuota()</td>
  * <td>the <i>quota</i> attribute</td>
  * </tr>
  * <tr>
- * <td>boolean isQuotaDefined()</td>
- * <td>if the <i>quota</i> attribute exists</td>
- * </tr>
- * <tr>
- * <td>long getShared()</td>
+ * <td>Long getShared()</td>
  * <td>the <i>shared</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean isSharedDefined()</td>
- * <td>if the <i>shared</i> attribute exists</td>
  * </tr>
  * </table>
  * 
@@ -110,7 +98,7 @@ import org.scribe.up.profile.BaseOAuthProfile;
  */
 public class DropBoxProfile extends BaseOAuthProfile implements CommonProfile {
     
-    private static final long serialVersionUID = -5148553965849104939L;
+    private static final long serialVersionUID = 818622588110145756L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -130,7 +118,7 @@ public class DropBoxProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getDisplayName() {
-        return (String) this.attributes.get(DropBoxAttributesDefinition.DISPLAY_NAME);
+        return (String) get(DropBoxAttributesDefinition.DISPLAY_NAME);
     }
     
     public String getUsername() {
@@ -142,7 +130,7 @@ public class DropBoxProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public Locale getLocale() {
-        return (Locale) this.attributes.get(DropBoxAttributesDefinition.COUNTRY);
+        return (Locale) get(DropBoxAttributesDefinition.COUNTRY);
     }
     
     public String getPictureUrl() {
@@ -150,34 +138,22 @@ public class DropBoxProfile extends BaseOAuthProfile implements CommonProfile {
     }
     
     public String getProfileUrl() {
-        return (String) this.attributes.get(DropBoxAttributesDefinition.REFERRAL_LINK);
+        return (String) get(DropBoxAttributesDefinition.REFERRAL_LINK);
     }
     
     public String getLocation() {
         return null;
     }
     
-    public long getNormal() {
-        return getSafeLong((Long) this.attributes.get(DropBoxAttributesDefinition.NORMAL));
+    public Long getNormal() {
+        return (Long) get(DropBoxAttributesDefinition.NORMAL);
     }
     
-    public boolean isNormalDefined() {
-        return this.attributes.get(DropBoxAttributesDefinition.NORMAL) != null;
+    public Long getQuota() {
+        return (Long) get(DropBoxAttributesDefinition.QUOTA);
     }
     
-    public long getQuota() {
-        return getSafeLong((Long) this.attributes.get(DropBoxAttributesDefinition.QUOTA));
-    }
-    
-    public boolean isQuotaDefined() {
-        return this.attributes.get(DropBoxAttributesDefinition.QUOTA) != null;
-    }
-    
-    public long getShared() {
-        return getSafeLong((Long) this.attributes.get(DropBoxAttributesDefinition.SHARED));
-    }
-    
-    public boolean isSharedDefined() {
-        return this.attributes.get(DropBoxAttributesDefinition.SHARED) != null;
+    public Long getShared() {
+        return (Long) get(DropBoxAttributesDefinition.SHARED);
     }
 }

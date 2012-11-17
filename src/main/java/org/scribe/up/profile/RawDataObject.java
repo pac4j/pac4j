@@ -21,7 +21,7 @@ package org.scribe.up.profile;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public abstract class RawDataObject extends SafeGetterObject {
+public abstract class RawDataObject {
     
     protected static boolean keepRawData = true;
     
