@@ -54,7 +54,7 @@ public final class ProvidersDefinition {
     public ProvidersDefinition(final OAuthProvider provider) {
         this.providers = new ArrayList<OAuthProvider>();
         this.providers.add(provider);
-        BaseOAuthProvider baseOAuthProvider = (BaseOAuthProvider) provider;
+        final BaseOAuthProvider baseOAuthProvider = (BaseOAuthProvider) provider;
         this.baseUrl = baseOAuthProvider.getCallbackUrl();
     }
     
@@ -87,10 +87,9 @@ public final class ProvidersDefinition {
         for (final OAuthProvider provider : this.providers) {
             final BaseOAuthProvider baseProvider = (BaseOAuthProvider) provider;
             // calculate new callback url by adding the OAuth provider type to the base url if not already added
-            String callbackUrl = baseProvider.getCallbackUrl();
+            final String callbackUrl = baseProvider.getCallbackUrl();
             if (callbackUrl == null || callbackUrl.indexOf(this.providerTypeParameter + "=") < 0) {
-                baseProvider.setCallbackUrl(this.addParameter(this.baseUrl, this.providerTypeParameter,
-                                                              provider.getType()));
+                baseProvider.setCallbackUrl(addParameter(this.baseUrl, this.providerTypeParameter, provider.getType()));
             }
         }
         this.initialized = true;
@@ -103,7 +102,7 @@ public final class ProvidersDefinition {
      * @return the right provider
      */
     public OAuthProvider findProvider(final Map<String, String[]> parameters) {
-        String[] values = parameters.get(this.providerTypeParameter);
+        final String[] values = parameters.get(this.providerTypeParameter);
         if (values != null && values.length == 1) {
             return findProvider(values[0]);
         }
@@ -123,6 +122,15 @@ public final class ProvidersDefinition {
             }
         }
         return null;
+    }
+    
+    /**
+     * Get all providers in definition.
+     * 
+     * @return all providers in definition
+     */
+    public List<OAuthProvider> getAllProviders() {
+        return this.providers;
     }
     
     /**

@@ -44,66 +44,66 @@ public final class TestProvidersDefinition extends TestCase {
     private static final String NEW_PARAMETER_NAME = "keepTheTypeOfTheProvider";
     
     private FacebookProvider newFacebookProvider() {
-        FacebookProvider facebookProvider = new FacebookProvider();
+        final FacebookProvider facebookProvider = new FacebookProvider();
         facebookProvider.setKey(KEY);
         facebookProvider.setSecret(SECRET);
         return facebookProvider;
     }
     
     private YahooProvider newYahooProvider() {
-        YahooProvider yahooProvider = new YahooProvider();
+        final YahooProvider yahooProvider = new YahooProvider();
         yahooProvider.setKey(KEY);
         yahooProvider.setSecret(SECRET);
         return yahooProvider;
     }
     
     public void testMissingProvider() {
-        ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        final ProvidersDefinition providersDefinition = new ProvidersDefinition();
         providersDefinition.setBaseUrl(URL);
         try {
             providersDefinition.init();
             fail("init() cannot succeed");
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertEquals("providers cannot be null", e.getMessage());
         }
     }
     
     public void testMissingBaseUrl() {
-        ProvidersDefinition providersDefinition = new ProvidersDefinition();
-        List<OAuthProvider> providers = new ArrayList<OAuthProvider>();
+        final ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        final List<OAuthProvider> providers = new ArrayList<OAuthProvider>();
         providers.add(newFacebookProvider());
         try {
             providersDefinition.init();
             fail("init() cannot succeed");
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             assertEquals("baseUrl cannot be blank", e.getMessage());
         }
     }
     
     public void testOneProvider() {
-        FacebookProvider facebookProvider = newFacebookProvider();
+        final FacebookProvider facebookProvider = newFacebookProvider();
         facebookProvider.setCallbackUrl(URL);
-        ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
+        final ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
         providersDefinition.init();
         providersDefinition.init();
         assertEquals(URL + "?" + ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER + "=" + facebookProvider.getType(),
                      facebookProvider.getCallbackUrl());
-        String[] values = new String[] {
+        final String[] values = new String[] {
             facebookProvider.getType()
         };
-        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        final Map<String, String[]> parameters = new HashMap<String, String[]>();
         parameters.put(ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER, values);
         assertEquals(facebookProvider, providersDefinition.findProvider(parameters));
         assertEquals(facebookProvider, providersDefinition.findProvider(facebookProvider.getType()));
     }
     
     public void testTwoProviders() {
-        FacebookProvider facebookProvider = newFacebookProvider();
-        YahooProvider yahooProvider = newYahooProvider();
-        List<OAuthProvider> providers = new ArrayList<OAuthProvider>();
+        final FacebookProvider facebookProvider = newFacebookProvider();
+        final YahooProvider yahooProvider = newYahooProvider();
+        final List<OAuthProvider> providers = new ArrayList<OAuthProvider>();
         providers.add(facebookProvider);
         providers.add(yahooProvider);
-        ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        final ProvidersDefinition providersDefinition = new ProvidersDefinition();
         providersDefinition.setProviderTypeParameter(NEW_PARAMETER_NAME);
         providersDefinition.setProviders(providers);
         providersDefinition.setBaseUrl(URL);
@@ -113,23 +113,37 @@ public final class TestProvidersDefinition extends TestCase {
         assertEquals(URL + "?" + NEW_PARAMETER_NAME + "=" + facebookProvider.getType(),
                      facebookProvider.getCallbackUrl());
         assertEquals(URL + "?" + NEW_PARAMETER_NAME + "=" + yahooProvider.getType(), yahooProvider.getCallbackUrl());
-        String[] values = new String[] {
+        final String[] values = new String[] {
             yahooProvider.getType()
         };
-        Map<String, String[]> parameters = new HashMap<String, String[]>();
+        final Map<String, String[]> parameters = new HashMap<String, String[]>();
         parameters.put(NEW_PARAMETER_NAME, values);
         assertEquals(yahooProvider, providersDefinition.findProvider(parameters));
         assertEquals(yahooProvider, providersDefinition.findProvider(yahooProvider.getType()));
     }
     
     public void testDoubleInit() {
-        FacebookProvider facebookProvider = newFacebookProvider();
+        final FacebookProvider facebookProvider = newFacebookProvider();
         facebookProvider.setCallbackUrl(URL);
-        ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
+        final ProvidersDefinition providersDefinition = new ProvidersDefinition(facebookProvider);
         providersDefinition.init();
-        ProvidersDefinition providersDefinition2 = new ProvidersDefinition(facebookProvider);
+        final ProvidersDefinition providersDefinition2 = new ProvidersDefinition(facebookProvider);
         providersDefinition2.init();
         assertEquals(URL + "?" + ProvidersDefinition.DEFAULT_PROVIDER_TYPE_PARAMETER + "=" + facebookProvider.getType(),
                      facebookProvider.getCallbackUrl());
+    }
+    
+    public void testAllProviders() {
+        final FacebookProvider facebookProvider = newFacebookProvider();
+        final YahooProvider yahooProvider = newYahooProvider();
+        final List<OAuthProvider> providers = new ArrayList<OAuthProvider>();
+        providers.add(facebookProvider);
+        providers.add(yahooProvider);
+        final ProvidersDefinition providersDefinition = new ProvidersDefinition();
+        providersDefinition.setProviders(providers);
+        providersDefinition.setBaseUrl(URL);
+        final List<OAuthProvider> providers2 = providersDefinition.getAllProviders();
+        assertEquals(2, providers2.size());
+        assertTrue(providers2.containsAll(providers));
     }
 }
