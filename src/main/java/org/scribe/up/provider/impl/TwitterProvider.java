@@ -19,8 +19,8 @@ import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.up.addon_to_scribe.ProxyOAuth10aServiceImpl;
-import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.JsonHelper;
+import org.scribe.up.profile.OAuthAttributesDefinitions;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.twitter.TwitterProfile;
 import org.scribe.up.provider.BaseOAuth10Provider;
@@ -47,7 +47,7 @@ public class TwitterProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        this.service = new ProxyOAuth10aServiceImpl(new TwitterApi(),
+        this.service = new ProxyOAuth10aServiceImpl(new TwitterApi.Authenticate(),
                                                     new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                     SignatureType.Header, null, null), this.proxyHost,
                                                     this.proxyPort);
