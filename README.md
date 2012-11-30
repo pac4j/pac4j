@@ -67,12 +67,13 @@ Even if you can use <b>scribe-up</b> on its own, this library is used to be the 
 
 <table>
 <tr><th>Library</th><th>Based on scribe-up version</th><th>Demo webapp</th></tr>
-<tr><td>cas-server-support-oauth 3.5.1</td><td>1.1.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo">cas-oauth-demo</a></td></tr>
+<tr><td>cas-server-support-oauth 3.5.2</td><td>1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
+<tr><td>cas-server-support-oauth 3.5.1</td><td>1.1.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.0</td><td>1.0.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.0">cas-oauth-demo-3.5.0</a></td></tr>
 <tr><td>buji-oauth 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/scribe-up-shiro-demo">scribe-up-shiro-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.1.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo-1.0.0">spring-security-oauth-client-demo-1.0.0</a></td></tr>
-<tr><td>play-oauth-client 1.0.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/play-oauth-client-demo">play-oauth-client-demo</a></td></tr>
+<tr><td>play-oauth-client 1.0.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/play-oauth-client-java-demo">play-oauth-client-java-demo</a><br /><a href="https://github.com/leleuj/play-oauth-client-scala-demo">play-oauth-client-scala-demo</a></td></tr>
 </table>
 
 <h2>Versions</h2>

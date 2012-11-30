@@ -74,7 +74,7 @@ public class TestWindowsLiveProvider extends TestProvider {
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
         assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, Gender.MALE, Locale.FRANCE,
-                            null, "http://profile.live.com/cid-416c383b220392d8/", null);
+                            null, "https://profile.live.com/", null);
         assertEquals(CommonHelper.getFormattedDate(1335878042000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdatedTime().toString());
         assertEquals(8, profile.getAttributes().size());
