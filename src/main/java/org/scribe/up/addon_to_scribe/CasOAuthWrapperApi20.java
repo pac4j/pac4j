@@ -35,7 +35,7 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     
     @Override
     public String getAccessTokenEndpoint() {
-        return this.casServerUrl + "/access_token?";
+        return this.casServerUrl + "/accessToken?";
     }
     
     @Override
