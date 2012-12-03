@@ -21,7 +21,7 @@ import org.scribe.up.profile.JsonHelper;
 import org.scribe.up.profile.github.GitHubPlan;
 
 /**
- * This class tests the {@link org.scribe.up.profile.github.gitHubPlan} class.
+ * This class tests the {@link org.scribe.up.profile.github.GitHubPlan} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0

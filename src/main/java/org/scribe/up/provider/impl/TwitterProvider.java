@@ -15,6 +15,7 @@
  */
 package org.scribe.up.provider.impl;
 
+import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
@@ -30,6 +31,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * This class is the OAuth provider to authenticate user in Twitter.
  * <p />
+ * You can define if a screen should always been displayed for authorization confirmation by using the
+ * {@link #setAlwaysConfirmAuthorization(boolean)} method (<code>false</code> by default).
+ * <p />
  * It returns a {@link org.scribe.up.profile.twitter.TwitterProfile}.
  * <p />
  * More information at https://dev.twitter.com/docs/api/1/get/account/verify_credentials
@@ -40,6 +44,8 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class TwitterProvider extends BaseOAuth10Provider {
     
+    private boolean alwaysConfirmAuthorization = false;
+    
     @Override
     protected TwitterProvider newProvider() {
         return new TwitterProvider();
@@ -47,10 +53,15 @@ public class TwitterProvider extends BaseOAuth10Provider {
     
     @Override
     protected void internalInit() {
-        this.service = new ProxyOAuth10aServiceImpl(new TwitterApi.Authenticate(),
-                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                    SignatureType.Header, null, null), this.proxyHost,
-                                                    this.proxyPort);
+        DefaultApi10a api;
+        if (this.alwaysConfirmAuthorization == false) {
+            api = new TwitterApi.Authenticate();
+        } else {
+            api = new TwitterApi();
+        }
+        this.service = new ProxyOAuth10aServiceImpl(api, new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                         SignatureType.Header, null, null),
+                                                    this.proxyHost, this.proxyPort);
     }
     
     @Override
@@ -69,5 +80,13 @@ public class TwitterProvider extends BaseOAuth10Provider {
             }
         }
         return profile;
+    }
+    
+    public boolean isAlwaysConfirmAuthorization() {
+        return this.alwaysConfirmAuthorization;
+    }
+    
+    public void setAlwaysConfirmAuthorization(final boolean alwaysConfirmAuthorization) {
+        this.alwaysConfirmAuthorization = alwaysConfirmAuthorization;
     }
 }
