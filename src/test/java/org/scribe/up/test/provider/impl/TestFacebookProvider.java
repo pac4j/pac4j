@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
@@ -94,7 +95,7 @@ public class TestFacebookProvider extends TestProvider {
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
-        assertEquals("mFoMgGkdK90l07Mw9TtR6NgVXsI", profile.getThirdPartyId());
+        assertTrue(StringUtils.isNotBlank(profile.getThirdPartyId()));
         assertEquals(1, profile.getTimezone().intValue());
         assertEquals(CommonHelper.getFormattedDate(1343375150000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
