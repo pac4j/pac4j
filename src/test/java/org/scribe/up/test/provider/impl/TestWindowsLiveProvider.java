@@ -17,7 +17,6 @@ package org.scribe.up.test.provider.impl;
 
 import java.util.Locale;
 
-import org.scribe.up.profile.Gender;
 import org.scribe.up.profile.ProfileHelper;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.profile.windowslive.WindowsLiveProfile;
@@ -73,10 +72,10 @@ public class TestWindowsLiveProvider extends TestProvider {
         assertEquals(WindowsLiveProfile.class.getSimpleName() + UserProfile.SEPARATOR + "416c383b220392d8",
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
-        assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, Gender.MALE, Locale.FRANCE,
-                            null, "https://profile.live.com/", null);
+        assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, null, Locale.FRANCE, null,
+                            "https://profile.live.com/", null);
         assertEquals(CommonHelper.getFormattedDate(1335878042000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdatedTime().toString());
-        assertEquals(8, profile.getAttributes().size());
+        assertEquals(7, profile.getAttributes().size());
     }
 }
