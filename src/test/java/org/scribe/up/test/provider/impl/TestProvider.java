@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.scribe.up.credential.OAuthCredential;
 import org.scribe.up.profile.CommonProfile;
 import org.scribe.up.profile.Gender;
-import org.scribe.up.profile.BaseOAuthProfile;
+import org.scribe.up.profile.OAuthProfile;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.OAuthProvider;
 import org.scribe.up.session.UserSession;
@@ -61,7 +61,7 @@ public abstract class TestProvider extends TestCase {
         
         final UserProfile profile = getProfile(provider, session, callbackUrl);
         
-        BaseOAuthProfile oauthProfile = (BaseOAuthProfile) profile;
+        final OAuthProfile oauthProfile = (OAuthProfile) profile;
         assertTrue(StringUtils.isNotBlank(oauthProfile.getAccessToken()));
         verifyProfile(profile);
         

@@ -25,7 +25,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 import org.scribe.up.credential.OAuthCredential;
-import org.scribe.up.profile.BaseOAuthProfile;
+import org.scribe.up.profile.OAuthProfile;
 import org.scribe.up.profile.UserProfile;
 import org.scribe.up.provider.exception.CredentialException;
 import org.scribe.up.provider.exception.HttpException;
@@ -119,7 +119,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     public UserProfile getUserProfile(final OAuthCredential credential) {
         try {
             return retrieveUserProfile(credential);
-        } catch (HttpException e) {
+        } catch (final HttpException e) {
             return null;
         }
     }
@@ -146,7 +146,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     public UserProfile getUserProfile(final String accessToken) {
         try {
             return retrieveUserProfile(accessToken);
-        } catch (HttpException e) {
+        } catch (final HttpException e) {
             return null;
         }
     }
@@ -199,7 +199,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         if (profile != null) {
             final String token = accessToken.getToken();
             logger.debug("add access_token : {} to profile", token);
-            ((BaseOAuthProfile) profile).setAccessToken(token);
+            ((OAuthProfile) profile).setAccessToken(token);
         }
     }
     
@@ -259,7 +259,7 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
     public OAuthCredential getCredential(final UserSession session, final Map<String, String[]> parameters) {
         try {
             return retrieveCredential(session, parameters);
-        } catch (CredentialException e) {
+        } catch (final CredentialException e) {
             return null;
         }
     }
@@ -276,13 +276,13 @@ public abstract class BaseOAuthProvider implements OAuthProvider, Cloneable {
         throws CredentialException {
         init();
         boolean errorFound = false;
-        CredentialException credentialException = new CredentialException();
+        final CredentialException credentialException = new CredentialException();
         String errorMessage = "";
         for (final String key : CredentialException.ERROR_NAMES) {
             final String[] values = parameters.get(key);
             if (values != null && values.length > 0) {
                 errorFound = true;
-                String message = values[0];
+                final String message = values[0];
                 errorMessage += key + " : '" + message + "'; ";
                 credentialException.setErrorMessage(key, message);
             }
