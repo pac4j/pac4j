@@ -70,26 +70,28 @@ Even if you can use <b>scribe-up</b> on its own, this library is used to be the 
 <tr><td>cas-server-support-oauth 3.5.2</td><td>1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.1</td><td>1.1.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.0</td><td>1.0.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.0">cas-oauth-demo-3.5.0</a></td></tr>
-<tr><td>buji-oauth 1.1.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/buji-oauth-demo">buji-oauth-demo</a></td></tr>
+<tr><td>buji-oauth 1.1.0</td><td>1.3.1</td><td><a href="https://github.com/leleuj/buji-oauth-demo">buji-oauth-demo</a></td></tr>
 <tr><td>buji-oauth 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/buji-oauth-demo-1.0.0">buji-oauth-demo-1.0.0</a></td></tr>
-<tr><td>spring-security-oauth-client 1.1.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
+<tr><td>spring-security-oauth-client 1.1.0</td><td>1.3.1</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.0.0</td><td>1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo-1.0.0">spring-security-oauth-client-demo-1.0.0</a></td></tr>
-<tr><td>play-oauth-client 1.0.0</td><td>1.3.0</td><td><a href="https://github.com/leleuj/play-oauth-client-java-demo">play-oauth-client-java-demo</a><br /><a href="https://github.com/leleuj/play-oauth-client-scala-demo">play-oauth-client-scala-demo</a></td></tr>
+<tr><td>play-oauth-client 1.0.0</td><td>1.3.1</td><td><a href="https://github.com/leleuj/play-oauth-client-java-demo">play-oauth-client-java-demo</a><br /><a href="https://github.com/leleuj/play-oauth-client-scala-demo">play-oauth-client-scala-demo</a></td></tr>
 </table>
 
 <h2>Versions</h2>
 
-The current version : <i>1.3.0-SNAPSHOT</i> is under development, it's available on <a href="https://oss.sonatype.org/content/repositories/snapshots/org/scribe/scribe-up/">Sonatype snapshots repository</a> as Maven dependency :
+The last released version is the <b>1.3.1</b>.
+Learn more about the <a href="https://github.com/leleuj/scribe-up/wiki/Versions">different versions</a>.
+
+The current version : <i>1.3.2-SNAPSHOT</i> is under development, it's available on <a href="https://oss.sonatype.org/content/repositories/snapshots/org/scribe/scribe-up/">Sonatype snapshots repository</a> as Maven dependency :
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.scribe&lt;/groupId&gt;
     &lt;artifactId&gt;scribe-up&lt;/artifactId&gt;
-    &lt;version&gt;1.3.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.3.2-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-The last released version is the <b>1.2.0</b>. Learn more about the <a href="https://github.com/leleuj/scribe-up/wiki/Versions">different versions</a>.
 
 <h2>Testing</h2>
 
-scribe-up is tested by 200 unit tests, 2 bench tests and 11 integration tests on OAuth providers by simulating complete authentication processes (using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
+scribe-up is tested by more than 200 unit, bench and integration tests on OAuth providers (which simulate complete authentication processes using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
 
 <h2>Contact</h2>
 
