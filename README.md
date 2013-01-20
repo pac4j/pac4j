@@ -39,12 +39,7 @@ This Maven project is composed of 6 modules :
 <li>the <i>FacebookProfile</i>, <i>TwitterProfile</i>... classes are the associated profiles, returned by the clients.</li>
 </ul>
 <br />
-This module is based on :<ul>
-<li>the <b>pac4j-core</b> module</li>
-<li>the <a href="https://github.com/fernandezpablo85/scribe-java">scribe-java</a> library for OAuth protocol support</li>
-<li>the <a href="https://github.com/FasterXML/jackson-core">Jackson</a> library for JSON parsing</li>
-<li>the <a href="http://commons.apache.org/lang/">commons-lang3</a> library.</li>
-</ul>
+This module is based on the <b>pac4j-core</b> module, the <a href="https://github.com/fernandezpablo85/scribe-java">scribe-java</a> library for OAuth protocol support, the <a href="https://github.com/FasterXML/jackson-core">Jackson</a> library for JSON parsing and the <a href="http://commons.apache.org/lang/">commons-lang3</a> library.
 <br />
 </li>
 <li><b>pac4j-cas</b> : this module is dedicated to CAS client support :
@@ -54,10 +49,7 @@ This module is based on :<ul>
 <li>the <i>CasProfile</i> class is the user profile returned by the <i>CasClient</i>.</li>
 </ul>
 <br />
-This module is based on :<ul>
-<li>the <b>pac4j-core</b> module</li>
-<li>the <a href="https://github.com/Jasig/java-cas-client">Jasig CAS client</a>.</li>
-</ul>
+This module is based on the <b>pac4j-core</b> module and the <a href="https://github.com/Jasig/java-cas-client">Jasig CAS client</a>.
 <br />
 </li>
 <li><b>pac4j-http</b> : this module is dedicated to HTTP protocol support :
@@ -67,10 +59,7 @@ This module is based on :<ul>
 <li>the <i>HttpProfile</i> class is the user profile returned by the <i>FormClient</i> and <i>BasicAuthClient</i>.</li>
 </ul>
 <br />
-This module is based on :<ul>
-<li>the <b>pac4j-core</b> module</li>
-<li>the <a href="http://commons.apache.org/codec/">commons-codec</a> library.</li>
-</ul>
+This module is based on the <b>pac4j-core</b> module and the <a href="http://commons.apache.org/codec/">commons-codec</a> library.
 <br />
 </li>
 <li><b>pac4j-openid</b> : this module is dedicated to OpenID protocol support :
@@ -80,10 +69,7 @@ This module is based on :<ul>
 <li>the <i>MyOpenIdProfile</i> class is the user profile for MyOpenId.</li>
 </ul>
 <br />
-This module is based on :<ul>
-<li>the <b>pac4j-core</b> module</li>
-<li>the <a href="http://code.google.com/p/openid4java/">openid4java</a> library.</li>
-</ul>
+This module is based on the <b>pac4j-core</b> module and the <a href="http://code.google.com/p/openid4java/">openid4java</a> library.
 <br />
 </li>
 <li><b>pac4j-test-cas</b> : this module is made to test CAS support in pac4j.</li>
@@ -102,7 +88,7 @@ Learn more by browsing the <a href="http://www.pac4j.org/apidocs/index.html">Jav
 <tr><td>Facebook</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>FacebookClient</td><td>FacebookProfile</td></tr>
 <tr><td>GitHub</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>GitHubClient</td><td>GitHubProfile</td></tr>
 <tr><td>Google</td><td>OAuth 1.0 & 2.0</td><td>pac4j-oauth</td><td>GoogleProvider & Google2Provider</td><td>GoogleProfile & Google2Profile</td></tr>
-<tr><td>LinkedIn</td><td>OAuth 1.0</td><td>pac4j-oauth</td>LinkedInClient</td><td>LinkedInProfile</td></tr>
+<tr><td>LinkedIn</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>LinkedInClient</td><td>LinkedInProfile</td></tr>
 <tr><td>Twitter</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>TwitterClient</td><td>TwitterProfile</td></tr>
 <tr><td>Windows Live</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>WindowsLiveClient</td><td>WindowsLiveProfile</td></tr>
 <tr><td>WordPress</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>WordPressClient</td><td>WordPressProfile</td></tr>
