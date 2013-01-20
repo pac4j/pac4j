@@ -41,6 +41,7 @@ This Maven project is composed of 6 modules :
 <br />
 This module is based on the <b>pac4j-core</b> module, the <a href="https://github.com/fernandezpablo85/scribe-java">scribe-java</a> library for OAuth protocol support, the <a href="https://github.com/FasterXML/jackson-core">Jackson</a> library for JSON parsing and the <a href="http://commons.apache.org/lang/">commons-lang3</a> library.
 <br />
+<br />
 </li>
 <li><b>pac4j-cas</b> : this module is dedicated to CAS client support :
 <ul>
