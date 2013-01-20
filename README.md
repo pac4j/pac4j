@@ -51,6 +51,7 @@ This module is based on the <b>pac4j-core</b> module, the <a href="https://githu
 <br />
 This module is based on the <b>pac4j-core</b> module and the <a href="https://github.com/Jasig/java-cas-client">Jasig CAS client</a>.
 <br />
+<br />
 </li>
 <li><b>pac4j-http</b> : this module is dedicated to HTTP protocol support :
 <ul>
@@ -61,6 +62,7 @@ This module is based on the <b>pac4j-core</b> module and the <a href="https://gi
 <br />
 This module is based on the <b>pac4j-core</b> module and the <a href="http://commons.apache.org/codec/">commons-codec</a> library.
 <br />
+<br />
 </li>
 <li><b>pac4j-openid</b> : this module is dedicated to OpenID protocol support :
 <ul>
@@ -70,6 +72,7 @@ This module is based on the <b>pac4j-core</b> module and the <a href="http://com
 </ul>
 <br />
 This module is based on the <b>pac4j-core</b> module and the <a href="http://code.google.com/p/openid4java/">openid4java</a> library.
+<br />
 <br />
 </li>
 <li><b>pac4j-test-cas</b> : this module is made to test CAS support in pac4j.</li>
