@@ -14,18 +14,10 @@ local.properties
 .loadpath
 target/
 test-output/
-
-# External tool builders
 .externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
 *.launch
-
-# CDT-specific
 .cproject
-
-# PDT-specific
 .buildpath
-
-#STS-specific
 .springBeans
+cas.log
+perfStats.log
