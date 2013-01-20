@@ -30,6 +30,7 @@ This Maven project is composed of 6 modules :
 <li>the <i>CommonProfile</i> class inherits from the <i>UserProfile</i> class and implements all the common getters that profiles must have (getFirstName(), getEmail()...)</li>
 <li>the <i>WebContext</i> interface represents a web context which can be implemented in a J2E or another environment.</li>
 </ul>
+<br />
 </li>
 <li><b>pac4j-oauth</b> : this module is dedicated to OAuth client support, it's the successor of the <b>scribe-up</b> library :
 <ul>
@@ -37,13 +38,14 @@ This Maven project is composed of 6 modules :
 <li>the <i>OAuthCredentials</i> class is the credentials for OAuth support</li>
 <li>the <i>FacebookProfile</i>, <i>TwitterProfile</i>... classes are the associated profiles, returned by the clients.</li>
 </ul>
-This module is based on :
-<ul>
+<br />
+This module is based on :<ul>
 <li>the <b>pac4j-core</b> module</li>
 <li>the <a href="https://github.com/fernandezpablo85/scribe-java">scribe-java</a> library for OAuth protocol support</li>
 <li>the <a href="https://github.com/FasterXML/jackson-core">Jackson</a> library for JSON parsing</li>
 <li>the <a href="http://commons.apache.org/lang/">commons-lang3</a> library.</li>
 </ul>
+<br />
 </li>
 <li><b>pac4j-cas</b> : this module is dedicated to CAS client support :
 <ul>
@@ -51,11 +53,12 @@ This module is based on :
 <li>the <i>CasCredentials</i> class is the credentials for CAS support</li>
 <li>the <i>CasProfile</i> class is the user profile returned by the <i>CasClient</i>.</li>
 </ul>
-This module is based on :
-<ul>
+<br />
+This module is based on :<ul>
 <li>the <b>pac4j-core</b> module</li>
 <li>the <a href="https://github.com/Jasig/java-cas-client">Jasig CAS client</a>.</li>
 </ul>
+<br />
 </li>
 <li><b>pac4j-http</b> : this module is dedicated to HTTP protocol support :
 <ul>
@@ -63,11 +66,12 @@ This module is based on :
 <li>the <i>UsernamePasswordCredentials</i> class is the username/password credentials in HTTP support</li>
 <li>the <i>HttpProfile</i> class is the user profile returned by the <i>FormClient</i> and <i>BasicAuthClient</i>.</li>
 </ul>
-This module is based on :
-<ul>
+<br />
+This module is based on :<ul>
 <li>the <b>pac4j-core</b> module</li>
 <li>the <a href="http://commons.apache.org/codec/">commons-codec</a> library.</li>
 </ul>
+<br />
 </li>
 <li><b>pac4j-openid</b> : this module is dedicated to OpenID protocol support :
 <ul>
@@ -75,36 +79,37 @@ This module is based on :
 <li>the <i>OpenIdCredentials</i> class is the credentials for OpenID support</li>
 <li>the <i>MyOpenIdProfile</i> class is the user profile for MyOpenId.</li>
 </ul>
-This module is based on :
-<ul>
+<br />
+This module is based on :<ul>
 <li>the <b>pac4j-core</b> module</li>
 <li>the <a href="http://code.google.com/p/openid4java/">openid4java</a> library.</li>
 </ul>
+<br />
 </li>
 <li><b>pac4j-test-cas</b> : this module is made to test CAS support in pac4j.</li>
 </ol>
 
-Learn more by browsing the Javadoc.
+Learn more by browsing the <a href="http://www.pac4j.org/apidocs/index.html">Javadoc</a>.
 
 
 <h2>Providers supported</h2>
 
 <table>
 <tr><th>Provider</th><th>Protocol</th><th>Maven dependency</th><th>Client class</th><th>Profile class</th></tr>
-<tr><td>CAS server</td><td>CAS</td></td>pac4j-cas</td><td>CasClient & CasProxyReceptor</td><td>CasProfile</td></tr>
-<tr><td>CAS server using OAuth Wrapper</td><td>OAuth 2.0</td></td>pac4j-oauth</td><td>CasOAuthWrapperClient</td><td>CasOAuthWrapperProfile</td></tr>
+<tr><td>CAS server</td><td>CAS</td><td>pac4j-cas</td><td>CasClient & CasProxyReceptor</td><td>CasProfile</td></tr>
+<tr><td>CAS server using OAuth Wrapper</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>CasOAuthWrapperClient</td><td>CasOAuthWrapperProfile</td></tr>
 <tr><td>DropBox</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>DropBoxClient</td><td>DropBoxProfile</td></tr>
 <tr><td>Facebook</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>FacebookClient</td><td>FacebookProfile</td></tr>
-<tr><td>GitHub</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>GitHubClient</td><td>GitHubProfile</td</tr>
+<tr><td>GitHub</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>GitHubClient</td><td>GitHubProfile</td></tr>
 <tr><td>Google</td><td>OAuth 1.0 & 2.0</td><td>pac4j-oauth</td><td>GoogleProvider & Google2Provider</td><td>GoogleProfile & Google2Profile</td></tr>
-<tr><td>LinkedIn</td><td>OAuth 1.0</td><td><td>pac4j-oauth</td>LinkedInClient</td><td>LinkedInProfile</td></tr>
+<tr><td>LinkedIn</td><td>OAuth 1.0</td><td>pac4j-oauth</td>LinkedInClient</td><td>LinkedInProfile</td></tr>
 <tr><td>Twitter</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>TwitterClient</td><td>TwitterProfile</td></tr>
 <tr><td>Windows Live</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>WindowsLiveClient</td><td>WindowsLiveProfile</td></tr>
 <tr><td>WordPress</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>WordPressClient</td><td>WordPressProfile</td></tr>
 <tr><td>Yahoo</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>YahooClient</td><td>YahooProfile</td></tr>
-<tr><td>Web sites with basic auth authentication</td><td>HTTP</td></td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
-<tr><td>Web sites with form authentication</td><td>HTTP</td></td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
-<tr><td>MyOpenId</td><td>OpenID</td></td>pac4j-openid</td><td>MyOpenIdClient</td><td>MyOpenIdProfile</td></tr>
+<tr><td>Web sites with basic auth authentication</td><td>HTTP</td><td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
+<tr><td>Web sites with form authentication</td><td>HTTP</td><td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
+<tr><td>MyOpenId</td><td>OpenID</td><td>pac4j-openid</td><td>MyOpenIdClient</td><td>MyOpenIdProfile</td></tr>
 </table>
 
 
@@ -135,7 +140,7 @@ As the pac4j snapshots libraries are stored in the <a href="https://oss.sonatype
 
 <h3>OAuth support</h3>
 
-If you want to authenticate and get the user profile from Facebook, you have to use the <i>FacebookClient</i> :
+If you want to authenticate and get the user profile from Facebook, you have to use the <i>org.pac4j.oauth.client.FacebookClient</i> :
 <pre><code>// declare the client (use default scope and fields)
 FacebookClient client = new FacebookClient(MY_KEY, MY_SECRET);
 // define the client application callback url
@@ -151,7 +156,7 @@ System.out.println("Hello : " + facebookProfile.getDisplayName() + " born the " 
 
 <h3>CAS support</h3>
 
-For integrating an application with a CAS server, you should use the <i>CasClient</i> :
+For integrating an application with a CAS server, you should use the <i>org.pac4j.cas.client.CasClient</i> :
 <pre><code>// declare the client
 CasClient client = new CasClient();
 // define the client application callback url
@@ -165,14 +170,18 @@ CasCredentials credentials = client.getCredentials(new J2EContext(request, respo
 CasProfile casProfile = client.getUserProfile(credentials);
 System.out.println("Hello : " + casProfile.getAttribute("anAttribute"));</code></pre>
 
-For proxy support, the <i>CasProxyReceptor</i> class must be used (on the same or new callback url) and declared with the <i>CasClient</i> class :
+For proxy support, the <i>org.pac4j.cas.client.CasProxyReceptor</i> class must be used (on the same or new callback url) and declared with the <i>CasClient</i> class :
 <pre><code>casClient.setCasProxyReceptor(new CasProxyReceptor());
 // casClient.setAcceptAnyProxy(false);
 // casClient.setAllowedProxyChains(proxies);</code></pre>
+In this case, the <i>org.pac4j.cas.profile.CasProxyProfile</i> must be used to get proxy tickets for other CAS services :
+<pre><code>CasProxyProfile casProxyProfile = (CasProxyProfile) casProfile;
+String proxyTicket = casProxyProfile.getProxyTicketFor(anotherCasService);</code></pre>
+
 
 <h3>HTTP support</h3>
 
-To use form authentication in a web application, you should use the <i>FormClient</i> class :
+To use form authentication in a web application, you should use the <i>org.pac4j.http.client.FormClient</i> class :
 <pre><code>// declare the client
 FormClient client = new FormClient("/myloginurl", new MyUsernamePasswordAuthenticator());
 client.setCallbackUrl("http://myserver/myapp/callbackUrl");
@@ -185,17 +194,18 @@ UsernamePasswordCredentials credentials = client.getCredentials(new J2EContext(r
 HttpProfile httpProfile = client.getUserProfile(credentials);
 System.out.println("Hello : " + httpProfile.getUsername());</code></pre>
 
-To use basic auth authentication in a web application, you should use the <i>BasicAuthClient</i> class :
+To use basic auth authentication in a web application, you should use the <i>org.pac4j.http.client.BasicAuthClient</i> class :
 <pre><code>// declare the client
 BasicAuthClient client = new BasicAuthClient(new MyUsernamePasswordAuthenticator(), new UsernameProfileCreator());</code></pre>
 
 <h3>OpenID support</h3>
 
-To use myopenid.com for authentication, you should use the <i>MyOpenIdClient</i> class :
+To use myopenid.com for authentication, you should use the <i>org.pac4j.openid.client.MyOpenIdClient</i> class :
 <pre><code>// declare the client
 MyOpenIdClient client = new MyOpenIdClient();
 client.setCallbackUrl("/callbackUrl");
-// send the user to myopenid.com for authentication (we assume the user identifier bas been saved in the "openIdUser" request parameter)
+// send the user to myopenid.com for authentication
+// we assume the user identifier is in the "openIdUser" request parameter
 response.sendRedirect(client.getRedirectionUrl(new J2EContext(request, response)));</code></pre>
 ...after successfull authentication...
 <pre><code>// get the OpenID credentials
@@ -206,7 +216,7 @@ System.out.println("Hello : " + profile.getDisplayName());</code></pre>
 
 <h3>Multiple clients</h3>
 
-If you use multiple clients, you can use more generic objects. All profiles inherit from the <i>CommonProfile</i> class :
+If you use multiple clients, you can use more generic objects. All profiles inherit from the <i>org.pac4j.core.profile.CommonProfile</i> class :
 <pre><code>// get credentials
 Credentials credentials = client.getCredentials(new J2EContext(request, response)));
 // get the common profile
@@ -219,14 +229,14 @@ String accessToken = oauthProfile.getAccessToken();
 // or
 String accesstoken = facebookProfile.getAccessToken();</code></pre>
 
-You can also group all clients on a single callback url by using the <i>ClientsGroup</i> class :
-<pre><code>ClientsGroup clientsGroup = new ClientsGroup("http://myserver/myapp/callbackUrl", facebookClient, casClient, formClient myOpenIdClient);
+You can also group all clients on a single callback url by using the <i>org.pac4j.core.client.ClientsGroup</i> class :
+<pre><code>ClientsGroup clientsGroup = new ClientsGroup("http://server/app/callbackUrl", fbClient, casClient, formClient myOpenIdClient);
 // on the callback url, retrieve the right client
 Client client = clientsGroup.findClient(new J2EContext(request, response)));</code></pre>
 
 <h3>Error handling</h3>
 
-All methods of the clients may throw a declared <i>ClientException</i>, which must be trapped by a try/catch. Regarding the exceptions or its sub-exceptions, errors can be properly handled.
+All methods of the clients may throw a declared <i>org.pac4j.core.exception.ClientException</i>, which must be trapped by an appropriate try/catch. Regarding the exceptions or its sub-exceptions, errors can be properly handled.
 
 
 <h2>Libraries built with pac4j</h2>
@@ -268,7 +278,7 @@ Learn more about the <a href="https://github.com/leleuj/pac4j/wiki/Versions">dif
 
 <h2>Testing</h2>
 
-pac4j is tested by more than 300 unit, bench and integration tests (Authentication processes are completely simulated using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
+pac4j is tested by more than 300 unit, bench and integration tests (authentication processes are completely simulated using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
 To launch the tests, the <b>nr</b> Maven profile should be used. For example :
 <pre><code>mvn clean install -Pnr</code></pre>
 Use the <b>js</b> Maven profile for Javadoc and sources generation.
