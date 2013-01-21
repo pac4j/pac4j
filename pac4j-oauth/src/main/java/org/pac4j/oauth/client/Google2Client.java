@@ -76,6 +76,13 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     protected void internalInit() throws ClientException {
         super.internalInit();
         CommonHelper.assertNotNull("scope", this.scope);
+        if (this.scope == Google2Scope.EMAIL) {
+            this.scopeValue = this.EMAIL_SCOPE;
+        } else if (this.scope == Google2Scope.PROFILE) {
+            this.scopeValue = this.PROFILE_SCOPE;
+        } else {
+            this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
+        }
         this.service = new ExtendedOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
                                                                                          this.callbackUrl,
                                                                                          SignatureType.Header,
@@ -107,12 +114,5 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     
     public void setScope(final Google2Scope scope) {
         this.scope = scope;
-        if (scope == Google2Scope.EMAIL) {
-            this.scopeValue = this.EMAIL_SCOPE;
-        } else if (scope == Google2Scope.PROFILE) {
-            this.scopeValue = this.PROFILE_SCOPE;
-        } else {
-            this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
-        }
     }
 }
