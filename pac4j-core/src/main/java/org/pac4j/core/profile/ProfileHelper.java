@@ -61,8 +61,8 @@ public final class ProfileHelper {
                 if (className != null) {
                     try {
                         String completeName;
-                        if ("CasProfile".equals(className)) {
-                            completeName = "org.pac4j.cas.profile.CasProfile";
+                        if ("CasProfile".equals(className) || "CasProxyProfile".equals(className)) {
+                            completeName = "org.pac4j.cas.profile." + className;
                         } else if ("HttpProfile".equals(className)) {
                             completeName = "org.pac4j.http.profile.HttpProfile";
                         } else if ("MyOpenIdProfile".equals(className)) {

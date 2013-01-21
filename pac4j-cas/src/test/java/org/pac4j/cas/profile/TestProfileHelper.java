@@ -31,6 +31,10 @@ public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileH
         return CasProfile.class;
     }
     
+    public void testBuildProfileCasProxyProfile() {
+        assertNotNull(ProfileHelper.buildProfile("CasProxyProfile" + "#" + STRING_ID, EMPTY_MAP));
+    }
+    
     @Override
     protected String getProfileType() {
         return "CasProfile";
