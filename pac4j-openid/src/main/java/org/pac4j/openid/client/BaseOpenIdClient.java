@@ -18,7 +18,6 @@ package org.pac4j.openid.client;
 import java.util.List;
 
 import org.openid4java.OpenIDException;
-import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -51,12 +50,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     @Override
     protected void internalInit() throws ClientException {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        try {
-            this.consumerManager = new ConsumerManager();
-        } catch (final ConsumerException e) {
-            logger.error("Cannot initialize consumer manager", e);
-            throw new ClientException(e);
-        }
+        this.consumerManager = new ConsumerManager();
     }
     
     /**

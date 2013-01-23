@@ -45,19 +45,6 @@
         <developerConnection>scm:git:git@github.com:leleuj/pac4j.git</developerConnection>
     </scm>
 
-    <repositories>
-        <repository>
-            <id>oss-openid4java</id>
-            <url>https://oss.sonatype.org/content/repositories/openid4java/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <developers>
         <developer>
             <id>leleuj</id>
@@ -147,14 +134,8 @@
             </dependency>
             <dependency>
                 <groupId>org.openid4java</groupId>
-                <artifactId>openid4java-consumer</artifactId>
-                <version>0.9.5</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>net.sourceforge.nekohtml</groupId>
-                        <artifactId>nekohtml</artifactId>
-                    </exclusion>
-                </exclusions>
+                <artifactId>openid4java</artifactId>
+                <version>0.9.7</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
