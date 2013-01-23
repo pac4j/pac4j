@@ -17,6 +17,7 @@ package org.pac4j.oauth.profile.converter;
 
 import junit.framework.TestCase;
 
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.JsonHelper;
 
@@ -53,6 +54,16 @@ public final class TestJsonObjectConverter extends TestCase implements TestsCons
         assertEquals(MockJsonObject.class, object.getClass());
         final MockJsonObject mock = (MockJsonObject) object;
         assertEquals(ELEMENT, mock.getValue());
+        assertEquals("", mock.toString());
+    }
+    
+    public void testJsonNodeKeepRawData() {
+        ProfileHelper.setKeepRawData(true);
+        final Object object = this.converter.convert(JsonHelper.getFirstNode(EMPTY_JSON));
+        assertEquals(MockJsonObject.class, object.getClass());
+        final MockJsonObject mock = (MockJsonObject) object;
+        assertEquals(ELEMENT, mock.getValue());
         assertEquals(EMPTY_JSON, mock.toString());
+        ProfileHelper.setKeepRawData(false);
     }
 }

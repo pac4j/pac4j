@@ -23,7 +23,7 @@ package org.pac4j.core.profile;
  */
 public abstract class RawDataObject {
     
-    protected static boolean keepRawData = true;
+    protected static boolean keepRawData = false;
     
     static void setKeepRawData(final boolean keepRawData) {
         RawDataObject.keepRawData = keepRawData;
