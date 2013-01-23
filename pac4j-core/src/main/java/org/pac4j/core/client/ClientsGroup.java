@@ -24,11 +24,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
 /**
- * This class is made to group multiple clients on one callback url (using a specific parameter to distinguish them).
+ * This class is made to group multiple clients using a specific parameter to distinguish them, generally on one callback url.
  * <p />
- * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the clients group + a specific
- * parameter added to define the client targeted. It is implicitly called by the "finders" methods and doesn't need to be called explicitly.
- * <br/ >
+ * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the clients group if empty and
+ * a specific parameter added to define the client targeted. It is implicitly called by the "finders" methods and doesn't need to be called
+ * explicitly. <br/ >
  * The failure urls are also computed if necessary.
  * <p />
  * The {@link #findClient(WebContext)} or {@link #findClient(String)} methods must be called to find the right client according to the input
@@ -84,9 +84,14 @@ public final class ClientsGroup extends InitializableObject {
         CommonHelper.assertNotNull("clients", this.clients);
         for (final Client client : this.clients) {
             final BaseClient baseClient = (BaseClient) client;
-            final String clientCallbackUrl = baseClient.getCallbackUrl();
-            if (clientCallbackUrl == null || clientCallbackUrl.indexOf(this.clientTypeParameter + "=") < 0) {
+            final String baseClientCallbackUrl = baseClient.getCallbackUrl();
+            // no callback url defined for the client -> set it with the group callback url + the "clientType" parameter
+            if (baseClientCallbackUrl == null) {
                 baseClient.setCallbackUrl(CommonHelper.addParameter(this.callbackUrl, this.clientTypeParameter,
+                                                                    baseClient.getType()));
+                // a callback url is already defined for the client without the "clientType" parameter -> just add it
+            } else if (baseClientCallbackUrl.indexOf(this.clientTypeParameter + "=") < 0) {
+                baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientTypeParameter,
                                                                     baseClient.getType()));
             }
         }

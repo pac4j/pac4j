@@ -130,4 +130,17 @@ public final class TestClientsGroup extends TestCase implements TestsConstants {
         clientsGroup.init();
         assertEquals(FAILURE_URL2, facebookClient.getFailureUrl());
     }
+    
+    public void testClientWithCallbackUrl() throws ClientException {
+        final MockBaseClient facebookClient = newFacebookClient();
+        facebookClient.setCallbackUrl(LOGIN_URL);
+        final MockBaseClient yahooClient = newYahooClient();
+        final ClientsGroup group = new ClientsGroup(CALLBACK_URL, facebookClient, yahooClient);
+        group.setClientTypeParameter(KEY);
+        group.init();
+        assertEquals(LOGIN_URL + "?" + group.getClientTypeParameter() + "=" + facebookClient.getType(),
+                     facebookClient.getCallbackUrl());
+        assertEquals(CALLBACK_URL + "?" + group.getClientTypeParameter() + "=" + yahooClient.getType(),
+                     yahooClient.getCallbackUrl());
+    }
 }
