@@ -28,6 +28,7 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
+import org.pac4j.cas.profile.CasAnonymousProfile;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.BaseClient;
@@ -226,6 +227,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
         init();
         logger.debug("credentials : {}", credentials);
+        // gateway, not authenticated
+        if (credentials == null) {
+            return new CasAnonymousProfile();
+        }
+        
         final String ticket = credentials.getServiceTicket();
         try {
             final Assertion assertion = this.ticketValidator.validate(ticket, this.callbackUrl);

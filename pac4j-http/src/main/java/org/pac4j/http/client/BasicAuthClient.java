@@ -33,7 +33,7 @@ import org.pac4j.http.profile.ProfileCreator;
  * This class is the client to authenticate users through HTTP basic auth.
  * <p />
  * For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a specific exception :
- * {@link RequiresBasicAuthException} is returned which must be handled by the application to force authentication.
+ * {@link RequiresHttpAction} is returned which must be handled by the application to force authentication.
  * <p />
  * The realm name can be defined using the {@link #setRealmName(String)} method.
  * <p />

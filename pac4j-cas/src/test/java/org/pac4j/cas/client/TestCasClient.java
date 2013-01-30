@@ -18,7 +18,10 @@ package org.pac4j.cas.client;
 import junit.framework.TestCase;
 
 import org.pac4j.cas.client.CasClient.CasProtocol;
+import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.logout.MockLogoutHandler;
+import org.pac4j.cas.profile.CasAnonymousProfile;
+import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -94,14 +97,20 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertTrue(casClient.getRedirectionUrl(MockWebContext.create()).indexOf("renew=true") >= 0);
     }
     
-    public void testGateway() throws TechnicalException {
+    public void testGateway() throws TechnicalException, RequiresHttpAction {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
-        assertFalse(casClient.getRedirectionUrl(MockWebContext.create()).indexOf("gateway=true") >= 0);
+        casClient.setLogoutHandler(new MockLogoutHandler());
+        final MockWebContext context = MockWebContext.create();
+        assertFalse(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
         casClient.reinit();
-        assertTrue(casClient.getRedirectionUrl(MockWebContext.create()).indexOf("gateway=true") >= 0);
+        assertTrue(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
+        final CasCredentials credentials = casClient.getCredentials(context);
+        assertNull(credentials);
+        final CasProfile profile = casClient.getUserProfile(null);
+        assertTrue(profile instanceof CasAnonymousProfile);
     }
     
     public void testNullLogoutHandler() {
