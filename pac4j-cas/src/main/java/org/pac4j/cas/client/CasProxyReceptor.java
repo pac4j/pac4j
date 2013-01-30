@@ -99,8 +99,9 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
      * @throws TechnicalException
      * @throws RequiresHttpAction
      */
-    public CasCredentials getCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
-        init();
+    @Override
+    protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
+        RequiresHttpAction {
         try {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
@@ -152,11 +153,17 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
                                      this.millisBetweenCleanUps);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
+    @Override
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     
     public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
+    }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return true;
     }
 }

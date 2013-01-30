@@ -15,7 +15,9 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -33,7 +35,13 @@ import org.slf4j.LoggerFactory;
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the failure url is handled through the {@link #setFailureUrl(String)}, {@link #getFailureUrl()} and
- * {@link #getFailureUrl(TechnicalException)} methods.</li>
+ * {@link #getFailureUrl(TechnicalException)} methods</li>
+ * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
+ * {@link #getRedirectionUrl(WebContext)} method will always return the redirection to the provider where as if it's false, the redirection
+ * url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the redirection,
+ * which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
+ * To force an "immediate" redirection, the {@link #getRedirectionUrl(WebContext, boolean)} must be used with <code>true</code> for the
+ * <code>isImmediate</code> parameter.</li>
  * </ul>
  * <p />
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
@@ -46,6 +54,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     Client<C, U>, Cloneable {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
+    
+    public static final String NEEDS_CLIENT_REDIRECTION_PARAMETER = "needs_client_redirection";
     
     protected String callbackUrl;
     
@@ -111,9 +121,50 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return this.name;
     }
     
+    /**
+     * Define if this client has a direct redirection.
+     * 
+     * @return if this client has a direct redirection
+     */
+    protected abstract boolean isDirectRedirection();
+    
+    public final String getRedirectionUrl(final WebContext context) throws TechnicalException {
+        return getRedirectionUrl(context, false);
+    }
+    
+    public final String getRedirectionUrl(final WebContext context, final boolean isImmediate)
+        throws TechnicalException {
+        init();
+        // it's a direct redirection or the redirection must be immediate -> return the redirection url
+        if (isDirectRedirection() || isImmediate) {
+            return retrieveRedirectionUrl(context);
+        } else {
+            // return an intermediate url which is the callback url with a specific parameter requiring redirection
+            return CommonHelper.addParameter(getCallbackUrl(), NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
+        }
+    }
+    
+    protected abstract String retrieveRedirectionUrl(final WebContext context) throws TechnicalException;
+    
+    public final C getCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
+        init();
+        final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
+        // needs redirection -> return the redirection url
+        if (CommonHelper.isNotBlank(value)) {
+            context.setResponseHeader("Location", retrieveRedirectionUrl(context));
+            context.setResponseStatus(302);
+            throw new RequiresHttpAction("Needs client redirection");
+        } else {
+            // else get the credentials
+            return retrieveCredentials(context);
+        }
+    }
+    
+    protected abstract C retrieveCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction;
+    
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name, "failureUrl",
-                                     this.failureUrl);
+                                     this.failureUrl, "isDirectRedirection", isDirectRedirection());
     }
 }

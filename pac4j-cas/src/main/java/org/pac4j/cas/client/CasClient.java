@@ -120,8 +120,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @return the redirection url
      * @throws TechnicalException
      */
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
                                                                        this.callbackUrl, this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
@@ -189,8 +189,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @return the credentials
      * @throws TechnicalException
      */
-    public CasCredentials getCredentials(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
             this.logoutHandler.recordSession(context);
@@ -326,5 +326,10 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
                                      this.renew, "gateway", this.gateway, "logoutHandler", this.logoutHandler,
                                      "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains",
                                      this.allowedProxyChains, "casProxyReceptor", this.casProxyReceptor);
+    }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return true;
     }
 }

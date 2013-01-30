@@ -37,14 +37,8 @@ public abstract class BaseOAuth20Client<U extends OAuthProfile> extends BaseOAut
     
     public static final String OAUTH_CODE = "code";
     
-    /**
-     * Retrieve the redirection url.
-     * 
-     * @param context
-     * @return the redirection url
-     */
     @Override
-    public String retrieveRedirectionUrl(final WebContext context) {
+    protected String retrieveAuthorizationUrl(final WebContext context) {
         // no request token for OAuth 2.0 -> no need to save it in the context
         final String authorizationUrl = this.service.getAuthorizationUrl(null);
         logger.debug("authorizationUrl : {}", authorizationUrl);
@@ -88,5 +82,10 @@ public abstract class BaseOAuth20Client<U extends OAuthProfile> extends BaseOAut
         final Token accessToken = this.service.getAccessToken(null, clientVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
+    }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return true;
     }
 }

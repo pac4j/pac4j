@@ -219,14 +219,15 @@ String accessToken = oauthProfile.getAccessToken();
 // or
 String accesstoken = facebookProfile.getAccessToken();</code></pre>
 
-You can also group all clients on a single callback url by using the <i>org.pac4j.core.client.ClientsGroup</i> class :
-<pre><code>ClientsGroup clientsGroup = new ClientsGroup("http://server/app/callbackUrl", fbClient, casClient, formClient myOpenIdClient);
+You can also group all clients on a single callback url by using the <i>org.pac4j.core.client.Clients</i> class :
+<pre><code>Clients clients = new Clients("http://server/app/callbackUrl", fbClient, casClient, formClient myOpenIdClient);
 // on the callback url, retrieve the right client
-Client client = clientsGroup.findClient(new J2EContext(request, response)));</code></pre>
+Client client = clients.findClient(new J2EContext(request, response)));</code></pre>
 
 <h3>Error handling</h3>
 
-All methods of the clients may throw a declared <i>org.pac4j.core.exception.ClientException</i>, which must be trapped by an appropriate try/catch. Regarding the exceptions or its sub-exceptions, errors can be properly handled.
+All methods of the clients may throw a declared <i>org.pac4j.core.exception.TechnicalException</i>, which must be trapped by an appropriate try/catch.
+The <i>getCredentials(WebContext)</i> method can throw an additionnal <i>org.pac4j.core.expception.RequiresHttpAction</i> exception to require some additionnal HTTP action (redirection, basic auth...)
 
 
 <h2>Libraries built with pac4j</h2>

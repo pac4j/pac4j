@@ -101,4 +101,9 @@ public class MyOpenIdClient extends BaseOpenIdClient<MyOpenIdProfile> {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
                                      "userParameterName", this.userParameterName, "name", getName());
     }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return false;
+    }
 }

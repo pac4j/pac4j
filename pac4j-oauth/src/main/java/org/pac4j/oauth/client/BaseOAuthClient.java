@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -87,22 +87,16 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @return the redirection url
      * @throws TechnicalException
      */
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         try {
-            return retrieveRedirectionUrl(context);
+            return retrieveAuthorizationUrl(context);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
     }
     
-    /**
-     * Retrieve the redirection url.
-     * 
-     * @param context
-     * @return the redirection url
-     */
-    protected abstract String retrieveRedirectionUrl(final WebContext context);
+    protected abstract String retrieveAuthorizationUrl(final WebContext context);
     
     /**
      * Get the credentials from the web context.
@@ -111,40 +105,29 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @return the credentials
      * @throws TechnicalException
      */
-    public OAuthCredentials getCredentials(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected OAuthCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
         try {
-            return retrieveCredentials(context);
+            boolean errorFound = false;
+            final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
+                                                                                                      "Failed to retrieve OAuth credentials, error parameters found");
+            String errorMessage = "";
+            for (final String key : OAuthCredentialsException.ERROR_NAMES) {
+                final String value = context.getRequestParameter(key);
+                if (value != null) {
+                    errorFound = true;
+                    errorMessage += key + " : '" + value + "'; ";
+                    oauthCredentialsException.setErrorMessage(key, value);
+                }
+            }
+            if (errorFound) {
+                logger.error(errorMessage);
+                throw oauthCredentialsException;
+            } else {
+                return getOAuthCredentials(context);
+            }
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
-        }
-    }
-    
-    /**
-     * Retrieve the credentials from the web context.
-     * 
-     * @param context
-     * @return the credentials
-     * @throws TechnicalException
-     */
-    protected OAuthCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
-        boolean errorFound = false;
-        final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
-                                                                                                  "Failed to retrieve OAuth credentials, error parameters found");
-        String errorMessage = "";
-        for (final String key : OAuthCredentialsException.ERROR_NAMES) {
-            final String value = context.getRequestParameter(key);
-            if (value != null) {
-                errorFound = true;
-                errorMessage += key + " : '" + value + "'; ";
-                oauthCredentialsException.setErrorMessage(key, value);
-            }
-        }
-        if (errorFound) {
-            logger.error(errorMessage);
-            throw oauthCredentialsException;
-        } else {
-            return getOAuthCredentials(context);
         }
     }
     

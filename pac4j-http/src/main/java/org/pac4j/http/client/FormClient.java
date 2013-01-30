@@ -79,13 +79,13 @@ public class FormClient extends BaseHttpClient {
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         return this.loginUrl;
     }
     
-    public UsernamePasswordCredentials getCredentials(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
         if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)) {
@@ -133,5 +133,10 @@ public class FormClient extends BaseHttpClient {
                                      this.usernameParameter, "passwordParameter", this.passwordParameter,
                                      "usernamePasswordAuthenticator", getUsernamePasswordAuthenticator(),
                                      "profileCreator", getProfileCreator());
+    }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return true;
     }
 }

@@ -17,8 +17,12 @@ package org.pac4j.core.client;
 
 import junit.framework.TestCase;
 
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 
 /**
@@ -37,5 +41,43 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getName(), newClient.getName());
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
         assertEquals(oldClient.getFailureUrl(), newClient.getFailureUrl());
+    }
+    
+    public void testDirectClient() throws TechnicalException, RequiresHttpAction {
+        final MockBaseClient<Credentials, CommonProfile> client = new MockBaseClient<Credentials, CommonProfile>(TYPE);
+        client.setCallbackUrl(CALLBACK_URL);
+        final MockWebContext context = MockWebContext.create();
+        final String redirectionUrl = client.getRedirectionUrl(context);
+        assertEquals(LOGIN_URL, redirectionUrl);
+        final Credentials credentials = client.getCredentials(context);
+        assertNull(credentials);
+    }
+    
+    public void testIndirectClient() throws TechnicalException, RequiresHttpAction {
+        final MockBaseClient<Credentials, CommonProfile> client = new MockBaseClient<Credentials, CommonProfile>(TYPE,
+                                                                                                                 false);
+        client.setCallbackUrl(CALLBACK_URL);
+        final MockWebContext context = MockWebContext.create();
+        final String redirectionUrl = client.getRedirectionUrl(context);
+        assertEquals(CommonHelper.addParameter(CALLBACK_URL, BaseClient.NEEDS_CLIENT_REDIRECTION_PARAMETER, "true"),
+                     redirectionUrl);
+        context.addRequestParameter(BaseClient.NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
+        try {
+            client.getCredentials(context);
+            fail("should throw RequiresHttpAction");
+        } catch (final RequiresHttpAction e) {
+            assertEquals(302, context.getResponseStatus());
+            assertEquals(LOGIN_URL, context.getResponseHeaders().get("Location"));
+            assertEquals("Needs client redirection", e.getMessage());
+        }
+    }
+    
+    public void testIndirectClientWithImmediate() throws TechnicalException, RequiresHttpAction {
+        final MockBaseClient<Credentials, CommonProfile> client = new MockBaseClient<Credentials, CommonProfile>(TYPE,
+                                                                                                                 false);
+        client.setCallbackUrl(CALLBACK_URL);
+        final MockWebContext context = MockWebContext.create();
+        final String redirectionUrl = client.getRedirectionUrl(context, true);
+        assertEquals(LOGIN_URL, redirectionUrl);
     }
 }

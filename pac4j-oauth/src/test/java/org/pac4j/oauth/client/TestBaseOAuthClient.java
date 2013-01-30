@@ -18,6 +18,7 @@ package org.pac4j.oauth.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
@@ -48,7 +49,7 @@ public final class TestBaseOAuthClient extends TestCase implements TestsConstant
         assertEquals(TYPE, client.getName());
     }
     
-    public void testGetCredentialOK() throws TechnicalException {
+    public void testGetCredentialOK() throws TechnicalException, RequiresHttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
@@ -57,7 +58,7 @@ public final class TestBaseOAuthClient extends TestCase implements TestsConstant
                                                                                      FAKE_VALUE)) instanceof OAuthCredentials);
     }
     
-    public void testGetCredentialError() {
+    public void testGetCredentialError() throws RequiresHttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);

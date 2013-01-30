@@ -18,6 +18,7 @@ package org.pac4j.oauth.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -40,7 +41,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         return client;
     }
     
-    public void testNoTokenNoVerifier() throws TechnicalException {
+    public void testNoTokenNoVerifier() throws TechnicalException, RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
@@ -49,7 +50,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testNoToken() throws TechnicalException {
+    public void testNoToken() throws TechnicalException, RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER,
                                                                                    VERIFIER));
@@ -59,7 +60,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testNoVerifier() throws TechnicalException {
+    public void testNoVerifier() throws TechnicalException, RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create()
                                            .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN));
@@ -69,8 +70,8 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testOk() throws TechnicalException {
-        final OAuthCredentials credentials = getClient()
+    public void testOk() throws TechnicalException, RequiresHttpAction {
+        final OAuthCredentials credentials = (OAuthCredentials) getClient()
             .getCredentials(MockWebContext
                                 .create()
                                 .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)

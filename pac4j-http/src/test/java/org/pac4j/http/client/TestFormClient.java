@@ -17,6 +17,7 @@
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -83,7 +84,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         assertEquals(LOGIN_URL, formClient.getRedirectionUrl(MockWebContext.create()));
     }
     
-    public void testGetCredentialsMissingUsername() {
+    public void testGetCredentialsMissingUsername() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         try {
             formClient.getCredentials(MockWebContext.create().addRequestParameter(formClient.getPasswordParameter(),
@@ -94,7 +95,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetCredentialsMissingPassword() {
+    public void testGetCredentialsMissingPassword() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         try {
             formClient.getCredentials(MockWebContext.create().addRequestParameter(formClient.getUsernameParameter(),
@@ -105,7 +106,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetCredentials() throws TechnicalException {
+    public void testGetCredentials() throws TechnicalException, RequiresHttpAction {
         final FormClient formClient = getFormClient();
         try {
             formClient.getCredentials(MockWebContext.create()
@@ -117,7 +118,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetRightCredentials() throws TechnicalException {
+    public void testGetRightCredentials() throws TechnicalException, RequiresHttpAction {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
             .addRequestParameter(formClient.getUsernameParameter(), USERNAME)

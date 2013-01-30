@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -114,7 +115,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         TestsHelper.initShouldFail(casClient, "logoutHandler cannot be null");
     }
     
-    public void testLogout() throws TechnicalException {
+    public void testLogout() throws TechnicalException, RequiresHttpAction {
         final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\" Version=\"2.0\" IssueInstant=\"2012-12-19T15:30:55Z\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>ST-1-FUUhL26EgrkcD6I2Mry9-cas01.example.org</samlp:SessionIndex></samlp:LogoutRequest>";
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);

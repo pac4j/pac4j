@@ -50,14 +50,8 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
         return getName() + "#" + REQUEST_TOKEN;
     }
     
-    /**
-     * Retrieve the redirection url.
-     * 
-     * @param context
-     * @return the redirection url
-     */
     @Override
-    public String retrieveRedirectionUrl(final WebContext context) {
+    protected String retrieveAuthorizationUrl(final WebContext context) {
         final Token requestToken = this.service.getRequestToken();
         logger.debug("requestToken : {}", requestToken);
         // save requestToken in user session
@@ -124,5 +118,10 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
         final Token accessToken = this.service.getAccessToken(tokenRequest, clientVerifier);
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
+    }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return false;
     }
 }

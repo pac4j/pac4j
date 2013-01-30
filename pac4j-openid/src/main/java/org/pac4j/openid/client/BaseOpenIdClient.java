@@ -78,9 +78,9 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      */
     protected abstract FetchRequest getFetchRequest() throws MessageException;
     
+    @Override
     @SuppressWarnings("rawtypes")
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
-        init();
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         final String userIdentifier = getUser(context);
         
         try {
@@ -112,8 +112,8 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
         }
     }
     
-    public OpenIdCredentials getCredentials(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected OpenIdCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
         // parameters list returned by the provider
         final ParameterList parameterList = new ParameterList(context.getRequestParameters());
         

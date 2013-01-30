@@ -17,23 +17,29 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.TestsConstants;
 
 /**
- * This is a mock client with settable name (for tests purpose).
+ * This is a mock client with settable name / direct redirection (for tests purpose).
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockBaseClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
+public class MockBaseClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> implements
+    TestsConstants {
+    
+    private boolean isDirect = true;
     
     public MockBaseClient(final String name) {
         setName(name);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
-        return null;
+    public MockBaseClient(final String name, final boolean isDirect) {
+        setName(name);
+        this.isDirect = isDirect;
     }
     
     @Override
@@ -45,11 +51,22 @@ public class MockBaseClient<C extends Credentials, U extends CommonProfile> exte
     protected void internalInit() {
     }
     
-    public C getCredentials(final WebContext context) throws TechnicalException {
+    public U getUserProfile(final C credentials) throws TechnicalException {
         return null;
     }
     
-    public U getUserProfile(final C credentials) throws TechnicalException {
+    @Override
+    protected boolean isDirectRedirection() {
+        return this.isDirect;
+    }
+    
+    @Override
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+        return LOGIN_URL;
+    }
+    
+    @Override
+    protected C retrieveCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
         return null;
     }
 }

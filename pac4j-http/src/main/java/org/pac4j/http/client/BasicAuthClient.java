@@ -78,14 +78,14 @@ public class BasicAuthClient extends BaseHttpClient {
         CommonHelper.assertNotBlank("realmName", this.realmName);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
-        init();
+    @Override
+    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         return this.callbackUrl;
     }
     
-    public UsernamePasswordCredentials getCredentials(final WebContext context) throws TechnicalException,
+    @Override
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
         RequiresHttpAction {
-        init();
         final String header = context.getRequestHeader(AUTHORIZATION_HEADER_NAME);
         if (header == null || !header.startsWith("Basic ")) {
             logger.warn("No basic auth found");
@@ -138,5 +138,10 @@ public class BasicAuthClient extends BaseHttpClient {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
                                      "name", getName(), "realmName", this.realmName, "usernamePasswordAuthenticator",
                                      getUsernamePasswordAuthenticator(), "profileCreator", getProfileCreator());
+    }
+    
+    @Override
+    protected boolean isDirectRedirection() {
+        return true;
     }
 }
