@@ -30,11 +30,11 @@ import org.pac4j.core.util.TestsConstants;
 public final class TestBaseClient extends TestCase implements TestsConstants {
     
     public void testClone() {
-        BaseClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials, CommonProfile>(TYPE);
+        final BaseClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials, CommonProfile>(TYPE);
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setFailureUrl(FAILURE_URL);
-        BaseClient<Credentials, CommonProfile> newClient = oldClient.clone();
-        assertEquals(oldClient.getType(), newClient.getType());
+        final BaseClient<Credentials, CommonProfile> newClient = oldClient.clone();
+        assertEquals(oldClient.getName(), newClient.getName());
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
         assertEquals(oldClient.getFailureUrl(), newClient.getFailureUrl());
     }

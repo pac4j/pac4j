@@ -21,7 +21,7 @@ package org.pac4j.core.exception;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public class HttpCommunicationException extends ClientException {
+public class HttpCommunicationException extends CommunicationException {
     
     private static final long serialVersionUID = -7972641539531738263L;
     

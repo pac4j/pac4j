@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is made to group multiple clients using a specific parameter to distinguish them, generally on one callback url.
@@ -38,11 +40,13 @@ import org.pac4j.core.util.InitializableObject;
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class ClientsGroup extends InitializableObject {
+public final class Clients extends InitializableObject {
     
-    public final static String DEFAULT_CLIENT_TYPE_PARAMETER = "client_type";
+    private static final Logger logger = LoggerFactory.getLogger(Clients.class);
     
-    private String clientTypeParameter = DEFAULT_CLIENT_TYPE_PARAMETER;
+    public final static String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
+    
+    private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
     
     private List<Client> clients;
     
@@ -50,25 +54,25 @@ public final class ClientsGroup extends InitializableObject {
     
     private String failureUrl;
     
-    public ClientsGroup() {
+    public Clients() {
     }
     
-    public ClientsGroup(final String callbackUrl, final List<Client> clients) {
+    public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
         setClients(clients);
     }
     
-    public ClientsGroup(final String callbackUrl, final Client... clients) {
+    public Clients(final String callbackUrl, final Client... clients) {
         setCallbackUrl(callbackUrl);
         setClients(clients);
     }
     
-    public ClientsGroup(final String callbackUrl, final String failureUrl, final List<Client> clients) {
+    public Clients(final String callbackUrl, final String failureUrl, final List<Client> clients) {
         this(callbackUrl, clients);
         setFailureUrl(failureUrl);
     }
     
-    public ClientsGroup(final String callbackUrl, final String failureUrl, final Client... clients) {
+    public Clients(final String callbackUrl, final String failureUrl, final Client... clients) {
         this(callbackUrl, clients);
         setFailureUrl(failureUrl);
     }
@@ -76,23 +80,23 @@ public final class ClientsGroup extends InitializableObject {
     /**
      * Initialize all clients by computing callback and failure urls.
      * 
-     * @throws ClientException
+     * @throws TechnicalException
      */
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("clients", this.clients);
         for (final Client client : this.clients) {
             final BaseClient baseClient = (BaseClient) client;
             final String baseClientCallbackUrl = baseClient.getCallbackUrl();
-            // no callback url defined for the client -> set it with the group callback url + the "clientType" parameter
+            // no callback url defined for the client -> set it with the group callback url + the "clientName" parameter
             if (baseClientCallbackUrl == null) {
-                baseClient.setCallbackUrl(CommonHelper.addParameter(this.callbackUrl, this.clientTypeParameter,
-                                                                    baseClient.getType()));
-                // a callback url is already defined for the client without the "clientType" parameter -> just add it
-            } else if (baseClientCallbackUrl.indexOf(this.clientTypeParameter + "=") < 0) {
-                baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientTypeParameter,
-                                                                    baseClient.getType()));
+                baseClient.setCallbackUrl(CommonHelper.addParameter(this.callbackUrl, this.clientNameParameter,
+                                                                    baseClient.getName()));
+                // a callback url is already defined for the client without the "clientName" parameter -> just add it
+            } else if (baseClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientNameParameter,
+                                                                    baseClient.getName()));
             }
         }
         if (CommonHelper.isNotBlank(this.failureUrl)) {
@@ -110,63 +114,50 @@ public final class ClientsGroup extends InitializableObject {
      * 
      * @param context
      * @return the right client
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public Client findClient(final WebContext context) throws ClientException {
-        final String type = context.getRequestParameter(this.clientTypeParameter);
-        if (type != null) {
-            return findClient(type);
-        }
-        return null;
+    public Client findClient(final WebContext context) throws TechnicalException {
+        final String name = context.getRequestParameter(this.clientNameParameter);
+        CommonHelper.assertNotBlank("name", name);
+        return findClient(name);
     }
     
     /**
-     * Return the right client according to the specific type.
+     * Return the right client according to the specific name.
      * 
-     * @param type
+     * @param name
      * @return the right client
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public Client findClient(final String type) throws ClientException {
+    public Client findClient(final String name) throws TechnicalException {
         init();
         for (final Client client : this.clients) {
-            if (CommonHelper.areEquals(type, client.getType())) {
+            if (CommonHelper.areEquals(name, client.getName())) {
                 return client;
             }
         }
-        return null;
+        final String message = "No client found for name : " + name;
+        logger.error(message);
+        throw new TechnicalException(message);
     }
     
     /**
      * Find all the clients.
      * 
      * @return all the clients
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public List<Client> findAllClients() throws ClientException {
+    public List<Client> findAllClients() throws TechnicalException {
         init();
         return this.clients;
     }
     
-    /**
-     * This method built the group from just one client (copying the callback and failure urls).
-     * 
-     * @param client
-     */
-    public void buildFromOneClient(final Client client) {
-        this.clients = new ArrayList<Client>();
-        this.clients.add(client);
-        final BaseClient baseClient = (BaseClient) client;
-        this.callbackUrl = baseClient.getCallbackUrl();
-        this.failureUrl = baseClient.getFailureUrl();
+    public String getClientNameParameter() {
+        return this.clientNameParameter;
     }
     
-    public void setClientTypeParameter(final String clientTypeParameter) {
-        this.clientTypeParameter = clientTypeParameter;
-    }
-    
-    public String getClientTypeParameter() {
-        return this.clientTypeParameter;
+    public void setClientNameParameter(final String clientNameParameter) {
+        this.clientNameParameter = clientNameParameter;
     }
     
     public String getCallbackUrl() {
@@ -199,6 +190,6 @@ public final class ClientsGroup extends InitializableObject {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", this.failureUrl,
-                                     "clientTypeParameter", this.clientTypeParameter, "clients", this.clients);
+                                     "clientTypeParameter", this.clientNameParameter, "clients", this.clients);
     }
 }

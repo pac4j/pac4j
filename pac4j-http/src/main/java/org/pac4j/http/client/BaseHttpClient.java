@@ -16,7 +16,7 @@
 package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -55,12 +55,12 @@ public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredenti
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         CommonHelper.assertNotNull("usernamePasswordAuthenticator", this.usernamePasswordAuthenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
     }
     
-    public HttpProfile getUserProfile(final UsernamePasswordCredentials credentials) throws ClientException {
+    public HttpProfile getUserProfile(final UsernamePasswordCredentials credentials) throws TechnicalException {
         init();
         // validate credentials
         this.usernamePasswordAuthenticator.validate(credentials);

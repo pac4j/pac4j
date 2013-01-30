@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.google.GoogleProfile;
@@ -56,7 +56,7 @@ public class GoogleClient extends BaseOAuth10Client<GoogleProfile> {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         this.service = new ProxyOAuth10aServiceImpl(
                                                     new GoogleApi(),

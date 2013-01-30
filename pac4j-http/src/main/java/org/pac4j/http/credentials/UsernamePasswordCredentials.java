@@ -32,10 +32,10 @@ public class UsernamePasswordCredentials extends Credentials {
     
     private final String password;
     
-    public UsernamePasswordCredentials(final String username, final String password, final String clientType) {
+    public UsernamePasswordCredentials(final String username, final String password, final String clientName) {
         this.username = username;
         this.password = password;
-        setClientType(clientType);
+        setClientName(clientName);
     }
     
     public String getUsername() {
@@ -49,6 +49,6 @@ public class UsernamePasswordCredentials extends Credentials {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "password", "[PROTECTED]",
-                                     "clientType", getClientType());
+                                     "clientName", getClientName());
     }
 }

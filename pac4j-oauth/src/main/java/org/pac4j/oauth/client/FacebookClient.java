@@ -18,7 +18,7 @@ package org.pac4j.oauth.client;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -97,7 +97,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         CommonHelper.assertNotBlank("fields", this.fields);
         if (StringUtils.isNotBlank(this.scope)) {

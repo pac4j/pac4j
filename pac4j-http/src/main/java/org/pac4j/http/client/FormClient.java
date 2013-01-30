@@ -17,8 +17,8 @@ package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -74,23 +74,23 @@ public class FormClient extends BaseHttpClient {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         init();
         return this.loginUrl;
     }
     
-    public UsernamePasswordCredentials getCredentials(final WebContext context) throws ClientException {
+    public UsernamePasswordCredentials getCredentials(final WebContext context) throws TechnicalException {
         init();
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
         if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)) {
             final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password,
-                                                                                            getType());
+                                                                                            getName());
             logger.debug("usernamePasswordCredentials : {}", credentials);
             return credentials;
         }
@@ -126,7 +126,7 @@ public class FormClient extends BaseHttpClient {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
-                                     "type", getType(), "loginUrl", this.loginUrl, "usernameParameter",
+                                     "name", getName(), "loginUrl", this.loginUrl, "usernameParameter",
                                      this.usernameParameter, "passwordParameter", this.passwordParameter,
                                      "usernamePasswordAuthenticator", getUsernamePasswordAuthenticator(),
                                      "profileCreator", getProfileCreator());

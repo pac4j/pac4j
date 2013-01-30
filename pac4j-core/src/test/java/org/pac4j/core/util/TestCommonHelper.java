@@ -17,7 +17,7 @@ package org.pac4j.core.util;
 
 import junit.framework.TestCase;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 
 /**
  * This class tests the {@link CommonHelper} class.
@@ -61,12 +61,12 @@ public final class TestCommonHelper extends TestCase {
         try {
             CommonHelper.assertNotBlank(NAME, "");
             fail("must throw an ClientException");
-        } catch (final ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals(NAME + " cannot be blank", e.getMessage());
         }
     }
     
-    public void testAssertNotBlankNotBlank() throws ClientException {
+    public void testAssertNotBlankNotBlank() throws TechnicalException {
         CommonHelper.assertNotBlank(NAME, VALUE);
     }
     
@@ -74,12 +74,12 @@ public final class TestCommonHelper extends TestCase {
         try {
             CommonHelper.assertNotNull(NAME, null);
             fail("must throw an ClientException");
-        } catch (final ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals(NAME + " cannot be null", e.getMessage());
         }
     }
     
-    public void testAssertNotNullNotNull() throws ClientException {
+    public void testAssertNotNullNotNull() throws TechnicalException {
         CommonHelper.assertNotNull(NAME, VALUE);
     }
     

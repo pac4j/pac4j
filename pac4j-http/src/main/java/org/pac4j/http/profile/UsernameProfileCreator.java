@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.profile;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -31,9 +31,9 @@ public class UsernameProfileCreator implements ProfileCreator {
      * 
      * @param username
      * @return the created profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public HttpProfile create(final String username) throws ClientException {
+    public HttpProfile create(final String username) throws TechnicalException {
         final HttpProfile profile = new HttpProfile();
         profile.addAttribute(CommonProfile.USERNAME, username);
         return profile;

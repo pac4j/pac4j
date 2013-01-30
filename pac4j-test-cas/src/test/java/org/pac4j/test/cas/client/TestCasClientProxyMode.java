@@ -18,7 +18,7 @@ package org.pac4j.test.cas.client;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientsGroup;
+import org.pac4j.core.client.Clients;
 
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
@@ -34,8 +34,7 @@ public final class TestCasClientProxyMode extends TestCasClient {
     
     private static final String CAS_URL = "http://localhost:8080/cas/";
     
-    private static final String CALLBACK_URL = CAS_URL + "callback?"
-                                               + ClientsGroup.DEFAULT_CLIENT_TYPE_PARAMETER + "=";
+    private static final String CALLBACK_URL = CAS_URL + "callback?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=";
     
     private static final String SERVICE_URL = "http://www.google.com/";
     
@@ -48,7 +47,7 @@ public final class TestCasClientProxyMode extends TestCasClient {
     @Override
     protected Client getClient() {
         this.casClient = new CasClient();
-        this.casClient.setCallbackUrl(CALLBACK_URL + this.casClient.getType());
+        this.casClient.setCallbackUrl(CALLBACK_URL + this.casClient.getName());
         this.casClient.setCasLoginUrl(CAS_URL + "login");
         this.casClient.setCasProtocol(getCasProtocol());
         this.casClient.setAcceptAnyProxy(true);

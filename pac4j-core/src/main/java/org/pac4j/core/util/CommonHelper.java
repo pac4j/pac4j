@@ -18,7 +18,7 @@ package org.pac4j.core.util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,28 +78,28 @@ public final class CommonHelper {
     }
     
     /**
-     * Verify that a String is not blank otherwise throw an {@link ClientException}.
+     * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
      * 
      * @param name
      * @param value
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public static void assertNotBlank(final String name, final String value) throws ClientException {
+    public static void assertNotBlank(final String name, final String value) throws TechnicalException {
         if (isBlank(value)) {
-            throw new ClientException(name + " cannot be blank");
+            throw new TechnicalException(name + " cannot be blank");
         }
     }
     
     /**
-     * Verify that an Object is not <code>null</code> otherwise throw an {@link ClientException}.
+     * Verify that an Object is not <code>null</code> otherwise throw an {@link TechnicalException}.
      * 
      * @param name
      * @param obj
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public static void assertNotNull(final String name, final Object obj) throws ClientException {
+    public static void assertNotNull(final String name, final Object obj) throws TechnicalException {
         if (obj == null) {
-            throw new ClientException(name + " cannot be null");
+            throw new TechnicalException(name + " cannot be null");
         }
     }
     

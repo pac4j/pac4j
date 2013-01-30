@@ -17,39 +17,39 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * This is a mock client with settable type (for tests purpose).
+ * This is a mock client with settable name (for tests purpose).
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public class MockBaseClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
     
-    public MockBaseClient(final String type) {
-        setType(type);
+    public MockBaseClient(final String name) {
+        setName(name);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         return null;
     }
     
     @Override
     protected BaseClient<C, U> newClient() {
-        return new MockBaseClient<C, U>(getType());
+        return new MockBaseClient<C, U>(getName());
     }
     
     @Override
     protected void internalInit() {
     }
     
-    public C getCredentials(final WebContext context) throws ClientException {
+    public C getCredentials(final WebContext context) throws TechnicalException {
         return null;
     }
     
-    public U getUserProfile(final C credentials) throws ClientException {
+    public U getUserProfile(final C credentials) throws TechnicalException {
         return null;
     }
 }

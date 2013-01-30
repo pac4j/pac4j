@@ -64,9 +64,9 @@ public abstract class BaseOAuth20Client<U extends OAuthProfile> extends BaseOAut
         if (verifierParameter != null) {
             final String verifier = OAuthEncoder.decode(verifierParameter);
             logger.debug("verifier : {}", verifier);
-            return new OAuthCredentials(verifier, getType());
+            return new OAuthCredentials(verifier, getName());
         } else {
-            String message = "No credential found";
+            final String message = "No credential found";
             logger.error(message);
             throw new OAuthCredentialsException(message);
         }

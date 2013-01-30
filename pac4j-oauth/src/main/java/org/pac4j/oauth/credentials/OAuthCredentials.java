@@ -35,18 +35,18 @@ public class OAuthCredentials extends Credentials {
     
     private final String verifier;
     
-    public OAuthCredentials(final String verifier, final String clientType) {
+    public OAuthCredentials(final String verifier, final String clientName) {
         this.requestToken = null;
         this.token = null;
         this.verifier = verifier;
-        setClientType(clientType);
+        setClientName(clientName);
     }
     
-    public OAuthCredentials(final Token requestToken, final String token, final String verifier, final String clientType) {
+    public OAuthCredentials(final Token requestToken, final String token, final String verifier, final String clientName) {
         this.requestToken = requestToken;
         this.token = token;
         this.verifier = verifier;
-        setClientType(clientType);
+        setClientName(clientName);
     }
     
     public Token getRequestToken() {
@@ -64,6 +64,6 @@ public class OAuthCredentials extends Credentials {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "requestToken", this.requestToken, "token", this.token,
-                                     "verifier", this.verifier, "clientType", getClientType());
+                                     "verifier", this.verifier, "clientName", getClientName());
     }
 }

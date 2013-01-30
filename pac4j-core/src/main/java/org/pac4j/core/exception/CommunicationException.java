@@ -16,24 +16,20 @@
 package org.pac4j.core.exception;
 
 /**
- * This class represents the root exception for the library.
+ * This class represents a communication exception.
  * 
  * @author Jerome Leleu
- * @since 1.3.0
+ * @since 1.4.0
  */
-public class ClientException extends Exception {
+public class CommunicationException extends TechnicalException {
     
-    private static final long serialVersionUID = -7849182901733016593L;
+    private static final long serialVersionUID = 3817212490339517957L;
     
-    public ClientException(final String message) {
+    public CommunicationException(final String message) {
         super(message);
     }
     
-    public ClientException(final Throwable t) {
+    public CommunicationException(final Throwable t) {
         super(t);
-    }
-    
-    public ClientException(final String message, final Throwable t) {
-        super(message, t);
     }
 }

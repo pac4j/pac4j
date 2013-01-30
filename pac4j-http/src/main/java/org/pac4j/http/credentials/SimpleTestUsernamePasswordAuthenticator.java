@@ -14,7 +14,7 @@
    limitations under the License.
  */package org.pac4j.http.credentials;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
     
     protected static final Logger logger = LoggerFactory.getLogger(SimpleTestUsernamePasswordAuthenticator.class);
     
-    public void validate(final UsernamePasswordCredentials credentials) throws ClientException {
+    public void validate(final UsernamePasswordCredentials credentials) throws TechnicalException {
         if (credentials == null) {
             throwsException("No credential");
         }

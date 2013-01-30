@@ -28,7 +28,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.BaseCredentialsReceptor;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -75,7 +75,7 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("proxyGrantingTicketStorage", this.proxyGrantingTicketStorage);
         // timer to clean proxyGrantingTicketStorage
@@ -96,9 +96,9 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
      * 
      * @param context
      * @return the credentials
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public CasCredentials getCredentials(final WebContext context) throws ClientException {
+    public CasCredentials getCredentials(final WebContext context) throws TechnicalException {
         init();
         try {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client

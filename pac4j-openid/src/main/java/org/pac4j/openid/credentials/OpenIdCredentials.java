@@ -36,10 +36,10 @@ public class OpenIdCredentials extends Credentials {
     private final DiscoveryInformation discoveryInformation;
     
     public OpenIdCredentials(final DiscoveryInformation discoveryInformation, final ParameterList parameterList,
-                             final String clientType) {
+                             final String clientName) {
         this.discoveryInformation = discoveryInformation;
         this.parameterList = parameterList;
-        setClientType(clientType);
+        setClientName(clientName);
         
     }
     
@@ -54,6 +54,6 @@ public class OpenIdCredentials extends Credentials {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "discoveryInformation", this.discoveryInformation,
-                                     "parameterList", this.parameterList, "clientType", getClientType());
+                                     "parameterList", this.parameterList, "clientName", getClientName());
     }
 }

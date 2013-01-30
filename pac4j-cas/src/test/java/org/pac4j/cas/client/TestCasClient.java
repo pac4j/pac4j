@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -47,7 +47,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         TestsHelper.initShouldFail(casClient, "casLoginUrl and casPrefixUrl cannot be both blank");
     }
     
-    public void testMissingSlashOnPrefixUrl() throws ClientException {
+    public void testMissingSlashOnPrefixUrl() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
@@ -56,7 +56,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
     }
     
-    public void testInitPrefixUrl() throws ClientException {
+    public void testInitPrefixUrl() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
@@ -65,7 +65,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
     }
     
-    public void testInitLoginUrl() throws ClientException {
+    public void testInitLoginUrl() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasPrefixUrl(PREFIX_URL);
@@ -74,7 +74,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(LOGIN_URL, casClient.getCasLoginUrl());
     }
     
-    public void testCloneCasClient() throws ClientException {
+    public void testCloneCasClient() throws TechnicalException {
         final CasClient oldClient = new CasClient();
         oldClient.setCasLoginUrl(LOGIN_URL);
         oldClient.setCasPrefixUrl(PREFIX_URL);
@@ -86,7 +86,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getCasProtocol(), newClient.getCasProtocol());
     }
     
-    public void testRenew() throws ClientException {
+    public void testRenew() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
@@ -96,7 +96,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertTrue(casClient.getRedirectionUrl(MockWebContext.create()).indexOf("renew=true") >= 0);
     }
     
-    public void testGateway() throws ClientException {
+    public void testGateway() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
@@ -114,7 +114,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         TestsHelper.initShouldFail(casClient, "logoutHandler cannot be null");
     }
     
-    public void testLogout() throws ClientException {
+    public void testLogout() throws TechnicalException {
         final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\" Version=\"2.0\" IssueInstant=\"2012-12-19T15:30:55Z\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>ST-1-FUUhL26EgrkcD6I2Mry9-cas01.example.org</samlp:SessionIndex></samlp:LogoutRequest>";
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);

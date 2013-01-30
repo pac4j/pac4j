@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -36,15 +36,15 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setFailureUrl(FAILURE_URL);
         oldClient.setMillisBetweenCleanUps(MILLIS_BETWEEN_CLEANUPS);
-        ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
+        final ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
         oldClient.setProxyGrantingTicketStorage(proxyGrantingTicketStorageImpl);
-        oldClient.setType(TYPE);
+        oldClient.setName(TYPE);
         final CasProxyReceptor client = (CasProxyReceptor) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getFailureUrl(), client.getFailureUrl());
         assertEquals(oldClient.getMillisBetweenCleanUps(), client.getMillisBetweenCleanUps());
         assertEquals(oldClient.getProxyGrantingTicketStorage(), client.getProxyGrantingTicketStorage());
-        assertEquals(oldClient.getType(), client.getType());
+        assertEquals(oldClient.getName(), client.getName());
     }
     
     public void testMissingCallbackUrl() {
@@ -59,7 +59,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         TestsHelper.initShouldFail(client, "proxyGrantingTicketStorage cannot be null");
     }
     
-    public void testMissingPgt() throws ClientException {
+    public void testMissingPgt() throws TechnicalException {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()
@@ -68,7 +68,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         assertEquals("", context.getWrittenResponse());
     }
     
-    public void testMissingPgtIou() throws ClientException {
+    public void testMissingPgtIou() throws TechnicalException {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()
@@ -77,7 +77,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         assertEquals("", context.getWrittenResponse());
     }
     
-    public void testOk() throws ClientException {
+    public void testOk() throws TechnicalException {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()

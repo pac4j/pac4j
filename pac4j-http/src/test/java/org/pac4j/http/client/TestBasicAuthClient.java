@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator;
@@ -38,16 +38,16 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         final BasicAuthClient oldClient = new BasicAuthClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setFailureUrl(FAILURE_URL);
-        oldClient.setType(TYPE);
+        oldClient.setName(TYPE);
         oldClient.setRealmName(REALM_NAME);
-        ProfileCreator profileCreator = new UsernameProfileCreator();
+        final ProfileCreator profileCreator = new UsernameProfileCreator();
         oldClient.setProfileCreator(profileCreator);
-        UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
+        final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
         final BasicAuthClient client = (BasicAuthClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getFailureUrl(), client.getFailureUrl());
-        assertEquals(oldClient.getType(), client.getType());
+        assertEquals(oldClient.getName(), client.getName());
         assertEquals(oldClient.getRealmName(), client.getRealmName());
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
         assertEquals(oldClient.getUsernamePasswordAuthenticator(), client.getUsernamePasswordAuthenticator());
@@ -72,13 +72,13 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
     }
     
     private BasicAuthClient getBasicAuthClient() {
-        BasicAuthClient basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
-                                                              new UsernameProfileCreator());
+        final BasicAuthClient basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
+                                                                    new UsernameProfileCreator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         return basicAuthClient;
     }
     
-    public void testRedirectionUrl() throws ClientException {
+    public void testRedirectionUrl() throws TechnicalException {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         assertEquals(CALLBACK_URL, basicAuthClient.getRedirectionUrl(MockWebContext.create()));
     }

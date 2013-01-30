@@ -15,7 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
@@ -59,7 +59,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         DefaultApi10a api;
         if (this.alwaysConfirmAuthorization == false) {

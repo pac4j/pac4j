@@ -30,9 +30,9 @@ public class CasCredentials extends Credentials {
     
     private final String serviceTicket;
     
-    public CasCredentials(final String serviceTicket, final String clientType) {
+    public CasCredentials(final String serviceTicket, final String clientName) {
         this.serviceTicket = serviceTicket;
-        setClientType(clientType);
+        setClientName(clientName);
     }
     
     public String getServiceTicket() {
@@ -41,7 +41,7 @@ public class CasCredentials extends Credentials {
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "serviceTicket", this.serviceTicket, "clientType",
-                                     getClientType());
+        return CommonHelper.toString(this.getClass(), "serviceTicket", this.serviceTicket, "clientName",
+                                     getClientName());
     }
 }

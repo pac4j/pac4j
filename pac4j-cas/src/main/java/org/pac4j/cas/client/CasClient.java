@@ -33,8 +33,8 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,9 +118,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * 
      * @param context
      * @return the redirection url
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         init();
         final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
                                                                        this.callbackUrl, this.renew, this.gateway);
@@ -143,11 +143,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("logoutHandler", this.logoutHandler);
         if (CommonHelper.isBlank(this.casLoginUrl) && CommonHelper.isBlank(this.casPrefixUrl)) {
-            throw new ClientException("casLoginUrl and casPrefixUrl cannot be both blank");
+            throw new TechnicalException("casLoginUrl and casPrefixUrl cannot be both blank");
         }
         if (this.casPrefixUrl != null && !this.casPrefixUrl.endsWith("/")) {
             this.casPrefixUrl += "/";
@@ -187,15 +187,15 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * 
      * @param context
      * @return the credentials
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public CasCredentials getCredentials(final WebContext context) throws ClientException {
+    public CasCredentials getCredentials(final WebContext context) throws TechnicalException {
         init();
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
             this.logoutHandler.recordSession(context);
             final String ticket = context.getRequestParameter(SERVICE_TICKET_PARAMETER);
-            final CasCredentials casCredentials = new CasCredentials(ticket, getType());
+            final CasCredentials casCredentials = new CasCredentials(ticket, getName());
             logger.debug("casCredentials : {}", casCredentials);
             return casCredentials;
         } else if (this.logoutHandler.isLogoutRequest(context)) {
@@ -218,9 +218,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * 
      * @param credentials
      * @return the user profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public CasProfile getUserProfile(final CasCredentials credentials) throws ClientException {
+    public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
         init();
         logger.debug("credentials : {}", credentials);
         final String ticket = credentials.getServiceTicket();
@@ -243,7 +243,7 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
             return casProfile;
         } catch (final TicketValidationException e) {
             logger.error("cannot validate CAS ticket : {} / {}", ticket, e);
-            throw new ClientException(e);
+            throw new TechnicalException(e);
         }
     }
     

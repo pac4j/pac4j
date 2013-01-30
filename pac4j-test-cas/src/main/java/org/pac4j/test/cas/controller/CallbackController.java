@@ -25,10 +25,10 @@ import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientsGroup;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -42,13 +42,13 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 public final class CallbackController extends AbstractController {
     
-    private final ClientsGroup clientsDefinition = new ClientsGroup();
+    private final Clients clientsDefinition = new Clients();
     
     private static final String CAS_BASE_URL = "http://localhost:8080/cas/";
     
     private static final String SERVICE_URL = "http://www.google.com/";
     
-    public CallbackController() throws ClientException {
+    public CallbackController() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCasLoginUrl(CAS_BASE_URL + "login");
         casClient.setCasProtocol(CasProtocol.CAS20);

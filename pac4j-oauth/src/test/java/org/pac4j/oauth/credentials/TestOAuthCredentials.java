@@ -32,19 +32,19 @@ public final class TestOAuthCredentials extends TestCase implements TestsConstan
     private final static Token REQUEST_TOKEN = new Token(TOKEN, SECRET);
     
     public void testOAuthCredentials() {
-        OAuthCredentials credentials = new OAuthCredentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
+        final OAuthCredentials credentials = new OAuthCredentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
         assertEquals(TOKEN, credentials.getToken());
         assertEquals(VERIFIER, credentials.getVerifier());
-        assertEquals(TYPE, credentials.getClientType());
-        Token requestToken = credentials.getRequestToken();
+        assertEquals(TYPE, credentials.getClientName());
+        final Token requestToken = credentials.getRequestToken();
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getSecret());
         // test serialization
-        byte[] bytes = TestsHelper.serialize(credentials);
-        OAuthCredentials credentials2 = (OAuthCredentials) TestsHelper.unserialize(bytes);
+        final byte[] bytes = TestsHelper.serialize(credentials);
+        final OAuthCredentials credentials2 = (OAuthCredentials) TestsHelper.unserialize(bytes);
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());
-        assertEquals(credentials.getClientType(), credentials2.getClientType());
+        assertEquals(credentials.getClientName(), credentials2.getClientName());
     }
 }

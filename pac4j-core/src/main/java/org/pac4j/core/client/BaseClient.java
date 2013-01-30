@@ -16,7 +16,7 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
  * <li>the cloning process is handled by the {@link #clone()} method, the {@link #newClient()} method must be implemented in sub-classes to
  * create a new instance</li>
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
- * <li>the type of the client is handled through the {@link #setType(String)} and {@link #getType()} methods</li>
+ * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the failure url is handled through the {@link #setFailureUrl(String)}, {@link #getFailureUrl()} and
- * {@link #getFailureUrl(ClientException)} methods.</li>
+ * {@link #getFailureUrl(TechnicalException)} methods.</li>
  * </ul>
  * <p />
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
@@ -49,7 +49,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     protected String callbackUrl;
     
-    private String type;
+    private String name;
     
     private String failureUrl;
     
@@ -62,7 +62,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public BaseClient<C, U> clone() {
         final BaseClient<C, U> newClient = newClient();
         newClient.setCallbackUrl(this.callbackUrl);
-        newClient.setType(this.type);
+        newClient.setName(this.name);
         newClient.setFailureUrl(this.failureUrl);
         return newClient;
     }
@@ -88,7 +88,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param exception
      * @return the failure url depending on the given exception
      */
-    public String getFailureUrl(final ClientException exception) {
+    public String getFailureUrl(final TechnicalException exception) {
         return this.failureUrl;
     }
     
@@ -100,20 +100,20 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.failureUrl = failureUrl;
     }
     
-    public void setType(final String type) {
-        this.type = type;
+    public void setName(final String name) {
+        this.name = name;
     }
     
-    public String getType() {
-        if (CommonHelper.isBlank(this.type)) {
+    public String getName() {
+        if (CommonHelper.isBlank(this.name)) {
             return this.getClass().getSimpleName();
         }
-        return this.type;
+        return this.name;
     }
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "type", this.type, "failureUrl",
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name, "failureUrl",
                                      this.failureUrl);
     }
 }

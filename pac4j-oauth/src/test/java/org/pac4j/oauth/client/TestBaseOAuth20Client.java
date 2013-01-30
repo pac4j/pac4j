@@ -18,7 +18,7 @@ package org.pac4j.oauth.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 
@@ -39,16 +39,16 @@ public final class TestBaseOAuth20Client extends TestCase implements TestsConsta
         return client;
     }
     
-    public void testNoCode() throws ClientException {
+    public void testNoCode() throws TechnicalException {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
-        } catch (ClientException e) {
+        } catch (TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
         }
     }
     
-    public void testOk() throws ClientException {
+    public void testOk() throws TechnicalException {
         final OAuthCredentials oauthCredential = getClient()
             .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);

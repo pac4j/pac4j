@@ -13,24 +13,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile;
-
-import org.pac4j.core.exception.TechnicalException;
+package org.pac4j.core.exception;
 
 /**
- * This interface represents the contract to create a HTTP profile.
+ * This class represents the root exception for the library.
  * 
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.3.0
  */
-public interface ProfileCreator {
+public class TechnicalException extends Exception {
     
-    /**
-     * Create a HTTP profile.
-     * 
-     * @param username
-     * @return the created profile
-     * @throws TechnicalException
-     */
-    public HttpProfile create(String username) throws TechnicalException;
+    private static final long serialVersionUID = 536639932593211210L;
+    
+    public TechnicalException(final String message) {
+        super(message);
+    }
+    
+    public TechnicalException(final Throwable t) {
+        super(t);
+    }
+    
+    public TechnicalException(final String message, final Throwable t) {
+        super(message, t);
+    }
 }

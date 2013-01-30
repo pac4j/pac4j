@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
@@ -56,7 +56,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         this.service = new ProxyOAuth10aServiceImpl(new YahooApi(), new OAuthConfig(this.key, this.secret,
                                                                                     this.callbackUrl,
@@ -74,10 +74,10 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
      * 
      * @param accessToken
      * @return the user profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
     @Override
-    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) throws ClientException {
+    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) throws TechnicalException {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl());
         final String guid = StringUtils.substringBetween(body, "<value>", "</value>");

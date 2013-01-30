@@ -17,7 +17,7 @@
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator;
@@ -39,17 +39,17 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         final FormClient oldClient = new FormClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setFailureUrl(FAILURE_URL);
-        oldClient.setType(TYPE);
+        oldClient.setName(TYPE);
         oldClient.setPasswordParameter(PASSWORD);
         oldClient.setUsernameParameter(USERNAME);
-        ProfileCreator profileCreator = new UsernameProfileCreator();
+        final ProfileCreator profileCreator = new UsernameProfileCreator();
         oldClient.setProfileCreator(profileCreator);
-        UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
+        final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
         final FormClient client = (FormClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getFailureUrl(), client.getFailureUrl());
-        assertEquals(oldClient.getType(), client.getType());
+        assertEquals(oldClient.getName(), client.getName());
         assertEquals(oldClient.getUsernameParameter(), client.getUsernameParameter());
         assertEquals(oldClient.getPasswordParameter(), client.getPasswordParameter());
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
@@ -76,7 +76,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator());
     }
     
-    public void testRedirectionUrl() throws ClientException {
+    public void testRedirectionUrl() throws TechnicalException {
         final FormClient formClient = getFormClient();
         assertEquals(LOGIN_URL, formClient.getRedirectionUrl(MockWebContext.create()));
     }
@@ -103,7 +103,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetCredentials() throws ClientException {
+    public void testGetCredentials() throws TechnicalException {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
             .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -117,7 +117,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         try {
             formClient.getUserProfile(null);
             fail("should fail");
-        } catch (final ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals("No credential", e.getMessage());
         }
     }
@@ -125,17 +125,17 @@ public final class TestFormClient extends TestCase implements TestsConstants {
     public void testGetUserProfileBadCredentials() {
         final FormClient formClient = getFormClient();
         try {
-            formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, formClient.getType()));
+            formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, formClient.getName()));
             fail("should fail");
-        } catch (final ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals("Username : '" + USERNAME + "' does not match password", e.getMessage());
         }
     }
     
-    public void testGetUserProfileGoodCredentials() throws ClientException {
+    public void testGetUserProfileGoodCredentials() throws TechnicalException {
         final FormClient formClient = getFormClient();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
-                                                                                              formClient.getType()));
+                                                                                              formClient.getName()));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());
     }

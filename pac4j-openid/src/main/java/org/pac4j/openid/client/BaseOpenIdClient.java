@@ -29,7 +29,7 @@ import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.credentials.OpenIdCredentials;
@@ -48,7 +48,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     private ConsumerManager consumerManager;
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         this.consumerManager = new ConsumerManager();
     }
@@ -67,7 +67,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      * @return the name of the attribute storing in session the discovery information
      */
     protected String getDiscoveryInformationSessionAttributeName() {
-        return getType() + "#" + DISCOVERY_INFORMATION;
+        return getName() + "#" + DISCOVERY_INFORMATION;
     }
     
     /**
@@ -79,7 +79,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     protected abstract FetchRequest getFetchRequest() throws MessageException;
     
     @SuppressWarnings("rawtypes")
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         init();
         final String userIdentifier = getUser(context);
         
@@ -108,11 +108,11 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             return redirectionUrl;
         } catch (final OpenIDException e) {
             logger.error("OpenID exception", e);
-            throw new ClientException("OpenID exception", e);
+            throw new TechnicalException("OpenID exception", e);
         }
     }
     
-    public OpenIdCredentials getCredentials(final WebContext context) throws ClientException {
+    public OpenIdCredentials getCredentials(final WebContext context) throws TechnicalException {
         init();
         // parameters list returned by the provider
         final ParameterList parameterList = new ParameterList(context.getRequestParameters());
@@ -122,7 +122,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             .getSessionAttribute(getDiscoveryInformationSessionAttributeName());
         
         // create credentials
-        final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList, getType());
+        final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList, getName());
         logger.debug("credentials : {}", credentials);
         return credentials;
     }
@@ -136,7 +136,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      */
     protected abstract U createProfile(AuthSuccess authSuccess) throws MessageException;
     
-    public U getUserProfile(final OpenIdCredentials credentials) throws ClientException {
+    public U getUserProfile(final OpenIdCredentials credentials) throws TechnicalException {
         init();
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
@@ -161,11 +161,11 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             }
         } catch (final OpenIDException e) {
             logger.error("OpenID exception", e);
-            throw new ClientException("OpenID exception", e);
+            throw new TechnicalException("OpenID exception", e);
         }
         
         final String message = "No verifiedId found";
         logger.error(message);
-        throw new ClientException(message);
+        throw new TechnicalException(message);
     }
 }

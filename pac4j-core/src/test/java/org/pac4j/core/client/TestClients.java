@@ -21,18 +21,18 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
 /**
- * This class tests the {@link ClientsGroup} class.
+ * This class tests the {@link Clients} class.
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class TestClientsGroup extends TestCase implements TestsConstants {
+public final class TestClients extends TestCase implements TestsConstants {
     
     private MockBaseClient newFacebookClient() {
         return new MockBaseClient("FacebookClient");
@@ -43,72 +43,59 @@ public final class TestClientsGroup extends TestCase implements TestsConstants {
     }
     
     public void testMissingClient() {
-        final ClientsGroup clientsGroup = new ClientsGroup();
+        final Clients clientsGroup = new Clients();
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(clientsGroup, "clients cannot be null");
     }
     
     public void testMissingCallbackUrl() {
-        final ClientsGroup clientsGroup = new ClientsGroup();
+        final Clients clientsGroup = new Clients();
         final List<Client> clients = new ArrayList<Client>();
         clients.add(newFacebookClient());
         TestsHelper.initShouldFail(clientsGroup, "callbackUrl cannot be blank");
     }
     
-    public void testOneClient() throws ClientException {
-        final MockBaseClient facebookClient = newFacebookClient();
-        facebookClient.setCallbackUrl(CALLBACK_URL);
-        final ClientsGroup clientsGroup = new ClientsGroup();
-        clientsGroup.buildFromOneClient(facebookClient);
-        clientsGroup.init();
-        clientsGroup.init();
-        assertEquals(CALLBACK_URL + "?" + ClientsGroup.DEFAULT_CLIENT_TYPE_PARAMETER + "=" + facebookClient.getType(),
-                     facebookClient.getCallbackUrl());
-        assertEquals(facebookClient, clientsGroup.findClient(MockWebContext.create()
-            .addRequestParameter(ClientsGroup.DEFAULT_CLIENT_TYPE_PARAMETER, facebookClient.getType())));
-        assertEquals(facebookClient, clientsGroup.findClient(facebookClient.getType()));
-    }
-    
-    public void testTwoClients() throws ClientException {
+    public void testTwoClients() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<Client>();
         clients.add(facebookClient);
         clients.add(yahooClient);
-        final ClientsGroup clientsGroup = new ClientsGroup();
-        clientsGroup.setClientTypeParameter(TYPE);
+        final Clients clientsGroup = new Clients();
+        clientsGroup.setClientNameParameter(TYPE);
         clientsGroup.setClients(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         assertNull(facebookClient.getCallbackUrl());
         assertNull(yahooClient.getCallbackUrl());
         clientsGroup.init();
-        assertEquals(CALLBACK_URL + "?" + TYPE + "=" + facebookClient.getType(), facebookClient.getCallbackUrl());
-        assertEquals(CALLBACK_URL + "?" + TYPE + "=" + yahooClient.getType(), yahooClient.getCallbackUrl());
+        assertEquals(CALLBACK_URL + "?" + TYPE + "=" + facebookClient.getName(), facebookClient.getCallbackUrl());
+        assertEquals(CALLBACK_URL + "?" + TYPE + "=" + yahooClient.getName(), yahooClient.getCallbackUrl());
         assertEquals(yahooClient,
-                     clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, yahooClient.getType())));
-        assertEquals(yahooClient, clientsGroup.findClient(yahooClient.getType()));
+                     clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, yahooClient.getName())));
+        assertEquals(yahooClient, clientsGroup.findClient(yahooClient.getName()));
     }
     
-    public void testDoubleInit() throws ClientException {
+    public void testDoubleInit() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
-        facebookClient.setCallbackUrl(CALLBACK_URL);
-        final ClientsGroup clientsGroup = new ClientsGroup();
-        clientsGroup.buildFromOneClient(facebookClient);
+        final Clients clientsGroup = new Clients();
+        clientsGroup.setCallbackUrl(CALLBACK_URL);
+        clientsGroup.setClients(facebookClient);
         clientsGroup.init();
-        final ClientsGroup clientsGroup2 = new ClientsGroup();
-        clientsGroup2.buildFromOneClient(facebookClient);
+        final Clients clientsGroup2 = new Clients();
+        clientsGroup2.setCallbackUrl(CALLBACK_URL);
+        clientsGroup2.setClients(facebookClient);
         clientsGroup2.init();
-        assertEquals(CALLBACK_URL + "?" + ClientsGroup.DEFAULT_CLIENT_TYPE_PARAMETER + "=" + facebookClient.getType(),
+        assertEquals(CALLBACK_URL + "?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=" + facebookClient.getName(),
                      facebookClient.getCallbackUrl());
     }
     
-    public void testAllClients() throws ClientException {
+    public void testAllClients() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<Client>();
         clients.add(facebookClient);
         clients.add(yahooClient);
-        final ClientsGroup clientsGroup = new ClientsGroup();
+        final Clients clientsGroup = new Clients();
         clientsGroup.setClients(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         final List<Client> clients2 = clientsGroup.findAllClients();
@@ -116,31 +103,31 @@ public final class TestClientsGroup extends TestCase implements TestsConstants {
         assertTrue(clients2.containsAll(clients));
     }
     
-    public void testFailureUrlDefinedInGroup() throws ClientException {
+    public void testFailureUrlDefinedInGroup() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
-        final ClientsGroup clientsGroup = new ClientsGroup(CALLBACK_URL, FAILURE_URL, facebookClient);
+        final Clients clientsGroup = new Clients(CALLBACK_URL, FAILURE_URL, facebookClient);
         clientsGroup.init();
         assertEquals(FAILURE_URL, facebookClient.getFailureUrl());
     }
     
-    public void testFailureUrlDefinedInBoth() throws ClientException {
+    public void testFailureUrlDefinedInBoth() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
         facebookClient.setFailureUrl(FAILURE_URL2);
-        final ClientsGroup clientsGroup = new ClientsGroup(CALLBACK_URL, FAILURE_URL, facebookClient);
+        final Clients clientsGroup = new Clients(CALLBACK_URL, FAILURE_URL, facebookClient);
         clientsGroup.init();
         assertEquals(FAILURE_URL2, facebookClient.getFailureUrl());
     }
     
-    public void testClientWithCallbackUrl() throws ClientException {
+    public void testClientWithCallbackUrl() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
         facebookClient.setCallbackUrl(LOGIN_URL);
         final MockBaseClient yahooClient = newYahooClient();
-        final ClientsGroup group = new ClientsGroup(CALLBACK_URL, facebookClient, yahooClient);
-        group.setClientTypeParameter(KEY);
+        final Clients group = new Clients(CALLBACK_URL, facebookClient, yahooClient);
+        group.setClientNameParameter(KEY);
         group.init();
-        assertEquals(LOGIN_URL + "?" + group.getClientTypeParameter() + "=" + facebookClient.getType(),
+        assertEquals(LOGIN_URL + "?" + group.getClientNameParameter() + "=" + facebookClient.getName(),
                      facebookClient.getCallbackUrl());
-        assertEquals(CALLBACK_URL + "?" + group.getClientTypeParameter() + "=" + yahooClient.getType(),
+        assertEquals(CALLBACK_URL + "?" + group.getClientNameParameter() + "=" + yahooClient.getName(),
                      yahooClient.getCallbackUrl());
     }
 }

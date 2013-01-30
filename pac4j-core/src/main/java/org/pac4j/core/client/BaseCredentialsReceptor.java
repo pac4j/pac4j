@@ -17,7 +17,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -29,11 +29,11 @@ import org.pac4j.core.profile.CommonProfile;
 public abstract class BaseCredentialsReceptor<C extends Credentials, U extends CommonProfile> extends
     BaseClient<C, U> {
     
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         throw new UnsupportedOperationException("Cannot get redirection url for credentials receptor");
     }
     
-    public U getUserProfile(final C credentials) throws ClientException {
+    public U getUserProfile(final C credentials) throws TechnicalException {
         throw new UnsupportedOperationException("Cannot get user profile for credentials receptor");
     }
 }

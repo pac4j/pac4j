@@ -18,22 +18,22 @@ package org.pac4j.core.credentials;
 import java.io.Serializable;
 
 /**
- * This class represents the base credentials. It is always associated to a client type.
+ * This class represents the base credentials. It is always associated to a client name.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public abstract class Credentials implements Serializable {
     
-    private static final long serialVersionUID = 8788145429106585265L;
+    private static final long serialVersionUID = 4864923514027378583L;
     
-    private String clientType;
+    private String clientName;
     
-    public String getClientType() {
-        return this.clientType;
+    public String getClientName() {
+        return this.clientName;
     }
     
-    public void setClientType(final String clientType) {
-        this.clientType = clientType;
+    public void setClientName(final String clientName) {
+        this.clientName = clientName;
     }
 }

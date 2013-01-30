@@ -22,7 +22,7 @@ import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.credentials.OpenIdCredentials;
 import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
@@ -47,14 +47,14 @@ public class MyOpenIdClient extends BaseOpenIdClient<MyOpenIdProfile> {
     private String userParameterName = DEFAULT_USER_PARAMETER_NAME;
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         CommonHelper.assertNotBlank("userParameterName", this.userParameterName);
     }
     
     @Override
     protected BaseClient<OpenIdCredentials, MyOpenIdProfile> newClient() {
-        MyOpenIdClient newClient = new MyOpenIdClient();
+        final MyOpenIdClient newClient = new MyOpenIdClient();
         newClient.setUserParameterName(this.userParameterName);
         return newClient;
     }
@@ -99,6 +99,6 @@ public class MyOpenIdClient extends BaseOpenIdClient<MyOpenIdProfile> {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
-                                     "userParameterName", this.userParameterName, "type", getType());
+                                     "userParameterName", this.userParameterName, "name", getName());
     }
 }

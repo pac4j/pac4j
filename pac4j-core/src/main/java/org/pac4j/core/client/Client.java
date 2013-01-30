@@ -17,13 +17,13 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 
 /**
  * This interface represents a client (whatever the protocol).<br />
  * <br />
- * A client has a type accessible by the {@link #getType()} method.<br />
+ * A client has a type accessible by the {@link #getName()} method.<br />
  * A client supports the authentication process and user profile retrieval through :<br />
  * <ul>
  * <li>the {@link #getRedirectionUrl(WebContext)} method to get the url where to redirect the user for authentication (at the provider)</li>
@@ -38,36 +38,36 @@ import org.pac4j.core.profile.UserProfile;
 public interface Client<C extends Credentials, U extends UserProfile> {
     
     /**
-     * Get the type of the client.
+     * Get the name of the client.
      * 
-     * @return the type of the client
+     * @return the name of the client
      */
-    public String getType();
+    public String getName();
     
     /**
      * Get the redirection url.
      * 
      * @param context
      * @return the redirection url
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public String getRedirectionUrl(WebContext context) throws ClientException;
+    public String getRedirectionUrl(WebContext context) throws TechnicalException;
     
     /**
      * Get the credentials from the web context.
      * 
      * @param context
      * @return the credentials
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public C getCredentials(WebContext context) throws ClientException;
+    public C getCredentials(WebContext context) throws TechnicalException;
     
     /**
      * Get the user profile from the credentials.
      * 
      * @param credentials
      * @return the user profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public U getUserProfile(C credentials) throws ClientException;
+    public U getUserProfile(C credentials) throws TechnicalException;
 }

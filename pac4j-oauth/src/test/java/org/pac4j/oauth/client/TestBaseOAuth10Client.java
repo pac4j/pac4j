@@ -18,7 +18,7 @@ package org.pac4j.oauth.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.scribe.model.Token;
@@ -40,42 +40,42 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         return client;
     }
     
-    public void testNoTokenNoVerifier() throws ClientException {
+    public void testNoTokenNoVerifier() throws TechnicalException {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
-        } catch (ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
         }
     }
     
-    public void testNoToken() throws ClientException {
+    public void testNoToken() throws TechnicalException {
         try {
             getClient().getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER,
                                                                                    VERIFIER));
             fail("should not get credentials");
-        } catch (ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
         }
     }
     
-    public void testNoVerifier() throws ClientException {
+    public void testNoVerifier() throws TechnicalException {
         try {
             getClient().getCredentials(MockWebContext.create()
                                            .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN));
             fail("should not get credentials");
-        } catch (ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
         }
     }
     
-    public void testOk() throws ClientException {
+    public void testOk() throws TechnicalException {
         final OAuthCredentials credentials = getClient()
             .getCredentials(MockWebContext
                                 .create()
                                 .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)
                                 .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN)
-                                .addSessionAttribute(getClient().getType() + "#" + BaseOAuth10Client.REQUEST_TOKEN,
+                                .addSessionAttribute(getClient().getName() + "#" + BaseOAuth10Client.REQUEST_TOKEN,
                                                      new Token(TOKEN, SECRET)));
         assertNotNull(credentials);
         assertEquals(TOKEN, credentials.getToken());

@@ -20,9 +20,9 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresBasicAuthException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -70,18 +70,18 @@ public class BasicAuthClient extends BaseHttpClient {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
     }
     
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         init();
         return this.callbackUrl;
     }
     
-    public UsernamePasswordCredentials getCredentials(final WebContext context) throws ClientException {
+    public UsernamePasswordCredentials getCredentials(final WebContext context) throws TechnicalException {
         init();
         final String header = context.getRequestHeader(BASICAUTH_HEADER_NAME);
         if (header == null || !header.startsWith("Basic ")) {
@@ -103,7 +103,7 @@ public class BasicAuthClient extends BaseHttpClient {
         }
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(token.substring(0, delim),
                                                                                         token.substring(delim + 1),
-                                                                                        getType());
+                                                                                        getName());
         logger.debug("usernamePasswordCredentials : {}", credentials);
         return credentials;
     }
@@ -119,7 +119,7 @@ public class BasicAuthClient extends BaseHttpClient {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
-                                     "type", getType(), "realmName", this.realmName, "usernamePasswordAuthenticator",
+                                     "name", getName(), "realmName", this.realmName, "usernamePasswordAuthenticator",
                                      getUsernamePasswordAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

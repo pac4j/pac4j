@@ -21,7 +21,7 @@ package org.pac4j.core.exception;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CredentialsException extends ClientException {
+public class CredentialsException extends TechnicalException {
     
     private static final long serialVersionUID = 8188990220217650629L;
     

@@ -47,7 +47,7 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
      * @return the name of the attribute storing in session the request token
      */
     protected String getRequestTokenSessionAttributeName() {
-        return getType() + "#" + REQUEST_TOKEN;
+        return getName() + "#" + REQUEST_TOKEN;
     }
     
     /**
@@ -85,9 +85,9 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
             final String token = OAuthEncoder.decode(tokenParameter);
             final String verifier = OAuthEncoder.decode(verifierParameter);
             logger.debug("token : {} / verifier : {}", token, verifier);
-            return new OAuthCredentials(tokenSession, token, verifier, getType());
+            return new OAuthCredentials(tokenSession, token, verifier, getName());
         } else {
-            String message = "No credential found";
+            final String message = "No credential found";
             logger.error(message);
             throw new OAuthCredentialsException(message);
         }
@@ -109,14 +109,14 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
         logger.debug("token : {}", token);
         logger.debug("verifier : {}", verifier);
         if (tokenRequest == null) {
-            String message = "Token request expired";
+            final String message = "Token request expired";
             logger.error(message);
             throw new OAuthCredentialsException(message);
         }
         final String savedToken = tokenRequest.getToken();
         logger.debug("savedToken : {}", savedToken);
         if (savedToken == null || !savedToken.equals(token)) {
-            String message = "Token received : " + token + " is different from saved token : " + savedToken;
+            final String message = "Token received : " + token + " is different from saved token : " + savedToken;
             logger.error(message);
             throw new OAuthCredentialsException(message);
         }

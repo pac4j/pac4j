@@ -18,7 +18,7 @@ package org.pac4j.oauth.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -32,23 +32,23 @@ import org.pac4j.oauth.credentials.OAuthCredentials;
 @SuppressWarnings("rawtypes")
 public final class TestBaseOAuthClient extends TestCase implements TestsConstants {
     
-    public void testDefaultType10() {
+    public void testDefaultName10() {
         final BaseOAuth10Client client = new YahooClient();
-        assertEquals("YahooClient", client.getType());
+        assertEquals("YahooClient", client.getName());
     }
     
-    public void testDefaultType20() {
+    public void testDefaultName20() {
         final BaseOAuth20Client client = new FacebookClient();
-        assertEquals("FacebookClient", client.getType());
+        assertEquals("FacebookClient", client.getName());
     }
     
-    public void testDefinedType() {
+    public void testDefinedName() {
         final BaseOAuth20Client client = new FacebookClient();
-        client.setType(TYPE);
-        assertEquals(TYPE, client.getType());
+        client.setName(TYPE);
+        assertEquals(TYPE, client.getName());
     }
     
-    public void testGetCredentialOK() throws ClientException {
+    public void testGetCredentialOK() throws TechnicalException {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
@@ -62,14 +62,15 @@ public final class TestBaseOAuthClient extends TestCase implements TestsConstant
         client.setKey(KEY);
         client.setSecret(SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        MockWebContext context = MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, FAKE_VALUE);
+        final MockWebContext context = MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE,
+                                                                                   FAKE_VALUE);
         for (final String key : OAuthCredentialsException.ERROR_NAMES) {
             context.addRequestParameter(key, FAKE_VALUE);
         }
         try {
             client.getCredentials(context);
             fail("should not get credentials");
-        } catch (ClientException e) {
+        } catch (final TechnicalException e) {
             assertEquals("Failed to retrieve OAuth credentials, error parameters found", e.getMessage());
         }
     }

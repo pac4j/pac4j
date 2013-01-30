@@ -15,7 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.github.GitHubProfile;
@@ -53,7 +53,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         super.internalInit();
         this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(),
                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,

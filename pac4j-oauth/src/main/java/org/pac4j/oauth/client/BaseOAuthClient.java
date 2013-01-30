@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
@@ -62,7 +62,7 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
     protected int proxyPort = 8080;
     
     @Override
-    protected void internalInit() throws ClientException {
+    protected void internalInit() throws TechnicalException {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
@@ -85,14 +85,14 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param context
      * @return the redirection url
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public String getRedirectionUrl(final WebContext context) throws ClientException {
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
         init();
         try {
             return retrieveRedirectionUrl(context);
         } catch (final OAuthException e) {
-            throw new ClientException(e);
+            throw new TechnicalException(e);
         }
     }
     
@@ -109,14 +109,14 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param context
      * @return the credentials
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public OAuthCredentials getCredentials(final WebContext context) throws ClientException {
+    public OAuthCredentials getCredentials(final WebContext context) throws TechnicalException {
         init();
         try {
             return retrieveCredentials(context);
         } catch (final OAuthException e) {
-            throw new ClientException(e);
+            throw new TechnicalException(e);
         }
     }
     
@@ -125,9 +125,9 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param context
      * @return the credentials
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    protected OAuthCredentials retrieveCredentials(final WebContext context) throws ClientException {
+    protected OAuthCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
         boolean errorFound = false;
         final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
                                                                                                   "Failed to retrieve OAuth credentials, error parameters found");
@@ -162,15 +162,15 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param credentials
      * @return the user profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public U getUserProfile(final OAuthCredentials credentials) throws ClientException {
+    public U getUserProfile(final OAuthCredentials credentials) throws TechnicalException {
         init();
         try {
             final Token token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);
         } catch (final OAuthException e) {
-            throw new ClientException(e);
+            throw new TechnicalException(e);
         }
     }
     
@@ -179,15 +179,15 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param accessToken
      * @return the user profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public U getUserProfile(final String accessToken) throws ClientException {
+    public U getUserProfile(final String accessToken) throws TechnicalException {
         init();
         try {
             final Token token = new Token(accessToken, "");
             return retrieveUserProfileFromToken(token);
         } catch (final OAuthException e) {
-            throw new ClientException(e);
+            throw new TechnicalException(e);
         }
     }
     
@@ -205,9 +205,9 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param accessToken
      * @return the user profile
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    protected U retrieveUserProfileFromToken(final Token accessToken) throws ClientException {
+    protected U retrieveUserProfileFromToken(final Token accessToken) throws TechnicalException {
         final String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);

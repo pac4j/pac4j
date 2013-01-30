@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.credentials;
 
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 
 /**
  * This interface represents the contract to validate a username / password credentials.
@@ -29,7 +29,7 @@ public interface UsernamePasswordAuthenticator {
      * Validate username/password credentials.
      * 
      * @param credentials
-     * @throws ClientException
+     * @throws TechnicalException
      */
-    public void validate(UsernamePasswordCredentials credentials) throws ClientException;
+    public void validate(UsernamePasswordCredentials credentials) throws TechnicalException;
 }

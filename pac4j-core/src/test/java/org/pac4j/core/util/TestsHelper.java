@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.junit.Assert;
-import org.pac4j.core.exception.ClientException;
+import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +135,7 @@ public final class TestsHelper {
         try {
             obj.init();
             Assert.fail("init should fail");
-        } catch (final ClientException e) {
+        } catch (final TechnicalException e) {
             Assert.assertEquals(message, e.getMessage());
         }
     }
