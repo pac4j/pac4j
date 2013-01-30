@@ -15,34 +15,19 @@
  */
 package org.pac4j.cas.logout;
 
-import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.context.WebContext;
 
 /**
- * This class is the default logout handler for the {@link CasClient}.
+ * This class is a mock for the {@link LogoutHandler} interface for tests purposes.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class DefaultLogoutHandler implements LogoutHandler {
-    
-    private static final String LOGOUT_REQUEST_PARAMETER = "logoutRequest";
-    
-    public boolean isTokenRequest(final WebContext context) {
-        return context.getRequestParameter(CasClient.SERVICE_TICKET_PARAMETER) != null;
-    }
-    
-    public boolean isLogoutRequest(final WebContext context) {
-        return "POST".equals(context.getRequestMethod())
-               && context.getRequestParameter(LOGOUT_REQUEST_PARAMETER) != null;
-    }
+public class MockLogoutHandler extends BaseLogoutHandler {
     
     public void recordSession(final WebContext context) {
-        // don't record session
     }
     
     public void destroySession(final WebContext context) {
-        // invalidate the current session
-        context.invalidateSession();
     }
 }

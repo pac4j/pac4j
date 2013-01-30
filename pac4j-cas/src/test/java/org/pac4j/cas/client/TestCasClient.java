@@ -15,14 +15,11 @@
  */
 package org.pac4j.cas.client;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 import org.pac4j.cas.client.CasClient.CasProtocol;
+import org.pac4j.cas.logout.MockLogoutHandler;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -115,16 +112,21 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         TestsHelper.initShouldFail(casClient, "logoutHandler cannot be null");
     }
     
-    public void testLogout() throws TechnicalException, RequiresHttpAction {
+    public void testLogout() throws TechnicalException {
         final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\" Version=\"2.0\" IssueInstant=\"2012-12-19T15:30:55Z\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>ST-1-FUUhL26EgrkcD6I2Mry9-cas01.example.org</samlp:SessionIndex></samlp:LogoutRequest>";
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
+        casClient.setLogoutHandler(new MockLogoutHandler());
         casClient.init();
-        final WebContext context = mock(WebContext.class);
-        when(context.getRequestParameter("logoutRequest")).thenReturn(logoutRequest);
-        when(context.getRequestMethod()).thenReturn("POST");
-        assertNull(casClient.getCredentials(context));
-        verify(context).invalidateSession();
+        final MockWebContext context = MockWebContext.create().addRequestParameter("logoutRequest", logoutRequest)
+            .setRequestMethod("POST");
+        try {
+            casClient.getCredentials(context);
+            fail("should throw RequiresHttpAction");
+        } catch (final RequiresHttpAction e) {
+            assertEquals(200, context.getResponseStatus());
+            assertEquals("logout request : no credential returned", e.getMessage());
+        }
     }
 }

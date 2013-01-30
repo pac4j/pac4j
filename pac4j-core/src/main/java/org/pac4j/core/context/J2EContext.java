@@ -103,13 +103,6 @@ public class J2EContext implements WebContext {
     }
     
     /**
-     * Invalidate the session.
-     */
-    public void invalidateSession() {
-        this.request.getSession().invalidate();
-    }
-    
-    /**
      * Return the HTTP request.
      * 
      * @return the HTTP request

@@ -17,6 +17,7 @@ package org.pac4j.test.cas.client;
 
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.client.CasClient.CasProtocol;
+import org.pac4j.cas.logout.MockLogoutHandler;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 
@@ -51,6 +52,7 @@ public final class TestCasClientProxyMode extends TestCasClient {
         this.casClient.setCasLoginUrl(CAS_URL + "login");
         this.casClient.setCasProtocol(getCasProtocol());
         this.casClient.setAcceptAnyProxy(true);
+        this.casClient.setLogoutHandler(new MockLogoutHandler());
         return this.casClient;
     }
     

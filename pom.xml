@@ -87,6 +87,13 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-cas</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.jasig.cas</groupId>
                 <artifactId>cas-server-webapp</artifactId>
                 <version>${cas.version}</version>

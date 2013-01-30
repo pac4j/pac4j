@@ -27,13 +27,13 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
-import org.pac4j.cas.logout.DefaultLogoutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -65,8 +65,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * <p />
  * This client handles CAS logout calls from the CAS server, using the {@link LogoutHandler} interface. It's defined by default as the
- * {@link DefaultLogoutHandler} class, but can be set to the {@link CasSingleSignOutHandler} class using the
- * {@link #setLogoutHandler(LogoutHandler)} method.
+ * {@link CasSingleSignOutHandler} class, but can be set to another class using the {@link #setLogoutHandler(LogoutHandler)} method.
  * <p />
  * To require a proxy granting ticket, the {@link CasProxyReceptor} class must be used and referenced in this class through the
  * {@link #setCasProxyReceptor(CasProxyReceptor)} method.
@@ -93,7 +92,7 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     
     public static final String SERVICE_TICKET_PARAMETER = "ticket";
     
-    protected LogoutHandler logoutHandler = new DefaultLogoutHandler();
+    protected LogoutHandler logoutHandler = new CasSingleSignOutHandler();
     
     protected TicketValidator ticketValidator;
     
@@ -188,9 +187,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @param context
      * @return the credentials
      * @throws TechnicalException
+     * @throws RequiresHttpAction
      */
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
+    protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
+        RequiresHttpAction {
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
             this.logoutHandler.recordSession(context);
@@ -200,8 +201,10 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
             return casCredentials;
         } else if (this.logoutHandler.isLogoutRequest(context)) {
             this.logoutHandler.destroySession(context);
-            logger.debug("logout request : no credential returned");
-            return null;
+            final String message = "logout request : no credential returned";
+            logger.debug(message);
+            context.setResponseStatus(200);
+            throw new RequiresHttpAction(message);
         }
         if (this.gateway) {
             logger.info("No credential found in this gateway round-trip");

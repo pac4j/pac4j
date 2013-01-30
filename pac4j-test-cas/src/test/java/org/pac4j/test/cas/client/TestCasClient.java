@@ -19,6 +19,7 @@ import org.jasig.cas.client.validation.ProxyList;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.cas.client.CasProxyReceptor;
+import org.pac4j.cas.logout.MockLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.TestClient;
@@ -57,9 +58,9 @@ public abstract class TestCasClient extends TestClient {
         oldClient.setRenew(true);
         oldClient.setGateway(true);
         oldClient.setAcceptAnyProxy(true);
-        ProxyList proxyList = new ProxyList();
+        final ProxyList proxyList = new ProxyList();
         oldClient.setAllowedProxyChains(proxyList);
-        CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
+        final CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
         oldClient.setCasProxyReceptor(casProxyReceptor);
         final CasClient client = (CasClient) internalTestClone(oldClient);
         assertEquals(oldClient.getCasLoginUrl(), client.getCasLoginUrl());
@@ -75,10 +76,11 @@ public abstract class TestCasClient extends TestClient {
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
-        CasClient casClient = new CasClient();
+        final CasClient casClient = new CasClient();
         casClient.setCallbackUrl("http://www.google.com/");
         casClient.setCasLoginUrl("http://localhost:8080/cas/login");
         casClient.setCasProtocol(getCasProtocol());
+        casClient.setLogoutHandler(new MockLogoutHandler());
         return casClient;
     }
     

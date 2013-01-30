@@ -73,11 +73,6 @@ public interface WebContext {
     public String getRequestMethod();
     
     /**
-     * Invalidate the session.
-     */
-    public void invalidateSession();
-    
-    /**
      * Write some content in the response.
      * 
      * @param content

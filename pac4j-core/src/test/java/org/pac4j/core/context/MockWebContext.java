@@ -124,10 +124,6 @@ public class MockWebContext extends BaseResponseContext {
         return this.method;
     }
     
-    public void invalidateSession() {
-        this.session.clear();
-    }
-    
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<String, String[]>();
         for (final String key : this.parameters.keySet()) {
