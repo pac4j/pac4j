@@ -88,6 +88,7 @@ public class BasicAuthClient extends BaseHttpClient {
         init();
         final String header = context.getRequestHeader(AUTHORIZATION_HEADER_NAME);
         if (header == null || !header.startsWith("Basic ")) {
+            logger.warn("No basic auth found");
             context.setResponseStatus(401);
             context.setResponseHeader(AUTHENTICATE_HEADER_NAME, "Basic realm=\"" + this.realmName + "\"");
             throw new RequiresHttpAction("Requires basic auth (no basic auth header found)");
@@ -110,6 +111,17 @@ public class BasicAuthClient extends BaseHttpClient {
                                                                                         token.substring(delim + 1),
                                                                                         getName());
         logger.debug("usernamePasswordCredentials : {}", credentials);
+        
+        try {
+            // validate credentials
+            this.usernamePasswordAuthenticator.validate(credentials);
+        } catch (final TechnicalException e) {
+            logger.error("Credentials validation fails", e);
+            context.setResponseStatus(401);
+            context.setResponseHeader(AUTHENTICATE_HEADER_NAME, "Basic realm=\"" + this.realmName + "\"");
+            throw new RequiresHttpAction("Requires basic auth (credentials validation fails)");
+        }
+        
         return credentials;
     }
     

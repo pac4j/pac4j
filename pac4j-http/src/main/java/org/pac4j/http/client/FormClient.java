@@ -92,6 +92,9 @@ public class FormClient extends BaseHttpClient {
             final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password,
                                                                                             getName());
             logger.debug("usernamePasswordCredentials : {}", credentials);
+            // validate credentials
+            this.usernamePasswordAuthenticator.validate(credentials);
+            
             return credentials;
         }
         final String message = "Username and password cannot be blank";

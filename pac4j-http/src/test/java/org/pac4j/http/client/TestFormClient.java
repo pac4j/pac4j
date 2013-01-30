@@ -100,41 +100,33 @@ public final class TestFormClient extends TestCase implements TestsConstants {
             formClient.getCredentials(MockWebContext.create().addRequestParameter(formClient.getUsernameParameter(),
                                                                                   USERNAME));
             fail("should fail");
-        } catch (final Exception e) {
+        } catch (final TechnicalException e) {
             assertEquals("Username and password cannot be blank", e.getMessage());
         }
     }
     
     public void testGetCredentials() throws TechnicalException {
         final FormClient formClient = getFormClient();
-        final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
-            .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-            .addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
-        assertEquals(USERNAME, credentials.getUsername());
-        assertEquals(PASSWORD, credentials.getPassword());
-    }
-    
-    public void testGetUserProfileNoCredential() {
-        final FormClient formClient = getFormClient();
         try {
-            formClient.getUserProfile(null);
-            fail("should fail");
-        } catch (final TechnicalException e) {
-            assertEquals("No credential", e.getMessage());
-        }
-    }
-    
-    public void testGetUserProfileBadCredentials() {
-        final FormClient formClient = getFormClient();
-        try {
-            formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, formClient.getName()));
+            formClient.getCredentials(MockWebContext.create()
+                .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
             fail("should fail");
         } catch (final TechnicalException e) {
             assertEquals("Username : '" + USERNAME + "' does not match password", e.getMessage());
         }
     }
     
-    public void testGetUserProfileGoodCredentials() throws TechnicalException {
+    public void testGetRightCredentials() throws TechnicalException {
+        final FormClient formClient = getFormClient();
+        final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
+            .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+            .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
+        assertEquals(USERNAME, credentials.getUsername());
+        assertEquals(USERNAME, credentials.getPassword());
+    }
+    
+    public void testGetUserProfile() throws TechnicalException {
         final FormClient formClient = getFormClient();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                                                                                               formClient.getName()));

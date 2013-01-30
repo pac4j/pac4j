@@ -42,7 +42,7 @@ import org.pac4j.http.profile.UsernameProfileCreator;
  */
 public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredentials, HttpProfile> {
     
-    private UsernamePasswordAuthenticator usernamePasswordAuthenticator;
+    protected UsernamePasswordAuthenticator usernamePasswordAuthenticator;
     
     private ProfileCreator profileCreator = new UsernameProfileCreator();
     
@@ -62,10 +62,8 @@ public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredenti
     
     public HttpProfile getUserProfile(final UsernamePasswordCredentials credentials) throws TechnicalException {
         init();
-        // validate credentials
-        this.usernamePasswordAuthenticator.validate(credentials);
         // create user profile
-        HttpProfile profile = this.profileCreator.create(credentials.getUsername());
+        final HttpProfile profile = this.profileCreator.create(credentials.getUsername());
         logger.debug("profile : {}", profile);
         return profile;
     }
