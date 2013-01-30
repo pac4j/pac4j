@@ -78,9 +78,25 @@ public interface WebContext {
     public void invalidateSession();
     
     /**
-     * Write some data in the response.
+     * Write some content in the response.
      * 
-     * @param data
+     * @param content
+     * @throws IOException
      */
-    public void WriteResponse(String data) throws IOException;
+    public void writeResponseContent(String content) throws IOException;
+    
+    /**
+     * Set the response status.
+     * 
+     * @param code
+     */
+    public void setResponseStatus(int code);
+    
+    /**
+     * Add a header to the response.
+     * 
+     * @param name
+     * @param value
+     */
+    public void setResponseHeader(String name, String value);
 }

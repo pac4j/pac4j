@@ -65,7 +65,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE);
         assertNull(client.getCredentials(context));
-        assertEquals("", context.getWrittenResponse());
+        assertEquals("", context.getResponseContent());
     }
     
     public void testMissingPgtIou() throws TechnicalException {
@@ -74,7 +74,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
         assertNull(client.getCredentials(context));
-        assertEquals("", context.getWrittenResponse());
+        assertEquals("", context.getResponseContent());
     }
     
     public void testOk() throws TechnicalException {
@@ -84,6 +84,6 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
         assertNull(client.getCredentials(context));
-        assertTrue(context.getWrittenResponse().length() > 0);
+        assertTrue(context.getResponseContent().length() > 0);
     }
 }

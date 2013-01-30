@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -83,24 +84,32 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         assertEquals(CALLBACK_URL, basicAuthClient.getRedirectionUrl(MockWebContext.create()));
     }
     
-    public void testGetCredentialsMissingHeader() {
+    public void testGetCredentialsMissingHeader() throws TechnicalException {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
+        final MockWebContext context = MockWebContext.create();
         try {
-            basicAuthClient.getCredentials(MockWebContext.create());
+            basicAuthClient.getCredentials(context);
             fail("should fail");
-        } catch (final Exception e) {
-            assertEquals("No basic auth header found", e.getMessage());
+        } catch (final RequiresHttpAction e) {
+            assertEquals(401, context.getResponseStatus());
+            assertEquals("Basic realm=\"authentication required\"",
+                         context.getResponseHeaders().get(BasicAuthClient.AUTHENTICATE_HEADER_NAME));
+            assertEquals("Requires basic auth (no basic auth header found)", e.getMessage());
         }
     }
     
-    public void testGetCredentialsNotABasicHeader() {
+    public void testGetCredentialsNotABasicHeader() throws TechnicalException {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
+        final MockWebContext context = MockWebContext.create();
         try {
-            basicAuthClient.getCredentials(MockWebContext.create()
-                .addRequestHeader(BasicAuthClient.BASICAUTH_HEADER_NAME, "fakeHeader"));
+            basicAuthClient.getCredentials(context.addRequestHeader(BasicAuthClient.AUTHORIZATION_HEADER_NAME,
+                                                                    "fakeHeader"));
             fail("should fail");
-        } catch (final Exception e) {
-            assertEquals("No basic auth header found", e.getMessage());
+        } catch (final RequiresHttpAction e) {
+            assertEquals(401, context.getResponseStatus());
+            assertEquals("Basic realm=\"authentication required\"",
+                         context.getResponseHeaders().get(BasicAuthClient.AUTHENTICATE_HEADER_NAME));
+            assertEquals("Requires basic auth (no basic auth header found)", e.getMessage());
         }
     }
     
@@ -108,7 +117,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         try {
             basicAuthClient.getCredentials(MockWebContext.create()
-                .addRequestHeader(BasicAuthClient.BASICAUTH_HEADER_NAME, "Basic fakeHeader"));
+                .addRequestHeader(BasicAuthClient.AUTHORIZATION_HEADER_NAME, "Basic fakeHeader"));
             fail("should fail");
         } catch (final Exception e) {
             assertEquals("Bad format of the basic auth header", e.getMessage());
@@ -119,7 +128,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         try {
             basicAuthClient.getCredentials(MockWebContext.create()
-                .addRequestHeader(BasicAuthClient.BASICAUTH_HEADER_NAME,
+                .addRequestHeader(BasicAuthClient.AUTHORIZATION_HEADER_NAME,
                                   "Basic " + Base64.encodeBase64String("fake".getBytes())));
             fail("should fail");
         } catch (final Exception e) {

@@ -17,6 +17,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 
@@ -59,8 +60,9 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * @param context
      * @return the credentials
      * @throws TechnicalException
+     * @throws RequiresHttpAction
      */
-    public C getCredentials(WebContext context) throws TechnicalException;
+    public C getCredentials(WebContext context) throws TechnicalException, RequiresHttpAction;
     
     /**
      * Get the user profile from the credentials.

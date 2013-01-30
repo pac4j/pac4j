@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.UserProfile;
@@ -100,7 +99,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
     protected abstract String getCallbackUrl(HtmlPage authorizationPage) throws Exception;
     
     protected UserProfile getProfile(final Client client, final WebContext context, final String callbackUrl)
-        throws TechnicalException {
+        throws Exception {
         
         final MockWebContext mockWebContext = (MockWebContext) context;
         mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));

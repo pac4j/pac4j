@@ -21,7 +21,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresBasicAuthException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
@@ -45,7 +45,9 @@ import org.pac4j.http.profile.ProfileCreator;
  */
 public class BasicAuthClient extends BaseHttpClient {
     
-    public static final String BASICAUTH_HEADER_NAME = "Authorization";
+    public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+    
+    public static final String AUTHENTICATE_HEADER_NAME = "WWW_AUTHENTICATE";
     
     private String realmName = "authentication required";
     
@@ -81,11 +83,14 @@ public class BasicAuthClient extends BaseHttpClient {
         return this.callbackUrl;
     }
     
-    public UsernamePasswordCredentials getCredentials(final WebContext context) throws TechnicalException {
+    public UsernamePasswordCredentials getCredentials(final WebContext context) throws TechnicalException,
+        RequiresHttpAction {
         init();
-        final String header = context.getRequestHeader(BASICAUTH_HEADER_NAME);
+        final String header = context.getRequestHeader(AUTHORIZATION_HEADER_NAME);
         if (header == null || !header.startsWith("Basic ")) {
-            throw new RequiresBasicAuthException("No basic auth header found", this.realmName);
+            context.setResponseStatus(401);
+            context.setResponseHeader(AUTHENTICATE_HEADER_NAME, "Basic realm=\"" + this.realmName + "\"");
+            throw new RequiresHttpAction("Requires basic auth (no basic auth header found)");
         }
         final String base64Token = header.substring(6);
         final byte[] decoded = Base64.decodeBase64(base64Token);

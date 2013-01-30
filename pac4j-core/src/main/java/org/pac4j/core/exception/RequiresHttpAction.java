@@ -16,23 +16,24 @@
 package org.pac4j.core.exception;
 
 /**
- * This class represents an exception which happens when a basic authentication is required and which should be handled by the application.
+ * This exception is thrown when an additionnal HTTP action (redirect, basic auth...) is required.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class RequiresBasicAuthException extends CredentialsException {
+public class RequiresHttpAction extends Exception {
     
-    private static final long serialVersionUID = -6942192034499308108L;
+    private static final long serialVersionUID = -1281366630912081625L;
     
-    protected final String realmName;
-    
-    public RequiresBasicAuthException(final String message, final String realmName) {
+    public RequiresHttpAction(final String message) {
         super(message);
-        this.realmName = realmName;
     }
     
-    public String getRealmName() {
-        return this.realmName;
+    public RequiresHttpAction(final Throwable t) {
+        super(t);
+    }
+    
+    public RequiresHttpAction(final String message, final Throwable t) {
+        super(message, t);
     }
 }

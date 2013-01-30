@@ -15,17 +15,16 @@
  */
 package org.pac4j.core.context;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is a mocked web context with settable request method/headers/parameters and session attributes (for tests purpose).
+ * This is a mocked web context to interact with request, response and session (for tests purpose).
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockWebContext implements WebContext {
+public class MockWebContext extends BaseResponseContext {
     
     protected final Map<String, String> parameters = new HashMap<String, String>();
     
@@ -34,8 +33,6 @@ public class MockWebContext implements WebContext {
     protected final Map<String, Object> session = new HashMap<String, Object>();
     
     protected String method = "GET";
-    
-    protected String writtenResponse = null;
     
     protected MockWebContext() {
     }
@@ -107,15 +104,6 @@ public class MockWebContext implements WebContext {
         return this;
     }
     
-    /**
-     * Return the written response.
-     * 
-     * @return the written response
-     */
-    public String getWrittenResponse() {
-        return this.writtenResponse;
-    }
-    
     public String getRequestParameter(final String name) {
         return this.parameters.get(name);
     }
@@ -138,14 +126,6 @@ public class MockWebContext implements WebContext {
     
     public void invalidateSession() {
         this.session.clear();
-    }
-    
-    public void WriteResponse(final String data) throws IOException {
-        if (this.writtenResponse == null) {
-            this.writtenResponse = data;
-        } else {
-            this.writtenResponse += data;
-        }
     }
     
     public Map<String, String[]> getRequestParameters() {

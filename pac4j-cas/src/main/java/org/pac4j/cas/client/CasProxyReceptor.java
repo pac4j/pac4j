@@ -28,8 +28,8 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.BaseCredentialsReceptor;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +106,7 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
             final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             
             if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-                context.WriteResponse("");
+                context.writeResponseContent("");
                 return null;
             }
             
@@ -115,8 +115,9 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
             
             this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
             
-            context.WriteResponse("<?xml version=\"1.0\"?>");
-            context.WriteResponse("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
+            context.writeResponseContent("<?xml version=\"1.0\"?>");
+            context
+                .writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         } catch (final IOException e) {
             throw new HttpCommunicationException(e);
         }

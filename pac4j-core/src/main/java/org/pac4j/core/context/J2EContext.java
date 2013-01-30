@@ -119,11 +119,31 @@ public class J2EContext implements WebContext {
     }
     
     /**
-     * Write some data in the response.
+     * Write some content in the response.
      * 
-     * @param data
+     * @param content
+     * @throws IOException
      */
-    public void WriteResponse(final String data) throws IOException {
-        this.response.getWriter().write(data);
+    public void writeResponseContent(final String content) throws IOException {
+        this.response.getWriter().write(content);
+    }
+    
+    /**
+     * Set the response status.
+     * 
+     * @param code
+     */
+    public void setResponseStatus(final int code) {
+        this.response.setStatus(code);
+    }
+    
+    /**
+     * Add a header to the response.
+     * 
+     * @param name
+     * @param value
+     */
+    public void setResponseHeader(final String name, final String value) {
+        this.response.setHeader(name, value);
     }
 }

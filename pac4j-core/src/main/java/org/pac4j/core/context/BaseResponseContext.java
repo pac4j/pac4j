@@ -1,0 +1,63 @@
+/*
+  Copyright 2012 - 2013 Jerome Leleu
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+package org.pac4j.core.context;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This class implements the methods related to the response as a POJO.
+ * 
+ * @author Jerome Leleu
+ * @since 1.4.0
+ */
+public abstract class BaseResponseContext implements WebContext {
+    
+    protected String responseContent = null;
+    
+    protected int responseStatus = -1;
+    
+    protected final Map<String, String> responseHeaders = new HashMap<String, String>();
+    
+    public void writeResponseContent(final String content) throws IOException {
+        if (this.responseContent == null) {
+            this.responseContent = content;
+        } else {
+            this.responseContent += content;
+        }
+    }
+    
+    public void setResponseStatus(final int code) {
+        this.responseStatus = code;
+    }
+    
+    public void setResponseHeader(final String name, final String value) {
+        this.responseHeaders.put(name, value);
+    }
+    
+    public String getResponseContent() {
+        return this.responseContent;
+    }
+    
+    public int getResponseStatus() {
+        return this.responseStatus;
+    }
+    
+    public Map<String, String> getResponseHeaders() {
+        return this.responseHeaders;
+    }
+}
