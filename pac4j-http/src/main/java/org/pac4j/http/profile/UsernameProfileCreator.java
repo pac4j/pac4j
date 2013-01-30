@@ -35,6 +35,7 @@ public class UsernameProfileCreator implements ProfileCreator {
      */
     public HttpProfile create(final String username) throws TechnicalException {
         final HttpProfile profile = new HttpProfile();
+        profile.setId(username);
         profile.addAttribute(CommonProfile.USERNAME, username);
         return profile;
     }

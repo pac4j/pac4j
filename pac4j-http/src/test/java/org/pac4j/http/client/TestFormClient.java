@@ -18,6 +18,8 @@ import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator;
@@ -136,6 +138,9 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         final FormClient formClient = getFormClient();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                                                                                               formClient.getName()));
+        assertEquals(USERNAME, profile.getId());
+        assertEquals(HttpProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());
     }
