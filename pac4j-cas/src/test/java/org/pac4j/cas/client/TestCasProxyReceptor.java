@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -59,21 +60,19 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         TestsHelper.initShouldFail(client, "proxyGrantingTicketStorage cannot be null");
     }
     
-    public void testMissingPgt() throws TechnicalException {
+    public void testMissingPgt() throws TechnicalException, RequiresHttpAction {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create()
-            .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE);
-        assertNull(client.getCredentials(context));
+        final MockWebContext context = MockWebContext.create();
+        client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE));
         assertEquals("", context.getResponseContent());
     }
     
-    public void testMissingPgtIou() throws TechnicalException {
+    public void testMissingPgtIou() throws TechnicalException, RequiresHttpAction {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create()
-            .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        assertNull(client.getCredentials(context));
+        final MockWebContext context = MockWebContext.create();
+        client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE));
         assertEquals("", context.getResponseContent());
     }
     
@@ -83,7 +82,13 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        assertNull(client.getCredentials(context));
-        assertTrue(context.getResponseContent().length() > 0);
+        try {
+            client.getCredentials(context);
+            fail("should throw RequiresHttpAction");
+        } catch (final RequiresHttpAction e) {
+            assertEquals(200, context.getResponseStatus());
+            assertTrue(context.getResponseContent().length() > 0);
+            assertEquals("No credential for CAS proxy receptor -> returns ok", e.getMessage());
+        }
     }
 }

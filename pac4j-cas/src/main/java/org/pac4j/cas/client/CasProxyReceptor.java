@@ -26,9 +26,9 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.BaseCredentialsReceptor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentials, CasProfile> {
+public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfile> {
     
     private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
     
@@ -97,8 +97,9 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
      * @param context
      * @return the credentials
      * @throws TechnicalException
+     * @throws RequiresHttpAction
      */
-    public CasCredentials getCredentials(final WebContext context) throws TechnicalException {
+    public CasCredentials getCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
         init();
         try {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
@@ -121,7 +122,11 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
         } catch (final IOException e) {
             throw new HttpCommunicationException(e);
         }
-        return null;
+        
+        final String message = "No credential for CAS proxy receptor -> returns ok";
+        context.setResponseStatus(200);
+        logger.debug(message);
+        throw new RequiresHttpAction(message);
     }
     
     public ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
@@ -145,5 +150,13 @@ public final class CasProxyReceptor extends BaseCredentialsReceptor<CasCredentia
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "proxyGrantingTicketStorage",
                                      this.proxyGrantingTicketStorage, "millisBetweenCleanUps",
                                      this.millisBetweenCleanUps);
+    }
+    
+    public String getRedirectionUrl(final WebContext context) throws TechnicalException {
+        throw new TechnicalException("Not supported by the CAS proxy receptor");
+    }
+    
+    public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
+        throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
 }

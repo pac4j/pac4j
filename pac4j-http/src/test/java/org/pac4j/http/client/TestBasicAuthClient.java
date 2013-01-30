@@ -90,7 +90,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         final MockWebContext context = MockWebContext.create();
         try {
             basicAuthClient.getCredentials(context);
-            fail("should fail");
+            fail("should throw RequiresHttpAction");
         } catch (final RequiresHttpAction e) {
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",
@@ -105,7 +105,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         try {
             basicAuthClient.getCredentials(context.addRequestHeader(BasicAuthClient.AUTHORIZATION_HEADER_NAME,
                                                                     "fakeHeader"));
-            fail("should fail");
+            fail("should throw RequiresHttpAction");
         } catch (final RequiresHttpAction e) {
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",
@@ -145,6 +145,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
             basicAuthClient
                 .getCredentials(context.addRequestHeader(BasicAuthClient.AUTHORIZATION_HEADER_NAME,
                                                          "Basic " + Base64.encodeBase64String(header.getBytes())));
+            fail("should throw RequiresHttpAction");
         } catch (final RequiresHttpAction e) {
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",

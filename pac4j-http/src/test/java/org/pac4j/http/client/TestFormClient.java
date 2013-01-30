@@ -89,7 +89,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
             formClient.getCredentials(MockWebContext.create().addRequestParameter(formClient.getPasswordParameter(),
                                                                                   PASSWORD));
             fail("should fail");
-        } catch (final Exception e) {
+        } catch (final TechnicalException e) {
             assertEquals("Username and password cannot be blank", e.getMessage());
         }
     }

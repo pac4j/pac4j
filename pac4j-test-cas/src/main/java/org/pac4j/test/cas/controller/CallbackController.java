@@ -28,6 +28,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,7 +43,7 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 public final class CallbackController extends AbstractController {
     
-    private final Clients clientsDefinition = new Clients();
+    private final Clients clients = new Clients();
     
     private static final String CAS_BASE_URL = "http://localhost:8080/cas/";
     
@@ -54,27 +55,31 @@ public final class CallbackController extends AbstractController {
         casClient.setCasProtocol(CasProtocol.CAS20);
         final CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
         casClient.setCasProxyReceptor(casProxyReceptor);
-        this.clientsDefinition.setCallbackUrl(CAS_BASE_URL + "callback");
-        this.clientsDefinition.setClients(casClient, casProxyReceptor);
-        this.clientsDefinition.init();
+        this.clients.setCallbackUrl(CAS_BASE_URL + "callback");
+        this.clients.setClients(casClient, casProxyReceptor);
+        this.clients.init();
     }
     
     @SuppressWarnings("unchecked")
     @Override
     protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response)
-        throws Exception {
+        throws TechnicalException {
         
         final WebContext context = new J2EContext(request, response);
         
-        final Client<CasCredentials, CasProfile> client = this.clientsDefinition.findClient(context);
+        final Client<CasCredentials, CasProfile> client = this.clients.findClient(context);
         
-        final CasCredentials credentials = client.getCredentials(context);
+        CasCredentials credentials = null;
+        try {
+            credentials = client.getCredentials(context);
+        } catch (final RequiresHttpAction e) {
+        }
         // has credentials
         if (credentials != null) {
             // get user profile
             final CasProxyProfile casProxyProfile = (CasProxyProfile) client.getUserProfile(credentials);
             // get proxy ticket
-            String proxyTicket = casProxyProfile.getProxyTicketFor(SERVICE_URL);
+            final String proxyTicket = casProxyProfile.getProxyTicketFor(SERVICE_URL);
             return new ModelAndView(new RedirectView(CommonHelper.addParameter(SERVICE_URL, "ticket", proxyTicket)));
         } else {
             // mode proxy
