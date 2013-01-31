@@ -62,6 +62,7 @@ public abstract class TestCasClient extends TestClient {
         oldClient.setAllowedProxyChains(proxyList);
         final CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
         oldClient.setCasProxyReceptor(casProxyReceptor);
+        oldClient.setUnauthenticatedUrl(FAILURE_URL);
         final CasClient client = (CasClient) internalTestClone(oldClient);
         assertEquals(oldClient.getCasLoginUrl(), client.getCasLoginUrl());
         assertEquals(oldClient.getCasPrefixUrl(), client.getCasPrefixUrl());
@@ -71,6 +72,7 @@ public abstract class TestCasClient extends TestClient {
         assertEquals(true, client.isAcceptAnyProxy());
         assertEquals(oldClient.getAllowedProxyChains(), client.getAllowedProxyChains());
         assertEquals(oldClient.getCasProxyReceptor(), client.getCasProxyReceptor());
+        assertEquals(oldClient.getUnauthenticatedUrl(), client.getUnauthenticatedUrl());
     }
     
     @SuppressWarnings("rawtypes")

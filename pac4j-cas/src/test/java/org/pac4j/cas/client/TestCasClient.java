@@ -17,7 +17,6 @@ package org.pac4j.cas.client;
 
 import junit.framework.TestCase;
 
-import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.logout.MockLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
@@ -39,8 +38,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
     
     private static final String PREFIX_URL_WITHOUT_SLASH = "http://myserver";
     
-    private static final CasProtocol PROTOCOL = CasProtocol.CAS20;
-    
     public void testMissingCasUrls() {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
@@ -54,6 +51,14 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.setCasPrefixUrl(PREFIX_URL_WITHOUT_SLASH);
         casClient.init();
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
+    }
+    
+    public void testMissingUnauthenticatedUrlIfGateway() throws TechnicalException {
+        final CasClient casClient = new CasClient();
+        casClient.setCallbackUrl(CALLBACK_URL);
+        casClient.setCasLoginUrl(LOGIN_URL);
+        casClient.setGateway(true);
+        TestsHelper.initShouldFail(casClient, "unauthenticatedUrl cannot be blank");
     }
     
     public void testInitPrefixUrl() throws TechnicalException {
@@ -74,18 +79,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(LOGIN_URL, casClient.getCasLoginUrl());
     }
     
-    public void testCloneCasClient() throws TechnicalException {
-        final CasClient oldClient = new CasClient();
-        oldClient.setCasLoginUrl(LOGIN_URL);
-        oldClient.setCasPrefixUrl(PREFIX_URL);
-        oldClient.setCasProtocol(PROTOCOL);
-        final CasClient newClient = (CasClient) oldClient.clone();
-        assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
-        assertEquals(oldClient.getCasLoginUrl(), newClient.getCasLoginUrl());
-        assertEquals(oldClient.getCasPrefixUrl(), newClient.getCasPrefixUrl());
-        assertEquals(oldClient.getCasProtocol(), newClient.getCasProtocol());
-    }
-    
     public void testRenew() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
@@ -104,12 +97,14 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         assertFalse(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
+        casClient.setUnauthenticatedUrl(FAILURE_URL);
         casClient.reinit();
         assertTrue(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
         final CasProfile profile = casClient.getUserProfile(null);
         assertNull(profile);
+        assertEquals(FAILURE_URL, casClient.getRedirectionUrl(context));
     }
     
     public void testNullLogoutHandler() {
