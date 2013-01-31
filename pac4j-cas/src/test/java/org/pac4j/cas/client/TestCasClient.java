@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.logout.MockLogoutHandler;
-import org.pac4j.cas.profile.CasAnonymousProfile;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -110,7 +109,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
         final CasProfile profile = casClient.getUserProfile(null);
-        assertTrue(profile instanceof CasAnonymousProfile);
+        assertNull(profile);
     }
     
     public void testNullLogoutHandler() {

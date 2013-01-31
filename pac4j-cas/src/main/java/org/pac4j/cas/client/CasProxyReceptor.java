@@ -125,9 +125,8 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
         }
         
         final String message = "No credential for CAS proxy receptor -> returns ok";
-        context.setResponseStatus(200);
         logger.debug(message);
-        throw new RequiresHttpAction(message);
+        throw RequiresHttpAction.ok(message, context);
     }
     
     public ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {

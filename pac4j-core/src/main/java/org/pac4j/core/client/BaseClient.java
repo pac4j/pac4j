@@ -151,9 +151,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
         // needs redirection -> return the redirection url
         if (CommonHelper.isNotBlank(value)) {
-            context.setResponseHeader("Location", retrieveRedirectionUrl(context));
-            context.setResponseStatus(302);
-            throw new RequiresHttpAction("Needs client redirection");
+            throw RequiresHttpAction.redirect("Needs client redirection", context, retrieveRedirectionUrl(context));
         } else {
             // else get the credentials
             return retrieveCredentials(context);

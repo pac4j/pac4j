@@ -15,6 +15,9 @@
  */
 package org.pac4j.core.exception;
 
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
+
 /**
  * This exception is thrown when an additionnal HTTP action (redirect, basic auth...) is required.
  * 
@@ -23,17 +26,49 @@ package org.pac4j.core.exception;
  */
 public class RequiresHttpAction extends Exception {
     
-    private static final long serialVersionUID = -1281366630912081625L;
+    private static final long serialVersionUID = -7818641324070893053L;
     
-    public RequiresHttpAction(final String message) {
+    protected RequiresHttpAction(final String message) {
         super(message);
     }
     
-    public RequiresHttpAction(final Throwable t) {
-        super(t);
+    /**
+     * Build a redirection.
+     * 
+     * @param message
+     * @param context
+     * @param url
+     * @return an HTTP redirection
+     */
+    public static RequiresHttpAction redirect(final String message, final WebContext context, final String url) {
+        context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+        context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
+        return new RequiresHttpAction(message);
     }
     
-    public RequiresHttpAction(final String message, final Throwable t) {
-        super(message, t);
+    /**
+     * Build an HTTP Ok.
+     * 
+     * @param message
+     * @param context
+     * @return an HTTP ok
+     */
+    public static RequiresHttpAction ok(final String message, final WebContext context) {
+        context.setResponseStatus(HttpConstants.OK);
+        return new RequiresHttpAction(message);
+    }
+    
+    /**
+     * Build a basic auth popup credentials.
+     * 
+     * @param message
+     * @param context
+     * @param realmName
+     * @return a basic auth popup credentials
+     */
+    public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
+        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
+        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        return new RequiresHttpAction(message);
     }
 }

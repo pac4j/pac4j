@@ -13,15 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.cas.profile;
+package org.pac4j.core.context;
+
 
 /**
- * This profile represents an anonymous CAS user.
+ * Some HTTP constants.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasAnonymousProfile extends CasProfile {
+public interface HttpConstants {
     
-    private static final long serialVersionUID = 3748287944651246823L;
+    public static final int OK = 200;
+    
+    public static final int UNAUTHORIZED = 401;
+    
+    public static final int TEMP_REDIRECT = 302;
+    
+    public static final String LOCATION_HEADER = "Location";
+    
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    
+    public static final String AUTHENTICATE_HEADER = "WWW_AUTHENTICATE";
 }

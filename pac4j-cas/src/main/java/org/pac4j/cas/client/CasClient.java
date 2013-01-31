@@ -28,7 +28,6 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
-import org.pac4j.cas.profile.CasAnonymousProfile;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.BaseClient;
@@ -204,8 +203,7 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
             this.logoutHandler.destroySession(context);
             final String message = "logout request : no credential returned";
             logger.debug(message);
-            context.setResponseStatus(200);
-            throw new RequiresHttpAction(message);
+            throw RequiresHttpAction.ok(message, context);
         }
         if (this.gateway) {
             logger.info("No credential found in this gateway round-trip");
@@ -227,9 +225,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
         init();
         logger.debug("credentials : {}", credentials);
-        // gateway, not authenticated
+        // gateway, not authenticated -> no profile
         if (credentials == null) {
-            return new CasAnonymousProfile();
+            return null;
         }
         
         final String ticket = credentials.getServiceTicket();

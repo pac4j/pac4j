@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -44,10 +45,6 @@ import org.pac4j.http.profile.ProfileCreator;
  * @since 1.4.0
  */
 public class BasicAuthClient extends BaseHttpClient {
-    
-    public static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    
-    public static final String AUTHENTICATE_HEADER_NAME = "WWW_AUTHENTICATE";
     
     private String realmName = "authentication required";
     
@@ -86,12 +83,11 @@ public class BasicAuthClient extends BaseHttpClient {
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
         RequiresHttpAction {
-        final String header = context.getRequestHeader(AUTHORIZATION_HEADER_NAME);
+        final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null || !header.startsWith("Basic ")) {
             logger.warn("No basic auth found");
-            context.setResponseStatus(401);
-            context.setResponseHeader(AUTHENTICATE_HEADER_NAME, "Basic realm=\"" + this.realmName + "\"");
-            throw new RequiresHttpAction("Requires basic auth (no basic auth header found)");
+            throw RequiresHttpAction.unauthorized("Requires basic auth (no basic auth header found)", context,
+                                                  this.realmName);
         }
         final String base64Token = header.substring(6);
         final byte[] decoded = Base64.decodeBase64(base64Token);
@@ -117,9 +113,8 @@ public class BasicAuthClient extends BaseHttpClient {
             this.usernamePasswordAuthenticator.validate(credentials);
         } catch (final TechnicalException e) {
             logger.error("Credentials validation fails", e);
-            context.setResponseStatus(401);
-            context.setResponseHeader(AUTHENTICATE_HEADER_NAME, "Basic realm=\"" + this.realmName + "\"");
-            throw new RequiresHttpAction("Requires basic auth (credentials validation fails)");
+            throw RequiresHttpAction.unauthorized("Requires basic auth (credentials validation fails)", context,
+                                                  this.realmName);
         }
         
         return credentials;
