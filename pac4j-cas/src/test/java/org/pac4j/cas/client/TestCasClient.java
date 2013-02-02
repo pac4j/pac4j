@@ -18,7 +18,6 @@ package org.pac4j.cas.client;
 import junit.framework.TestCase;
 
 import org.pac4j.cas.credentials.CasCredentials;
-import org.pac4j.cas.logout.MockLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -93,7 +92,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
-        casClient.setLogoutHandler(new MockLogoutHandler());
         final MockWebContext context = MockWebContext.create();
         assertFalse(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
@@ -120,7 +118,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
-        casClient.setLogoutHandler(new MockLogoutHandler());
         casClient.init();
         final MockWebContext context = MockWebContext.create().addRequestParameter("logoutRequest", logoutRequest)
             .setRequestMethod("POST");

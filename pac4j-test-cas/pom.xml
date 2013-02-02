@@ -58,11 +58,6 @@
 			<artifactId>pac4j-core</artifactId>
 			<type>test-jar</type>
 		</dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-cas</artifactId>
-            <type>test-jar</type>
-        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

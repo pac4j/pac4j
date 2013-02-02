@@ -72,7 +72,7 @@ public class LinkedInClient extends BaseOAuth10Client<LinkedInProfile> {
             final String value = StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">");
             profile.addAttribute(attribute, value);
             if (LinkedInAttributesDefinition.URL.equals(attribute)) {
-                final String id = StringUtils.substringBetween(value, "&amp;key=", "&amp;authToken=");
+                final String id = StringUtils.substringBetween(value, "id=", "&amp;authType=");
                 profile.setId(id);
             }
         }
