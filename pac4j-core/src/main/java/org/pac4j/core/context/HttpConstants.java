@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.context;
 
-
 /**
  * Some HTTP constants.
  * 
@@ -30,9 +29,11 @@ public interface HttpConstants {
     
     public static final int TEMP_REDIRECT = 302;
     
+    public static final int FORBIDDEN = 403;
+    
     public static final String LOCATION_HEADER = "Location";
     
     public static final String AUTHORIZATION_HEADER = "Authorization";
     
-    public static final String AUTHENTICATE_HEADER = "WWW_AUTHENTICATE";
+    public static final String AUTHENTICATE_HEADER = "WWW-Authenticate";
 }
