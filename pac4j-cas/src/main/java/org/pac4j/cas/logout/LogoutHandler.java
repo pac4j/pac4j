@@ -45,8 +45,9 @@ public interface LogoutHandler {
      * Associates a token request with the current web session.
      * 
      * @param context
+     * @param ticket
      */
-    public void recordSession(final WebContext context);
+    public void recordSession(final WebContext context, String ticket);
     
     /**
      * Destroys the current web session for the given CAS logout request.

@@ -37,7 +37,7 @@ public class NoLogoutHandler implements LogoutHandler {
                && context.getRequestParameter(LOGOUT_REQUEST_PARAMETER) != null;
     }
     
-    public void recordSession(final WebContext context) {
+    public void recordSession(final WebContext context, final String ticket) {
     }
     
     public void destroySession(final WebContext context) {

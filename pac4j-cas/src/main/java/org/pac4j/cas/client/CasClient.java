@@ -139,7 +139,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
         // if gateway
         if (this.gateway) {
             // check previous roundtrip
-            String gatewayRoundtrip = (String) context.getSessionAttribute(getGatewayRoundtripSessionAttributeName());
+            final String gatewayRoundtrip = (String) context
+                .getSessionAttribute(getGatewayRoundtripSessionAttributeName());
             if (CommonHelper.isNotBlank(gatewayRoundtrip)) {
                 // already roundtrip -> redirect to unauthenticated url
                 redirectionUrl = this.unauthenticatedUrl;
@@ -229,8 +230,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
         RequiresHttpAction {
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
-            this.logoutHandler.recordSession(context);
             final String ticket = context.getRequestParameter(SERVICE_TICKET_PARAMETER);
+            this.logoutHandler.recordSession(context, ticket);
             final CasCredentials casCredentials = new CasCredentials(ticket, getName());
             logger.debug("casCredentials : {}", casCredentials);
             return casCredentials;

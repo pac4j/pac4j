@@ -21,8 +21,7 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 
 /**
- * This class is the logout handler for the {@link CasClient} class based on the {@link SingleSignOutHandler} class of the Jasig CAS
- * client.<br />
+ * This class is the logout handler for the {@link CasClient} class based on the {@link SingleSignOutHandler} class of the Jasig CAS client.<br />
  * It should only be used in J2E context.
  * 
  * @author Jerome Leleu
@@ -49,22 +48,22 @@ public class CasSingleSignOutHandler implements LogoutHandler {
     }
     
     public boolean isTokenRequest(final WebContext context) {
-        J2EContext j2eContext = (J2EContext) context;
+        final J2EContext j2eContext = (J2EContext) context;
         return this.singleSignOutHandler.isTokenRequest(j2eContext.getRequest());
     }
     
     public boolean isLogoutRequest(final WebContext context) {
-        J2EContext j2eContext = (J2EContext) context;
+        final J2EContext j2eContext = (J2EContext) context;
         return this.singleSignOutHandler.isLogoutRequest(j2eContext.getRequest());
     }
     
-    public void recordSession(final WebContext context) {
-        J2EContext j2eContext = (J2EContext) context;
+    public void recordSession(final WebContext context, final String ticket) {
+        final J2EContext j2eContext = (J2EContext) context;
         this.singleSignOutHandler.recordSession(j2eContext.getRequest());
     }
     
     public void destroySession(final WebContext context) {
-        J2EContext j2eContext = (J2EContext) context;
+        final J2EContext j2eContext = (J2EContext) context;
         this.singleSignOutHandler.destroySession(j2eContext.getRequest());
     }
 }
