@@ -51,8 +51,6 @@ public interface TestsConstants {
     
     // urls
     public static final String CALLBACK_URL = "http://myserver/callback";
-    public static final String FAILURE_URL = "http://myserver/failure";
     public static final String GOOGLE_URL = "http://www.google.com";
     public final static String LOGIN_URL = "http://myserver/login";
-    public static final String FAILURE_URL2 = "http://myserver/failureUrl2";
 }

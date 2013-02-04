@@ -54,10 +54,8 @@ public abstract class TestClient extends TestCase implements TestsConstants {
     
     protected BaseClient internalTestClone(final BaseClient oldClient) {
         oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setFailureUrl(FAILURE_URL);
         final BaseClient client = oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getFailureUrl(), client.getFailureUrl());
         assertEquals(oldClient.getName(), client.getName());
         return client;
     }

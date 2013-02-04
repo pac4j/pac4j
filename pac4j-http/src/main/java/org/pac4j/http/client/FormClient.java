@@ -17,7 +17,7 @@ package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
@@ -41,6 +41,10 @@ import org.pac4j.http.profile.ProfileCreator;
 public class FormClient extends BaseHttpClient {
     
     private String loginUrl;
+    
+    public final static String ERROR_PARAMETER = "error";
+    
+    public final static String MISSING_FIELD_ERROR = "missing_field";
     
     public final static String DEFAULT_USERNAME_PARAMETER = "username";
     
@@ -85,21 +89,35 @@ public class FormClient extends BaseHttpClient {
     }
     
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
+        RequiresHttpAction {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
         if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)) {
             final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password,
                                                                                             getName());
             logger.debug("usernamePasswordCredentials : {}", credentials);
-            // validate credentials
-            this.usernamePasswordAuthenticator.validate(credentials);
+            try {
+                // validate credentials
+                this.usernamePasswordAuthenticator.validate(credentials);
+            } catch (final TechnicalException e) {
+                String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, e.getClass()
+                    .getSimpleName());
+                logger.debug("redirectionUrl : {}", redirectionUrl);
+                final String message = "Credentials validation fails -> return to the form with error";
+                logger.error(message);
+                throw RequiresHttpAction.redirect(message, context, redirectionUrl);
+            }
             
             return credentials;
         }
-        final String message = "Username and password cannot be blank";
+        String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+        redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
+        logger.debug("redirectionUrl : {}", redirectionUrl);
+        final String message = "Username and password cannot be blank -> return to the form with error";
         logger.error(message);
-        throw new CredentialsException(message);
+        throw RequiresHttpAction.redirect(message, context, redirectionUrl);
     }
     
     public String getLoginUrl() {
@@ -128,11 +146,10 @@ public class FormClient extends BaseHttpClient {
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
-                                     "name", getName(), "loginUrl", this.loginUrl, "usernameParameter",
-                                     this.usernameParameter, "passwordParameter", this.passwordParameter,
-                                     "usernamePasswordAuthenticator", getUsernamePasswordAuthenticator(),
-                                     "profileCreator", getProfileCreator());
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
+                                     this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
+                                     this.passwordParameter, "usernamePasswordAuthenticator",
+                                     getUsernamePasswordAuthenticator(), "profileCreator", getProfileCreator());
     }
     
     @Override

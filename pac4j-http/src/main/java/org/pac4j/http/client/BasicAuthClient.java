@@ -107,7 +107,6 @@ public class BasicAuthClient extends BaseHttpClient {
                                                                                         token.substring(delim + 1),
                                                                                         getName());
         logger.debug("usernamePasswordCredentials : {}", credentials);
-        
         try {
             // validate credentials
             this.usernamePasswordAuthenticator.validate(credentials);
@@ -130,8 +129,8 @@ public class BasicAuthClient extends BaseHttpClient {
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
-                                     "name", getName(), "realmName", this.realmName, "usernamePasswordAuthenticator",
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
+                                     this.realmName, "usernamePasswordAuthenticator",
                                      getUsernamePasswordAuthenticator(), "profileCreator", getProfileCreator());
     }
     

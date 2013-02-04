@@ -61,7 +61,7 @@ public abstract class TestCasClient extends TestClient {
         oldClient.setAllowedProxyChains(proxyList);
         final CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
         oldClient.setCasProxyReceptor(casProxyReceptor);
-        oldClient.setUnauthenticatedUrl(FAILURE_URL);
+        oldClient.setUnauthenticatedUrl(GOOGLE_URL);
         final CasClient client = (CasClient) internalTestClone(oldClient);
         assertEquals(oldClient.getCasLoginUrl(), client.getCasLoginUrl());
         assertEquals(oldClient.getCasPrefixUrl(), client.getCasPrefixUrl());

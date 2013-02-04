@@ -98,8 +98,8 @@ public class MyOpenIdClient extends BaseOpenIdClient<MyOpenIdProfile> {
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", getFailureUrl(),
-                                     "userParameterName", this.userParameterName, "name", getName());
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "userParameterName",
+                                     this.userParameterName, "name", getName());
     }
     
     @Override

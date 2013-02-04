@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
  * create a new instance</li>
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
- * <li>the failure url is handled through the {@link #setFailureUrl(String)}, {@link #getFailureUrl()} and
- * {@link #getFailureUrl(TechnicalException)} methods</li>
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
  * {@link #getRedirectionUrl(WebContext)} method will always return the redirection to the provider where as if it's false, the redirection
  * url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the redirection,
@@ -61,8 +59,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     private String name;
     
-    private String failureUrl;
-    
     /**
      * Clone the current client.
      * 
@@ -73,7 +69,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         final BaseClient<C, U> newClient = newClient();
         newClient.setCallbackUrl(this.callbackUrl);
         newClient.setName(this.name);
-        newClient.setFailureUrl(this.failureUrl);
         return newClient;
     }
     
@@ -90,24 +85,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     public String getCallbackUrl() {
         return this.callbackUrl;
-    }
-    
-    /**
-     * Get the failure url depending on the given exception.
-     * 
-     * @param exception
-     * @return the failure url depending on the given exception
-     */
-    public String getFailureUrl(final TechnicalException exception) {
-        return this.failureUrl;
-    }
-    
-    public String getFailureUrl() {
-        return this.failureUrl;
-    }
-    
-    public void setFailureUrl(final String failureUrl) {
-        this.failureUrl = failureUrl;
     }
     
     public void setName(final String name) {
@@ -162,7 +139,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name, "failureUrl",
-                                     this.failureUrl, "isDirectRedirection", isDirectRedirection());
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,
+                                     "isDirectRedirection", isDirectRedirection());
     }
 }

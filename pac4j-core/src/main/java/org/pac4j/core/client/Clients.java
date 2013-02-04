@@ -30,8 +30,7 @@ import org.slf4j.LoggerFactory;
  * <p />
  * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the clients group if empty and
  * a specific parameter added to define the client targeted. It is implicitly called by the "finders" methods and doesn't need to be called
- * explicitly. <br/ >
- * The failure urls are also computed if necessary.
+ * explicitly.
  * <p />
  * The {@link #findClient(WebContext)} or {@link #findClient(String)} methods must be called to find the right client according to the input
  * context or type. The {@link #findAllClients()} method returns all the clients.
@@ -78,7 +77,7 @@ public final class Clients extends InitializableObject {
     }
     
     /**
-     * Initialize all clients by computing callback and failure urls.
+     * Initialize all clients by computing callback urls.
      * 
      * @throws TechnicalException
      */
@@ -97,14 +96,6 @@ public final class Clients extends InitializableObject {
             } else if (baseClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
                 baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientNameParameter,
                                                                     baseClient.getName()));
-            }
-        }
-        if (CommonHelper.isNotBlank(this.failureUrl)) {
-            for (final Client client : this.clients) {
-                final BaseClient baseClient = (BaseClient) client;
-                if (CommonHelper.isBlank(baseClient.getFailureUrl())) {
-                    baseClient.setFailureUrl(this.failureUrl);
-                }
             }
         }
     }

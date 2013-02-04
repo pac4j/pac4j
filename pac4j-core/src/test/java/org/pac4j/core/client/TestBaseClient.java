@@ -36,11 +36,9 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
     public void testClone() {
         final BaseClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials, CommonProfile>(TYPE);
         oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setFailureUrl(FAILURE_URL);
         final BaseClient<Credentials, CommonProfile> newClient = oldClient.clone();
         assertEquals(oldClient.getName(), newClient.getName());
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
-        assertEquals(oldClient.getFailureUrl(), newClient.getFailureUrl());
     }
     
     public void testDirectClient() throws TechnicalException, RequiresHttpAction {

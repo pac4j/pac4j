@@ -35,14 +35,12 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
     public void testClone() {
         final CasProxyReceptor oldClient = new CasProxyReceptor();
         oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setFailureUrl(FAILURE_URL);
         oldClient.setMillisBetweenCleanUps(MILLIS_BETWEEN_CLEANUPS);
         final ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
         oldClient.setProxyGrantingTicketStorage(proxyGrantingTicketStorageImpl);
         oldClient.setName(TYPE);
         final CasProxyReceptor client = (CasProxyReceptor) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getFailureUrl(), client.getFailureUrl());
         assertEquals(oldClient.getMillisBetweenCleanUps(), client.getMillisBetweenCleanUps());
         assertEquals(oldClient.getProxyGrantingTicketStorage(), client.getProxyGrantingTicketStorage());
         assertEquals(oldClient.getName(), client.getName());

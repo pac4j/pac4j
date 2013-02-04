@@ -40,7 +40,6 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
     public void testClone() {
         final BasicAuthClient oldClient = new BasicAuthClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setFailureUrl(FAILURE_URL);
         oldClient.setName(TYPE);
         oldClient.setRealmName(REALM_NAME);
         final ProfileCreator profileCreator = new UsernameProfileCreator();
@@ -49,7 +48,6 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         oldClient.setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
         final BasicAuthClient client = (BasicAuthClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getFailureUrl(), client.getFailureUrl());
         assertEquals(oldClient.getName(), client.getName());
         assertEquals(oldClient.getRealmName(), client.getRealmName());
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());

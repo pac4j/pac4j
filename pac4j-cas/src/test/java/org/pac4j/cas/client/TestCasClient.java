@@ -95,14 +95,14 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         assertFalse(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
-        casClient.setUnauthenticatedUrl(FAILURE_URL);
+        casClient.setUnauthenticatedUrl(GOOGLE_URL);
         casClient.reinit();
         assertTrue(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
         final CasProfile profile = casClient.getUserProfile(null);
         assertNull(profile);
-        assertEquals(FAILURE_URL, casClient.getRedirectionUrl(context));
+        assertEquals(GOOGLE_URL, casClient.getRedirectionUrl(context));
     }
     
     public void testNullLogoutHandler() {

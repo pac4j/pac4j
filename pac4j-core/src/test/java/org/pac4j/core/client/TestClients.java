@@ -103,21 +103,6 @@ public final class TestClients extends TestCase implements TestsConstants {
         assertTrue(clients2.containsAll(clients));
     }
     
-    public void testFailureUrlDefinedInGroup() throws TechnicalException {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final Clients clientsGroup = new Clients(CALLBACK_URL, FAILURE_URL, facebookClient);
-        clientsGroup.init();
-        assertEquals(FAILURE_URL, facebookClient.getFailureUrl());
-    }
-    
-    public void testFailureUrlDefinedInBoth() throws TechnicalException {
-        final MockBaseClient facebookClient = newFacebookClient();
-        facebookClient.setFailureUrl(FAILURE_URL2);
-        final Clients clientsGroup = new Clients(CALLBACK_URL, FAILURE_URL, facebookClient);
-        clientsGroup.init();
-        assertEquals(FAILURE_URL2, facebookClient.getFailureUrl());
-    }
-    
     public void testClientWithCallbackUrl() throws TechnicalException {
         final MockBaseClient facebookClient = newFacebookClient();
         facebookClient.setCallbackUrl(LOGIN_URL);
