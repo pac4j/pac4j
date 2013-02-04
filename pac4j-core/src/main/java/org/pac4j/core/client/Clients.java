@@ -51,8 +51,6 @@ public final class Clients extends InitializableObject {
     
     private String callbackUrl;
     
-    private String failureUrl;
-    
     public Clients() {
     }
     
@@ -64,16 +62,6 @@ public final class Clients extends InitializableObject {
     public Clients(final String callbackUrl, final Client... clients) {
         setCallbackUrl(callbackUrl);
         setClients(clients);
-    }
-    
-    public Clients(final String callbackUrl, final String failureUrl, final List<Client> clients) {
-        this(callbackUrl, clients);
-        setFailureUrl(failureUrl);
-    }
-    
-    public Clients(final String callbackUrl, final String failureUrl, final Client... clients) {
-        this(callbackUrl, clients);
-        setFailureUrl(failureUrl);
     }
     
     /**
@@ -159,14 +147,6 @@ public final class Clients extends InitializableObject {
         this.callbackUrl = callbackUrl;
     }
     
-    public String getFailureUrl() {
-        return this.failureUrl;
-    }
-    
-    public void setFailureUrl(final String failureUrl) {
-        this.failureUrl = failureUrl;
-    }
-    
     public void setClients(final List<Client> clients) {
         this.clients = clients;
     }
@@ -180,7 +160,7 @@ public final class Clients extends InitializableObject {
     
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "failureUrl", this.failureUrl,
-                                     "clientTypeParameter", this.clientNameParameter, "clients", this.clients);
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
+                                     this.clientNameParameter, "clients", this.clients);
     }
 }
