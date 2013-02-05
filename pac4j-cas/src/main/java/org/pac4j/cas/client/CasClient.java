@@ -63,9 +63,7 @@ import org.slf4j.LoggerFactory;
  * For the CAS round-trip :
  * <ul>
  * <li>the <code>renew</code> parameter can be set by using the {@link #setRenew(boolean)} method</li>
- * <li>the <code>gateway</code> parameter can be set by using the {@link #setGateway(boolean)} method. In this case, the
- * "unauthenticated url" must be defined through the {@link #setUnauthenticatedUrl(String)} method (it's returned when calling the
- * {@link #getRedirectionUrl(WebContext)} method if a CAS round-trip with gateway has already been done).</li>
+ * <li>the <code>gateway</code> parameter can be set by using the {@link #setGateway(boolean)} method.</li>
  * </ul>
  * <p />
  * This client handles CAS logout calls from the CAS server, using the {@link LogoutHandler} interface. It's defined by default as the
@@ -84,8 +82,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class CasClient extends BaseClient<CasCredentials, CasProfile> {
-    
-    private static final String GATEWAY_ROUNDTRIP = "gatewayRoundtrip";
     
     protected static final Logger logger = LoggerFactory.getLogger(CasClient.class);
     
@@ -120,12 +116,6 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     
     protected CasProxyReceptor casProxyReceptor;
     
-    protected String unauthenticatedUrl;
-    
-    protected String getGatewayRoundtripSessionAttributeName() {
-        return GATEWAY_ROUNDTRIP + "#" + this.casPrefixUrl;
-    }
-    
     /**
      * Get the redirection url.
      * 
@@ -135,26 +125,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      */
     @Override
     protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
-        final String redirectionUrl;
-        // if gateway
-        if (this.gateway) {
-            // check previous roundtrip
-            final String gatewayRoundtrip = (String) context
-                .getSessionAttribute(getGatewayRoundtripSessionAttributeName());
-            if (CommonHelper.isNotBlank(gatewayRoundtrip)) {
-                // already roundtrip -> redirect to unauthenticated url
-                redirectionUrl = this.unauthenticatedUrl;
-            } else {
-                // no roundtrip -> try one
-                redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
-                                                                  this.callbackUrl, this.renew, true);
-                // and save this information
-                context.setSessionAttribute(getGatewayRoundtripSessionAttributeName(), "true");
-            }
-        } else {
-            redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER, this.callbackUrl,
-                                                              this.renew, false);
-        }
+        final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
+                                                                       this.callbackUrl, this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return redirectionUrl;
     }
@@ -170,7 +142,6 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
         casClient.setAcceptAnyProxy(this.acceptAnyProxy);
         casClient.setAllowedProxyChains(this.allowedProxyChains);
         casClient.setCasProxyReceptor(this.casProxyReceptor);
-        casClient.setUnauthenticatedUrl(this.unauthenticatedUrl);
         return casClient;
     }
     
@@ -180,9 +151,6 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
         CommonHelper.assertNotNull("logoutHandler", this.logoutHandler);
         if (CommonHelper.isBlank(this.casLoginUrl) && CommonHelper.isBlank(this.casPrefixUrl)) {
             throw new TechnicalException("casLoginUrl and casPrefixUrl cannot be both blank");
-        }
-        if (this.gateway) {
-            CommonHelper.assertNotBlank("unauthenticatedUrl", this.unauthenticatedUrl);
         }
         if (this.casPrefixUrl != null && !this.casPrefixUrl.endsWith("/")) {
             this.casPrefixUrl += "/";
@@ -261,8 +229,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
         init();
         logger.debug("credentials : {}", credentials);
-        // gateway, not authenticated -> no profile
-        if (credentials == null) {
+        // gateway & not authenticated -> no profile
+        if (this.gateway && credentials == null) {
             return null;
         }
         
@@ -362,22 +330,13 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
         this.casProxyReceptor = casProxyReceptor;
     }
     
-    public String getUnauthenticatedUrl() {
-        return this.unauthenticatedUrl;
-    }
-    
-    public void setUnauthenticatedUrl(final String unauthenticatedUrl) {
-        this.unauthenticatedUrl = unauthenticatedUrl;
-    }
-    
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "casLoginUrl", this.casLoginUrl,
                                      "casPrefixUrl", this.casPrefixUrl, "casProtocol", this.casProtocol, "renew",
                                      this.renew, "gateway", this.gateway, "logoutHandler", this.logoutHandler,
                                      "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains",
-                                     this.allowedProxyChains, "casProxyReceptor", this.casProxyReceptor,
-                                     "unauthenticatedUrl", this.unauthenticatedUrl);
+                                     this.allowedProxyChains, "casProxyReceptor", this.casProxyReceptor);
     }
     
     @Override

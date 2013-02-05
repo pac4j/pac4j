@@ -52,14 +52,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
     }
     
-    public void testMissingUnauthenticatedUrlIfGateway() throws TechnicalException {
-        final CasClient casClient = new CasClient();
-        casClient.setCallbackUrl(CALLBACK_URL);
-        casClient.setCasLoginUrl(LOGIN_URL);
-        casClient.setGateway(true);
-        TestsHelper.initShouldFail(casClient, "unauthenticatedUrl cannot be blank");
-    }
-    
     public void testInitPrefixUrl() throws TechnicalException {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
@@ -95,14 +87,12 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         assertFalse(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
-        casClient.setUnauthenticatedUrl(GOOGLE_URL);
         casClient.reinit();
         assertTrue(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
         final CasProfile profile = casClient.getUserProfile(null);
         assertNull(profile);
-        assertEquals(GOOGLE_URL, casClient.getRedirectionUrl(context));
     }
     
     public void testNullLogoutHandler() {

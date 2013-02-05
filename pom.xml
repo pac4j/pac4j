@@ -165,6 +165,12 @@
 				<groupId>org.openid4java</groupId>
 				<artifactId>openid4java</artifactId>
 				<version>0.9.7</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -196,12 +202,6 @@
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl-over-slf4j</artifactId>
-				<version>1.7.0</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
