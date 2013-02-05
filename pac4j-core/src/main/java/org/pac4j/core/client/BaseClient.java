@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
  * {@link #getRedirectionUrl(WebContext)} method will always return the redirection to the provider where as if it's false, the redirection
  * url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the redirection,
  * which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
- * To force an "immediate" redirection, the {@link #getRedirectionUrl(WebContext, boolean)} must be used with <code>true</code> for the
- * <code>isImmediate</code> parameter.</li>
+ * To force a direct redirection, the {@link #getRedirectionUrl(WebContext, boolean)} must be used with <code>true</code> for the
+ * <code>forceDirectRedirection</code> parameter.</li>
  * </ul>
  * <p />
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
@@ -109,11 +109,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return getRedirectionUrl(context, false);
     }
     
-    public final String getRedirectionUrl(final WebContext context, final boolean isImmediate)
+    public final String getRedirectionUrl(final WebContext context, final boolean forceDirectRedirection)
         throws TechnicalException {
         init();
-        // it's a direct redirection or the redirection must be immediate -> return the redirection url
-        if (isDirectRedirection() || isImmediate) {
+        // it's a direct redirection or force the redirection -> return the redirection url
+        if (isDirectRedirection() || forceDirectRedirection) {
             return retrieveRedirectionUrl(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
