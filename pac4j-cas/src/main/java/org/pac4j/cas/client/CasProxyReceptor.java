@@ -105,15 +105,16 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
         try {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+            logger.debug("proxyGrantingTicketIou : {}", proxyGrantingTicketIou);
             final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+            logger.debug("proxyGrantingTicket : {}", proxyGrantingTicket);
             
             if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
                 context.writeResponseContent("");
-                return null;
+                final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
+                logger.error(message);
+                throw RequiresHttpAction.ok(message, context);
             }
-            
-            logger.debug("Received proxyGrantingTicketId [{}] for proxyGrantingTicketIou [{}]", proxyGrantingTicket,
-                         proxyGrantingTicketIou);
             
             this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
             

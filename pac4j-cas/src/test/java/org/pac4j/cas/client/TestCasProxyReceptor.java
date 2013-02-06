@@ -58,20 +58,30 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         TestsHelper.initShouldFail(client, "proxyGrantingTicketStorage cannot be null");
     }
     
-    public void testMissingPgt() throws TechnicalException, RequiresHttpAction {
+    public void testMissingPgt() throws TechnicalException {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE));
-        assertEquals("", context.getResponseContent());
+        try {
+            client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE));
+        } catch (final RequiresHttpAction e) {
+            assertEquals(200, context.getResponseStatus());
+            assertEquals("", context.getResponseContent());
+            assertEquals("Missing proxyGrantingTicket or proxyGrantingTicketIou", e.getMessage());
+        }
     }
     
-    public void testMissingPgtIou() throws TechnicalException, RequiresHttpAction {
+    public void testMissingPgtiou() throws TechnicalException {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE));
-        assertEquals("", context.getResponseContent());
+        try {
+            client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE));
+        } catch (final RequiresHttpAction e) {
+            assertEquals(200, context.getResponseStatus());
+            assertEquals("", context.getResponseContent());
+            assertEquals("Missing proxyGrantingTicket or proxyGrantingTicketIou", e.getMessage());
+        }
     }
     
     public void testOk() throws TechnicalException {
