@@ -179,10 +179,10 @@ public class TestFacebookClient extends TestOAuthClient {
         final List<FacebookInfo> likes = profile.getLikes();
         assertEquals(9, likes.size());
         final FacebookInfo like = likes.get(0);
-        assertEquals("Surfing", like.getName());
-        assertEquals("112392265454714", like.getId());
+        assertEquals("Boxing", like.getName());
+        assertEquals("105648929470083", like.getId());
         assertEquals("Sport", like.getCategory());
-        assertEquals(1330030467000L, like.getCreatedTime().getTime());
+        assertEquals(1360152791000L, like.getCreatedTime().getTime());
         final List<FacebookPhoto> albums = profile.getAlbums();
         assertEquals(3, albums.size());
         final FacebookPhoto album = albums.get(1);
