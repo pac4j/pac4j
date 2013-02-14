@@ -102,8 +102,8 @@ public class FormClient extends BaseHttpClient {
                 this.usernamePasswordAuthenticator.validate(credentials);
             } catch (final TechnicalException e) {
                 String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, e.getClass()
-                    .getSimpleName());
+                String errorMessage = computeErrorMessage(e);
+                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
                 logger.debug("redirectionUrl : {}", redirectionUrl);
                 final String message = "Credentials validation fails -> return to the form with error";
                 logger.error(message);
@@ -118,6 +118,16 @@ public class FormClient extends BaseHttpClient {
         final String message = "Username and password cannot be blank -> return to the form with error";
         logger.error(message);
         throw RequiresHttpAction.redirect(message, context, redirectionUrl);
+    }
+    
+    /**
+     * Return the error message depending on the thrown exception. Can be overriden for other message computation.
+     * 
+     * @param e
+     * @return the error message
+     */
+    protected String computeErrorMessage(final TechnicalException e) {
+        return e.getClass().getSimpleName();
     }
     
     public String getLoginUrl() {
