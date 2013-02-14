@@ -60,8 +60,8 @@ public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredenti
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
     }
     
-    public HttpProfile getUserProfile(final UsernamePasswordCredentials credentials) throws TechnicalException {
-        init();
+    @Override
+    protected HttpProfile retrieveUserProfile(final UsernamePasswordCredentials credentials) throws TechnicalException {
         // create user profile
         final HttpProfile profile = this.profileCreator.create(credentials.getUsername());
         logger.debug("profile : {}", profile);

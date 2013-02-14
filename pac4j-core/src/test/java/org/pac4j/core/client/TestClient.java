@@ -70,7 +70,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         
         final String callbackUrl = getCallbackUrl(redirectionPage);
         
-        final UserProfile profile = getProfile(client, context, callbackUrl);
+        final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
         
         verifyProfile(profile);
         
@@ -98,8 +98,8 @@ public abstract class TestClient extends TestCase implements TestsConstants {
     
     protected abstract String getCallbackUrl(HtmlPage authorizationPage) throws Exception;
     
-    protected UserProfile getProfile(final Client client, final WebContext context, final String callbackUrl)
-        throws Exception {
+    protected UserProfile getCredentialsAndProfile(final Client client, final WebContext context,
+                                                   final String callbackUrl) throws Exception {
         
         final MockWebContext mockWebContext = (MockWebContext) context;
         mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
@@ -135,5 +135,30 @@ public abstract class TestClient extends TestCase implements TestsConstants {
             assertTrue(profile.getProfileUrl().startsWith(profileUrl));
         }
         assertEquals(location, profile.getLocation());
+    }
+    
+    protected boolean isCancellable() {
+        return false;
+    }
+    
+    public void testCancelAuthentication() throws Exception {
+        if (isCancellable()) {
+            final Client client = getClient();
+            
+            final MockWebContext context = MockWebContext.create();
+            final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
+            
+            final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
+            
+            final String callbackUrl = getCallbackUrlForCancel(redirectionPage);
+            
+            final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
+            
+            assertNull(profile);
+        }
+    }
+    
+    protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
+        throw new IllegalArgumentException("To be implemented");
     }
 }

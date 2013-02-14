@@ -226,14 +226,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @return the user profile
      * @throws TechnicalException
      */
-    public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
-        init();
-        logger.debug("credentials : {}", credentials);
-        // gateway & not authenticated -> no profile
-        if (this.gateway && credentials == null) {
-            return null;
-        }
-        
+    @Override
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials) throws TechnicalException {
         final String ticket = credentials.getServiceTicket();
         try {
             final Assertion assertion = this.ticketValidator.validate(ticket, this.callbackUrl);

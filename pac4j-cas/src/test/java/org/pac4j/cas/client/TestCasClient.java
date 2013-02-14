@@ -18,7 +18,6 @@ package org.pac4j.cas.client;
 import junit.framework.TestCase;
 
 import org.pac4j.cas.credentials.CasCredentials;
-import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -91,8 +90,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertTrue(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
-        final CasProfile profile = casClient.getUserProfile(null);
-        assertNull(profile);
     }
     
     public void testNullLogoutHandler() {

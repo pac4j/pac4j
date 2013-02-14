@@ -158,7 +158,8 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     
-    public CasProfile getUserProfile(final CasCredentials credentials) throws TechnicalException {
+    @Override
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials) throws TechnicalException {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     

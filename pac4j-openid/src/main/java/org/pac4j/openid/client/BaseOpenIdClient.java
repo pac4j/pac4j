@@ -136,8 +136,8 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      */
     protected abstract U createProfile(AuthSuccess authSuccess) throws MessageException;
     
-    public U getUserProfile(final OpenIdCredentials credentials) throws TechnicalException {
-        init();
+    @Override
+    protected U retrieveUserProfile(final OpenIdCredentials credentials) throws TechnicalException {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
         logger.debug("parameterList : {}", parameterList);

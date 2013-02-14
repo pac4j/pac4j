@@ -147,8 +147,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @return the user profile
      * @throws TechnicalException
      */
-    public U getUserProfile(final OAuthCredentials credentials) throws TechnicalException {
-        init();
+    @Override
+    protected U retrieveUserProfile(final OAuthCredentials credentials) throws TechnicalException {
         try {
             final Token token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);

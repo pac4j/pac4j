@@ -137,6 +137,18 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     protected abstract C retrieveCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction;
     
+    public final U getUserProfile(final C credentials) throws TechnicalException {
+        init();
+        logger.debug("credentials : {}", credentials);
+        if (credentials == null) {
+            return null;
+        }
+        
+        return retrieveUserProfile(credentials);
+    }
+    
+    protected abstract U retrieveUserProfile(final C credentials) throws TechnicalException;
+    
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,

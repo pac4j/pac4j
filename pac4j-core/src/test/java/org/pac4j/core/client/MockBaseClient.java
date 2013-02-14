@@ -28,8 +28,7 @@ import org.pac4j.core.util.TestsConstants;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockBaseClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> implements
-    TestsConstants {
+public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonProfile> implements TestsConstants {
     
     private boolean isDirect = true;
     
@@ -43,16 +42,17 @@ public class MockBaseClient<C extends Credentials, U extends CommonProfile> exte
     }
     
     @Override
-    protected BaseClient<C, U> newClient() {
-        return new MockBaseClient<C, U>(getName());
+    protected BaseClient<C, CommonProfile> newClient() {
+        return new MockBaseClient<C>(getName());
     }
     
     @Override
     protected void internalInit() {
     }
     
-    public U getUserProfile(final C credentials) throws TechnicalException {
-        return null;
+    @Override
+    protected CommonProfile retrieveUserProfile(final C credentials) throws TechnicalException {
+        return new CommonProfile();
     }
     
     @Override
