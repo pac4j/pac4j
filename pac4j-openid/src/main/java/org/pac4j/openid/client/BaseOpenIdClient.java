@@ -43,6 +43,10 @@ import org.pac4j.openid.credentials.OpenIdCredentials;
  */
 public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClient<OpenIdCredentials, U> {
     
+    private static final String OPENID_MODE = "openid.mode";
+    
+    private static final String CANCEL_MODE = "cancel";
+    
     public final static String DISCOVERY_INFORMATION = "discoveryInformation";
     
     private ConsumerManager consumerManager;
@@ -114,6 +118,13 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     
     @Override
     protected OpenIdCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
+        final String mode = context.getRequestParameter(OPENID_MODE);
+        // cancelled authentication
+        if (CommonHelper.areEquals(mode, CANCEL_MODE)) {
+            logger.debug("authentication cancelled");
+            return null;
+        }
+        
         // parameters list returned by the provider
         final ParameterList parameterList = new ParameterList(context.getRequestParameters());
         

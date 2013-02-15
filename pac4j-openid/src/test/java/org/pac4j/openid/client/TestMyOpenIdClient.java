@@ -98,4 +98,19 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
                             null, null, null, null);
         assertEquals(2, profile.getAttributes().size());
     }
+    
+    @Override
+    protected boolean isCancellable() {
+        return true;
+    }
+    
+    @Override
+    protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
+        final HtmlForm form = authorizationPage.getForms().get(0);
+        final HtmlSubmitInput submit = form.getInputByValue("Cancel");
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
+        logger.debug("callbackUrl : {}", callbackUrl);
+        return callbackUrl;
+    }
 }
