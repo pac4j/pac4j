@@ -15,6 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -110,5 +112,28 @@ public class TestTwitterClient extends TestOAuthClient {
         assertEquals(3600, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertEquals(36, profile.getAttributes().size());
+    }
+    
+    @Override
+    protected boolean isCancellable() {
+        return true;
+    }
+    
+    @Override
+    protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
+        final HtmlForm form = authorizationPage.getForms().get(0);
+        final HtmlSubmitInput submit = form.getElementById("cancel");
+        final HtmlPage callbackPage = submit.click();
+        final List<HtmlAnchor> anchors = callbackPage.getAnchors();
+        String callbackUrl = null;
+        for (final HtmlAnchor anchor : anchors) {
+            final String url = anchor.getHrefAttribute();
+            if (url.startsWith(GOOGLE_URL)) {
+                callbackUrl = url;
+                break;
+            }
+        }
+        logger.debug("callbackUrl : {}", callbackUrl);
+        return callbackUrl;
     }
 }
