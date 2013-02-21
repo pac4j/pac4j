@@ -219,13 +219,7 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
         throws HttpCommunicationException {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
-        final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, dataUrl, this.proxyHost, this.proxyPort);
-        if (this.connectTimeout != 0) {
-            request.setConnectTimeout(this.connectTimeout, TimeUnit.MILLISECONDS);
-        }
-        if (this.readTimeout != 0) {
-            request.setReadTimeout(this.readTimeout, TimeUnit.MILLISECONDS);
-        }
+        final ProxyOAuthRequest request = createProxyRequest(dataUrl);
         this.service.signRequest(accessToken, request);
         // for Google
         if (this instanceof GoogleClient) {
@@ -244,6 +238,23 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
             throw new HttpCommunicationException(code, body);
         }
         return body;
+    }
+    
+    /**
+     * Create a proxy request.
+     * 
+     * @param url
+     * @return a proxy request
+     */
+    protected ProxyOAuthRequest createProxyRequest(final String url) {
+        final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, url, this.proxyHost, this.proxyPort);
+        if (this.connectTimeout != 0) {
+            request.setConnectTimeout(this.connectTimeout, TimeUnit.MILLISECONDS);
+        }
+        if (this.readTimeout != 0) {
+            request.setReadTimeout(this.readTimeout, TimeUnit.MILLISECONDS);
+        }
+        return request;
     }
     
     /**

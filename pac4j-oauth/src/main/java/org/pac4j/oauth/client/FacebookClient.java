@@ -18,6 +18,7 @@ package org.pac4j.oauth.client;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
@@ -26,9 +27,14 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
+import org.scribe.builder.api.DefaultApi20;
 import org.scribe.builder.api.ExtendedFacebookApi;
 import org.scribe.model.OAuthConfig;
+import org.scribe.model.OAuthConstants;
+import org.scribe.model.ProxyOAuthRequest;
+import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.FacebookOAuth20ServiceImpl;
 import org.scribe.utils.OAuthEncoder;
 
@@ -49,9 +55,12 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p />
  * The number of results can be limited by using the {@link #setLimit(int)} method.
  * <p />
+ * An extended access token can be requested by setting <code>true</code> on the {@link #setRequiresExtendedToken(boolean)} method.
+ * <p />
  * It returns a {@link org.pac4j.oauth.profile.facebook.FacebookProfile}.
  * <p />
- * More information at http://developers.facebook.com/docs/reference/api/user/
+ * More information at http://developers.facebook.com/docs/reference/api/user/<br />
+ * More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/
  * 
  * @see org.pac4j.oauth.profile.facebook.FacebookProfile
  * @author Jerome Leleu
@@ -59,6 +68,10 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.0.0
  */
 public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
+    
+    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token";
+    
+    private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
     
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
     
@@ -78,6 +91,10 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     public final static int DEFAULT_LIMIT = 0;
     
     protected int limit = DEFAULT_LIMIT;
+    
+    protected boolean requiresExtendedToken = false;
+    
+    protected DefaultApi20 api20;
     
     public FacebookClient() {
     }
@@ -100,13 +117,15 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     protected void internalInit() throws TechnicalException {
         super.internalInit();
         CommonHelper.assertNotBlank("fields", this.fields);
+        this.api20 = new ExtendedFacebookApi();
         if (StringUtils.isNotBlank(this.scope)) {
-            this.service = new FacebookOAuth20ServiceImpl(new ExtendedFacebookApi(),
-                                                          new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                          SignatureType.Header, this.scope, null),
-                                                          this.proxyHost, this.proxyPort);
+            this.service = new FacebookOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
+                                                                                      this.callbackUrl,
+                                                                                      SignatureType.Header, this.scope,
+                                                                                      null), this.proxyHost,
+                                                          this.proxyPort);
         } else {
-            this.service = new FacebookOAuth20ServiceImpl(new ExtendedFacebookApi(),
+            this.service = new FacebookOAuth20ServiceImpl(this.api20,
                                                           new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                           SignatureType.Header, null, null),
                                                           this.proxyHost, this.proxyPort);
@@ -120,6 +139,38 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
             url += "&limit=" + this.limit;
         }
         return url;
+    }
+    
+    @Override
+    protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) throws TechnicalException {
+        String body = sendRequestForData(accessToken, getProfileUrl());
+        if (body == null) {
+            throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
+        }
+        final FacebookProfile profile = extractUserProfile(body);
+        addAccessTokenToProfile(profile, accessToken);
+        if (profile != null && this.requiresExtendedToken) {
+            String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, this.key);
+            url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, this.secret);
+            url = CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
+            final ProxyOAuthRequest request = createProxyRequest(url);
+            final long t0 = System.currentTimeMillis();
+            final Response response = request.send();
+            final int code = response.getCode();
+            body = response.getBody();
+            final long t1 = System.currentTimeMillis();
+            logger.debug("Request took : " + (t1 - t0) + " ms for : " + url);
+            logger.debug("response code : {} / response body : {}", code, body);
+            if (code == 200) {
+                logger.debug("Retrieve extended token from : {}", body);
+                Token extendedAccessToken = this.api20.getAccessTokenExtractor().extract(body);
+                logger.debug("Extended token : {}", extendedAccessToken);
+                addAccessTokenToProfile(profile, extendedAccessToken);
+            } else {
+                logger.error("Cannot get extended token : {} / {}", code, body);
+            }
+        }
+        return profile;
     }
     
     @Override
@@ -216,5 +267,13 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     public void setLimit(final int limit) {
         this.limit = limit;
+    }
+    
+    public boolean isRequiresExtendedToken() {
+        return this.requiresExtendedToken;
+    }
+    
+    public void setRequiresExtendedToken(final boolean requiresExtendedToken) {
+        this.requiresExtendedToken = requiresExtendedToken;
     }
 }
