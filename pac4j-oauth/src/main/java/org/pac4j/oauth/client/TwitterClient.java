@@ -75,7 +75,8 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
         }
         this.service = new ProxyOAuth10aServiceImpl(api, new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                          SignatureType.Header, null, null),
-                                                    this.proxyHost, this.proxyPort);
+                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
+                                                    this.proxyPort);
     }
     
     @Override

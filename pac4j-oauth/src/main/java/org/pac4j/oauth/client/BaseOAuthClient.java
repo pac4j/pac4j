@@ -15,8 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import java.util.concurrent.TimeUnit;
-
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -54,8 +52,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
     // 0,5 second
     protected int connectTimeout = 500;
     
-    // 3 seconds
-    protected int readTimeout = 3000;
+    // 2 seconds
+    protected int readTimeout = 2000;
     
     protected String proxyHost = null;
     
@@ -245,14 +243,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @return a proxy request
      */
     protected ProxyOAuthRequest createProxyRequest(final String url) {
-        final ProxyOAuthRequest request = new ProxyOAuthRequest(Verb.GET, url, this.proxyHost, this.proxyPort);
-        if (this.connectTimeout != 0) {
-            request.setConnectTimeout(this.connectTimeout, TimeUnit.MILLISECONDS);
-        }
-        if (this.readTimeout != 0) {
-            request.setReadTimeout(this.readTimeout, TimeUnit.MILLISECONDS);
-        }
-        return request;
+        return new ProxyOAuthRequest(Verb.GET, url, this.connectTimeout, this.readTimeout, this.proxyHost,
+                                     this.proxyPort);
     }
     
     /**

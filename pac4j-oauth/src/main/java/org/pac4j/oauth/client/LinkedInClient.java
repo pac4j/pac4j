@@ -56,7 +56,8 @@ public class LinkedInClient extends BaseOAuth10Client<LinkedInProfile> {
         super.internalInit();
         this.service = new ProxyOAuth10aServiceImpl(new LinkedInApi(),
                                                     new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                    SignatureType.Header, null, null), this.proxyHost,
+                                                                    SignatureType.Header, null, null),
+                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
                                                     this.proxyPort);
     }
     

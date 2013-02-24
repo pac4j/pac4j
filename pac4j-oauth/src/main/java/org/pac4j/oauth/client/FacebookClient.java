@@ -122,13 +122,14 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
             this.service = new FacebookOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
                                                                                       this.callbackUrl,
                                                                                       SignatureType.Header, this.scope,
-                                                                                      null), this.proxyHost,
-                                                          this.proxyPort);
+                                                                                      null), this.connectTimeout,
+                                                          this.readTimeout, this.proxyHost, this.proxyPort);
         } else {
             this.service = new FacebookOAuth20ServiceImpl(this.api20,
                                                           new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                           SignatureType.Header, null, null),
-                                                          this.proxyHost, this.proxyPort);
+                                                          this.connectTimeout, this.readTimeout, this.proxyHost,
+                                                          this.proxyPort);
         }
     }
     

@@ -23,7 +23,6 @@ import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuth20ServiceImpl;
 
 /**
  * This class represents a specific OAuth service with proxy capabilities for OAuth 2.0 protocol. It could be part of the Scribe library.
@@ -35,14 +34,18 @@ public class ProxyOAuth20ServiceImpl extends OAuth20ServiceImpl {
     
     protected final DefaultApi20 api;
     protected final OAuthConfig config;
+    protected final int connectTimeout;
+    protected final int readTimeout;
     protected final String proxyHost;
     protected final int proxyPort;
     
-    public ProxyOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final String proxyHost,
-                                   final int proxyPort) {
+    public ProxyOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
+                                   final int readTimeout, final String proxyHost, final int proxyPort) {
         super(api, config);
         this.api = api;
         this.config = config;
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
         this.proxyHost = proxyHost;
         this.proxyPort = proxyPort;
     }
@@ -50,8 +53,8 @@ public class ProxyOAuth20ServiceImpl extends OAuth20ServiceImpl {
     @Override
     public Token getAccessToken(final Token requestToken, final Verifier verifier) {
         final OAuthRequest request = new ProxyOAuthRequest(this.api.getAccessTokenVerb(),
-                                                           this.api.getAccessTokenEndpoint(), this.proxyHost,
-                                                           this.proxyPort);
+                                                           this.api.getAccessTokenEndpoint(), this.connectTimeout,
+                                                           this.readTimeout, this.proxyHost, this.proxyPort);
         request.addQuerystringParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
         request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());
         request.addQuerystringParameter(OAuthConstants.CODE, verifier.getValue());

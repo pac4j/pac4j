@@ -67,7 +67,8 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
         this.service = new ProxyOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl),
                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                   SignatureType.Header, null, null), this.proxyHost,
+                                                                   SignatureType.Header, null, null),
+                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
                                                    this.proxyPort);
     }
     

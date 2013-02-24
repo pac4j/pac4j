@@ -59,8 +59,8 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
         this.service = new ExtendedOAuth20ServiceImpl(new WordPressApi(), new OAuthConfig(this.key, this.secret,
                                                                                           this.callbackUrl,
                                                                                           SignatureType.Header, null,
-                                                                                          null), this.proxyHost,
-                                                      this.proxyPort);
+                                                                                          null), this.connectTimeout,
+                                                      this.readTimeout, this.proxyHost, this.proxyPort);
     }
     
     @Override

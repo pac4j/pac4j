@@ -27,9 +27,9 @@ import org.scribe.model.OAuthConfig;
  */
 public final class FacebookOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl {
     
-    public FacebookOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final String proxyHost,
-                                      final int proxyPort) {
-        super(api, config, proxyHost, proxyPort);
+    public FacebookOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
+                                      final int readTimeout, final String proxyHost, final int proxyPort) {
+        super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort);
     }
     
     public String getAuthorizationUrl(final String facebookState) {

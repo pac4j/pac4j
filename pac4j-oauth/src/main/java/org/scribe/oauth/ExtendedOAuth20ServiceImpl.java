@@ -32,16 +32,16 @@ import org.scribe.model.Verifier;
  */
 public class ExtendedOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl {
     
-    public ExtendedOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final String proxyHost,
-                                      final int proxyPort) {
-        super(api, config, proxyHost, proxyPort);
+    public ExtendedOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
+                                      final int readTimeout, final String proxyHost, final int proxyPort) {
+        super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort);
     }
     
     @Override
     public Token getAccessToken(final Token requestToken, final Verifier verifier) {
         final OAuthRequest request = new ProxyOAuthRequest(this.api.getAccessTokenVerb(),
-                                                           this.api.getAccessTokenEndpoint(), this.proxyHost,
-                                                           this.proxyPort);
+                                                           this.api.getAccessTokenEndpoint(), this.connectTimeout,
+                                                           this.readTimeout, this.proxyHost, this.proxyPort);
         // PATCH : body parameters instead of request parameters
         request.addBodyParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
         request.addBodyParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());

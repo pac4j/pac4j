@@ -25,7 +25,6 @@ import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuth10aServiceImpl;
 import org.scribe.utils.MapUtils;
 
 /**
@@ -38,14 +37,18 @@ public class ProxyOAuth10aServiceImpl extends OAuth10aServiceImpl {
     
     protected final DefaultApi10a api;
     protected final OAuthConfig config;
+    protected final int connectTimeout;
+    protected final int readTimeout;
     protected final String proxyHost;
     protected final int proxyPort;
     
-    public ProxyOAuth10aServiceImpl(final DefaultApi10a api, final OAuthConfig config, final String proxyHost,
-                                    final int proxyPort) {
+    public ProxyOAuth10aServiceImpl(final DefaultApi10a api, final OAuthConfig config, final int connectTimeout,
+                                    final int readTimeout, final String proxyHost, final int proxyPort) {
         super(api, config);
         this.api = api;
         this.config = config;
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
         this.proxyHost = proxyHost;
         this.proxyPort = proxyPort;
     }
@@ -54,8 +57,8 @@ public class ProxyOAuth10aServiceImpl extends OAuth10aServiceImpl {
     public Token getRequestToken() {
         this.config.log("obtaining request token from " + this.api.getRequestTokenEndpoint());
         final OAuthRequest request = new ProxyOAuthRequest(this.api.getRequestTokenVerb(),
-                                                           this.api.getRequestTokenEndpoint(), this.proxyHost,
-                                                           this.proxyPort);
+                                                           this.api.getRequestTokenEndpoint(), this.connectTimeout,
+                                                           this.readTimeout, this.proxyHost, this.proxyPort);
         
         this.config.log("setting oauth_callback to " + this.config.getCallback());
         request.addOAuthParameter(OAuthConstants.CALLBACK, this.config.getCallback());
@@ -88,8 +91,8 @@ public class ProxyOAuth10aServiceImpl extends OAuth10aServiceImpl {
     public Token getAccessToken(final Token requestToken, final Verifier verifier) {
         this.config.log("obtaining access token from " + this.api.getAccessTokenEndpoint());
         final ProxyOAuthRequest request = new ProxyOAuthRequest(this.api.getAccessTokenVerb(),
-                                                                this.api.getAccessTokenEndpoint(), this.proxyHost,
-                                                                this.proxyPort);
+                                                                this.api.getAccessTokenEndpoint(), this.connectTimeout,
+                                                                this.readTimeout, this.proxyHost, this.proxyPort);
         request.addOAuthParameter(OAuthConstants.TOKEN, requestToken.getToken());
         request.addOAuthParameter(OAuthConstants.VERIFIER, verifier.getValue());
         

@@ -87,7 +87,8 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
                                                                                          this.callbackUrl,
                                                                                          SignatureType.Header,
                                                                                          this.scopeValue, null),
-                                                      this.proxyHost, this.proxyPort);
+                                                      this.connectTimeout, this.readTimeout, this.proxyHost,
+                                                      this.proxyPort);
     }
     
     @Override

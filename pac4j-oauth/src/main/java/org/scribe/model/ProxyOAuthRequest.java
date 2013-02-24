@@ -30,9 +30,16 @@ public class ProxyOAuthRequest extends OAuthRequest {
     
     private final ProxyRequest proxyRequest;
     
-    public ProxyOAuthRequest(final Verb verb, final String url, final String proxyHost, final int proxyPort) {
+    public ProxyOAuthRequest(final Verb verb, final String url, final int connectTimeout, final int readTimeout,
+                             final String proxyHost, final int proxyPort) {
         super(verb, url);
         this.proxyRequest = new ProxyRequest(verb, url);
+        if (connectTimeout != 0) {
+            this.proxyRequest.setConnectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        }
+        if (readTimeout != 0) {
+            this.proxyRequest.setReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        }
         this.proxyRequest.setProxyHost(proxyHost);
         this.proxyRequest.setProxyPort(proxyPort);
     }
@@ -125,16 +132,6 @@ public class ProxyOAuthRequest extends OAuthRequest {
     @Override
     public String getCharset() {
         return this.proxyRequest.getCharset();
-    }
-    
-    @Override
-    public void setConnectTimeout(final int duration, final TimeUnit unit) {
-        this.proxyRequest.setConnectTimeout(duration, unit);
-    }
-    
-    @Override
-    public void setReadTimeout(final int duration, final TimeUnit unit) {
-        this.proxyRequest.setReadTimeout(duration, unit);
     }
     
     @Override

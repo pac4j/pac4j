@@ -306,6 +306,6 @@
 
 	<properties>
 		<cas.version>3.5.1</cas.version>
-		<slf4j.version>1.7.0</slf4j.version>
+		<slf4j.version>1.7.2</slf4j.version>
 	</properties>
 </project>
