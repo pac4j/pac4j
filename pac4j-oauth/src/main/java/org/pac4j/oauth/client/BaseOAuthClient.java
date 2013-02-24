@@ -221,10 +221,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
         final long t0 = System.currentTimeMillis();
         final ProxyOAuthRequest request = createProxyRequest(dataUrl);
         this.service.signRequest(accessToken, request);
-        // for Google
-        if (this instanceof GoogleClient) {
-            request.addHeader("GData-Version", "3.0");
-        } else if (this instanceof WordPressClient) {
+        // if WordPress
+        if (this instanceof WordPressClient) {
             request.addHeader("Authorization", "Bearer " + accessToken.getToken());
         }
         final Response response = request.send();

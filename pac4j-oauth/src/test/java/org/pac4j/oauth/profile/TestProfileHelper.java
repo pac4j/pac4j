@@ -43,10 +43,6 @@ public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileH
         assertNotNull(ProfileHelper.buildProfile("GitHubProfile" + "#" + STRING_ID, EMPTY_MAP));
     }
     
-    public void testBuildProfileGoogleProfile() {
-        assertNotNull(ProfileHelper.buildProfile("GoogleProfile" + "#" + STRING_ID, EMPTY_MAP));
-    }
-    
     public void testBuildProfileGoogle2Profile() {
         assertNotNull(ProfileHelper.buildProfile("Google2Profile" + "#" + STRING_ID, EMPTY_MAP));
     }

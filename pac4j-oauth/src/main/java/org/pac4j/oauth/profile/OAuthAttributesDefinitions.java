@@ -19,7 +19,6 @@ import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.github.GitHubAttributesDefinition;
-import org.pac4j.oauth.profile.google.GoogleAttributesDefinition;
 import org.pac4j.oauth.profile.google2.Google2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterAttributesDefinition;
@@ -38,8 +37,6 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition facebookDefinition = new FacebookAttributesDefinition();
     
     public final static AttributesDefinition githubDefinition = new GitHubAttributesDefinition();
-    
-    public final static AttributesDefinition googleDefinition = new GoogleAttributesDefinition();
     
     public final static AttributesDefinition google2Definition = new Google2AttributesDefinition();
     
