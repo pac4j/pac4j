@@ -20,6 +20,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -53,6 +54,16 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
         final MyOpenIdClient client = (MyOpenIdClient) getClient();
         client.setUserParameterName(null);
         TestsHelper.initShouldFail(client, "userParameterName cannot be blank");
+    }
+    
+    public void testMissingUser() {
+        final MyOpenIdClient client = (MyOpenIdClient) getClient();
+        try {
+            client.getRedirectionUrl(MockWebContext.create(), true);
+            fail("should fail because of missing OpenID user");
+        } catch (TechnicalException e) {
+            assertEquals("'openIDUser' cannot be blank", e.getMessage());
+        }
     }
     
     @Override

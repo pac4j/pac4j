@@ -86,6 +86,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     @SuppressWarnings("rawtypes")
     protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
         final String userIdentifier = getUser(context);
+        CommonHelper.assertNotBlank("'openIDUser'", userIdentifier);
         
         try {
             // perform discovery on the user-supplied identifier
