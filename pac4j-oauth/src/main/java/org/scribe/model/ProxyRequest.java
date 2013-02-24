@@ -343,6 +343,6 @@ class ProxyRequest {
     
     @Override
     public String toString() {
-        return String.format("@Request(%s %s)", getVerb(), getUrl());
+        return String.format("@ProxyRequest(%s %s)", getVerb(), getUrl());
     }
 }
