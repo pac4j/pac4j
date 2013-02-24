@@ -237,7 +237,7 @@ Even if you can use <b>pac4j</b> on its own, this library is used to be integrat
 <li>the <a href="https://wiki.jasig.org/display/CASUM/OAuth">cas-server-support-oauth</a> module to add OAuth client and server support to the <a href="http://www.jasig.org/cas">CAS server</a></li>
 <li>the <a href="https://github.com/bujiio/buji-oauth">buji-oauth</a> library to add OAuth client support to the <a href="http://shiro.apache.org">Apache Shiro project</a></li>
 <li>the <a href="https://github.com/leleuj/spring-security-oauth-client">spring-security-oauth-client</a> library to add OAuth client support to <a href="http://static.springsource.org/spring-security/site/">Spring Security</a>.</li>
-<li>the <a href="https://github.com/leleuj/play-oauth-client">play-oauth-client</a> library to add OAuth client support to the <a href="http://www.playframework.org/">Play 2.0 framework</a>.</li>
+<li>the <a href="https://github.com/leleuj/play-pac4j">play-pac4j</a> library to add multi-protocols client support to the <a href="http://www.playframework.org/">Play 2.x framework</a> in Java and Scala.</li>
 </ol>
 
 <table>
@@ -250,7 +250,7 @@ Even if you can use <b>pac4j</b> on its own, this library is used to be integrat
 <tr><td>buji-oauth 1.0.0</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/buji-oauth-demo-1.0.0">buji-oauth-demo-1.0.0</a></td></tr>
 <tr><td>spring-security-oauth-client 1.1.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.0.0</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo-1.0.0">spring-security-oauth-client-demo-1.0.0</a></td></tr>
-<tr><td>play-pac4j 1.1.0-SNAPSHOT</td><td>OAuth/CAS/OpenID/HTTP</td><td>pac4j 1.4.0-SNAPSHOT</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
+<tr><td>play-pac4j 1.1.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0-SNAPSHOT</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
 <tr><td>play-oauth-client 1.0.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/play-oauth-client-java-demo">play-oauth-client-java-demo</a><br /><a href="https://github.com/leleuj/play-oauth-client-scala-demo">play-oauth-client-scala-demo</a></td></tr>
 </table>
 
