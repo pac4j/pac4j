@@ -21,6 +21,7 @@ import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -111,5 +112,10 @@ public abstract class TestCasClient extends TestClient {
         } else {
             assertEquals(0, profile.getAttributes().size());
         }
+    }
+    
+    @Override
+    protected Protocol getProtocol() {
+        return Protocol.CAS;
     }
 }

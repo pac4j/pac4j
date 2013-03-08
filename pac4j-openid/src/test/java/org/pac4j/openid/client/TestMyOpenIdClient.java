@@ -17,6 +17,7 @@
 package org.pac4j.openid.client;
 
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
@@ -123,5 +124,10 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected Protocol getProtocol() {
+        return Protocol.OPENID;
     }
 }

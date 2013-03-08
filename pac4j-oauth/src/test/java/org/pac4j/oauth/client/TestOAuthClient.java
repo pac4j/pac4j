@@ -16,6 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.util.TestsHelper;
 
@@ -69,5 +70,10 @@ public abstract class TestOAuthClient extends TestClient {
     
     public void testClone() {
         internalTestClone((BaseClient) getClient());
+    }
+    
+    @Override
+    protected Protocol getProtocol() {
+        return Protocol.OAUTH;
     }
 }

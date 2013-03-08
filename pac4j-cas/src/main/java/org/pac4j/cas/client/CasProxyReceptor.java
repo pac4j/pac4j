@@ -26,6 +26,7 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -166,5 +167,10 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     @Override
     protected boolean isDirectRedirection() {
         return true;
+    }
+    
+    @Override
+    public Protocol getProtocol() {
+        return Protocol.CAS;
     }
 }

@@ -28,6 +28,7 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -179,5 +180,10 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
         final String message = "No verifiedId found";
         logger.error(message);
         throw new TechnicalException(message);
+    }
+    
+    @Override
+    public Protocol getProtocol() {
+        return Protocol.OPENID;
     }
 }

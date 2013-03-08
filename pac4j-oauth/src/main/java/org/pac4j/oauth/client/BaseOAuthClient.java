@@ -16,6 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -315,5 +316,10 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
     
     public void setProxyPort(final int proxyPort) {
         this.proxyPort = proxyPort;
+    }
+    
+    @Override
+    public Protocol getProtocol() {
+        return Protocol.OAUTH;
     }
 }

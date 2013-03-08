@@ -46,6 +46,13 @@ public abstract class TestClient extends TestCase implements TestsConstants {
     
     protected static final Logger logger = LoggerFactory.getLogger(TestClient.class);
     
+    protected abstract Protocol getProtocol();
+    
+    public void testProtocol() {
+        final BaseClient client = (BaseClient) getClient();
+        assertEquals(getProtocol(), client.getProtocol());
+    }
+    
     public void testMissingCallbackUrl() {
         final BaseClient client = (BaseClient) getClient();
         client.setCallbackUrl(null);

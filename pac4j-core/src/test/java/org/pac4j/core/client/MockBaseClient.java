@@ -69,4 +69,9 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     protected C retrieveCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
         return null;
     }
+    
+    @Override
+    public Protocol getProtocol() {
+        return null;
+    }
 }

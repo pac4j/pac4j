@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
  * <p />
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
  * required to initialize the client.
+ * <p/>
+ * The {@link #getProtocol()} method returns the implemented {@link Protocol} by the client.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -148,6 +150,13 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
     
     protected abstract U retrieveUserProfile(final C credentials) throws TechnicalException;
+    
+    /**
+     * Return the implemented protocol.
+     * 
+     * @return the implemented protocol
+     */
+    public abstract Protocol getProtocol();
     
     @Override
     public String toString() {

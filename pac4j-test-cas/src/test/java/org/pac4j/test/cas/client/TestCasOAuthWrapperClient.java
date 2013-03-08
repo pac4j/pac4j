@@ -17,6 +17,7 @@ package org.pac4j.test.cas.client;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -95,5 +96,10 @@ public final class TestCasOAuthWrapperClient extends TestClient {
         assertEquals("eduPersonAffiliation", profile.getAttribute("eduPersonAffiliation"));
         assertEquals("groupMembership", profile.getAttribute("groupMembership"));
         assertEquals(4, profile.getAttributes().size());
+    }
+    
+    @Override
+    protected Protocol getProtocol() {
+        return Protocol.OAUTH;
     }
 }
