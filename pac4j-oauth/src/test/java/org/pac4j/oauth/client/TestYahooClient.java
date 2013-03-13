@@ -101,7 +101,7 @@ public class TestYahooClient extends TestOAuthClient {
         assertEquals(1976, profile.getBirthYear().intValue());
         assertEquals("03/10", profile.getBirthdate().toString());
         assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
-        assertEquals(36, profile.getDisplayAge().intValue());
+        assertEquals(37, profile.getDisplayAge().intValue());
         final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
         final YahooDisclosure disclosure = disclosures.get(0);

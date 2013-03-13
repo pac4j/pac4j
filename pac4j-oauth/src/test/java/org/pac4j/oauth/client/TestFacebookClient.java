@@ -174,7 +174,7 @@ public class TestFacebookClient extends TestOAuthClient {
         final FacebookInfo book = books.get(0);
         assertEquals("Science fiction", book.getName());
         assertEquals("108157509212483", book.getId());
-        assertEquals("Public figure", book.getCategory());
+        assertEquals("Book genre", book.getCategory());
         assertEquals(1330030350000L, book.getCreatedTime().getTime());
         final List<FacebookInfo> likes = profile.getLikes();
         assertEquals(9, likes.size());

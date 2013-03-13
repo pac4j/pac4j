@@ -17,6 +17,7 @@ package org.pac4j.core.exception;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * This exception is thrown when an additionnal HTTP action (redirect, basic auth...) is required.
@@ -28,8 +29,11 @@ public class RequiresHttpAction extends Exception {
     
     private static final long serialVersionUID = -7818641324070893053L;
     
-    protected RequiresHttpAction(final String message) {
+    protected int code;
+    
+    protected RequiresHttpAction(final String message, final int code) {
         super(message);
+        this.code = code;
     }
     
     /**
@@ -43,7 +47,7 @@ public class RequiresHttpAction extends Exception {
     public static RequiresHttpAction redirect(final String message, final WebContext context, final String url) {
         context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
         context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
-        return new RequiresHttpAction(message);
+        return new RequiresHttpAction(message, HttpConstants.TEMP_REDIRECT);
     }
     
     /**
@@ -55,7 +59,7 @@ public class RequiresHttpAction extends Exception {
      */
     public static RequiresHttpAction ok(final String message, final WebContext context) {
         context.setResponseStatus(HttpConstants.OK);
-        return new RequiresHttpAction(message);
+        return new RequiresHttpAction(message, HttpConstants.OK);
     }
     
     /**
@@ -69,6 +73,11 @@ public class RequiresHttpAction extends Exception {
     public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
-        return new RequiresHttpAction(message);
+        return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
+    }
+    
+    @Override
+    public String toString() {
+        return CommonHelper.toString(RequiresHttpAction.class, "code", this.code);
     }
 }

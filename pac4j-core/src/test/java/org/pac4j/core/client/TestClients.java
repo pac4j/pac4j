@@ -63,7 +63,7 @@ public final class TestClients extends TestCase implements TestsConstants {
         clients.add(yahooClient);
         final Clients clientsGroup = new Clients();
         clientsGroup.setClientNameParameter(TYPE);
-        clientsGroup.setClients(clients);
+        clientsGroup.setClientsList(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         assertNull(facebookClient.getCallbackUrl());
         assertNull(yahooClient.getCallbackUrl());
@@ -96,7 +96,7 @@ public final class TestClients extends TestCase implements TestsConstants {
         clients.add(facebookClient);
         clients.add(yahooClient);
         final Clients clientsGroup = new Clients();
-        clientsGroup.setClients(clients);
+        clientsGroup.setClientsList(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         final List<Client> clients2 = clientsGroup.findAllClients();
         assertEquals(2, clients2.size());

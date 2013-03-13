@@ -56,7 +56,7 @@ public final class Clients extends InitializableObject {
     
     public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
-        setClients(clients);
+        setClientsList(clients);
     }
     
     public Clients(final String callbackUrl, final Client... clients) {
@@ -147,7 +147,7 @@ public final class Clients extends InitializableObject {
         this.callbackUrl = callbackUrl;
     }
     
-    public void setClients(final List<Client> clients) {
+    public void setClientsList(final List<Client> clients) {
         this.clients = clients;
     }
     
