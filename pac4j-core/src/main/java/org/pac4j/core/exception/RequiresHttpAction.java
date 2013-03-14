@@ -43,8 +43,10 @@ public class RequiresHttpAction extends Exception {
      * @param context
      * @param url
      * @return an HTTP redirection
+     * @throws TechnicalException
      */
-    public static RequiresHttpAction redirect(final String message, final WebContext context, final String url) {
+    public static RequiresHttpAction redirect(final String message, final WebContext context, final String url)
+        throws TechnicalException {
         context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
         context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
         return new RequiresHttpAction(message, HttpConstants.TEMP_REDIRECT);
@@ -56,8 +58,9 @@ public class RequiresHttpAction extends Exception {
      * @param message
      * @param context
      * @return an HTTP ok
+     * @throws TechnicalException
      */
-    public static RequiresHttpAction ok(final String message, final WebContext context) {
+    public static RequiresHttpAction ok(final String message, final WebContext context) throws TechnicalException {
         context.setResponseStatus(HttpConstants.OK);
         return new RequiresHttpAction(message, HttpConstants.OK);
     }
@@ -69,8 +72,10 @@ public class RequiresHttpAction extends Exception {
      * @param context
      * @param realmName
      * @return a basic auth popup credentials
+     * @throws TechnicalException
      */
-    public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
+    public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName)
+        throws TechnicalException {
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);

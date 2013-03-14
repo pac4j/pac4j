@@ -15,7 +15,6 @@
  */
 package org.pac4j.cas.client;
 
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,7 +27,6 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -103,28 +101,24 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     @Override
     protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
         RequiresHttpAction {
-        try {
-            // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
-            final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
-            logger.debug("proxyGrantingTicketIou : {}", proxyGrantingTicketIou);
-            final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
-            logger.debug("proxyGrantingTicket : {}", proxyGrantingTicket);
-            
-            if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-                context.writeResponseContent("");
-                final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
-                logger.error(message);
-                throw RequiresHttpAction.ok(message, context);
-            }
-            
-            this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
-            
-            context.writeResponseContent("<?xml version=\"1.0\"?>");
-            context
-                .writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
-        } catch (final IOException e) {
-            throw new HttpCommunicationException(e);
+        
+        // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
+        final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+        logger.debug("proxyGrantingTicketIou : {}", proxyGrantingTicketIou);
+        final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+        logger.debug("proxyGrantingTicket : {}", proxyGrantingTicket);
+        
+        if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
+            context.writeResponseContent("");
+            final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
+            logger.error(message);
+            throw RequiresHttpAction.ok(message, context);
         }
+        
+        this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
+        
+        context.writeResponseContent("<?xml version=\"1.0\"?>");
+        context.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
         
         final String message = "No credential for CAS proxy receptor -> returns ok";
         logger.debug(message);

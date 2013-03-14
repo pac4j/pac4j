@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.context;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public abstract class BaseResponseContext implements WebContext {
     
     protected final Map<String, String> responseHeaders = new HashMap<String, String>();
     
-    public void writeResponseContent(final String content) throws IOException {
+    public void writeResponseContent(final String content) {
         if (this.responseContent == null) {
             this.responseContent = content;
         } else {

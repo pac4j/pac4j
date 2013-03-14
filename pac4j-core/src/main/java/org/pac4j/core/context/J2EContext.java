@@ -21,6 +21,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.pac4j.core.exception.TechnicalException;
+
 /**
  * This implementation uses the J2E request and session.
  * 
@@ -116,18 +118,32 @@ public class J2EContext implements WebContext {
      * 
      * @param content
      * @throws IOException
+     * @throws TechnicalException
      */
-    public void writeResponseContent(final String content) throws IOException {
-        this.response.getWriter().write(content);
+    public void writeResponseContent(final String content) throws TechnicalException {
+        try {
+            this.response.getWriter().write(content);
+        } catch (IOException e) {
+            throw new TechnicalException(e);
+        }
     }
     
     /**
      * Set the response status.
      * 
      * @param code
+     * @throws TechnicalException
      */
-    public void setResponseStatus(final int code) {
-        this.response.setStatus(code);
+    public void setResponseStatus(final int code) throws TechnicalException {
+        if (code == HttpConstants.OK || code == HttpConstants.TEMP_REDIRECT) {
+            this.response.setStatus(code);
+        } else {
+            try {
+                this.response.sendError(code);
+            } catch (IOException e) {
+                throw new TechnicalException(e);
+            }
+        }
     }
     
     /**
