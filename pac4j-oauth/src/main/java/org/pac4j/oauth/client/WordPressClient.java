@@ -15,7 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
@@ -54,7 +53,7 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         this.service = new ExtendedOAuth20ServiceImpl(new WordPressApi(), new OAuthConfig(this.key, this.secret,
                                                                                           this.callbackUrl,

@@ -15,7 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
@@ -53,7 +52,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         this.service = new ProxyOAuth20ServiceImpl(new LiveApi(), new OAuthConfig(this.key, this.secret,
                                                                                   this.callbackUrl,

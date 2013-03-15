@@ -21,7 +21,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -55,7 +54,7 @@ public final class TestClients extends TestCase implements TestsConstants {
         TestsHelper.initShouldFail(clientsGroup, "callbackUrl cannot be blank");
     }
     
-    public void testTwoClients() throws TechnicalException {
+    public void testTwoClients() {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<Client>();
@@ -75,7 +74,7 @@ public final class TestClients extends TestCase implements TestsConstants {
         assertEquals(yahooClient, clientsGroup.findClient(yahooClient.getName()));
     }
     
-    public void testDoubleInit() throws TechnicalException {
+    public void testDoubleInit() {
         final MockBaseClient facebookClient = newFacebookClient();
         final Clients clientsGroup = new Clients();
         clientsGroup.setCallbackUrl(CALLBACK_URL);
@@ -89,7 +88,7 @@ public final class TestClients extends TestCase implements TestsConstants {
                      facebookClient.getCallbackUrl());
     }
     
-    public void testAllClients() throws TechnicalException {
+    public void testAllClients() {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<Client>();
@@ -103,7 +102,7 @@ public final class TestClients extends TestCase implements TestsConstants {
         assertTrue(clients2.containsAll(clients));
     }
     
-    public void testClientWithCallbackUrl() throws TechnicalException {
+    public void testClientWithCallbackUrl() {
         final MockBaseClient facebookClient = newFacebookClient();
         facebookClient.setCallbackUrl(LOGIN_URL);
         final MockBaseClient yahooClient = newYahooClient();

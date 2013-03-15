@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -58,7 +57,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         TestsHelper.initShouldFail(client, "proxyGrantingTicketStorage cannot be null");
     }
     
-    public void testMissingPgt() throws TechnicalException {
+    public void testMissingPgt() {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -71,7 +70,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         }
     }
     
-    public void testMissingPgtiou() throws TechnicalException {
+    public void testMissingPgtiou() {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -84,7 +83,7 @@ public final class TestCasProxyReceptor extends TestCase implements TestsConstan
         }
     }
     
-    public void testOk() throws TechnicalException {
+    public void testOk() {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create()

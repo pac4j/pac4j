@@ -17,8 +17,6 @@ package org.pac4j.core.util;
 
 import junit.framework.TestCase;
 
-import org.pac4j.core.exception.TechnicalException;
-
 /**
  * This class tests the {@link InitializableObject} class.
  * 
@@ -27,7 +25,7 @@ import org.pac4j.core.exception.TechnicalException;
  */
 public final class TestInitializableObject extends TestCase {
     
-    public void testInit() throws TechnicalException {
+    public void testInit() {
         CounterInitializableObject counterInitializableObject = new CounterInitializableObject();
         assertEquals(0, counterInitializableObject.getCounter());
         counterInitializableObject.init();
@@ -36,7 +34,7 @@ public final class TestInitializableObject extends TestCase {
         assertEquals(1, counterInitializableObject.getCounter());
     }
     
-    public void testReinit() throws TechnicalException {
+    public void testReinit() {
         CounterInitializableObject counterInitializableObject = new CounterInitializableObject();
         assertEquals(0, counterInitializableObject.getCounter());
         counterInitializableObject.reinit();

@@ -18,7 +18,6 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
@@ -107,12 +106,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
     
-    public final String getRedirectionUrl(final WebContext context) throws TechnicalException {
+    public final String getRedirectionUrl(final WebContext context) {
         return getRedirectionUrl(context, false);
     }
     
-    public final String getRedirectionUrl(final WebContext context, final boolean forceDirectRedirection)
-        throws TechnicalException {
+    public final String getRedirectionUrl(final WebContext context, final boolean forceDirectRedirection) {
         init();
         // it's a direct redirection or force the redirection -> return the redirection url
         if (isDirectRedirection() || forceDirectRedirection) {
@@ -123,9 +121,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         }
     }
     
-    protected abstract String retrieveRedirectionUrl(final WebContext context) throws TechnicalException;
+    protected abstract String retrieveRedirectionUrl(final WebContext context);
     
-    public final C getCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
+    public final C getCredentials(final WebContext context) throws RequiresHttpAction {
         init();
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
         // needs redirection -> return the redirection url
@@ -137,9 +135,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         }
     }
     
-    protected abstract C retrieveCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction;
+    protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
     
-    public final U getUserProfile(final C credentials) throws TechnicalException {
+    public final U getUserProfile(final C credentials) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
@@ -149,7 +147,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return retrieveUserProfile(credentials);
     }
     
-    protected abstract U retrieveUserProfile(final C credentials) throws TechnicalException;
+    protected abstract U retrieveUserProfile(final C credentials);
     
     /**
      * Return the implemented protocol.

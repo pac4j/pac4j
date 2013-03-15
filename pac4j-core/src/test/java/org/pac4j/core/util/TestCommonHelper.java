@@ -66,7 +66,7 @@ public final class TestCommonHelper extends TestCase {
         }
     }
     
-    public void testAssertNotBlankNotBlank() throws TechnicalException {
+    public void testAssertNotBlankNotBlank() {
         CommonHelper.assertNotBlank(NAME, VALUE);
     }
     
@@ -79,7 +79,7 @@ public final class TestCommonHelper extends TestCase {
         }
     }
     
-    public void testAssertNotNullNotNull() throws TechnicalException {
+    public void testAssertNotNullNotNull() {
         CommonHelper.assertNotNull(NAME, VALUE);
     }
     

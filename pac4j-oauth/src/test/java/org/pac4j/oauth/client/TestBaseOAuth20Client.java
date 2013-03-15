@@ -40,7 +40,7 @@ public final class TestBaseOAuth20Client extends TestCase implements TestsConsta
         return client;
     }
     
-    public void testNoCode() throws TechnicalException, RequiresHttpAction {
+    public void testNoCode() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
@@ -49,7 +49,7 @@ public final class TestBaseOAuth20Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testOk() throws TechnicalException, RequiresHttpAction {
+    public void testOk() throws RequiresHttpAction {
         final OAuthCredentials oauthCredential = (OAuthCredentials) getClient()
             .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);

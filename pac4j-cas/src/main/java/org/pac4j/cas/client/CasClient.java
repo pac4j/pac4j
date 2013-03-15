@@ -122,10 +122,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * 
      * @param context
      * @return the redirection url
-     * @throws TechnicalException
      */
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    protected String retrieveRedirectionUrl(final WebContext context) {
         final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
                                                                        this.callbackUrl, this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
@@ -147,7 +146,7 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("logoutHandler", this.logoutHandler);
         if (CommonHelper.isBlank(this.casLoginUrl) && CommonHelper.isBlank(this.casPrefixUrl)) {
@@ -191,11 +190,10 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * 
      * @param context
      * @return the credentials
-     * @throws TechnicalException
      * @throws RequiresHttpAction
      */
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
+    protected CasCredentials retrieveCredentials(final WebContext context) throws 
         RequiresHttpAction {
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
@@ -225,10 +223,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * 
      * @param credentials
      * @return the user profile
-     * @throws TechnicalException
      */
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials) throws TechnicalException {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials) {
         final String ticket = credentials.getServiceTicket();
         try {
             final Assertion assertion = this.ticketValidator.validate(ticket, this.callbackUrl);

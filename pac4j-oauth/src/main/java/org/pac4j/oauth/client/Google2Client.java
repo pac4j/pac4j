@@ -15,7 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
@@ -73,7 +72,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotNull("scope", this.scope);
         if (this.scope == Google2Scope.EMAIL) {

@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.util;
 
-import org.pac4j.core.exception.TechnicalException;
 
 /**
  * This class is an object that can be (re-)initialized through the {@link #init()} and the {@link #reinit()} methods, the
@@ -30,10 +29,8 @@ public abstract class InitializableObject {
     
     /**
      * Initialize the object.
-     * 
-     * @throws TechnicalException
      */
-    public void init() throws TechnicalException {
+    public void init() {
         if (!this.initialized) {
             synchronized (this) {
                 if (!this.initialized) {
@@ -46,18 +43,14 @@ public abstract class InitializableObject {
     
     /**
      * Force (again) the initialization of the object.
-     * 
-     * @throws TechnicalException
      */
-    public synchronized void reinit() throws TechnicalException {
+    public synchronized void reinit() {
         internalInit();
         this.initialized = true;
     }
     
     /**
      * Internal initialization of the object.
-     * 
-     * @throws TechnicalException
      */
-    protected abstract void internalInit() throws TechnicalException;
+    protected abstract void internalInit();
 }

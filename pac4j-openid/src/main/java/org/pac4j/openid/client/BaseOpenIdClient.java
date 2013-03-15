@@ -53,7 +53,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     private ConsumerManager consumerManager;
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         this.consumerManager = new ConsumerManager();
     }
@@ -85,7 +85,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     
     @Override
     @SuppressWarnings("rawtypes")
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    protected String retrieveRedirectionUrl(final WebContext context) {
         final String userIdentifier = getUser(context);
         CommonHelper.assertNotBlank("'openIDUser'", userIdentifier);
         
@@ -119,7 +119,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     }
     
     @Override
-    protected OpenIdCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
+    protected OpenIdCredentials retrieveCredentials(final WebContext context) {
         final String mode = context.getRequestParameter(OPENID_MODE);
         // cancelled authentication
         if (CommonHelper.areEquals(mode, CANCEL_MODE)) {
@@ -150,7 +150,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     protected abstract U createProfile(AuthSuccess authSuccess) throws MessageException;
     
     @Override
-    protected U retrieveUserProfile(final OpenIdCredentials credentials) throws TechnicalException {
+    protected U retrieveUserProfile(final OpenIdCredentials credentials) {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
         logger.debug("parameterList : {}", parameterList);

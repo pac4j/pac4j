@@ -20,7 +20,6 @@ import java.util.Locale;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -56,7 +55,7 @@ public class TestGoogle2Client extends TestOAuthClient {
         TestsHelper.initShouldFail(client, "scope cannot be null");
     }
     
-    public void testDefaultScope() throws TechnicalException {
+    public void testDefaultScope() {
         final Google2Client google2Client = new Google2Client();
         google2Client.setKey(KEY);
         google2Client.setSecret(SECRET);

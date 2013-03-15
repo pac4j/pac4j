@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -41,7 +40,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
     }
     
-    public void testDirectClient() throws TechnicalException, RequiresHttpAction {
+    public void testDirectClient() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -51,7 +50,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertNull(credentials);
     }
     
-    public void testIndirectClient() throws TechnicalException, RequiresHttpAction {
+    public void testIndirectClient() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -69,7 +68,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testIndirectClientWithImmediate() throws TechnicalException, RequiresHttpAction {
+    public void testIndirectClientWithImmediate() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
@@ -77,7 +76,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertEquals(LOGIN_URL, redirectionUrl);
     }
     
-    public void testNullCredentials() throws TechnicalException, RequiresHttpAction {
+    public void testNullCredentials() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         assertNull(client.getUserProfile(null));

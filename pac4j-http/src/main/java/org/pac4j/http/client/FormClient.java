@@ -78,19 +78,18 @@ public class FormClient extends BaseHttpClient {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
     }
     
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    protected String retrieveRedirectionUrl(final WebContext context) {
         return this.loginUrl;
     }
     
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
-        RequiresHttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
         if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)) {

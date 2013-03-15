@@ -56,7 +56,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         this.service = new ProxyOAuth10aServiceImpl(new YahooApi(), new OAuthConfig(this.key, this.secret,
                                                                                     this.callbackUrl,
@@ -71,14 +71,10 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
     
     /**
-     * Retrieve the user profile from the access token.
-     * 
-     * @param accessToken
-     * @return the user profile
-     * @throws TechnicalException
+     * {@inheritDoc}
      */
     @Override
-    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) throws TechnicalException {
+    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl());
         final String guid = StringUtils.substringBetween(body, "<value>", "</value>");

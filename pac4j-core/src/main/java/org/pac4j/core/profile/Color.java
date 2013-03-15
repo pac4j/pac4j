@@ -17,6 +17,8 @@ package org.pac4j.core.profile;
 
 import java.io.Serializable;
 
+import org.pac4j.core.exception.TechnicalException;
+
 /**
  * This class is a simple RGB color values holder.
  * <p/>
@@ -35,7 +37,7 @@ public class Color implements Serializable {
     
     public Color(final int red, final int green, final int blue) {
         if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255)
-            throw new IllegalArgumentException("Color's red, green or blue values must be between 0 and 255.");
+            throw new TechnicalException("Color's red, green or blue values must be between 0 and 255.");
         this.red = red;
         this.green = green;
         this.blue = blue;

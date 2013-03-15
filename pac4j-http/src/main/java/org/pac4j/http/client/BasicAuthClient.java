@@ -23,7 +23,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -69,20 +68,19 @@ public class BasicAuthClient extends BaseHttpClient {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
     }
     
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    protected String retrieveRedirectionUrl(final WebContext context) {
         return this.callbackUrl;
     }
     
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
-        RequiresHttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null || !header.startsWith("Basic ")) {
             logger.warn("No basic auth found");
@@ -110,7 +108,7 @@ public class BasicAuthClient extends BaseHttpClient {
         try {
             // validate credentials
             this.usernamePasswordAuthenticator.validate(credentials);
-        } catch (final TechnicalException e) {
+        } catch (final RuntimeException e) {
             logger.error("Credentials validation fails", e);
             throw RequiresHttpAction.unauthorized("Requires basic auth (credentials validation fails)", context,
                                                   this.realmName);

@@ -62,14 +62,10 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
     }
     
     /**
-     * Get the OAuth credentials from the web context.
-     * 
-     * @param context
-     * @return the OAuth credentials
-     * @throws OAuthCredentialsException
+     * {@inheritDoc}
      */
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws OAuthCredentialsException {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         final String tokenParameter = context.getRequestParameter(OAUTH_TOKEN);
         final String verifierParameter = context.getRequestParameter(OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {
@@ -88,14 +84,10 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
     }
     
     /**
-     * Get the access token from OAuth credentials.
-     * 
-     * @param credentials
-     * @return the access token
-     * @throws OAuthCredentialsException
+     * {@inheritDoc}
      */
     @Override
-    protected Token getAccessToken(final OAuthCredentials credentials) throws OAuthCredentialsException {
+    protected Token getAccessToken(final OAuthCredentials credentials) {
         final Token tokenRequest = credentials.getRequestToken();
         final String token = credentials.getToken();
         final String verifier = credentials.getVerifier();

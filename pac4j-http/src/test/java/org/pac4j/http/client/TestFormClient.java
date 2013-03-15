@@ -20,7 +20,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -79,12 +78,12 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator());
     }
     
-    public void testRedirectionUrl() throws TechnicalException {
+    public void testRedirectionUrl() {
         final FormClient formClient = getFormClient();
         assertEquals(LOGIN_URL, formClient.getRedirectionUrl(MockWebContext.create()));
     }
     
-    public void testGetCredentialsMissingUsername() throws TechnicalException {
+    public void testGetCredentialsMissingUsername() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
@@ -99,7 +98,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetCredentialsMissingPassword() throws TechnicalException {
+    public void testGetCredentialsMissingPassword() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
@@ -114,7 +113,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetCredentials() throws TechnicalException {
+    public void testGetCredentials() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
@@ -130,7 +129,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
     
-    public void testGetRightCredentials() throws TechnicalException, RequiresHttpAction {
+    public void testGetRightCredentials() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
             .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -139,7 +138,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         assertEquals(USERNAME, credentials.getPassword());
     }
     
-    public void testGetUserProfile() throws TechnicalException {
+    public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                                                                                               formClient.getName()));

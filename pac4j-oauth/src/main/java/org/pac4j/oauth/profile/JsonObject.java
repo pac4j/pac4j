@@ -17,6 +17,7 @@ package org.pac4j.oauth.profile;
 
 import java.io.Serializable;
 
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.RawDataObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,7 +51,7 @@ public abstract class JsonObject extends RawDataObject implements Serializable {
                 }
                 buildFromJson(jsonNode);
             } else {
-                throw new IllegalArgumentException(json.getClass() + " not supported");
+                throw new TechnicalException(json.getClass() + " not supported");
             }
         }
     }

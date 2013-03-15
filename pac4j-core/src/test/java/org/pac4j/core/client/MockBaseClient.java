@@ -18,7 +18,6 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
@@ -51,7 +50,7 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     }
     
     @Override
-    protected CommonProfile retrieveUserProfile(final C credentials) throws TechnicalException {
+    protected CommonProfile retrieveUserProfile(final C credentials) {
         return new CommonProfile();
     }
     
@@ -61,12 +60,12 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     }
     
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    protected String retrieveRedirectionUrl(final WebContext context) {
         return LOGIN_URL;
     }
     
     @Override
-    protected C retrieveCredentials(final WebContext context) throws TechnicalException, RequiresHttpAction {
+    protected C retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         return null;
     }
     

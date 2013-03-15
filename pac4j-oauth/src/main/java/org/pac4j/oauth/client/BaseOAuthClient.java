@@ -61,7 +61,7 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
     protected int proxyPort = 8080;
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
@@ -84,10 +84,9 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param context
      * @return the redirection url
-     * @throws TechnicalException
      */
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    protected String retrieveRedirectionUrl(final WebContext context) {
         try {
             return retrieveAuthorizationUrl(context);
         } catch (final OAuthException e) {
@@ -102,10 +101,9 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param context
      * @return the credentials
-     * @throws TechnicalException
      */
     @Override
-    protected OAuthCredentials retrieveCredentials(final WebContext context) throws TechnicalException {
+    protected OAuthCredentials retrieveCredentials(final WebContext context) {
         try {
             boolean errorFound = false;
             final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
@@ -135,19 +133,17 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param context
      * @return the OAuth credentials
-     * @throws OAuthCredentialsException
      */
-    protected abstract OAuthCredentials getOAuthCredentials(final WebContext context) throws OAuthCredentialsException;
+    protected abstract OAuthCredentials getOAuthCredentials(final WebContext context);
     
     /**
      * Get the user profile from the credentials.
      * 
      * @param credentials
      * @return the user profile
-     * @throws TechnicalException
      */
     @Override
-    protected U retrieveUserProfile(final OAuthCredentials credentials) throws TechnicalException {
+    protected U retrieveUserProfile(final OAuthCredentials credentials) {
         try {
             final Token token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);
@@ -161,9 +157,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param accessToken
      * @return the user profile
-     * @throws TechnicalException
      */
-    public U getUserProfile(final String accessToken) throws TechnicalException {
+    public U getUserProfile(final String accessToken) {
         init();
         try {
             final Token token = new Token(accessToken, "");
@@ -178,18 +173,16 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * 
      * @param credentials
      * @return the access token
-     * @throws OAuthCredentialsException
      */
-    protected abstract Token getAccessToken(OAuthCredentials credentials) throws OAuthCredentialsException;
+    protected abstract Token getAccessToken(OAuthCredentials credentials);
     
     /**
      * Retrieve the user profile from the access token.
      * 
      * @param accessToken
      * @return the user profile
-     * @throws TechnicalException
      */
-    protected U retrieveUserProfileFromToken(final Token accessToken) throws TechnicalException {
+    protected U retrieveUserProfileFromToken(final Token accessToken) {
         final String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
@@ -212,10 +205,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @param accessToken
      * @param dataUrl
      * @return the user data response
-     * @throws HttpCommunicationException
      */
-    protected String sendRequestForData(final Token accessToken, final String dataUrl)
-        throws HttpCommunicationException {
+    protected String sendRequestForData(final Token accessToken, final String dataUrl) {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final ProxyOAuthRequest request = createProxyRequest(dataUrl);

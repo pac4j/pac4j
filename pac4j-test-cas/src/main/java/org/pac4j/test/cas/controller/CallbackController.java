@@ -29,7 +29,6 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -49,7 +48,7 @@ public final class CallbackController extends AbstractController {
     
     private static final String SERVICE_URL = "http://www.google.com/";
     
-    public CallbackController() throws TechnicalException {
+    public CallbackController() {
         final CasClient casClient = new CasClient();
         casClient.setCasLoginUrl(CAS_BASE_URL + "login");
         casClient.setCasProtocol(CasProtocol.CAS20);
@@ -62,8 +61,7 @@ public final class CallbackController extends AbstractController {
     
     @SuppressWarnings("unchecked")
     @Override
-    protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response)
-        throws TechnicalException {
+    protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response) {
         
         final WebContext context = new J2EContext(request, response);
         

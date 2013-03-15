@@ -79,12 +79,12 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         return basicAuthClient;
     }
     
-    public void testRedirectionUrl() throws TechnicalException {
+    public void testRedirectionUrl() {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         assertEquals(CALLBACK_URL, basicAuthClient.getRedirectionUrl(MockWebContext.create()));
     }
     
-    public void testGetCredentialsMissingHeader() throws TechnicalException {
+    public void testGetCredentialsMissingHeader() {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
         try {
@@ -98,7 +98,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         }
     }
     
-    public void testGetCredentialsNotABasicHeader() throws TechnicalException {
+    public void testGetCredentialsNotABasicHeader() {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
         try {
@@ -137,7 +137,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         }
     }
     
-    public void testGetCredentialsBadCredentials() throws TechnicalException {
+    public void testGetCredentialsBadCredentials() {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + PASSWORD;
         final MockWebContext context = MockWebContext.create();
@@ -154,7 +154,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         }
     }
     
-    public void testGetCredentialsGoodCredentials() throws TechnicalException, RequiresHttpAction {
+    public void testGetCredentialsGoodCredentials() throws RequiresHttpAction {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + USERNAME;
         final UsernamePasswordCredentials credentials = basicAuthClient.getCredentials(MockWebContext.create()

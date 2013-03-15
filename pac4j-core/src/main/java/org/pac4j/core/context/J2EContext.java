@@ -117,10 +117,8 @@ public class J2EContext implements WebContext {
      * Write some content in the response.
      * 
      * @param content
-     * @throws IOException
-     * @throws TechnicalException
      */
-    public void writeResponseContent(final String content) throws TechnicalException {
+    public void writeResponseContent(final String content) {
         try {
             this.response.getWriter().write(content);
         } catch (IOException e) {
@@ -132,9 +130,8 @@ public class J2EContext implements WebContext {
      * Set the response status.
      * 
      * @param code
-     * @throws TechnicalException
      */
-    public void setResponseStatus(final int code) throws TechnicalException {
+    public void setResponseStatus(final int code) {
         if (code == HttpConstants.OK || code == HttpConstants.TEMP_REDIRECT) {
             this.response.setStatus(code);
         } else {

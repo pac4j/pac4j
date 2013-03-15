@@ -16,8 +16,6 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
@@ -57,7 +55,7 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         this.service = new ProxyOAuth10aServiceImpl(new DropBoxApi(),
                                                     new OAuthConfig(this.key, this.secret, this.callbackUrl,
@@ -72,14 +70,10 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     }
     
     /**
-     * Get the OAuth credentials from the web context.
-     * 
-     * @param context
-     * @return the OAuth credentials
-     * @throws OAuthCredentialsException
+     * {@inheritDoc}
      */
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws OAuthCredentialsException {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         // get tokenRequest from session
         final Token tokenRequest = (Token) context.getSessionAttribute(getRequestTokenSessionAttributeName());
         logger.debug("tokenRequest : {}", tokenRequest);

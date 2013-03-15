@@ -16,7 +16,6 @@
 package org.pac4j.oauth.client;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
 import org.pac4j.oauth.profile.linkedin.LinkedInProfile;
@@ -52,7 +51,7 @@ public class LinkedInClient extends BaseOAuth10Client<LinkedInProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         this.service = new ProxyOAuth10aServiceImpl(new LinkedInApi(),
                                                     new OAuthConfig(this.key, this.secret, this.callbackUrl,

@@ -74,7 +74,7 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("proxyGrantingTicketStorage", this.proxyGrantingTicketStorage);
         // timer to clean proxyGrantingTicketStorage
@@ -91,15 +91,10 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     }
     
     /**
-     * Get the credentials from the web context.
-     * 
-     * @param context
-     * @return the credentials
-     * @throws TechnicalException
-     * @throws RequiresHttpAction
+     * {@inheritDoc}
      */
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws TechnicalException,
+    protected CasCredentials retrieveCredentials(final WebContext context) throws
         RequiresHttpAction {
         
         // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
@@ -148,13 +143,18 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
                                      this.millisBetweenCleanUps);
     }
     
-    @Override
-    protected String retrieveRedirectionUrl(final WebContext context) throws TechnicalException {
+    /**
+     * {@inheritDoc}
+     */
+    protected String retrieveRedirectionUrl(final WebContext context) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials) throws TechnicalException {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     

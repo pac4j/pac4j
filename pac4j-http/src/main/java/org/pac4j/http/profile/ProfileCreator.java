@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.profile;
 
-import org.pac4j.core.exception.TechnicalException;
 
 /**
  * This interface represents the contract to create a HTTP profile.
@@ -30,7 +29,6 @@ public interface ProfileCreator {
      * 
      * @param username
      * @return the created profile
-     * @throws TechnicalException
      */
-    public HttpProfile create(String username) throws TechnicalException;
+    public HttpProfile create(String username);
 }

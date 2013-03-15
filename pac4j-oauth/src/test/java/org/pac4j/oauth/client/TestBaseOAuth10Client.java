@@ -41,7 +41,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         return client;
     }
     
-    public void testNoTokenNoVerifier() throws TechnicalException, RequiresHttpAction {
+    public void testNoTokenNoVerifier() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
@@ -50,7 +50,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testNoToken() throws TechnicalException, RequiresHttpAction {
+    public void testNoToken() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER,
                                                                                    VERIFIER));
@@ -60,7 +60,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testNoVerifier() throws TechnicalException, RequiresHttpAction {
+    public void testNoVerifier() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create()
                                            .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN));
@@ -70,7 +70,7 @@ public final class TestBaseOAuth10Client extends TestCase implements TestsConsta
         }
     }
     
-    public void testOk() throws TechnicalException, RequiresHttpAction {
+    public void testOk() throws RequiresHttpAction {
         final OAuthCredentials credentials = (OAuthCredentials) getClient()
             .getCredentials(MockWebContext
                                 .create()

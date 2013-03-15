@@ -17,8 +17,6 @@ package org.pac4j.core.context;
 
 import java.util.Map;
 
-import org.pac4j.core.exception.TechnicalException;
-
 /**
  * This interface represents the web context to use HTTP request and session.
  * 
@@ -77,17 +75,15 @@ public interface WebContext {
      * Write some content in the response.
      * 
      * @param content
-     * @throws TechnicalException
      */
-    public void writeResponseContent(String content) throws TechnicalException;
+    public void writeResponseContent(String content);
     
     /**
      * Set the response status.
      * 
      * @param code
-     * @throws TechnicalException
      */
-    public void setResponseStatus(int code) throws TechnicalException;
+    public void setResponseStatus(int code);
     
     /**
      * Add a header to the response.

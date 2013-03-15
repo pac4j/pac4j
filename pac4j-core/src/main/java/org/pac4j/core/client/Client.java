@@ -18,7 +18,6 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 
 /**
@@ -50,26 +49,23 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * 
      * @param context
      * @return the redirection url
-     * @throws TechnicalException
      */
-    public String getRedirectionUrl(WebContext context) throws TechnicalException;
+    public String getRedirectionUrl(WebContext context);
     
     /**
      * Get the credentials from the web context.
      * 
      * @param context
      * @return the credentials
-     * @throws TechnicalException
      * @throws RequiresHttpAction
      */
-    public C getCredentials(WebContext context) throws TechnicalException, RequiresHttpAction;
+    public C getCredentials(WebContext context) throws RequiresHttpAction;
     
     /**
      * Get the user profile from the credentials.
      * 
      * @param credentials
      * @return the user profile
-     * @throws TechnicalException
      */
-    public U getUserProfile(C credentials) throws TechnicalException;
+    public U getUserProfile(C credentials);
 }

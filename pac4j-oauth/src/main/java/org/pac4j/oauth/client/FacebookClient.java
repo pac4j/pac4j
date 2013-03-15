@@ -114,7 +114,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("fields", this.fields);
         this.api20 = new ExtendedFacebookApi();
@@ -143,7 +143,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) throws TechnicalException {
+    protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) {
         String body = sendRequestForData(accessToken, getProfileUrl());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
@@ -205,10 +205,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     /**
-     * Retrieve the redirection url.
-     * 
-     * @param context
-     * @return the redirection url
+     * {@inheritDoc}
      */
     @Override
     public String retrieveRedirectionUrl(final WebContext context) {
@@ -223,14 +220,10 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     /**
-     * Get the OAuth credentials from the web context.
-     * 
-     * @param context
-     * @return the OAuth credentials
-     * @throws OAuthCredentialsException
+     * {@inheritDoc}
      */
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws OAuthCredentialsException {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
         final String userSessionFacebookState = (String) context.getSessionAttribute(FACEBOOK_STATE);
         String stateVerifier = context.getRequestParameter(FACEBOOK_STATE);

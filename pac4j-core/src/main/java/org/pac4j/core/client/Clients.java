@@ -66,11 +66,9 @@ public final class Clients extends InitializableObject {
     
     /**
      * Initialize all clients by computing callback urls.
-     * 
-     * @throws TechnicalException
      */
     @Override
-    protected void internalInit() throws TechnicalException {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("clients", this.clients);
         for (final Client client : this.clients) {
@@ -93,9 +91,8 @@ public final class Clients extends InitializableObject {
      * 
      * @param context
      * @return the right client
-     * @throws TechnicalException
      */
-    public Client findClient(final WebContext context) throws TechnicalException {
+    public Client findClient(final WebContext context) {
         final String name = context.getRequestParameter(this.clientNameParameter);
         CommonHelper.assertNotBlank("name", name);
         return findClient(name);
@@ -106,9 +103,8 @@ public final class Clients extends InitializableObject {
      * 
      * @param name
      * @return the right client
-     * @throws TechnicalException
      */
-    public Client findClient(final String name) throws TechnicalException {
+    public Client findClient(final String name) {
         init();
         for (final Client client : this.clients) {
             if (CommonHelper.areEquals(name, client.getName())) {
@@ -124,9 +120,8 @@ public final class Clients extends InitializableObject {
      * Find all the clients.
      * 
      * @return all the clients
-     * @throws TechnicalException
      */
-    public List<Client> findAllClients() throws TechnicalException {
+    public List<Client> findAllClients() {
         init();
         return this.clients;
     }

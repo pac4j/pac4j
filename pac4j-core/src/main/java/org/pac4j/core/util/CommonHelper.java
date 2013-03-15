@@ -82,9 +82,8 @@ public final class CommonHelper {
      * 
      * @param name
      * @param value
-     * @throws TechnicalException
      */
-    public static void assertNotBlank(final String name, final String value) throws TechnicalException {
+    public static void assertNotBlank(final String name, final String value) {
         if (isBlank(value)) {
             throw new TechnicalException(name + " cannot be blank");
         }
@@ -95,9 +94,8 @@ public final class CommonHelper {
      * 
      * @param name
      * @param obj
-     * @throws TechnicalException
      */
-    public static void assertNotNull(final String name, final Object obj) throws TechnicalException {
+    public static void assertNotNull(final String name, final Object obj) {
         if (obj == null) {
             throw new TechnicalException(name + " cannot be null");
         }
@@ -143,7 +141,7 @@ public final class CommonHelper {
             return URLEncoder.encode(text, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
             logger.error("Unable to encode text : {} / {}", text, e);
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         }
     }
     

@@ -49,7 +49,7 @@ public final class TestBaseOAuthClient extends TestCase implements TestsConstant
         assertEquals(TYPE, client.getName());
     }
     
-    public void testGetCredentialOK() throws TechnicalException, RequiresHttpAction {
+    public void testGetCredentialOK() throws RequiresHttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
