@@ -71,8 +71,8 @@ public class RequiresHttpAction extends Exception {
      * @return a basic auth popup credentials
      */
     public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
-        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
     }
     
