@@ -76,6 +76,15 @@ public class RequiresHttpAction extends Exception {
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
     }
     
+    /**
+     * Return the HTTP code.
+     * 
+     * @return the HTTP code
+     */
+    public int getCode() {
+        return this.code;
+    }
+    
     @Override
     public String toString() {
         return CommonHelper.toString(RequiresHttpAction.class, "code", this.code);
