@@ -222,7 +222,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
      * {@inheritDoc}
      */
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
+    protected OAuthCredentials retrieveCredentials(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         final String errorReason = context.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
         // user has denied permissions
@@ -230,20 +230,28 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
             logger.debug("authentication has been cancelled by user");
             return null;
         } else {
-            // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
-            final String userSessionFacebookState = (String) context.getSessionAttribute(FACEBOOK_STATE);
-            String stateVerifier = context.getRequestParameter(FACEBOOK_STATE);
-            if (stateVerifier != null) {
-                stateVerifier = OAuthEncoder.decode(stateVerifier);
-                logger.debug("stateVerifier : {}", stateVerifier);
-                if (stateVerifier.equals(userSessionFacebookState)) {
-                    return super.getOAuthCredentials(context);
-                }
-            }
-            final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
-            logger.error(message);
-            throw new OAuthCredentialsException(message);
+            return super.retrieveCredentials(context);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
+        // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
+        final String userSessionFacebookState = (String) context.getSessionAttribute(FACEBOOK_STATE);
+        String stateVerifier = context.getRequestParameter(FACEBOOK_STATE);
+        if (stateVerifier != null) {
+            stateVerifier = OAuthEncoder.decode(stateVerifier);
+            logger.debug("stateVerifier : {}", stateVerifier);
+            if (stateVerifier.equals(userSessionFacebookState)) {
+                return super.getOAuthCredentials(context);
+            }
+        }
+        final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
+        logger.error(message);
+        throw new OAuthCredentialsException(message);
     }
     
     public String getScope() {
