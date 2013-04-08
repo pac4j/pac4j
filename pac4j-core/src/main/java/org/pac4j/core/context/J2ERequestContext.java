@@ -15,34 +15,22 @@
  */
 package org.pac4j.core.context;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.pac4j.core.exception.TechnicalException;
 
 /**
- * This implementation uses the J2E request and session.
+ * This implementation uses the J2E request.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class J2EContext implements WebContext {
+public class J2ERequestContext extends BaseResponseContext {
     
     private final HttpServletRequest request;
     
-    private final HttpServletResponse response;
-    
-    /**
-     * Build a J2E context from the current HTTP request.
-     * 
-     * @param request
-     */
-    public J2EContext(final HttpServletRequest request, final HttpServletResponse response) {
+    public J2ERequestContext(final HttpServletRequest request) {
         this.request = request;
-        this.response = response;
     }
     
     /**
@@ -111,56 +99,5 @@ public class J2EContext implements WebContext {
      */
     public HttpServletRequest getRequest() {
         return this.request;
-    }
-    
-    /**
-     * Return the HTTP response.
-     * 
-     * @return the HTTP response
-     */
-    public HttpServletResponse getResponse() {
-        return this.response;
-    }
-    
-    /**
-     * Write some content in the response.
-     * 
-     * @param content
-     */
-    public void writeResponseContent(final String content) {
-        if (content != null) {
-            try {
-                this.response.getWriter().write(content);
-            } catch (final IOException e) {
-                throw new TechnicalException(e);
-            }
-        }
-    }
-    
-    /**
-     * Set the response status.
-     * 
-     * @param code
-     */
-    public void setResponseStatus(final int code) {
-        if (code == HttpConstants.OK || code == HttpConstants.TEMP_REDIRECT) {
-            this.response.setStatus(code);
-        } else {
-            try {
-                this.response.sendError(code);
-            } catch (final IOException e) {
-                throw new TechnicalException(e);
-            }
-        }
-    }
-    
-    /**
-     * Add a header to the response.
-     * 
-     * @param name
-     * @param value
-     */
-    public void setResponseHeader(final String name, final String value) {
-        this.response.setHeader(name, value);
     }
 }

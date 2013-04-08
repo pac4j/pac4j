@@ -26,16 +26,14 @@ import java.util.Map;
  */
 public abstract class BaseResponseContext implements WebContext {
     
-    protected String responseContent = null;
+    protected String responseContent = "";
     
     protected int responseStatus = -1;
     
     protected final Map<String, String> responseHeaders = new HashMap<String, String>();
     
     public void writeResponseContent(final String content) {
-        if (this.responseContent == null) {
-            this.responseContent = content;
-        } else {
+        if (content != null) {
             this.responseContent += content;
         }
     }
