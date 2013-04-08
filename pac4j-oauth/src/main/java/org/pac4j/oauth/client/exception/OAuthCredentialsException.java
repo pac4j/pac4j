@@ -28,13 +28,13 @@ import org.pac4j.core.exception.CredentialsException;
  */
 public class OAuthCredentialsException extends CredentialsException {
     
-    private static final long serialVersionUID = -2281605732696011090L;
+    private static final long serialVersionUID = -3540979749535811079L;
     
-    private static final String ERROR = "error";
+    public static final String ERROR = "error";
     
-    private static final String ERROR_REASON = "error_reason";
+    public static final String ERROR_REASON = "error_reason";
     
-    private static final String ERROR_DESCRIPTION = "error_description";
+    public static final String ERROR_DESCRIPTION = "error_description";
     
     private static final String ERROR_URI = "error_uri";
     

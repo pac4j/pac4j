@@ -19,7 +19,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -164,7 +163,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
             logger.debug("response code : {} / response body : {}", code, body);
             if (code == 200) {
                 logger.debug("Retrieve extended token from : {}", body);
-                Token extendedAccessToken = this.api20.getAccessTokenExtractor().extract(body);
+                final Token extendedAccessToken = this.api20.getAccessTokenExtractor().extract(body);
                 logger.debug("Extended token : {}", extendedAccessToken);
                 addAccessTokenToProfile(profile, extendedAccessToken);
             } else {
@@ -224,19 +223,27 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
      */
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) {
-        // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
-        final String userSessionFacebookState = (String) context.getSessionAttribute(FACEBOOK_STATE);
-        String stateVerifier = context.getRequestParameter(FACEBOOK_STATE);
-        if (stateVerifier != null) {
-            stateVerifier = OAuthEncoder.decode(stateVerifier);
-            logger.debug("stateVerifier : {}", stateVerifier);
-            if (stateVerifier.equals(userSessionFacebookState)) {
-                return super.getOAuthCredentials(context);
+        final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
+        final String errorReason = context.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
+        // user has denied permissions
+        if ("access_denied".equals(error) && "user_denied".equals(errorReason)) {
+            logger.debug("authentication has been cancelled by user");
+            return null;
+        } else {
+            // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
+            final String userSessionFacebookState = (String) context.getSessionAttribute(FACEBOOK_STATE);
+            String stateVerifier = context.getRequestParameter(FACEBOOK_STATE);
+            if (stateVerifier != null) {
+                stateVerifier = OAuthEncoder.decode(stateVerifier);
+                logger.debug("stateVerifier : {}", stateVerifier);
+                if (stateVerifier.equals(userSessionFacebookState)) {
+                    return super.getOAuthCredentials(context);
+                }
             }
+            final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
+            logger.error(message);
+            throw new OAuthCredentialsException(message);
         }
-        final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
-        logger.error(message);
-        throw new OAuthCredentialsException(message);
     }
     
     public String getScope() {
