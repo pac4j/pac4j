@@ -26,6 +26,7 @@ import org.pac4j.core.client.TestClient;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -95,6 +96,11 @@ public abstract class TestCasClient extends TestClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(CasProfile.class);
     }
     
     @Override

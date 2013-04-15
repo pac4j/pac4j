@@ -23,6 +23,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -72,6 +73,12 @@ public class TestWordPressClient extends TestOAuthClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(WordPressProfile.class);
+        kryo.register(WordPressLinks.class);
     }
     
     @Override

@@ -29,6 +29,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.openid.profile.myopenid.MyOpenIdProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -62,7 +63,7 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
         try {
             client.getRedirectionUrl(MockWebContext.create(), true);
             fail("should fail because of missing OpenID user");
-        } catch (TechnicalException e) {
+        } catch (final TechnicalException e) {
             assertEquals("'openIDUser' cannot be blank", e.getMessage());
         }
     }
@@ -96,6 +97,11 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(MyOpenIdProfile.class);
     }
     
     @Override

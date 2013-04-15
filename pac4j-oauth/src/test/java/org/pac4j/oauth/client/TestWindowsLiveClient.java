@@ -25,6 +25,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
@@ -64,6 +65,11 @@ public class TestWindowsLiveClient extends TestOAuthClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(WindowsLiveProfile.class);
     }
     
     @Override

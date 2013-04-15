@@ -25,6 +25,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -81,6 +82,11 @@ public final class TestCasOAuthWrapperClient extends TestClient {
         final String callbackUrl = link.getHrefAttribute();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(CasOAuthWrapperProfile.class);
     }
     
     @Override

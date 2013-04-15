@@ -24,6 +24,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oauth.profile.JsonList;
 import org.pac4j.oauth.profile.yahoo.YahooAddress;
 import org.pac4j.oauth.profile.yahoo.YahooDisclosure;
 import org.pac4j.oauth.profile.yahoo.YahooEmail;
@@ -31,6 +32,7 @@ import org.pac4j.oauth.profile.yahoo.YahooImage;
 import org.pac4j.oauth.profile.yahoo.YahooInterest;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -71,6 +73,17 @@ public class TestYahooClient extends TestOAuthClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(YahooProfile.class);
+        kryo.register(JsonList.class);
+        kryo.register(YahooDisclosure.class);
+        kryo.register(YahooInterest.class);
+        kryo.register(YahooImage.class);
+        kryo.register(YahooEmail.class);
+        kryo.register(YahooAddress.class);
     }
     
     @Override

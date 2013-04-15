@@ -34,6 +34,9 @@ import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.ObjectBuffer;
+import com.esotericsoftware.kryo.SerializationException;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
@@ -46,6 +49,10 @@ import com.gargoylesoftware.htmlunit.WebClient;
 public final class TestsHelper {
     
     private static final Logger logger = LoggerFactory.getLogger(TestsHelper.class);
+    
+    private static final int BUFFERS_INITIAL_CAPACITY = 1024;
+    
+    private static final int BUFFERS_MAXIMAL_CAPACITY = 1024 * 10;
     
     public static WebClient newWebClient(final boolean isJavascriptEnabled) {
         final WebClient webClient = new WebClient();
@@ -129,6 +136,26 @@ public final class TestsHelper {
             logger.warn("cannot deserialize object", e);
         }
         return o;
+    }
+    
+    public static byte[] serializeKryo(final Kryo kryo, final Object object) {
+        final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
+        try {
+            return buffer.writeClassAndObject(object);
+        } catch (final SerializationException e) {
+            logger.error("serialize exception with Kryo on object : {}", object, e);
+        }
+        return null;
+    }
+    
+    public static Object unserializeKryo(final Kryo kryo, final byte[] bytes) {
+        try {
+            final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
+            return buffer.readClassAndObject(bytes);
+        } catch (final SerializationException e) {
+            logger.error("unserialize exception with Kryo", e);
+        }
+        return null;
     }
     
     public static void initShouldFail(final InitializableObject obj, final String message) {

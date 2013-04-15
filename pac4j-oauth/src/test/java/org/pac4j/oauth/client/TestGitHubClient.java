@@ -23,6 +23,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -59,6 +60,12 @@ public class TestGitHubClient extends TestOAuthClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(GitHubProfile.class);
+        kryo.register(GitHubPlan.class);
     }
     
     @Override

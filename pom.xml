@@ -178,6 +178,11 @@
 				<version>2.5</version>
 				<scope>provided</scope>
 			</dependency>
+            <dependency>
+                <groupId>com.googlecode</groupId>
+                <artifactId>kryo</artifactId>
+                <version>1.04</version>
+            </dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>junit</groupId>

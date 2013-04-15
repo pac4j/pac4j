@@ -24,6 +24,7 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -50,19 +51,24 @@ public class TestDropBoxClient extends TestOAuthClient {
     
     @Override
     protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
-        HtmlForm form = authorizationPage.getForms().get(1);
+        HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput login = form.getInputByName("login_email");
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("login_password");
         passwd.setValueAttribute("testpwdscribeup");
         HtmlSubmitInput submit = form.getInputByName("login_submit_dummy");
         final HtmlPage confirmPage = submit.click();
-        form = confirmPage.getForms().get(1);
+        form = confirmPage.getForms().get(0);
         submit = form.getInputByName("allow_access");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(DropBoxProfile.class);
     }
     
     @Override

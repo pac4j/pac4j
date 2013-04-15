@@ -25,10 +25,13 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.oauth.profile.JsonList;
+import org.pac4j.oauth.profile.facebook.FacebookApplication;
 import org.pac4j.oauth.profile.facebook.FacebookEducation;
 import org.pac4j.oauth.profile.facebook.FacebookEvent;
 import org.pac4j.oauth.profile.facebook.FacebookGroup;
 import org.pac4j.oauth.profile.facebook.FacebookInfo;
+import org.pac4j.oauth.profile.facebook.FacebookMusicData;
 import org.pac4j.oauth.profile.facebook.FacebookMusicListen;
 import org.pac4j.oauth.profile.facebook.FacebookObject;
 import org.pac4j.oauth.profile.facebook.FacebookPhoto;
@@ -37,6 +40,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import org.pac4j.oauth.profile.facebook.FacebookWork;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -96,6 +100,24 @@ public class TestFacebookClient extends TestOAuthClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(FacebookProfile.class);
+        kryo.register(FacebookObject.class);
+        kryo.register(JsonList.class);
+        kryo.register(FacebookEvent.class);
+        kryo.register(FacebookInfo.class);
+        kryo.register(FacebookMusicListen.class);
+        kryo.register(FacebookApplication.class);
+        kryo.register(FacebookMusicData.class);
+        kryo.register(FacebookEducation.class);
+        kryo.register(FacebookRelationshipStatus.class);
+        kryo.register(FacebookGroup.class);
+        kryo.register(FacebookWork.class);
+        kryo.register(FacebookPicture.class);
+        kryo.register(FacebookPhoto.class);
     }
     
     @Override

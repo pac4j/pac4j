@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.client;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -22,7 +24,12 @@ import junit.framework.TestCase;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.kryo.ColorSerializer;
+import org.pac4j.core.kryo.FormattedDateSerializer;
+import org.pac4j.core.kryo.LocaleSerializer;
+import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.FormattedDate;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -30,6 +37,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
@@ -81,10 +89,26 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         
         verifyProfile(profile);
         
-        final byte[] bytes = TestsHelper.serialize(profile);
+        // Java serialization
+        byte[] bytes = TestsHelper.serialize(profile);
         final UserProfile profile2 = (UserProfile) TestsHelper.unserialize(bytes);
-        
         verifyProfile(profile2);
+        
+        // Kryo serialization
+        final Kryo kryo = new Kryo();
+        kryo.register(HashMap.class);
+        kryo.register(Locale.class, new LocaleSerializer());
+        kryo.register(Date.class);
+        kryo.register(FormattedDate.class, new FormattedDateSerializer());
+        kryo.register(Gender.class);
+        kryo.register(Color.class, new ColorSerializer());
+        registerForKryo(kryo);
+        bytes = TestsHelper.serializeKryo(kryo, profile);
+        final UserProfile profile3 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
+        verifyProfile(profile3);
+    }
+    
+    protected void registerForKryo(final Kryo kryo) {
     }
     
     protected boolean isJavascriptEnabled() {

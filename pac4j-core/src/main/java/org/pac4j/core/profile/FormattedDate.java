@@ -27,7 +27,7 @@ import java.util.Locale;
  */
 public final class FormattedDate extends Date {
     
-    private static final long serialVersionUID = -279874272436563464L;
+    private static final long serialVersionUID = 7721389956184262608L;
     
     private String format;
     
@@ -52,6 +52,10 @@ public final class FormattedDate extends Date {
     
     public void setLocale(final Locale locale) {
         this.locale = locale;
+    }
+    
+    public Locale getLocale() {
+        return this.locale;
     }
     
     @Override

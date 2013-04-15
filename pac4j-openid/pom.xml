@@ -55,6 +55,11 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.googlecode</groupId>
+            <artifactId>kryo</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<!-- for testing -->
 		<dependency>
 			<groupId>org.pac4j</groupId>

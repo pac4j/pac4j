@@ -72,6 +72,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.googlecode</groupId>
+            <artifactId>kryo</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<!-- for testing -->
 	</dependencies>
 

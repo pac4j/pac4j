@@ -27,6 +27,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.client.Google2Client.Google2Scope;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -86,6 +87,11 @@ public class TestGoogle2Client extends TestOAuthClient {
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
+    }
+    
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(Google2Profile.class);
     }
     
     @Override
