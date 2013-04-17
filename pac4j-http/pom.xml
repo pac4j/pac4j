@@ -69,6 +69,17 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>org.pac4j.http</Bundle-SymbolicName>
+						<Export-Package>org.pac4j.http.*;version=${project.version}</Export-Package>
+						<Import-Package>*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
