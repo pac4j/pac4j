@@ -50,9 +50,9 @@ public final class TestsHelper {
     
     private static final Logger logger = LoggerFactory.getLogger(TestsHelper.class);
     
-    private static final int BUFFERS_INITIAL_CAPACITY = 1024;
+    private static final int BUFFERS_INITIAL_CAPACITY = 5 * 1024;
     
-    private static final int BUFFERS_MAXIMAL_CAPACITY = 1024 * 10;
+    private static final int BUFFERS_MAXIMAL_CAPACITY = 1024 * 20;
     
     public static WebClient newWebClient(final boolean isJavascriptEnabled) {
         final WebClient webClient = new WebClient();

@@ -18,6 +18,7 @@ package org.pac4j.core.client;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -31,6 +32,7 @@ import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.FormattedDate;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -76,6 +78,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
     }
     
     public void testAuthenticationAndUserProfileRetrieval() throws Exception {
+        ProfileHelper.setKeepRawData(true);
         final Client client = getClient();
         
         final MockWebContext context = MockWebContext.create();
@@ -94,6 +97,15 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         final UserProfile profile2 = (UserProfile) TestsHelper.unserialize(bytes);
         verifyProfile(profile2);
         
+        // like CAS serialization
+        final Map<String, Object> attributes = profile2.getAttributes();
+        final Map<String, Object> newAttributes = new HashMap<String, Object>();
+        for (final String key : attributes.keySet()) {
+            newAttributes.put(key, attributes.get(key).toString());
+        }
+        final UserProfile profile3 = ProfileHelper.buildProfile(profile2.getTypedId(), newAttributes);
+        verifyProfile(profile3);
+        
         // Kryo serialization
         final Kryo kryo = new Kryo();
         kryo.register(HashMap.class);
@@ -104,8 +116,9 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         kryo.register(Color.class, new ColorSerializer());
         registerForKryo(kryo);
         bytes = TestsHelper.serializeKryo(kryo, profile);
-        final UserProfile profile3 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
-        verifyProfile(profile3);
+        final UserProfile profile4 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
+        verifyProfile(profile4);
+        ProfileHelper.setKeepRawData(false);
     }
     
     protected void registerForKryo(final Kryo kryo) {

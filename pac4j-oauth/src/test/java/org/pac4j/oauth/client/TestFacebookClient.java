@@ -129,15 +129,9 @@ public class TestFacebookClient extends TestOAuthClient {
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile,
-                            "testscribeup@gmail.com",
-                            "Jerome",
-                            "Testscribeup",
-                            "Jerome Testscribeup",
-                            "jerome.testscribeup",
-                            Gender.MALE,
-                            Locale.FRANCE,
-                            "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash3/157632_100003571536393_1742338663_q.jpg",
+        assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jerome", "Testscribeup", "Jerome Testscribeup",
+                            "jerome.testscribeup", Gender.MALE, Locale.FRANCE,
+                            "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-",
                             "http://www.facebook.com/jerome.testscribeup", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
@@ -247,8 +241,6 @@ public class TestFacebookClient extends TestOAuthClient {
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
         assertEquals(4, musicListens.size());
         final FacebookPicture picture = profile.getPicture();
-        assertEquals("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash3/157632_100003571536393_1742338663_q.jpg",
-                     picture.getUrl());
         assertFalse(picture.getIsSilhouette());
         assertEquals(37, profile.getAttributes().size());
     }
