@@ -112,10 +112,10 @@ For example :
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.pac4j&lt;/groupId&gt;
     &lt;artifactId&gt;pac4j-oauth&lt;/artifactId&gt;
-    &lt;version&gt;1.4.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.4.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
-As the pac4j snapshots libraries are stored in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>, this repository needs to be added in the Maven <i>pom.xml</i> file :
+As the pac4j snapshots libraries are stored in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>, this repository may be added in the Maven <i>pom.xml</i> file :
 <pre><code>&lt;repository&gt;
 			&lt;id&gt;sonatype-nexus-snapshots&lt;/id&gt;
 			&lt;name&gt;Sonatype Nexus Snapshots&lt;/name&gt;
@@ -234,7 +234,7 @@ The <i>getCredentials(WebContext)</i> method can throw a checked <i>org.pac4j.co
 
 Even if you can use <b>pac4j</b> on its own, this library is used to be integrated with :
 <ol>
-<li>the <a href="https://wiki.jasig.org/display/CASUM/OAuth">cas-server-support-oauth</a> module to add OAuth client and server support to the <a href="http://www.jasig.org/cas">CAS server</a></li>
+<li>the <a href="https://wiki.jasig.org/pages/viewpage.action?pageId=57577635">cas-server-support-pac4j</a> module to add multi-protocols client support to the <a href="http://www.jasig.org/cas">CAS server</a></li>
 <li>the <a href="https://github.com/bujiio/buji-oauth">buji-oauth</a> library to add OAuth client support to the <a href="http://shiro.apache.org">Apache Shiro project</a></li>
 <li>the <a href="https://github.com/leleuj/spring-security-oauth-client">spring-security-oauth-client</a> library to add OAuth client support to <a href="http://static.springsource.org/spring-security/site/">Spring Security</a>.</li>
 <li>the <a href="https://github.com/leleuj/play-pac4j">play-pac4j</a> library to add multi-protocols client support to the <a href="http://www.playframework.org/">Play 2.x framework</a> in Java and Scala.</li>
@@ -242,10 +242,8 @@ Even if you can use <b>pac4j</b> on its own, this library is used to be integrat
 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
-<tr><td>cas-server-support-oauth 4.0.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/cas-oauth-demo">cas-oauth-demo</a></td></tr>
+<tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.2</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
-<tr><td>cas-server-support-oauth 3.5.1</td><td>OAuth</td><td>scribe-up 1.1.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
-<tr><td>cas-server-support-oauth 3.5.0</td><td>OAuth</td><td>scribe-up 1.0.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.0">cas-oauth-demo-3.5.0</a></td></tr>
 <tr><td>buji-oauth 1.1.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/buji-oauth-demo">buji-oauth-demo</a></td></tr>
 <tr><td>buji-oauth 1.0.0</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/buji-oauth-demo-1.0.0">buji-oauth-demo-1.0.0</a></td></tr>
 <tr><td>spring-security-oauth-client 1.1.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
@@ -256,13 +254,13 @@ Even if you can use <b>pac4j</b> on its own, this library is used to be integrat
 
 <h2>Versions</h2>
 
-The current version : <i>1.4.0-SNAPSHOT</i> is under development, it's available in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>.
+The current version : <i>1.4.1-SNAPSHOT</i> is under development, it's available in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>.
 
-This is the first version of the <b>pac4j</b> project. The last released version is the <b>scribe-up 1.3.1</b> library (which is the old pac4j-oauth library) :
+The latest release of the <b>pac4j</b> project is the <b>1.4.0</b> version :
 <pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;org.scribe&lt;/groupId&gt;
-    &lt;artifactId&gt;scribe-up&lt;/artifactId&gt;
-    &lt;version&gt;1.3.1&lt;/version&gt;
+    &lt;groupId&gt;org.pac4j&lt;/groupId&gt;
+    &lt;artifactId&gt;pac4j-core&lt;/artifactId&gt;
+    &lt;version&gt;1.4.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 Learn more about the <a href="https://github.com/leleuj/pac4j/wiki/Versions">different versions</a>.
@@ -279,3 +277,4 @@ Use the <b>js</b> Maven profile for Javadoc and sources generation.
 <h2>Contact</h2>
 
 Find me on <a href="http://www.linkedin.com/in/jleleu">LinkedIn</a> or by email : leleuj@gmail.com
+
