@@ -116,4 +116,10 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
     protected boolean isDirectRedirection() {
         return false;
     }
+    
+    @Override
+    protected void addAccessTokenToProfile(U profile, Token accessToken) {
+    	super.addAccessTokenToProfile(profile, accessToken);
+    	profile.setAccessSecret(accessToken.getSecret());
+    }
 }

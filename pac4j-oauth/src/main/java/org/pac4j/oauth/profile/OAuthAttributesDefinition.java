@@ -28,7 +28,10 @@ public class OAuthAttributesDefinition extends AttributesDefinition {
     
     public transient static final String ACCESS_TOKEN = "access_token";
     
+    public transient static final String ACCESS_SECRET = "access_secret";
+    
     public OAuthAttributesDefinition() {
         addAttribute(ACCESS_TOKEN, Converters.stringConverter, false);
+        addAttribute(ACCESS_SECRET, Converters.stringConverter, false);
     }
 }
