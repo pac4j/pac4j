@@ -237,7 +237,8 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @return the body of the requested resource
      */
     public String sendRequestForData(final OAuthProfile profile, final String dataUrl) {
-    	final Token accessToken = new Token(profile.getAccessToken(), profile.getAccessSecret());
+    	final String secret = profile.getAccessSecret();
+    	final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
     	return sendRequestForData(accessToken, dataUrl);
     }
     
