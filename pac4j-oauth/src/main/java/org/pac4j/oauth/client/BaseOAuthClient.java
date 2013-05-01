@@ -222,10 +222,24 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
         logger.debug("Request took : " + (t1 - t0) + " ms for : " + dataUrl);
         logger.debug("response code : {} / response body : {}", code, body);
         if (code != 200) {
-            logger.error("Failed to get user data, code : " + code + " / body : " + body);
+            logger.error("Failed to get data, code : " + code + " / body : " + body);
             throw new HttpCommunicationException(code, body);
         }
         return body;
+    }
+    
+    /**
+     * Make a request to the OAuth provider to access a protected resource. The profile 
+     * should contain a valid access token (and secret if needed). 
+     * 
+     * @param profile
+     * @param dataUrl
+     * @return the body of the requested resource
+     */
+    public String sendRequestForData(final OAuthProfile profile, final String dataUrl) {
+    	final String secret = profile.getAccessSecret();
+    	final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
+    	return sendRequestForData(accessToken, dataUrl);
     }
     
     /**
