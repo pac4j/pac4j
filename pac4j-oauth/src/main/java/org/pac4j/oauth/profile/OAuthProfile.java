@@ -45,4 +45,22 @@ public abstract class OAuthProfile extends CommonProfile {
     public String getAccessToken() {
         return (String) getAttribute(OAuthAttributesDefinition.ACCESS_TOKEN);
     }
+
+    /**
+     * Set the access token secret
+     * 
+     * @param accessSecret
+     */
+    public void setAccessSecret(final String accessSecret) {
+        addAttribute(OAuthAttributesDefinition.ACCESS_SECRET, accessSecret);
+    }
+    
+    /**
+     * Return the access token secret.
+     * 
+     * @return the access token secret
+     */
+    public String getAccessSecret() {
+        return (String) getAttribute(OAuthAttributesDefinition.ACCESS_SECRET);
+    }
 }
