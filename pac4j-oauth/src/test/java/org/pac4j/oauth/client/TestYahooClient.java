@@ -145,6 +145,7 @@ public class TestYahooClient extends TestOAuthClient {
         assertEquals("Europe/Paris", profile.getTimeZone());
         assertEquals("2012-03-05T14:26:25Z", profile.getUpdated().toString());
         assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
-        assertEquals(23, profile.getAttributes().size());
+        assertNotNull(profile.getAccessSecret());
+        assertEquals(24, profile.getAttributes().size());
     }
 }

@@ -80,10 +80,11 @@ public class TestDropBoxClient extends TestOAuthClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
-                            null, "https://www.dropbox.com/referrals/NTc1MjA2NjI0OQ", null);
+                            null, "http://db.tt/RvmZyvJa", null);
         assertEquals(0L, profile.getShared().longValue());
         assertEquals(1410412L, profile.getNormal().longValue());
         assertEquals(2147483648L, profile.getQuota().longValue());
-        assertEquals(7, profile.getAttributes().size());
+        assertNotNull(profile.getAccessSecret());
+        assertEquals(8, profile.getAttributes().size());
     }
 }

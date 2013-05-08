@@ -86,6 +86,7 @@ public class TestLinkedInClient extends TestOAuthClient {
                             "http://www.linkedin.com/profile/view?id=167439971&amp;authType=name&amp;authToken=_IWF&amp;trk=api*",
                             null);
         assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());
-        assertEquals(5, profile.getAttributes().size());
+        assertNotNull(profile.getAccessSecret());
+        assertEquals(6, profile.getAttributes().size());
     }
 }

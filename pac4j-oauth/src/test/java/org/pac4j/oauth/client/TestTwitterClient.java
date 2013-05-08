@@ -117,7 +117,8 @@ public class TestTwitterClient extends TestOAuthClient {
         assertEquals("Amsterdam", profile.getTimeZone());
         assertEquals(3600, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
-        assertEquals(36, profile.getAttributes().size());
+        assertNotNull(profile.getAccessSecret());
+        assertEquals(37, profile.getAttributes().size());
     }
     
     @Override
