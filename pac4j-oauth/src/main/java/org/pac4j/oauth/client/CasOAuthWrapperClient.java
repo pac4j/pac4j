@@ -23,7 +23,7 @@ import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.scribe.builder.api.CasOAuthWrapperApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+import org.scribe.oauth.ExtendedOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -64,7 +64,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        this.service = new ProxyOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl),
+        this.service = new ExtendedOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl),
                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                    SignatureType.Header, null, null),
                                                    this.connectTimeout, this.readTimeout, this.proxyHost,

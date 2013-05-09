@@ -16,7 +16,10 @@
 package org.scribe.builder.api;
 
 import org.scribe.model.OAuthConfig;
+import org.scribe.model.Verb;
 import org.scribe.utils.OAuthEncoder;
+import org.scribe.extractors.AccessTokenExtractor;
+import org.scribe.extractors.JsonTokenExtractor;
 
 /**
  * This class represents the OAuth API implementation for the CAS OAuth wrapper.
@@ -33,13 +36,25 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     }
     
     @Override
+    public AccessTokenExtractor getAccessTokenExtractor() {
+        return new JsonTokenExtractor();
+    }
+
+    @Override
     public String getAccessTokenEndpoint() {
         return this.casServerUrl + "/accessToken?";
     }
     
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
-        return String.format(this.casServerUrl + "/authorize?client_id=%s&redirect_uri=%s", config.getApiKey(),
-                             OAuthEncoder.encode(config.getCallback()));
+        return String.format(this.casServerUrl + "/authorize?" + 
+                "response_type=code&client_id=%s&redirect_uri=%s",
+                config.getApiKey(),
+                OAuthEncoder.encode(config.getCallback()));
+    }
+
+    @Override
+    public Verb getAccessTokenVerb() {
+        return Verb.PUT;
     }
 }
