@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * This class converts a XML into a XML object.
  * 
  * @author Jerome Leleu
- * @since 1.4.2
+ * @since 1.4.1
  */
 public final class XmlObjectConverter implements AttributeConverter<XmlObject> {
     
