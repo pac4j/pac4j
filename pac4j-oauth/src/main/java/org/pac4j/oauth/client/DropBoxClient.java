@@ -102,4 +102,9 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
         }
         return profile;
     }
+    
+    @Override
+    protected boolean hasBeenCancelled(final WebContext context) {
+        return false;
+    }
 }

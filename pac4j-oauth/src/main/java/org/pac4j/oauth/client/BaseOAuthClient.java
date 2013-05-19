@@ -104,6 +104,12 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      */
     @Override
     protected OAuthCredentials retrieveCredentials(final WebContext context) {
+        // check if the authentication has been cancelled
+        if (hasBeenCancelled(context)) {
+            logger.debug("authentication has been cancelled by user");
+            return null;
+        }
+        // check errors
         try {
             boolean errorFound = false;
             final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
@@ -127,6 +133,14 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
             throw new TechnicalException(e);
         }
     }
+    
+    /**
+     * Return if the authentication has been cancelled.
+     * 
+     * @param context the web context.
+     * @return if the authentication has been cancelled.
+     */
+    protected abstract boolean hasBeenCancelled(WebContext context);
     
     /**
      * Get the OAuth credentials from the web context.
@@ -229,17 +243,17 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
     }
     
     /**
-     * Make a request to the OAuth provider to access a protected resource. The profile 
-     * should contain a valid access token (and secret if needed). 
+     * Make a request to the OAuth provider to access a protected resource. The profile should contain a valid access token (and secret if
+     * needed).
      * 
      * @param profile
      * @param dataUrl
      * @return the body of the requested resource
      */
     public String sendRequestForData(final OAuthProfile profile, final String dataUrl) {
-    	final String secret = profile.getAccessSecret();
-    	final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
-    	return sendRequestForData(accessToken, dataUrl);
+        final String secret = profile.getAccessSecret();
+        final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
+        return sendRequestForData(accessToken, dataUrl);
     }
     
     /**

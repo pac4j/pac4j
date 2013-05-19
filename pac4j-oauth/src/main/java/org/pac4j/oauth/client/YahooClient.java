@@ -16,8 +16,8 @@
 package org.pac4j.oauth.client;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
@@ -104,5 +104,10 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
             }
         }
         return profile;
+    }
+    
+    @Override
+    protected boolean hasBeenCancelled(final WebContext context) {
+        return false;
     }
 }

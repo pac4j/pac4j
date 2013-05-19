@@ -20,7 +20,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
@@ -196,19 +195,15 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected OAuthCredentials retrieveCredentials(final WebContext context) {
+    protected boolean hasBeenCancelled(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         final String errorReason = context.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
         // user has denied permissions
         if ("access_denied".equals(error) && "user_denied".equals(errorReason)) {
-            logger.debug("authentication has been cancelled by user");
-            return null;
+            return true;
         } else {
-            return super.retrieveCredentials(context);
+            return false;
         }
     }
     

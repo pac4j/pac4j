@@ -15,6 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
@@ -87,6 +88,11 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     
     @Override
     protected boolean requiresStateParameter() {
+        return false;
+    }
+    
+    @Override
+    protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }
 }

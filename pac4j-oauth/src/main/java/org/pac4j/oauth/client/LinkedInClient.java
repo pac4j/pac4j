@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
 import org.pac4j.oauth.profile.linkedin.LinkedInProfile;
@@ -68,13 +67,12 @@ public class LinkedInClient extends BaseOAuth10Client<LinkedInProfile> {
     }
     
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
+    protected boolean hasBeenCancelled(final WebContext context) {
         final String problem = context.getRequestParameter("oauth_problem");
         if ("user_refused".equals(problem)) {
-            logger.debug("authentication has been cancelled");
-            return null;
+            return true;
         } else {
-            return super.getOAuthCredentials(context);
+            return false;
         }
     }
     

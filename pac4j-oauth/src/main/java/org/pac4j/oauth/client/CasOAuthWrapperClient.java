@@ -17,6 +17,7 @@ package org.pac4j.oauth.client;
 
 import java.util.Iterator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
@@ -105,6 +106,11 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     @Override
     protected boolean requiresStateParameter() {
+        return false;
+    }
+    
+    @Override
+    protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }
 }

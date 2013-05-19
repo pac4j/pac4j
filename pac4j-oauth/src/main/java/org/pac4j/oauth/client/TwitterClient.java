@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
@@ -44,8 +43,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.0.0
  */
 public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
-    
-    private static final String DENIED_PARAMETER = "denied";
     
     private boolean alwaysConfirmAuthorization = false;
     
@@ -83,13 +80,12 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
-        final String denied = context.getRequestParameter(DENIED_PARAMETER);
+    protected boolean hasBeenCancelled(final WebContext context) {
+        final String denied = context.getRequestParameter("denied");
         if (CommonHelper.isNotBlank(denied)) {
-            logger.debug("authentication has been cancelled : {}", denied);
-            return null;
+            return true;
         } else {
-            return super.getOAuthCredentials(context);
+            return false;
         }
     }
     
