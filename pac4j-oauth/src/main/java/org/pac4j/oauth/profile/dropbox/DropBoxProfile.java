@@ -18,8 +18,8 @@ package org.pac4j.oauth.profile.dropbox;
 import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
 
 /**
  * This class is the user profile for DropBox with appropriate getters.<br />
@@ -94,7 +94,7 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxProfile extends OAuthProfile {
+public class DropBoxProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = 6671295443243112368L;
     

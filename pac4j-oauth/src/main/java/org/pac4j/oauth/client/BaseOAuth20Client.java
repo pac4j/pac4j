@@ -19,7 +19,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.StateOAuth20Service;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuth20Client<U extends OAuthProfile> extends BaseOAuthClient<U> {
+public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOAuthClient<U> {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth20Client.class);
     

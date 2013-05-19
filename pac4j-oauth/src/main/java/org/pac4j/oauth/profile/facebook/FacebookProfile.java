@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
  * This class is the user profile for Facebook with appropriate getters.<br />
@@ -208,7 +208,7 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public class FacebookProfile extends OAuthProfile {
+public class FacebookProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 6339376303764855109L;
     

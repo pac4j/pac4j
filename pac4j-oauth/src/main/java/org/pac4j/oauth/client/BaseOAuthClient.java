@@ -23,7 +23,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth10Profile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 import org.scribe.exceptions.OAuthException;
 import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient<OAuthCredentials, U> {
+public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClient<OAuthCredentials, U> {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthClient.class);
     
@@ -250,7 +251,7 @@ public abstract class BaseOAuthClient<U extends OAuthProfile> extends BaseClient
      * @param dataUrl
      * @return the body of the requested resource
      */
-    public String sendRequestForData(final OAuthProfile profile, final String dataUrl) {
+    public String sendRequestForData(final OAuth10Profile profile, final String dataUrl) {
         final String secret = profile.getAccessSecret();
         final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
         return sendRequestForData(accessToken, dataUrl);

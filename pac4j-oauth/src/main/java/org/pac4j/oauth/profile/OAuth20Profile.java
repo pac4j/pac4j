@@ -18,15 +18,15 @@ package org.pac4j.oauth.profile;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * This class is the base OAuth profile, extending from the base {@link org.pac4j.core.profile.CommonProfile}. It deals with the OAuth
+ * This class is the base OAuth 2.0 profile, extending from the base {@link org.pac4j.core.profile.CommonProfile}. It deals with the OAuth
  * access token.
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public abstract class OAuthProfile extends CommonProfile {
+public abstract class OAuth20Profile extends CommonProfile {
     
-    private static final long serialVersionUID = 5936903744523656143L;
+    private static final long serialVersionUID = -2313972372691233648L;
     
     /**
      * Set the access token
@@ -44,23 +44,5 @@ public abstract class OAuthProfile extends CommonProfile {
      */
     public String getAccessToken() {
         return (String) getAttribute(OAuthAttributesDefinition.ACCESS_TOKEN);
-    }
-
-    /**
-     * Set the access token secret
-     * 
-     * @param accessSecret
-     */
-    public void setAccessSecret(final String accessSecret) {
-        addAttribute(OAuthAttributesDefinition.ACCESS_SECRET, accessSecret);
-    }
-    
-    /**
-     * Return the access token secret.
-     * 
-     * @return the access token secret
-     */
-    public String getAccessSecret() {
-        return (String) getAttribute(OAuthAttributesDefinition.ACCESS_SECRET);
     }
 }

@@ -20,8 +20,8 @@ import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Color;
+import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
 
 /**
  * This class is the user profile for Twitter with appropriate getters.<br />
@@ -204,9 +204,9 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterProfile extends OAuthProfile {
+public class TwitterProfile extends OAuth10Profile {
     
-    private static final long serialVersionUID = -3281714508744663356L;
+    private static final long serialVersionUID = -6473348745856820192L;
     
     @Override
     protected AttributesDefinition getAttributesDefinition() {

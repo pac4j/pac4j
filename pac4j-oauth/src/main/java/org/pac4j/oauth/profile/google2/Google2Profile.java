@@ -19,7 +19,7 @@ import java.util.Date;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
  * This class is the user profile for Google (using OAuth protocol version 2) with appropriate getters.<br />
@@ -90,7 +90,7 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2Profile extends OAuthProfile {
+public class Google2Profile extends OAuth20Profile {
     
     private static final long serialVersionUID = -8815552294635373736L;
     

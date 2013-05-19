@@ -18,7 +18,7 @@ package org.pac4j.oauth.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth10Profile;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.utils.OAuthEncoder;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAuthClient<U> {
+public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOAuthClient<U> {
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth10Client.class);
     
@@ -118,8 +118,8 @@ public abstract class BaseOAuth10Client<U extends OAuthProfile> extends BaseOAut
     }
     
     @Override
-    protected void addAccessTokenToProfile(U profile, Token accessToken) {
-    	super.addAccessTokenToProfile(profile, accessToken);
-    	profile.setAccessSecret(accessToken.getSecret());
+    protected void addAccessTokenToProfile(final U profile, final Token accessToken) {
+        super.addAccessTokenToProfile(profile, accessToken);
+        profile.setAccessSecret(accessToken.getSecret());
     }
 }

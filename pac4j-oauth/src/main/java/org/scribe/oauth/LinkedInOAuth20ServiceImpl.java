@@ -17,21 +17,24 @@ package org.scribe.oauth;
 
 import org.scribe.builder.api.StateApi20;
 import org.scribe.model.OAuthConfig;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Token;
 
 /**
- * This class overload getAuthorizationUrl method to allow to add the state parameter to authorization url.
+ * This service is dedicated for LinkedIn service using OAuth protocol version 2.0.
  * 
- * @author Mehdi BEN HAJ ABBES
- * @since 1.2.0
+ * @author Jerome Leleu
+ * @since 1.4.1
  */
-public class StateOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl implements StateOAuth20Service {
+public final class LinkedInOAuth20ServiceImpl extends StateOAuth20ServiceImpl {
     
-    public StateOAuth20ServiceImpl(final StateApi20 api, final OAuthConfig config, final int connectTimeout,
-                                   final int readTimeout, final String proxyHost, final int proxyPort) {
+    public LinkedInOAuth20ServiceImpl(final StateApi20 api, final OAuthConfig config, final int connectTimeout,
+                                      final int readTimeout, final String proxyHost, final int proxyPort) {
         super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort);
     }
     
-    public String getAuthorizationUrl(final String state) {
-        return ((StateApi20) this.api).getAuthorizationUrl(this.config, state);
+    @Override
+    public void signRequest(final Token accessToken, final OAuthRequest request) {
+        request.addQuerystringParameter("oauth2_access_token", accessToken.getToken());
     }
 }

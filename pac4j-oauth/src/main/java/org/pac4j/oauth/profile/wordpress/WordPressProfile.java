@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.wordpress;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
  * This class is the user profile for WordPress with appropriate getters.<br />
@@ -88,7 +88,7 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressProfile extends OAuthProfile {
+public class WordPressProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 6790248892408246089L;
     

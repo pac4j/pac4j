@@ -16,8 +16,8 @@
 package org.pac4j.oauth.profile.linkedin;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
 
 /**
  * This class is the user profile for LinkedIn with appropriate getters.<br />
@@ -84,7 +84,7 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class LinkedInProfile extends OAuthProfile {
+public class LinkedInProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = 5585883516753196756L;
     

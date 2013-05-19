@@ -18,37 +18,35 @@ package org.pac4j.oauth.profile.converter;
 import java.lang.reflect.Constructor;
 
 import org.pac4j.core.profile.converter.AttributeConverter;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.XmlObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
- * This class converts a JSON (String or JsonNode) into an JSON object.
+ * This class converts a XML into a XML object.
  * 
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.4.2
  */
-public final class JsonObjectConverter implements AttributeConverter<JsonObject> {
+public final class XmlObjectConverter implements AttributeConverter<XmlObject> {
     
-    private static final Logger logger = LoggerFactory.getLogger(JsonObjectConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlObjectConverter.class);
     
-    private final Class<? extends JsonObject> clazz;
+    private final Class<? extends XmlObject> clazz;
     
-    public JsonObjectConverter(final Class<? extends JsonObject> clazz) {
+    public XmlObjectConverter(final Class<? extends XmlObject> clazz) {
         this.clazz = clazz;
     }
     
-    public JsonObject convert(final Object attribute) {
-        if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
+    public XmlObject convert(final Object attribute) {
+        if (attribute != null && attribute instanceof String) {
             try {
-                final Constructor<? extends JsonObject> constructor = this.clazz.getDeclaredConstructor();
-                final JsonObject jsonObject = constructor.newInstance();
-                jsonObject.buildFrom(attribute);
-                return jsonObject;
+                final Constructor<? extends XmlObject> constructor = this.clazz.getDeclaredConstructor();
+                final XmlObject xmlObject = constructor.newInstance();
+                xmlObject.buildFrom((String) attribute);
+                return xmlObject;
             } catch (final Exception e) {
-                logger.error("Cannot build JsonObject : {}", e, this.clazz);
+                logger.error("Cannot build XmlObject : {}", e, this.clazz);
             }
         }
         return null;

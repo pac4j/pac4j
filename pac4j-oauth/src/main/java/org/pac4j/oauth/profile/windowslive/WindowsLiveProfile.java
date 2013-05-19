@@ -19,7 +19,7 @@ import java.util.Date;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.OAuthProfile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
  * This class is the user profile for Windows Live with appropriate getters.<br />
@@ -86,7 +86,7 @@ import org.pac4j.oauth.profile.OAuthProfile;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WindowsLiveProfile extends OAuthProfile {
+public class WindowsLiveProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 1648212768999086087L;
     

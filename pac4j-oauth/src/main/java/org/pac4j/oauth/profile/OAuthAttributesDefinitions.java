@@ -21,6 +21,7 @@ import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.github.GitHubAttributesDefinition;
 import org.pac4j.oauth.profile.google2.Google2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterAttributesDefinition;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveAttributesDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
@@ -51,4 +52,6 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition wordPressDefinition = new WordPressAttributesDefinition();
     
     public final static AttributesDefinition dropBoxDefinition = new DropBoxAttributesDefinition();
+    
+    public final static AttributesDefinition linkedin2Definition = new LinkedIn2AttributesDefinition();
 }
