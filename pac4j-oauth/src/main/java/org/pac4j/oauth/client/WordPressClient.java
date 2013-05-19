@@ -84,4 +84,9 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
         }
         return profile;
     }
+    
+    @Override
+    protected boolean requiresStateParameter() {
+        return false;
+    }
 }

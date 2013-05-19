@@ -50,7 +50,7 @@ public class TestGitHubClient extends TestOAuthClient {
     
     @Override
     protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(0);
+        final HtmlForm form = authorizationPage.getForms().get(1);
         final HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput password = form.getInputByName("password");

@@ -78,4 +78,9 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
         }
         return profile;
     }
+    
+    @Override
+    protected boolean requiresStateParameter() {
+        return false;
+    }
 }

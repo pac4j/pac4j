@@ -129,9 +129,8 @@ public class TestFacebookClient extends TestOAuthClient {
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jerome", "Testscribeup", "Jerome Testscribeup",
-                            "jerome.testscribeup", Gender.MALE, Locale.FRANCE,
-                            "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-",
+        assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", "jerome.testscribeup",
+                            Gender.MALE, Locale.FRANCE, "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-",
                             "http://www.facebook.com/jerome.testscribeup", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
@@ -150,7 +149,7 @@ public class TestFacebookClient extends TestOAuthClient {
         assertEquals("High School", education.getType());
         education = educations.get(1);
         assertEquals("Ingénieur", education.getDegree().getName());
-        assertEquals("testscribeup@gmail.com", profile.getEmail());
+        assertNull(profile.getEmail());
         assertEquals("San Francisco, California", (profile.getHometown()).getName());
         assertEquals("female", (profile.getInterestedIn()).get(0));
         assertEquals("New York, New York", (profile.getLocationObject()).getName());
@@ -189,7 +188,7 @@ public class TestFacebookClient extends TestOAuthClient {
         final FacebookInfo music = musics.get(0);
         assertEquals("Hard rock", music.getName());
         assertEquals("112175695466436", music.getId());
-        assertEquals("Musical genre", music.getCategory());
+        assertEquals("Interest", music.getCategory());
         assertEquals(1330030350000L, music.getCreatedTime().getTime());
         final List<FacebookInfo> books = profile.getBooks();
         assertEquals(1, books.size());
@@ -242,6 +241,6 @@ public class TestFacebookClient extends TestOAuthClient {
         assertEquals(4, musicListens.size());
         final FacebookPicture picture = profile.getPicture();
         assertFalse(picture.getIsSilhouette());
-        assertEquals(37, profile.getAttributes().size());
+        assertEquals(36, profile.getAttributes().size());
     }
 }

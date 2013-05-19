@@ -15,7 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -26,16 +25,15 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
-import org.scribe.builder.api.DefaultApi20;
 import org.scribe.builder.api.ExtendedFacebookApi;
+import org.scribe.builder.api.StateApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.ProxyOAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
-import org.scribe.oauth.FacebookOAuth20ServiceImpl;
-import org.scribe.utils.OAuthEncoder;
+import org.scribe.oauth.StateOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -78,11 +76,6 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     protected final static String BASE_URL = "https://graph.facebook.com/me";
     
-    // Used as UserSession attribute and request parameter attribute for the the returned callbackUrl
-    protected static final String FACEBOOK_STATE = "state";
-    
-    protected static final int RANDOM_STRING_LENGTH_10 = 10;
-    
     public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
     
     protected String scope = DEFAULT_SCOPE;
@@ -93,7 +86,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     protected boolean requiresExtendedToken = false;
     
-    protected DefaultApi20 api20;
+    protected StateApi20 api20;
     
     public FacebookClient() {
     }
@@ -118,17 +111,17 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         CommonHelper.assertNotBlank("fields", this.fields);
         this.api20 = new ExtendedFacebookApi();
         if (StringUtils.isNotBlank(this.scope)) {
-            this.service = new FacebookOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
-                                                                                      this.callbackUrl,
-                                                                                      SignatureType.Header, this.scope,
-                                                                                      null), this.connectTimeout,
-                                                          this.readTimeout, this.proxyHost, this.proxyPort);
+            this.service = new StateOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
+                                                                                   this.callbackUrl,
+                                                                                   SignatureType.Header, this.scope,
+                                                                                   null), this.connectTimeout,
+                                                       this.readTimeout, this.proxyHost, this.proxyPort);
         } else {
-            this.service = new FacebookOAuth20ServiceImpl(this.api20,
-                                                          new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                          SignatureType.Header, null, null),
-                                                          this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                          this.proxyPort);
+            this.service = new StateOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
+                                                                                   this.callbackUrl,
+                                                                                   SignatureType.Header, null, null),
+                                                       this.connectTimeout, this.readTimeout, this.proxyHost,
+                                                       this.proxyPort);
         }
     }
     
@@ -207,21 +200,6 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
      * {@inheritDoc}
      */
     @Override
-    public String retrieveRedirectionUrl(final WebContext context) {
-        // Generating a random Facebook state parameter and storing it in the UserSession under 'state' attribute
-        final String randomFacebookState = RandomStringUtils.randomAlphanumeric(RANDOM_STRING_LENGTH_10);
-        logger.debug("Facebook state parameter: [{}]", randomFacebookState);
-        context.setSessionAttribute(FACEBOOK_STATE, randomFacebookState);
-        final String authorizationUrl = ((FacebookOAuth20ServiceImpl) this.service)
-            .getAuthorizationUrl(randomFacebookState);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        return authorizationUrl;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected OAuthCredentials retrieveCredentials(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         final String errorReason = context.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
@@ -232,26 +210,6 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         } else {
             return super.retrieveCredentials(context);
         }
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
-        // getting the Facebook state parameter from the callbackUrl returned by Facebook after authentication
-        final String userSessionFacebookState = (String) context.getSessionAttribute(FACEBOOK_STATE);
-        String stateVerifier = context.getRequestParameter(FACEBOOK_STATE);
-        if (stateVerifier != null) {
-            stateVerifier = OAuthEncoder.decode(stateVerifier);
-            logger.debug("stateVerifier : {}", stateVerifier);
-            if (stateVerifier.equals(userSessionFacebookState)) {
-                return super.getOAuthCredentials(context);
-            }
-        }
-        final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
-        logger.error(message);
-        throw new OAuthCredentialsException(message);
     }
     
     public String getScope() {
@@ -284,5 +242,10 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     public void setRequiresExtendedToken(final boolean requiresExtendedToken) {
         this.requiresExtendedToken = requiresExtendedToken;
+    }
+    
+    @Override
+    protected boolean requiresStateParameter() {
+        return true;
     }
 }

@@ -16,6 +16,7 @@
 package org.pac4j.test.cas.client;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Ignore;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
@@ -39,6 +40,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Ignore
 public final class TestCasOAuthWrapperClient extends TestClient {
     
     private static final String USERNAME = "leleuj";

@@ -65,10 +65,10 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
         super.internalInit();
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
         this.service = new ExtendedOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl),
-                                                   new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                   SignatureType.Header, null, null),
-                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                   this.proxyPort);
+                                                      new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                                      SignatureType.Header, null, null),
+                                                      this.connectTimeout, this.readTimeout, this.proxyHost,
+                                                      this.proxyPort);
     }
     
     @Override
@@ -101,5 +101,10 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     public void setCasOAuthUrl(final String casOAuthUrl) {
         this.casOAuthUrl = casOAuthUrl;
+    }
+    
+    @Override
+    protected boolean requiresStateParameter() {
+        return false;
     }
 }

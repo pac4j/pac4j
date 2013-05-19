@@ -15,24 +15,23 @@
  */
 package org.scribe.oauth;
 
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.builder.api.ExtendedFacebookApi;
+import org.scribe.builder.api.StateApi20;
 import org.scribe.model.OAuthConfig;
 
 /**
- * This class overload getAuthorizationUrl method to allow to add the Facebook state parameter to authorization url.
+ * This class overload getAuthorizationUrl method to allow to add the state parameter to authorization url.
  * 
  * @author Mehdi BEN HAJ ABBES
  * @since 1.2.0
  */
-public final class FacebookOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl {
+public final class StateOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl implements StateOAuth20Service {
     
-    public FacebookOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
-                                      final int readTimeout, final String proxyHost, final int proxyPort) {
+    public StateOAuth20ServiceImpl(final StateApi20 api, final OAuthConfig config, final int connectTimeout,
+                                   final int readTimeout, final String proxyHost, final int proxyPort) {
         super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort);
     }
     
-    public String getAuthorizationUrl(final String facebookState) {
-        return ((ExtendedFacebookApi) this.api).getAuthorizationUrl(this.config, facebookState);
+    public String getAuthorizationUrl(final String state) {
+        return ((StateApi20) this.api).getAuthorizationUrl(this.config, state);
     }
 }

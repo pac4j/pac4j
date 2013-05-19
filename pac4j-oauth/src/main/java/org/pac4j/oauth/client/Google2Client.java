@@ -115,4 +115,9 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     public void setScope(final Google2Scope scope) {
         this.scope = scope;
     }
+    
+    @Override
+    protected boolean requiresStateParameter() {
+        return false;
+    }
 }

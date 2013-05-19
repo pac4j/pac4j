@@ -78,4 +78,9 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
         }
         return profile;
     }
+    
+    @Override
+    protected boolean requiresStateParameter() {
+        return false;
+    }
 }
