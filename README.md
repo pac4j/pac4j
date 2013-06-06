@@ -1,24 +1,30 @@
-<h2>What is pac4j ?</h2>
+## What is pac4j ?
 
-<b>pac4j</b> is a Profile & Authentication Client for Java (it's a global rebuilding of the <b>scribe-up</b> library). It targets all the protocols supporting the following mechanism :
-<ol>
-<li>From the client application, redirect the user to the "provider" for authentication (HTTP 302)</li>
-<li>After successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
-<li>With these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").</li>
-</ol>
+**pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the protocols supporting the following mechanism :
 
-It has a <b>very simple and unified API</b> to support these 4 protocols on client side : 
-<ol>
-<li>OAuth (1.0 & 2.0)</li>
-<li>CAS (1.0, 2.0, SAML, logout & proxy)</li>
-<li>HTTP (form & basic auth authentications)</li>
-<li>OpenID.</li>
-</ol>
+1. From the client application, redirect the user to the "provider" for authentication (HTTP 302)
+2. After successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials
+3. With these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").
+
+It has a **very simple and unified API** to support these 4 protocols on client side : 
+
+1. OAuth (1.0 & 2.0)
+2. CAS (1.0, 2.0, SAML, logout & proxy)
+3. HTTP (form & basic auth authentications)
+4. OpenID.
+
+There are 5 libraries implementing **pac4j** for the following environments :
+
+1. the CAS server (using the *cas-server-support-pac4j* library)
+2. the Play 2.x framework (using the *play-pac4j_java*, *play-pac4j_scala2.9* and *play-pac4j_scala2.10* libraries)
+3. any basic J2E environment (using the *j2e-pac4j* library)
+4. the Apache Shiro library (using the *buji-pac4j* library)
+5. the Spring Security library (using the *spring-security-pac4j* library).
 
 It's available under the Apache 2 license.
 
 
-<h2>Technical description</h2>
+## Technical description
 
 This Maven project is composed of 6 modules :
 <ol>
@@ -230,26 +236,29 @@ All methods of the clients may throw an unchecked <i>org.pac4j.core.exception.Te
 The <i>getCredentials(WebContext)</i> method can throw a checked <i>org.pac4j.core.expception.RequiresHttpAction</i>, exception to require some additionnal HTTP action (redirection, basic auth...)
 
 
-<h2>Libraries built with pac4j</h2>
+## Libraries built with pac4j
 
-Even if you can use <b>pac4j</b> on its own, this library is used to be integrated with :
-<ol>
-<li>the <a href="https://wiki.jasig.org/pages/viewpage.action?pageId=57577635">cas-server-support-pac4j</a> module to add multi-protocols client support to the <a href="http://www.jasig.org/cas">CAS server</a></li>
-<li>the <a href="https://github.com/leleuj/play-pac4j">play-pac4j</a> library to add multi-protocols client support to the <a href="http://www.playframework.org/">Play 2.x framework</a> in Java and Scala.</li>
-<li>the <a href="https://github.com/bujiio/buji-oauth">buji-oauth</a> library to add OAuth client support to the <a href="http://shiro.apache.org">Apache Shiro project</a></li>
-<li>the <a href="https://github.com/leleuj/spring-security-oauth-client">spring-security-oauth-client</a> library to add OAuth client support to <a href="http://static.springsource.org/spring-security/site/">Spring Security</a>.</li>
-</ol>
+Even if you can use **pac4j** on its own, this library is used to be integrated with :
+
+1. the [cas-server-support-pac4j](https://wiki.jasig.org/pages/viewpage.action?pageId=57577635) module to add multi-protocols client support to the [CAS server](http://www.jasig.org/cas)
+2. the [play-pac4j](https://github.com/leleuj/play-pac4j) library to add multi-protocols client support to the [Play 2.x framework](http://www.playframework.org/) in Java and Scala
+2. the [j2e-pac4j](https://github.com/leleuj/j2e-pac4j) library to add multi-protocols client support to the [J2E environment](http://docs.oracle.com/javaee/)
+3. the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library to add multi-protocols client support to the [Apache Shiro project](http://shiro.apache.org)
+4. the [spring-security-oauth-client](https://github.com/leleuj/spring-security-oauth-client) library to add OAuth client support to [Spring Security](http://static.springsource.org/spring-security/site/)
+
 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
 <tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.2</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
 <tr><td>play-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>buji-oauth 1.1.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/buji-oauth-demo">buji-oauth-demo</a></td></tr>
+<tr><td>j2e-pac4j 1.0.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-java-demo">j2e-java-demo</a></td></tr>
+<tr><td>buji-pac4j 1.2.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
 <tr><td>spring-security-oauth-client 1.1.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
 </table>
 
-<h2>Versions</h2>
+
+## Versions
 
 The current version : <i>1.4.1-SNAPSHOT</i> is under development, it's available in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>.
 
