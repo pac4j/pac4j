@@ -16,7 +16,6 @@
 package org.pac4j.test.cas.client;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
@@ -40,7 +39,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-@Ignore
 public final class TestCasOAuthWrapperClient extends TestClient {
     
     private static final String USERNAME = "leleuj";
@@ -50,8 +48,10 @@ public final class TestCasOAuthWrapperClient extends TestClient {
     public void testClone() {
         final CasOAuthWrapperClient oldClient = new CasOAuthWrapperClient();
         oldClient.setCasOAuthUrl(CAS_SERVER_URL);
+        oldClient.setSpringSecurityCompliant(true);
         final CasOAuthWrapperClient client = (CasOAuthWrapperClient) internalTestClone(oldClient);
         assertEquals(oldClient.getCasOAuthUrl(), client.getCasOAuthUrl());
+        assertEquals(oldClient.isSpringSecurityCompliant(), client.isSpringSecurityCompliant());
     }
     
     public void testMissingCasOAuthUrl() {

@@ -45,6 +45,8 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     private String casOAuthUrl;
     
+    private boolean springSecurityCompliant = false;
+    
     public CasOAuthWrapperClient() {
     }
     
@@ -58,6 +60,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     protected CasOAuthWrapperClient newClient() {
         final CasOAuthWrapperClient newClient = new CasOAuthWrapperClient();
         newClient.setCasOAuthUrl(this.casOAuthUrl);
+        newClient.setSpringSecurityCompliant(this.springSecurityCompliant);
         return newClient;
     }
     
@@ -65,7 +68,8 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        this.service = new ExtendedOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl),
+        this.service = new ExtendedOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl,
+                                                                               this.springSecurityCompliant),
                                                       new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                       SignatureType.Header, null, null),
                                                       this.connectTimeout, this.readTimeout, this.proxyHost,
@@ -102,6 +106,14 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     public void setCasOAuthUrl(final String casOAuthUrl) {
         this.casOAuthUrl = casOAuthUrl;
+    }
+    
+    public boolean isSpringSecurityCompliant() {
+        return this.springSecurityCompliant;
+    }
+    
+    public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
+        this.springSecurityCompliant = springSecurityCompliant;
     }
     
     @Override

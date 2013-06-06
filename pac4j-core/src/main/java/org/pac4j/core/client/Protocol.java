@@ -25,5 +25,7 @@ public enum Protocol {
     OAUTH,
     CAS,
     OPENID,
-    HTTP
+    HTTP,
+    SAML,
+    JANRAIN
 }

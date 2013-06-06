@@ -101,10 +101,9 @@ public class TestTwitterClient extends TestOAuthClient {
         assertFalse(profile.getNotifications());
         assertTrue(profile.getProfileBackgroundColor() instanceof Color);
         assertEquals("http://a0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrl());
-        assertEquals("https://twimg0-a.akamaihd.net/images/themes/theme1/bg.png",
-                     profile.getProfileBackgroundImageUrlHttps());
+        assertEquals("https://si0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrlHttps());
         assertFalse(profile.getProfileBackgroundTile());
-        assertEquals("https://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_5_normal.png",
+        assertEquals("https://si0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                      profile.getProfileImageUrlHttps());
         assertTrue(profile.getProfileLinkColor() instanceof Color);
         assertTrue(profile.getProfileSidebarBorderColor() instanceof Color);

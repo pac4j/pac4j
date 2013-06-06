@@ -64,7 +64,7 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
             client.getRedirectionUrl(MockWebContext.create(), true);
             fail("should fail because of missing OpenID user");
         } catch (final TechnicalException e) {
-            assertEquals("'openIDUser' cannot be blank", e.getMessage());
+            assertEquals("openIdUser cannot be blank", e.getMessage());
         }
     }
     

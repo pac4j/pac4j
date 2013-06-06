@@ -15,11 +15,12 @@
  */
 package org.scribe.builder.api;
 
+import org.scribe.extractors.AccessTokenExtractor;
+import org.scribe.extractors.JsonTokenExtractor;
+import org.scribe.extractors.TokenExtractor20Impl;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.Verb;
 import org.scribe.utils.OAuthEncoder;
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.JsonTokenExtractor;
 
 /**
  * This class represents the OAuth API implementation for the CAS OAuth wrapper.
@@ -31,15 +32,22 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     
     private final String casServerUrl;
     
-    public CasOAuthWrapperApi20(final String casServerUrl) {
+    private final boolean springSecurityCompliant;
+    
+    public CasOAuthWrapperApi20(final String casServerUrl, final boolean springSecurityCompliant) {
         this.casServerUrl = casServerUrl;
+        this.springSecurityCompliant = springSecurityCompliant;
     }
     
     @Override
     public AccessTokenExtractor getAccessTokenExtractor() {
-        return new JsonTokenExtractor();
+        if (this.springSecurityCompliant) {
+            return new JsonTokenExtractor();
+        } else {
+            return new TokenExtractor20Impl();
+        }
     }
-
+    
     @Override
     public String getAccessTokenEndpoint() {
         return this.casServerUrl + "/accessToken?";
@@ -47,14 +55,16 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
-        return String.format(this.casServerUrl + "/authorize?" + 
-                "response_type=code&client_id=%s&redirect_uri=%s",
-                config.getApiKey(),
-                OAuthEncoder.encode(config.getCallback()));
+        return String.format(this.casServerUrl + "/authorize?" + "response_type=code&client_id=%s&redirect_uri=%s",
+                             config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
     }
-
+    
     @Override
     public Verb getAccessTokenVerb() {
-        return Verb.PUT;
+        if (this.springSecurityCompliant) {
+            return Verb.PUT;
+        } else {
+            return Verb.POST;
+        }
     }
 }

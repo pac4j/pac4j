@@ -15,25 +15,31 @@
  */
 package org.pac4j.oauth.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.pac4j.oauth.profile.JsonHelper;
+import junit.framework.TestCase;
 
 /**
- * Some XML helper mirroring the {@link JsonHelper}.
+ * Test {@link XmlHelper}.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public final class XmlHelper {
+public final class TestXmlHelper extends TestCase {
     
-    /**
-     * Get a sub-text between tags from a text.
-     * 
-     * @param text the text.
-     * @param tag the tag.
-     * @return a sub-text between tags from a text.
-     */
-    public static String get(final String text, final String tag) {
-        return StringUtils.substringBetween(text, "<" + tag + ">", "</" + tag + ">");
+    private static final String TEXT = "text";
+    
+    private static final String TAG1 = "tag1";
+    
+    private static final String OPEN_TAG1 = "<" + TAG1 + ">";
+    
+    private static final String CLOSE_TAG1 = "</" + TAG1 + ">";
+    
+    private static final String CLOSE_TAG2 = "</tag2>";
+    
+    public void testGoodText() {
+        assertEquals(TEXT, XmlHelper.get(OPEN_TAG1 + TEXT + CLOSE_TAG1, TAG1));
+    }
+    
+    public void testBadText() {
+        assertNull(XmlHelper.get(OPEN_TAG1 + TEXT + CLOSE_TAG2, TAG1));
     }
 }

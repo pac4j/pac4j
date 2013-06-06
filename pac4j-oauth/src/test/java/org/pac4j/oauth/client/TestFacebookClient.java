@@ -136,7 +136,7 @@ public class TestFacebookClient extends TestOAuthClient {
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertTrue(StringUtils.isNotBlank(profile.getThirdPartyId()));
-        assertEquals(1, profile.getTimezone().intValue());
+        assertEquals(2, profile.getTimezone().intValue());
         assertEquals(TestsHelper.getFormattedDate(1343375150000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdateTime().toString());
         assertNull(profile.getVerified());
@@ -188,7 +188,7 @@ public class TestFacebookClient extends TestOAuthClient {
         final FacebookInfo music = musics.get(0);
         assertEquals("Hard rock", music.getName());
         assertEquals("112175695466436", music.getId());
-        assertEquals("Interest", music.getCategory());
+        assertEquals("Musical genre", music.getCategory());
         assertEquals(1330030350000L, music.getCreatedTime().getTime());
         final List<FacebookInfo> books = profile.getBooks();
         assertEquals(1, books.size());
@@ -238,7 +238,7 @@ public class TestFacebookClient extends TestOAuthClient {
         assertTrue(group.getAdministrator());
         assertEquals(1, group.getBookmarkOrder().intValue());
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
-        assertEquals(4, musicListens.size());
+        assertEquals(3, musicListens.size());
         final FacebookPicture picture = profile.getPicture();
         assertFalse(picture.getIsSilhouette());
         assertEquals(36, profile.getAttributes().size());

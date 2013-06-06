@@ -119,7 +119,7 @@ public class UserProfile implements Serializable {
     }
     
     /**
-     * Get the user identifier.
+     * Get the user identifier. This identifier is unique for this provider but not necessarily through all providers.
      * 
      * @return the user identifier
      */
@@ -128,7 +128,7 @@ public class UserProfile implements Serializable {
     }
     
     /**
-     * Get the user identifier with a prefix which is the profile type.
+     * Get the user identifier with a prefix which is the profile type. This identifier is unique through all providers.
      * 
      * @return the typed user identifier
      */
