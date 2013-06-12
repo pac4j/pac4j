@@ -76,7 +76,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     
     @Override
     protected String getProfileUrl() {
-        return "http://api.twitter.com/1/account/verify_credentials.json";
+        return "http://api.twitter.com/1.1/account/verify_credentials.json";
     }
     
     @Override
