@@ -24,71 +24,76 @@ There are 5 libraries implementing **pac4j** for the following environments :
 It's available under the Apache 2 license.
 
 
+## The "big picture"
+
+<img src="http://www.pac4j.org/img/pac4j.png" />
+
+
 ## Technical description
 
 This Maven project is composed of 6 modules :
 <ol>
-<li><b>pac4j-core</b> : this is the core module of the project with the core classes/interfaces :
+<li>**pac4j-core** : this is the core module of the project with the core classes/interfaces :
 <ul>
-<li>the <i>Client</i> interface is the <b>main API of the project</b> as it defines the mechanism that all clients must follow : getRedirectionUrl(WebContext), getCredentials(WebContext) and getUserProfile(Credentials)</li>
-<li>the <i>Credentials</i> class is the base class for all credentials</li>
-<li>the <i>UserProfile</i> class is the base class for all user profiles (it is associated with attributes definition and converters)</li>
-<li>the <i>CommonProfile</i> class inherits from the <i>UserProfile</i> class and implements all the common getters that profiles must have (getFirstName(), getEmail()...)</li>
-<li>the <i>WebContext</i> interface represents a web context which can be implemented in a J2E or another environment.</li>
+<li>the *Client* interface is the **main API of the project** as it defines the mechanism that all clients must follow : getRedirectionUrl(WebContext), getCredentials(WebContext) and getUserProfile(Credentials)</li>
+<li>the *Credentials* class is the base class for all credentials</li>
+<li>the *UserProfile* class is the base class for all user profiles (it is associated with attributes definition and converters)</li>
+<li>the *CommonProfile* class inherits from the *UserProfile* class and implements all the common getters that profiles must have (getFirstName(), getEmail()...)</li>
+<li>the *WebContext* interface represents a web context which can be implemented in a J2E or another environment.</li>
 </ul>
 <br />
 </li>
-<li><b>pac4j-oauth</b> : this module is dedicated to OAuth client support, it's the successor of the <b>scribe-up</b> library :
+<li>**pac4j-oauth** : this module is dedicated to OAuth client support, it's the successor of the *scribe-up* library :
 <ul>
-<li>the <i>FacebookClient</i>, <i>TwitterClient</i>... classes are the clients for all the providers : Facebook, Twitter...</li>
-<li>the <i>OAuthCredentials</i> class is the credentials for OAuth support</li>
-<li>the <i>FacebookProfile</i>, <i>TwitterProfile</i>... classes are the associated profiles, returned by the clients.</li>
+<li>the *FacebookClient*, *TwitterClient*... classes are the clients for all the providers : Facebook, Twitter...</li>
+<li>the *OAuthCredentials* class is the credentials for OAuth support</li>
+<li>the *FacebookProfile*, *TwitterProfile*... classes are the associated profiles, returned by the clients.</li>
 </ul>
 <br />
-This module is based on the <b>pac4j-core</b> module, the <a href="https://github.com/fernandezpablo85/scribe-java">scribe-java</a> library for OAuth protocol support, the <a href="https://github.com/FasterXML/jackson-core">Jackson</a> library for JSON parsing and the <a href="http://commons.apache.org/lang/">commons-lang3</a> library.
+This module is based on the **pac4j-core** module, the [scribe-java](https://github.com/fernandezpablo85/scribe-java) library for OAuth protocol support, the [Jackson](https://github.com/FasterXML/jackson-core) library for JSON parsing and the [commons-lang3](http://commons.apache.org/lang/) library.
 <br />
 <br />
 </li>
-<li><b>pac4j-cas</b> : this module is dedicated to CAS client support :
+<li>**pac4j-cas** : this module is dedicated to CAS client support :
 <ul>
-<li>the <i>CasClient</i> class is the client for CAS server (the <i>CasProxyReceptor</i> is dedicated to CAS proxy support)</li>
-<li>the <i>CasCredentials</i> class is the credentials for CAS support</li>
-<li>the <i>CasProfile</i> class is the user profile returned by the <i>CasClient</i>.</li>
+<li>the *CasClient* class is the client for CAS server (the *CasProxyReceptor* is dedicated to CAS proxy support)</li>
+<li>the *CasCredentials* class is the credentials for CAS support</li>
+<li>the *CasProfile* class is the user profile returned by the *CasClient*.</li>
 </ul>
 <br />
-This module is based on the <b>pac4j-core</b> module and the <a href="https://github.com/Jasig/java-cas-client">Jasig CAS client</a>.
+This module is based on the **pac4j-core** module and the [Jasig CAS client](https://github.com/Jasig/java-cas-client).
 <br />
 <br />
 </li>
-<li><b>pac4j-http</b> : this module is dedicated to HTTP protocol support :
+<li>**pac4j-http** : this module is dedicated to HTTP protocol support :
 <ul>
-<li>the <i>FormClient</i> & <i>BasicAuthClient</i> classes are the client for form and basic auth authentications</li>
-<li>the <i>UsernamePasswordCredentials</i> class is the username/password credentials in HTTP support</li>
-<li>the <i>HttpProfile</i> class is the user profile returned by the <i>FormClient</i> and <i>BasicAuthClient</i>.</li>
+<li>the *FormClient* and *BasicAuthClient* classes are the client for form and basic auth authentications</li>
+<li>the *UsernamePasswordCredentials* class is the username/password credentials in HTTP support</li>
+<li>the *HttpProfile* class is the user profile returned by the *FormClient* and *BasicAuthClient*.</li>
 </ul>
 <br />
-This module is based on the <b>pac4j-core</b> module and the <a href="http://commons.apache.org/codec/">commons-codec</a> library.
+This module is based on the **pac4j-core** module and the [commons-codec](http://commons.apache.org/codec/) library.
 <br />
 <br />
 </li>
-<li><b>pac4j-openid</b> : this module is dedicated to OpenID protocol support :
+<li>**pac4j-openid** : this module is dedicated to OpenID protocol support :
 <ul>
-<li>the <i>MyOpenIdClient</i> class is dedicated to MyOpenId</li>
-<li>the <i>OpenIdCredentials</i> class is the credentials for OpenID support</li>
-<li>the <i>MyOpenIdProfile</i> class is the user profile for MyOpenId.</li>
+<li>the *MyOpenIdClient* class is dedicated to MyOpenId</li>
+<li>the *OpenIdCredentials* class is the credentials for OpenID support</li>
+<li>the *MyOpenIdProfile* class is the user profile for MyOpenId.</li>
 </ul>
 <br />
-This module is based on the <b>pac4j-core</b> module and the <a href="http://code.google.com/p/openid4java/">openid4java</a> library.
+This module is based on the **pac4j-core** module and the [openid4java](http://code.google.com/p/openid4java/) library.
 <br />
 <br />
 </li>
-<li><b>pac4j-test-cas</b> : this module is made to test CAS support in pac4j.</li>
+<li>**pac4j-test-cas** : this module is made to test CAS support in pac4j.</li>
 </ol>
 
-Learn more by browsing the <a href="http://www.pac4j.org/apidocs/pac4j/index.html">Javadoc</a>.
+Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html).
 
 
-<h2>Providers supported</h2>
+## Providers supported
 
 <table>
 <tr><th>Provider</th><th>Protocol</th><th>Maven dependency</th><th>Client class</th><th>Profile class</th></tr>
@@ -244,7 +249,7 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 2. the [play-pac4j](https://github.com/leleuj/play-pac4j) library to add multi-protocols client support to the [Play 2.x framework](http://www.playframework.org/) in Java and Scala
 2. the [j2e-pac4j](https://github.com/leleuj/j2e-pac4j) library to add multi-protocols client support to the [J2E environment](http://docs.oracle.com/javaee/)
 3. the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library to add multi-protocols client support to the [Apache Shiro project](http://shiro.apache.org)
-4. the [spring-security-oauth-client](https://github.com/leleuj/spring-security-oauth-client) library to add OAuth client support to [Spring Security](http://static.springsource.org/spring-security/site/)
+4. the [spring-security-pac4j](https://github.com/leleuj/spring-security-pac4j) library to add multi-protocols client support to [Spring Security](http://static.springsource.org/spring-security/site/)
 
 
 <table>
@@ -252,9 +257,9 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 <tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.2</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
 <tr><td>play-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>j2e-pac4j 1.0.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-java-demo">j2e-java-demo</a></td></tr>
+<tr><td>j2e-pac4j 1.0.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
 <tr><td>buji-pac4j 1.2.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-oauth-client 1.1.0</td><td>OAuth</td><td>scribe-up 1.3.1</td><td><a href="https://github.com/leleuj/spring-security-oauth-client-demo">spring-security-oauth-client-demo</a></td></tr>
+<tr><td>spring-security-pac4j 1.2.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
 </table>
 
 
