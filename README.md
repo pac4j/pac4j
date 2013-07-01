@@ -238,7 +238,7 @@ Client client = clients.findClient(new J2EContext(request, response)));</code></
 <h3>Error handling</h3>
 
 All methods of the clients may throw an unchecked <i>org.pac4j.core.exception.TechnicalException</i>, which could be trapped by an appropriate try/catch.
-The <i>getCredentials(WebContext)</i> method can throw a checked <i>org.pac4j.core.expception.RequiresHttpAction</i>, exception to require some additionnal HTTP action (redirection, basic auth...)
+The <i>getCredentials(WebContext)</i> method can throw a checked <i>org.pac4j.core.exception.RequiresHttpAction</i>, exception to require some additionnal HTTP action (redirection, basic auth...)
 
 
 ## Libraries built with pac4j
