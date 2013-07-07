@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class converts a XML into a XML object.
+ * This class converts a XML text into a XML object.
  * 
  * @author Jerome Leleu
  * @since 1.4.1

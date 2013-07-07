@@ -13,27 +13,30 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.util;
-
-import org.apache.commons.lang3.StringUtils;
-import org.pac4j.oauth.profile.JsonHelper;
+package org.pac4j.oauth.profile;
 
 /**
- * Some XML helper mirroring the {@link JsonHelper}.
+ * This class represents a XML text found at a position;
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public final class XmlHelper {
+public class XmlMatch {
     
-    /**
-     * Get a sub-text between tags from a text.
-     * 
-     * @param text the text.
-     * @param tag the tag.
-     * @return a sub-text between tags from a text.
-     */
-    public static String get(final String text, final String tag) {
-        return StringUtils.substringBetween(text, "<" + tag + ">", "</" + tag + ">");
+    private final String text;
+    
+    private final int pos;
+    
+    public XmlMatch(final String text, final int pos) {
+        this.text = text;
+        this.pos = pos;
+    }
+    
+    public String getText() {
+        return this.text;
+    }
+    
+    public int getPos() {
+        return this.pos;
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.pac4j.oauth.profile.linkedin2;
 
+import org.pac4j.oauth.profile.converter.XmlListConverter;
 import org.pac4j.oauth.profile.converter.XmlObjectConverter;
 
 /**
@@ -25,4 +26,10 @@ import org.pac4j.oauth.profile.converter.XmlObjectConverter;
  */
 public final class LinkedIn2Converters {
     public final static XmlObjectConverter locationConverter = new XmlObjectConverter(LinkedIn2Location.class);
+    
+    public final static XmlListConverter positionsConverter = new XmlListConverter(LinkedIn2Position.class);
+    
+    public final static XmlObjectConverter dateConverter = new XmlObjectConverter(LinkedIn2Date.class);
+    
+    public final static XmlObjectConverter companyConverter = new XmlObjectConverter(LinkedIn2Company.class);
 }

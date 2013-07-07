@@ -232,13 +232,13 @@ public class TestFacebookClient extends TestOAuthClient {
         assertNotNull(event.getEndTime());
         final List<FacebookGroup> groups = profile.getGroups();
         final FacebookGroup group = groups.get(0);
-        assertEquals(1, group.getVersion().intValue());
+        assertNull(group.getVersion());
         assertEquals("Dev ScribeUP", group.getName());
         assertEquals("167694120024728", group.getId());
         assertTrue(group.getAdministrator());
         assertEquals(1, group.getBookmarkOrder().intValue());
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
-        assertEquals(3, musicListens.size());
+        assertEquals(4, musicListens.size());
         final FacebookPicture picture = profile.getPicture();
         assertFalse(picture.getIsSilhouette());
         assertEquals(36, profile.getAttributes().size());

@@ -13,36 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.profile.linkedin2;
+package org.pac4j.oauth.profile.converter;
 
-import org.pac4j.oauth.profile.XmlHelper;
 import org.pac4j.oauth.profile.XmlObject;
 
 /**
- * This class represents a LinkedIn location.
+ * This class is a mock for XmlObject.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Location extends XmlObject {
+public final class MockXmlObject extends XmlObject {
     
-    private static final long serialVersionUID = -7548166141136051112L;
+    private static final long serialVersionUID = 8482186401170683300L;
     
-    private String name;
-    
-    private String code;
+    private String value;
     
     @Override
     protected void buildFromXml(final String xml) {
-        this.name = XmlHelper.get(xml, "name");
-        this.code = XmlHelper.get(xml, "code");
+        this.value = xml;
     }
     
-    public String getName() {
-        return this.name;
-    }
-    
-    public String getCode() {
-        return this.code;
+    public String getValue() {
+        return this.value;
     }
 }

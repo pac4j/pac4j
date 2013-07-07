@@ -15,14 +15,19 @@
  */
 package org.pac4j.oauth.client;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
+import org.pac4j.oauth.profile.XmlList;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2Company;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2Date;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Location;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2Position;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -91,6 +96,10 @@ public class TestLinkedIn2Client extends TestOAuthClient {
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(LinkedIn2Profile.class);
         kryo.register(LinkedIn2Location.class);
+        kryo.register(XmlList.class);
+        kryo.register(LinkedIn2Position.class);
+        kryo.register(LinkedIn2Date.class);
+        kryo.register(LinkedIn2Company.class);
     }
     
     @Override
@@ -102,11 +111,42 @@ public class TestLinkedIn2Client extends TestOAuthClient {
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), LinkedIn2Profile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile, null, "test", "scribeUp", null, null, Gender.UNSPECIFIED, null, null, null,
-                            "Paris Area, France");
-        LinkedIn2Location location = (LinkedIn2Location) profile.getAttribute(LinkedIn2AttributesDefinition.LOCATION);
+        assertCommonProfile(userProfile,
+                            "testscribeup@gmail.com",
+                            "test",
+                            "scribeUp",
+                            "test scribeUp",
+                            null,
+                            Gender.UNSPECIFIED,
+                            null,
+                            "http://m.c.lnkd.licdn.com/mpr/mprx/0_XGm9Ldp1WfMsB74Zk32WLwptW7DZvoWZQisWLwSfnuJeEmY4eXYVwIJ3bFSb9DeNL3uHo21cF5lC",
+                            "http://www.linkedin.com/pub/test-scribeup/48/aa/16b", "Paris Area, France");
+        LinkedIn2Location location = profile.getCompleteLocation();
         assertEquals("Paris Area, France", location.getName());
         assertEquals("fr", location.getCode());
-        assertEquals(4, profile.getAttributes().size());
+        assertNull(profile.getMaidenName());
+        assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());
+        assertEquals("Information Technology and Services", profile.getIndustry());
+        assertEquals(1, profile.getNumConnections().intValue());
+        assertEquals("This is a summary...", profile.getSummary());
+        assertNull(profile.getSpecialties());
+        List<LinkedIn2Position> positions = profile.getPositions();
+        assertEquals(2, positions.size());
+        LinkedIn2Position position = positions.get(0);
+        assertEquals("417494299", position.getId());
+        assertEquals("Developer", position.getTitle());
+        assertEquals("Desc", position.getSummary());
+        LinkedIn2Date startDate = position.getStartDate();
+        assertEquals(2012, startDate.getYear().intValue());
+        assertEquals(3, startDate.getMonth().intValue());
+        assertTrue(position.getIsCurrent().booleanValue());
+        assertNull(position.getEndDate());
+        LinkedIn2Company company = position.getCompany();
+        assertEquals("PAC4J", company.getName());
+        assertEquals("Information Technology and Services", company.getIndustry());
+        assertEquals("http://www.linkedin.com/profile/view?id=167439971&amp;authType=name&amp;authToken=_IWF&amp;trk=api*a167383*s175634*",
+                     profile.getSiteStandardProfileRequest());
+        assertEquals("167439971", profile.getOAuth10Id());
+        assertEquals(14, profile.getAttributes().size());
     }
 }

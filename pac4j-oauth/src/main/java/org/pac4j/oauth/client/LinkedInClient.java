@@ -26,6 +26,8 @@ import org.scribe.model.SignatureType;
 import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 /**
+ * Deprecated ! Upgrade to {@link LinkedIn2Client} !
+ * <p />
  * This class is the OAuth client to authenticate user in LinkedIn.
  * <p />
  * It returns a {@link org.pac4j.oauth.profile.linkedin.LinkedInProfile}.
@@ -36,6 +38,7 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
  * @author Jerome Leleu
  * @since 1.0.0
  */
+@Deprecated
 public class LinkedInClient extends BaseOAuth10Client<LinkedInProfile> {
     
     public LinkedInClient() {

@@ -79,46 +79,49 @@ public abstract class TestClient extends TestCase implements TestsConstants {
     
     public void testAuthenticationAndUserProfileRetrieval() throws Exception {
         ProfileHelper.setKeepRawData(true);
-        final Client client = getClient();
-        
-        final MockWebContext context = MockWebContext.create();
-        final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
-        
-        final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
-        
-        final String callbackUrl = getCallbackUrl(redirectionPage);
-        
-        final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
-        
-        verifyProfile(profile);
-        
-        // Java serialization
-        byte[] bytes = TestsHelper.serialize(profile);
-        final UserProfile profile2 = (UserProfile) TestsHelper.unserialize(bytes);
-        verifyProfile(profile2);
-        
-        // like CAS serialization
-        final Map<String, Object> attributes = profile2.getAttributes();
-        final Map<String, Object> newAttributes = new HashMap<String, Object>();
-        for (final String key : attributes.keySet()) {
-            newAttributes.put(key, attributes.get(key).toString());
+        try {
+            final Client client = getClient();
+            
+            final MockWebContext context = MockWebContext.create();
+            final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
+            
+            final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
+            
+            final String callbackUrl = getCallbackUrl(redirectionPage);
+            
+            final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
+            
+            verifyProfile(profile);
+            
+            // Java serialization
+            byte[] bytes = TestsHelper.serialize(profile);
+            final UserProfile profile2 = (UserProfile) TestsHelper.unserialize(bytes);
+            verifyProfile(profile2);
+            
+            // like CAS serialization
+            final Map<String, Object> attributes = profile2.getAttributes();
+            final Map<String, Object> newAttributes = new HashMap<String, Object>();
+            for (final String key : attributes.keySet()) {
+                newAttributes.put(key, attributes.get(key).toString());
+            }
+            final UserProfile profile3 = ProfileHelper.buildProfile(profile2.getTypedId(), newAttributes);
+            verifyProfile(profile3);
+            
+            // Kryo serialization
+            final Kryo kryo = new Kryo();
+            kryo.register(HashMap.class);
+            kryo.register(Locale.class, new LocaleSerializer());
+            kryo.register(Date.class);
+            kryo.register(FormattedDate.class, new FormattedDateSerializer());
+            kryo.register(Gender.class);
+            kryo.register(Color.class, new ColorSerializer());
+            registerForKryo(kryo);
+            bytes = TestsHelper.serializeKryo(kryo, profile);
+            final UserProfile profile4 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
+            verifyProfile(profile4);
+        } finally {
+            ProfileHelper.setKeepRawData(false);
         }
-        final UserProfile profile3 = ProfileHelper.buildProfile(profile2.getTypedId(), newAttributes);
-        verifyProfile(profile3);
-        
-        // Kryo serialization
-        final Kryo kryo = new Kryo();
-        kryo.register(HashMap.class);
-        kryo.register(Locale.class, new LocaleSerializer());
-        kryo.register(Date.class);
-        kryo.register(FormattedDate.class, new FormattedDateSerializer());
-        kryo.register(Gender.class);
-        kryo.register(Color.class, new ColorSerializer());
-        registerForKryo(kryo);
-        bytes = TestsHelper.serializeKryo(kryo, profile);
-        final UserProfile profile4 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
-        verifyProfile(profile4);
-        ProfileHelper.setKeepRawData(false);
     }
     
     protected void registerForKryo(final Kryo kryo) {

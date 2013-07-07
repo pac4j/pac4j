@@ -83,7 +83,7 @@ public class TestTwitterClient extends TestOAuthClient {
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,
                             Locale.FRENCH,
                             "http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
-                            "http://github.com/leleuj", "New York");
+                            "http://t.co/fNjYqp7wZ8", "New York");
         assertFalse(profile.getContributorsEnabled());
         assertEquals(TestsHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
             .getCreatedAt().toString());
@@ -101,10 +101,10 @@ public class TestTwitterClient extends TestOAuthClient {
         assertFalse(profile.getNotifications());
         assertTrue(profile.getProfileBackgroundColor() instanceof Color);
         assertEquals("http://a0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrl());
-        assertEquals("https://si0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrlHttps());
+        assertTrue(profile.getProfileBackgroundImageUrlHttps().endsWith("/images/themes/theme1/bg.png"));
         assertFalse(profile.getProfileBackgroundTile());
-        assertEquals("https://si0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
-                     profile.getProfileImageUrlHttps());
+        assertTrue(profile.getProfileImageUrlHttps()
+            .endsWith("/sticky/default_profile_images/default_profile_5_normal.png"));
         assertTrue(profile.getProfileLinkColor() instanceof Color);
         assertTrue(profile.getProfileSidebarBorderColor() instanceof Color);
         assertTrue(profile.getProfileSidebarFillColor() instanceof Color);

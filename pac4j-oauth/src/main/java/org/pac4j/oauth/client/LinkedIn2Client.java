@@ -19,8 +19,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
+import org.pac4j.oauth.profile.XmlHelper;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
-import org.pac4j.oauth.util.XmlHelper;
 import org.scribe.builder.api.LinkedInApi20;
 import org.scribe.builder.api.StateApi20;
 import org.scribe.model.OAuthConfig;
@@ -28,8 +29,16 @@ import org.scribe.model.SignatureType;
 import org.scribe.oauth.LinkedInOAuth20ServiceImpl;
 
 /**
- * More information at https://developer.linkedin.com/documents/authentication.
+ * This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).
+ * <p />
+ * It returns a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile}.
+ * <p />
+ * The scope (by default : <code>r_fullprofile</code>) can be specified using the {@#setScope(String)} method, as well
+ * as the returned fields through the {@#setFields(String)} method.
+ * <p />
+ * More information at https://developer.linkedin.com/documents/profile-api
  * 
+ * @see org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile
  * @author Jerome Leleu
  * @since 1.4.1
  */
@@ -39,7 +48,7 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
     
     protected String scope = DEFAULT_SCOPE;
     
-    protected String fields = "id,first-name,last-name,location";
+    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,location,email-address,headline,industry,num-connections,summary,specialties,positions,picture-url,site-standard-profile-request,public-profile-url";
     
     public LinkedIn2Client() {
     }
@@ -95,9 +104,12 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
     protected LinkedIn2Profile extractUserProfile(final String body) {
         LinkedIn2Profile profile = new LinkedIn2Profile();
         profile.setId(XmlHelper.get(body, "id"));
-        for (final String attribute : OAuthAttributesDefinitions.linkedin2Definition.getAllAttributes()) {
+        for (final String attribute : OAuthAttributesDefinitions.linkedin2Definition.getPrincipalAttributes()) {
             profile.addAttribute(attribute, XmlHelper.get(body, attribute));
         }
+        String url = XmlHelper.get(XmlHelper.get(body, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST),
+                                   "url");
+        profile.addAttribute(LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST, url);
         return profile;
     }
     

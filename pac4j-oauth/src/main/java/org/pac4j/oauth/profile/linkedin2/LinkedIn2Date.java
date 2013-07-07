@@ -15,34 +15,35 @@
  */
 package org.pac4j.oauth.profile.linkedin2;
 
+import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.XmlHelper;
 import org.pac4j.oauth.profile.XmlObject;
 
 /**
- * This class represents a LinkedIn location.
+ * This class represents a LinkedIn date.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Location extends XmlObject {
+public class LinkedIn2Date extends XmlObject {
     
-    private static final long serialVersionUID = -7548166141136051112L;
+    private static final long serialVersionUID = 7741232980013691057L;
     
-    private String name;
+    private Integer year;
     
-    private String code;
+    private Integer month;
     
     @Override
     protected void buildFromXml(final String xml) {
-        this.name = XmlHelper.get(xml, "name");
-        this.code = XmlHelper.get(xml, "code");
+        this.year = (Integer) XmlHelper.convert(Converters.integerConverter, xml, "year");
+        this.month = (Integer) XmlHelper.convert(Converters.integerConverter, xml, "month");
     }
     
-    public String getName() {
-        return this.name;
+    public Integer getYear() {
+        return this.year;
     }
     
-    public String getCode() {
-        return this.code;
+    public Integer getMonth() {
+        return this.month;
     }
 }

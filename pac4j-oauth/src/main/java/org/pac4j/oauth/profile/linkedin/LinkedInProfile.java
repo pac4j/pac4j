@@ -84,6 +84,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
  * @author Jerome Leleu
  * @since 1.1.0
  */
+@Deprecated
 public class LinkedInProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = 5585883516753196756L;

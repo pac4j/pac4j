@@ -31,7 +31,7 @@ public final class TestJsonObjectConverter extends TestCase implements TestsCons
     
     private final JsonObjectConverter converter = new JsonObjectConverter(MockJsonObject.class);
     
-    private final static String EMPTY_JSON = "\"" + ELEMENT + "\"";
+    private final static String SIMPLE_JSON = "\"" + ELEMENT + "\"";
     
     public void testNull() {
         assertNull(this.converter.convert(null));
@@ -42,7 +42,7 @@ public final class TestJsonObjectConverter extends TestCase implements TestsCons
     }
     
     public void testJsonString() {
-        final Object object = this.converter.convert(EMPTY_JSON);
+        final Object object = this.converter.convert(SIMPLE_JSON);
         assertEquals(MockJsonObject.class, object.getClass());
         final MockJsonObject mock = (MockJsonObject) object;
         assertEquals(ELEMENT, mock.getValue());
@@ -50,7 +50,7 @@ public final class TestJsonObjectConverter extends TestCase implements TestsCons
     }
     
     public void testJsonNode() {
-        final Object object = this.converter.convert(JsonHelper.getFirstNode(EMPTY_JSON));
+        final Object object = this.converter.convert(JsonHelper.getFirstNode(SIMPLE_JSON));
         assertEquals(MockJsonObject.class, object.getClass());
         final MockJsonObject mock = (MockJsonObject) object;
         assertEquals(ELEMENT, mock.getValue());
@@ -59,11 +59,11 @@ public final class TestJsonObjectConverter extends TestCase implements TestsCons
     
     public void testJsonNodeKeepRawData() {
         ProfileHelper.setKeepRawData(true);
-        final Object object = this.converter.convert(JsonHelper.getFirstNode(EMPTY_JSON));
+        final Object object = this.converter.convert(JsonHelper.getFirstNode(SIMPLE_JSON));
         assertEquals(MockJsonObject.class, object.getClass());
         final MockJsonObject mock = (MockJsonObject) object;
         assertEquals(ELEMENT, mock.getValue());
-        assertEquals(EMPTY_JSON, mock.toString());
+        assertEquals(SIMPLE_JSON, mock.toString());
         ProfileHelper.setKeepRawData(false);
     }
 }

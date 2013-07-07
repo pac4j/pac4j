@@ -13,33 +13,36 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.util;
+package org.pac4j.oauth.profile.linkedin2;
 
-import junit.framework.TestCase;
+import org.pac4j.oauth.profile.XmlHelper;
+import org.pac4j.oauth.profile.XmlObject;
 
 /**
- * Test {@link XmlHelper}.
+ * This class represents a LinkedIn company.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public final class TestXmlHelper extends TestCase {
+public class LinkedIn2Company extends XmlObject {
     
-    private static final String TEXT = "text";
+    private static final long serialVersionUID = -2516111031032736648L;
     
-    private static final String TAG1 = "tag1";
+    private String name;
     
-    private static final String OPEN_TAG1 = "<" + TAG1 + ">";
+    private String industry;
     
-    private static final String CLOSE_TAG1 = "</" + TAG1 + ">";
-    
-    private static final String CLOSE_TAG2 = "</tag2>";
-    
-    public void testGoodText() {
-        assertEquals(TEXT, XmlHelper.get(OPEN_TAG1 + TEXT + CLOSE_TAG1, TAG1));
+    @Override
+    protected void buildFromXml(final String xml) {
+        this.name = XmlHelper.get(xml, "name");
+        this.industry = XmlHelper.get(xml, "industry");
     }
     
-    public void testBadText() {
-        assertNull(XmlHelper.get(OPEN_TAG1 + TEXT + CLOSE_TAG2, TAG1));
+    public String getName() {
+        return this.name;
+    }
+    
+    public String getIndustry() {
+        return this.industry;
     }
 }
