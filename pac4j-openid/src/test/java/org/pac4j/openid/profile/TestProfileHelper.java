@@ -27,6 +27,10 @@ import org.pac4j.openid.profile.myopenid.MyOpenIdProfile;
  */
 public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
     
+    public void testBuildProfileGoogleOpenIdProfile() {
+        assertNotNull(ProfileHelper.buildProfile("GoogleOpenIdProfile" + "#" + STRING_ID, EMPTY_MAP));
+    }
+    
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {
         return MyOpenIdProfile.class;
