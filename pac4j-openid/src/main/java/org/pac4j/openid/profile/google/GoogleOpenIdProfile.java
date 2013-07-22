@@ -77,7 +77,7 @@ import org.pac4j.openid.profile.OpenIdProfile;
  * 
  * @see org.pac4j.openid.client.GoogleOpenIdClient
  * @author Stephane Gleizes
- * @since 1.5.0
+ * @since 1.4.1
  */
 public class GoogleOpenIdProfile extends OpenIdProfile {
     

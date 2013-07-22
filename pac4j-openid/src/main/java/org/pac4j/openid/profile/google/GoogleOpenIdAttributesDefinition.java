@@ -22,7 +22,7 @@ import org.pac4j.core.profile.converter.Converters;
  * This class defines the attributes of the {@link GoogleOpenIdProfile}.
  * 
  * @author Stephane Gleizes
- * @since 1.5.0
+ * @since 1.4.1
  */
 public class GoogleOpenIdAttributesDefinition extends AttributesDefinition {
     

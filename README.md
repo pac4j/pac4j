@@ -78,9 +78,9 @@ This module is based on the <b>pac4j-core</b> module and the <a href="http://com
 </li>
 <li><b>pac4j-openid</b> : this module is dedicated to OpenID protocol support :
 <ul>
-<li>the <i>MyOpenIdClient</i> class is dedicated to MyOpenId</li>
+<li>the <i>MyOpenIdClient</i>, <i>GoogleOpenIdClient</i>... are the clients for all the providers : MyOpenId, Google...</li>
 <li>the <i>OpenIdCredentials</i> class is the credentials for OpenID support</li>
-<li>the <i>MyOpenIdProfile</i> class is the user profile for MyOpenId.</li>
+<li>the <i>MyOpenIdProfile</i>, <i>GoogleOpenIdProfile</i> class are the associated profiles, returned by the client.</li>
 </ul>
 <br />
 This module is based on the <b>pac4j-core</b> module and the <a href="http://code.google.com/p/openid4java/">openid4java</a> library.
@@ -111,6 +111,7 @@ Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.ht
 <tr><td>Web sites with basic auth authentication</td><td>HTTP</td><td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
 <tr><td>Web sites with form authentication</td><td>HTTP</td><td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
 <tr><td>MyOpenId</td><td>OpenID</td><td>pac4j-openid</td><td>MyOpenIdClient</td><td>MyOpenIdProfile</td></tr>
+<tr><td>Google</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
 </table>
 
 
@@ -208,7 +209,7 @@ client.setCallbackUrl("/callbackUrl");
 // send the user to myopenid.com for authentication
 // we assume the user identifier is in the "openIdUser" request parameter
 response.sendRedirect(client.getRedirectionUrl(new J2EContext(request, response)));</code></pre>
-...after successfull authentication...
+...after successfull authentication, in the client application, on the callback url (for MyOpenId)...
 <pre><code>// get the OpenID credentials
 OpenIdCredentials credentials = client.getCredentials(new J2EContext(request, response)));
 // get the myOpenID profile
