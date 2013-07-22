@@ -81,7 +81,7 @@ public class TestGoogle2Client extends TestOAuthClient {
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup34");
+        passwd.setValueAttribute("testpwdscribeup56");
         final HtmlSubmitInput submit = form.getInputByName("signIn");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();

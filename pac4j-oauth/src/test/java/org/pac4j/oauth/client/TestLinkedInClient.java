@@ -53,7 +53,7 @@ public class TestLinkedInClient extends TestOAuthClient {
         final HtmlTextInput sessionKey = form.getInputByName("session_key");
         sessionKey.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput sessionPassword = form.getInputByName("session_password");
-        sessionPassword.setValueAttribute("testpwdscribeup");
+        sessionPassword.setValueAttribute("testpwdscribeup56");
         final HtmlSubmitInput submit = form.getInputByName("authorize");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
