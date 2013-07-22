@@ -16,6 +16,7 @@
 package org.pac4j.openid.profile;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.openid.profile.google.GoogleOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.myopenid.MyOpenIdAttributesDefinition;
 
 /**
@@ -27,4 +28,6 @@ import org.pac4j.openid.profile.myopenid.MyOpenIdAttributesDefinition;
 public final class OpenIdAttributesDefinitions {
     
     public final static AttributesDefinition myOpenIdDefinition = new MyOpenIdAttributesDefinition();
+    
+    public static final AttributesDefinition googleOpenIdDefinition = new GoogleOpenIdAttributesDefinition();
 }
