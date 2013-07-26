@@ -78,7 +78,7 @@ public abstract class TestCasClient extends TestClient {
     @Override
     protected Client getClient() {
         final CasClient casClient = new CasClient();
-        casClient.setCallbackUrl("http://www.google.com/");
+        casClient.setCallbackUrl(PAC4J_BASE_URL);
         casClient.setCasLoginUrl("http://localhost:8080/cas/login");
         casClient.setCasProtocol(getCasProtocol());
         return casClient;

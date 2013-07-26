@@ -46,7 +46,7 @@ public final class CallbackController extends AbstractController {
     
     private static final String CAS_BASE_URL = "http://localhost:8080/cas/";
     
-    private static final String SERVICE_URL = "http://www.google.com/";
+    private static final String SERVICE_URL = "http://www.pac4j.org/";
     
     public CallbackController() {
         final CasClient casClient = new CasClient();

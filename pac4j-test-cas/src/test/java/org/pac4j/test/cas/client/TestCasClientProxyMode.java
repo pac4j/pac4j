@@ -36,7 +36,7 @@ public final class TestCasClientProxyMode extends TestCasClient {
     
     private static final String CALLBACK_URL = CAS_URL + "callback?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=";
     
-    private static final String SERVICE_URL = "http://www.google.com/";
+    private static final String SERVICE_URL = PAC4J_BASE_URL;
     
     @Override
     protected CasProtocol getCasProtocol() {

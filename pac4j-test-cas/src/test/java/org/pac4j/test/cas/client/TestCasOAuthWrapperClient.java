@@ -66,7 +66,7 @@ public final class TestCasOAuthWrapperClient extends TestClient {
         final CasOAuthWrapperClient casOAuthWrapperClient = new CasOAuthWrapperClient();
         casOAuthWrapperClient.setKey("my_key");
         casOAuthWrapperClient.setSecret("my_secret");
-        casOAuthWrapperClient.setCallbackUrl("http://www.google.com/");
+        casOAuthWrapperClient.setCallbackUrl(PAC4J_BASE_URL);
         casOAuthWrapperClient.setCasOAuthUrl("http://localhost:8080/cas/oauth2.0");
         return casOAuthWrapperClient;
     }
