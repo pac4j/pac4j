@@ -44,7 +44,7 @@ public class TestGitHubClient extends TestOAuthClient {
         final GitHubClient githubClient = new GitHubClient();
         githubClient.setKey("62374f5573a89a8f9900");
         githubClient.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
-        githubClient.setCallbackUrl(GOOGLE_URL);
+        githubClient.setCallbackUrl(PAC4J_BASE_URL);
         return githubClient;
     }
     

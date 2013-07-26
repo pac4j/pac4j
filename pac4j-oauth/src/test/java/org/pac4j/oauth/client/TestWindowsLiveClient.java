@@ -50,7 +50,7 @@ public class TestWindowsLiveClient extends TestOAuthClient {
         final WindowsLiveClient liveClient = new WindowsLiveClient();
         liveClient.setKey("00000000400BFE75");
         liveClient.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");
-        liveClient.setCallbackUrl("http://javadoc.leleuj.cloudbees.net/");
+        liveClient.setCallbackUrl(PAC4J_URL);
         return liveClient;
     }
     

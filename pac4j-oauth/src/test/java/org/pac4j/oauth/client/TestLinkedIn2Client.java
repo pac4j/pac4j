@@ -84,7 +84,7 @@ public class TestLinkedIn2Client extends TestOAuthClient {
         final HtmlTextInput email = form.getInputByName("session_key");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput password = form.getInputByName("session_password");
-        password.setValueAttribute("testpwdscribeup");
+        password.setValueAttribute("testpwdscribeup56");
         final HtmlSubmitInput submit = form.getInputByName("authorize");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
@@ -121,7 +121,7 @@ public class TestLinkedIn2Client extends TestOAuthClient {
                             null,
                             "http://m.c.lnkd.licdn.com/mpr/mprx/0_XGm9Ldp1WfMsB74Zk32WLwptW7DZvoWZQisWLwSfnuJeEmY4eXYVwIJ3bFSb9DeNL3uHo21cF5lC",
                             "http://www.linkedin.com/pub/test-scribeup/48/aa/16b", "Paris Area, France");
-        LinkedIn2Location location = profile.getCompleteLocation();
+        final LinkedIn2Location location = profile.getCompleteLocation();
         assertEquals("Paris Area, France", location.getName());
         assertEquals("fr", location.getCode());
         assertNull(profile.getMaidenName());
@@ -130,18 +130,18 @@ public class TestLinkedIn2Client extends TestOAuthClient {
         assertEquals(1, profile.getNumConnections().intValue());
         assertEquals("This is a summary...", profile.getSummary());
         assertNull(profile.getSpecialties());
-        List<LinkedIn2Position> positions = profile.getPositions();
+        final List<LinkedIn2Position> positions = profile.getPositions();
         assertEquals(2, positions.size());
-        LinkedIn2Position position = positions.get(0);
+        final LinkedIn2Position position = positions.get(0);
         assertEquals("417494299", position.getId());
         assertEquals("Developer", position.getTitle());
         assertEquals("Desc", position.getSummary());
-        LinkedIn2Date startDate = position.getStartDate();
+        final LinkedIn2Date startDate = position.getStartDate();
         assertEquals(2012, startDate.getYear().intValue());
         assertEquals(3, startDate.getMonth().intValue());
         assertTrue(position.getIsCurrent().booleanValue());
         assertNull(position.getEndDate());
-        LinkedIn2Company company = position.getCompany();
+        final LinkedIn2Company company = position.getCompany();
         assertEquals("PAC4J", company.getName());
         assertEquals("Information Technology and Services", company.getIndustry());
         assertEquals("http://www.linkedin.com/profile/view?id=167439971&amp;authType=name&amp;authToken=_IWF&amp;trk=api*a167383*s175634*",

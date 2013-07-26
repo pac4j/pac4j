@@ -79,7 +79,7 @@ public class TestFacebookClient extends TestOAuthClient {
         final FacebookClient facebookClient = new FacebookClient();
         facebookClient.setKey("291329260930505");
         facebookClient.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
-        facebookClient.setCallbackUrl(GOOGLE_URL + "/");
+        facebookClient.setCallbackUrl(PAC4J_URL);
         facebookClient
             .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups,user_actions.music");
         facebookClient.setFields(FacebookClient.DEFAULT_FIELDS
@@ -131,7 +131,7 @@ public class TestFacebookClient extends TestOAuthClient {
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", "jerome.testscribeup",
                             Gender.MALE, Locale.FRANCE, "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-",
-                            "http://www.facebook.com/jerome.testscribeup", "New York, New York");
+                            "https://www.facebook.com/jerome.testscribeup", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
@@ -212,7 +212,7 @@ public class TestFacebookClient extends TestOAuthClient {
         assertEquals("100003571536393", from.getId());
         assertEquals("Jerome Testscribeup", from.getName());
         assertEquals("Profile Pictures", album.getName());
-        assertEquals("http://www.facebook.com/album.php?fbid=168023009993416&id=100003571536393&aid=34144",
+        assertEquals("https://www.facebook.com/album.php?fbid=168023009993416&id=100003571536393&aid=34144",
                      album.getLink());
         assertEquals("168023156660068", album.getCoverPhoto());
         assertEquals("everyone", album.getPrivacy());

@@ -54,7 +54,7 @@ public class TestYahooClient extends TestOAuthClient {
         yahooClient
             .setKey("dj0yJmk9QUlLcTVINlBpdm5VJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PTJm");
         yahooClient.setSecret("95220809156c027c0a10c959a04b099da5510b66");
-        yahooClient.setCallbackUrl(GOOGLE_URL);
+        yahooClient.setCallbackUrl(PAC4J_BASE_URL);
         return yahooClient;
     }
     

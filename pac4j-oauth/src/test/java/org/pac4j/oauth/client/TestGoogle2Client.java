@@ -70,7 +70,7 @@ public class TestGoogle2Client extends TestOAuthClient {
         final Google2Client google2Client = new Google2Client();
         google2Client.setKey("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         google2Client.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
-        google2Client.setCallbackUrl("https://www.google.com/");
+        google2Client.setCallbackUrl(PAC4J_BASE_URL);
         google2Client.setScope(Google2Scope.EMAIL_AND_PROFILE);
         return google2Client;
     }

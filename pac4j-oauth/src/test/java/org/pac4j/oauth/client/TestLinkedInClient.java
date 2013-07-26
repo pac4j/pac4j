@@ -43,7 +43,7 @@ public class TestLinkedInClient extends TestOAuthClient {
         final LinkedInClient linkedInClient = new LinkedInClient();
         linkedInClient.setKey("gsqj8dn56ayn");
         linkedInClient.setSecret("kUFAZ2oYvwMQ6HFl");
-        linkedInClient.setCallbackUrl(GOOGLE_URL);
+        linkedInClient.setCallbackUrl(PAC4J_URL);
         return linkedInClient;
     }
     

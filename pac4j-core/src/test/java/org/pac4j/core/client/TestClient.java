@@ -179,7 +179,8 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         if (profileUrl == null) {
             assertNull(profile.getProfileUrl());
         } else {
-            assertTrue(profile.getProfileUrl().startsWith(profileUrl));
+            final String profUrl = profile.getProfileUrl();
+            assertTrue(profUrl.startsWith(profileUrl));
         }
         assertEquals(location, profile.getLocation());
     }

@@ -49,7 +49,7 @@ public class TestTwitterClient extends TestOAuthClient {
         final TwitterClient twitterClient = new TwitterClient();
         twitterClient.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterClient.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
-        twitterClient.setCallbackUrl(GOOGLE_URL);
+        twitterClient.setCallbackUrl(PAC4J_URL);
         return twitterClient;
     }
     
@@ -114,7 +114,7 @@ public class TestTwitterClient extends TestOAuthClient {
         assertNull(profile.getShowAllInlineMedia());
         assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(3600, profile.getUtcOffset().intValue());
+        assertEquals(7200, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertNotNull(profile.getAccessSecret());
         assertEquals(37, profile.getAttributes().size());
@@ -134,7 +134,7 @@ public class TestTwitterClient extends TestOAuthClient {
         String callbackUrl = null;
         for (final HtmlAnchor anchor : anchors) {
             final String url = anchor.getHrefAttribute();
-            if (url.startsWith(GOOGLE_URL)) {
+            if (url.startsWith(PAC4J_URL)) {
                 callbackUrl = url;
                 break;
             }

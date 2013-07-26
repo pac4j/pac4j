@@ -16,7 +16,6 @@
  */
 package org.pac4j.openid.client;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.pac4j.core.client.Client;
@@ -29,7 +28,6 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.openid.profile.google.GoogleOpenIdProfile;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -48,7 +46,7 @@ public class TestGoogleOpenIdClient extends TestClient implements TestsConstants
     @Override
     protected Client getClient() {
         final GoogleOpenIdClient client = new GoogleOpenIdClient();
-        client.setCallbackUrl(GOOGLE_URL);
+        client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
     
@@ -58,30 +56,13 @@ public class TestGoogleOpenIdClient extends TestClient implements TestsConstants
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup34");
-        HtmlSubmitInput submit = form.getInputByName("signIn");
+        passwd.setValueAttribute("testpwdscribeup56");
+        final HtmlSubmitInput submit = form.getInputByName("signIn");
         
-        final HtmlPage confirmPage = submit.click();
-        final HtmlForm confirmForm = confirmPage.getForms().get(0);
-        List<?> matches = confirmForm.getByXPath("button[1]");
-        final String callbackUrl;
-        
-        if (!matches.isEmpty()) {
-            HtmlElement approveAccessButton = (HtmlElement) matches.get(0);
-            final HtmlPage callbackPage = approveAccessButton.click();
-            callbackUrl = callbackPage.getUrl().toString();
-        } else {
-            // No confirmation page : access has already been granted
-            callbackUrl = confirmPage.getUrl().toString();
-        }
-        
+        final HtmlPage callbackPage = submit.click();
+        final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
-    }
-    
-    @Override
-    protected boolean isJavascriptEnabled() {
-    	return true;
     }
     
     @Override
@@ -93,22 +74,13 @@ public class TestGoogleOpenIdClient extends TestClient implements TestsConstants
     protected void verifyProfile(final UserProfile userProfile) {
         final GoogleOpenIdProfile profile = (GoogleOpenIdProfile) userProfile;
         logger.debug("userProfile : {}", profile);
-        // TODO: Replace '<id>' by the expected id
-        assertEquals("https://www.google.com/accounts/o8/id?id=<id>", profile.getId());
-        assertEquals(GoogleOpenIdProfile.class.getSimpleName() + UserProfile.SEPARATOR +
-                     "https://www.google.com/accounts/o8/id?id=<id>",
-                     profile.getTypedId());
+        final String id = "AItOawmMrzkgh-RhXW-d0iQ16ybkKpReh7g-hQQ";
+        assertEquals("https://www.google.com/accounts/o8/id?id=" + id, profile.getId());
+        assertEquals(GoogleOpenIdProfile.class.getSimpleName() + UserProfile.SEPARATOR
+                     + "https://www.google.com/accounts/o8/id?id=" + id, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOpenIdProfile.class));
-        assertCommonProfile(userProfile,
-                            "testscribeup@gmail.com",
-                            "Jérôme",
-                            "ScribeUP",
-                            "Jérôme ScribeUP",
-                            null,
-                            Gender.UNSPECIFIED,
-                            Locale.ENGLISH,
-                            null, null,
-                            "<country>"); // TODO: Replace '<country>' by the expected country
+        assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
+                            Gender.UNSPECIFIED, Locale.FRANCE, null, null, "FR");
         assertEquals(5, profile.getAttributes().size());
     }
     

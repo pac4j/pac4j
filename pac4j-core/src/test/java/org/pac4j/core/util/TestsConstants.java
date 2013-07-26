@@ -53,4 +53,6 @@ public interface TestsConstants {
     public static final String CALLBACK_URL = "http://myserver/callback";
     public static final String GOOGLE_URL = "http://www.google.com";
     public final static String LOGIN_URL = "http://myserver/login";
+    public static final String PAC4J_BASE_URL = "http://www.pac4j.org/";
+    public static final String PAC4J_URL = PAC4J_BASE_URL + "test.html";
 }

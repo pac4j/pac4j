@@ -71,7 +71,7 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
     @Override
     protected Client getClient() {
         final MyOpenIdClient client = new MyOpenIdClient();
-        client.setCallbackUrl(GOOGLE_URL);
+        client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
     
