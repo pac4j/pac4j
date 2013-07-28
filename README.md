@@ -1,3 +1,7 @@
+---
+published: false
+---
+
 ## What is pac4j ?
 
 **pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the protocols supporting the following mechanism :
@@ -124,7 +128,7 @@ For example :
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.pac4j&lt;/groupId&gt;
     &lt;artifactId&gt;pac4j-oauth&lt;/artifactId&gt;
-    &lt;version&gt;1.4.0&lt;/version&gt;
+    &lt;version&gt;1.4.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 As the pac4j snapshots libraries are stored in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>, this repository may be added in the Maven <i>pom.xml</i> file :
@@ -255,24 +259,24 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
-<tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
+<tr><td>cas-server-support-pac4j 4.0.0-RC2-SNAPSHOT</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
 <tr><td>cas-server-support-oauth 3.5.2</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
 <tr><td>play-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>j2e-pac4j 1.0.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
-<tr><td>buji-pac4j 1.2.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-pac4j 1.2.0-SNAPSHOT</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
+<tr><td>j2e-pac4j 1.0.0</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
+<tr><td>buji-pac4j 1.2.0</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
+<tr><td>spring-security-pac4j 1.2.0</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.0</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
 </table>
 
 
 ## Versions
 
-The current version : <i>1.4.1-SNAPSHOT</i> is under development, it's available in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>.
+The current version : <i>1.4.2-SNAPSHOT</i> is under development, it's available in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>.
 
-The latest release of the <b>pac4j</b> project is the <b>1.4.0</b> version :
+The latest release of the <b>pac4j</b> project is the <b>1.4.1</b> version :
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.pac4j&lt;/groupId&gt;
     &lt;artifactId&gt;pac4j-core&lt;/artifactId&gt;
-    &lt;version&gt;1.4.0&lt;/version&gt;
+    &lt;version&gt;1.4.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 Learn more about the <a href="https://github.com/leleuj/pac4j/wiki/Versions">different versions</a>.
