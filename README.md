@@ -266,7 +266,7 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version **1.4.2-SNAPSHOT** is under development. It's available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency :
+The current version **1.4.2-SNAPSHOT** is under development. It's available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
 The last released version is the **1.4.1** :
 
@@ -282,8 +282,11 @@ See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
 ## Testing
 
 pac4j is tested by more than 300 unit, bench and integration tests (authentication processes are completely simulated using the [HtmlUnit](http://htmlunit.sourceforge.net/) library).
+
 To launch the tests, the **nr** Maven profile should be used. For example :
+
     mvn clean install -Pnr
+
 Use the **js** Maven profile for Javadoc and sources generation.
 
 
