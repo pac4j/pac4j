@@ -266,27 +266,30 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version : <i>1.4.2-SNAPSHOT</i> is under development, it's available in the <a href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a>.
+The current version **1.4.2-SNAPSHOT** is under development. It's available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency :
 
-The latest release of the <b>pac4j</b> project is the <b>1.4.1</b> version :
-<pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;org.pac4j&lt;/groupId&gt;
-    &lt;artifactId&gt;pac4j-core&lt;/artifactId&gt;
-    &lt;version&gt;1.4.1&lt;/version&gt;
-&lt;/dependency&gt;</code></pre>
+The last released version is the **1.4.1** :
 
-Learn more about the <a href="https://github.com/leleuj/pac4j/wiki/Versions">different versions</a>.
+    <dependency>
+        <groupId>org.pac4j</groupId>
+        <artifactId>pac4j-core</artifactId>
+        <version>1.4.1</version>
+    </dependency>
 
-
-<h2>Testing</h2>
-
-pac4j is tested by more than 300 unit, bench and integration tests (authentication processes are completely simulated using the <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> library).
-To launch the tests, the <b>nr</b> Maven profile should be used. For example :
-<pre><code>mvn clean install -Pnr</code></pre>
-Use the <b>js</b> Maven profile for Javadoc and sources generation.
+See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
 
 
-<h2>Contact</h2>
+## Testing
 
-Find me on <a href="http://www.linkedin.com/in/jleleu">LinkedIn</a> or by email : leleuj@gmail.com
+pac4j is tested by more than 300 unit, bench and integration tests (authentication processes are completely simulated using the [HtmlUnit](http://htmlunit.sourceforge.net/) library).
+To launch the tests, the **nr** Maven profile should be used. For example :
+    mvn clean install -Pnr
+Use the **js** Maven profile for Javadoc and sources generation.
+
+
+## Contact
+
+If you have any question, please use the following mailing lists :
+- [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
+- [pac4j developers](https://groups.google.com/forum/?hl=en#!forum/pac4j-dev)
 
