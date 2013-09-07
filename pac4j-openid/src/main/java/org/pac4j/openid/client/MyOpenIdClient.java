@@ -28,7 +28,7 @@ import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
 import org.pac4j.openid.profile.myopenid.MyOpenIdProfile;
 
 /**
- * This class is the OpenID client to authenticate users in myopenid.com.
+ * This class is the OpenID client to authenticate users in myopenid.com. The service will end on Februray 1, 2014.
  * <p />
  * The user used for the redirection to myopenid.com must be defined in the request parameter named {@link #DEFAULT_USER_PARAMETER_NAME} (by
  * default) or the name given through the {@link #setUserParameterName(String)} method.
@@ -39,6 +39,7 @@ import org.pac4j.openid.profile.myopenid.MyOpenIdProfile;
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Deprecated
 public class MyOpenIdClient extends BaseOpenIdClient<MyOpenIdProfile> {
     
     public static final String DEFAULT_USER_PARAMETER_NAME = "openIdUser";
