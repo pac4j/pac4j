@@ -88,7 +88,8 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         final String errorDescription = context.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
         // user has denied permissions
-        if ("access_denied".equals(error) && "the+user+denied+your+request".equals(errorDescription)) {
+        if ("access_denied".equals(error) && ( "the+user+denied+your+request".equals(errorDescription) ||
+      		  "the user denied your request".equals(errorDescription))) {
             return true;
         } else {
             return false;
