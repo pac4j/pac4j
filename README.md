@@ -279,6 +279,7 @@ The last released version is the **1.4.1** :
 See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
 
 
+
 ## Testing
 
 pac4j is tested by more than 300 unit, bench and integration tests (authentication processes are completely simulated using the [HtmlUnit](http://htmlunit.sourceforge.net/) library).
