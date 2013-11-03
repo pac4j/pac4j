@@ -92,4 +92,18 @@ public interface WebContext {
      * @param value
      */
     public void setResponseHeader(String name, String value);
+
+    /**
+     * Return the server name.
+     *
+     * @return the server name
+     */
+    public String getServerName();
+
+    /**
+     * Return the server port.
+     *
+     * @return the server port
+     */
+    public int getServerPort();
 }

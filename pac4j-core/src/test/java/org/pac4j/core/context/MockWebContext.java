@@ -33,7 +33,11 @@ public class MockWebContext extends BaseResponseContext {
     protected final Map<String, Object> session = new HashMap<String, Object>();
     
     protected String method = "GET";
-    
+
+    protected String serverName = "localhost";
+
+    protected int serverPort = 8080;
+
     protected MockWebContext() {
     }
     
@@ -134,5 +138,21 @@ public class MockWebContext extends BaseResponseContext {
             map.put(key, values);
         }
         return map;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public void setServerPort(int serverPort) {
+       this.serverPort = serverPort;
     }
 }
