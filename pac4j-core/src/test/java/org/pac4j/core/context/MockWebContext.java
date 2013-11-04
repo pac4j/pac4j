@@ -36,7 +36,7 @@ public class MockWebContext extends BaseResponseContext {
 
     protected String serverName = "localhost";
 
-    protected int serverPort = 8080;
+    protected int serverPort = 80;
 
     protected MockWebContext() {
     }

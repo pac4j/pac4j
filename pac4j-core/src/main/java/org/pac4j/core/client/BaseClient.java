@@ -137,17 +137,17 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
     
-    public final U getUserProfile(final C credentials) {
+    public final U getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;
         }
         
-        return retrieveUserProfile(credentials);
+        return retrieveUserProfile(credentials, context);
     }
     
-    protected abstract U retrieveUserProfile(final C credentials);
+    protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
     
     /**
      * Return the implemented protocol.

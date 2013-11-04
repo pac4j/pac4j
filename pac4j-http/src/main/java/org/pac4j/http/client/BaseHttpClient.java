@@ -17,6 +17,7 @@ package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -61,7 +62,7 @@ public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredenti
     }
     
     @Override
-    protected HttpProfile retrieveUserProfile(final UsernamePasswordCredentials credentials) {
+    protected HttpProfile retrieveUserProfile(final UsernamePasswordCredentials credentials, final WebContext context) {
         // create user profile
         final HttpProfile profile = this.profileCreator.create(credentials.getUsername());
         logger.debug("profile : {}", profile);

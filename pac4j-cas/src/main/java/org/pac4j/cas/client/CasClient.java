@@ -34,6 +34,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -125,8 +126,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      */
     @Override
     protected String retrieveRedirectionUrl(final WebContext context) {
-        final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
-                                                                       this.callbackUrl, this.renew, this.gateway);
+        final String fullCasLoginUrl = prependHostToUrlIfNotPresent(this.casLoginUrl, context);
+        final String fullCallbackUrl = prependHostToUrlIfNotPresent(this.callbackUrl, context);
+
+        final String redirectionUrl = CommonUtils.constructRedirectUrl(fullCasLoginUrl, SERVICE_PARAMETER,
+                                                                       fullCallbackUrl, this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return redirectionUrl;
     }
@@ -225,10 +229,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @return the user profile
      */
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials) {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
         final String ticket = credentials.getServiceTicket();
         try {
-            final Assertion assertion = this.ticketValidator.validate(ticket, this.callbackUrl);
+            final String fullCallbackUrl = prependHostToUrlIfNotPresent(this.callbackUrl, context);
+            final Assertion assertion = this.ticketValidator.validate(ticket, fullCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal : {}", principal);
             final CasProfile casProfile;
@@ -339,5 +344,23 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     @Override
     public Protocol getProtocol() {
         return Protocol.CAS;
+    }
+
+    String prependHostToUrlIfNotPresent(String url, WebContext webContext) {
+        if (url != null && !url.startsWith("http://")) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("http://").append(webContext.getServerName());
+
+            if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
+                sb.append(":").append(webContext.getServerPort());
+            }
+
+            sb.append(url.startsWith("/") ? url : "/"+url);
+
+            return sb.toString();
+        }
+
+        return url;
     }
 }

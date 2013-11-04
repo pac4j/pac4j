@@ -50,7 +50,7 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     }
     
     @Override
-    protected CommonProfile retrieveUserProfile(final C credentials) {
+    protected CommonProfile retrieveUserProfile(final C credentials, final WebContext context) {
         return new CommonProfile();
     }
     

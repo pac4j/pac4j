@@ -140,8 +140,10 @@ public final class TestFormClient extends TestCase implements TestsConstants {
     
     public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
+        final MockWebContext context = MockWebContext.create();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
-                                                                                              formClient.getName()));
+                                                                                              formClient.getName()),
+                                                                                              context);
         assertEquals(USERNAME, profile.getId());
         assertEquals(HttpProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));

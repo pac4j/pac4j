@@ -28,7 +28,9 @@ public interface HttpConstants {
     public static final int UNAUTHORIZED = 401;
     
     public static final int TEMP_REDIRECT = 302;
-    
+
+    public static final int DEFAULT_PORT = 80;
+
     public static final String LOCATION_HEADER = "Location";
     
     public static final String AUTHORIZATION_HEADER = "Authorization";

@@ -78,7 +78,8 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
     
     public void testNullCredentials() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
-        assertNull(client.getUserProfile(null));
+        assertNull(client.getUserProfile(null, context));
     }
 }

@@ -29,7 +29,7 @@ import org.pac4j.core.profile.UserProfile;
  * <li>the {@link #getRedirectionUrl(WebContext)} method to get the url where to redirect the user for authentication (at the provider)</li>
  * <li>the {@link #getCredentials(WebContext)} method to get the credentials (in the application) after the user has been successfully
  * authenticated at the provider</li>
- * <li>the {@link #getUserProfile(Credentials)} method to get the user profile from the credentials.</li>
+ * <li>the {@link #getUserProfile(Credentials, WebContext)} method to get the user profile from the credentials.</li>
  * </ul>
  * 
  * @author Jerome Leleu
@@ -67,5 +67,5 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * @param credentials
      * @return the user profile
      */
-    public U getUserProfile(C credentials);
+    public U getUserProfile(C credentials, WebContext context);
 }

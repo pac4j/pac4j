@@ -158,7 +158,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return the user profile
      */
     @Override
-    protected U retrieveUserProfile(final OAuthCredentials credentials) {
+    protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) {
         try {
             final Token token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);
