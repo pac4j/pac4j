@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -59,7 +60,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected String callbackUrl;
     
     private String name;
-    
+
     /**
      * Clone the current client.
      * 
@@ -87,7 +88,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public String getCallbackUrl() {
         return this.callbackUrl;
     }
-    
+
+    public String getContextualCallbackUrl(WebContext context) {
+        return prependHostToUrlIfNotPresent(this.callbackUrl, context);
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
@@ -117,7 +122,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return retrieveRedirectionUrl(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
-            return CommonHelper.addParameter(getCallbackUrl(), NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
+            return CommonHelper.addParameter(getContextualCallbackUrl(context), NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
         }
     }
     
@@ -160,5 +165,24 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,
                                      "isDirectRedirection", isDirectRedirection());
+    }
+
+    protected String prependHostToUrlIfNotPresent(String url, WebContext webContext) {
+        if (url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
+            StringBuilder sb = new StringBuilder();
+
+            // TODO: there doesn't seem to be a way to get the scheme with the play api, just use http for now
+            sb.append("http://").append(webContext.getServerName());
+
+            if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
+                sb.append(":").append(webContext.getServerPort());
+            }
+
+            sb.append(url.startsWith("/") ? url : "/"+url);
+
+            return sb.toString();
+        }
+
+        return url;
     }
 }

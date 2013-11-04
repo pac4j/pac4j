@@ -82,4 +82,35 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         client.setCallbackUrl(CALLBACK_URL);
         assertNull(client.getUserProfile(null, context));
     }
+
+    public void testPrependHostToUrlIfNotPresent_whenHostIsNotPresent() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockWebContext context = MockWebContext.create();
+        context.setServerName("pac4j.com");
+
+        String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
+
+        assertEquals("http://pac4j.com/cas/login", result);
+    }
+
+    public void testPrependHostToUrlIfNotPresent_whenHostIsPresent() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockWebContext context = MockWebContext.create();
+        context.setServerName("pac4j.com");
+
+        String result = client.prependHostToUrlIfNotPresent("http://cashost.com/cas/login", context);
+
+        assertEquals("http://cashost.com/cas/login", result);
+    }
+
+    public void testPrependHostToUrlIfNotPresent_whenServerIsNotUsingDefaultHttpPort() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockWebContext context = MockWebContext.create();
+        context.setServerName("pac4j.com");
+        context.setServerPort(8080);
+
+        String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
+
+        assertEquals("http://pac4j.com:8080/cas/login", result);
+    }
 }

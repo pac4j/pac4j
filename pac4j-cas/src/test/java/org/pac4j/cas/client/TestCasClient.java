@@ -115,35 +115,4 @@ public final class TestCasClient extends TestCase implements TestsConstants {
             assertEquals("logout request : no credential returned", e.getMessage());
         }
     }
-
-    public void testPrependHostToUrlIfNotPresent_whenHostIsNotPresent() {
-        final CasClient casClient = new CasClient();
-        final MockWebContext context = MockWebContext.create();
-        context.setServerName("pac4j.com");
-
-        String result = casClient.prependHostToUrlIfNotPresent("/cas/login", context);
-
-        assertEquals("http://pac4j.com/cas/login", result);
-    }
-
-    public void testPrependHostToUrlIfNotPresent_whenHostIsPresent() {
-        final CasClient casClient = new CasClient();
-        final MockWebContext context = MockWebContext.create();
-        context.setServerName("pac4j.com");
-
-        String result = casClient.prependHostToUrlIfNotPresent("http://cashost.com/cas/login", context);
-
-        assertEquals("http://cashost.com/cas/login", result);
-    }
-
-    public void testPrependHostToUrlIfNotPresent_whenServerIsNotUsingDefaultHttpPort() {
-        final CasClient casClient = new CasClient();
-        final MockWebContext context = MockWebContext.create();
-        context.setServerName("pac4j.com");
-        context.setServerPort(8080);
-
-        String result = casClient.prependHostToUrlIfNotPresent("/cas/login", context);
-
-        assertEquals("http://pac4j.com:8080/cas/login", result);
-    }
 }
