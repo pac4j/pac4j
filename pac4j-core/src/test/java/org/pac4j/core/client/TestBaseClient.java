@@ -85,6 +85,8 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
 
     public void testPrependHostToUrlIfNotPresent_whenHostIsNotPresent() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        client.setEnableContextualRedirects(true);
+
         final MockWebContext context = MockWebContext.create();
         context.setServerName("pac4j.com");
 
@@ -95,6 +97,8 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
 
     public void testPrependHostToUrlIfNotPresent_whenHostIsPresent() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        client.setEnableContextualRedirects(true);
+
         final MockWebContext context = MockWebContext.create();
         context.setServerName("pac4j.com");
 
@@ -105,6 +109,8 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
 
     public void testPrependHostToUrlIfNotPresent_whenServerIsNotUsingDefaultHttpPort() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        client.setEnableContextualRedirects(true);
+
         final MockWebContext context = MockWebContext.create();
         context.setServerName("pac4j.com");
         context.setServerPort(8080);
@@ -116,11 +122,24 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
 
     public void testPrependHostToUrlIfNotPresent_whenRequestIsSecure() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        client.setEnableContextualRedirects(true);
+
         final MockWebContext context = MockWebContext.create();
         context.setScheme("https");
 
         String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
 
         assertEquals("https://localhost/cas/login", result);
+    }
+
+    public void testPrependHostToUrlIfNotPresent_whenContextualRedirectsAreDisabled() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        client.setEnableContextualRedirects(false);
+
+        final MockWebContext context = MockWebContext.create();
+
+        String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
+
+        assertEquals("/cas/login", result);
     }
 }

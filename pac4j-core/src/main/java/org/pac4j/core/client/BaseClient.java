@@ -61,6 +61,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     private String name;
 
+    private boolean enableContextualRedirects = false;
+
     /**
      * Clone the current client.
      * 
@@ -167,8 +169,24 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
                                      "isDirectRedirection", isDirectRedirection());
     }
 
+    /**
+     * Returns if contextual redirects are enabled for this client
+     *
+     * @return if contextual redirects are enabled for this client
+     */
+    public boolean isEnableContextualRedirects() {
+        return enableContextualRedirects;
+    }
+
+    /**
+     * Sets whether contextual redirects are enabled for this client
+     */
+    public void setEnableContextualRedirects(boolean enableContextualRedirects) {
+        this.enableContextualRedirects = enableContextualRedirects;
+    }
+
     protected String prependHostToUrlIfNotPresent(String url, WebContext webContext) {
-        if (url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
+        if (this.enableContextualRedirects && url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
             StringBuilder sb = new StringBuilder();
 
             sb.append(webContext.getScheme()).append("://").append(webContext.getServerName());
