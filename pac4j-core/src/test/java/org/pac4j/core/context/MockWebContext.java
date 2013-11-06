@@ -36,6 +36,8 @@ public class MockWebContext extends BaseResponseContext {
 
     protected String serverName = "localhost";
 
+    protected String scheme = "http";
+
     protected int serverPort = 80;
 
     protected MockWebContext() {
@@ -154,5 +156,13 @@ public class MockWebContext extends BaseResponseContext {
 
     public void setServerPort(int serverPort) {
        this.serverPort = serverPort;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
     }
 }

@@ -118,4 +118,13 @@ public class J2ERequestContext extends BaseResponseContext {
     public int getServerPort() {
         return this.request.getServerPort();
     }
+
+    /**
+     * Return the scheme.
+     *
+     * @return the scheme
+     */
+    public String getScheme() {
+        return this.request.getScheme();
+    }
 }

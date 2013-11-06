@@ -181,4 +181,13 @@ public class J2EContext implements WebContext {
     public int getServerPort() {
         return this.request.getServerPort();
     }
+
+    /**
+     * Return the scheme.
+     *
+     * @return the scheme
+     */
+    public String getScheme() {
+        return this.request.getScheme();
+    }
 }

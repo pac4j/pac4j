@@ -171,8 +171,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         if (url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
             StringBuilder sb = new StringBuilder();
 
-            // TODO: there doesn't seem to be a way to get the scheme with the play api, just use http for now
-            sb.append("http://").append(webContext.getServerName());
+            sb.append(webContext.getScheme()).append("://").append(webContext.getServerName());
 
             if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
                 sb.append(":").append(webContext.getServerPort());

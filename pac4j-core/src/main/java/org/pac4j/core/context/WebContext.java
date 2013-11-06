@@ -106,4 +106,11 @@ public interface WebContext {
      * @return the server port
      */
     public int getServerPort();
+
+    /**
+     * Return the scheme.
+     *
+     * @return the scheme
+     */
+    public String getScheme();
 }
