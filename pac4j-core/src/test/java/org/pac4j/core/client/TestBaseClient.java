@@ -113,4 +113,14 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
 
         assertEquals("http://pac4j.com:8080/cas/login", result);
     }
+
+    public void testPrependHostToUrlIfNotPresent_whenRequestIsSecure() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockWebContext context = MockWebContext.create();
+        context.setScheme("https");
+
+        String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
+
+        assertEquals("https://localhost/cas/login", result);
+    }
 }
