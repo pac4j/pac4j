@@ -91,7 +91,7 @@ public class J2ERequestContext extends BaseResponseContext {
     public String getRequestMethod() {
         return this.request.getMethod();
     }
-    
+
     /**
      * Return the HTTP request.
      * 
@@ -99,5 +99,32 @@ public class J2ERequestContext extends BaseResponseContext {
      */
     public HttpServletRequest getRequest() {
         return this.request;
+    }
+
+    /**
+     * Return the server name.
+     *
+     * @return the server name
+     */
+    public String getServerName() {
+        return this.request.getServerName();
+    }
+
+    /**
+     * Return the server port.
+     *
+     * @return the server port
+     */
+    public int getServerPort() {
+        return this.request.getServerPort();
+    }
+
+    /**
+     * Return the scheme.
+     *
+     * @return the scheme
+     */
+    public String getScheme() {
+        return this.request.getScheme();
     }
 }

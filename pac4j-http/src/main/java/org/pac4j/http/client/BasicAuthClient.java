@@ -76,7 +76,7 @@ public class BasicAuthClient extends BaseHttpClient {
     
     @Override
     protected String retrieveRedirectionUrl(final WebContext context) {
-        return this.callbackUrl;
+        return getContextualCallbackUrl(context);
     }
     
     @Override

@@ -154,7 +154,7 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
      * {@inheritDoc}
      */
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials) {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     

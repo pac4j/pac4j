@@ -125,8 +125,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      */
     @Override
     protected String retrieveRedirectionUrl(final WebContext context) {
-        final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
-                                                                       this.callbackUrl, this.renew, this.gateway);
+        final String contextualCasLoginUrl = prependHostToUrlIfNotPresent(this.casLoginUrl, context);
+        final String contextualCallbackUrl = getContextualCallbackUrl(context);
+
+        final String redirectionUrl = CommonUtils.constructRedirectUrl(contextualCasLoginUrl, SERVICE_PARAMETER,
+                                                                       contextualCallbackUrl, this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return redirectionUrl;
     }
@@ -225,10 +228,11 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @return the user profile
      */
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials) {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
         final String ticket = credentials.getServiceTicket();
         try {
-            final Assertion assertion = this.ticketValidator.validate(ticket, this.callbackUrl);
+            final String contextualCallbackUrl = getContextualCallbackUrl(context);
+            final Assertion assertion = this.ticketValidator.validate(ticket, contextualCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal : {}", principal);
             final CasProfile casProfile;

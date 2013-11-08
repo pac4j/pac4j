@@ -75,7 +75,7 @@ public final class CallbackController extends AbstractController {
         // has credentials
         if (credentials != null) {
             // get user profile
-            final CasProxyProfile casProxyProfile = (CasProxyProfile) client.getUserProfile(credentials);
+            final CasProxyProfile casProxyProfile = (CasProxyProfile) client.getUserProfile(credentials, context);
             // get proxy ticket
             final String proxyTicket = casProxyProfile.getProxyTicketFor(SERVICE_URL);
             return new ModelAndView(new RedirectView(CommonHelper.addParameter(SERVICE_URL, "ticket", proxyTicket)));

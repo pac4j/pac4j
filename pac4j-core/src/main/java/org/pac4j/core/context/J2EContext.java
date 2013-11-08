@@ -163,4 +163,31 @@ public class J2EContext implements WebContext {
     public void setResponseHeader(final String name, final String value) {
         this.response.setHeader(name, value);
     }
+
+    /**
+     * Return the server name.
+     *
+     * @return the server name
+     */
+    public String getServerName() {
+        return this.request.getServerName();
+    }
+
+    /**
+     * Return the server port.
+     *
+     * @return the server port
+     */
+    public int getServerPort() {
+        return this.request.getServerPort();
+    }
+
+    /**
+     * Return the scheme.
+     *
+     * @return the scheme
+     */
+    public String getScheme() {
+        return this.request.getScheme();
+    }
 }

@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -59,7 +60,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected String callbackUrl;
     
     private String name;
-    
+
+    private boolean enableContextualRedirects = false;
+
     /**
      * Clone the current client.
      * 
@@ -87,7 +90,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public String getCallbackUrl() {
         return this.callbackUrl;
     }
-    
+
+    public String getContextualCallbackUrl(WebContext context) {
+        return prependHostToUrlIfNotPresent(this.callbackUrl, context);
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
@@ -117,7 +124,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return retrieveRedirectionUrl(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
-            return CommonHelper.addParameter(getCallbackUrl(), NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
+            return CommonHelper.addParameter(getContextualCallbackUrl(context), NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
         }
     }
     
@@ -137,17 +144,17 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
     
-    public final U getUserProfile(final C credentials) {
+    public final U getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;
         }
         
-        return retrieveUserProfile(credentials);
+        return retrieveUserProfile(credentials, context);
     }
     
-    protected abstract U retrieveUserProfile(final C credentials);
+    protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
     
     /**
      * Return the implemented protocol.
@@ -160,5 +167,39 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,
                                      "isDirectRedirection", isDirectRedirection());
+    }
+
+    /**
+     * Returns if contextual redirects are enabled for this client
+     *
+     * @return if contextual redirects are enabled for this client
+     */
+    public boolean isEnableContextualRedirects() {
+        return enableContextualRedirects;
+    }
+
+    /**
+     * Sets whether contextual redirects are enabled for this client
+     */
+    public void setEnableContextualRedirects(boolean enableContextualRedirects) {
+        this.enableContextualRedirects = enableContextualRedirects;
+    }
+
+    protected String prependHostToUrlIfNotPresent(String url, WebContext webContext) {
+        if (this.enableContextualRedirects && url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(webContext.getScheme()).append("://").append(webContext.getServerName());
+
+            if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
+                sb.append(":").append(webContext.getServerPort());
+            }
+
+            sb.append(url.startsWith("/") ? url : "/"+url);
+
+            return sb.toString();
+        }
+
+        return url;
     }
 }

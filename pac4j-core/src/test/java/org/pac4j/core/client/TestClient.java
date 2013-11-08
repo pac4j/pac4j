@@ -153,7 +153,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         final Credentials credentials = client.getCredentials(context);
         logger.debug("credentials : {}", credentials);
         
-        final UserProfile profile = client.getUserProfile(credentials);
+        final UserProfile profile = client.getUserProfile(credentials, mockWebContext);
         return profile;
     }
     
