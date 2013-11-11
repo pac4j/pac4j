@@ -29,6 +29,11 @@ It's available under the Apache 2 license.
 <img src="http://www.pac4j.org/img/pac4j.png" />
 
 
+## Sequence diagram (example : CAS)
+
+<img src="http://www.pac4j.org/img/sequence_diagram.png" />
+
+
 ## Technical description
 
 This Maven project is composed of 6 modules :
