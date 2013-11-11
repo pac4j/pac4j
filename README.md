@@ -31,7 +31,7 @@ It's available under the Apache 2 license.
 
 ## Sequence diagram (example : CAS)
 
-<img src="http://www.pac4j.org/img/sequence_diagram.png" />
+<img src="http://www.pac4j.org/img/sequence_diagram.jpg" />
 
 
 ## Technical description
