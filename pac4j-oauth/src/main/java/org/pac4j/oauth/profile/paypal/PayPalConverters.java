@@ -1,5 +1,5 @@
-<!--
-   Copyright 2012 - 2013 Jerome Leleu
+/*
+  Copyright 2012 - 2013 Jerome Leleu
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -12,17 +12,18 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
--->
-<configuration>
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>pac4j test %d{HH:mm:ss} [%thread] %-5level %logger{10} - %msg%n%ex{short}</pattern>
-		</encoder>
-	</appender>
-	
-	<logger name="org.pac4j" level="DEBUG"/>
-	
-	<root level="WARN">
-		<appender-ref ref="STDOUT" />
-	</root>
-</configuration>
+ */
+package org.pac4j.oauth.profile.paypal;
+
+import org.pac4j.oauth.profile.converter.JsonObjectConverter;
+
+/**
+ * This class defines all the converters specific to PayPal.
+ * 
+ * @author Jerome Leleu
+ * @since 1.4.2
+ */
+public class PayPalConverters {
+    
+    public final static JsonObjectConverter addressConverter = new JsonObjectConverter(PayPalAddress.class);
+}

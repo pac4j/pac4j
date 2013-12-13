@@ -27,6 +27,7 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -85,7 +86,7 @@ public abstract class TestCasClient extends TestClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput username = form.getInputByName("username");
         username.setValueAttribute(USERNAME);

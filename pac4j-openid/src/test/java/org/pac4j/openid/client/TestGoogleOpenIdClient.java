@@ -28,6 +28,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.openid.profile.google.GoogleOpenIdProfile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -51,7 +52,7 @@ public class TestGoogleOpenIdClient extends TestClient implements TestsConstants
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");

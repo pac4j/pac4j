@@ -20,6 +20,7 @@ import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
@@ -55,8 +56,8 @@ public final class TestCasClientProxyMode extends TestCasClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
-        final String callbackUrl = super.getCallbackUrl(authorizationPage);
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
+        final String callbackUrl = super.getCallbackUrl(webClient, authorizationPage);
         logger.debug("callbackUrl : {}", callbackUrl);
         
         this.casClient.setCallbackUrl(SERVICE_URL);

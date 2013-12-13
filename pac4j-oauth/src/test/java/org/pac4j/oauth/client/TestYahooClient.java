@@ -33,6 +33,8 @@ import org.pac4j.oauth.profile.yahoo.YahooInterest;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -59,16 +61,16 @@ public class TestYahooClient extends TestOAuthClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getFormByName("login_form");
         final HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@yahoo.fr");
         final HtmlPasswordInput passwd = form.getInputByName("passwd");
         passwd.setValueAttribute("testpwdscribeup");
-        HtmlSubmitInput submit = form.getInputByName(".save");
-        final HtmlPage confirmPage = submit.click();
+        final HtmlButton button = form.getButtonByName(".save");
+        final HtmlPage confirmPage = button.click();
         form = confirmPage.getFormByName("rcForm");
-        submit = form.getInputByName("agree");
+        final HtmlSubmitInput submit = form.getInputByName("agree");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);

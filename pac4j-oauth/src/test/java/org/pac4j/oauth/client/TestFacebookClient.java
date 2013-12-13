@@ -41,6 +41,7 @@ import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import org.pac4j.oauth.profile.facebook.FacebookWork;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -89,7 +90,7 @@ public class TestFacebookClient extends TestOAuthClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("email");
         email.setValueAttribute("testscribeup@gmail.com");
@@ -198,7 +199,7 @@ public class TestFacebookClient extends TestOAuthClient {
         assertEquals("Book genre", book.getCategory());
         assertEquals(1330030350000L, book.getCreatedTime().getTime());
         final List<FacebookInfo> likes = profile.getLikes();
-        assertEquals(9, likes.size());
+        assertEquals(8, likes.size());
         final FacebookInfo like = likes.get(0);
         assertEquals("Boxing", like.getName());
         assertEquals("105648929470083", like.getId());

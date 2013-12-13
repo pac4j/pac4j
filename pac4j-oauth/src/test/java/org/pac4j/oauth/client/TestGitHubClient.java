@@ -24,6 +24,7 @@ import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -49,7 +50,7 @@ public class TestGitHubClient extends TestOAuthClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(1);
         final HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
@@ -84,7 +85,7 @@ public class TestGitHubClient extends TestOAuthClient {
                             "testscribeup",
                             Gender.UNSPECIFIED,
                             null,
-                            "https://secure.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars",
+                            "gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https%3A%2F%2Fidenticons.github.com%2F4899e444e4b0ddd35831a44c41c54a79.png",
                             "https://github.com/testscribeup", "Paris");
         assertEquals("User", profile.getType());
         assertEquals("ScribeUp", profile.getBlog());

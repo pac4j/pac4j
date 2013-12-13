@@ -87,7 +87,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
             
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
             
-            final String callbackUrl = getCallbackUrl(redirectionPage);
+            final String callbackUrl = getCallbackUrl(webClient, redirectionPage);
             
             final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
             
@@ -143,7 +143,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         return loginPage;
     }
     
-    protected abstract String getCallbackUrl(HtmlPage authorizationPage) throws Exception;
+    protected abstract String getCallbackUrl(final WebClient webClient, HtmlPage authorizationPage) throws Exception;
     
     protected UserProfile getCredentialsAndProfile(final Client client, final WebContext context,
                                                    final String callbackUrl) throws Exception {
@@ -174,7 +174,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         if (pictureUrl == null) {
             assertNull(profile.getPictureUrl());
         } else {
-            assertTrue(profile.getPictureUrl().startsWith(pictureUrl));
+            assertTrue(profile.getPictureUrl().contains(pictureUrl));
         }
         if (profileUrl == null) {
             assertNull(profile.getProfileUrl());

@@ -23,7 +23,7 @@ import org.pac4j.oauth.profile.google2.Google2Profile;
 import org.scribe.builder.api.GoogleApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
-import org.scribe.oauth.ExtendedOAuth20ServiceImpl;
+import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -83,12 +83,12 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         } else {
             this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
-        this.service = new ExtendedOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
-                                                                                         this.callbackUrl,
-                                                                                         SignatureType.Header,
-                                                                                         this.scopeValue, null),
-                                                      this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                      this.proxyPort);
+        this.service = new ProxyOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
+                                                                                      this.callbackUrl,
+                                                                                      SignatureType.Header,
+                                                                                      this.scopeValue, null),
+                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
+                                                   this.proxyPort, false, true);
     }
     
     @Override

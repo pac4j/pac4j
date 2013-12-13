@@ -226,8 +226,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         final long t0 = System.currentTimeMillis();
         final ProxyOAuthRequest request = createProxyRequest(dataUrl);
         this.service.signRequest(accessToken, request);
-        // if WordPress
-        if (this instanceof WordPressClient) {
+        // if WordPress or Paypal
+        if (this instanceof WordPressClient || this instanceof PayPalClient) {
             request.addHeader("Authorization", "Bearer " + accessToken.getToken());
         }
         final Response response = request.send();

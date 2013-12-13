@@ -38,9 +38,17 @@ public class ProxyOAuth20ServiceImpl extends OAuth20ServiceImpl {
     protected final int readTimeout;
     protected final String proxyHost;
     protected final int proxyPort;
+    protected final boolean getParameter;
+    protected final boolean addGrantType;
     
     public ProxyOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
                                    final int readTimeout, final String proxyHost, final int proxyPort) {
+        this(api, config, connectTimeout, readTimeout, proxyHost, proxyPort, true, false);
+    }
+    
+    public ProxyOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
+                                   final int readTimeout, final String proxyHost, final int proxyPort,
+                                   final boolean getParameter, final boolean addGrantType) {
         super(api, config);
         this.api = api;
         this.config = config;
@@ -48,6 +56,8 @@ public class ProxyOAuth20ServiceImpl extends OAuth20ServiceImpl {
         this.readTimeout = readTimeout;
         this.proxyHost = proxyHost;
         this.proxyPort = proxyPort;
+        this.getParameter = getParameter;
+        this.addGrantType = addGrantType;
     }
     
     @Override
@@ -55,12 +65,29 @@ public class ProxyOAuth20ServiceImpl extends OAuth20ServiceImpl {
         final OAuthRequest request = new ProxyOAuthRequest(this.api.getAccessTokenVerb(),
                                                            this.api.getAccessTokenEndpoint(), this.connectTimeout,
                                                            this.readTimeout, this.proxyHost, this.proxyPort);
-        request.addQuerystringParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
-        request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());
-        request.addQuerystringParameter(OAuthConstants.CODE, verifier.getValue());
-        request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, this.config.getCallback());
-        if (this.config.hasScope())
-            request.addQuerystringParameter(OAuthConstants.SCOPE, this.config.getScope());
+        if (this.getParameter) {
+            request.addQuerystringParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
+            request.addQuerystringParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());
+            request.addQuerystringParameter(OAuthConstants.CODE, verifier.getValue());
+            request.addQuerystringParameter(OAuthConstants.REDIRECT_URI, this.config.getCallback());
+            if (this.config.hasScope()) {
+                request.addQuerystringParameter(OAuthConstants.SCOPE, this.config.getScope());
+            }
+            if (this.addGrantType) {
+                request.addQuerystringParameter("grant_type", "authorization_code");
+            }
+        } else {
+            request.addBodyParameter(OAuthConstants.CLIENT_ID, this.config.getApiKey());
+            request.addBodyParameter(OAuthConstants.CLIENT_SECRET, this.config.getApiSecret());
+            request.addBodyParameter(OAuthConstants.CODE, verifier.getValue());
+            request.addBodyParameter(OAuthConstants.REDIRECT_URI, this.config.getCallback());
+            if (this.config.hasScope()) {
+                request.addBodyParameter(OAuthConstants.SCOPE, this.config.getScope());
+            }
+            if (this.addGrantType) {
+                request.addBodyParameter("grant_type", "authorization_code");
+            }
+        }
         final Response response = request.send();
         return this.api.getAccessTokenExtractor().extract(response.getBody());
     }

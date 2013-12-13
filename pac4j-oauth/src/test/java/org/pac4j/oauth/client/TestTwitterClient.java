@@ -28,6 +28,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -54,7 +55,7 @@ public class TestTwitterClient extends TestOAuthClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput sessionUsernameOrEmail = form.getInputByName("session[username_or_email]");
         sessionUsernameOrEmail.setValueAttribute("testscribeup@gmail.com");
@@ -81,8 +82,7 @@ public class TestTwitterClient extends TestOAuthClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,
-                            Locale.FRENCH,
-                            "http://a0.twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                            Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
                             "http://t.co/fNjYqp7wZ8", "New York");
         assertFalse(profile.getContributorsEnabled());
         assertEquals(TestsHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
@@ -100,7 +100,7 @@ public class TestTwitterClient extends TestOAuthClient {
         assertEquals(0, profile.getListedCount().intValue());
         assertFalse(profile.getNotifications());
         assertTrue(profile.getProfileBackgroundColor() instanceof Color);
-        assertEquals("http://a0.twimg.com/images/themes/theme1/bg.png", profile.getProfileBackgroundImageUrl());
+        assertTrue(profile.getProfileBackgroundImageUrl().contains(".twimg.com/images/themes/theme1/bg.png"));
         assertTrue(profile.getProfileBackgroundImageUrlHttps().endsWith("/images/themes/theme1/bg.png"));
         assertFalse(profile.getProfileBackgroundTile());
         assertTrue(profile.getProfileImageUrlHttps()
@@ -114,7 +114,7 @@ public class TestTwitterClient extends TestOAuthClient {
         assertNull(profile.getShowAllInlineMedia());
         assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(7200, profile.getUtcOffset().intValue());
+        assertEquals(3600, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertNotNull(profile.getAccessSecret());
         assertEquals(37, profile.getAttributes().size());

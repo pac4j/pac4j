@@ -28,6 +28,7 @@ import org.pac4j.oauth.client.Google2Client.Google2Scope;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -76,7 +77,7 @@ public class TestGoogle2Client extends TestOAuthClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
@@ -114,7 +115,7 @@ public class TestGoogle2Client extends TestOAuthClient {
                             "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                             "https://plus.google.com/113675986756217860428", null);
         assertTrue(profile.getVerifiedEmail());
-        assertEquals("0001-03-10", profile.getBirthday().toString());
-        assertEquals(11, profile.getAttributes().size());
+        assertNull(profile.getBirthday());
+        assertEquals(10, profile.getAttributes().size());
     }
 }

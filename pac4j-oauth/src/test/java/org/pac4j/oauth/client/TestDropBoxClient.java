@@ -25,6 +25,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -50,7 +51,7 @@ public class TestDropBoxClient extends TestOAuthClient {
     }
     
     @Override
-    protected String getCallbackUrl(final HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput login = form.getInputByName("login_email");
         login.setValueAttribute("testscribeup@gmail.com");
@@ -80,7 +81,7 @@ public class TestDropBoxClient extends TestOAuthClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
-                            null, "http://db.tt/RvmZyvJa", null);
+                            null, "https://db.tt/RvmZyvJa", null);
         assertEquals(0L, profile.getShared().longValue());
         assertEquals(1410412L, profile.getNormal().longValue());
         assertEquals(2147483648L, profile.getQuota().longValue());

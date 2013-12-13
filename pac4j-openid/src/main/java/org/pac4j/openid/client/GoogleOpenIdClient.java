@@ -59,11 +59,14 @@ public class GoogleOpenIdClient extends BaseOpenIdClient<GoogleOpenIdProfile> {
     @Override
     protected FetchRequest getFetchRequest() throws MessageException {
         final FetchRequest fetchRequest = FetchRequest.createFetchRequest();
-        fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.COUNTRY, "http://axschema.org/contact/country/home", true);
+        fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.COUNTRY, "http://axschema.org/contact/country/home",
+                                  true);
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.EMAIL, "http://axschema.org/contact/email", true);
-        fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.FIRSTNAME, "http://axschema.org/namePerson/first", true);
+        fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.FIRSTNAME, "http://axschema.org/namePerson/first",
+                                  true);
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.LANGUAGE, "http://axschema.org/pref/language", true);
-        fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.LASTNAME, "http://axschema.org/namePerson/last", true);
+        fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.LASTNAME, "http://axschema.org/namePerson/last",
+                                  true);
         logger.debug("fetchRequest: {}", fetchRequest);
         return fetchRequest;
     }
@@ -88,6 +91,6 @@ public class GoogleOpenIdClient extends BaseOpenIdClient<GoogleOpenIdProfile> {
     
     @Override
     protected boolean isDirectRedirection() {
-        return false;
+        return true;
     }
 }
