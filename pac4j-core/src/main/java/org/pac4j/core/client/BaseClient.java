@@ -60,9 +60,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected String callbackUrl;
     
     private String name;
-
+    
     private boolean enableContextualRedirects = false;
-
+    
     /**
      * Clone the current client.
      * 
@@ -90,11 +90,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public String getCallbackUrl() {
         return this.callbackUrl;
     }
-
-    public String getContextualCallbackUrl(WebContext context) {
+    
+    public String getContextualCallbackUrl(final WebContext context) {
         return prependHostToUrlIfNotPresent(this.callbackUrl, context);
     }
-
+    
     public void setName(final String name) {
         this.name = name;
     }
@@ -124,7 +124,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return retrieveRedirectionUrl(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
-            return CommonHelper.addParameter(getContextualCallbackUrl(context), NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
+            return CommonHelper.addParameter(getContextualCallbackUrl(context), NEEDS_CLIENT_REDIRECTION_PARAMETER,
+                                             "true");
         }
     }
     
@@ -157,6 +158,19 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
     
     /**
+     * For backward compatibility.
+     */
+    public final U getUserProfile(final C credentials) {
+        init();
+        logger.debug("credentials : {}", credentials);
+        if (credentials == null) {
+            return null;
+        }
+        
+        return retrieveUserProfile(credentials, null);
+    }
+    
+    /**
      * Return the implemented protocol.
      * 
      * @return the implemented protocol
@@ -168,38 +182,39 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,
                                      "isDirectRedirection", isDirectRedirection());
     }
-
+    
     /**
      * Returns if contextual redirects are enabled for this client
-     *
+     * 
      * @return if contextual redirects are enabled for this client
      */
     public boolean isEnableContextualRedirects() {
-        return enableContextualRedirects;
+        return this.enableContextualRedirects;
     }
-
+    
     /**
      * Sets whether contextual redirects are enabled for this client
      */
-    public void setEnableContextualRedirects(boolean enableContextualRedirects) {
+    public void setEnableContextualRedirects(final boolean enableContextualRedirects) {
         this.enableContextualRedirects = enableContextualRedirects;
     }
-
-    protected String prependHostToUrlIfNotPresent(String url, WebContext webContext) {
-        if (this.enableContextualRedirects && url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
-            StringBuilder sb = new StringBuilder();
-
+    
+    protected String prependHostToUrlIfNotPresent(final String url, final WebContext webContext) {
+        if (webContext != null && this.enableContextualRedirects && url != null && !url.startsWith("http://")
+            && !url.startsWith("https://")) {
+            final StringBuilder sb = new StringBuilder();
+            
             sb.append(webContext.getScheme()).append("://").append(webContext.getServerName());
-
+            
             if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
                 sb.append(":").append(webContext.getServerPort());
             }
-
-            sb.append(url.startsWith("/") ? url : "/"+url);
-
+            
+            sb.append(url.startsWith("/") ? url : "/" + url);
+            
             return sb.toString();
         }
-
+        
         return url;
     }
 }

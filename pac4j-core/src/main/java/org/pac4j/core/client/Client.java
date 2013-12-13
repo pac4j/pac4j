@@ -65,6 +65,7 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * Get the user profile from the credentials.
      * 
      * @param credentials
+     * @param context
      * @return the user profile
      */
     public U getUserProfile(C credentials, WebContext context);
