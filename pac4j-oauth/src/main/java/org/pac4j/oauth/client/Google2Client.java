@@ -15,8 +15,10 @@
  */
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.google2.Google2Profile;
@@ -25,53 +27,52 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
  * This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.
- * <p />
- * The <i>scope</i> is by default : {@link Google2Scope#EMAIL}, but it can also but set to : {@link Google2Scope#PROFILE} or
- * {@link Google2Scope#EMAIL_AND_PROFILE}.
- * <p />
+ * <p/>
+ * The <i>scope</i> is by default : {@link Google2Scope#EMAIL}, but it can also but set to : {@link
+ * Google2Scope#PROFILE} or {@link Google2Scope#EMAIL_AND_PROFILE}.
+ * <p/>
  * It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.
- * <p />
+ * <p/>
  * More information at https://developers.google.com/accounts/docs/OAuth2Login
- * 
- * @see org.pac4j.oauth.profile.google2.Google2Profile
+ *
  * @author Jerome Leleu
+ * @see org.pac4j.oauth.profile.google2.Google2Profile
  * @since 1.2.0
  */
 public class Google2Client extends BaseOAuth20Client<Google2Profile> {
-    
     public enum Google2Scope {
         EMAIL,
         PROFILE,
         EMAIL_AND_PROFILE
-    };
-    
+    }
+
+    ;
+
     protected final String PROFILE_SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
-    
+
     protected final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-    
+
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
-    
+
     protected String scopeValue;
-    
+
     public Google2Client() {
     }
-    
+
     public Google2Client(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
     protected Google2Client newClient() {
         final Google2Client newClient = new Google2Client();
         newClient.setScope(this.scope);
         return newClient;
     }
-    
+
     @Override
     protected void internalInit() {
         super.internalInit();
@@ -83,19 +84,16 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         } else {
             this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
-        this.service = new ProxyOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
-                                                                                      this.callbackUrl,
-                                                                                      SignatureType.Header,
-                                                                                      this.scopeValue, null),
-                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                   this.proxyPort, false, true);
+        this.service = new ProxyOAuth20ServiceImpl(new GoogleApi20(),
+                new OAuthConfig(this.key, this.secret, this.callbackUrl, SignatureType.Header, this.scopeValue, null),
+                this.connectTimeout, this.readTimeout, this.proxyHost, this.proxyPort, false, true);
     }
-    
+
     @Override
     protected String getProfileUrl() {
         return "https://www.googleapis.com/oauth2/v2/userinfo";
     }
-    
+
     @Override
     protected Google2Profile extractUserProfile(final String body) {
         final Google2Profile profile = new Google2Profile();
@@ -108,22 +106,28 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         }
         return profile;
     }
-    
+
     public Google2Scope getScope() {
         return this.scope;
     }
-    
+
     public void setScope(final Google2Scope scope) {
         this.scope = scope;
     }
-    
+
     @Override
     protected boolean requiresStateParameter() {
         return false;
     }
-    
+
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
+        final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
+        // user has denied permissions
+        if ("access_denied".equals(error)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
