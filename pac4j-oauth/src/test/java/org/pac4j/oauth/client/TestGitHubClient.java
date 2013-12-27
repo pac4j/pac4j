@@ -39,6 +39,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class TestGitHubClient extends TestOAuthClient {
     
+    @Override
+    public void testClone() {
+        final GitHubClient oldClient = new GitHubClient();
+        oldClient.setScope(SCOPE);
+        final GitHubClient client = (GitHubClient) internalTestClone(oldClient);
+        assertEquals(oldClient.getScope(), client.getScope());
+    }
+    
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -46,6 +54,7 @@ public class TestGitHubClient extends TestOAuthClient {
         githubClient.setKey("62374f5573a89a8f9900");
         githubClient.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
         githubClient.setCallbackUrl(PAC4J_BASE_URL);
+        githubClient.setScope("user");
         return githubClient;
     }
     

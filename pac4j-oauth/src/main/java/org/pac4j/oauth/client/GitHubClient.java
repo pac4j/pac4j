@@ -29,6 +29,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * This class is the OAuth client to authenticate users in GitHub.
  * <p />
+ * The <i>scope</i> can be defined to require specific permissions from the user by using the {@link #setScope(String)} method. By default,
+ * the <i>scope</i> is : <code>user</code>.
+ * <p />
  * It returns a {@link org.pac4j.oauth.profile.github.GitHubProfile}.
  * <p />
  * More information at http://developer.github.com/v3/users/
@@ -38,6 +41,10 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.0.0
  */
 public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
+    
+    public final static String DEFAULT_SCOPE = "user";
+    
+    protected String scope = DEFAULT_SCOPE;
     
     public GitHubClient() {
     }
@@ -49,17 +56,19 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     
     @Override
     protected GitHubClient newClient() {
-        return new GitHubClient();
+        GitHubClient client = new GitHubClient();
+        client.setScope(this.scope);
+        return client;
     }
     
     @Override
     protected void internalInit() {
         super.internalInit();
-        this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(),
-                                                   new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                   SignatureType.Header, "user", null),
-                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                   this.proxyPort);
+        this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(), new OAuthConfig(this.key, this.secret,
+                                                                                    this.callbackUrl,
+                                                                                    SignatureType.Header, this.scope,
+                                                                                    null), this.connectTimeout,
+                                                   this.readTimeout, this.proxyHost, this.proxyPort);
     }
     
     @Override
@@ -88,5 +97,13 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
+    }
+    
+    public String getScope() {
+        return this.scope;
+    }
+    
+    public void setScope(final String scope) {
+        this.scope = scope;
     }
 }
