@@ -137,7 +137,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
-        final String redirectionUrl = baseClient.getRedirectionUrl(context, true);
+        final String redirectionUrl = baseClient.getRedirectionUrl(context, true, false);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         final HtmlPage loginPage = webClient.getPage(redirectionUrl);
         return loginPage;

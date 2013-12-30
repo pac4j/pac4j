@@ -27,7 +27,7 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class RequiresHttpAction extends Exception {
     
-    private static final long serialVersionUID = -7818641324070893053L;
+    private static final long serialVersionUID = -3959659239684160075L;
     
     protected int code;
     
@@ -71,9 +71,23 @@ public class RequiresHttpAction extends Exception {
      * @return a basic auth popup credentials
      */
     public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
-        context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        if (CommonHelper.isNotBlank(realmName)) {
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
+    }
+    
+    /**
+     * Build a forbidden response.
+     * 
+     * @param message
+     * @param context
+     * @return a forbidden response
+     */
+    public static RequiresHttpAction forbidden(final String message, final WebContext context) {
+        context.setResponseStatus(HttpConstants.FORBIDDEN);
+        return new RequiresHttpAction(message, HttpConstants.FORBIDDEN);
     }
     
     /**

@@ -79,9 +79,9 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         return basicAuthClient;
     }
     
-    public void testRedirectionUrl() {
+    public void testRedirectionUrl() throws RequiresHttpAction {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
-        assertEquals(CALLBACK_URL, basicAuthClient.getRedirectionUrl(MockWebContext.create()));
+        assertEquals(CALLBACK_URL, basicAuthClient.getRedirectionUrl(MockWebContext.create(), false, false));
     }
     
     public void testGetCredentialsMissingHeader() {

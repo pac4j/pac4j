@@ -21,6 +21,7 @@ import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -58,10 +59,10 @@ public class TestMyOpenIdClient extends TestClient implements TestsConstants {
         TestsHelper.initShouldFail(client, "userParameterName cannot be blank");
     }
     
-    public void testMissingUser() {
+    public void testMissingUser() throws RequiresHttpAction {
         final MyOpenIdClient client = (MyOpenIdClient) getClient();
         try {
-            client.getRedirectionUrl(MockWebContext.create(), true);
+            client.getRedirectionUrl(MockWebContext.create(), true, false);
             fail("should fail because of missing OpenID user");
         } catch (final TechnicalException e) {
             assertEquals("openIdUser cannot be blank", e.getMessage());

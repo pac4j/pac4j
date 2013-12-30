@@ -38,8 +38,10 @@ import org.slf4j.LoggerFactory;
  * {@link #getRedirectionUrl(WebContext)} method will always return the redirection to the provider where as if it's false, the redirection
  * url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the redirection,
  * which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
- * To force a direct redirection, the {@link #getRedirectionUrl(WebContext, boolean)} must be used with <code>true</code> for the
- * <code>forceDirectRedirection</code> parameter.</li>
+ * To force a direct redirection, the {@link #getRedirectionUrl(WebContext, boolean, boolean)} must be used with <code>true</code> for the
+ * <code>forceDirectRedirection</code> parameter</li>
+ * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
+ * which will be completed according to the current host, port and scheme. Disabled by default.</li>
  * </ul>
  * <p />
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
@@ -55,7 +57,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     
     protected static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
     
-    public static final String NEEDS_CLIENT_REDIRECTION_PARAMETER = "needs_client_redirection";
+    public final static String NEEDS_CLIENT_REDIRECTION_PARAMETER = "needs_client_redirection";
+    
+    public final static String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
     
     protected String callbackUrl;
     
@@ -113,14 +117,25 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
     
-    public final String getRedirectionUrl(final WebContext context) {
-        return getRedirectionUrl(context, false);
-    }
-    
-    public final String getRedirectionUrl(final WebContext context, final boolean forceDirectRedirection) {
+    public final String getRedirectionUrl(final WebContext context, final boolean protectedTarget,
+                                          final boolean ajaxRequest) throws RequiresHttpAction {
         init();
+        // it's an AJAX request -> unauthorized (instead of a redirection)
+        if (ajaxRequest) {
+            throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
+        }
+        // authentication has already been tried
+        String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        if (CommonHelper.isNotBlank(attemptedAuth)) {
+            context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
+            // protected target -> forbidden
+            if (protectedTarget) {
+                logger.error("authentication already tried and protected target -> forbidden");
+                throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
+            }
+        }
         // it's a direct redirection or force the redirection -> return the redirection url
-        if (isDirectRedirection() || forceDirectRedirection) {
+        if (isDirectRedirection() || protectedTarget) {
             return retrieveRedirectionUrl(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
@@ -139,7 +154,14 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             throw RequiresHttpAction.redirect("Needs client redirection", context, retrieveRedirectionUrl(context));
         } else {
             // else get the credentials
-            return retrieveCredentials(context);
+            C credentials = retrieveCredentials(context);
+            // no credentials -> save this authentication has already been tried and failed
+            if (credentials == null) {
+                context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+            } else {
+                context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
+            }
+            return credentials;
         }
     }
     
@@ -158,19 +180,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
     
     /**
-     * For backward compatibility.
-     */
-    public final U getUserProfile(final C credentials) {
-        init();
-        logger.debug("credentials : {}", credentials);
-        if (credentials == null) {
-            return null;
-        }
-        
-        return retrieveUserProfile(credentials, null);
-    }
-    
-    /**
      * Return the implemented protocol.
      * 
      * @return the implemented protocol
@@ -180,7 +189,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,
-                                     "isDirectRedirection", isDirectRedirection());
+                                     "isDirectRedirection", isDirectRedirection(), "enableContextualRedirects",
+                                     isEnableContextualRedirects());
     }
     
     /**

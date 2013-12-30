@@ -68,14 +68,14 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         assertEquals(LOGIN_URL, casClient.getCasLoginUrl());
     }
     
-    public void testRenew() {
+    public void testRenew() throws RequiresHttpAction {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
-        assertFalse(casClient.getRedirectionUrl(MockWebContext.create()).indexOf("renew=true") >= 0);
+        assertFalse(casClient.getRedirectionUrl(MockWebContext.create(), false, false).indexOf("renew=true") >= 0);
         casClient.setRenew(true);
         casClient.reinit();
-        assertTrue(casClient.getRedirectionUrl(MockWebContext.create()).indexOf("renew=true") >= 0);
+        assertTrue(casClient.getRedirectionUrl(MockWebContext.create(), false, false).indexOf("renew=true") >= 0);
     }
     
     public void testGateway() throws RequiresHttpAction {
@@ -83,10 +83,10 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
         final MockWebContext context = MockWebContext.create();
-        assertFalse(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
+        assertFalse(casClient.getRedirectionUrl(context, false, false).indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
         casClient.reinit();
-        assertTrue(casClient.getRedirectionUrl(context).indexOf("gateway=true") >= 0);
+        assertTrue(casClient.getRedirectionUrl(context, false, false).indexOf("gateway=true") >= 0);
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
     }

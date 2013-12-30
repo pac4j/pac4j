@@ -84,7 +84,7 @@ public class TestWindowsLiveClient extends TestOAuthClient {
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, Gender.UNSPECIFIED,
                             Locale.FRANCE, null, "https://profile.live.com/", null);
-        assertEquals(TestsHelper.getFormattedDate(1380580126000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
+        assertEquals(TestsHelper.getFormattedDate(1388227598000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
             .getUpdatedTime().toString());
         assertEquals(7, profile.getAttributes().size());
     }

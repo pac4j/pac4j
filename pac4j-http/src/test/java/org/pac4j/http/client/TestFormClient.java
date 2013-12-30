@@ -78,9 +78,9 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator());
     }
     
-    public void testRedirectionUrl() {
+    public void testRedirectionUrl() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
-        assertEquals(LOGIN_URL, formClient.getRedirectionUrl(MockWebContext.create()));
+        assertEquals(LOGIN_URL, formClient.getRedirectionUrl(MockWebContext.create(), false, false));
     }
     
     public void testGetCredentialsMissingUsername() {
@@ -143,7 +143,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                                                                                               formClient.getName()),
-                                                                                              context);
+                                                              context);
         assertEquals(USERNAME, profile.getId());
         assertEquals(HttpProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
