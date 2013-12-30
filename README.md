@@ -120,7 +120,7 @@ For example:
       <version>1.4.1</version>
     </dependency>
 
-As the pac4j snapshots libraries are stored in the [Sonatype snapshots repository(https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/), this repository may be added in the Maven *pom.xml* file:
+As the pac4j snapshots libraries are stored in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/), this repository may need be added in the Maven *pom.xml* file:
 
     <repository>
       <id>sonatype-nexus-snapshots</id>
