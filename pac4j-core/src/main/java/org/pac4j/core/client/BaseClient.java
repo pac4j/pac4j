@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
- * {@link #getRedirectionUrl(WebContext)} method will always return the redirection to the provider where as if it's false, the redirection
- * url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the redirection,
- * which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
+ * {@link #getRedirectionUrl(WebContext,boolean,boolean)} method will always return the redirection to the provider where as if it's false,
+ * the redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
+ * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
  * To force a direct redirection, the {@link #getRedirectionUrl(WebContext, boolean, boolean)} must be used with <code>true</code> for the
  * <code>forceDirectRedirection</code> parameter</li>
  * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls

@@ -34,7 +34,7 @@ public abstract class XmlObject extends RawDataObject implements Serializable {
     /**
      * Build an object from XML.
      * 
-     * @param json
+     * @param xml
      */
     public final void buildFrom(final String xml) {
         if (keepRawData) {
@@ -46,7 +46,7 @@ public abstract class XmlObject extends RawDataObject implements Serializable {
     /**
      * Build an object from a XML text.
      * 
-     * @param text
+     * @param xml
      */
     protected abstract void buildFromXml(String xml);
     

@@ -33,8 +33,8 @@ import org.scribe.oauth.LinkedInOAuth20ServiceImpl;
  * <p />
  * It returns a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile}.
  * <p />
- * The scope (by default : <code>r_fullprofile</code>) can be specified using the {@#setScope(String)} method, as well
- * as the returned fields through the {@#setFields(String)} method.
+ * The scope (by default : <code>r_fullprofile</code>) can be specified using the {@link #setScope(String)} method, as well as the returned
+ * fields through the {@link #setFields(String)} method.
  * <p />
  * More information at https://developer.linkedin.com/documents/profile-api
  * 
@@ -88,8 +88,9 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         final String errorDescription = context.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
         // user has denied permissions
-        if ("access_denied".equals(error) && ( "the+user+denied+your+request".equals(errorDescription) ||
-      		  "the user denied your request".equals(errorDescription))) {
+        if ("access_denied".equals(error)
+            && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
+                .equals(errorDescription))) {
             return true;
         } else {
             return false;
