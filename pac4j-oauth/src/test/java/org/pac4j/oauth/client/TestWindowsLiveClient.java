@@ -22,7 +22,6 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -84,8 +83,7 @@ public class TestWindowsLiveClient extends TestOAuthClient {
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Test", "ScribeUP", "Test ScribeUP", null, Gender.UNSPECIFIED,
                             Locale.FRANCE, null, "https://profile.live.com/", null);
-        assertEquals(TestsHelper.getFormattedDate(1388227598000L, "yyyy-MM-dd'T'HH:mm:ssz", null), profile
-            .getUpdatedTime().toString());
+        assertNotNull(profile.getUpdatedTime());
         assertEquals(7, profile.getAttributes().size());
     }
 }

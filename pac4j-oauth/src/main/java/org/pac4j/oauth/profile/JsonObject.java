@@ -15,8 +15,6 @@
  */
 package org.pac4j.oauth.profile;
 
-import java.io.Serializable;
-
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.RawDataObject;
 
@@ -28,11 +26,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public abstract class JsonObject extends RawDataObject implements Serializable {
+public abstract class JsonObject extends RawDataObject {
     
-    private static final long serialVersionUID = 2300984913280001378L;
-    
-    protected String json = "";
+    private static final long serialVersionUID = 4261523645471006190L;
     
     /**
      * Build an object from JSON (String or JsonNode).
@@ -47,7 +43,7 @@ public abstract class JsonObject extends RawDataObject implements Serializable {
             } else if (json instanceof JsonNode) {
                 final JsonNode jsonNode = (JsonNode) json;
                 if (keepRawData) {
-                    this.json = jsonNode.toString();
+                    this.data = jsonNode.toString();
                 }
                 buildFromJson(jsonNode);
             } else {
@@ -62,9 +58,4 @@ public abstract class JsonObject extends RawDataObject implements Serializable {
      * @param json
      */
     protected abstract void buildFromJson(JsonNode json);
-    
-    @Override
-    public String toString() {
-        return this.json;
-    }
 }

@@ -15,8 +15,6 @@
  */
 package org.pac4j.oauth.profile;
 
-import java.io.Serializable;
-
 import org.pac4j.core.profile.RawDataObject;
 
 /**
@@ -25,11 +23,9 @@ import org.pac4j.core.profile.RawDataObject;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public abstract class XmlObject extends RawDataObject implements Serializable {
+public abstract class XmlObject extends RawDataObject {
     
-    private static final long serialVersionUID = -4572005373483625065L;
-    
-    protected String xml = "";
+    private static final long serialVersionUID = 7281757045791685668L;
     
     /**
      * Build an object from XML.
@@ -38,7 +34,7 @@ public abstract class XmlObject extends RawDataObject implements Serializable {
      */
     public final void buildFrom(final String xml) {
         if (keepRawData) {
-            this.xml = xml;
+            this.data = xml;
         }
         buildFromXml(xml);
     }
@@ -49,9 +45,4 @@ public abstract class XmlObject extends RawDataObject implements Serializable {
      * @param xml
      */
     protected abstract void buildFromXml(String xml);
-    
-    @Override
-    public String toString() {
-        return this.xml;
-    }
 }
