@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class FacebookMusicData extends JsonObject {
     
-    private static final long serialVersionUID = 7221203529595022102L;
+    private static final long serialVersionUID = 3242237840580051260L;
     
     private String id;
     
@@ -61,5 +61,10 @@ public final class FacebookMusicData extends JsonObject {
     
     public String getTitle() {
         return this.title;
+    }
+    
+    @Override
+    protected boolean isRootObject() {
+        return false;
     }
 }

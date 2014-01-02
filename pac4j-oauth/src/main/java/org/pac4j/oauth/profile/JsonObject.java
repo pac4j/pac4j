@@ -42,7 +42,7 @@ public abstract class JsonObject extends RawDataObject {
                 buildFromJson(JsonHelper.getFirstNode(s));
             } else if (json instanceof JsonNode) {
                 final JsonNode jsonNode = (JsonNode) json;
-                if (keepRawData) {
+                if (keepRawData && isRootObject()) {
                     this.data = jsonNode.toString();
                 }
                 buildFromJson(jsonNode);

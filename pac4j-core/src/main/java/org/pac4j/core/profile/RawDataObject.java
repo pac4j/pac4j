@@ -35,6 +35,10 @@ public abstract class RawDataObject implements Serializable {
         RawDataObject.keepRawData = keepRawData;
     }
     
+    protected boolean isRootObject() {
+        return true;
+    }
+    
     @Override
     public String toString() {
         return this.data;

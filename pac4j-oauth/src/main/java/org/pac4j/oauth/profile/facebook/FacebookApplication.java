@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public final class FacebookApplication extends FacebookObject {
     
-    private static final long serialVersionUID = 2931580603565785300L;
+    private static final long serialVersionUID = 8888597071833762957L;
     
     private String namespace;
     
@@ -36,6 +36,11 @@ public final class FacebookApplication extends FacebookObject {
     protected void buildFromJson(final JsonNode json) {
         super.buildFromJson(json);
         this.namespace = (String) JsonHelper.convert(Converters.stringConverter, json, "namespace");
+    }
+    
+    @Override
+    protected boolean isRootObject() {
+        return false;
     }
     
     public String getNamespace() {

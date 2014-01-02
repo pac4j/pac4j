@@ -33,7 +33,7 @@ public abstract class XmlObject extends RawDataObject {
      * @param xml
      */
     public final void buildFrom(final String xml) {
-        if (keepRawData) {
+        if (keepRawData && isRootObject()) {
             this.data = xml;
         }
         buildFromXml(xml);
