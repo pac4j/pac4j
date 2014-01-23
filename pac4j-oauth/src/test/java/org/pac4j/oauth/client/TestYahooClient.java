@@ -99,7 +99,7 @@ public class TestYahooClient extends TestOAuthClient {
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@yahoo.fr", "Test", "ScribeUP", "Test ScribeUP", "Test",
                             Gender.MALE, Locale.FRANCE,
-                            "http://avatars.zenfs.com/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",
+                            "/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",
                             "http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", "Chatou, Ile-de-France");
         assertEquals("my profile", profile.getAboutMe());
         final List<YahooAddress> addresses = profile.getAddresses();
@@ -133,7 +133,7 @@ public class TestYahooClient extends TestOAuthClient {
         assertEquals("HOME", email.getType());
         assertEquals(Gender.MALE, profile.getGender());
         final YahooImage image = profile.getImage();
-        assertEquals("http://avatars.zenfs.com/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png", image.getImageUrl());
+        assertTrue(image.getImageUrl().contains("/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png"));
         assertEquals(150, image.getWidth().intValue());
         assertEquals(225, image.getHeight().intValue());
         assertEquals("150x225", image.getSize());
