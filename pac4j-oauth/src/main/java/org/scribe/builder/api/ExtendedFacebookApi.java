@@ -37,8 +37,8 @@ public final class ExtendedFacebookApi extends StateApi20 {
     
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, final String state) {
-        Preconditions.checkValidUrl(config.getCallback(),
-                                    "Must provide a valid url as callback. Facebook does not support OOB");
+        Preconditions.checkEmptyString(config.getCallback(),
+                                       "Must provide a valid url as callback. Facebook does not support OOB");
         
         // Append scope if present
         if (config.hasScope()) {
