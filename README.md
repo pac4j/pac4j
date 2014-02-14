@@ -23,7 +23,6 @@ There are 5 libraries implementing **pac4j** for the following environments :
 
 It's available under the Apache 2 license.
 
-
 ## The "big picture"
 
 <img src="http://www.pac4j.org/img/pac4j.png" />
