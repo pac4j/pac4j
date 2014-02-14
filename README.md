@@ -1,4 +1,4 @@
-## What is pac4j ?
+## What is pac4j ? <img src="https://travis-ci.org/leleuj/pac4j.png" />
 
 **pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the protocols supporting the following mechanism :
 

@@ -1,0 +1,12 @@
+language: java
+
+script: "mvn deploy --settings travis/settings.xml"
+
+jdk:
+  - oraclejdk7
+
+env:
+  global:
+  - secure: "cDN6+bwe7NVMjvevGMwk9tdglhGf66yi3nvbnfSgio207FuNG4duF/RNOUOMsuWX1Sc79ZMDuOttZ5AvL3ZHKPtmzTBMvCdDkf1FwFmzU6N+x84rT4zyos+gZLgHbV0M0M28y8aJIJq2kcwiqVwuMBay5tjrpJ8IMPoY6eDl4uE="
+  - secure: "FMcvaLiOywLOlP7HeczaWfjei8B8sZk6ddXiVnFJEVQYq+SlLIqIBfFcCw08DwJ4eW9CyZbF0JGHMbBahj0A/UchQ1kenm9FIklG9oLuTeGwAk4V2Vot2hgVgsYK3k+OIDNd2UOi/Cs+WS3GcyWpfPAj68p0ti5IvZCgV8k2usU="
+
