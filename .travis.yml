@@ -8,6 +8,7 @@ jdk:
 branches:
   only:
     - master
+    - 1.4.x
 
 env:
   global:
