@@ -23,6 +23,8 @@ There are 5 libraries implementing **pac4j** for the following environments:
 
 It's available under the Apache 2 license.
 
+Build status: <img src="https://travis-ci.org/leleuj/pac4j.png" />
+
 
 ## The "big picture"
 
@@ -282,7 +284,9 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version **1.5.0-SNAPSHOT** is under development. It's available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
+The current version **1.5.0-SNAPSHOT** is under development.  
+The build is done on Travis: [https://travis-ci.org/leleuj/pac4j](https://travis-ci.org/leleuj/pac4j).   
+The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
 The last released version is the **1.4.1**:
 
