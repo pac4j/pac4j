@@ -1,3 +1,5 @@
+<img src="https://travis-ci.org/leleuj/pac4j.png" />
+
 ## What is pac4j ?
 
 **pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the protocols supporting the following mechanism:
@@ -22,8 +24,6 @@ There are 5 libraries implementing **pac4j** for the following environments:
 5. the Spring Security library (using the *spring-security-pac4j* library).
 
 It's available under the Apache 2 license.
-
-Build status: <img src="https://travis-ci.org/leleuj/pac4j.png" />
 
 
 ## The "big picture"
