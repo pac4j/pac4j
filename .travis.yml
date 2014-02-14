@@ -5,11 +5,6 @@ script: "mvn deploy --settings travis/settings.xml"
 jdk:
   - oraclejdk7
 
-branches:
-  only:
-    - master
-    - 1.4.x
-
 env:
   global:
   - secure: "cDN6+bwe7NVMjvevGMwk9tdglhGf66yi3nvbnfSgio207FuNG4duF/RNOUOMsuWX1Sc79ZMDuOttZ5AvL3ZHKPtmzTBMvCdDkf1FwFmzU6N+x84rT4zyos+gZLgHbV0M0M28y8aJIJq2kcwiqVwuMBay5tjrpJ8IMPoY6eDl4uE="
