@@ -16,6 +16,7 @@
  */
 package org.pac4j.openid.client;
 
+import org.junit.Ignore;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Protocol;
 import org.pac4j.core.client.TestClient;
@@ -44,6 +45,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
  * @since 1.4.0
  */
 @SuppressWarnings("rawtypes")
+@Ignore
 public class TestMyOpenIdClient extends TestClient implements TestsConstants {
     
     public void testClone() {
