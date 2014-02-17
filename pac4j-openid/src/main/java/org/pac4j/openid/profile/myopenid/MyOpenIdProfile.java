@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2013 Jerome Leleu
+  Copyright 2012 - 2014 Jerome Leleu
 
    import org.pac4j.openid.profile.OpenIdProfile;
 (the "License");
