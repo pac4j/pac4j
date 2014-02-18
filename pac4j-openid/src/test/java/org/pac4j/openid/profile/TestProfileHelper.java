@@ -17,7 +17,8 @@ package org.pac4j.openid.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.openid.profile.myopenid.MyOpenIdProfile;
+import org.pac4j.openid.profile.google.GoogleOpenIdAttributesDefinition;
+import org.pac4j.openid.profile.google.GoogleOpenIdProfile;
 
 /**
  * This class tests the {@link ProfileHelper} class for all the OpenID profiles.
@@ -33,16 +34,16 @@ public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileH
     
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {
-        return MyOpenIdProfile.class;
+        return GoogleOpenIdProfile.class;
     }
     
     @Override
     protected String getProfileType() {
-        return "MyOpenIdProfile";
+        return "GoogleOpenIdProfile";
     }
     
     @Override
     protected String getAttributeName() {
-        return "fullname";
+        return GoogleOpenIdAttributesDefinition.FIRSTNAME;
     }
 }

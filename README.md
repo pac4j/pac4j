@@ -73,9 +73,9 @@ This module is based on the **pac4j-core** module and the [commons-codec](http:/
 
 #### pac4j-openid: this module is dedicated to OpenID protocol support:
 
-* the *MyOpenIdClient* and *GoogleOpenIdClient* are the clients for all the providers: MyOpenId and Google
+* the *GoogleOpenIdClient* is the client for Google
 * the *OpenIdCredentials* class is the credentials for OpenID support
-* the *MyOpenIdProfile* and *GoogleOpenIdProfile* class are the associated profiles, returned by the client.
+* the *GoogleOpenIdProfile* class is the associated profile, returned by the client.
 
 This module is based on the **pac4j-core** module and the [openid4java](http://code.google.com/p/openid4java/) library.
 
@@ -102,7 +102,6 @@ Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.ht
 <tr><td>PayPal</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>PayPalClient</td><td>PayPalProfile</td></tr>
 <tr><td>Web sites with basic auth authentication</td><td>HTTP</td><td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
 <tr><td>Web sites with form authentication</td><td>HTTP</td><td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
-<tr><td>MyOpenId</td><td>OpenID</td><td>pac4j-openid</td><td>MyOpenIdClient</td><td>MyOpenIdProfile</td></tr>
 <tr><td>Google</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
 </table>
 
@@ -211,22 +210,22 @@ To use basic auth authentication in a web application, you should use the *org.p
 
 ### OpenID support
 
-To use myopenid.com for authentication, you should use the *org.pac4j.openid.client.MyOpenIdClient* class:
+To use Google and OpenID for authentication, you should use the *org.pac4j.openid.client.GoogleOpenIdClient* class:
 
     // declare the client
-    MyOpenIdClient client = new MyOpenIdClient();
+    GoogleOpenIdClient client = new GoogleOpenIdClient();
     client.setCallbackUrl("/callbackUrl");
-    // send the user to myopenid.com for authentication
+    // send the user to Google for authentication
     WebContext context = new J2EContext(request, response);
     // we assume the user identifier is in the "openIdUser" request parameter
     response.sendRedirect(client.getRedirectionUrl(context, false, false));
 
-...after successfull authentication, in the client application, on the callback url (for MyOpenId)...
+...after successfull authentication, in the client application, on the callback url...
 
     // get the OpenID credentials
     OpenIdCredentials credentials = client.getCredentials(context));
-    // get the myOpenID profile
-    MyOpenIdProfile profile = client.getUserProfile(credentials, context);
+    // get the GooglOpenID profile
+    GoogleOpenIdProfile profile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + profile.getDisplayName());
 
 ### Multiple clients
@@ -248,7 +247,7 @@ If you want to interact more with the OAuth providers (like Facebook), you can r
 
 You can also group all clients on a single callback url by using the *org.pac4j.core.client.Clients* class:
 
-    Clients clients = new Clients("http://server/app/callbackUrl", fbClient, casClient, formClient myOpenIdClient);
+    Clients clients = new Clients("http://server/app/callbackUrl", fbClient, casClient, formClient googleOpenIdClient);
     // on the callback url, retrieve the right client
     Client client = clients.findClient(context));
 

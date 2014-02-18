@@ -18,12 +18,11 @@ package org.pac4j.openid.profile;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * This class is the generic OpenID profile. The service will end on Februray 1, 2014.
+ * This class is the generic OpenID profile.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-@Deprecated
 public abstract class OpenIdProfile extends CommonProfile {
     
     private static final long serialVersionUID = 3383327344233649562L;
