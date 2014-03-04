@@ -24,6 +24,7 @@ import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.paypal.PayPalAttributesDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterAttributesDefinition;
+import org.pac4j.oauth.profile.vk.VkAttributesDefinition;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveAttributesDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
 import org.pac4j.oauth.profile.yahoo.YahooAttributesDefinition;
@@ -57,4 +58,6 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition linkedin2Definition = new LinkedIn2AttributesDefinition();
     
     public final static AttributesDefinition payPalDefinition = new PayPalAttributesDefinition();
+    
+    public final static AttributesDefinition vkDefinition = new VkAttributesDefinition();
 }
