@@ -8,7 +8,7 @@ import org.pac4j.oauth.profile.vk.converter.VkBooleanConverter;
  * This class defines all the converters specific to Vk.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 04.03.2014 15:24:18
+ * @since 1.5.0
  * 
  */
 public final class VkConverters {

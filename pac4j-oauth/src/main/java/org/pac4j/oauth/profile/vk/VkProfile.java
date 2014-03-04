@@ -88,7 +88,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
  * 
  * @see org.pac4j.oauth.client.VkClient
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 04.03.2014 15:42:56
+ * @since 1.5.0
  */
 public class VkProfile extends OAuth20Profile {
 
