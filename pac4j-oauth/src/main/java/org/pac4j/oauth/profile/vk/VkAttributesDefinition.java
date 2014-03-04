@@ -7,7 +7,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * This class defines the attributes of the Vk profile.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 1.5.0
+ * @since 1.5
  * 
  */
 public class VkAttributesDefinition extends OAuthAttributesDefinition {

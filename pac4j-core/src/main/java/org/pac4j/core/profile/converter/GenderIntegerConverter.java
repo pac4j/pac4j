@@ -6,7 +6,7 @@ import org.pac4j.core.profile.Gender;
  * This class converts an Integer to a Gender.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 1.5.0
+ * @since 1.5
  * 
  */
 public final class GenderIntegerConverter implements AttributeConverter<Gender> {

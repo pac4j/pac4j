@@ -4,7 +4,7 @@ import org.pac4j.core.profile.converter.AttributeConverter;
 
 /**
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 1.5.0
+ * @since 1.5
  * 
  */
 public final class VkBooleanConverter implements AttributeConverter<Boolean> {

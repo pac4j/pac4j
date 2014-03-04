@@ -11,7 +11,7 @@ import org.scribe.utils.Preconditions;
  * of the Scribe library.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 1.5.0
+ * @since 1.5
  * 
  */
 public final class VkApi extends DefaultApi20 {

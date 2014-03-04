@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * 
  * @see org.pac4j.oauth.profile.vk.VkProfile
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
- * @since 1.5.0
+ * @since 1.5
  * 
  */
 public class VkClient extends BaseOAuth20Client<VkProfile> {
