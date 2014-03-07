@@ -1,1 +1,131 @@
-test
+<!DOCTYPE html>
+<html>
+   <head>
+   <title>pac4j</title>
+   <meta charset='utf-8'>
+   <script src='http://html5slides.googlecode.com/svn/trunk/slides.js'></script>
+   </head>
+<body style='display: none'>
+
+<section class='slides layout-regular template-default'>
+
+<article><h3>Why do we need the <strong>pac4j</strong> library ?</h3>
+<ul>
+ <li>Today, in Java applications, using client side protocols is very complex: almost every framework and protocol requires a dedicated solution !</li>
+ <li><strong>pac4j</strong>, as the Profile and Authentication Client for Java, aims to be a <i>simple and unified library</i> for all Java frameworks and protocols.</li>
+</ul>
+</article>
+
+<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>protocols (OAuth, CAS, OpenID, HTTP)</i>...</q>
+<div class='author'> J&eacute;r&ocirc;me Leleu ;-)</div></article>
+
+<article><h3>What kind of protocol is supported by <strong>pac4j</strong> ?</h3>
+<ul>
+ <li>It targets all the protocols supporting the following mechanism:</li>
+ <ol>
+  <li>from the client application, redirect the user to the "provider" for authentication (HTTP 302)</li>
+  <li>after successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
+  <li>with these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").</li>
+ </ol>
+</ul>
+</article>
+
+<article><h3>What protocols are actually supported by <strong>pac4j</strong> ?</h3>
+<ul>
+ <li><strong>OAuth</strong> (1.0 & 2.0): DropBox, Facebook, Github, Google, LinkedIn, Twitter, Windows live, WordPress, Yahoo...</li>
+ <li><strong>CAS</strong>: protocol versions 1.0  & 2.0 / SAML ticket validation, proxy ticket validation, logout request and CAS proxyfication</li>
+ <li><strong>HTTP</strong>: form & basic authentications</li>
+ <li><strong>OpenID</strong>: myopenid.com & Google</li>
+</ul>
+</article>
+
+<article><h3>What projects/environments is <strong>pac4j</strong> implemented for ?</h3>
+<ul>
+ <li>any <a target="_blank" href="http://docs.oracle.com/javaee/">J2E</a> web application</li>
+ <li>the <a target="_blank" href="http://www.jasig.org/cas">CAS web SSO</a> project</li>
+ <li>the <a target="_blank" href="http://shiro.apache.org/">Apache Shiro security</a> library</li>
+ <li>the <a target="_blank" href="http://www.playframework.com/">Play framework 2.x</a> project</li>
+ <li>the <a target="_blank" href="http://projects.spring.io/spring-security/">Spring Security</a> library</li>
+</ul>
+</article>
+
+<article><h3>The "big picture"</h3>
+<p>
+  <img src='img/pac4j.png' />
+</p>
+</article>
+
+<article><h3><strong>pac4j</strong> details</h3>
+<table>
+ <tr><td>Module</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/pac4j">https://github.com/leleuj/pac4j</a></td></tr>
+ <tr><td>Latest release</td><td>1.4.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.5.0-SNAPSHOT</td></tr>
+ <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>J2E</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Module</td><td>j2e-pac4j</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/j2e-pac4j">https://github.com/leleuj/j2e-pac4j</a></td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
+ <tr><td>Latest release</td><td>1.0.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.0.2-SNAPSHOT</td></tr>
+ <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/j2e-pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>CAS</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Module</td><td>cas-server-support-pac4j</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j">https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j</a></td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4j-oauth-demo</a></td></tr>
+ <tr><td>Latest release</td><td>4.0.0-RC3</td></tr>
+ <tr><td>Latest snapshot</td><td>4.0.0-RC4-SNAPSHOT</td></tr>
+ <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>Shiro</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Module</td><td>buji-pac4j</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/bujiio/buji-pac4j">https://github.com/bujiio/buji-pac4j</a></td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
+ <tr><td>Latest release</td><td>1.2.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.2.2-SNAPSHOT</td></tr>
+ <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/io/buji/">Sonatype snapshots repository</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/buji-pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>Play</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Modules</td><td>play-pac4j_java<br />play-pac4j_scala2.9, play-pac4j_scala2.10 <i>(v1.1.x / Play 2.0 & 2.1)</i><br />play_pac4j_scala <i>(v1.2.x / Play 2.2)</i></td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/play-pac4j">https://github.com/leleuj/play-pac4j</a></td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a>, <a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
+ <tr><td>Latest release</td><td>1.1.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.1.2-SNAPSHOT <i>(Play 2.0 & 2.1)</i><br />1.2.0-SNAPSHOT <i>(Play 2.2)</i></td></tr>
+ <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/play-pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>Spring Security</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Module</td><td>spring-security-pac4j</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/spring-security-pac4j">https://github.com/leleuj/spring-security-pac4j</a></td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
+ <tr><td>Latest release</td><td>1.2.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.2.2-SNAPSHOT</td></tr>
+ <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/spring-security-pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+</section>
+
+</body>
+</html>
