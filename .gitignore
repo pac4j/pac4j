@@ -21,3 +21,5 @@ test-output/
 .springBeans
 cas.log
 perfStats.log
+*.iml
+.idea

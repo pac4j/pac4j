@@ -50,6 +50,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     protected String key;
     
     protected String secret;
+
+    protected boolean tokenAsHeader = false;
     
     // 0,5 second
     protected int connectTimeout = 500;
@@ -226,8 +228,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         final long t0 = System.currentTimeMillis();
         final ProxyOAuthRequest request = createProxyRequest(dataUrl);
         this.service.signRequest(accessToken, request);
-        // if WordPress
-        if (this instanceof WordPressClient) {
+        // FIX: It's now up to the client to decide if the token should be in header
+        if (this.getTokenAsHeader()) {
             request.addHeader("Authorization", "Bearer " + accessToken.getToken());
         }
         final Response response = request.send();
@@ -336,6 +338,14 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     
     public void setProxyPort(final int proxyPort) {
         this.proxyPort = proxyPort;
+    }
+
+    public boolean getTokenAsHeader() {
+        return tokenAsHeader;
+    }
+
+    public void setTokenAsHeader(boolean tokenAsHeader) {
+        this.tokenAsHeader = tokenAsHeader;
     }
     
     @Override
