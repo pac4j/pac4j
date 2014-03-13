@@ -229,7 +229,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         final ProxyOAuthRequest request = createProxyRequest(dataUrl);
         this.service.signRequest(accessToken, request);
         // FIX: It's now up to the client to decide if the token should be in header
-        if (this.getTokenAsHeader()) {
+        if (this.isTokenAsHeader()) {
             request.addHeader("Authorization", "Bearer " + accessToken.getToken());
         }
         final Response response = request.send();
@@ -340,7 +340,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         this.proxyPort = proxyPort;
     }
 
-    public boolean getTokenAsHeader() {
+    public boolean isTokenAsHeader() {
         return tokenAsHeader;
     }
 
