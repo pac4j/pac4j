@@ -41,11 +41,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     
     public WordPressClient() {
+        setTokenAsHeader(true);
     }
     
     public WordPressClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
+        setTokenAsHeader(true);
     }
     
     @Override

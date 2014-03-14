@@ -50,11 +50,13 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     protected String scope = DEFAULT_SCOPE;
     
     public PayPalClient() {
+        setTokenAsHeader(true);
     }
     
     public PayPalClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
+        setTokenAsHeader(true);
     }
     
     @Override
