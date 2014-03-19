@@ -125,7 +125,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         String url = BASE_URL + "?fields=" + this.fields;
         if (this.limit > DEFAULT_LIMIT) {
             url += "&limit=" + this.limit;
@@ -135,7 +135,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     @Override
     protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) {
-        String body = sendRequestForData(accessToken, getProfileUrl());
+        String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
         }

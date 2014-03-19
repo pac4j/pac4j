@@ -22,6 +22,7 @@ import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.scribe.builder.api.LiveApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -63,7 +64,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         return "https://apis.live.net/v5.0/me";
     }
     

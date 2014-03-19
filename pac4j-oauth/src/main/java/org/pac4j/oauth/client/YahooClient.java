@@ -66,7 +66,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         return "http://social.yahooapis.com/v1/me/guid?format=xml";
     }
     
@@ -76,7 +76,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     @Override
     protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
         // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
-        String body = sendRequestForData(accessToken, getProfileUrl());
+        String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         final String guid = StringUtils.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         if (StringUtils.isBlank(guid)) {

@@ -200,7 +200,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return the user profile
      */
     protected U retrieveUserProfileFromToken(final Token accessToken) {
-        final String body = sendRequestForData(accessToken, getProfileUrl());
+        final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
         }
@@ -211,10 +211,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     
     /**
      * Retrieve the url of the profile of the authenticated user for the provider.
-     * 
+     *
+     * @param accessToken only used when constructing dynamic urls from data in the token
      * @return the url of the user profile given by the provider
      */
-    protected abstract String getProfileUrl();
+    @SuppressWarnings("unused")
+    protected abstract String getProfileUrl(final Token accessToken);
     
     /**
      * Make a request to get the data of the authenticated user for the provider.

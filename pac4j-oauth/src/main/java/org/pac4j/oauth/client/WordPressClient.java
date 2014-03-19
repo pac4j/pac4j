@@ -23,6 +23,7 @@ import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 import org.scribe.builder.api.WordPressApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -66,7 +67,7 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         return "https://public-api.wordpress.com/rest/v1/me/?pretty=1";
     }
     

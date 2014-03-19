@@ -24,6 +24,7 @@ import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.scribe.builder.api.CasOAuthWrapperApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -77,7 +78,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         return this.casOAuthUrl + "/profile";
     }
     
