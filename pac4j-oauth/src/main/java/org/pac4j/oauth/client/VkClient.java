@@ -7,6 +7,7 @@ import org.pac4j.oauth.profile.vk.VkProfile;
 import org.scribe.builder.api.VkApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -64,7 +65,7 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected String getProfileUrl() {
+	protected String getProfileUrl(final Token accessToken) {
 		String url = BASE_URL + "?fields=" + this.fields;
 		return url;
 	}

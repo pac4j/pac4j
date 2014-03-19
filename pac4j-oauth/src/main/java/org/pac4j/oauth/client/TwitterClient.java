@@ -24,6 +24,7 @@ import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,7 +76,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         return "https://api.twitter.com/1.1/account/verify_credentials.json";
     }
     

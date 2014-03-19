@@ -23,6 +23,7 @@ import org.pac4j.oauth.profile.linkedin.LinkedInProfile;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
+import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 /**
@@ -65,7 +66,7 @@ public class LinkedInClient extends BaseOAuth10Client<LinkedInProfile> {
     }
     
     @Override
-    protected String getProfileUrl() {
+    protected String getProfileUrl(final Token accessToken) {
         return "http://api.linkedin.com/v1/people/~";
     }
     
