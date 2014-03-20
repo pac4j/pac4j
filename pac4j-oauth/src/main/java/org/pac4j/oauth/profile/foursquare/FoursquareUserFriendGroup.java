@@ -23,35 +23,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents a Foursquare user friend group container, with count and list of different groups.
+ * This class represents a Foursquare group of friends, could be mutual or other.
  *
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareUserFriends extends JsonObject {
+public class FoursquareUserFriendGroup extends JsonObject {
 
     private int count;
-    private List<FoursquareUserFriendGroup> groups = new ArrayList<FoursquareUserFriendGroup>();
+    private String name;
+    private String type;
+
+    private List<FoursquareUserFriend> friends = new ArrayList<FoursquareUserFriend>();
 
     @Override
     protected void buildFromJson(JsonNode json) {
         count = json.get("count").asInt();
-        ArrayNode groupsArray = (ArrayNode) json.get("groups");
+        name = json.get("name").asText();
+        type = json.get("type").asText();
+
+        ArrayNode groupsArray = (ArrayNode) json.get("items");
 
         for (int i=0;i<groupsArray.size();i++) {
-            FoursquareUserFriendGroup group = new FoursquareUserFriendGroup();
-            group.buildFromJson(groupsArray.get(i));
-            groups.add(group);
+            FoursquareUserFriend friend = new FoursquareUserFriend();
+            friend.buildFromJson(groupsArray.get(i));
+            friends.add(friend);
         }
+    }
+
+    public List<FoursquareUserFriend> getFriends() {
+        return friends;
     }
 
     public int getCount() {
         return count;
     }
 
-    public List<FoursquareUserFriendGroup> getGroups() {
-        return groups;
+    public String getName() {
+        return name;
     }
 
-
+    public String getType() {
+        return type;
+    }
 }

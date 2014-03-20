@@ -16,42 +16,24 @@
 package org.pac4j.oauth.profile.foursquare;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.pac4j.oauth.profile.JsonObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * This class represents a Foursquare user friend group container, with count and list of different groups.
+ * This class represents a Foursquare user photo.
  *
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareUserFriends extends JsonObject {
+public class FoursquareUserPhoto extends JsonObject {
 
-    private int count;
-    private List<FoursquareUserFriendGroup> groups = new ArrayList<FoursquareUserFriendGroup>();
+    private String photoUrl;
 
     @Override
     protected void buildFromJson(JsonNode json) {
-        count = json.get("count").asInt();
-        ArrayNode groupsArray = (ArrayNode) json.get("groups");
-
-        for (int i=0;i<groupsArray.size();i++) {
-            FoursquareUserFriendGroup group = new FoursquareUserFriendGroup();
-            group.buildFromJson(groupsArray.get(i));
-            groups.add(group);
-        }
+        photoUrl = String.valueOf(json.get("prefix")) + "original" + String.valueOf(json.get("suffix").asText());
     }
 
-    public int getCount() {
-        return count;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
-
-    public List<FoursquareUserFriendGroup> getGroups() {
-        return groups;
-    }
-
-
 }

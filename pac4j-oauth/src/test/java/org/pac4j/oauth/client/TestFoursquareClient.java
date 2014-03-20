@@ -3,16 +3,14 @@ package org.pac4j.oauth.client;
 import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
 import org.pac4j.oauth.profile.foursquare.FoursquareUserFriend;
+import org.pac4j.oauth.profile.foursquare.FoursquareUserFriendGroup;
 import org.pac4j.oauth.profile.foursquare.FoursquareUserFriends;
-import org.pac4j.oauth.profile.github.GitHubPlan;
-import org.pac4j.oauth.profile.github.GitHubProfile;
 
 import java.util.ArrayList;
 
@@ -52,7 +50,7 @@ public class TestFoursquareClient extends TestOAuthClient {
         kryo.register(FoursquareProfile.class);
         kryo.register(FoursquareUserFriends.class);
         kryo.register(ArrayList.class);
-        kryo.register(FoursquareUserFriends.FoursquareUserFriendGroup.class);
+        kryo.register(FoursquareUserFriendGroup.class);
         kryo.register(FoursquareUserFriend.class);
     }
 
