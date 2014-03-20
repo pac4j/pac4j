@@ -30,7 +30,7 @@ public class FoursquareAttributesDefinition extends OAuthAttributesDefinition {
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String GENDER = "gender";
-    public static final String PHOTO = "picture_url";
+    public static final String PHOTO = "photo";
     public static final String EMAIL = "email";
     public static final String FIRENDS = "friends";
     public static final String HOME_CITY = "homeCity";
@@ -48,6 +48,7 @@ public class FoursquareAttributesDefinition extends OAuthAttributesDefinition {
         addAttribute(GENDER, Converters.genderConverter);
         addAttribute(FIRENDS, FoursquareConverters.friendsConverter);
         addAttribute(CONTACT, FoursquareConverters.contactConverter);
+        addAttribute(PHOTO, FoursquareConverters.photoConverter);
     }
 
 }

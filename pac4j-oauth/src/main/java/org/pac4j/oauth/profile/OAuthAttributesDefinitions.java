@@ -62,5 +62,5 @@ public final class OAuthAttributesDefinitions {
     
     public final static AttributesDefinition vkDefinition = new VkAttributesDefinition();
 
-    public final static AttributesDefinition foursquareDefenition = new FoursquareAttributesDefinition();
+    public final static AttributesDefinition foursquareDefinition = new FoursquareAttributesDefinition();
 }

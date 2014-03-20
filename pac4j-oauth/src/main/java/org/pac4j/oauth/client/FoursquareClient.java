@@ -17,13 +17,10 @@ package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
 import org.scribe.builder.api.Foursquare2Api;
-import org.scribe.builder.api.FoursquareApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
@@ -75,7 +72,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
         if (user != null) {
             profile.setId(JsonHelper.get(user, "id"));
 
-            for (final String attribute : OAuthAttributesDefinitions.foursquareDefenition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.foursquareDefinition.getAllAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(user, attribute));
             }
         }

@@ -26,4 +26,5 @@ import org.pac4j.oauth.profile.converter.JsonObjectConverter;
 public class FoursquareConverters {
     public final static JsonObjectConverter friendsConverter = new JsonObjectConverter(FoursquareUserFriends.class);
     public final static JsonObjectConverter contactConverter = new JsonObjectConverter(FoursquareUserContact.class);
+    public final static JsonObjectConverter photoConverter = new JsonObjectConverter(FoursquareUserPhoto.class);
 }

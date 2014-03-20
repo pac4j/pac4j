@@ -1,3 +1,18 @@
+/*
+  Copyright 2012 - 2014 Jerome Leleu
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.pac4j.oauth.client;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -7,10 +22,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
-import org.pac4j.oauth.profile.foursquare.FoursquareUserFriend;
-import org.pac4j.oauth.profile.foursquare.FoursquareUserFriendGroup;
-import org.pac4j.oauth.profile.foursquare.FoursquareUserFriends;
+import org.pac4j.oauth.profile.foursquare.*;
 
 import java.util.ArrayList;
 
@@ -52,6 +64,8 @@ public class TestFoursquareClient extends TestOAuthClient {
         kryo.register(ArrayList.class);
         kryo.register(FoursquareUserFriendGroup.class);
         kryo.register(FoursquareUserFriend.class);
+        kryo.register(FoursquareUserContact.class);
+        kryo.register(FoursquareUserPhoto.class);
     }
 
     @Override
@@ -70,7 +84,7 @@ public class TestFoursquareClient extends TestOAuthClient {
                 Gender.UNSPECIFIED,
                 null,
                 "https://irs0.4sqi.net/img/user/original/blank_boy.png",
-                null, null);
+                "https://foursquare.com/user/81827700", "");
 
 
     }

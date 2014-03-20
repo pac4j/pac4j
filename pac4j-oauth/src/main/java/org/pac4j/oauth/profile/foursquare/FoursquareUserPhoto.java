@@ -16,6 +16,7 @@
 package org.pac4j.oauth.profile.foursquare;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
 
 /**
@@ -30,7 +31,7 @@ public class FoursquareUserPhoto extends JsonObject {
 
     @Override
     protected void buildFromJson(JsonNode json) {
-        photoUrl = String.valueOf(json.get("prefix")) + "original" + String.valueOf(json.get("suffix").asText());
+        photoUrl = JsonHelper.get(json,"prefix") + "original" + JsonHelper.get(json,"suffix");
     }
 
     public String getPhotoUrl() {

@@ -91,7 +91,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 public class FoursquareProfile extends OAuth20Profile {
     @Override
     protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.foursquareDefenition;
+        return OAuthAttributesDefinitions.foursquareDefinition;
     }
 
     public String getBio() {
@@ -127,7 +127,7 @@ public class FoursquareProfile extends OAuth20Profile {
 
     @Override
     public String getProfileUrl() {
-        return "foursquare.com/user/" + getId();
+        return "https://foursquare.com/user/" + getId();
     }
 
     @Override
