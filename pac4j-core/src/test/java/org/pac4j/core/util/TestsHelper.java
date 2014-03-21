@@ -56,9 +56,10 @@ public final class TestsHelper {
     
     public static WebClient newWebClient(final boolean isJavascriptEnabled) {
         final WebClient webClient = new WebClient();
-        webClient.setRedirectEnabled(true);
-        webClient.setCssEnabled(false);
-        webClient.setJavaScriptEnabled(isJavascriptEnabled);
+        webClient.getOptions().setRedirectEnabled(true);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setCssEnabled(false);
+        webClient.getOptions().setJavaScriptEnabled(isJavascriptEnabled);
         return webClient;
     }
     

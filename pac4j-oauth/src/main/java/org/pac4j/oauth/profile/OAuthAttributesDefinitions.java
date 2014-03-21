@@ -18,6 +18,7 @@ package org.pac4j.oauth.profile;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
+import org.pac4j.oauth.profile.foursquare.FoursquareAttributesDefinition;
 import org.pac4j.oauth.profile.github.GitHubAttributesDefinition;
 import org.pac4j.oauth.profile.google2.Google2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
@@ -60,4 +61,6 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition payPalDefinition = new PayPalAttributesDefinition();
     
     public final static AttributesDefinition vkDefinition = new VkAttributesDefinition();
+
+    public final static AttributesDefinition foursquareDefinition = new FoursquareAttributesDefinition();
 }
