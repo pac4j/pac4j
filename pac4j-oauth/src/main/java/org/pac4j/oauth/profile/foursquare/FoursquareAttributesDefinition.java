@@ -50,5 +50,4 @@ public class FoursquareAttributesDefinition extends OAuthAttributesDefinition {
         addAttribute(CONTACT, FoursquareConverters.contactConverter);
         addAttribute(PHOTO, FoursquareConverters.photoConverter);
     }
-
 }

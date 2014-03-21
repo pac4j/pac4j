@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class FoursquareUserFriends extends JsonObject {
 
+    private static final long serialVersionUID = -6264070010780654226L;
+
     private int count;
     private List<FoursquareUserFriendGroup> groups = new ArrayList<FoursquareUserFriendGroup>();
 
@@ -52,6 +54,4 @@ public class FoursquareUserFriends extends JsonObject {
     public List<FoursquareUserFriendGroup> getGroups() {
         return groups;
     }
-
-
 }

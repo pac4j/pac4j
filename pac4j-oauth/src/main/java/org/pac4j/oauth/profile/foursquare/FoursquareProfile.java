@@ -89,6 +89,9 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
  * @since 1.5.0
  */
 public class FoursquareProfile extends OAuth20Profile {
+    
+    private static final long serialVersionUID = 8919122885219420820L;
+
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.foursquareDefinition;

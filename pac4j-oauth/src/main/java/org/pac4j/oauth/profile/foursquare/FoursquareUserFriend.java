@@ -28,6 +28,8 @@ import org.pac4j.oauth.profile.JsonObject;
  */
 public class FoursquareUserFriend extends JsonObject{
     
+    private static final long serialVersionUID = 8954533489873703341L;
+
     private String id;
     private String firstName;
     private String lastName;

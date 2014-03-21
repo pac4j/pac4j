@@ -22,9 +22,14 @@ import org.pac4j.oauth.profile.JsonObject;
 /**
  * This class is the user profile for Foursquare with appropriate getters.<br />
  * It is returned by the {@link org.pac4j.oauth.client.FoursquareClient}.
+ * 
+ * @author Alexey Ogarkov
+ * @since 1.5.0
  */
 public class FoursquareUserContact extends JsonObject {
 
+    private static final long serialVersionUID = -4866834192367416908L;
+ 
     private String email;
     private String twitter;
     private String facebook;

@@ -18,6 +18,7 @@ package org.pac4j.oauth.client;
 import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
+
 import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -26,6 +27,12 @@ import org.pac4j.oauth.profile.foursquare.*;
 
 import java.util.ArrayList;
 
+/**
+ * This class tests the {@link FoursquareClient} class by simulating a complete authentication.
+ * 
+ * @author Alexey Ogarkov
+ * @since 1.5.0
+ */
 public class TestFoursquareClient extends TestOAuthClient {
 
     @Override
