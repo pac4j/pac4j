@@ -16,6 +16,7 @@
 package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -84,8 +85,8 @@ public class FormClient extends BaseHttpClient {
     }
     
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) {
-        return this.loginUrl;
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+        return RedirectAction.redirect(this.loginUrl);
     }
     
     @Override

@@ -11,7 +11,8 @@ It has a **very simple and unified API** to support these 4 protocols on client 
 1. OAuth (1.0 & 2.0)
 2. CAS (1.0, 2.0, SAML, logout & proxy)
 3. HTTP (form & basic auth authentications)
-4. OpenID.
+4. OpenID
+5. SAML (2.0)
 
 There are 5 libraries implementing **pac4j** for the following environments:
 
@@ -40,7 +41,7 @@ This Maven project is composed of 6 modules:
 
 #### pac4j-core: this is the core module of the project with the core classes/interfaces
 
-* the *Client* interface is the **main API of the project** as it defines the mechanism that all clients must follow: getRedirectionUrl(WebContext,boolean,boolean), getCredentials(WebContext) and getUserProfile(Credentials,WebContext)
+* the *Client* interface is the **main API of the project** as it defines the mechanism that all clients must follow: redirect(WebContext,boolean,boolean), getCredentials(WebContext) and getUserProfile(Credentials,WebContext)
 * the *Credentials* class is the base class for all credentials
 * the *UserProfile* class is the base class for all user profiles (it is associated with attributes definition and converters)
 * the *CommonProfile* class inherits from the *UserProfile* class and implements all the common getters that profiles must have (getFirstName(), getEmail()...)
@@ -79,6 +80,14 @@ This module is based on the **pac4j-core** module and the [commons-codec](http:/
 
 This module is based on the **pac4j-core** module and the [openid4java](http://code.google.com/p/openid4java/) library.
 
+#### pac4j-saml: this module is dedicated to SAML support:
+
+* the *Saml2Client* class is the client for integrating with a SAML2 compliant Identity Provider
+* the *Saml2Credentials* class is the credentials for SAML2 support
+* the *Saml2Profile* class is the user profile returned by the *Saml2Client*.
+
+This module is based on the **pac4j-core** module and the [OpenSAML library](https://wiki.shibboleth.net/confluence/display/OpenSAML/Home).
+
 #### pac4j-test-cas: this module is made to test CAS support in pac4j.
 
 Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html).
@@ -112,7 +121,7 @@ Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.ht
 
 ### Maven dependencies
 
-First, you have define the right dependency: pac4j-oauth for OAuth support or/and pac4j-cas for CAS support or/and pac4j-http for HTTP support or/and pac4j-openid for OpenID support.
+First, you have define the right dependency: pac4j-oauth for OAuth support or/and pac4j-cas for CAS support or/and pac4j-http for HTTP support or/and pac4j-openid for OpenID support or/and pac4j-saml for SAML support.
 For example:
 
     <dependency>
@@ -145,7 +154,7 @@ If you want to authenticate and get the user profile from Facebook, you have to 
     client.setCallbackUrl("http://myserver/myapp/callbackUrl");
     // send the user to Facebook for authentication and permissions
     WebContext context = new J2EContext(request, response);
-    response.sendRedirect(client.getRedirectionUrl(context, false, false));
+    client.redirect(context, false, false);
 
 ...after successfull authentication, in the client application, on the callback url (for Facebook)...
 
@@ -165,7 +174,7 @@ For integrating an application with a CAS server, you should use the *org.pac4j.
     client.setCallbackUrl("http://myserver/myapp/callbackUrl");
     // send the user to the CAS server for authentication
     WebContext context = new J2EContext(request, response);
-    response.sendRedirect(client.getRedirectionUrl(context, false, false));
+    client.redirect(context, false, false);
 
 ...after successfull authentication, in the client application, on the callback url...
 
@@ -195,7 +204,7 @@ To use form authentication in a web application, you should use the *org.pac4j.h
     client.setCallbackUrl("http://myserver/myapp/callbackUrl");
     // send the user to the form for authentication
     WebContext context = new J2EContext(request, response);
-    response.sendRedirect(client.getRedirectionUrl(context, false, false));
+    client.redirect(context, false, false);
 
 ...after successfull authentication...
 
@@ -220,7 +229,7 @@ To use Google and OpenID for authentication, you should use the *org.pac4j.openi
     // send the user to Google for authentication
     WebContext context = new J2EContext(request, response);
     // we assume the user identifier is in the "openIdUser" request parameter
-    response.sendRedirect(client.getRedirectionUrl(context, false, false));
+    client.redirect(context, false, false);
 
 ...after successfull authentication, in the client application, on the callback url...
 
@@ -229,6 +238,36 @@ To use Google and OpenID for authentication, you should use the *org.pac4j.openi
     // get the GooglOpenID profile
     GoogleOpenIdProfile profile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + profile.getDisplayName());
+
+### SAML support
+
+For integrating an application with a SAML2 Identity Provider server, you should use the *org.pac4j.saml.client.Saml2Client*:
+
+    //Generate a keystore for all signature and encryption stuff:
+    keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
+    
+    // declare the client
+    Saml2Client client = new Saml2Client();
+    // configure keystore
+    client.setKeystorePath("samlKeystore.jks");
+    client.setKeystorePassword("pac4j-demo-passwd");
+    client.setPrivateKeyPassword("pac4j-demo-passwd");
+    // configure a file containing the Identity Provider metadata 
+    client.setIdpMetadataPath("testshib-providers.xml");
+
+    // generate pac4j SAML2 Service Provider metadata to import on Idenity Provider side
+    String spMetadata = client.printClientMetadata();
+    
+    // send the user to the Identity Provider server for authentication
+    WebContext context = new J2EContext(request, response);
+    client.redirect(context, false, false);
+
+...after successfull authentication, in the Service Provider application, on the assertion consumer service url...
+
+    // get SAML2 credentials
+    Saml2Credentials credentials = client.getCredentials(context));
+    // get the SAML2 profile
+    Saml2Profile saml2Profile = client.getUserProfile(credentials, context);
 
 ### Multiple clients
 

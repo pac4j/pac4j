@@ -60,8 +60,8 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     }
     
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) {
-        return LOGIN_URL;
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+        return RedirectAction.redirect(LOGIN_URL);
     }
     
     @Override
