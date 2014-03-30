@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -75,12 +76,12 @@ public class BasicAuthClient extends BaseHttpClient {
     }
     
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) {
-        return getContextualCallbackUrl(context);
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+        return RedirectAction.redirect(getContextualCallbackUrl(context));
     }
     
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    public UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null || !header.startsWith("Basic ")) {
             logger.warn("No basic auth found");

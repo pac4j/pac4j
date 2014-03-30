@@ -17,6 +17,7 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -42,34 +43,34 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClient<OAuthCredentials, U> {
-    
+
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthClient.class);
-    
+
     protected OAuthService service;
-    
+
     protected String key;
-    
+
     protected String secret;
 
     protected boolean tokenAsHeader = false;
-    
+
     // 0,5 second
     protected int connectTimeout = 500;
-    
+
     // 2 seconds
     protected int readTimeout = 2000;
-    
+
     protected String proxyHost = null;
-    
+
     protected int proxyPort = 8080;
-    
+
     @Override
     protected void internalInit() {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
     }
-    
+
     @Override
     public BaseOAuthClient<U> clone() {
         final BaseOAuthClient<U> newClient = (BaseOAuthClient<U>) super.clone();
@@ -81,7 +82,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         newClient.setProxyPort(this.proxyPort);
         return newClient;
     }
-    
+
     /**
      * Get the redirection url.
      * 
@@ -89,16 +90,16 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return the redirection url
      */
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
         try {
-            return retrieveAuthorizationUrl(context);
+            return RedirectAction.redirect(retrieveAuthorizationUrl(context));
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
         }
     }
-    
+
     protected abstract String retrieveAuthorizationUrl(final WebContext context);
-    
+
     /**
      * Get the credentials from the web context.
      * 
@@ -116,7 +117,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         try {
             boolean errorFound = false;
             final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
-                                                                                                      "Failed to retrieve OAuth credentials, error parameters found");
+                    "Failed to retrieve OAuth credentials, error parameters found");
             String errorMessage = "";
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
                 final String value = context.getRequestParameter(key);
@@ -136,7 +137,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
             throw new TechnicalException(e);
         }
     }
-    
+
     /**
      * Return if the authentication has been cancelled.
      * 
@@ -144,7 +145,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return if the authentication has been cancelled.
      */
     protected abstract boolean hasBeenCancelled(WebContext context);
-    
+
     /**
      * Get the OAuth credentials from the web context.
      * 
@@ -152,7 +153,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return the OAuth credentials
      */
     protected abstract OAuthCredentials getOAuthCredentials(final WebContext context);
-    
+
     /**
      * Get the user profile from the credentials.
      * 
@@ -168,7 +169,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
             throw new TechnicalException(e);
         }
     }
-    
+
     /**
      * Get the user profile from the access token.
      * 
@@ -184,7 +185,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
             throw new TechnicalException(e);
         }
     }
-    
+
     /**
      * Get the access token from OAuth credentials.
      * 
@@ -192,7 +193,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return the access token
      */
     protected abstract Token getAccessToken(OAuthCredentials credentials);
-    
+
     /**
      * Retrieve the user profile from the access token.
      * 
@@ -208,7 +209,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         addAccessTokenToProfile(profile, accessToken);
         return profile;
     }
-    
+
     /**
      * Retrieve the url of the profile of the authenticated user for the provider.
      *
@@ -217,7 +218,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      */
     @SuppressWarnings("unused")
     protected abstract String getProfileUrl(final Token accessToken);
-    
+
     /**
      * Make a request to get the data of the authenticated user for the provider.
      * 
@@ -246,7 +247,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         }
         return body;
     }
-    
+
     /**
      * Make a request to the OAuth provider to access a protected resource. The profile should contain a valid access token (and secret if
      * needed).
@@ -260,7 +261,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
         return sendRequestForData(accessToken, dataUrl);
     }
-    
+
     /**
      * Create a proxy request.
      * 
@@ -269,9 +270,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      */
     protected ProxyOAuthRequest createProxyRequest(final String url) {
         return new ProxyOAuthRequest(Verb.GET, url, this.connectTimeout, this.readTimeout, this.proxyHost,
-                                     this.proxyPort);
+                this.proxyPort);
     }
-    
+
     /**
      * Extract the user profile from the response (JSON, XML...) of the profile url.
      * 
@@ -279,7 +280,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @return the user profile object
      */
     protected abstract U extractUserProfile(String body);
-    
+
     /**
      * Add the access token to the profile (as an attribute).
      * 
@@ -293,51 +294,51 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
             profile.setAccessToken(token);
         }
     }
-    
+
     public void setKey(final String key) {
         this.key = key;
     }
-    
+
     public void setSecret(final String secret) {
         this.secret = secret;
     }
-    
+
     public void setConnectTimeout(final int connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
-    
+
     public void setReadTimeout(final int readTimeout) {
         this.readTimeout = readTimeout;
     }
-    
+
     public String getKey() {
         return this.key;
     }
-    
+
     public String getSecret() {
         return this.secret;
     }
-    
+
     public int getConnectTimeout() {
         return this.connectTimeout;
     }
-    
+
     public int getReadTimeout() {
         return this.readTimeout;
     }
-    
+
     public String getProxyHost() {
         return this.proxyHost;
     }
-    
+
     public void setProxyHost(final String proxyHost) {
         this.proxyHost = proxyHost;
     }
-    
+
     public int getProxyPort() {
         return this.proxyPort;
     }
-    
+
     public void setProxyPort(final int proxyPort) {
         this.proxyPort = proxyPort;
     }
@@ -349,7 +350,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     public void setTokenAsHeader(boolean tokenAsHeader) {
         this.tokenAsHeader = tokenAsHeader;
     }
-    
+
     @Override
     public Protocol getProtocol() {
         return Protocol.OAUTH;

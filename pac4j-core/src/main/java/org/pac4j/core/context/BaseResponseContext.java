@@ -25,36 +25,46 @@ import java.util.Map;
  * @since 1.4.0
  */
 public abstract class BaseResponseContext implements WebContext {
-    
+
     protected String responseContent = "";
-    
+
     protected int responseStatus = -1;
-    
+
+    protected String responseLocation;
+
     protected final Map<String, String> responseHeaders = new HashMap<String, String>();
-    
+
     public void writeResponseContent(final String content) {
         if (content != null) {
             this.responseContent += content;
         }
     }
-    
+
     public void setResponseStatus(final int code) {
         this.responseStatus = code;
     }
-    
+
     public void setResponseHeader(final String name, final String value) {
         this.responseHeaders.put(name, value);
     }
-    
+
     public String getResponseContent() {
         return this.responseContent;
     }
-    
+
     public int getResponseStatus() {
         return this.responseStatus;
     }
-    
+
+    public String getResponseLocation() {
+        return this.responseLocation;
+    }
+
     public Map<String, String> getResponseHeaders() {
         return this.responseHeaders;
+    }
+
+    public void sendRedirect(final String location) {
+        responseLocation = location;
     }
 }

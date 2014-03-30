@@ -26,6 +26,7 @@ import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -146,7 +147,7 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     /**
      * {@inheritDoc}
      */
-    protected String retrieveRedirectionUrl(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     

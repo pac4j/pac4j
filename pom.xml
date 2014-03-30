@@ -60,6 +60,7 @@
 		<module>pac4j-openid</module>
 		<module>pac4j-test-cas</module>
 		<module>pac4j-http</module>
+		<module>pac4j-saml</module>
 	</modules>
 
 	<dependencyManagement>

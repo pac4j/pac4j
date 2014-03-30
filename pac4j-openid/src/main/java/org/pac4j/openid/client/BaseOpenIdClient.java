@@ -29,6 +29,7 @@ import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -85,7 +86,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     
     @Override
     @SuppressWarnings("rawtypes")
-    protected String retrieveRedirectionUrl(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
         final String userIdentifier = getUser(context);
         CommonHelper.assertNotBlank("openIdUser", userIdentifier);
         
@@ -112,7 +113,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             
             final String redirectionUrl = authRequest.getDestinationUrl(true);
             logger.debug("redirectionUrl : {}", redirectionUrl);
-            return redirectionUrl;
+            return RedirectAction.redirect(redirectionUrl);
         } catch (final OpenIDException e) {
             logger.error("OpenID exception", e);
             throw new TechnicalException("OpenID exception", e);

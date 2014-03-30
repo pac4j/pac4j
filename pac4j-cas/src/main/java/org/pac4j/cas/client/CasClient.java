@@ -34,6 +34,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -124,14 +125,14 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
      * @return the redirection url
      */
     @Override
-    protected String retrieveRedirectionUrl(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) {
         final String contextualCasLoginUrl = prependHostToUrlIfNotPresent(this.casLoginUrl, context);
         final String contextualCallbackUrl = getContextualCallbackUrl(context);
 
         final String redirectionUrl = CommonUtils.constructRedirectUrl(contextualCasLoginUrl, SERVICE_PARAMETER,
                                                                        contextualCallbackUrl, this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
-        return redirectionUrl;
+        return RedirectAction.redirect(redirectionUrl);
     }
     
     @Override

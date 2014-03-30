@@ -20,18 +20,18 @@ import java.util.Map;
 
 /**
  * This is a mocked web context to interact with request, response and session (for tests purpose).
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public class MockWebContext extends BaseResponseContext {
-    
+
     protected final Map<String, String> parameters = new HashMap<String, String>();
-    
+
     protected final Map<String, String> headers = new HashMap<String, String>();
-    
+
     protected final Map<String, Object> session = new HashMap<String, Object>();
-    
+
     protected String method = "GET";
 
     protected String serverName = "localhost";
@@ -40,21 +40,23 @@ public class MockWebContext extends BaseResponseContext {
 
     protected int serverPort = 80;
 
+    protected String requestContent = "";
+
     protected MockWebContext() {
     }
-    
+
     /**
      * Create a new instance.
-     * 
+     *
      * @return a new instance
      */
     public static MockWebContext create() {
         return new MockWebContext();
     }
-    
+
     /**
      * Add request parameters for mock purpose.
-     * 
+     *
      * @param parameters
      * @return this mock web context
      */
@@ -62,10 +64,10 @@ public class MockWebContext extends BaseResponseContext {
         this.parameters.putAll(parameters);
         return this;
     }
-    
+
     /**
      * Add a request parameter for mock purpose.
-     * 
+     *
      * @param key
      * @param value
      * @return this mock web context
@@ -74,10 +76,10 @@ public class MockWebContext extends BaseResponseContext {
         this.parameters.put(key, value);
         return this;
     }
-    
+
     /**
      * Add a request header for mock purpose.
-     * 
+     *
      * @param key
      * @param value
      * @return this mock web context
@@ -86,10 +88,10 @@ public class MockWebContext extends BaseResponseContext {
         this.headers.put(key, value);
         return this;
     }
-    
+
     /**
      * Add a session attribute for mock purpose.
-     * 
+     *
      * @param name
      * @param value
      * @return this mock web context
@@ -98,10 +100,10 @@ public class MockWebContext extends BaseResponseContext {
         setSessionAttribute(name, value);
         return this;
     }
-    
+
     /**
      * Set the request method for mock purpose.
-     * 
+     *
      * @param method
      * @return this mock web context
      */
@@ -109,27 +111,27 @@ public class MockWebContext extends BaseResponseContext {
         this.method = method;
         return this;
     }
-    
+
     public String getRequestParameter(final String name) {
         return this.parameters.get(name);
     }
-    
+
     public String getRequestHeader(final String name) {
         return this.headers.get(name);
     }
-    
+
     public void setSessionAttribute(final String name, final Object value) {
         this.session.put(name, value);
     }
-    
+
     public Object getSessionAttribute(final String name) {
         return this.session.get(name);
     }
-    
+
     public String getRequestMethod() {
         return this.method;
     }
-    
+
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<String, String[]>();
         for (final String key : this.parameters.keySet()) {
@@ -165,4 +167,16 @@ public class MockWebContext extends BaseResponseContext {
     public void setScheme(String scheme) {
         this.scheme = scheme;
     }
+
+	public void setRequestContent(String requestContent) {
+		this.requestContent = requestContent;
+	}
+
+	public String readRequestContent() {
+        return this.requestContent;
+	}
+
+	public String getFullRequestURL() {
+		return scheme + "://" + serverName + ":" + serverPort + "/";
+	}
 }

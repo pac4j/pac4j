@@ -43,7 +43,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @since 1.2.0
  */
 public class TestGoogle2Client extends TestOAuthClient {
-    
+
     @Override
     public void testClone() {
         final Google2Client oldClient = new Google2Client();
@@ -51,21 +51,21 @@ public class TestGoogle2Client extends TestOAuthClient {
         final Google2Client client = (Google2Client) internalTestClone(oldClient);
         assertEquals(oldClient.getScope(), client.getScope());
     }
-    
+
     public void testMissingScope() {
         final Google2Client client = (Google2Client) getClient();
         client.setScope(null);
         TestsHelper.initShouldFail(client, "scope cannot be null");
     }
-    
+
     public void testDefaultScope() throws RequiresHttpAction {
         final Google2Client google2Client = new Google2Client();
         google2Client.setKey(KEY);
         google2Client.setSecret(SECRET);
         google2Client.setCallbackUrl(CALLBACK_URL);
-        google2Client.getRedirectionUrl(MockWebContext.create(), false, false);
+        google2Client.redirect(MockWebContext.create(), false, false);
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -76,7 +76,7 @@ public class TestGoogle2Client extends TestOAuthClient {
         google2Client.setScope(Google2Scope.EMAIL_AND_PROFILE);
         return google2Client;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
@@ -90,31 +90,25 @@ public class TestGoogle2Client extends TestOAuthClient {
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(Google2Profile.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final Google2Profile profile = (Google2Profile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("113675986756217860428", profile.getId());
         assertEquals(Google2Profile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
-                     profile.getTypedId());
+                profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), Google2Profile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile,
-                            "testscribeup@gmail.com",
-                            "Jérôme",
-                            "ScribeUP",
-                            "Jérôme ScribeUP",
-                            null,
-                            Gender.MALE,
-                            Locale.ENGLISH,
-                            "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
-                            "https://plus.google.com/113675986756217860428", null);
+        assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
+                Gender.MALE, Locale.ENGLISH,
+                "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
+                "https://plus.google.com/113675986756217860428", null);
         assertTrue(profile.getVerifiedEmail());
         assertNull(profile.getBirthday());
         assertEquals(10, profile.getAttributes().size());

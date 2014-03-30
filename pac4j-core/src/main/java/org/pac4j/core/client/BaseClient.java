@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.client.RedirectAction.RedirectType;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -35,10 +36,10 @@ import org.slf4j.LoggerFactory;
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
- * {@link #getRedirectionUrl(WebContext,boolean,boolean)} method will always return the redirection to the provider where as if it's false,
+ * {@link #getRedirection(WebContext,boolean,boolean)} method will always return the redirection to the provider where as if it's false,
  * the redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
  * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
- * To force a direct redirection, the {@link #getRedirectionUrl(WebContext, boolean, boolean)} must be used with <code>true</code> for the
+ * To force a direct redirection, the {@link #getRedirection(WebContext, boolean, boolean)} must be used with <code>true</code> for the
  * <code>forceDirectRedirection</code> parameter</li>
  * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
@@ -117,7 +118,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
     
-    public final String getRedirectionUrl(final WebContext context, final boolean protectedTarget,
+    public final void redirect(final WebContext context, final boolean protectedTarget,
                                           final boolean ajaxRequest) throws RequiresHttpAction {
         init();
         // it's an AJAX request -> unauthorized (instead of a redirection)
@@ -136,22 +137,40 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         }
         // it's a direct redirection or force the redirection -> return the redirection url
         if (isDirectRedirection() || protectedTarget) {
-            return retrieveRedirectionUrl(context);
+            RedirectAction action = retrieveRedirectAction(context);
+            if (action.getType() == RedirectType.REDIRECT) {
+            	context.sendRedirect(action.getLocation());
+            } else if (action.getType() == RedirectType.SUCCESS) {
+            	context.writeResponseContent(action.getContent());
+            	context.setResponseStatus(HttpConstants.OK);
+            }
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
-            return CommonHelper.addParameter(getContextualCallbackUrl(context), NEEDS_CLIENT_REDIRECTION_PARAMETER,
-                                             "true");
+            context.sendRedirect(CommonHelper.addParameter(getContextualCallbackUrl(context), NEEDS_CLIENT_REDIRECTION_PARAMETER,
+                                             "true"));
         }
     }
     
-    protected abstract String retrieveRedirectionUrl(final WebContext context);
+    /**
+     * Get the redirectAction computed when we call redirect. This is rather a utility method than the
+     * correct way to get redirected to the authentication provider.
+     * 
+     * @param context
+     * @return
+     */
+    final public RedirectAction getRedirectAction(final WebContext context) {
+    	init();
+    	return retrieveRedirectAction(context);
+    }
+    
+    protected abstract RedirectAction retrieveRedirectAction(final WebContext context);
     
     public final C getCredentials(final WebContext context) throws RequiresHttpAction {
         init();
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
         // needs redirection -> return the redirection url
         if (CommonHelper.isNotBlank(value)) {
-            throw RequiresHttpAction.redirect("Needs client redirection", context, retrieveRedirectionUrl(context));
+            throw RequiresHttpAction.redirect("Needs client redirection", context, retrieveRedirectAction(context).getLocation());
         } else {
             // else get the credentials
             C credentials = retrieveCredentials(context);
