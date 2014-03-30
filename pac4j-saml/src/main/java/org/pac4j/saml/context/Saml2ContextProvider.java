@@ -32,12 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Responsible for building a {@link ExtendedSAMLMessageContext} from given SAML2 properties
- * (idpEntityId, spEntityId and metadata manager) and current {@link WebContext}.
+ * Responsible for building a {@link ExtendedSAMLMessageContext} from given SAML2 properties (idpEntityId and metadata
+ * manager) and current {@link WebContext}.
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 @SuppressWarnings("rawtypes")
 public class Saml2ContextProvider {
@@ -59,7 +58,7 @@ public class Saml2ContextProvider {
     public ExtendedSAMLMessageContext buildSpContext(final WebContext webContext) {
 
         ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
-        context.setMetadataProvider(metadata);
+        context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
 
@@ -69,7 +68,7 @@ public class Saml2ContextProvider {
     public ExtendedSAMLMessageContext buildSpAndIdpContext(final WebContext webContext) {
 
         ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
-        context.setMetadataProvider(metadata);
+        context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
         addIDPContext(context);
@@ -87,21 +86,21 @@ public class Saml2ContextProvider {
     }
 
     protected void addSPContext(final BasicSAMLMessageContext context) {
-        context.setLocalEntityId(spEntityId);
+        context.setLocalEntityId(this.spEntityId);
         context.setLocalEntityRole(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
 
         EntityDescriptor entityDescriptor = null;
         RoleDescriptor roleDescriptor = null;
         try {
-            entityDescriptor = metadata.getEntityDescriptor(spEntityId);
-            roleDescriptor = metadata.getRole(spEntityId, SPSSODescriptor.DEFAULT_ELEMENT_NAME,
+            entityDescriptor = this.metadata.getEntityDescriptor(this.spEntityId);
+            roleDescriptor = this.metadata.getRole(this.spEntityId, SPSSODescriptor.DEFAULT_ELEMENT_NAME,
                     SAMLConstants.SAML20P_NS);
         } catch (MetadataProviderException e) {
             throw new SamlException("An error occured while getting SP descriptors", e);
         }
 
         if (entityDescriptor == null || roleDescriptor == null) {
-            throw new SamlException("Cannot find entity " + spEntityId + " or role "
+            throw new SamlException("Cannot find entity " + this.spEntityId + " or role "
                     + SPSSODescriptor.DEFAULT_ELEMENT_NAME + " in metadata provider");
         }
 
@@ -111,21 +110,21 @@ public class Saml2ContextProvider {
 
     protected void addIDPContext(final BasicSAMLMessageContext context) {
 
-        context.setPeerEntityId(idpEntityId);
+        context.setPeerEntityId(this.idpEntityId);
         context.setPeerEntityRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
 
         EntityDescriptor entityDescriptor = null;
         RoleDescriptor roleDescriptor = null;
         try {
-            entityDescriptor = metadata.getEntityDescriptor(idpEntityId);
-            roleDescriptor = metadata.getRole(idpEntityId, IDPSSODescriptor.DEFAULT_ELEMENT_NAME,
+            entityDescriptor = this.metadata.getEntityDescriptor(this.idpEntityId);
+            roleDescriptor = this.metadata.getRole(this.idpEntityId, IDPSSODescriptor.DEFAULT_ELEMENT_NAME,
                     SAMLConstants.SAML20P_NS);
         } catch (MetadataProviderException e) {
             throw new SamlException("An error occured while getting IDP descriptors", e);
         }
 
         if (entityDescriptor == null || roleDescriptor == null) {
-            throw new SamlException("Cannot find entity " + idpEntityId + " or role "
+            throw new SamlException("Cannot find entity " + this.idpEntityId + " or role "
                     + IDPSSODescriptor.DEFAULT_ELEMENT_NAME + " in metadata provider");
         }
 

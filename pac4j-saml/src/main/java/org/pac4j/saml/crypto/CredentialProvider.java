@@ -35,12 +35,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class responsible for loading a private key from a JKS keystore and returning
- * the corresponding {@link Credential} opensaml object.
+ * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
+ * opensaml object.
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class CredentialProvider {
 
@@ -54,16 +53,16 @@ public class CredentialProvider {
         KeyStore keyStore = loadKeyStore(name, storePasswd);
         this.privateKey = getPrivateKeyAlias(keyStore);
         Map<String, String> passwords = new HashMap<String, String>();
-        passwords.put(privateKey, privateKeyPasswd);
+        passwords.put(this.privateKey, privateKeyPasswd);
         this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
     }
 
     public Credential getCredential() {
         try {
             CriteriaSet cs = new CriteriaSet();
-            EntityIDCriteria criteria = new EntityIDCriteria(privateKey);
+            EntityIDCriteria criteria = new EntityIDCriteria(this.privateKey);
             cs.add(criteria);
-            return credentialResolver.resolveSingle(cs);
+            return this.credentialResolver.resolveSingle(cs);
         } catch (org.opensaml.xml.security.SecurityException e) {
             throw new SamlException("Can't obtain SP private key", e);
         }
@@ -77,14 +76,14 @@ public class CredentialProvider {
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             return ks;
         } catch (Exception e) {
-            logger.error("Error loading keystore", e);
+            this.logger.error("Error loading keystore", e);
             throw new SamlException("Error loading keystore", e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.debug("Error closing input stream of keystore", e);
+                    this.logger.debug("Error closing input stream of keystore", e);
                 }
             }
         }
@@ -102,5 +101,4 @@ public class CredentialProvider {
             throw new SamlException("Unable to get aliases from keyStore", e);
         }
     }
-
 }

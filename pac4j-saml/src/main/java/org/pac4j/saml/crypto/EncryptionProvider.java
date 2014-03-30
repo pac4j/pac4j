@@ -30,7 +30,6 @@ import org.opensaml.xml.security.keyinfo.StaticKeyInfoCredentialResolver;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class EncryptionProvider {
 
@@ -49,12 +48,11 @@ public class EncryptionProvider {
     }
 
     public Decrypter buildDecrypter() {
-        Credential encryptionCredential = credentialProvider.getCredential();
+        Credential encryptionCredential = this.credentialProvider.getCredential();
         KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
         Decrypter decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
         decrypter.setRootInNewDocument(true);
 
         return decrypter;
     }
-
 }

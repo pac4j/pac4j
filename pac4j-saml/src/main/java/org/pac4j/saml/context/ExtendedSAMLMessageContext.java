@@ -23,8 +23,9 @@ import org.opensaml.saml2.core.Assertion;
  * Allow to store additional information for SAML processing.
  * 
  * @author Michael Remond
- *
+ * @version 1.5.0
  */
+@SuppressWarnings("rawtypes")
 public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
 
     /* valid subject assertion */
@@ -37,7 +38,7 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     private String assertionConsumerUrl;
 
     public Assertion getSubjectAssertion() {
-        return subjectAssertion;
+        return this.subjectAssertion;
     }
 
     public void setSubjectAssertion(final Assertion subjectAssertion) {
@@ -45,7 +46,7 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     }
 
     public String getRequestId() {
-        return requestId;
+        return this.requestId;
     }
 
     public void setRequestId(final String requestId) {
@@ -53,11 +54,10 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     }
 
     public String getAssertionConsumerUrl() {
-        return assertionConsumerUrl;
+        return this.assertionConsumerUrl;
     }
 
     public void setAssertionConsumerUrl(final String assertionConsumerUrl) {
         this.assertionConsumerUrl = assertionConsumerUrl;
     }
-
 }

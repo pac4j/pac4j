@@ -27,7 +27,6 @@ import org.pac4j.core.credentials.Credentials;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class Saml2Credentials extends Credentials {
 
@@ -44,16 +43,16 @@ public class Saml2Credentials extends Credentials {
     }
 
     public NameID getNameId() {
-        return nameId;
+        return this.nameId;
     }
 
     public List<Attribute> getAttributes() {
-        return attributes;
+        return this.attributes;
     }
 
     @Override
     public String toString() {
-        return "SAMLCredential [nameId=" + nameId + ", attributes=" + attributes + "]";
+        return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
     }
 
 }

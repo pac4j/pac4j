@@ -74,13 +74,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
- * This class is the client to authenticate users with a SAML2 Identity Provider.
- * This implementation relies on the Web Browser SSO profile with HTTP-POST binding.
- * (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
+ * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
+ * Browser SSO profile with HTTP-POST binding. (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
@@ -98,8 +96,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     private String idpMetadataPath;
 
     private String idpEntityId;
-
-    private String spEntityId;
 
     private CredentialProvider credentialProvider;
 
@@ -143,7 +139,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // load private key from the keystore and provide it as OpenSAML credentials
-        this.credentialProvider = new CredentialProvider(keystorePath, keystorePassword, privateKeyPassword);
+        this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword,
+                this.privateKeyPassword);
 
         // required parserPool for XML processing
         StaticBasicParserPool parserPool = new StaticBasicParserPool();
@@ -156,7 +153,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // load IDP metadata from a file
         FilesystemMetadataProvider idpMetadataProvider;
         try {
-            idpMetadataProvider = new FilesystemMetadataProvider(new File(idpMetadataPath));
+            idpMetadataProvider = new FilesystemMetadataProvider(new File(this.idpMetadataPath));
             idpMetadataProvider.setParserPool(parserPool);
             idpMetadataProvider.initialize();
         } catch (MetadataProviderException e) {
@@ -164,32 +161,30 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
-        if (idpEntityId == null) {
+        if (this.idpEntityId == null) {
             try {
                 XMLObject md = idpMetadataProvider.getMetadata();
                 if (md instanceof EntitiesDescriptor) {
                     for (EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
-                        idpEntityId = entity.getEntityID();
+                        this.idpEntityId = entity.getEntityID();
                         break;
                     }
                 } else if (md instanceof EntityDescriptor) {
-                    idpEntityId = ((EntityDescriptor) md).getEntityID();
+                    this.idpEntityId = ((EntityDescriptor) md).getEntityID();
                 }
             } catch (MetadataProviderException e) {
                 throw new SamlException("Error getting idp entityId from IDP metadata", e);
             }
-            if (idpEntityId == null) {
+            if (this.idpEntityId == null) {
                 throw new SamlException("No idp entityId found");
             }
         }
 
         // Generate our Service Provider metadata
         Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
-        metadataGenerator.setCredentialProvider(credentialProvider);
-        // If no spEntityId declared, use callback url
-        if (spEntityId == null) {
-            spEntityId = getCallbackUrl();
-        }
+        metadataGenerator.setCredentialProvider(this.credentialProvider);
+        // for the spEntityId, use the callback url
+        String spEntityId = getCallbackUrl();
         metadataGenerator.setEntityId(spEntityId);
         // Assertion consumer service url is the callback url
         metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
@@ -200,7 +195,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Initialize metadata provider for our SP and get the XML as a String
         try {
             spMetadataProvider.initialize();
-            spMetadata = metadataGenerator.printMetadata();
+            this.spMetadata = metadataGenerator.printMetadata();
         } catch (MetadataProviderException e) {
             throw new TechnicalException("Error initializing spMetadataProvider", e);
         } catch (MarshallingException e) {
@@ -217,24 +212,24 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // Build the contextProvider
-        contextProvider = new Saml2ContextProvider(metadataManager, idpEntityId, spEntityId);
+        this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, spEntityId);
 
         // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
         VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
         // Get an AuthnRequest builder
-        authnRequestBuilder = new Saml2AuthnRequestBuilder();
+        this.authnRequestBuilder = new Saml2AuthnRequestBuilder();
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
         HTTPPostEncoder postEncoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
         HTTPPostDecoder postDecoder = new Pac4jHTTPPostDecoder(parserPool);
-        handler = new Saml2WebSSOProfileHandler(credentialProvider, postEncoder, postDecoder, parserPool);
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, postEncoder, postDecoder, parserPool);
 
         // Build provider for digital signature validation and encryption
-        signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
-        encryptionProvider = new EncryptionProvider(credentialProvider);
+        this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
+        this.encryptionProvider = new EncryptionProvider(this.credentialProvider);
 
         // Build the SAML response validator
-        responseValidator = new Saml2ResponseValidator();
+        this.responseValidator = new Saml2ResponseValidator();
 
     }
 
@@ -246,25 +241,24 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setPrivateKeyPassword(this.privateKeyPassword);
         client.setIdpMetadataPath(this.idpMetadataPath);
         client.setIdpEntityId(this.idpEntityId);
-        client.setSpEntityId(this.spEntityId);
         client.setCallbackUrl(this.callbackUrl);
         return client;
     }
 
     @Override
     protected boolean isDirectRedirection() {
-        return true;
+        return false;
     }
 
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
 
-        ExtendedSAMLMessageContext context = contextProvider.buildSpAndIdpContext(wc);
+        ExtendedSAMLMessageContext context = this.contextProvider.buildSpAndIdpContext(wc);
         final String relayState = getContextualCallbackUrl(wc);
 
-        AuthnRequest authnRequest = authnRequestBuilder.build(context);
+        AuthnRequest authnRequest = this.authnRequestBuilder.build(context);
 
-        handler.sendMessage(context, authnRequest, relayState);
+        this.handler.sendMessage(context, authnRequest, relayState);
 
         String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
 
@@ -274,16 +268,16 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     @Override
     protected Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
 
-        ExtendedSAMLMessageContext context = contextProvider.buildSpContext(wc);
+        ExtendedSAMLMessageContext context = this.contextProvider.buildSpContext(wc);
         // assertion consumer url is pac4j callback url
         context.setAssertionConsumerUrl(getCallbackUrl());
 
-        SignatureTrustEngine trustEngine = signatureTrustEngineProvider.build();
-        Decrypter decrypter = encryptionProvider.buildDecrypter();
+        SignatureTrustEngine trustEngine = this.signatureTrustEngineProvider.build();
+        Decrypter decrypter = this.encryptionProvider.buildDecrypter();
 
-        handler.receiveMessage(context, trustEngine);
+        this.handler.receiveMessage(context, trustEngine);
 
-        responseValidator.validateSamlResponse(context, trustEngine, decrypter);
+        this.responseValidator.validateSamlResponse(context, trustEngine, decrypter);
 
         return buildSaml2Credentials(context, decrypter);
 
@@ -336,10 +330,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return Protocol.SAML;
     }
 
-    public void setSpEntityId(final String spEntityId) {
-        this.spEntityId = spEntityId;
-    }
-
     public void setIdpMetadataPath(final String idpMetadataPath) {
         this.idpMetadataPath = idpMetadataPath;
     }
@@ -362,7 +352,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     public String printClientMetadata() {
         init();
-        return spMetadata;
+        return this.spMetadata;
     }
 
 }

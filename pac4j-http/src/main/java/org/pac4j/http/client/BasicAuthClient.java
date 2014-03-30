@@ -33,8 +33,9 @@ import org.pac4j.http.profile.ProfileCreator;
 /**
  * This class is the client to authenticate users through HTTP basic auth.
  * <p />
- * For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a specific exception :
- * {@link RequiresHttpAction} is returned which must be handled by the application to force authentication.
+ * For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
+ * specific exception : {@link RequiresHttpAction} is returned which must be handled by the application to force
+ * authentication.
  * <p />
  * The realm name can be defined using the {@link #setRealmName(String)} method.
  * <p />
@@ -45,66 +46,65 @@ import org.pac4j.http.profile.ProfileCreator;
  * @since 1.4.0
  */
 public class BasicAuthClient extends BaseHttpClient {
-    
+
     private String realmName = "authentication required";
-    
+
     public BasicAuthClient() {
     }
-    
+
     public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
     }
-    
+
     public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                           final ProfileCreator profilePopulator) {
+            final ProfileCreator profilePopulator) {
         setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
     }
-    
+
     @Override
     protected BaseClient<UsernamePasswordCredentials, HttpProfile> newClient() {
         final BasicAuthClient newClient = new BasicAuthClient();
         newClient.setRealmName(this.realmName);
         return newClient;
     }
-    
+
     @Override
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
     }
-    
+
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         return RedirectAction.redirect(getContextualCallbackUrl(context));
     }
-    
+
     @Override
-    public UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null || !header.startsWith("Basic ")) {
             logger.warn("No basic auth found");
             throw RequiresHttpAction.unauthorized("Requires basic auth (no basic auth header found)", context,
-                                                  this.realmName);
+                    this.realmName);
         }
         final String base64Token = header.substring(6);
         final byte[] decoded = Base64.decodeBase64(base64Token);
-        
+
         String token;
         try {
             token = new String(decoded, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
             throw new CredentialsException("Bad format of the basic auth header");
         }
-        
+
         final int delim = token.indexOf(":");
         if (delim < 0) {
             throw new CredentialsException("Bad format of the basic auth header");
         }
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(token.substring(0, delim),
-                                                                                        token.substring(delim + 1),
-                                                                                        getName());
+                token.substring(delim + 1), getName());
         logger.debug("usernamePasswordCredentials : {}", credentials);
         try {
             // validate credentials
@@ -112,27 +112,27 @@ public class BasicAuthClient extends BaseHttpClient {
         } catch (final RuntimeException e) {
             logger.error("Credentials validation fails", e);
             throw RequiresHttpAction.unauthorized("Requires basic auth (credentials validation fails)", context,
-                                                  this.realmName);
+                    this.realmName);
         }
-        
+
         return credentials;
     }
-    
+
     public String getRealmName() {
         return this.realmName;
     }
-    
+
     public void setRealmName(final String realmName) {
         this.realmName = realmName;
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
-                                     this.realmName, "usernamePasswordAuthenticator",
-                                     getUsernamePasswordAuthenticator(), "profileCreator", getProfileCreator());
+                this.realmName, "usernamePasswordAuthenticator", getUsernamePasswordAuthenticator(), "profileCreator",
+                getProfileCreator());
     }
-    
+
     @Override
     protected boolean isDirectRedirection() {
         return true;

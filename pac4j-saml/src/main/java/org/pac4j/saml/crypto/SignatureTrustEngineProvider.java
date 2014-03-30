@@ -27,7 +27,6 @@ import org.opensaml.xml.signature.impl.ExplicitKeySignatureTrustEngine;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class SignatureTrustEngineProvider {
 
@@ -38,9 +37,8 @@ public class SignatureTrustEngineProvider {
     }
 
     public SignatureTrustEngine build() {
-        MetadataCredentialResolver metadataResolver = new MetadataCredentialResolver(metadataProvider);
+        MetadataCredentialResolver metadataResolver = new MetadataCredentialResolver(this.metadataProvider);
         return new ExplicitKeySignatureTrustEngine(metadataResolver, Configuration.getGlobalSecurityConfiguration()
                 .getDefaultKeyInfoCredentialResolver());
     }
-
 }

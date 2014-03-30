@@ -38,7 +38,6 @@ import org.pac4j.saml.util.SamlUtils;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 @SuppressWarnings("rawtypes")
 public class Saml2AuthnRequestBuilder {
@@ -61,7 +60,7 @@ public class Saml2AuthnRequestBuilder {
     protected AuthnRequest buildAuthnRequest(final SAMLMessageContext context,
             final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
-        SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) builderFactory
+        SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
         AuthnRequest request = builder.buildObject();
 
@@ -83,7 +82,7 @@ public class Saml2AuthnRequestBuilder {
 
     @SuppressWarnings("unchecked")
     protected Issuer getIssuer(final String spEntityId) {
-        SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) builderFactory
+        SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
                 .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
         Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
@@ -94,5 +93,4 @@ public class Saml2AuthnRequestBuilder {
         Random r = new Random();
         return '_' + Long.toString(Math.abs(r.nextLong()), 16) + Long.toString(Math.abs(r.nextLong()), 16);
     }
-
 }

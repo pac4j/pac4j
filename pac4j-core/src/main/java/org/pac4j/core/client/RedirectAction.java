@@ -16,8 +16,8 @@
 package org.pac4j.core.client;
 
 /**
- * Indicates the action when the {@link Client} requires a redirection to achieve
- * user authentication. Valid redirection type are :
+ * Indicates the action when the {@link Client} requires a redirection to achieve user authentication. Valid redirection
+ * type are :
  * <ul>
  * <li>REDIRECT (HTTP 302)</li>
  * <li>SUCCESS (HTTP 200)</li>
@@ -25,7 +25,6 @@ package org.pac4j.core.client;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class RedirectAction {
 
@@ -58,15 +57,14 @@ public class RedirectAction {
     }
 
     public RedirectType getType() {
-        return type;
+        return this.type;
     }
 
     public String getLocation() {
-        return location;
+        return this.location;
     }
 
     public String getContent() {
-        return content;
+        return this.content;
     }
-
 }

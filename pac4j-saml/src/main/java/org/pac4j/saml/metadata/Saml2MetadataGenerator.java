@@ -50,10 +50,9 @@ import org.w3c.dom.Element;
 
 /**
  * Generates metadata object with standard values and overriden user defined values.
- *
+ * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 @SuppressWarnings("unchecked")
 public class Saml2MetadataGenerator {
@@ -91,16 +90,16 @@ public class Saml2MetadataGenerator {
 
     public String printMetadata() throws MarshallingException {
         EntityDescriptor md = buildMetadata();
-        Element entityDescriptorElement = marshallerFactory.getMarshaller(md).marshall(md);
+        Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
         return XMLHelper.nodeToString(entityDescriptorElement);
     }
 
     public EntityDescriptor buildMetadata() {
 
-        SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) builderFactory
+        SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
                 .getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
         EntityDescriptor descriptor = builder.buildObject();
-        descriptor.setEntityID(entityId);
+        descriptor.setEntityID(this.entityId);
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
 
         return descriptor;
@@ -119,19 +118,20 @@ public class Saml2MetadataGenerator {
 
     protected SPSSODescriptor buildSPSSODescriptor() {
 
-        SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) builderFactory
+        SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) this.builderFactory
                 .getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         SPSSODescriptor spDescriptor = builder.buildObject();
 
-        spDescriptor.setAuthnRequestsSigned(authnRequestSigned);
-        spDescriptor.setWantAssertionsSigned(wantAssertionSigned);
+        spDescriptor.setAuthnRequestsSigned(this.authnRequestSigned);
+        spDescriptor.setWantAssertionsSigned(this.wantAssertionSigned);
         spDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
 
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
         int index = 0;
         spDescriptor.getAssertionConsumerServices().add(
-                getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++, defaultACSIndex == index));
+                getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++,
+                        this.defaultACSIndex == index));
 
         spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));
         spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, getKeyInfo()));
@@ -142,7 +142,7 @@ public class Saml2MetadataGenerator {
 
     protected Collection<NameIDFormat> buildNameIDFormat() {
 
-        SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) builderFactory
+        SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
                 .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
         Collection<NameIDFormat> formats = new LinkedList<NameIDFormat>();
         NameIDFormat transientNameID = builder.buildObject();
@@ -162,10 +162,10 @@ public class Saml2MetadataGenerator {
 
     protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
             final boolean isDefault) {
-        SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) builderFactory
+        SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
                 .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
         AssertionConsumerService consumer = builder.buildObject();
-        consumer.setLocation(assertionConsumerServiceUrl);
+        consumer.setLocation(this.assertionConsumerServiceUrl);
         consumer.setBinding(binding);
         if (isDefault) {
             consumer.setIsDefault(true);
@@ -175,10 +175,10 @@ public class Saml2MetadataGenerator {
     }
 
     protected SingleLogoutService getSingleLogoutService(final String binding) {
-        SAMLObjectBuilder<SingleLogoutService> builder = (SAMLObjectBuilder<SingleLogoutService>) builderFactory
+        SAMLObjectBuilder<SingleLogoutService> builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
                 .getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
         SingleLogoutService logoutService = builder.buildObject();
-        logoutService.setLocation(singleLogoutServiceUrl);
+        logoutService.setLocation(this.singleLogoutServiceUrl);
         logoutService.setBinding(binding);
         return logoutService;
     }
@@ -193,12 +193,12 @@ public class Saml2MetadataGenerator {
     }
 
     protected KeyInfo getKeyInfo() {
-        Credential serverCredential = credentialProvider.getCredential();
+        Credential serverCredential = this.credentialProvider.getCredential();
         return generateKeyInfoForCredential(serverCredential);
     }
 
     public CredentialProvider getCredentialProvider() {
-        return credentialProvider;
+        return this.credentialProvider;
     }
 
     public void setCredentialProvider(final CredentialProvider credentialProvider) {
@@ -206,7 +206,7 @@ public class Saml2MetadataGenerator {
     }
 
     public String getEntityId() {
-        return entityId;
+        return this.entityId;
     }
 
     public void setEntityId(final String entityId) {
@@ -214,7 +214,7 @@ public class Saml2MetadataGenerator {
     }
 
     public boolean isAuthnRequestSigned() {
-        return authnRequestSigned;
+        return this.authnRequestSigned;
     }
 
     public void setAuthnRequestSigned(final boolean authnRequestSigned) {
@@ -222,7 +222,7 @@ public class Saml2MetadataGenerator {
     }
 
     public boolean isWantAssertionSigned() {
-        return wantAssertionSigned;
+        return this.wantAssertionSigned;
     }
 
     public void setWantAssertionSigned(final boolean wantAssertionSigned) {
@@ -230,7 +230,7 @@ public class Saml2MetadataGenerator {
     }
 
     public int getDefaultACSIndex() {
-        return defaultACSIndex;
+        return this.defaultACSIndex;
     }
 
     public void setDefaultACSIndex(final int defaultACSIndex) {
@@ -244,5 +244,4 @@ public class Saml2MetadataGenerator {
     public void setSingleLogoutServiceUrl(final String singleLogoutServiceUrl) {
         this.singleLogoutServiceUrl = singleLogoutServiceUrl;
     }
-
 }

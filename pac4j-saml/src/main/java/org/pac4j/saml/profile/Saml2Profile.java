@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.saml.profile;
 
 import org.pac4j.core.profile.CommonProfile;
@@ -23,10 +22,9 @@ import org.pac4j.core.profile.CommonProfile;
  * It is returned by the {@link org.pac4j.cas.client.Saml2Client}.
  * 
  * @author Michael Remond
- *
+ * @version 1.5.0
  */
 public class Saml2Profile extends CommonProfile {
 
     private static final long serialVersionUID = -7811733390277407623L;
-
 }

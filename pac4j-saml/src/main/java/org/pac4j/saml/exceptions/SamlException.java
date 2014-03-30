@@ -23,7 +23,6 @@ import org.pac4j.core.exception.TechnicalException;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 public class SamlException extends TechnicalException {
 
@@ -40,5 +39,4 @@ public class SamlException extends TechnicalException {
     public SamlException(final String message, final Throwable t) {
         super(message, t);
     }
-
 }
