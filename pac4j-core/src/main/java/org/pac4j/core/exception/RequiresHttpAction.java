@@ -58,7 +58,20 @@ public class RequiresHttpAction extends Exception {
      * @return an HTTP ok
      */
     public static RequiresHttpAction ok(final String message, final WebContext context) {
+        return ok(message, context, "");
+    }
+    
+    /**
+     * Build an HTTP Ok.
+     * 
+     * @param message
+     * @param context
+     * @param content
+     * @return an HTTP ok
+     */
+    public static RequiresHttpAction ok(final String message, final WebContext context, String content) {
         context.setResponseStatus(HttpConstants.OK);
+        context.writeResponseContent(content);
         return new RequiresHttpAction(message, HttpConstants.OK);
     }
     
