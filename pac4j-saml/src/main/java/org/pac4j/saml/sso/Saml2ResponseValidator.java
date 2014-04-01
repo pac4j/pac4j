@@ -69,6 +69,9 @@ public class Saml2ResponseValidator {
     /* maximum skew in seconds between SP and IDP clocks */
     private int acceptedSkew = 60;
 
+    /* maximum lifetime after a successfull authentication on an IDP */
+    private int maximumAuthenticationLifetime = 3600;
+
     /**
      * Validates the SAML protocol response and the SAML SSO response.
      * The method decrypt encrypted assertions if any.
@@ -380,7 +383,7 @@ public class Saml2ResponseValidator {
             final ExtendedSAMLMessageContext context) {
 
         for (AuthnStatement statement : authnStatements) {
-            if (!isIssueInstantValid(statement.getAuthnInstant())) {
+            if (!isAuthnInstantValid(statement.getAuthnInstant())) {
                 throw new SamlException("Authentication issue instant is too old or in the future");
             }
             if (statement.getSessionNotOnOrAfter() != null && statement.getSessionNotOnOrAfter().isBeforeNow()) {
@@ -455,13 +458,26 @@ public class Saml2ResponseValidator {
         return false;
     }
 
-    private boolean isIssueInstantValid(final DateTime issueInstant) {
+    private boolean isDateValid(final DateTime issueInstant, int interval) {
         long now = System.currentTimeMillis();
-        return issueInstant.isBefore(now + acceptedSkew * 1000) && issueInstant.isAfter(now - acceptedSkew * 1000);
+        return issueInstant.isBefore(now + acceptedSkew * 1000)
+                && issueInstant.isAfter(now - (acceptedSkew + interval) * 1000);
+    }
+
+    private boolean isIssueInstantValid(final DateTime issueInstant) {
+        return isDateValid(issueInstant, 0);
+    }
+
+    private boolean isAuthnInstantValid(DateTime authnInstant) {
+        return isDateValid(authnInstant, maximumAuthenticationLifetime);
     }
 
     public void setAcceptedSkew(final int acceptedSkew) {
         this.acceptedSkew = acceptedSkew;
+    }
+
+    public void setMaximumAuthenticationLifetime(int maximumAuthenticationLifetime) {
+        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
 
 }
