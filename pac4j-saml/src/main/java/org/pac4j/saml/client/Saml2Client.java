@@ -97,6 +97,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String idpEntityId;
 
+    private Integer maximumAuthenticationLifetime;
+
     private CredentialProvider credentialProvider;
 
     private Saml2ContextProvider contextProvider;
@@ -230,6 +232,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         // Build the SAML response validator
         this.responseValidator = new Saml2ResponseValidator();
+        if (this.maximumAuthenticationLifetime != null) {
+            this.responseValidator.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
+        }
 
     }
 
@@ -348,6 +353,10 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     public void setPrivateKeyPassword(final String privateKeyPassword) {
         this.privateKeyPassword = privateKeyPassword;
+    }
+
+    public void setMaximumAuthenticationLifetime(Integer maximumAuthenticationLifetime) {
+        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
 
     public String printClientMetadata() {
