@@ -246,6 +246,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setPrivateKeyPassword(this.privateKeyPassword);
         client.setIdpMetadataPath(this.idpMetadataPath);
         client.setIdpEntityId(this.idpEntityId);
+        client.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
         client.setCallbackUrl(this.callbackUrl);
         return client;
     }

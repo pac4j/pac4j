@@ -16,7 +16,6 @@
 
 package org.pac4j.saml.transport;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -34,8 +33,6 @@ import org.pac4j.core.context.WebContext;
  */
 public class SimpleRequestAdapter implements HTTPInTransport {
 
-    private final ByteArrayInputStream inputStream;
-
     private final WebContext wc;
 
     public WebContext getWebContext() {
@@ -44,11 +41,10 @@ public class SimpleRequestAdapter implements HTTPInTransport {
 
     public SimpleRequestAdapter(final WebContext wc) {
         this.wc = wc;
-        this.inputStream = new ByteArrayInputStream(wc.readRequestContent().getBytes());
     }
 
     public InputStream getIncomingStream() {
-        return inputStream;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Object getAttribute(final String arg0) {

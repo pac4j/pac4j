@@ -21,7 +21,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.pac4j.core.exception.TechnicalException;
 
 /**
@@ -121,19 +120,6 @@ public class J2EContext implements WebContext {
      */
     public HttpServletResponse getResponse() {
         return this.response;
-    }
-
-    /**
-     * Read content from the request.
-     *
-     * @return the content of the request
-     */
-    public String readRequestContent() {
-        try {
-            return IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
-        } catch (final IOException e) {
-            throw new TechnicalException(e);
-        }
     }
 
     /**

@@ -15,13 +15,9 @@
  */
 package org.pac4j.core.context;
 
-import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.IOUtils;
-import org.pac4j.core.exception.TechnicalException;
 
 /**
  * This implementation uses the J2E request.
@@ -130,19 +126,6 @@ public class J2ERequestContext extends BaseResponseContext {
      */
     public String getScheme() {
         return this.request.getScheme();
-    }
-
-    /**
-     * Read content from the request.
-     *
-     * @return the content of the request
-     */
-    public String readRequestContent() {
-        try {
-            return IOUtils.toString(request.getInputStream(), request.getCharacterEncoding());
-        } catch (final IOException e) {
-            throw new TechnicalException(e);
-        }
     }
 
     public String getFullRequestURL() {
