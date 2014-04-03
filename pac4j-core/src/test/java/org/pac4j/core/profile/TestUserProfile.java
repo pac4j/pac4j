@@ -32,15 +32,18 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
     
     private static final String ID = "id";
     
+    private static final String ROLE = "oneRole";
+    private static final String PERMISSION = "onePermission";
+    
     public void testSetId() {
-        UserProfile userProfile = new UserProfile();
+        final UserProfile userProfile = new UserProfile();
         assertNull(userProfile.getId());
         userProfile.setId(ID);
         assertEquals(ID, userProfile.getId());
     }
     
     public void testAddAttribute() {
-        UserProfile userProfile = new UserProfile();
+        final UserProfile userProfile = new UserProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAttributes().size());
@@ -48,9 +51,9 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
     }
     
     public void testAddAttributes() {
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(KEY, VALUE);
-        UserProfile userProfile = new UserProfile();
+        final UserProfile userProfile = new UserProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttributes(attributes);
         assertEquals(1, userProfile.getAttributes().size());
@@ -58,11 +61,34 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
     }
     
     public void testUnsafeAddAttribute() {
-        UserProfile userProfile = new UserProfile();
+        final UserProfile userProfile = new UserProfile();
         try {
             userProfile.getAttributes().put(KEY, VALUE);
             fail();
-        } catch (UnsupportedOperationException e) {
+        } catch (final UnsupportedOperationException e) {
         }
+    }
+    
+    public void testRoles() {
+        final UserProfile profile = new UserProfile();
+        assertEquals(0, profile.getRoles().size());
+        profile.addRole(ROLE);
+        assertEquals(1, profile.getRoles().size());
+        assertEquals(ROLE, profile.getRoles().get(0));
+    }
+    
+    public void testPermissions() {
+        final UserProfile profile = new UserProfile();
+        assertEquals(0, profile.getPermissions().size());
+        profile.addPermission(PERMISSION);
+        assertEquals(1, profile.getPermissions().size());
+        assertEquals(PERMISSION, profile.getPermissions().get(0));
+    }
+    
+    public void testRme() {
+        final UserProfile profile = new UserProfile();
+        assertFalse(profile.isRemembered());
+        profile.setRemembered(true);
+        assertTrue(profile.isRemembered());
     }
 }

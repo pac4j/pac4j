@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.authorization.AuthorizationGenerator;
 import org.pac4j.core.client.RedirectAction.RedirectType;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -29,46 +30,50 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is the default implementation of a client (whatever the protocol). It has the core concepts :
  * <ul>
- * <li>the initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()}
- * must be implemented in sub-classes</li>
- * <li>the cloning process is handled by the {@link #clone()} method, the {@link #newClient()} method must be
- * implemented in sub-classes to create a new instance</li>
+ * <li>the initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()} must be implemented
+ * in sub-classes</li>
+ * <li>the cloning process is handled by the {@link #clone()} method, the {@link #newClient()} method must be implemented in sub-classes to
+ * create a new instance</li>
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
- * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if
- * it's false, the redirection url will be the callback url with an additionnal parameter :
- * {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the redirection, which will be handled <b>later</b> in the
- * {@link #getCredentials(WebContext)} method.<br />
- * To force a direct redirection, the {@link #getRedirection(WebContext, boolean, boolean)} must be used with
- * <code>true</code> for the <code>forceDirectRedirection</code> parameter</li>
- * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use
- * relative callback urls which will be completed according to the current host, port and scheme. Disabled by default.</li>
+ * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if it's false, the
+ * redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
+ * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
+ * To force a direct redirection, the {@link #getRedirection(WebContext, boolean, boolean)} must be used with <code>true</code> for the
+ * <code>forceDirectRedirection</code> parameter</li>
+ * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
+ * which will be completed according to the current host, port and scheme. Disabled by default.</li>
  * </ul>
  * <p />
- * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no
- * explicit call is required to initialize the client.
+ * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
+ * required to initialize the client.
  * <p/>
  * The {@link #getProtocol()} method returns the implemented {@link Protocol} by the client.
+ * <p />
+ * After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
+ * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements
-        Client<C, U>, Cloneable {
-
+    Client<C, U>, Cloneable {
+    
     protected static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
-
+    
     public final static String NEEDS_CLIENT_REDIRECTION_PARAMETER = "needs_client_redirection";
-
+    
     public final static String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
-
+    
     protected String callbackUrl;
-
+    
     private String name;
-
+    
     private boolean enableContextualRedirects = false;
-
+    
+    private AuthorizationGenerator<U> authorizationGenerator = null;
+    
     /**
      * Clone the current client.
      * 
@@ -81,47 +86,47 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         newClient.setName(this.name);
         return newClient;
     }
-
+    
     /**
      * Create a new instance of the client.
      * 
      * @return A new instance of the client
      */
     protected abstract BaseClient<C, U> newClient();
-
+    
     public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
-
+    
     public String getCallbackUrl() {
         return this.callbackUrl;
     }
-
+    
     public String getContextualCallbackUrl(final WebContext context) {
         return prependHostToUrlIfNotPresent(this.callbackUrl, context);
     }
-
+    
     public void setName(final String name) {
         this.name = name;
     }
-
+    
     public String getName() {
         if (CommonHelper.isBlank(this.name)) {
             return this.getClass().getSimpleName();
         }
         return this.name;
     }
-
+    
     /**
      * Define if this client has a direct redirection.
      * 
      * @return if this client has a direct redirection
      */
     protected abstract boolean isDirectRedirection();
-
+    
     public final void redirect(final WebContext context, final boolean protectedTarget, final boolean ajaxRequest)
-            throws RequiresHttpAction {
-        RedirectAction action = getRedirectAction(context, protectedTarget, ajaxRequest);
+        throws RequiresHttpAction {
+        final RedirectAction action = getRedirectAction(context, protectedTarget, ajaxRequest);
         if (action.getType() == RedirectType.REDIRECT) {
             context.sendRedirect(action.getLocation());
         } else if (action.getType() == RedirectType.SUCCESS) {
@@ -129,10 +134,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             context.setResponseStatus(HttpConstants.OK);
         }
     }
-
+    
     /**
-     * Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be
-     * directly, the {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
+     * Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
+     * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
      * 
      * @param context
      * @param protectTarget
@@ -141,14 +146,14 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @throws RequiresHttpAction
      */
     public final RedirectAction getRedirectAction(final WebContext context, final boolean protectedTarget,
-            final boolean ajaxRequest) throws RequiresHttpAction {
+                                                  final boolean ajaxRequest) throws RequiresHttpAction {
         init();
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequest) {
             throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
         }
         // authentication has already been tried
-        String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
             // protected target -> forbidden
@@ -162,21 +167,21 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return retrieveRedirectAction(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
-            String intermediateUrl = CommonHelper.addParameter(getContextualCallbackUrl(context),
-                    NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
+            final String intermediateUrl = CommonHelper.addParameter(getContextualCallbackUrl(context),
+                                                                     NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
             return RedirectAction.redirect(intermediateUrl);
         }
     }
-
+    
     protected abstract RedirectAction retrieveRedirectAction(final WebContext context);
-
+    
     public final C getCredentials(final WebContext context) throws RequiresHttpAction {
         init();
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
         // needs redirection -> return the redirection url
         if (CommonHelper.isNotBlank(value)) {
-            RedirectAction action = retrieveRedirectAction(context);
-            String message = "Needs client redirection";
+            final RedirectAction action = retrieveRedirectAction(context);
+            final String message = "Needs client redirection";
             if (action.getType() == RedirectType.SUCCESS) {
                 throw RequiresHttpAction.ok(message, context, action.getContent());
             } else {
@@ -185,7 +190,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             }
         } else {
             // else get the credentials
-            C credentials = retrieveCredentials(context);
+            final C credentials = retrieveCredentials(context);
             // no credentials -> save this authentication has already been tried and failed
             if (credentials == null) {
                 context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
@@ -195,35 +200,39 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return credentials;
         }
     }
-
+    
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
-
+    
     public final U getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;
         }
-
-        return retrieveUserProfile(credentials, context);
+        
+        final U profile = retrieveUserProfile(credentials, context);
+        if (this.authorizationGenerator != null) {
+            this.authorizationGenerator.generate(profile);
+        }
+        return profile;
     }
-
+    
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
-
+    
     /**
      * Return the implemented protocol.
      * 
      * @return the implemented protocol
      */
     public abstract Protocol getProtocol();
-
+    
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", this.name,
-                "isDirectRedirection", isDirectRedirection(), "enableContextualRedirects",
-                isEnableContextualRedirects());
+                                     "isDirectRedirection", isDirectRedirection(), "enableContextualRedirects",
+                                     isEnableContextualRedirects());
     }
-
+    
     /**
      * Returns if contextual redirects are enabled for this client
      * 
@@ -232,30 +241,38 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public boolean isEnableContextualRedirects() {
         return this.enableContextualRedirects;
     }
-
+    
     /**
      * Sets whether contextual redirects are enabled for this client
      */
     public void setEnableContextualRedirects(final boolean enableContextualRedirects) {
         this.enableContextualRedirects = enableContextualRedirects;
     }
-
+    
     protected String prependHostToUrlIfNotPresent(final String url, final WebContext webContext) {
         if (webContext != null && this.enableContextualRedirects && url != null && !url.startsWith("http://")
-                && !url.startsWith("https://")) {
+            && !url.startsWith("https://")) {
             final StringBuilder sb = new StringBuilder();
-
+            
             sb.append(webContext.getScheme()).append("://").append(webContext.getServerName());
-
+            
             if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
                 sb.append(":").append(webContext.getServerPort());
             }
-
+            
             sb.append(url.startsWith("/") ? url : "/" + url);
-
+            
             return sb.toString();
         }
-
+        
         return url;
+    }
+    
+    public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+        this.authorizationGenerator = authorizationGenerator;
+    }
+    
+    public AuthorizationGenerator<U> getAuthorizationGenerator() {
+        return this.authorizationGenerator;
     }
 }

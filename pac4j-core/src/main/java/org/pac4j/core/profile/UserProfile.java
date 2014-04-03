@@ -16,8 +16,10 @@
 package org.pac4j.core.profile;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.pac4j.core.util.CommonHelper;
@@ -26,14 +28,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication : it's an identifier (string) and attributes
- * (objects). The attributes definition is null (generic profile), it must be defined in subclasses.
+ * (objects). The attributes definition is null (generic profile), it must be defined in subclasses. Additional concepts are the
+ * "remember me" nature of the user profile and the roles and permissions associated.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class UserProfile implements Serializable {
     
-    private static final long serialVersionUID = 4413106536020895877L;
+    private static final long serialVersionUID = 9020114478664816338L;
     
     protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
     
@@ -42,6 +45,12 @@ public class UserProfile implements Serializable {
     private final Map<String, Object> attributes = new HashMap<String, Object>();
     
     public transient static final String SEPARATOR = "#";
+    
+    private boolean isRemembered = false;
+    
+    private final List<String> roles = new ArrayList<String>();
+    
+    private final List<String> permissions = new ArrayList<String>();
     
     /**
      * Build a profile from user identifier and attributes.
@@ -155,8 +164,63 @@ public class UserProfile implements Serializable {
         return this.attributes.get(name);
     }
     
+    /**
+     * Add a role.
+     * 
+     * @param role the role to add.
+     */
+    public void addRole(final String role) {
+        this.roles.add(role);
+    }
+    
+    /**
+     * Add a permission.
+     * 
+     * @param permission the permission to add.
+     */
+    public void addPermission(final String permission) {
+        this.permissions.add(permission);
+    }
+    
+    /**
+     * Define if this profile is remembered.
+     * 
+     * @param rme whether the user is remembered.
+     */
+    public void setRemembered(final boolean rme) {
+        this.isRemembered = rme;
+    }
+    
+    /**
+     * Get the roles of the user.
+     * 
+     * @return the user roles.
+     */
+    public List<String> getRoles() {
+        return Collections.unmodifiableList(this.roles);
+    }
+    
+    /**
+     * Get the permissions of the user.
+     * 
+     * @return the user permissions.
+     */
+    public List<String> getPermissions() {
+        return Collections.unmodifiableList(this.permissions);
+    }
+    
+    /**
+     * Is the user remembered?
+     * 
+     * @return whether the user is remembered.
+     */
+    public boolean isRemembered() {
+        return this.isRemembered;
+    }
+    
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "id", this.id, "attributes", this.attributes);
+        return CommonHelper.toString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
+                                     this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered);
     }
 }
