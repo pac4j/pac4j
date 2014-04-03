@@ -67,7 +67,7 @@ public class Saml2ResponseValidator {
     private final static Logger logger = LoggerFactory.getLogger(Saml2ResponseValidator.class);
 
     /* maximum skew in seconds between SP and IDP clocks */
-    private int acceptedSkew = 60;
+    private int acceptedSkew = 120;
 
     /* maximum lifetime after a successfull authentication on an IDP */
     private int maximumAuthenticationLifetime = 3600;

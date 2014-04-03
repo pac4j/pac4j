@@ -72,14 +72,6 @@ public interface WebContext {
     public String getRequestMethod();
 
     /**
-     * Read content from the request.
-     * 
-     * @return the content of the request
-     * @since 1.5.0
-     */
-    public String readRequestContent();
-
-    /**
      * Write some content in the response.
      *
      * @param content

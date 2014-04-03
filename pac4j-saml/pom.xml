@@ -17,8 +17,8 @@
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
-    <name>pac4j-saml</name>
-    <description>pac4j for SAMLv2 protocol</description>
+    <packaging>jar</packaging>
+    <name>pac4j for SAML protocol</name>
 
     <dependencies>
         <dependency>
