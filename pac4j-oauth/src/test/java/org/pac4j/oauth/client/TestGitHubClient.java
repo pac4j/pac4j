@@ -38,7 +38,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @since 1.0.0
  */
 public class TestGitHubClient extends TestOAuthClient {
-    
+
     @Override
     public void testClone() {
         final GitHubClient oldClient = new GitHubClient();
@@ -46,7 +46,7 @@ public class TestGitHubClient extends TestOAuthClient {
         final GitHubClient client = (GitHubClient) internalTestClone(oldClient);
         assertEquals(oldClient.getScope(), client.getScope());
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -57,10 +57,10 @@ public class TestGitHubClient extends TestOAuthClient {
         githubClient.setScope("user");
         return githubClient;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(1);
+        final HtmlForm form = authorizationPage.getForms().get(2);
         final HtmlTextInput login = form.getInputByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput password = form.getInputByName("password");
@@ -71,13 +71,13 @@ public class TestGitHubClient extends TestOAuthClient {
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(GitHubProfile.class);
         kryo.register(GitHubPlan.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final GitHubProfile profile = (GitHubProfile) userProfile;
@@ -86,16 +86,9 @@ public class TestGitHubClient extends TestOAuthClient {
         assertEquals(GitHubProfile.class.getSimpleName() + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile,
-                            "testscribeup@gmail.com",
-                            null,
-                            null,
-                            "Test",
-                            "testscribeup",
-                            Gender.UNSPECIFIED,
-                            null,
-                            "gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?d=https%3A%2F%2Fidenticons.github.com%2F4899e444e4b0ddd35831a44c41c54a79.png",
-                            "https://github.com/testscribeup", "Paris");
+        assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "Test", "testscribeup",
+                Gender.UNSPECIFIED, null, "https://avatars.githubusercontent.com/u/1412558?",
+                "https://github.com/testscribeup", "Paris");
         assertEquals("User", profile.getType());
         assertEquals("ScribeUp", profile.getBlog());
         assertEquals("https://api.github.com/users/testscribeup", profile.getUrl());

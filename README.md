@@ -1,3 +1,30 @@
+- [What is pac4j ?](#what-is-pac4j--)
+- [The "big picture"](#the-big-picture)
+- [Sequence diagram (example: CAS)](#sequence-diagram-example-cas)
+- [Technical description](#technical-description)
+    - [pac4j-core](#pac4j-core)
+    - [pac4j-oauth](#pac4j-oauth)
+    - [pac4j-cas](#pac4j-cas)
+    - [pac4j-http](#pac4j-http)
+    - [pac4j-openid](#pac4j-openid)    
+    - [pac4j-saml](#pac4j-saml)
+    - [pac4j-test-cas](#pac4j-test-cas)
+- [Providers supported](#providers-supported)
+- [Code sample](#code-sample)
+    - [Maven dependencies](#maven-dependencies)
+    - [OAuth support](#oauth-support)
+    - [CAS support](#cas-support)
+    - [HTTP support](#http-support)
+    - [OpenID support](#openid-support)
+    - [SAML support](#saml-support)
+    - [Multiple clients](#multiple-clients)
+    - [Error handling](#error-handling)
+    - [Authorizations](#authorizations)
+- [Libraries built with pac4j](#libraries-built-with-pac4j)
+- [Versions](#versions)
+- [Testing](#testing)
+- [Contact](#contact)
+    
 ## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j) 
 
 **pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the protocols supporting the following mechanism:
@@ -39,7 +66,9 @@ It's available under the Apache 2 license.
 
 This Maven project is composed of 6 modules:
 
-#### pac4j-core: this is the core module of the project with the core classes/interfaces
+#### pac4j-core
+
+This is the core module of the project with the core classes/interfaces:
 
 * the *Client* interface is the **main API of the project** as it defines the mechanism that all clients must follow: redirect(WebContext,boolean,boolean), getCredentials(WebContext) and getUserProfile(Credentials,WebContext)
 * the *Credentials* class is the base class for all credentials
@@ -47,7 +76,9 @@ This Maven project is composed of 6 modules:
 * the *CommonProfile* class inherits from the *UserProfile* class and implements all the common getters that profiles must have (getFirstName(), getEmail()...)
 * the *WebContext* interface represents a web context which can be implemented in a J2E or another environment.
 
-#### pac4j-oauth: this module is dedicated to OAuth client support, it's the successor of the <b>scribe-up</b> library:
+#### pac4j-oauth
+
+This module is dedicated to OAuth client support, it's the successor of the <b>scribe-up</b> library:
 
 * the *FacebookClient*, *TwitterClient*... classes are the clients for all the providers: Facebook, Twitter...
 * the *OAuthCredentials* class is the credentials for OAuth support
@@ -55,8 +86,9 @@ This Maven project is composed of 6 modules:
 
 This module is based on the **pac4j-core** module, the [scribe-java](https://github.com/fernandezpablo85/scribe-java) library for OAuth protocol support, the [Jackson](https://github.com/FasterXML/jackson-core) library for JSON parsing and the [commons-lang3](http://commons.apache.org/lang/) library.
 
+#### pac4j-cas
 
-#### pac4j-cas: this module is dedicated to CAS client support:
+This module is dedicated to CAS client support:
 
 * the *CasClient* class is the client for CAS server (the *CasProxyReceptor* is dedicated to CAS proxy support)
 * the *CasCredentials* class is the credentials for CAS support
@@ -64,7 +96,9 @@ This module is based on the **pac4j-core** module, the [scribe-java](https://git
 
 This module is based on the **pac4j-core** module and the [Jasig CAS client](https://github.com/Jasig/java-cas-client).
 
-#### pac4j-http: this module is dedicated to HTTP protocol support:
+#### pac4j-http
+
+This module is dedicated to HTTP protocol support:
 
 * the *FormClient* & *BasicAuthClient* classes are the client for form and basic auth authentications
 * the *UsernamePasswordCredentials* class is the username/password credentials in HTTP support
@@ -72,7 +106,9 @@ This module is based on the **pac4j-core** module and the [Jasig CAS client](htt
 
 This module is based on the **pac4j-core** module and the [commons-codec](http://commons.apache.org/codec/) library.
 
-#### pac4j-openid: this module is dedicated to OpenID protocol support:
+#### pac4j-openid
+
+This module is dedicated to OpenID protocol support:
 
 * the *GoogleOpenIdClient* is the client for Google
 * the *OpenIdCredentials* class is the credentials for OpenID support
@@ -80,7 +116,9 @@ This module is based on the **pac4j-core** module and the [commons-codec](http:/
 
 This module is based on the **pac4j-core** module and the [openid4java](http://code.google.com/p/openid4java/) library.
 
-#### pac4j-saml: this module is dedicated to SAML support:
+#### pac4j-saml
+
+This module is dedicated to SAML support:
 
 * the *Saml2Client* class is the client for integrating with a SAML2 compliant Identity Provider
 * the *Saml2Credentials* class is the credentials for SAML2 support
@@ -88,7 +126,9 @@ This module is based on the **pac4j-core** module and the [openid4java](http://c
 
 This module is based on the **pac4j-core** module and the [OpenSAML library](https://wiki.shibboleth.net/confluence/display/OpenSAML/Home).
 
-#### pac4j-test-cas: this module is made to test CAS support in pac4j.
+#### pac4j-test-cas
+
+This module is made to test CAS support in pac4j.
 
 Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html).
 
@@ -297,6 +337,17 @@ You can also group all clients on a single callback url by using the *org.pac4j.
 
 All methods of the clients may throw an unchecked *org.pac4j.core.exception.TechnicalException*, which could be trapped by an appropriate try/catch.
 The *getRedirectionUrl(WebContext,boolean,boolean)* and the *getCredentials(WebContext)* methods may also throw a checked *org.pac4j.core.exception.RequiresHttpAction*, to require some additionnal HTTP action (redirection, basic auth...)
+
+### Authorizations
+
+Although the primary target of the pac4j library is to deal with authentication, authorizations can be handled as well.
+
+After a successful authentication at a provider, the associated client can generate roles, permissions and a "remembered" status. These information are available in every user profile.
+
+The generation of this information is controlled by a class implementing the *org.pac4j.core.authorization.AuthorizationGenerator* interface and set for this client.
+
+    FromAttributesAuthorizationGenerator authGenerator = new FromAttributesAuthorizationGenerator(new String[]{"attribRole1"}, new String[]{"attribPermission1"})
+    client.setAuthorizationGenerator(authGenerator);
 
 
 ## Libraries built with pac4j

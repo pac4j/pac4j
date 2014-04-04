@@ -43,7 +43,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @since 1.0.0
  */
 public class TestTwitterClient extends TestOAuthClient {
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -53,7 +53,7 @@ public class TestTwitterClient extends TestOAuthClient {
         twitterClient.setCallbackUrl(PAC4J_URL);
         return twitterClient;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
@@ -67,12 +67,12 @@ public class TestTwitterClient extends TestOAuthClient {
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(TwitterProfile.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final TwitterProfile profile = (TwitterProfile) userProfile;
@@ -82,11 +82,11 @@ public class TestTwitterClient extends TestOAuthClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,
-                            Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
-                            "http://t.co/fNjYqp7wZ8", "New York");
+                Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                "http://t.co/fNjYqp7wZ8", "New York");
         assertFalse(profile.getContributorsEnabled());
         assertEquals(TestsHelper.getFormattedDate(1328872224000L, "EEE MMM dd HH:mm:ss Z yyyy", Locale.US), profile
-            .getCreatedAt().toString());
+                .getCreatedAt().toString());
         assertTrue(profile.getDefaultProfile());
         assertTrue(profile.getDefaultProfileImage());
         assertEquals("biographie", profile.getDescription());
@@ -103,8 +103,8 @@ public class TestTwitterClient extends TestOAuthClient {
         assertTrue(profile.getProfileBackgroundImageUrl().contains(".twimg.com/images/themes/theme1/bg.png"));
         assertTrue(profile.getProfileBackgroundImageUrlHttps().endsWith("/images/themes/theme1/bg.png"));
         assertFalse(profile.getProfileBackgroundTile());
-        assertTrue(profile.getProfileImageUrlHttps()
-            .endsWith("/sticky/default_profile_images/default_profile_5_normal.png"));
+        assertTrue(profile.getProfileImageUrlHttps().endsWith(
+                "/sticky/default_profile_images/default_profile_5_normal.png"));
         assertTrue(profile.getProfileLinkColor() instanceof Color);
         assertTrue(profile.getProfileSidebarBorderColor() instanceof Color);
         assertTrue(profile.getProfileSidebarFillColor() instanceof Color);
@@ -114,17 +114,17 @@ public class TestTwitterClient extends TestOAuthClient {
         assertNull(profile.getShowAllInlineMedia());
         assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(3600, profile.getUtcOffset().intValue());
+        assertEquals(7200, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertNotNull(profile.getAccessSecret());
         assertEquals(37, profile.getAttributes().size());
     }
-    
+
     @Override
     protected boolean isCancellable() {
         return true;
     }
-    
+
     @Override
     protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);

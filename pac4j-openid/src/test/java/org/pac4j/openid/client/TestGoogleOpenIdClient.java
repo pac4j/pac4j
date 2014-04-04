@@ -43,34 +43,34 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 @SuppressWarnings("rawtypes")
 public class TestGoogleOpenIdClient extends TestClient implements TestsConstants {
-    
+
     @Override
     protected Client getClient() {
         final GoogleOpenIdClient client = new GoogleOpenIdClient();
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup56");
+        passwd.setValueAttribute("testpwdscribeup78");
         final HtmlSubmitInput submit = form.getInputByName("signIn");
-        
+
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(GoogleOpenIdProfile.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final GoogleOpenIdProfile profile = (GoogleOpenIdProfile) userProfile;
@@ -78,13 +78,13 @@ public class TestGoogleOpenIdClient extends TestClient implements TestsConstants
         final String id = "AItOawmMrzkgh-RhXW-d0iQ16ybkKpReh7g-hQQ";
         assertEquals("https://www.google.com/accounts/o8/id?id=" + id, profile.getId());
         assertEquals(GoogleOpenIdProfile.class.getSimpleName() + UserProfile.SEPARATOR
-                     + "https://www.google.com/accounts/o8/id?id=" + id, profile.getTypedId());
+                + "https://www.google.com/accounts/o8/id?id=" + id, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOpenIdProfile.class));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
-                            Gender.UNSPECIFIED, Locale.FRANCE, null, null, "FR");
+                Gender.UNSPECIFIED, Locale.FRANCE, null, null, "FR");
         assertEquals(5, profile.getAttributes().size());
     }
-    
+
     @Override
     protected Protocol getProtocol() {
         return Protocol.OPENID;

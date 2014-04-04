@@ -38,7 +38,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @since 1.1.0
  */
 public class TestWordPressClient extends TestOAuthClient {
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -48,7 +48,7 @@ public class TestWordPressClient extends TestOAuthClient {
         wordPressClient.setCallbackUrl(GOOGLE_URL + "/");
         return wordPressClient;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getFormByName("loginform");
@@ -56,32 +56,32 @@ public class TestWordPressClient extends TestOAuthClient {
         login.setValueAttribute("testscribeup");
         final HtmlPasswordInput passwd = form.getInputByName("pwd");
         passwd.setValueAttribute("testpwdscribeup");
-        
+
         HtmlElement button = (HtmlElement) authorizationPage.createElement("button");
         button.setAttribute("type", "submit");
         form.appendChild(button);
         // HtmlButton button = form.getButtonByName("wp-submit");
-        
+
         final HtmlPage confirmPage = button.click();
         form = confirmPage.getFormByName("loginform");
-        
+
         button = (HtmlElement) confirmPage.createElement("button");
         button.setAttribute("type", "submit");
         form.appendChild(button);
         // button = form.getButtonByName("wp-submit");
-        
+
         final HtmlPage callbackPage = button.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(WordPressProfile.class);
         kryo.register(WordPressLinks.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final WordPressProfile profile = (WordPressProfile) userProfile;
@@ -91,9 +91,9 @@ public class TestWordPressClient extends TestOAuthClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WordPressProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "testscribeup", "testscribeup",
-                            Gender.UNSPECIFIED, null,
-                            "http://0.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",
-                            "http://en.gravatar.com/testscribeup", null);
+                Gender.UNSPECIFIED, null,
+                "https://0.gravatar.com/avatar/67c3844a672979889c1e3abbd8c4eb22?s=96&d=identicon&r=G",
+                "http://en.gravatar.com/testscribeup", null);
         assertEquals(36224958, profile.getPrimaryBlog().intValue());
         final WordPressLinks links = profile.getLinks();
         assertEquals("https://public-api.wordpress.com/rest/v1/me", links.getSelf());

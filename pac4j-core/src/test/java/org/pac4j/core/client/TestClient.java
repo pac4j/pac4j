@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -49,26 +50,24 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-@SuppressWarnings({
-    "rawtypes", "unchecked"
-})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class TestClient extends TestCase implements TestsConstants {
-    
+
     protected static final Logger logger = LoggerFactory.getLogger(TestClient.class);
-    
+
     protected abstract Protocol getProtocol();
-    
+
     public void testProtocol() {
         final BaseClient client = (BaseClient) getClient();
         assertEquals(getProtocol(), client.getProtocol());
     }
-    
+
     public void testMissingCallbackUrl() {
         final BaseClient client = (BaseClient) getClient();
         client.setCallbackUrl(null);
         TestsHelper.initShouldFail(client, "callbackUrl cannot be blank");
     }
-    
+
     protected BaseClient internalTestClone(final BaseClient oldClient) {
         oldClient.setCallbackUrl(CALLBACK_URL);
         final BaseClient client = oldClient.clone();
@@ -76,28 +75,28 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getName(), client.getName());
         return client;
     }
-    
+
     public void testAuthenticationAndUserProfileRetrieval() throws Exception {
         ProfileHelper.setKeepRawData(true);
         try {
             final Client client = getClient();
-            
+
             final MockWebContext context = MockWebContext.create();
             final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
-            
+
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
-            
+
             final String callbackUrl = getCallbackUrl(webClient, redirectionPage);
-            
+
             final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
-            
+
             verifyProfile(profile);
-            
+
             // Java serialization
             byte[] bytes = TestsHelper.serialize(profile);
             final UserProfile profile2 = (UserProfile) TestsHelper.unserialize(bytes);
             verifyProfile(profile2);
-            
+
             // like CAS serialization
             final Map<String, Object> attributes = profile2.getAttributes();
             final Map<String, Object> newAttributes = new HashMap<String, Object>();
@@ -106,7 +105,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
             }
             final UserProfile profile3 = ProfileHelper.buildProfile(profile2.getTypedId(), newAttributes);
             verifyProfile(profile3);
-            
+
             // Kryo serialization
             final Kryo kryo = new Kryo();
             kryo.register(HashMap.class);
@@ -115,6 +114,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
             kryo.register(FormattedDate.class, new FormattedDateSerializer());
             kryo.register(Gender.class);
             kryo.register(Color.class, new ColorSerializer());
+            kryo.register(ArrayList.class);
             registerForKryo(kryo);
             bytes = TestsHelper.serializeKryo(kryo, profile);
             final UserProfile profile4 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
@@ -123,18 +123,18 @@ public abstract class TestClient extends TestCase implements TestsConstants {
             ProfileHelper.setKeepRawData(false);
         }
     }
-    
+
     protected void registerForKryo(final Kryo kryo) {
     }
-    
+
     protected boolean isJavascriptEnabled() {
         return false;
     }
-    
+
     protected abstract Client getClient();
-    
+
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client client, final MockWebContext context)
-        throws Exception {
+            throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
         baseClient.redirect(context, true, false);
@@ -143,27 +143,26 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         final HtmlPage loginPage = webClient.getPage(redirectionUrl);
         return loginPage;
     }
-    
+
     protected abstract String getCallbackUrl(final WebClient webClient, HtmlPage authorizationPage) throws Exception;
-    
+
     protected UserProfile getCredentialsAndProfile(final Client client, final WebContext context,
-                                                   final String callbackUrl) throws Exception {
-        
+            final String callbackUrl) throws Exception {
+
         final MockWebContext mockWebContext = (MockWebContext) context;
         mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
         final Credentials credentials = client.getCredentials(context);
         logger.debug("credentials : {}", credentials);
-        
+
         final UserProfile profile = client.getUserProfile(credentials, mockWebContext);
         return profile;
     }
-    
+
     protected abstract void verifyProfile(UserProfile userProfile);
-    
+
     protected void assertCommonProfile(final UserProfile userProfile, final String email, final String firstName,
-                                       final String familyName, final String displayName, final String username,
-                                       final Gender gender, final Locale locale, final String pictureUrl,
-                                       final String profileUrl, final String location) {
+            final String familyName, final String displayName, final String username, final Gender gender,
+            final Locale locale, final String pictureUrl, final String profileUrl, final String location) {
         final CommonProfile profile = (CommonProfile) userProfile;
         assertEquals(email, profile.getEmail());
         assertEquals(firstName, profile.getFirstName());
@@ -185,28 +184,28 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         }
         assertEquals(location, profile.getLocation());
     }
-    
+
     protected boolean isCancellable() {
         return false;
     }
-    
+
     public void testCancelAuthentication() throws Exception {
         if (isCancellable()) {
             final Client client = getClient();
-            
+
             final MockWebContext context = MockWebContext.create();
             final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
-            
+
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
-            
+
             final String callbackUrl = getCallbackUrlForCancel(redirectionPage);
-            
+
             final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
-            
+
             assertNull(profile);
         }
     }
-    
+
     protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
         throw new IllegalArgumentException("To be implemented");
     }
