@@ -310,6 +310,13 @@ For integrating an application with a SAML2 Identity Provider server, you should
     // get the SAML2 profile
     Saml2Profile saml2Profile = client.getUserProfile(credentials, context);
 
+#### Additional configuration:
+
+Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate you a new assertion. By default, the SAML pac4j client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the maximumAuthenticationLifetime parameter:
+    
+    // Lifetime in seconds
+    client.setMaximumAuthenticationLifetime(600);
+
 ### Multiple clients
 
 If you use multiple clients, you can use more generic objects. All profiles inherit from the *org.pac4j.core.profile.CommonProfile* class:

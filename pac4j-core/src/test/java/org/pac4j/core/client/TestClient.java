@@ -86,9 +86,9 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
 
-            final String callbackUrl = getCallbackUrl(webClient, redirectionPage);
+            updateContextForAuthn(webClient, redirectionPage, context);
 
-            final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
+            final UserProfile profile = getCredentialsAndProfile(client, context);
 
             verifyProfile(profile);
 
@@ -124,6 +124,14 @@ public abstract class TestClient extends TestCase implements TestsConstants {
         }
     }
 
+    // Default implementation use getCallbackUrl method
+    protected void updateContextForAuthn(WebClient webClient, HtmlPage redirectionPage, MockWebContext context)
+            throws Exception {
+        final String callbackUrl = getCallbackUrl(webClient, redirectionPage);
+        final MockWebContext mockWebContext = context;
+        mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
+    }
+
     protected void registerForKryo(final Kryo kryo) {
     }
 
@@ -146,15 +154,12 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
     protected abstract String getCallbackUrl(final WebClient webClient, HtmlPage authorizationPage) throws Exception;
 
-    protected UserProfile getCredentialsAndProfile(final Client client, final WebContext context,
-            final String callbackUrl) throws Exception {
+    protected UserProfile getCredentialsAndProfile(final Client client, final WebContext context) throws Exception {
 
-        final MockWebContext mockWebContext = (MockWebContext) context;
-        mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
         final Credentials credentials = client.getCredentials(context);
         logger.debug("credentials : {}", credentials);
 
-        final UserProfile profile = client.getUserProfile(credentials, mockWebContext);
+        final UserProfile profile = client.getUserProfile(credentials, context);
         return profile;
     }
 
@@ -198,12 +203,18 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
 
-            final String callbackUrl = getCallbackUrlForCancel(redirectionPage);
+            updateContextForCancel(redirectionPage, context);
 
-            final UserProfile profile = getCredentialsAndProfile(client, context, callbackUrl);
+            final UserProfile profile = getCredentialsAndProfile(client, context);
 
             assertNull(profile);
         }
+    }
+
+    protected void updateContextForCancel(HtmlPage redirectionPage, WebContext context) throws Exception {
+        final String callbackUrl = getCallbackUrlForCancel(redirectionPage);
+        final MockWebContext mockWebContext = (MockWebContext) context;
+        mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
     }
 
     protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {

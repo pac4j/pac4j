@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  * @since 1.1.0
  */
 public final class ProfileHelper {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
-    
+
     /**
      * Indicate if the user identifier matches this kind of profile.
      * 
@@ -45,7 +45,7 @@ public final class ProfileHelper {
             return false;
         }
     }
-    
+
     /**
      * Build a profile from a typed id and a map of attributes.
      * 
@@ -63,6 +63,8 @@ public final class ProfileHelper {
                         String completeName;
                         if ("CasProfile".equals(className) || "CasProxyProfile".equals(className)) {
                             completeName = "org.pac4j.cas.profile." + className;
+                        } else if ("Saml2Profile".equals(className)) {
+                            completeName = "org.pac4j.saml.profile.Saml2Profile";
                         } else if ("HttpProfile".equals(className)) {
                             completeName = "org.pac4j.http.profile.HttpProfile";
                         } else if ("MyOpenIdProfile".equals(className)) {
@@ -75,7 +77,7 @@ public final class ProfileHelper {
                         }
                         @SuppressWarnings("unchecked")
                         final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
-                            .forName(completeName).getDeclaredConstructor();
+                                .forName(completeName).getDeclaredConstructor();
                         final UserProfile userProfile = constructor.newInstance();
                         userProfile.build(typedId, attributes);
                         logger.debug("userProfile built : {}", userProfile);
@@ -88,7 +90,7 @@ public final class ProfileHelper {
         }
         return null;
     }
-    
+
     /**
      * Set whether the input data should be stored in object to be restored for CAS serialization when toString() is called. Save memory
      * also.

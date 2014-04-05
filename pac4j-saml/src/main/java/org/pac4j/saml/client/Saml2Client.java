@@ -316,8 +316,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         Saml2Profile profile = new Saml2Profile();
         profile.setId(credentials.getNameId().getValue());
-
-        // TODO write some attribute mapper
         for (Attribute attribute : credentials.getAttributes()) {
             List<String> values = new ArrayList<String>();
             for (XMLObject attributeValue : attribute.getAttributeValues()) {
