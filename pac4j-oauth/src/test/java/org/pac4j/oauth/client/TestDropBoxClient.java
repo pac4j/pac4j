@@ -26,6 +26,7 @@ import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
@@ -39,7 +40,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @since 1.2.0
  */
 public class TestDropBoxClient extends TestOAuthClient {
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -49,7 +50,7 @@ public class TestDropBoxClient extends TestOAuthClient {
         dropBoxClient.setCallbackUrl(GOOGLE_URL);
         return dropBoxClient;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         HtmlForm form = authorizationPage.getForms().get(0);
@@ -57,21 +58,22 @@ public class TestDropBoxClient extends TestOAuthClient {
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("login_password");
         passwd.setValueAttribute("testpwdscribeup");
-        HtmlSubmitInput submit = form.getInputByName("login_submit_dummy");
+        HtmlButton submit = form.getButtonByName("");
+        form.setMethodAttribute("POST");
         final HtmlPage confirmPage = submit.click();
         form = confirmPage.getForms().get(0);
-        submit = form.getInputByName("allow_access");
-        final HtmlPage callbackPage = submit.click();
+        HtmlSubmitInput submit2 = form.getInputByName("allow_access");
+        final HtmlPage callbackPage = submit2.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(DropBoxProfile.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
@@ -81,7 +83,7 @@ public class TestDropBoxClient extends TestOAuthClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
-                            null, "https://db.tt/RvmZyvJa", null);
+                null, "https://db.tt/RvmZyvJa", null);
         assertEquals(0L, profile.getShared().longValue());
         assertEquals(1410412L, profile.getNormal().longValue());
         assertEquals(2147483648L, profile.getQuota().longValue());
