@@ -40,7 +40,7 @@ public class MockWebContext extends BaseResponseContext {
 
     protected int serverPort = 80;
 
-    protected String requestContent = "";
+    protected String fullRequestURL = null;
 
     protected MockWebContext() {
     }
@@ -136,9 +136,7 @@ public class MockWebContext extends BaseResponseContext {
         final Map<String, String[]> map = new HashMap<String, String[]>();
         for (final String key : this.parameters.keySet()) {
             final String value = this.parameters.get(key);
-            final String[] values = new String[] {
-                value
-            };
+            final String[] values = new String[] { value };
             map.put(key, values);
         }
         return map;
@@ -157,7 +155,7 @@ public class MockWebContext extends BaseResponseContext {
     }
 
     public void setServerPort(int serverPort) {
-       this.serverPort = serverPort;
+        this.serverPort = serverPort;
     }
 
     public String getScheme() {
@@ -168,15 +166,15 @@ public class MockWebContext extends BaseResponseContext {
         this.scheme = scheme;
     }
 
-	public void setRequestContent(String requestContent) {
-		this.requestContent = requestContent;
-	}
+    public String getFullRequestURL() {
+        if (fullRequestURL != null) {
+            return fullRequestURL;
+        } else {
+            return scheme + "://" + serverName + ":" + serverPort + "/";
+        }
+    }
 
-	public String readRequestContent() {
-        return this.requestContent;
-	}
-
-	public String getFullRequestURL() {
-		return scheme + "://" + serverName + ":" + serverPort + "/";
-	}
+    public void setFullRequestURL(String fullRequestURL) {
+        this.fullRequestURL = fullRequestURL;
+    }
 }
