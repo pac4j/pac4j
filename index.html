@@ -16,7 +16,7 @@
 </ul>
 </article>
 
-<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>protocols (OAuth, CAS, OpenID, HTTP)</i>...</q>
+<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>protocols (OAuth, CAS, OpenID, HTTP, SAML)</i>...</q>
 <div class='author'> J&eacute;r&ocirc;me Leleu ;-)</div></article>
 
 <article><h3>What kind of protocol is supported by <strong>pac4j</strong> ?</h3>
@@ -36,6 +36,7 @@
  <li><strong>CAS</strong>: protocol versions 1.0  & 2.0 / SAML ticket validation, proxy ticket validation, logout request and CAS proxyfication</li>
  <li><strong>HTTP</strong>: form & basic authentications</li>
  <li><strong>OpenID</strong>: Google</li>
+ <li><strong>SAML</strong> 2.0</li>
 </ul>
 </article>
 
@@ -46,6 +47,7 @@
  <li>the <a target="_blank" href="http://shiro.apache.org/">Apache Shiro security</a> library</li>
  <li>the <a target="_blank" href="http://www.playframework.com/">Play framework 2.x</a> project</li>
  <li>the <a target="_blank" href="http://projects.spring.io/spring-security/">Spring Security</a> library</li>
+ <li>the <a target="_blank" href="http://www.ratpack.io/">Ratpack</a> JVM toolkit</li>
 </ul>
 </article>
 
@@ -57,10 +59,10 @@
 
 <article><h3><strong>pac4j</strong> details</h3>
 <table>
- <tr><td>Module</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http</td></tr>
+ <tr><td>Module</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http, pac4j-saml</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/pac4j">https://github.com/leleuj/pac4j</a></td></tr>
- <tr><td>Latest release</td><td>1.4.1</td></tr>
- <tr><td>Latest snapshot</td><td>1.5.0-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.5.0</td></tr>
+ <tr><td>Latest snapshot</td><td>1.5.1-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -71,8 +73,8 @@
  <tr><td>Module</td><td>j2e-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/j2e-pac4j">https://github.com/leleuj/j2e-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.0.1</td></tr>
- <tr><td>Latest snapshot</td><td>1.0.2-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.0.2</td></tr>
+ <tr><td>Latest snapshot</td><td>1.0.3-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/j2e-pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -83,8 +85,8 @@
  <tr><td>Module</td><td>cas-server-support-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j">https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4j-oauth-demo</a></td></tr>
- <tr><td>Latest release</td><td>4.0.0-RC3</td></tr>
- <tr><td>Latest snapshot</td><td>4.0.0-RC4-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>4.0.0-RC4</td></tr>
+ <tr><td>Latest snapshot</td><td>4.0.0-RC5-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
 </table>
 </article>
@@ -94,8 +96,8 @@
  <tr><td>Module</td><td>buji-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/bujiio/buji-pac4j">https://github.com/bujiio/buji-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.2.1</td></tr>
- <tr><td>Latest snapshot</td><td>1.2.2-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.2.2</td></tr>
+ <tr><td>Latest snapshot</td><td>1.2.3-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/io/buji/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/buji-pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -106,8 +108,8 @@
  <tr><td>Modules</td><td>play-pac4j_java<br />play-pac4j_scala2.9, play-pac4j_scala2.10 <i>(v1.1.x / Play 2.0 & 2.1)</i><br />play_pac4j_scala <i>(v1.2.x / Play 2.2)</i></td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/play-pac4j">https://github.com/leleuj/play-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a>, <a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.1.1</td></tr>
- <tr><td>Latest snapshot</td><td>1.1.2-SNAPSHOT <i>(Play 2.0 & 2.1)</i><br />1.2.0-SNAPSHOT <i>(Play 2.2)</i></td></tr>
+ <tr><td>Latest release</td><td>>1.1.2 <i>(Play 2.0 & 2.1)</i><br />1.2.0 <i>(Play 2.2)</i></td></tr>
+ <tr><td>Latest snapshot</td><td>1.1.3-SNAPSHOT <i>(Play 2.0 & 2.1)</i><br />1.2.1-SNAPSHOT <i>(Play 2.2)</i></td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/play-pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -118,10 +120,22 @@
  <tr><td>Module</td><td>spring-security-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/spring-security-pac4j">https://github.com/leleuj/spring-security-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.2.1</td></tr>
- <tr><td>Latest snapshot</td><td>1.2.2-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.2.2</td></tr>
+ <tr><td>Latest snapshot</td><td>1.2.3-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/spring-security-pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>Ratpack</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Module</td><td>ratpack-pac4j</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j">https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j</a></td></tr>
+ <tr><td>Demo</td><td>Coming soon...</a></td></tr>
+ <tr><td>Latest release</td><td>0.9.3</td></tr>
+ <tr><td>Latest snapshot</td><td>0.9.4</td></tr>
+ <tr><td>Development version</td><td><a target="_blank" href="https://github.com/ratpack/ratpack/tree/master">Github source</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="http://www.ratpack.io/manual/0.9.3/api/">Javadoc</a></td></tr>
 </table>
 </article>
 
