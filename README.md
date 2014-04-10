@@ -23,6 +23,7 @@
 - [Libraries built with pac4j](#libraries-built-with-pac4j)
 - [Versions](#versions)
 - [Testing](#testing)
+- [Bugs / Features tracking](#bugs--features-tracking)
 - [Contact](#contact)
     
 ## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j) 
