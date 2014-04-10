@@ -30,7 +30,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
@@ -53,16 +52,18 @@ public class TestDropBoxClient extends TestOAuthClient {
 
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
+        webClient.waitForBackgroundJavaScript(5000);
         HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput login = form.getInputByName("login_email");
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("login_password");
         passwd.setValueAttribute("testpwdscribeup");
         HtmlButton submit = form.getButtonByName("");
-        form.setMethodAttribute("POST");
-        final HtmlPage confirmPage = submit.click();
+        HtmlPage confirmPage = submit.click();
+        confirmPage = (HtmlPage) confirmPage.refresh();
+        webClient.waitForBackgroundJavaScript(5000);
         form = confirmPage.getForms().get(0);
-        HtmlSubmitInput submit2 = form.getInputByName("allow_access");
+        HtmlButton submit2 = form.getButtonByName("allow_access");
         final HtmlPage callbackPage = submit2.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
@@ -72,6 +73,10 @@ public class TestDropBoxClient extends TestOAuthClient {
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(DropBoxProfile.class);
+    }
+
+    protected boolean isJavascriptEnabled() {
+        return true;
     }
 
     @Override
