@@ -37,28 +37,29 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.credentials.OpenIdCredentials;
 
 /**
- * This class is a base implementation for an OpenID protocol client based on the openid4java library. It should work for all OpenID
- * clients. In subclasses, some methods are to be implemented / customized for specific needs depending on the client.
+ * This class is a base implementation for an OpenID protocol client based on the openid4java library. It should work
+ * for all OpenID clients. In subclasses, some methods are to be implemented / customized for specific needs depending
+ * on the client.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClient<OpenIdCredentials, U> {
-    
+
     private static final String OPENID_MODE = "openid.mode";
-    
+
     private static final String CANCEL_MODE = "cancel";
-    
+
     public final static String DISCOVERY_INFORMATION = "discoveryInformation";
-    
+
     private ConsumerManager consumerManager;
-    
+
     @Override
     protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         this.consumerManager = new ConsumerManager();
     }
-    
+
     /**
      * Return the user identifier for the web context.
      * 
@@ -66,7 +67,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      * @return the user identifier
      */
     protected abstract String getUser(WebContext context);
-    
+
     /**
      * Return the name of the attribute storing in session the discovery information.
      * 
@@ -75,7 +76,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     protected String getDiscoveryInformationSessionAttributeName() {
         return getName() + "#" + DISCOVERY_INFORMATION;
     }
-    
+
     /**
      * Get a fetch request for attributes.
      * 
@@ -83,34 +84,35 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      * @throws MessageException
      */
     protected abstract FetchRequest getFetchRequest() throws MessageException;
-    
+
     @Override
     @SuppressWarnings("rawtypes")
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         final String userIdentifier = getUser(context);
         CommonHelper.assertNotBlank("openIdUser", userIdentifier);
-        
+
         try {
             // perform discovery on the user-supplied identifier
             final List discoveries = this.consumerManager.discover(userIdentifier);
-            
+
             // attempt to associate with the OpenID provider
             // and retrieve one service endpoint for authentication
             final DiscoveryInformation discoveryInformation = this.consumerManager.associate(discoveries);
-            
+
             // save discovery information in session
             context.setSessionAttribute(getDiscoveryInformationSessionAttributeName(), discoveryInformation);
 
             final String contextualCallbackUrl = getContextualCallbackUrl(context);
             // create authentication request to be sent to the OpenID provider
-            final AuthRequest authRequest = this.consumerManager.authenticate(discoveryInformation, contextualCallbackUrl);
-            
+            final AuthRequest authRequest = this.consumerManager.authenticate(discoveryInformation,
+                    contextualCallbackUrl);
+
             // create fetch request for attributes
             final FetchRequest fetchRequest = getFetchRequest();
             if (fetchRequest != null) {
                 authRequest.addExtension(fetchRequest);
             }
-            
+
             final String redirectionUrl = authRequest.getDestinationUrl(true);
             logger.debug("redirectionUrl : {}", redirectionUrl);
             return RedirectAction.redirect(redirectionUrl);
@@ -119,7 +121,12 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             throw new TechnicalException("OpenID exception", e);
         }
     }
-    
+
+    @Override
+    protected boolean isDirectRedirection() {
+        return false;
+    }
+
     @Override
     protected OpenIdCredentials retrieveCredentials(final WebContext context) {
         final String mode = context.getRequestParameter(OPENID_MODE);
@@ -128,20 +135,20 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             logger.debug("authentication cancelled");
             return null;
         }
-        
+
         // parameters list returned by the provider
         final ParameterList parameterList = new ParameterList(context.getRequestParameters());
-        
+
         // retrieve the previously stored discovery information
         final DiscoveryInformation discoveryInformation = (DiscoveryInformation) context
-            .getSessionAttribute(getDiscoveryInformationSessionAttributeName());
-        
+                .getSessionAttribute(getDiscoveryInformationSessionAttributeName());
+
         // create credentials
         final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList, getName());
         logger.debug("credentials : {}", credentials);
         return credentials;
     }
-    
+
     /**
      * Create the appropriate OpenID profile.
      * 
@@ -150,26 +157,26 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
      * @throws MessageException
      */
     protected abstract U createProfile(AuthSuccess authSuccess) throws MessageException;
-    
+
     @Override
     protected U retrieveUserProfile(final OpenIdCredentials credentials, final WebContext context) {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
         logger.debug("parameterList : {}", parameterList);
         logger.debug("discoveryInformation : {}", discoveryInformation);
-        
+
         try {
             final String contextualCallbackUrl = getContextualCallbackUrl(context);
             // verify the response
             final VerificationResult verification = this.consumerManager.verify(contextualCallbackUrl, parameterList,
-                                                                                discoveryInformation);
-            
+                    discoveryInformation);
+
             // examine the verification result and extract the verified identifier
             final Identifier verified = verification.getVerifiedId();
             if (verified != null) {
                 final AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
                 logger.debug("authSuccess : {}", authSuccess);
-                
+
                 final U profile = createProfile(authSuccess);
                 profile.setId(verified.getIdentifier());
                 logger.debug("profile : {}", profile);
@@ -179,12 +186,12 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
             logger.error("OpenID exception", e);
             throw new TechnicalException("OpenID exception", e);
         }
-        
+
         final String message = "No verifiedId found";
         logger.error(message);
         throw new TechnicalException(message);
     }
-    
+
     @Override
     public Protocol getProtocol() {
         return Protocol.OPENID;

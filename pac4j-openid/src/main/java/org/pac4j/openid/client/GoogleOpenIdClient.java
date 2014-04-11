@@ -88,9 +88,4 @@ public class GoogleOpenIdClient extends BaseOpenIdClient<GoogleOpenIdProfile> {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName());
     }
-
-    @Override
-    protected boolean isDirectRedirection() {
-        return false;
-    }
 }
