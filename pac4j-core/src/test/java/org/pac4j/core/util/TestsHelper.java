@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.ObjectBuffer;
 import com.esotericsoftware.kryo.SerializationException;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
@@ -47,22 +48,25 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * @since 1.0.0
  */
 public final class TestsHelper {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(TestsHelper.class);
-    
+
     private static final int BUFFERS_INITIAL_CAPACITY = 5 * 1024;
-    
+
     private static final int BUFFERS_MAXIMAL_CAPACITY = 1024 * 20;
-    
+
     public static WebClient newWebClient(final boolean isJavascriptEnabled) {
         final WebClient webClient = new WebClient();
         webClient.getOptions().setRedirectEnabled(true);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setCssEnabled(false);
         webClient.getOptions().setJavaScriptEnabled(isJavascriptEnabled);
+        if (isJavascriptEnabled) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        }
         return webClient;
     }
-    
+
     public static Map<String, String> getParametersFromUrl(String url) {
         int pos = url.indexOf("?");
         if (pos >= 0) {
@@ -87,7 +91,7 @@ public final class TestsHelper {
         }
         return parameters;
     }
-    
+
     public static String getFormattedDate(final long l, final String format, final Locale locale) {
         final Date d = new Date(l);
         SimpleDateFormat simpleDateFormat;
@@ -98,7 +102,7 @@ public final class TestsHelper {
         }
         return simpleDateFormat.format(d);
     }
-    
+
     public static byte[] serialize(final Object o) {
         byte[] bytes = null;
         try {
@@ -120,7 +124,7 @@ public final class TestsHelper {
         }
         return bytes;
     }
-    
+
     public static Object unserialize(final byte[] bytes) {
         Object o = null;
         try {
@@ -142,7 +146,7 @@ public final class TestsHelper {
         }
         return o;
     }
-    
+
     public static byte[] serializeKryo(final Kryo kryo, final Object object) {
         final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
         try {
@@ -152,7 +156,7 @@ public final class TestsHelper {
         }
         return null;
     }
-    
+
     public static Object unserializeKryo(final Kryo kryo, final byte[] bytes) {
         try {
             final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
@@ -162,7 +166,7 @@ public final class TestsHelper {
         }
         return null;
     }
-    
+
     public static void initShouldFail(final InitializableObject obj, final String message) {
         try {
             obj.init();
