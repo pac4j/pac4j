@@ -38,43 +38,43 @@ import org.pac4j.openid.profile.google.GoogleOpenIdProfile;
  * @since 1.4.1
  */
 public class GoogleOpenIdClient extends BaseOpenIdClient<GoogleOpenIdProfile> {
-    
+
     public static final String GOOGLE_GENERIC_USER_IDENTIFIER = "https://www.google.com/accounts/o8/id";
-    
+
     @Override
     protected void internalInit() {
         super.internalInit();
     }
-    
+
     @Override
     protected BaseClient<OpenIdCredentials, GoogleOpenIdProfile> newClient() {
         return new GoogleOpenIdClient();
     }
-    
+
     @Override
     protected String getUser(final WebContext context) {
         return GOOGLE_GENERIC_USER_IDENTIFIER;
     }
-    
+
     @Override
     protected FetchRequest getFetchRequest() throws MessageException {
         final FetchRequest fetchRequest = FetchRequest.createFetchRequest();
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.COUNTRY, "http://axschema.org/contact/country/home",
-                                  true);
+                true);
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.EMAIL, "http://axschema.org/contact/email", true);
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.FIRSTNAME, "http://axschema.org/namePerson/first",
-                                  true);
+                true);
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.LANGUAGE, "http://axschema.org/pref/language", true);
         fetchRequest.addAttribute(GoogleOpenIdAttributesDefinition.LASTNAME, "http://axschema.org/namePerson/last",
-                                  true);
+                true);
         logger.debug("fetchRequest: {}", fetchRequest);
         return fetchRequest;
     }
-    
+
     @Override
     protected GoogleOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException {
         final GoogleOpenIdProfile profile = new GoogleOpenIdProfile();
-        
+
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
             for (final String name : OpenIdAttributesDefinitions.googleOpenIdDefinition.getAllAttributes()) {
@@ -83,14 +83,14 @@ public class GoogleOpenIdClient extends BaseOpenIdClient<GoogleOpenIdProfile> {
         }
         return profile;
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName());
     }
-    
+
     @Override
     protected boolean isDirectRedirection() {
-        return true;
+        return false;
     }
 }
