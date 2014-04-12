@@ -13,9 +13,9 @@ import org.pac4j.core.profile.ProfileHelper;
  * This class tests the {@link DefaultCasAuthorizationGenerator}.
  * 
  * @author Michael Remond
- *
+ * @since 1.5.1
  */
-public class TestDefaultCasAuthorizationGenerator extends TestCase {
+public final class TestDefaultCasAuthorizationGenerator extends TestCase {
 
     public void testNoAttribute() {
         AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<CommonProfile>();
