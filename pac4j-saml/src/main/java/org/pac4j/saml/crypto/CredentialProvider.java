@@ -16,9 +16,9 @@
 
 package org.pac4j.saml.crypto;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.util.Enumeration;
@@ -30,6 +30,7 @@ import org.opensaml.xml.security.credential.Credential;
 import org.opensaml.xml.security.credential.CredentialResolver;
 import org.opensaml.xml.security.credential.KeyStoreCredentialResolver;
 import org.opensaml.xml.security.criteria.EntityIDCriteria;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SamlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,8 @@ public class CredentialProvider {
     private final String privateKey;
 
     public CredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-        KeyStore keyStore = loadKeyStore(name, storePasswd);
+        URL url = CommonHelper.getURLFromName(name);
+        KeyStore keyStore = loadKeyStore(url, storePasswd);
         this.privateKey = getPrivateKeyAlias(keyStore);
         Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(this.privateKey, privateKeyPasswd);
@@ -68,10 +70,10 @@ public class CredentialProvider {
         }
     }
 
-    private KeyStore loadKeyStore(final String name, final String storePasswd) {
+    private KeyStore loadKeyStore(final URL url, final String storePasswd) {
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(name);
+            inputStream = url.openStream();
             KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             return ks;

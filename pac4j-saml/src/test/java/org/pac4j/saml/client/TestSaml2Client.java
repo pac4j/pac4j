@@ -59,10 +59,10 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
     @Override
     protected Client getClient() {
         final Saml2Client saml2Client = new Saml2Client();
-        saml2Client.setKeystorePath(this.getClass().getResource("samlKeystore.jks").getFile());
+        saml2Client.setKeystorePath("resource:samlKeystore.jks");
         saml2Client.setKeystorePassword("pac4j-demo-passwd");
         saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
-        saml2Client.setIdpMetadataPath(this.getClass().getResource("testshib-providers.xml").getFile());
+        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
         saml2Client.setCallbackUrl("http://localhost:8080/callback?client_name=Saml2Client");
         saml2Client.setMaximumAuthenticationLifetime(3600);
         return saml2Client;
