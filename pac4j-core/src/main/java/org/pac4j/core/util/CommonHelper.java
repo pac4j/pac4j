@@ -16,6 +16,8 @@
 package org.pac4j.core.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 
 import org.pac4j.core.exception.TechnicalException;
@@ -29,9 +31,13 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public final class CommonHelper {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
-    
+
+    private static final String RESOURCE_PREFIX = "resource:";
+
+    private static final String FILE_PREFIX = "file:";
+
     /**
      * Return if the String is not blank.
      * 
@@ -44,7 +50,7 @@ public final class CommonHelper {
         }
         return s.trim().length() > 0;
     }
-    
+
     /**
      * Return if the String is blank.
      * 
@@ -54,7 +60,7 @@ public final class CommonHelper {
     public static boolean isBlank(final String s) {
         return !isNotBlank(s);
     }
-    
+
     /**
      * Compare two String to see if they are equals (both null is ok).
      * 
@@ -65,7 +71,7 @@ public final class CommonHelper {
     public static boolean areEquals(final String s1, final String s2) {
         return s1 == null ? s2 == null : s1.equals(s2);
     }
-    
+
     /**
      * Compare two String to see if they are not equals.
      * 
@@ -76,7 +82,7 @@ public final class CommonHelper {
     public static boolean areNotEquals(final String s1, final String s2) {
         return !areEquals(s1, s2);
     }
-    
+
     /**
      * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
      * 
@@ -88,7 +94,7 @@ public final class CommonHelper {
             throw new TechnicalException(name + " cannot be blank");
         }
     }
-    
+
     /**
      * Verify that an Object is not <code>null</code> otherwise throw an {@link TechnicalException}.
      * 
@@ -100,7 +106,7 @@ public final class CommonHelper {
             throw new TechnicalException(name + " cannot be null");
         }
     }
-    
+
     /**
      * Add a new parameter to an url.
      * 
@@ -129,7 +135,7 @@ public final class CommonHelper {
         }
         return null;
     }
-    
+
     /**
      * Encode a text using UTF-8.
      * 
@@ -144,7 +150,7 @@ public final class CommonHelper {
             throw new TechnicalException(e);
         }
     }
-    
+
     /**
      * Build a normalized "toString" text for an object.
      * 
@@ -171,5 +177,33 @@ public final class CommonHelper {
             b = !b;
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns an {@link URL} from given name depending on its format:
+     * - loads from the classloader if name starts with "resource:"
+     * - loads as standard {@link URL} as fallback
+     * 
+     * @param name
+     * @return
+     */
+    public static URL getURLFromName(String name) {
+        try {
+            if (name.startsWith(RESOURCE_PREFIX)) {
+                String path = name.substring(RESOURCE_PREFIX.length());
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
+                }
+                return CommonHelper.class.getResource(path);
+            } else {
+                String path = name;
+                if (!name.startsWith(FILE_PREFIX)) {
+                    path = FILE_PREFIX + name;
+                }
+                return new URL(path);
+            }
+        } catch (MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
     }
 }

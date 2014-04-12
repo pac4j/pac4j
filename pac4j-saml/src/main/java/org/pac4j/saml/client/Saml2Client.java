@@ -17,6 +17,8 @@
 package org.pac4j.saml.client;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,11 +157,14 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // load IDP metadata from a file
         FilesystemMetadataProvider idpMetadataProvider;
         try {
-            idpMetadataProvider = new FilesystemMetadataProvider(new File(this.idpMetadataPath));
+            URL url = CommonHelper.getURLFromName(this.idpMetadataPath);
+            idpMetadataProvider = new FilesystemMetadataProvider(new File(url.toURI()));
             idpMetadataProvider.setParserPool(parserPool);
             idpMetadataProvider.initialize();
         } catch (MetadataProviderException e) {
             throw new SamlException("Error initializing idpMetadataProvider", e);
+        } catch (URISyntaxException e) {
+            throw new TechnicalException("Error converting idp Metadata path url to uri", e);
         }
 
         // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
