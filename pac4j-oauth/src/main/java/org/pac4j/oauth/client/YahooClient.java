@@ -67,7 +67,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     
     @Override
     protected String getProfileUrl(final Token accessToken) {
-        return "http://social.yahooapis.com/v1/me/guid?format=xml";
+        return "https://social.yahooapis.com/v1/me/guid?format=xml";
     }
     
     /**
@@ -75,7 +75,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
      */
     @Override
     protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
-        // get the guid : http://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
+        // get the guid : https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         final String guid = StringUtils.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
@@ -84,7 +84,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
             logger.error(message);
             throw new HttpCommunicationException(message);
         }
-        body = sendRequestForData(accessToken, "http://social.yahooapis.com/v1/user/" + guid + "/profile?format=json");
+        body = sendRequestForData(accessToken, "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json");
         final YahooProfile profile = extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
         return profile;
