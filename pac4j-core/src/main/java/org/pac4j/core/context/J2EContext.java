@@ -200,12 +200,4 @@ public class J2EContext implements WebContext {
             return requestURL.append('?').append(queryString).toString();
         }
     }
-
-    public void sendRedirect(final String url) {
-        try {
-            response.sendRedirect(url);
-        } catch (IOException e) {
-            throw new TechnicalException(e);
-        }
-    }
 }
