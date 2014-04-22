@@ -131,7 +131,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             throws RequiresHttpAction {
         final RedirectAction action = getRedirectAction(context, protectedTarget, ajaxRequest);
         if (action.getType() == RedirectType.REDIRECT) {
-            context.sendRedirect(action.getLocation());
+            context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
+            context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
         } else if (action.getType() == RedirectType.SUCCESS) {
             context.writeResponseContent(action.getContent());
             context.setResponseStatus(HttpConstants.OK);

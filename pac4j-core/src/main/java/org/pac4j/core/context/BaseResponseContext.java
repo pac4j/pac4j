@@ -57,14 +57,11 @@ public abstract class BaseResponseContext implements WebContext {
     }
 
     public String getResponseLocation() {
-        return this.responseLocation;
+        return this.responseHeaders.get(HttpConstants.LOCATION_HEADER);
     }
 
     public Map<String, String> getResponseHeaders() {
         return this.responseHeaders;
     }
 
-    public void sendRedirect(final String location) {
-        responseLocation = location;
-    }
 }
