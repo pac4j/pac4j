@@ -199,10 +199,10 @@ If you want to authenticate and get the user profile from Facebook, you have to 
     WebContext context = new J2EContext(request, response);
     client.redirect(context, false, false);
 
-...after successfull authentication, in the client application, on the callback url (for Facebook)...
+...after successful authentication, in the client application, on the callback url (for Facebook)...
 
     // get OAuth credentials
-    OAuthCredentials credentials = client.getCredentials(context));
+    OAuthCredentials credentials = client.getCredentials(context);
     // get the facebook profile
     FacebookProfile facebookProfile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + facebookProfile.getDisplayName() + " born the " + facebookProfile.getBirthday());</code></pre>
@@ -219,10 +219,10 @@ For integrating an application with a CAS server, you should use the *org.pac4j.
     WebContext context = new J2EContext(request, response);
     client.redirect(context, false, false);
 
-...after successfull authentication, in the client application, on the callback url...
+...after successful authentication, in the client application, on the callback url...
 
     // get CAS credentials
-    CasCredentials credentials = client.getCredentials(context));
+    CasCredentials credentials = client.getCredentials(context);
     // get the CAS profile
     CasProfile casProfile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + casProfile.getAttribute("anAttribute"));</code></pre>
@@ -249,10 +249,10 @@ To use form authentication in a web application, you should use the *org.pac4j.h
     WebContext context = new J2EContext(request, response);
     client.redirect(context, false, false);
 
-...after successfull authentication...
+...after successful authentication...
 
     // get username/password credentials
-    UsernamePasswordCredentials credentials = client.getCredentials(context));
+    UsernamePasswordCredentials credentials = client.getCredentials(context);
     // get the HTTP profile
     HttpProfile httpProfile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + httpProfile.getUsername());</code></pre>
@@ -274,10 +274,10 @@ To use Google and OpenID for authentication, you should use the *org.pac4j.openi
     // we assume the user identifier is in the "openIdUser" request parameter
     client.redirect(context, false, false);
 
-...after successfull authentication, in the client application, on the callback url...
+...after successful authentication, in the client application, on the callback url...
 
     // get the OpenID credentials
-    OpenIdCredentials credentials = client.getCredentials(context));
+    OpenIdCredentials credentials = client.getCredentials(context);
     // get the GooglOpenID profile
     GoogleOpenIdProfile profile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + profile.getDisplayName());
@@ -298,17 +298,17 @@ For integrating an application with a SAML2 Identity Provider server, you should
     // configure a file containing the Identity Provider metadata 
     client.setIdpMetadataPath("testshib-providers.xml");
 
-    // generate pac4j SAML2 Service Provider metadata to import on Idenity Provider side
+    // generate pac4j SAML2 Service Provider metadata to import on Identity Provider side
     String spMetadata = client.printClientMetadata();
     
     // send the user to the Identity Provider server for authentication
     WebContext context = new J2EContext(request, response);
     client.redirect(context, false, false);
 
-...after successfull authentication, in the Service Provider application, on the assertion consumer service url...
+...after successful authentication, in the Service Provider application, on the assertion consumer service url...
 
     // get SAML2 credentials
-    Saml2Credentials credentials = client.getCredentials(context));
+    Saml2Credentials credentials = client.getCredentials(context);
     // get the SAML2 profile
     Saml2Profile saml2Profile = client.getUserProfile(credentials, context);
 
@@ -324,7 +324,7 @@ Once you have an authenticated web session on the Identity Provider, usually it 
 If you use multiple clients, you can use more generic objects. All profiles inherit from the *org.pac4j.core.profile.CommonProfile* class:
 
     // get credentials
-    Credentials credentials = client.getCredentials(context));
+    Credentials credentials = client.getCredentials(context);
     // get the common profile
     CommonProfile commonProfile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + commonProfile.getFirstName());
@@ -340,7 +340,7 @@ You can also group all clients on a single callback url by using the *org.pac4j.
 
     Clients clients = new Clients("http://server/app/callbackUrl", fbClient, casClient, formClient googleOpenIdClient, samlClient);
     // on the callback url, retrieve the right client
-    Client client = clients.findClient(context));
+    Client client = clients.findClient(context);
 
 ### Error handling
 
