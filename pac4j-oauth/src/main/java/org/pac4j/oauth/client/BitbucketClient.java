@@ -27,10 +27,6 @@ import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 /**
- *
- * @author Sebastian Sdorra
- */
-/**
  * This class is the OAuth client to authenticate users in Bitbucket.
  * 
  * It returns a {@link org.pac4j.oauth.profile.bitbucket.BitbucketProfile}.
