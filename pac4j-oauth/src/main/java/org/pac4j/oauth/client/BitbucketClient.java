@@ -32,8 +32,9 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
  * It returns a {@link org.pac4j.oauth.profile.bitbucket.BitbucketProfile}.
  * <p />
  * 
- * @see org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
+ * @see org.pac4j.oauth.profile.bitbucket.BitbucketProfile
  * @author Sebastian Sdorra
+ * @since 1.5.1
  */
 public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
 {

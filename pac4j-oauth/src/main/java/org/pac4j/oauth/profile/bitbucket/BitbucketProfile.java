@@ -81,6 +81,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
  * </table>
  * 
  * @author Sebastian Sdorra
+ * @since 1.5.1
  */
 public class BitbucketProfile extends OAuth10Profile
 {

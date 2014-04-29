@@ -21,6 +21,7 @@ import org.scribe.model.Token;
  * This class represents the OAuth API implementation for Bitbucket.
  * 
  * @author Sebastian Sdorra
+ * @since 1.5.1
  */
 public class BitBucketApi extends DefaultApi10a {
   

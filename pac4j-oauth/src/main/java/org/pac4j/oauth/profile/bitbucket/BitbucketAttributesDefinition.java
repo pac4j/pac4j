@@ -22,6 +22,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * This class defines the attributes of the Bitbucket profile.
  * 
  * @author Sebastian Sdorra
+ * @since 1.5.1
  */
 public class BitbucketAttributesDefinition extends OAuthAttributesDefinition {
   
