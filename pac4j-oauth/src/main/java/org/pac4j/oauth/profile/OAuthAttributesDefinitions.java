@@ -16,6 +16,7 @@
 package org.pac4j.oauth.profile;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.oauth.profile.bitbucket.BitbucketAttributesDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.foursquare.FoursquareAttributesDefinition;
@@ -63,4 +64,6 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition vkDefinition = new VkAttributesDefinition();
 
     public final static AttributesDefinition foursquareDefinition = new FoursquareAttributesDefinition();
+    
+    public final static AttributesDefinition bitbucketDefinition = new BitbucketAttributesDefinition();
 }
