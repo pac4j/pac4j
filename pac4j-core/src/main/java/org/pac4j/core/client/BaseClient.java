@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements
-        Client<C, U>, Cloneable {
+Client<C, U>, Cloneable {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
 
@@ -174,6 +174,20 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             final String intermediateUrl = CommonHelper.addParameter(getContextualCallbackUrl(context),
                     NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
             return RedirectAction.redirect(intermediateUrl);
+        }
+    }
+
+    /**
+     * Return the redirection url to the provider, requested from an anonymous page.
+     *
+     * @param context the current web context
+     * @return the redirection url to the provider.
+     */
+    public String getRedirectionUrl(final WebContext context) {
+        try {
+            return getRedirectAction(context, false, false).getLocation();
+        } catch (final RequiresHttpAction e) {
+            return null;
         }
     }
 
