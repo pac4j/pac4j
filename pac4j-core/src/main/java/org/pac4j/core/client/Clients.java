@@ -26,44 +26,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is made to group multiple clients using a specific parameter to distinguish them, generally on one callback url.
+ * This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
+ * callback url.
  * <p />
- * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the clients group if empty and
- * a specific parameter added to define the client targeted. It is implicitly called by the "finders" methods and doesn't need to be called
- * explicitly.
+ * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the
+ * clients group if empty and a specific parameter added to define the client targeted. It is implicitly called by the
+ * "finders" methods and doesn't need to be called explicitly.
  * <p />
- * The {@link #findClient(WebContext)} or {@link #findClient(String)} methods must be called to find the right client according to the input
- * context or type. The {@link #findAllClients()} method returns all the clients.
+ * The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called
+ * to find the right client according to the input context or type. The {@link #findAllClients()} method returns all the
+ * clients.
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
 public final class Clients extends InitializableObject {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(Clients.class);
-    
+
     public final static String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
-    
+
     private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
-    
+
     private List<Client> clients;
-    
+
     private String callbackUrl;
-    
+
     public Clients() {
     }
-    
+
     public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
         setClientsList(clients);
     }
-    
+
     public Clients(final String callbackUrl, final Client... clients) {
         setCallbackUrl(callbackUrl);
         setClients(clients);
     }
-    
+
     /**
      * Initialize all clients by computing callback urls.
      */
@@ -77,15 +79,15 @@ public final class Clients extends InitializableObject {
             // no callback url defined for the client -> set it with the group callback url + the "clientName" parameter
             if (baseClientCallbackUrl == null) {
                 baseClient.setCallbackUrl(CommonHelper.addParameter(this.callbackUrl, this.clientNameParameter,
-                                                                    baseClient.getName()));
+                        baseClient.getName()));
                 // a callback url is already defined for the client without the "clientName" parameter -> just add it
             } else if (baseClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
                 baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientNameParameter,
-                                                                    baseClient.getName()));
+                        baseClient.getName()));
             }
         }
     }
-    
+
     /**
      * Return the right client according to the web context.
      * 
@@ -97,7 +99,7 @@ public final class Clients extends InitializableObject {
         CommonHelper.assertNotBlank("name", name);
         return findClient(name);
     }
-    
+
     /**
      * Return the right client according to the specific name.
      * 
@@ -111,11 +113,29 @@ public final class Clients extends InitializableObject {
                 return client;
             }
         }
-        final String message = "No client found for name : " + name;
+        final String message = "No client found for name: " + name;
         logger.error(message);
         throw new TechnicalException(message);
     }
-    
+
+    /**
+     * Return the right client according to the specific class.
+     *
+     * @param class
+     * @return the right client
+     */
+    public Client findClient(final Class<? extends Client> clazz) {
+        init();
+        for (final Client client : this.clients) {
+            if (client.getClass().equals(clazz)) {
+                return client;
+            }
+        }
+        final String message = "No client found for class: " + clazz;
+        logger.error(message);
+        throw new TechnicalException(message);
+    }
+
     /**
      * Find all the clients.
      * 
@@ -125,37 +145,37 @@ public final class Clients extends InitializableObject {
         init();
         return this.clients;
     }
-    
+
     public String getClientNameParameter() {
         return this.clientNameParameter;
     }
-    
+
     public void setClientNameParameter(final String clientNameParameter) {
         this.clientNameParameter = clientNameParameter;
     }
-    
+
     public String getCallbackUrl() {
         return this.callbackUrl;
     }
-    
+
     public void setCallbackUrl(final String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
-    
+
     public void setClientsList(final List<Client> clients) {
         this.clients = clients;
     }
-    
+
     public void setClients(final Client... clients) {
         this.clients = new ArrayList<Client>();
         for (final Client client : clients) {
             this.clients.add(client);
         }
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
-                                     this.clientNameParameter, "clients", this.clients);
+                this.clientNameParameter, "clients", this.clients);
     }
 }

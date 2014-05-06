@@ -32,28 +32,28 @@ import org.pac4j.core.util.TestsHelper;
  */
 @SuppressWarnings("rawtypes")
 public final class TestClients extends TestCase implements TestsConstants {
-    
+
     private MockBaseClient newFacebookClient() {
         return new MockBaseClient("FacebookClient");
     }
-    
+
     private MockBaseClient newYahooClient() {
         return new MockBaseClient("YahooClient");
     }
-    
+
     public void testMissingClient() {
         final Clients clientsGroup = new Clients();
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(clientsGroup, "clients cannot be null");
     }
-    
+
     public void testMissingCallbackUrl() {
         final Clients clientsGroup = new Clients();
         final List<Client> clients = new ArrayList<Client>();
         clients.add(newFacebookClient());
         TestsHelper.initShouldFail(clientsGroup, "callbackUrl cannot be blank");
     }
-    
+
     public void testTwoClients() {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
@@ -70,10 +70,10 @@ public final class TestClients extends TestCase implements TestsConstants {
         assertEquals(CALLBACK_URL + "?" + TYPE + "=" + facebookClient.getName(), facebookClient.getCallbackUrl());
         assertEquals(CALLBACK_URL + "?" + TYPE + "=" + yahooClient.getName(), yahooClient.getCallbackUrl());
         assertEquals(yahooClient,
-                     clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, yahooClient.getName())));
+                clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, yahooClient.getName())));
         assertEquals(yahooClient, clientsGroup.findClient(yahooClient.getName()));
     }
-    
+
     public void testDoubleInit() {
         final MockBaseClient facebookClient = newFacebookClient();
         final Clients clientsGroup = new Clients();
@@ -85,9 +85,9 @@ public final class TestClients extends TestCase implements TestsConstants {
         clientsGroup2.setClients(facebookClient);
         clientsGroup2.init();
         assertEquals(CALLBACK_URL + "?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=" + facebookClient.getName(),
-                     facebookClient.getCallbackUrl());
+                facebookClient.getCallbackUrl());
     }
-    
+
     public void testAllClients() {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
@@ -101,7 +101,7 @@ public final class TestClients extends TestCase implements TestsConstants {
         assertEquals(2, clients2.size());
         assertTrue(clients2.containsAll(clients));
     }
-    
+
     public void testClientWithCallbackUrl() {
         final MockBaseClient facebookClient = newFacebookClient();
         facebookClient.setCallbackUrl(LOGIN_URL);
@@ -110,8 +110,24 @@ public final class TestClients extends TestCase implements TestsConstants {
         group.setClientNameParameter(KEY);
         group.init();
         assertEquals(LOGIN_URL + "?" + group.getClientNameParameter() + "=" + facebookClient.getName(),
-                     facebookClient.getCallbackUrl());
+                facebookClient.getCallbackUrl());
         assertEquals(CALLBACK_URL + "?" + group.getClientNameParameter() + "=" + yahooClient.getName(),
-                     yahooClient.getCallbackUrl());
+                yahooClient.getCallbackUrl());
+    }
+
+    public void testByClass1() {
+        final MockBaseClient facebookClient = newFacebookClient();
+        final FakeClient fakeClient = new FakeClient();
+        final Clients clients = new Clients(CALLBACK_URL, facebookClient, fakeClient);
+        assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
+        assertEquals(fakeClient, clients.findClient(FakeClient.class));
+    }
+
+    public void testByClass2() {
+        final MockBaseClient facebookClient = newFacebookClient();
+        final FakeClient fakeClient = new FakeClient();
+        final Clients clients = new Clients(CALLBACK_URL, fakeClient, facebookClient);
+        assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
+        assertEquals(fakeClient, clients.findClient(FakeClient.class));
     }
 }
