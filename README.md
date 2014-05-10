@@ -1,6 +1,4 @@
-<table>
-<tr>
-<td>
+<img src="http://www.pac4j.org/img/logo.png" />
 
 - [What is pac4j ?](#what-is-pac4j--)
 - [The "big picture"](#the-big-picture)
@@ -29,14 +27,6 @@
 - [Testing](#testing)
 - [Bugs / Features tracking](#bugs--features-tracking)
 - [Contact](#contact)
-
-</td><td>
-
-<img src="http://www.pac4j.org/img/logo.png" />
-
-</td>
-</tr>
-</table>
 
 
 ## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j) 
