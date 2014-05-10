@@ -1,4 +1,6 @@
-<div style="with: 100%; text-align: center;"><img src="http://www.pac4j.org/img/logo.png" /></div>
+<p align="center">
+  <img src="http://www.pac4j.org/img/logo.png" />
+</p>
 
 - [What is pac4j ?](#what-is-pac4j--)
 - [The "big picture"](#the-big-picture)
