@@ -9,9 +9,13 @@
 
 <section class='slides layout-regular template-default'>
 
+<article><h2>&gt; pac4j: protect your Java applications &lt;</h2><br />
+<center><img src="img/logo.png" /></center>
+</article>
+
 <article><h3>Why do we absolutely need the <strong>pac4j</strong> library ?</h3>
 <ul>
- <li>Today, in Java applications, using client side protocols is very complex: almost every framework and protocol requires a dedicated solution !</li>
+ <li>Today, in Java applications, using client side protocols (for authentication and profile retrieval) is very complex: almost every framework and protocol requires a dedicated solution !</li>
  <li><strong>pac4j</strong>, as the Profile and Authentication Client for Java, aims to be a <i>simple and unified library</i> for all Java frameworks and protocols.</li>
 </ul>
 </article>
@@ -23,7 +27,7 @@
 <ul>
  <li>It targets all the protocols supporting the following mechanism:</li>
  <ol>
-  <li>from the client application, redirect the user to the "provider" for authentication (HTTP 302)</li>
+  <li>from the client application, redirect the user to the "provider" for authentication (mostly HTTP 302)</li>
   <li>after successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
   <li>with these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").</li>
  </ol>
@@ -85,8 +89,8 @@
  <tr><td>Module</td><td>cas-server-support-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j">https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4j-oauth-demo</a></td></tr>
- <tr><td>Latest release</td><td>4.0.0-RC4</td></tr>
- <tr><td>Latest snapshot</td><td>4.0.0-RC5-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>4.0.0</td></tr>
+ <tr><td>Latest snapshot</td><td>4.0.1-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
 </table>
 </article>
@@ -131,11 +135,11 @@
 <table>
  <tr><td>Module</td><td>ratpack-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j">https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j</a></td></tr>
- <tr><td>Demo</td><td>Coming soon...</a></td></tr>
- <tr><td>Latest release</td><td>0.9.3</td></tr>
- <tr><td>Latest snapshot</td><td>0.9.4</td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/ratpack-pac4j-demo">https://github.com/leleuj/ratpack-pac4j-demo</a></td></tr>
+ <tr><td>Latest release</td><td>0.9.4</td></tr>
+ <tr><td>Latest snapshot</td><td>0.9.5-SNAPSHOT</td></tr>
  <tr><td>Development version</td><td><a target="_blank" href="https://github.com/ratpack/ratpack/tree/master">Github source</a></td></tr>
- <tr><td>Documentation</td><td><a target="_blank" href="http://www.ratpack.io/manual/0.9.3/api/">Javadoc</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="http://www.ratpack.io/manual/0.9.4/api/">Javadoc</a></td></tr>
 </table>
 </article>
 
