@@ -42,7 +42,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * This class tests the {@link GoogleOpenIdClient} class by simulating a complete authentication.
  * 
  * @author Patrice de Saint Steban
- * @since 1.5.1
+ * @since 1.6.0
  */
 @SuppressWarnings("rawtypes")
 public class TestYahooOpenIdClient extends TestClient implements TestsConstants {

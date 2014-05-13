@@ -36,7 +36,7 @@ import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
  * 
  * @see org.pac4j.openid.profile.google.GoogleOpenIdProfile
  * @author Patrice de Saint Steban
- * @since 1.5.1
+ * @since 1.6.0
  */
 public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 

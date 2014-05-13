@@ -22,7 +22,7 @@ import org.pac4j.core.profile.converter.Converters;
  * This class defines the attributes of the {@link YahooOpenIdProfile}.
  * 
  * @author Patrice de Saint Steban
- * @since 1.5.1
+ * @since 1.6.0
  */
 public class YahooOpenIdAttributesDefinition extends AttributesDefinition {
     
