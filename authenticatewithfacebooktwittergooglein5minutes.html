@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>pac4j: the authentication solution for Java</title>
+    <meta name="description" content="pac4j, the Java authentication solution for CAS, OAuth, SAML, OpenID, HTTP protocols; Facebook, Twitter, Google, Yahoo, LinkedIn... providers; J2E, CAS, Shiro, Spring Security, Play, Ratpack frameworks">
+    <meta name="keywords" content="pac4j Java authentication CAS, OAuth, SAML, OpenID, HTTP, Facebook, Twitter, Google, Yahoo, LinkedIn, J2E, Shiro, Spring Security, Play, Ratpack">
+    <meta name="author" content="Jerome Leleu">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+    	.image { width: 100%; text-align: center; }
+    	h2 { margin-top: 40px; }
+    </style>
+  </head>
+  <body>
+  	<div class="container">
+  		<a href="/" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left"></span> Return to home page</a>
+    	<h1>Authenticate with Facebook, Twitter or Google, with the pac4j library, in 5 minutes</h1>
+    	<p>Modern web sites authenticate their users through local forms but also through services like Facebook or Gmail. But, having multiples solutions makes life harder for the developers who need to implement all these protocols. Fortunately, there is the pac4j library. It provides a simple interface to authenticate against the most popular providers, just in a few lines of source code. Let's see how we can do it in 5 minutes.</p>
+    	<h2>Introduction</h2>
+    	<p>On web sites, users generally need to authenticate. While they could use a local authentication, users want to use more and more their favourite accounts (Facebook, Twitter or Google...)</p>
+    	<p>Delegating authentication has become a major issue. Though, every identity provider (OAuth protocol for Facebook, OpenID for Google, ...) has various solutions and libraries, less or more complex, leading developers to relearn everything for every new development.</p>
+    	<p>The pac4j library solves this problem by providing a simple and consistent solution for all identity providers, protocols and frameworks of the Java Virtual Machine (JVM).</p>
+    	<p>This ecosystem is composed of:</p>
+    	<ul>
+    		<li>a set of modules (pac4j-core, pac4j-oauth, pac4j-openid…) which implements all the logic of the different protocols and identity providers: the developer will choose the appropriate modules for the requested identity providers;</li>
+    		<li>a set of libraries dedicated to different JVM frameworks: j2e-pac4j for a simple J2E application, spring-security-pac4j for a Spring-Security application, buji-pac4j for a Shiro application, play-pac4j for the Play framework... The developer will choose the appropriate library for his application;</li>
+    		<li>a set of web application demos (for JEE, Spring-Security, Shiro, Play, ...) showing the most common use cases.</li>
+    	</ul>
+    	<div class="image">
+    		<a href="http://www.pac4j.org/img/vue_globale.png" target="_blank"><img src="http://www.pac4j.org/img/vue_globale.png" width="1000" height="560" /></a>
+    	</div>
+    	<p>At the moment, pac4j supports 5 protocols and 18 identity providers:</p>
+    	<ul>
+    		<li>OAuth : Facebook, GitHub, Google, LinkedIn, Twitter, Yahoo, Windows Live, WordPress, DropBox, PayPal, Vk.com, Foursquare, an OAuth wrapper for the CAS server;</li>
+			<li>CAS : CAS servers;</li>
+			<li>OpenID : Google;</li>
+			<li>SAML : SAML 2 IdP;</li>
+			<li>HTTP : authentication by form or basic auth.</li>
+		</ul>
+		<h2>Protect your J2E application</h2>
+    	<p>The first step to add the Facebook authentication in a J2E application is to add the following dependencies:</p>
+    	<ul>
+    		<li>pac4j-oauth (protocol used by Facebook);</li>
+    		<li>j2e-pac4j (for a J2E application).</li>
+    	</ul>
+		<p>For Maven for example, you would need to add the following dependencies to the pom.xml file:</p>
+		<strong>pom.xml</strong>
+		<pre>&lt;dependency>
+  &lt;groupId>org.pac4j&lt;/groupId>
+  &lt;artifactId>j2e-pac4j&lt;/artifactId>
+  &lt;version>1.0.2&lt;/version>
+&lt;/dependency>
+&lt;dependency>
+  &lt;groupId>org.pac4j&lt;/groupId>
+  &lt;artifactId>pac4j-oauth&lt;/artifactId>
+  &lt;version>1.5.0&lt;/version>&lt;/dependency>
+&lt;/dependency></pre>
+    	<p>The second step is to define, for each identity provider, the right client to perform the authentication. For Facebook, Twitter and Google (OAuth providers), you need to create an OAuth application for every identity provider to be able to authenticate with it. For each OAuth application, a key and a "secret" is provided by the identity provider. So we will create a specific class to define all these clients:</p>
+    	<strong>MyClientsFactory.java</strong>
+    	<pre>public class MyClientsFactory implements ClientsFactory {
+  @Override
+  public Clients build() {
+    final FacebookClient facebookClient = new FacebookClient("fbKey", "fbSecret");
+    final TwitterClient twitterClient = new TwitterClient("twKey", "twSecret");
+    final Google2Client googleClient = new Google2Client("gooKey", "gooSecret");
+    return new Clients("http://localhost:8080/callback", facebookClient, twitterClient, googleClient);
+  }
+}</pre>
+    	<p>In this example, the "http://localhost:8080/callback" url is the callback url inside the application, which will be used by the identity providers to finish the authentication process.</p>
+		<p>To protect all urls starting with "/facebook" and trigger an authentication with Facebook, we need to define the "RequiresAuthenticationFilter" filter in the "web.xml" file:</p>
+		<strong>web.xml</strong>
+<pre>&lt;filter>
+  &lt;filter-name>FacebookFilter&lt;/filter-name>
+  &lt;filter-class>org.pac4j.j2e.filter.RequiresAuthenticationFilter&lt;/filter-class>
+  &lt;init-param>
+    &lt;param-name>clientsFactory&lt;/param-name>
+    &lt;param-value>org.leleuj.config.MyClientsFactory&lt;/param-value>
+  &lt;/init-param>
+  &lt;init-param>
+    &lt;param-name>clientName&lt;/param-name>
+    &lt;param-value>FacebookClient&lt;/param-value>
+  &lt;/init-param>
+&lt;/filter>
+&lt;filter-mapping>
+  &lt;filter-name>FacebookFilter&lt;/filter-name>
+  &lt;url-pattern>/facebook/*&lt;/url-pattern>
+  &lt;dispatcher>REQUEST&lt;/dispatcher>
+&lt;/filter-mapping></pre>
+    	<p>In this example, the application will intercept all requests starting with "/facebook" and proceed them in the appropriate filter. This filter will let the user go through it (if the user is already authenticated) or redirect him to the Facebook login page.</p>
+    	<p>To make the authentication works (by defining the callback url), we need to add the "CallbackFilter" in the "web.xml" file:</p>
+    	<strong>web.xml</strong>
+<pre>&lt;filter>
+  &lt;filter-name>CallbackFilter&lt;/filter-name>
+  &lt;filter-class>org.pac4j.j2e.filter.CallbackFilter&lt;/filter-class>
+  &lt;init-param>
+    &lt;param-name>clientsFactory&lt;/param-name>
+    &lt;param-value>org.leleuj.config.MyClientsFactory&lt;/param-value>
+  &lt;/init-param>
+  &lt;init-param>
+    &lt;param-name>defaultUrl&lt;/param-name>
+    &lt;param-value>/&lt;/param-value>
+  &lt;/init-param>
+&lt;/filter>
+&lt;filter-mapping>
+  &lt;filter-name>CallbackFilter&lt;/filter-name>
+  &lt;url-pattern>/callback&lt;/url-pattern>
+  &lt;dispatcher>REQUEST&lt;/dispatcher>
+&lt;/filter-mapping></pre>
+		<p>We must notice that the user can start willingly or not the authentication process. He starts an authentication when he tries to access a protected area, but he can also start it by clicking on a "Login" button. By the way, for a lot of web sites (Gmail, Hotmail, ...), it's often the only possible action.</p>
+		<p>If we want to start the authentication process (for Facebook for example), we just need to compute the appropriate redirection url (to Facbeook):</p>
+		<strong>Redirection computation</strong>
+<pre>FacebookClient facebookClient = (FacebookClient) clients.findClient("FacebookClient");
+String redirectionUrl = facebookClient.getRedirectAction(context, false, false).getLocation();</pre>
+		<h2>Protect your Spring Security application</h2>
+		<p>Spring-Security is certainly one of the most famous libraries to manage the security of a web site. In this part, we will see how to mix pac4j and Spring-Security, because it's a bit specific.</p>
+		<p>The first step to integrate the Facebook authentication in a Spring-Security application is to add (once again) the required dependencies:</p>
+		<ul>
+			<li>pac4j-oauth (protocol used by Facebook);</li>
+			<li>spring-security-pac4j (because it's a Spring-Security application).</li>
+		</ul>
+		<p>For Maven for example, you would need to add the following dependencies to the pom.xml file:</p>
+		<strong>pom.xml</strong>
+<pre>&lt;dependency>
+  &lt;groupId>org.pac4j&lt;/groupId>
+  &lt;artifactId>spring-security-pac4j&lt;/artifactId>
+  &lt;version>1.2.2&lt;/version>
+&lt;/dependency>
+&lt;dependency>
+  &lt;groupId>org.pac4j&lt;/groupId>
+  &lt;artifactId>pac4j-oauth&lt;/artifactId>
+  &lt;version>1.5.0&lt;/version>
+&lt;/dependency></pre>
+		<p>In a Spring-Security application, the clients are defined in the Spring context:</p>
+		<strong>beans.xml</strong>
+<pre>&lt;bean id="facebookClient" class="org.pac4j.oauth.client.FacebookClient">
+  &lt;property name="key" value="fbKey" />
+  &lt;property name="secret" value="fbSecret" />
+&lt;/bean>
+&lt;bean id="twitterClient" class="org.pac4j.oauth.client.TwitterClient">
+  &lt;property name="key" value="twKey" />
+  &lt;property name="secret" value="twSecret" />
+&lt;/bean>
+&lt;bean id="googleClient" class="org.pac4j.oauth.client.Google2Client">
+  &lt;property name="key" value="gooKey" />
+  &lt;property name="secret" value="gooSecret" />
+&lt;/bean>
+&lt;bean id="clients" class="org.pac4j.core.client.Clients">
+  &lt;property name="callbackUrl" value="http://localhost:8080/callback" />
+  &lt;property name="clients">
+    &lt;list>
+        &lt;ref bean="facebookClient" />
+        &lt;ref bean="twitterClient" />
+        &lt;ref bean="googleClient" />
+    &lt;/list>
+  &lt;/property>
+&lt;/bean></pre>
+		<p>To protect all the urls starting with "/facebook", a "security:http" section must be defined with the appropriate entry point and filter in the Spring security context:</p>
+		<strong>beans.xml</strong>
+<pre>&lt;security:http entry-point-ref="facebookEntryPoint">
+  &lt;security:custom-filter after="CAS_FILTER" ref="clientFilter" />
+  &lt;security:intercept-url pattern="/facebook/**"     access="IS_AUTHENTICATED_FULLY" />
+&lt;/security:http>
+&lt;bean id="facebookEntryPoint" class="org.pac4j.springframework.security.web.ClientAuthenticationEntryPoint">
+  &lt;property name="client" ref="facebookClient" />
+&lt;/bean></pre>
+		<p>To make the authentication process works (by defining the callback url), it's required to define the "ClientAuthenticationFilter" filter and the "ClientAuthenticationProvider" provider in the Spring security context:</p>
+		<strong>beans.xml</strong>
+<pre>&lt;bean id="clientFilter" class="org.pac4j.springframework.security.web.ClientAuthenticationFilter">
+  &lt;constructor-arg value="/callback"/>
+  &lt;property name="clients" ref="clients" />
+  &lt;property name="authenticationManager" ref="authenticationManager" />
+&lt;/bean>
+&lt;bean id="clientProvider" class="org.pac4j.springframework.security.authentication.ClientAuthenticationProvider">
+  &lt;property name="clients" ref="clients" />
+&lt;/bean></pre>
+		<h2>Protect other applications</h2>
+		<p>You can also protect applications built on Shiro, Play framework or Ratpack like the way we did for J2E and Spring-Security using the dedicated library (buji-pac4j for Shiro, play-pac4j for Play and ratpack-pac4j for Ratpack).</p>
+		<p>The CAS server also uses the pac4j library through the cas-server-support-pac4j module to delegate authentication.</p>
+		<p>If you want to use an identity provider which does not exist, you can create it by yourself. Or if you use a Java framework for which no pac4j implementation exists, you can also create it by yourself. All the protocols implemented by pac4j follow the flow:</p>
+    	<div class="image">
+    		<a href="http://www.pac4j.org/img/cinematique.png" target="_blank"><img src="http://www.pac4j.org/img/cinematique.png" width="798" height="382" /></a>
+    	</div>
+		<p>When a user accesses a protected application, 1) he is redirected to the identity provider for authentication, 2) after a successful authentication, he is redirected back to the application with specific information and 3) the application uses these information to validate the authentication and retrieve the user profile.</p>
+		<p>This flow is represented by the "Client" interface which must be implemented by all clients:</p>
+		<strong>Client.java</strong>
+<pre>public interface Client<C extends Credentials, U extends UserProfile > {
+
+  void redirect(WebContext context, boolean protectedTarget, boolean ajaxRequest) throws RequiresHttpAction;
+
+  C getCredentials(WebContext context) throws RequiresHttpAction;
+
+  U getUserProfile(C credentials, WebContext context);
+}</pre>
+		<p>Therefore, all clients like Facebook, Twitter, Google, ... (defined by the FacebookClient, TwitterClient, Google2Client, ... classes) implement this interface. In fact, there is a complete hierarchy of classes under the root implementation "org.pac4j.core.client.BaseClient":</p>
+    	<div class="image">
+    		<img src="http://www.pac4j.org/img/hierarchie_clients.png" />
+    	</div>
+		<p>To start the authentication process with Facebook for example, the "redirect" method of the FacebookClient client must be called to redirect the user to the identity provider for authentication. After a successful authentication, the user is redirected back to the callback url of the application on which the "getCredentials" must be called to retrieve some specific information ("credentials") returned by the identity provider. There are different types of "credentials" depending on the protocols:</p>
+    	<div class="image">
+    		<img src="http://www.pac4j.org/img/hierarchie_credentials.png" />
+    	</div>
+		<p>With these "credentials", the application finally retrieves the profile of the authenticated user by calling the "getUserProfile" method. Here again, we have a complete hierarchy of profiles:</p>
+    	<div class="image">
+    		<img src="http://www.pac4j.org/img/hierarchie_profils.png" />
+    	</div>
+		<p>All user profiles inherit from the same "org.pac4j.core.profil.CommonProfile" class, which gathers all the common methods: getEmail, getFirstName, getLastName...</p>
+		<p>A user profile is defined by an identifier, a list of attributes, roles, permissions and a "remember-me" status. These attributes are retrieved from the identity provider and may be defined with accuracy by implementing the "org.pac4j.core.profile.AttributesDefinition" interface which gives the conversions to perform for each of the retrieved attribute. For example, here is the Facebook attributes definition:</p>
+		<strong>For Facebook</strong>
+<pre>public class FacebookAttributesDefinition extends OAuthAttributesDefinition {
+
+  public static final String NAME = "name";
+  public static final String FIRST_NAME = "first_name";
+  public static final String MIDDLE_NAME = "middle_name";
+  public static final String LAST_NAME = "last_name";
+  public static final String GENDER = "gender";
+  public static final String LOCALE = "locale";
+  public static final String LANGUAGES = "languages";
+
+  ...
+
+  public FacebookAttributesDefinition() {
+    final String[] names = new String[] { 
+      NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, USERNAME, THIRD_PARTY_ID, 
+      BIO, EMAIL, POLITICAL, QUOTES, RELIGION, WEBSITE };
+
+    for (final String name : names) {
+      addAttribute(name, Converters.stringConverter);
+    }
+    addAttribute(TIMEZONE, Converters.integerConverter);
+    addAttribute(VERIFIED, Converters.booleanConverter);
+    addAttribute(GENDER, Converters.genderConverter);
+    addAttribute(LOCALE, Converters.localeConverter);
+    addAttribute(UPDATED_TIME, Converters.dateConverter);
+    addAttribute(BIRTHDAY, FacebookConverters.birthdayConverter);
+    addAttribute(RELATIONSHIP_STATUS, FacebookConverters.relationshipStatusConverter);
+    addAttribute(LANGUAGES, FacebookConverters.listObjectConverter);
+
+    ...</pre>
+		<p>Thus, for any new identity provider, you need to create your "MyProviderClient", handling the "MyProviderCredentials" specific information and returning the "MyProviderProfile" user profile...</p>
+		<p>If you have all the required identity providers, but that your framework does not have any pac4j implementation available, you can still create your "myframework-pac4j" library.</p>
+		<p>This library will be built on the last version of the "pac4j-core" module, which is the core (independent from protocols) of pac4j. For Maven, you would have the following dependencies in your pom.xml file:</p>
+		<strong>pom.xml</strong>
+<pre>&lt;dependency>
+  &lt;groupId>org.pac4j&lt;/groupId>
+  &lt;artifactId>pac4j-core&lt;/artifactId>
+  &lt;version>1.5.0&lt;/version>
+&lt;/dependency></pre>
+		<p>You will need to use the "org.pac4j.core.client.Clients" class (notice the "s" at the end of the name) which allows to gather several clients on the same callback url (otherwise we would need several callback urls: /callbackFacebook, /callbackTwitter, /callbackGoogle,.. which would make things more complicated).</p>
+		<p>The pac4j library interacts with the HTTP requests/responses through the "org.pac4j.core.context.WebContext" interface, which represents the current web context. The J2E implementation is provided by the "org.pac4j.core.context.J2EContext" class, but you may need to create your own implementation, like for example:</p>
+		<ul>
+			<li>the "io.buji.pac4j.ShiroWebContext" context dedicated to Shiro;</li>
+			<li>the "org.pac4j.play.java.JavaWebContext" specific to the Play framework using the Java language.</li>
+		</ul>
+		<p>So, by using the "Clients" class, the appropriate web context and the "redirect" method of the chosen client, you can secure an url and redirect the user to the identity provider for authentication.</p>
+		<p>Protecting an url depends on the capabilities of the current framework. For J2E, the "RequiresAuthenticationFilter" filter does the job:</p>
+<pre>protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response, final HttpSession session, final FilterChain chain) throws IOException, ServletException {
+
+  final CommonProfile profile = UserUtils.getProfile(request);
+  logger.debug("profile : {}", profile);
+
+  // profile not null, already authenticated -> access
+  if (profile != null) {
+    chain.doFilter(request, response);
+
+  } else {
+    // no authentication tried -> redirect to provider
+    // keep the current url
+    String requestedUrl = request.getRequestURL().toString();
+    String queryString = request.getQueryString();
+    if (CommonHelper.isNotBlank(queryString)) {
+      requestedUrl += "?" + queryString;
+    }
+    logger.debug("requestedUrl : {}", requestedUrl);
+    session.setAttribute(ORIGINAL_REQUESTED_URL, requestedUrl);
+
+    // compute and perform the redirection
+    final WebContext context = new J2EContext(request, response);
+    Client<Credentials, CommonProfile> client = ClientsConfiguration.getClients().findClient(this.clientName);
+
+    try {
+      client.redirect(context, true, false);
+    } catch (RequiresHttpAction e) {
+      logger.debug("extra HTTP action required : {}", e.getCode());
+    }
+  }
+}</pre>
+		<p>For Spring Security, the "ClientAuthenticationEntryPoint" entry point (called when an authentication is required) is in charge of this:</p>
+<pre>public final class ClientAuthenticationEntryPoint implements AuthenticationEntryPoint, InitializingBean {
+
+  private Client<Credentials, UserProfile> client;
+
+  public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException, ServletException {
+    logger.debug("client : {}", this.client);
+    final WebContext context = new J2EContext(request, response);
+
+    try {
+      this.client.redirect(context, true, false);
+    } catch (final RequiresHttpAction e) {
+      logger.debug("extra HTTP action required : {}", e.getCode());
+    }
+  }</pre>
+		<p>After a successful authentication, the user is redirected to the callback url of the application where the appropriate pac4j implementation must retrieve the "credentials" and the user profile by using the "Clients" and the "getCredentials" and "getUserProfile" methods.</p>
+		<p>For J2E, it's the "CallbackFilter" filter which performs these actions and initializes the security context (with the user profile):</p>
+<pre>public class CallbackFilter extends ClientsConfigFilter {
+
+  protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response, 
+                    final HttpSession session, final FilterChain chain) throws IOException,    ServletException {
+
+    final WebContext context = new J2EContext(request, response);
+    final Client client = ClientsConfiguration.getClients().findClient(context);
+    logger.debug("client : {}", client);
+
+    final Credentials credentials;
+    try {
+      credentials = client.getCredentials(context);
+    } catch (final RequiresHttpAction e) {
+      logger.debug("extra HTTP action required : {}", e.getCode());
+      return;
+    }
+    logger.debug("credentials : {}", credentials);
+
+    // get user profile
+    final CommonProfile profile = (CommonProfile) client.getUserProfile(credentials,     context);
+    logger.debug("profile : {}", profile);
+
+    if (profile != null) {
+      // only save profile when it's not null
+      UserUtils.setProfile(session, profile);
+    }
+
+    final String requestedUrl = (String) session.getAttribute(RequiresAuthenticationFilter.ORIGINAL_REQUESTED_URL);
+    logger.debug("requestedUrl : {}", requestedUrl);
+    if (CommonHelper.isNotBlank(requestedUrl)) {
+      response.sendRedirect(requestedUrl);
+    } else {
+      response.sendRedirect(this.defaultUrl);
+    }
+  }
+}</pre>
+		<p>For Spring Security, the retrieval of the "credentials" and the "user profile" is done in two steps through the appropriate filter and provider.</p>
+		<p>To create your own pac4j implementation for your framework, you must therefore provide the required mechanisms to protect urls and finish the authentication process.</p>
+		<h2>Conclusion</h2>
+		<p>It's always pretty complicated to secure an application with the latest "modern" protocols (OAuth, OpenID, ...), and it's even harder with many protocols involved. And the various identity providers like Google, LinkedIn, Yahoo (and many more) does not make this integration easy enough, despite their efforts.</p>
+		<p>Get your life easier and use pac4j to handle all your authentications for all your platforms.</p>
+		<p>So? Did we did integrate with OAuth, OpenID... in less than 5 minutes? With all the required identifiers and urls, I think it's completely feasible. But now it's time to do it yourself.</p>
+		<p>In all cases, the pac4j team is very reactive and will be happy to answer any question. Don't hesitate to browse the site and open a ticket.</p>
+		<p><em>Translated from: <a href="http://thierry-leriche-dessirier.developpez.com/tutoriels/java/pac4j-5-min/" target"_blank">http://thierry-leriche-dessirier.developpez.com/tutoriels/java/pac4j-5-min/</a></em></p>
+    </div>
+  </body>
+</html>
