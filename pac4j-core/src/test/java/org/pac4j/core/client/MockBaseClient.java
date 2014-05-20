@@ -70,7 +70,7 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     }
     
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return null;
     }
 }

@@ -352,7 +352,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     }
 
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return Mechanism.OAUTH_PROTOCOL;
     }
 }

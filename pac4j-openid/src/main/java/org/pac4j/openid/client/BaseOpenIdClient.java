@@ -193,7 +193,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClie
     }
 
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return Mechanism.OPENID_PROTOCOL;
     }
 }

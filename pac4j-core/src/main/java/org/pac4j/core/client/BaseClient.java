@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
  * required to initialize the client.
  * <p/>
- * The {@link #getProtocol()} method returns the implemented {@link Mechanism} by the client.
+ * The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.
  * <p />
  * After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
  * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.
@@ -240,11 +240,11 @@ Client<C, U>, Cloneable {
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
 
     /**
-     * Return the implemented protocol.
+     * Return the implemented mechanism.
      * 
-     * @return the implemented protocol
+     * @return the implemented mechanism
      */
-    public abstract Mechanism getProtocol();
+    public abstract Mechanism getMechanism();
 
     @Override
     public String toString() {

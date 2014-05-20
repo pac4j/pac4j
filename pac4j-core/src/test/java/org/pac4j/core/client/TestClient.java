@@ -59,7 +59,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
     public void testProtocol() {
         final BaseClient client = (BaseClient) getClient();
-        assertEquals(getProtocol(), client.getProtocol());
+        assertEquals(getProtocol(), client.getMechanism());
     }
 
     public void testMissingCallbackUrl() {
