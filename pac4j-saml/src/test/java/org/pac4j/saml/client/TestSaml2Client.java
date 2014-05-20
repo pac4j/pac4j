@@ -22,7 +22,7 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.NotImplementedException;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -51,9 +51,9 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
     }
 
     @Override
-    protected Protocol getProtocol() {
+    protected Mechanism getProtocol() {
         // TODO Auto-generated method stub
-        return Protocol.SAML;
+        return Mechanism.SAML_PROTOCOL;
     }
 
     @Override

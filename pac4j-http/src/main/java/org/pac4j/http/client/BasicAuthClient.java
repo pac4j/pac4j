@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -136,5 +137,10 @@ public class BasicAuthClient extends BaseHttpClient {
     @Override
     protected boolean isDirectRedirection() {
         return true;
+    }
+    
+    @Override
+    public Mechanism getProtocol() {
+        return Mechanism.BASICAUTH_MECHANISM;
     }
 }
