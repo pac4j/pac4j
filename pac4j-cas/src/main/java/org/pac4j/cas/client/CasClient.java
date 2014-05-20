@@ -339,7 +339,7 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return Mechanism.CAS_PROTOCOL;
     }
 }

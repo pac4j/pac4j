@@ -165,7 +165,7 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     }
     
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return Mechanism.CAS_PROTOCOL;
     }
 }

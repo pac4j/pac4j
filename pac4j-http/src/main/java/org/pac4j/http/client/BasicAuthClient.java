@@ -140,7 +140,7 @@ public class BasicAuthClient extends BaseHttpClient {
     }
     
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return Mechanism.BASICAUTH_MECHANISM;
     }
 }

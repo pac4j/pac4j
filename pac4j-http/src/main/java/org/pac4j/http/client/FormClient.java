@@ -169,7 +169,7 @@ public class FormClient extends BaseHttpClient {
     }
     
     @Override
-    public Mechanism getProtocol() {
+    public Mechanism getMechanism() {
         return Mechanism.FORM_MECHANISM;
     }
 }
