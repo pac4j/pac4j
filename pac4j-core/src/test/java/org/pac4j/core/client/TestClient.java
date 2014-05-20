@@ -55,7 +55,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
     protected static final Logger logger = LoggerFactory.getLogger(TestClient.class);
 
-    protected abstract Protocol getProtocol();
+    protected abstract Mechanism getProtocol();
 
     public void testProtocol() {
         final BaseClient client = (BaseClient) getClient();

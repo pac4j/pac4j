@@ -16,7 +16,7 @@
 package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
@@ -83,10 +83,5 @@ public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredenti
     
     public void setProfileCreator(final ProfileCreator profileCreator) {
         this.profileCreator = profileCreator;
-    }
-    
-    @Override
-    public Protocol getProtocol() {
-        return Protocol.HTTP;
     }
 }
