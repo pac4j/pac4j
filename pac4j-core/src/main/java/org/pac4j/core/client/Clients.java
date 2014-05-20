@@ -127,10 +127,12 @@ public final class Clients extends InitializableObject {
      */
     public <C extends Client> C findClient(final Class<C> clazz) {
         init();
-        for (final Client client : this.clients) {
-            if (client.getClass().equals(clazz)) {
+        if (clazz != null) {
+          for (final Client client : this.clients) {
+            if (clazz.isAssignableFrom(client.getClass())) {
                 return (C) client;
             }
+          }
         }
         final String message = "No client found for class: " + clazz;
         logger.error(message);
