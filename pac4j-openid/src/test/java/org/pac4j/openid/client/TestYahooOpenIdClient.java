@@ -100,7 +100,7 @@ public class TestYahooOpenIdClient extends TestClient implements TestsConstants 
     }
 
     @Override
-    protected Mechanism getProtocol() {
+    protected Mechanism getMechanism() {
         return Mechanism.OPENID_PROTOCOL;
     }
 }

@@ -51,7 +51,7 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
     }
 
     @Override
-    protected Mechanism getProtocol() {
+    protected Mechanism getMechanism() {
         // TODO Auto-generated method stub
         return Mechanism.SAML_PROTOCOL;
     }

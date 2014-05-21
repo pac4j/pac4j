@@ -108,7 +108,7 @@ public final class TestCasOAuthWrapperClient extends TestClient {
     }
     
     @Override
-    protected Mechanism getProtocol() {
+    protected Mechanism getMechanism() {
         return Mechanism.OAUTH_PROTOCOL;
     }
 }

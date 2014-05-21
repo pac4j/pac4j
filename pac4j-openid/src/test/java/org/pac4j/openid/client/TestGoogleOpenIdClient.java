@@ -86,7 +86,7 @@ public class TestGoogleOpenIdClient extends TestClient implements TestsConstants
     }
 
     @Override
-    protected Mechanism getProtocol() {
+    protected Mechanism getMechanism() {
         return Mechanism.OPENID_PROTOCOL;
     }
 }

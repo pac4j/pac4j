@@ -122,7 +122,7 @@ public abstract class TestCasClient extends TestClient {
     }
     
     @Override
-    protected Mechanism getProtocol() {
+    protected Mechanism getMechanism() {
         return Mechanism.CAS_PROTOCOL;
     }
 }
