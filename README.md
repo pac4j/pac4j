@@ -12,6 +12,7 @@
     - [pac4j-http](#pac4j-http)
     - [pac4j-openid](#pac4j-openid)    
     - [pac4j-saml](#pac4j-saml)
+	- [pac4j-gae](#pac4j-gae)
     - [pac4j-test-cas](#pac4j-test-cas)
 - [Providers supported](#providers-supported)
 - [Code sample](#code-sample)
@@ -46,6 +47,7 @@ It has a **very simple and unified API** to support these 5 protocols on client 
 3. HTTP (form & basic auth authentications)
 4. OpenID
 5. SAML (2.0) (*still experimental*)
+6. GAE UserService
 
 There are 6 libraries implementing **pac4j** for the following environments:
 
@@ -139,6 +141,16 @@ This module is made to test CAS support in pac4j.
 
 Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html).
 
+#### pac4j-gae
+
+This module is dedicated to Gae connexion login mechanism support:
+
+* the *GaeUserServiceClient* is the client for Gae
+* the *GaeUserServiceCredentials* class is the credentials for gae support
+* the *GaeUserServiceProfile* class is the associated profile, returned by the client.
+
+This module is based on the **pac4j-core** module and the [Google App Engine API](http://appengine.google.com) library.
+
 
 ## Providers supported
 
@@ -164,6 +176,7 @@ Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.ht
 <tr><td>Google</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
 <tr><td>Yahoo</td><td>OpenID</td><td>pac4j-openid</td><td>YahooOpenIdClient</td><td>YahooOpenIdProfile</td></tr>
 <tr><td>SAML Identity Provider</td><td>SAML 2.0</td><td>pac4j-saml</td><td>Saml2Client</td><td>Saml2Profile</td></tr>
+<tr><td>Google App Engine User Service</td><td>Gae User Service Mechanism</td><td>pac4j-gae</td><td>GaeUserServiceClient</td><td>GaeUserServiceProfile</td></tr>
 </table>
 
 
@@ -318,6 +331,25 @@ For integrating an application with a SAML2 Identity Provider server, you should
     Saml2Credentials credentials = client.getCredentials(context);
     // get the SAML2 profile
     Saml2Profile saml2Profile = client.getUserProfile(credentials, context);
+
+### Gae User Service support
+
+To use the Google App Engine authentication, you should use the *org.pac4j.gae.client.GaeUserServiceClient* class:
+
+    // declare the client
+    GaeUserServiceClient client = new GaeUserServiceClient();
+    client.setCallbackUrl("/callbackUrl");
+    // send the user to Google for authentication
+    WebContext context = new J2EContext(request, response);
+    client.redirect(context, false, false);
+
+...after successful authentication, in the client application, on the callback url...
+
+    // get the OpenID credentials
+    GaeUserServiceCredentials credentials = client.getCredentials(context);
+    // get the GooglOpenID profile
+    GaeUserServiceProfile profile = client.getUserProfile(credentials, context);
+    System.out.println("Hello: " + profile.getDisplayName());
 
 #### Additional configuration:
 
