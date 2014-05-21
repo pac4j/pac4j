@@ -18,7 +18,6 @@ package org.pac4j.saml.crypto;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.util.Enumeration;
@@ -51,8 +50,8 @@ public class CredentialProvider {
     private final String privateKey;
 
     public CredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-        URL url = CommonHelper.getURLFromName(name);
-        KeyStore keyStore = loadKeyStore(url, storePasswd);
+        InputStream inputStream = CommonHelper.getInputStreamFromName(name);
+        KeyStore keyStore = loadKeyStore(inputStream, storePasswd);
         this.privateKey = getPrivateKeyAlias(keyStore);
         Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(this.privateKey, privateKeyPasswd);
@@ -70,10 +69,8 @@ public class CredentialProvider {
         }
     }
 
-    private KeyStore loadKeyStore(final URL url, final String storePasswd) {
-        InputStream inputStream = null;
+    private KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd) {
         try {
-            inputStream = url.openStream();
             KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             return ks;

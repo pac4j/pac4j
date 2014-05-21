@@ -16,11 +16,9 @@
 
 package org.pac4j.saml.client;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.Configuration;
@@ -38,8 +36,12 @@ import org.opensaml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
 import org.opensaml.saml2.metadata.provider.ChainingMetadataProvider;
-import org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
+import org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider;
+import org.opensaml.util.resource.ClasspathResource;
+import org.opensaml.util.resource.FilesystemResource;
+import org.opensaml.util.resource.Resource;
+import org.opensaml.util.resource.ResourceException;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.encryption.DecryptionException;
@@ -155,16 +157,25 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // load IDP metadata from a file
-        FilesystemMetadataProvider idpMetadataProvider;
+        ResourceBackedMetadataProvider idpMetadataProvider;
         try {
-            URL url = CommonHelper.getURLFromName(this.idpMetadataPath);
-            idpMetadataProvider = new FilesystemMetadataProvider(new File(url.toURI()));
+            Resource resource = null;
+            if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
+                String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
+                if (!path.startsWith("/")) {
+                    path = "/" + path;
+                }
+                resource = new ClasspathResource(path);
+            } else {
+                resource = new FilesystemResource(this.idpMetadataPath);
+            }
+            idpMetadataProvider = new ResourceBackedMetadataProvider(new Timer(true), resource);
             idpMetadataProvider.setParserPool(parserPool);
             idpMetadataProvider.initialize();
         } catch (MetadataProviderException e) {
             throw new SamlException("Error initializing idpMetadataProvider", e);
-        } catch (URISyntaxException e) {
-            throw new TechnicalException("Error converting idp Metadata path url to uri", e);
+        } catch (ResourceException e) {
+            throw new TechnicalException("Error getting idp Metadata resource", e);
         }
 
         // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
