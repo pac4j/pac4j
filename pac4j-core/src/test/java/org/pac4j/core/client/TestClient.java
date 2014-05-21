@@ -57,7 +57,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
     protected abstract Mechanism getMechanism();
 
-    public void testProtocol() {
+    public void testMechanism() {
         final BaseClient client = (BaseClient) getClient();
         assertEquals(getMechanism(), client.getMechanism());
     }
