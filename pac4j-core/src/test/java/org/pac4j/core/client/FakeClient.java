@@ -39,7 +39,7 @@ public class FakeClient extends BaseClient<Credentials, CommonProfile> {
     }
 
     @Override
-    public Protocol getProtocol() {
+    public Mechanism getMechanism() {
         throw new UnsupportedOperationException("Not implemneted yet");
     }
 

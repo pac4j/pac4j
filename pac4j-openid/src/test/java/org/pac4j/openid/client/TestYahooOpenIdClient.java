@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Locale;
 
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -100,7 +100,7 @@ public class TestYahooOpenIdClient extends TestClient implements TestsConstants 
     }
 
     @Override
-    protected Protocol getProtocol() {
-        return Protocol.OPENID;
+    protected Mechanism getMechanism() {
+        return Mechanism.OPENID_PROTOCOL;
     }
 }

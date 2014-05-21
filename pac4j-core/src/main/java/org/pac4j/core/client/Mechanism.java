@@ -16,16 +16,18 @@
 package org.pac4j.core.client;
 
 /**
- * This enum lists all available protocols.
+ * This enum lists all available connection mechanism.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public enum Protocol {
-    OAUTH,
-    CAS,
-    OPENID,
-    HTTP,
-    SAML,
-    JANRAIN
+public enum Mechanism {
+    OAUTH_PROTOCOL,
+    CAS_PROTOCOL,
+    OPENID_PROTOCOL,
+    FORM_MECHANISM,
+    BASICAUTH_MECHANISM,
+    SAML_PROTOCOL,
+    JANRAIN_MECHANISM,
+    GAE_MECHANISM
 }
