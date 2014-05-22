@@ -34,13 +34,13 @@
 
 ## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j) 
 
-**pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the protocols supporting the following mechanism:
+**pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the authentication mechanisms supporting the following flow:
 
 1. From the client application, redirect the user to the "provider" for authentication (HTTP 302)
 2. After successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials
 3. With these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").
 
-It has a **very simple and unified API** to support these 5 protocols on client side: 
+It has a **very simple and unified API** to support these 6 authentication mechanisms on client side: 
 
 1. OAuth (1.0 & 2.0)
 2. CAS (1.0, 2.0, SAML, logout & proxy)
