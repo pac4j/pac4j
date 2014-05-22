@@ -18,17 +18,17 @@
 
 <article><h3>Why do we absolutely need the <strong>pac4j</strong> library ?</h3>
 <ul>
- <li>Today, in Java applications, using client side protocols (for authentication and profile retrieval) is very complex: almost every framework and protocol requires a dedicated solution !</li>
- <li><strong>pac4j</strong>, as the Profile and Authentication Client for Java, aims to be a <i>simple and unified library</i> for all Java frameworks and protocols.</li>
+ <li>Today, in Java applications, using client side authentication mechanisms (for authentication and profile retrieval) is very complex: almost every framework and protocol requires a dedicated solution !</li>
+ <li><strong>pac4j</strong>, as the Profile and Authentication Client for Java, aims to be a <i>simple and unified library</i> for all Java frameworks and authentication mechanisms.</li>
 </ul>
 </article>
 
-<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>protocols (OAuth, CAS, OpenID, HTTP, SAML)</i>...</q>
+<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>authentication mechanisms (OAuth, CAS, OpenID, HTTP, SAML)</i>...</q>
 <div class='author'> J&eacute;r&ocirc;me Leleu ;-)</div></article>
 
-<article><h3>What kind of protocol is supported by <strong>pac4j</strong> ?</h3>
+<article><h3>What kind of authentication mechanisms is supported by <strong>pac4j</strong> ?</h3>
 <ul>
- <li>It targets all the protocols supporting the following mechanism:</li>
+ <li>It targets all the authentication mechanisms supporting the following flow:</li>
  <ol>
   <li>from the client application, redirect the user to the "provider" for authentication (mostly HTTP 302)</li>
   <li>after successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
@@ -37,13 +37,14 @@
 </ul>
 </article>
 
-<article><h3>What protocols are actually supported by <strong>pac4j</strong> ?</h3>
+<article><h3>What authentication mechanisms are actually supported by <strong>pac4j</strong> ?</h3>
 <ul>
  <li><strong>OAuth</strong> (1.0 & 2.0): DropBox, Facebook, Github, Google, LinkedIn, Twitter, Windows live, WordPress, Yahoo...</li>
  <li><strong>CAS</strong>: protocol versions 1.0  & 2.0 / SAML ticket validation, proxy ticket validation, logout request and CAS proxyfication</li>
  <li><strong>HTTP</strong>: form & basic authentications</li>
  <li><strong>OpenID</strong>: Google</li>
  <li><strong>SAML</strong> 2.0</li>
+ <li><strong>Google App Engine authentication service</strong></li>
 </ul>
 </article>
 
@@ -66,10 +67,10 @@
 
 <article><h3><strong>pac4j</strong> details</h3>
 <table>
- <tr><td>Module</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http, pac4j-saml</td></tr>
+ <tr><td>Module</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http, pac4j-saml, pac4j-gae</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/leleuj/pac4j">https://github.com/leleuj/pac4j</a></td></tr>
- <tr><td>Latest release</td><td>1.5.0</td></tr>
- <tr><td>Latest snapshot</td><td>1.5.1-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.5.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.6.0-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -93,7 +94,7 @@
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j">https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4j-oauth-demo</a></td></tr>
  <tr><td>Latest release</td><td>4.0.0</td></tr>
- <tr><td>Latest snapshot</td><td>4.0.1-SNAPSHOT</td></tr>
+ <tr><td>Latest snapshot</td><td>4.1.0-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
 </table>
 </article>
