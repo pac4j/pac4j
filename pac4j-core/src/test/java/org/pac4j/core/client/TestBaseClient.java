@@ -181,4 +181,11 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertEquals("true", (String) context.getSessionAttribute(client.getName()
                                                                   + BaseClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
     }
+    
+    public void testGetState() {
+    	final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+    	final MockWebContext context = MockWebContext.create();
+    	context.addSessionAttribute("id", "someid");
+    	assertEquals("someid", client.getState(context));
+    }
 }

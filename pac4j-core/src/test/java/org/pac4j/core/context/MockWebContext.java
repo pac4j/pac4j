@@ -177,4 +177,8 @@ public class MockWebContext extends BaseResponseContext {
     public void setFullRequestURL(String fullRequestURL) {
         this.fullRequestURL = fullRequestURL;
     }
+
+	public String getSessionIdentifier() {
+		return (String) this.session.get("id");
+	}
 }

@@ -200,4 +200,8 @@ public class J2EContext implements WebContext {
             return requestURL.append('?').append(queryString).toString();
         }
     }
+
+	public String getSessionIdentifier() {
+		return this.request.getSession().getId();
+	}
 }
