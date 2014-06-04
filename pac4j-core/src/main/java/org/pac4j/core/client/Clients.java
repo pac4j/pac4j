@@ -121,8 +121,7 @@ public final class Clients extends InitializableObject {
     /**
      * Return the right client according to the specific class.
      *
-     * @param class
-     * @param C the client class
+     * @param clazz
      * @return the right client
      */
     public <C extends Client> C findClient(final Class<C> clazz) {

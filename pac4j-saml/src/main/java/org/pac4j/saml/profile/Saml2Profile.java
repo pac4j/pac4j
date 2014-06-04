@@ -16,10 +16,11 @@
 package org.pac4j.saml.profile;
 
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.saml.client.Saml2Client;
 
 /**
  * This class is the user profile for sites using SAML2 protocol.<br />
- * It is returned by the {@link org.pac4j.cas.client.Saml2Client}.
+ * It is returned by the {@link Saml2Client}.
  * 
  * @author Michael Remond
  * @version 1.5.0

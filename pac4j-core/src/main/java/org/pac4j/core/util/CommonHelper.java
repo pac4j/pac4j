@@ -184,7 +184,7 @@ public final class CommonHelper {
      * - loads as {@link FileInputStream} otherwise
      * 
      * @param name
-     * @return
+     * @return the input stream
      */
     public static InputStream getInputStreamFromName(String name) {
         if (name.startsWith(RESOURCE_PREFIX)) {

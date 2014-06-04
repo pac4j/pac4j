@@ -18,6 +18,7 @@ package org.pac4j.openid.profile.yahoo;
 import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.openid.client.YahooOpenIdClient;
 import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
 import org.pac4j.openid.profile.OpenIdProfile;
 

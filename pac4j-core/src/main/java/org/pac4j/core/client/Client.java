@@ -69,7 +69,7 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown instead:<br />
      * <ul>
      * <li>if this client requires an indirect redirection, the redirection will be actually performed by these method and not by the
-     * {@link #getRedirection(WebContext, boolean, boolean)} one (302 HTTP status code)</li>
+     * {@link #redirect(WebContext, boolean, boolean)} one (302 HTTP status code)</li>
      * <li>if the <code>CasClient</code> receives a logout request, it returns a 200 HTTP status code</li>
      * <li>for the <code>BasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response (401 HTTP status
      * code) is returned to request credentials through a popup.</li>

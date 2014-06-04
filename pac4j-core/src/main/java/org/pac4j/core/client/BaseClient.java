@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if it's false, the
  * redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
  * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
- * To force a direct redirection, the {@link #getRedirection(WebContext, boolean, boolean)} must be used with <code>true</code> for the
+ * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean, boolean)} must be used with <code>true</code> for the
  * <code>forceDirectRedirection</code> parameter</li>
  * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
@@ -144,7 +144,7 @@ Client<C, U>, Cloneable {
      * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
      * 
      * @param context
-     * @param protectTarget
+     * @param protectedTarget
      * @param ajaxRequest
      * @return the redirection action
      * @throws RequiresHttpAction
