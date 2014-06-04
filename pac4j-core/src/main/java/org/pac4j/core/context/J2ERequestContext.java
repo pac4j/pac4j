@@ -138,4 +138,8 @@ public class J2ERequestContext extends BaseResponseContext {
         }
     }
 
+	public String getSessionIdentifier() {
+		return this.request.getSession().getId();
+	}
+
 }

@@ -276,7 +276,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
 
         ExtendedSAMLMessageContext context = this.contextProvider.buildSpAndIdpContext(wc);
-        final String relayState = getContextualCallbackUrl(wc);
+        final String relayState = getState(wc);
 
         AuthnRequest authnRequest = this.authnRequestBuilder.build(context);
 

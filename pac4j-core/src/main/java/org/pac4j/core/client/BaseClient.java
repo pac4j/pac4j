@@ -108,6 +108,16 @@ Client<C, U>, Cloneable {
     public String getContextualCallbackUrl(final WebContext context) {
         return prependHostToUrlIfNotPresent(this.callbackUrl, context);
     }
+    
+    /**
+     * Returns the state information available from the context
+     * 
+     * @param context
+     * @return
+     */
+    public String getState(final WebContext context) {
+    	return context.getSessionIdentifier();
+    }
 
     public void setName(final String name) {
         this.name = name;

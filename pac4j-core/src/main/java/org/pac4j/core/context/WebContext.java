@@ -47,6 +47,13 @@ public interface WebContext {
      * @return the request header
      */
     public String getRequestHeader(String name);
+    
+    /**
+     * Returns the session identifier
+     * 
+     * @return the session identifer
+     */
+    public String getSessionIdentifier();
 
     /**
      * Save an attribute in session.
