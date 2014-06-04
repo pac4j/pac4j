@@ -23,8 +23,11 @@ import org.apache.commons.lang.NotImplementedException;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.profile.Saml2Profile;
@@ -47,6 +50,16 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback?client_name=Saml2Client\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"http://localhost:8080/callback?client_name=Saml2Client\""));
+
+    }
+
+    public void testRelayState() throws RequiresHttpAction {
+
+        Saml2Client client = (Saml2Client) getClient();
+        WebContext context = MockWebContext.create();
+        context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
 
     }
 

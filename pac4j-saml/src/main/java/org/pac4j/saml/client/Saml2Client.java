@@ -91,6 +91,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     // Identify the KeyInfoGenerator factory created during opensaml boostrap
     public static final String SAML_METADATA_KEY_INFO_GENERATOR = "MetadataKeyInfoGenerator";
 
+    public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
+
     private String keystorePath;
 
     private String keystorePassword;
@@ -276,7 +278,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
 
         ExtendedSAMLMessageContext context = this.contextProvider.buildSpAndIdpContext(wc);
-        final String relayState = getContextualCallbackUrl(wc);
+        final String relayState = getStateParameter(wc);
 
         AuthnRequest authnRequest = this.authnRequestBuilder.build(context);
 
@@ -343,6 +345,12 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         return profile;
+    }
+
+    @Override
+    protected String getStateParameter(WebContext webContext) {
+        String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
+        return (relayState == null) ? getContextualCallbackUrl(webContext) : relayState;
     }
 
     @Override

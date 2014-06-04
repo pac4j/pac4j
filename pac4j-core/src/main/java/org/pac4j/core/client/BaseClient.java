@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements
-Client<C, U>, Cloneable {
+        Client<C, U>, Cloneable {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
 
@@ -286,6 +286,15 @@ Client<C, U>, Cloneable {
         }
 
         return url;
+    }
+
+    /**
+     * Return the state parameter required by some security protocols like SAML or OAuth.
+     * 
+     * @return the state
+     */
+    protected String getStateParameter(WebContext webContext) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void addAuthorizationGenerator(AuthorizationGenerator<U> authorizationGenerator) {
