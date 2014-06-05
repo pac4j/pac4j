@@ -31,7 +31,7 @@ import org.pac4j.core.util.TestsConstants;
  * @since 1.4.0
  */
 public final class TestBaseClient extends TestCase implements TestsConstants {
-    
+
     public void testClone() {
         final BaseClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials>(TYPE);
         oldClient.setCallbackUrl(CALLBACK_URL);
@@ -39,7 +39,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getName(), newClient.getName());
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
     }
-    
+
     public void testDirectClient() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
@@ -50,7 +50,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final Credentials credentials = client.getCredentials(context);
         assertNull(credentials);
     }
-    
+
     public void testIndirectClient() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
@@ -58,7 +58,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         client.redirect(context, false, false);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(CommonHelper.addParameter(CALLBACK_URL, BaseClient.NEEDS_CLIENT_REDIRECTION_PARAMETER, "true"),
-                     redirectionUrl);
+                redirectionUrl);
         context.addRequestParameter(BaseClient.NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
         try {
             client.getCredentials(context);
@@ -69,7 +69,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
             assertEquals("Needs client redirection", e.getMessage());
         }
     }
-    
+
     public void testIndirectClientWithImmediate() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
@@ -78,74 +78,74 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
-    
+
     public void testNullCredentials() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
         assertNull(client.getUserProfile(null, context));
     }
-    
+
     public void testPrependHostToUrlIfNotPresent_whenHostIsNotPresent() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setEnableContextualRedirects(true);
-        
+
         final MockWebContext context = MockWebContext.create();
         context.setServerName("pac4j.com");
-        
+
         String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
-        
+
         assertEquals("http://pac4j.com/cas/login", result);
     }
-    
+
     public void testPrependHostToUrlIfNotPresent_whenHostIsPresent() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setEnableContextualRedirects(true);
-        
+
         final MockWebContext context = MockWebContext.create();
         context.setServerName("pac4j.com");
-        
+
         String result = client.prependHostToUrlIfNotPresent("http://cashost.com/cas/login", context);
-        
+
         assertEquals("http://cashost.com/cas/login", result);
     }
-    
+
     public void testPrependHostToUrlIfNotPresent_whenServerIsNotUsingDefaultHttpPort() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setEnableContextualRedirects(true);
-        
+
         final MockWebContext context = MockWebContext.create();
         context.setServerName("pac4j.com");
         context.setServerPort(8080);
-        
+
         String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
-        
+
         assertEquals("http://pac4j.com:8080/cas/login", result);
     }
-    
+
     public void testPrependHostToUrlIfNotPresent_whenRequestIsSecure() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setEnableContextualRedirects(true);
-        
+
         final MockWebContext context = MockWebContext.create();
         context.setScheme("https");
-        
+
         String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
-        
+
         assertEquals("https://localhost/cas/login", result);
     }
-    
+
     public void testPrependHostToUrlIfNotPresent_whenContextualRedirectsAreDisabled() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setEnableContextualRedirects(false);
-        
+
         final MockWebContext context = MockWebContext.create();
-        
+
         String result = client.prependHostToUrlIfNotPresent("/cas/login", context);
-        
+
         assertEquals("/cas/login", result);
     }
-    
+
     public void testAjaxRequest() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
@@ -158,7 +158,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
             assertEquals(401, context.getResponseStatus());
         }
     }
-    
+
     public void testAlreadyTried() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
@@ -172,13 +172,24 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
             assertEquals(403, context.getResponseStatus());
         }
     }
-    
+
     public void testSaveAlreadyTried() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
-        assertEquals("true", (String) context.getSessionAttribute(client.getName()
-                                                                  + BaseClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
+        assertEquals("true",
+                (String) context.getSessionAttribute(client.getName() + BaseClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
+    }
+
+    public void testStateParameter() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        final MockWebContext context = MockWebContext.create();
+        try {
+            client.getStateParameter(context);
+            fail("should fail");
+        } catch (UnsupportedOperationException e) {
+
+        }
     }
 }
