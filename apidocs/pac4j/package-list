@@ -1,3 +1,4 @@
+org.pac4j.cas.authorization
 org.pac4j.cas.client
 org.pac4j.cas.credentials
 org.pac4j.cas.logout
@@ -11,6 +12,9 @@ org.pac4j.core.kryo
 org.pac4j.core.profile
 org.pac4j.core.profile.converter
 org.pac4j.core.util
+org.pac4j.gae.client
+org.pac4j.gae.credentials
+org.pac4j.gae.profile
 org.pac4j.http.client
 org.pac4j.http.credentials
 org.pac4j.http.profile
@@ -18,6 +22,7 @@ org.pac4j.oauth.client
 org.pac4j.oauth.client.exception
 org.pac4j.oauth.credentials
 org.pac4j.oauth.profile
+org.pac4j.oauth.profile.bitbucket
 org.pac4j.oauth.profile.casoauthwrapper
 org.pac4j.oauth.profile.converter
 org.pac4j.oauth.profile.dropbox
@@ -39,6 +44,7 @@ org.pac4j.openid.client
 org.pac4j.openid.credentials
 org.pac4j.openid.profile
 org.pac4j.openid.profile.google
+org.pac4j.openid.profile.yahoo
 org.pac4j.saml.client
 org.pac4j.saml.context
 org.pac4j.saml.credentials
