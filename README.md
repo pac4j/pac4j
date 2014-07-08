@@ -318,6 +318,9 @@ For integrating an application with a SAML2 Identity Provider server, you should
     // Configure a file containing the Identity Provider (IDP) metadata.
     // It is the IDP's responsibility to make its metadata freely accessible.
     client.setIdpMetadataPath("testshib-providers.xml");
+    // Configure the callback url either directly or with the Clients container
+    // The callback url will be the SP entity ID
+    client.setCallbackUrl("http://localhost:8080/callback");
 
     // generate pac4j SAML2 Service Provider metadata to import on Identity Provider side
     String spMetadata = client.printClientMetadata();
@@ -332,6 +335,13 @@ For integrating an application with a SAML2 Identity Provider server, you should
     Saml2Credentials credentials = client.getCredentials(context);
     // get the SAML2 profile
     Saml2Profile saml2Profile = client.getUserProfile(credentials, context);
+
+#### Additional configuration:
+
+Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate you a new assertion. By default, the SAML pac4j client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the maximumAuthenticationLifetime parameter:
+    
+    // Lifetime in seconds
+    client.setMaximumAuthenticationLifetime(600);
 
 ### Gae User Service support
 
@@ -351,13 +361,6 @@ To use the Google App Engine authentication, you should use the *org.pac4j.gae.c
     // get the GooglOpenID profile
     GaeUserServiceProfile profile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + profile.getDisplayName());
-
-#### Additional configuration:
-
-Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate you a new assertion. By default, the SAML pac4j client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the maximumAuthenticationLifetime parameter:
-    
-    // Lifetime in seconds
-    client.setMaximumAuthenticationLifetime(600);
 
 ### Multiple clients
 
