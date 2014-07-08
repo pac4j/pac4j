@@ -315,7 +315,8 @@ For integrating an application with a SAML2 Identity Provider server, you should
     client.setKeystorePath("samlKeystore.jks");
     client.setKeystorePassword("pac4j-demo-passwd");
     client.setPrivateKeyPassword("pac4j-demo-passwd");
-    // configure a file containing the Identity Provider metadata 
+    // Configure a file containing the Identity Provider (IDP) metadata.
+    // It is the IDP's responsibility to make its metadata freely accessible.
     client.setIdpMetadataPath("testshib-providers.xml");
 
     // generate pac4j SAML2 Service Provider metadata to import on Identity Provider side
