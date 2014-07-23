@@ -226,7 +226,16 @@ public class FacebookProfile extends OAuth20Profile {
     public String getDisplayName() {
         return (String) getAttribute(FacebookAttributesDefinition.NAME);
     }
-    
+
+    /**
+     * For new OAuth Facebook applications, the username field is no more supported and generates an error:
+     * {"error":{"message":"(#12) username is deprecated for versions v2.0 and higher","type":"OAuthException","code":12}}
+     */
+    @Deprecated
+    public String getUsername() {
+        return (String) getAttribute(USERNAME);
+    }
+
     @Override
     public String getPictureUrl() {
         final FacebookPicture picture = (FacebookPicture) getAttribute(FacebookAttributesDefinition.PICTURE);
