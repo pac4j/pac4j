@@ -17,9 +17,18 @@
 package org.pac4j.saml.client;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.NotImplementedException;
+import org.junit.Test;
+import org.opensaml.DefaultBootstrap;
+import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
+import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Mechanism;
@@ -43,24 +52,54 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 public final class TestSaml2Client extends TestClient implements TestsConstants {
 
-    public void testSPMetadata() {
+    static {
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-        Saml2Client client = (Saml2Client) getClient();
+    @Test
+    public void testSPMetadata() {
+        Saml2Client client = getClient();
         String spMetadata = client.printClientMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback?client_name=Saml2Client\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"http://localhost:8080/callback?client_name=Saml2Client\""));
-
     }
 
+    @Test
     public void testRelayState() throws RequiresHttpAction {
-
-        Saml2Client client = (Saml2Client) getClient();
+        Saml2Client client = getClient();
         WebContext context = MockWebContext.create();
         context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
+    }
 
+    @Test
+    public void testIdpMetadataParsing_fromString() throws IOException {
+        Saml2Client client = getClient();
+        InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
+        String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
+        client.setIdpMetadata(metadata);
+        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
+        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
+        XMLObject md = client.getXmlObject(provider);
+        String id = client.getIdpEntityId(md);
+        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
+    }
+
+    @Test
+    public void testIdpMetadataParsing_fromFile() {
+        Saml2Client client = getClient();
+        client.setIdpMetadataPath("resource:testshib-providers.xml");
+        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
+        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
+        XMLObject md = client.getXmlObject(provider);
+        String id = client.getIdpEntityId(md);
+        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
     @Override
@@ -70,7 +109,7 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
     }
 
     @Override
-    protected Client getClient() {
+    protected Saml2Client getClient() {
         final Saml2Client saml2Client = new Saml2Client();
         saml2Client.setKeystorePath("resource:samlKeystore.jks");
         saml2Client.setKeystorePassword("pac4j-demo-passwd");
@@ -82,9 +121,9 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
     }
 
     @Override
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client client, final MockWebContext context)
+    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client, final MockWebContext context)
             throws Exception {
-        final BaseClient baseClient = (BaseClient) client;
+        final BaseClient<?, ?> baseClient = (BaseClient<?, ?>) client;
         // force immediate redirection for tests
         baseClient.redirect(context, true, false);
         File redirectFile = File.createTempFile("pac4j-saml2", ".html");

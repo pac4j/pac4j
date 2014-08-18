@@ -83,15 +83,25 @@ public final class CommonHelper {
     }
 
     /**
+     * Verify that a boolean is true otherwise throw an {@link TechnicalException}.
+     * 
+     * @param value the value to be checked for truth
+     * @param message the message to include in the exception if the value is false
+     */
+    public static void assertTrue(final boolean value, final String message) {
+        if (!value) {
+            throw new TechnicalException(message);
+        }
+    }
+
+    /**
      * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
      * 
      * @param name
      * @param value
      */
     public static void assertNotBlank(final String name, final String value) {
-        if (isBlank(value)) {
-            throw new TechnicalException(name + " cannot be blank");
-        }
+        assertTrue(!isBlank(value), name + " cannot be blank");
     }
 
     /**
@@ -101,9 +111,7 @@ public final class CommonHelper {
      * @param obj
      */
     public static void assertNotNull(final String name, final Object obj) {
-        if (obj == null) {
-            throw new TechnicalException(name + " cannot be null");
-        }
+        assertTrue(obj != null, name + " cannot be null");
     }
 
     /**
