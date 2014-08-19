@@ -45,30 +45,30 @@ import org.pac4j.saml.util.SamlUtils;
 @SuppressWarnings("rawtypes")
 public class Saml2AuthnRequestBuilder {
 
-	private boolean forceAuth;
-	
-	private AuthnContextComparisonTypeEnumeration comparisonType;
-	
-	private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
-	
-	/**
-	 * Default constructor
-	 */
-	public Saml2AuthnRequestBuilder() {
-	}
-	
-    /**
-	 * @param forceAuth
-	 * @param comparisonType
-	 * @param bindingType
-	 */
-	public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType) {
-		this.forceAuth = forceAuth;
-		this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
-		this.bindingType = bindingType;
-	}
+    private boolean forceAuth;
 
-	private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+    private AuthnContextComparisonTypeEnumeration comparisonType;
+
+    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
+    /**
+     * Default constructor
+     */
+    public Saml2AuthnRequestBuilder() {
+    }
+
+    /**
+     * @param forceAuth
+     * @param comparisonType
+     * @param bindingType
+     */
+    public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType) {
+        this.forceAuth = forceAuth;
+        this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
+        this.bindingType = bindingType;
+    }
+
+    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     public AuthnRequest build(final SAMLMessageContext context) {
 
@@ -90,11 +90,11 @@ public class Saml2AuthnRequestBuilder {
         AuthnRequest request = builder.buildObject();
 
         if (comparisonType != null) {
-        	RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
-        	authnContext.setComparison(comparisonType);
-        	request.setRequestedAuthnContext(authnContext);
+            RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
+            authnContext.setComparison(comparisonType);
+            request.setRequestedAuthnContext(authnContext);
         }
-        
+
         request.setID(generateID());
         request.setIssuer(getIssuer(context.getLocalEntityId()));
         request.setIssueInstant(new DateTime());
@@ -102,7 +102,7 @@ public class Saml2AuthnRequestBuilder {
         request.setIsPassive(false);
         request.setForceAuthn(this.forceAuth);
         request.setProviderName("pac4j-saml");
-        
+
         request.setDestination(ssoService.getLocation());
         request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
         request.setProtocolBinding(assertionConsumerService.getBinding());
@@ -124,10 +124,9 @@ public class Saml2AuthnRequestBuilder {
         Random r = new Random();
         return '_' + Long.toString(Math.abs(r.nextLong()), 16) + Long.toString(Math.abs(r.nextLong()), 16);
     }
-    
-    
-	protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
-		if ("exact".equals(comparisonType)) {
+
+    protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
+        if ("exact".equals(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.EXACT;
         } else if ("minimum".equals(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.MINIMUM;
@@ -136,7 +135,7 @@ public class Saml2AuthnRequestBuilder {
         } else if ("better".equals(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.BETTER;
         } else {
-        	return null;
+            return null;
         }
-	}
+    }
 }

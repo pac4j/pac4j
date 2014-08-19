@@ -34,7 +34,7 @@ import org.opensaml.xml.security.credential.Credential;
 public class SimpleResponseAdapter implements HTTPOutTransport {
 
     private final OutputStream outputStream = new ByteArrayOutputStream();
-    
+
     private String redirectUrl;
 
     public String getOutgoingContent() {
@@ -122,8 +122,7 @@ public class SimpleResponseAdapter implements HTTPOutTransport {
     }
 
     public void sendRedirect(final String redirectUrl) {
-    	// FIXME: Any better way to do a redirect operation?
-    	this.redirectUrl = redirectUrl;
+        this.redirectUrl = redirectUrl;
     }
 
     public void setHeader(final String arg0, final String arg1) {
@@ -138,11 +137,11 @@ public class SimpleResponseAdapter implements HTTPOutTransport {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-	/**
-	 * @return the redirectUrl
-	 */
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
+    /**
+     * @return the redirectUrl
+     */
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
 
 }
