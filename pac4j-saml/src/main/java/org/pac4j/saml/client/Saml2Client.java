@@ -24,8 +24,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.binding.encoding.BaseSAML2MessageEncoder;
 import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
 import org.opensaml.saml2.binding.encoding.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml2.core.Assertion;
@@ -45,6 +43,8 @@ import org.opensaml.util.resource.ClasspathResource;
 import org.opensaml.util.resource.FilesystemResource;
 import org.opensaml.util.resource.Resource;
 import org.opensaml.util.resource.ResourceException;
+import org.opensaml.ws.message.decoder.MessageDecoder;
+import org.opensaml.ws.message.encoder.MessageEncoder;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.encryption.DecryptionException;
@@ -249,15 +249,19 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, bindingType);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
-        BaseSAML2MessageEncoder encoder = null;
+        MessageEncoder encoder = null;
         if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
         	encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
-        } else {
+        } else if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_REDIRECT_BINDING_URI)) {
         	encoder = new HTTPRedirectDeflateEncoder();
+        } else {
+        	// TODO: Support other binding types on need basis
+        	throw new UnsupportedOperationException("Binding type - " + bindingType + " is not supported"); 
         }
-        	
-        HTTPPostDecoder postDecoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, postDecoder, parserPool);
+        
+        // Do we need binding specific decoder? 
+        MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool);
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
