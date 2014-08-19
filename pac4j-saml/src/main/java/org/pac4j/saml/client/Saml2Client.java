@@ -23,8 +23,11 @@ import java.util.Timer;
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
+import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
+import org.opensaml.saml2.binding.encoding.BaseSAML2MessageEncoder;
 import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
+import org.opensaml.saml2.binding.encoding.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeStatement;
@@ -120,6 +123,12 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     private EncryptionProvider encryptionProvider;
 
     private String spMetadata;
+    
+    private boolean forceAuth;
+    
+    private String comparisonType;
+    
+    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     @Override
     protected void internalInit() {
@@ -201,7 +210,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // Generate our Service Provider metadata
-        Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
+        Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator(bindingType);
         metadataGenerator.setCredentialProvider(this.credentialProvider);
         // for the spEntityId, use the callback url
         String spEntityId = getCallbackUrl();
@@ -237,12 +246,18 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
         VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new Saml2AuthnRequestBuilder();
+        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, bindingType);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
-        HTTPPostEncoder postEncoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
+        BaseSAML2MessageEncoder encoder = null;
+        if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+        	encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
+        } else {
+        	encoder = new HTTPRedirectDeflateEncoder();
+        }
+        	
         HTTPPostDecoder postDecoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, postEncoder, postDecoder, parserPool);
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, postDecoder, parserPool);
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
@@ -284,9 +299,14 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         this.handler.sendMessage(context, authnRequest, relayState);
 
-        String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
-
-        return RedirectAction.success(content);
+        if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+        	String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
+        	return RedirectAction.success(content);
+        } else {
+        	String location = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getRedirectUrl();
+        	return RedirectAction.redirect(location);
+        }
+        
     }
 
     @Override
@@ -387,4 +407,45 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return this.spMetadata;
     }
 
+	/**
+	 * @return the forceAuth
+	 */
+	public boolean isForceAuth() {
+		return forceAuth;
+	}
+
+	/**
+	 * @param forceAuth the forceAuth to set
+	 */
+	public void setForceAuth(boolean forceAuth) {
+		this.forceAuth = forceAuth;
+	}
+
+	/**
+	 * @return the comparisonType
+	 */
+	public String getComparisonType() {
+		return comparisonType;
+	}
+
+	/**
+	 * @param comparisonType the comparisonType to set
+	 */
+	public void setComparisonType(String comparisonType) {
+		this.comparisonType = comparisonType;
+	}
+
+	/**
+	 * @return the bindingType
+	 */
+	public String getBindingType() {
+		return bindingType;
+	}
+
+	/**
+	 * @param bindingType the bindingType to set
+	 */
+	public void setBindingType(String bindingType) {
+		this.bindingType = bindingType;
+	}
 }

@@ -72,8 +72,7 @@ public class Saml2WebSSOProfileHandler {
 
         SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
         IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor,
-                SAMLConstants.SAML2_POST_BINDING_URI);
+        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, authnRequest.getProtocolBinding());
 
         context.setCommunicationProfileId(SAML2_WEBSSO_PROFILE_URI);
         context.setOutboundMessage(authnRequest);

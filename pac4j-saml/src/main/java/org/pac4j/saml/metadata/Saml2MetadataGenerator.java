@@ -76,8 +76,23 @@ public class Saml2MetadataGenerator {
     protected boolean wantAssertionSigned = true;
 
     protected int defaultACSIndex = 0;
+    
+    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+    
+    /**
+     * Default constructor 
+     */
+    public Saml2MetadataGenerator() {
+	}
 
-    public AbstractMetadataProvider buildMetadataProvider() {
+    /**
+	 * @param bindingType
+	 */
+	public Saml2MetadataGenerator(String bindingType) {
+		this.bindingType = bindingType;
+	}
+
+	public AbstractMetadataProvider buildMetadataProvider() {
         final EntityDescriptor md = buildMetadata();
         return new AbstractMetadataProvider() {
 
@@ -130,7 +145,7 @@ public class Saml2MetadataGenerator {
 
         int index = 0;
         spDescriptor.getAssertionConsumerServices().add(
-                getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++,
+                getAssertionConsumerService(bindingType, index++,
                         this.defaultACSIndex == index));
 
         spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));

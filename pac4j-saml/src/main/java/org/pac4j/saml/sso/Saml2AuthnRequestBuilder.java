@@ -24,8 +24,11 @@ import org.opensaml.common.SAMLObjectBuilder;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.binding.SAMLMessageContext;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml2.metadata.SPSSODescriptor;
@@ -42,15 +45,37 @@ import org.pac4j.saml.util.SamlUtils;
 @SuppressWarnings("rawtypes")
 public class Saml2AuthnRequestBuilder {
 
-    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+	private boolean forceAuth;
+	
+	private AuthnContextComparisonTypeEnumeration comparisonType;
+	
+	private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+	
+	/**
+	 * Default constructor
+	 */
+	public Saml2AuthnRequestBuilder() {
+	}
+	
+    /**
+	 * @param forceAuth
+	 * @param comparisonType
+	 * @param bindingType
+	 */
+	public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType) {
+		this.forceAuth = forceAuth;
+		this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
+		this.bindingType = bindingType;
+	}
+
+	private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     public AuthnRequest build(final SAMLMessageContext context) {
 
         SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
         IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
 
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor,
-                SAMLConstants.SAML2_POST_BINDING_URI);
+        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, bindingType);
         AssertionConsumerService assertionConsumerService = SamlUtils.getAssertionConsumerService(spDescriptor, null);
 
         return buildAuthnRequest(context, assertionConsumerService, ssoService);
@@ -64,14 +89,20 @@ public class Saml2AuthnRequestBuilder {
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
         AuthnRequest request = builder.buildObject();
 
+        if (comparisonType != null) {
+        	RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
+        	authnContext.setComparison(comparisonType);
+        	request.setRequestedAuthnContext(authnContext);
+        }
+        
         request.setID(generateID());
         request.setIssuer(getIssuer(context.getLocalEntityId()));
         request.setIssueInstant(new DateTime());
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIsPassive(false);
-        request.setForceAuthn(false);
+        request.setForceAuthn(this.forceAuth);
         request.setProviderName("pac4j-saml");
-
+        
         request.setDestination(ssoService.getLocation());
         request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
         request.setProtocolBinding(assertionConsumerService.getBinding());
@@ -93,4 +124,19 @@ public class Saml2AuthnRequestBuilder {
         Random r = new Random();
         return '_' + Long.toString(Math.abs(r.nextLong()), 16) + Long.toString(Math.abs(r.nextLong()), 16);
     }
+    
+    
+	protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
+		if ("exact".equals(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.EXACT;
+        } else if ("minimum".equals(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.MINIMUM;
+        } else if ("maximum".equals(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.MAXIMUM;
+        } else if ("better".equals(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.BETTER;
+        } else {
+        	return null;
+        }
+	}
 }
