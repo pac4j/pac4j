@@ -45,6 +45,7 @@ public class GitHubAttributesDefinition extends OAuthAttributesDefinition {
     public static final String BIO = "bio";
     public static final String TOTAL_PRIVATE_REPOS = "total_private_repos";
     public static final String CREATED_AT = "created_at";
+    public static final String UPDATED_AT = "updated_at";
     public static final String NAME = "name";
     public static final String DISK_USAGE = "disk_usage";
     public static final String PLAN = "plan";
@@ -67,6 +68,7 @@ public class GitHubAttributesDefinition extends OAuthAttributesDefinition {
         }
         addAttribute(HIREABLE, Converters.booleanConverter);
         addAttribute(CREATED_AT, GitHubConverters.dateConverter);
+        addAttribute(UPDATED_AT, GitHubConverters.dateConverter);
         addAttribute(PLAN, GitHubConverters.planConverter);
     }
 }
