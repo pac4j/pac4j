@@ -255,7 +255,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         } else if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_REDIRECT_BINDING_URI)) {
         	encoder = new HTTPRedirectDeflateEncoder();
         } else {
-        	// TODO: Support other binding types on need basis
         	throw new UnsupportedOperationException("Binding type - " + bindingType + " is not supported"); 
         }
         
