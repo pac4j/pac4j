@@ -101,7 +101,7 @@ public class TestGitHubClient extends TestOAuthClient {
         assertEquals("Company", profile.getCompany());
         assertFalse(profile.getHireable());
         assertEquals(0, profile.getCollaborators().intValue());
-        assertEquals("Java developper", profile.getBio());
+        assertNull(profile.getBio());
         assertEquals(0, profile.getTotalPrivateRepos().intValue());
         assertEquals("2012-02-06T13:05:21Z", profile.getCreatedAt().toString());
         assertEquals(0, profile.getDiskUsage().intValue());
