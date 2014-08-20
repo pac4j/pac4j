@@ -123,11 +123,11 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     private EncryptionProvider encryptionProvider;
 
     private String spMetadata;
-    
+
     private boolean forceAuth;
-    
+
     private String comparisonType;
-    
+
     private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     @Override
@@ -243,21 +243,21 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Build the contextProvider
         this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, spEntityId);
 
-        // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
-        VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
         // Get an AuthnRequest builder
         this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, bindingType);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
         MessageEncoder encoder = null;
-        if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-        	encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
-        } else if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_REDIRECT_BINDING_URI)) {
-        	encoder = new HTTPRedirectDeflateEncoder();
+        if (SAMLConstants.SAML2_POST_BINDING_URI.equals(bindingType)) {
+            // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
+            VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
+            encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
+        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(bindingType)) {
+            encoder = new HTTPRedirectDeflateEncoder();
         } else {
-        	throw new UnsupportedOperationException("Binding type - " + bindingType + " is not supported"); 
+            throw new UnsupportedOperationException("Binding type - " + bindingType + " is not supported"); 
         }
-        
+
         // Do we need binding specific decoder? 
         MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
         this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool);
@@ -303,13 +303,13 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.handler.sendMessage(context, authnRequest, relayState);
 
         if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-        	String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
-        	return RedirectAction.success(content);
+            String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
+            return RedirectAction.success(content);
         } else {
-        	String location = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getRedirectUrl();
-        	return RedirectAction.redirect(location);
+            String location = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getRedirectUrl();
+            return RedirectAction.redirect(location);
         }
-        
+
     }
 
     @Override
@@ -410,45 +410,45 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return this.spMetadata;
     }
 
-	/**
-	 * @return the forceAuth
-	 */
-	public boolean isForceAuth() {
-		return forceAuth;
-	}
+    /**
+     * @return the forceAuth
+     */
+    public boolean isForceAuth() {
+        return forceAuth;
+    }
 
-	/**
-	 * @param forceAuth the forceAuth to set
-	 */
-	public void setForceAuth(boolean forceAuth) {
-		this.forceAuth = forceAuth;
-	}
+    /**
+     * @param forceAuth the forceAuth to set
+     */
+    public void setForceAuth(boolean forceAuth) {
+        this.forceAuth = forceAuth;
+    }
 
-	/**
-	 * @return the comparisonType
-	 */
-	public String getComparisonType() {
-		return comparisonType;
-	}
+    /**
+     * @return the comparisonType
+     */
+    public String getComparisonType() {
+        return comparisonType;
+    }
 
-	/**
-	 * @param comparisonType the comparisonType to set
-	 */
-	public void setComparisonType(String comparisonType) {
-		this.comparisonType = comparisonType;
-	}
+    /**
+     * @param comparisonType the comparisonType to set
+     */
+    public void setComparisonType(String comparisonType) {
+        this.comparisonType = comparisonType;
+    }
 
-	/**
-	 * @return the bindingType
-	 */
-	public String getBindingType() {
-		return bindingType;
-	}
+    /**
+     * @return the bindingType
+     */
+    public String getBindingType() {
+        return bindingType;
+    }
 
-	/**
-	 * @param bindingType the bindingType to set
-	 */
-	public void setBindingType(String bindingType) {
-		this.bindingType = bindingType;
-	}
+    /**
+     * @param bindingType the bindingType to set
+     */
+    public void setBindingType(String bindingType) {
+        this.bindingType = bindingType;
+    }
 }
