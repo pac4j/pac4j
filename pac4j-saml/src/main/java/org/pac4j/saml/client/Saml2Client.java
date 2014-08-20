@@ -124,9 +124,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String spMetadata;
 
-    private boolean forceAuth;
+    private boolean forceAuth = false;
 
-    private String comparisonType;
+    private String comparisonType = null;
 
     private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
@@ -210,7 +210,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // Generate our Service Provider metadata
-        Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator(bindingType);
+        Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
         metadataGenerator.setCredentialProvider(this.credentialProvider);
         // for the spEntityId, use the callback url
         String spEntityId = getCallbackUrl();
