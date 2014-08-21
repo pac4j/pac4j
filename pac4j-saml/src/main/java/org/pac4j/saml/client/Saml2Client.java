@@ -128,7 +128,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String comparisonType = null;
 
-    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+    private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
     @Override
     protected void internalInit() {
@@ -244,23 +244,23 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, spEntityId);
 
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, bindingType);
+        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
         MessageEncoder encoder = null;
-        if (SAMLConstants.SAML2_POST_BINDING_URI.equals(bindingType)) {
+        if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
             // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
             VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
             encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
-        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(bindingType)) {
+        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
             encoder = new HTTPRedirectDeflateEncoder();
         } else {
-            throw new UnsupportedOperationException("Binding type - " + bindingType + " is not supported"); 
+            throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported"); 
         }
 
         // Do we need binding specific decoder? 
         MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool);
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool, destinationBindingType);
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
@@ -284,6 +284,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setIdpEntityId(this.idpEntityId);
         client.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
         client.setCallbackUrl(this.callbackUrl);
+        client.setCallbackUrl(this.callbackUrl);
+        client.setDestinationBindingType(this.destinationBindingType);
+        client.setComparisonType(this.comparisonType);
         return client;
     }
 
@@ -302,7 +305,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         this.handler.sendMessage(context, authnRequest, relayState);
 
-        if (bindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+        if (destinationBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
             String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
             return RedirectAction.success(content);
         } else {
@@ -439,16 +442,17 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     /**
-     * @return the bindingType
+     * @return the destinationBindingType
      */
-    public String getBindingType() {
-        return bindingType;
+    public String getDestinationBindingType() {
+        return destinationBindingType;
     }
 
     /**
-     * @param bindingType the bindingType to set
+     * @param destinationBindingType the destinationBindingType to set
      */
-    public void setBindingType(String bindingType) {
-        this.bindingType = bindingType;
+    public void setDestinationBindingType(String destinationBindingType) {
+        this.destinationBindingType = destinationBindingType;
     }
+
 }

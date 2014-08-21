@@ -16,40 +16,17 @@
 
 package org.pac4j.saml.client;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
-import java.util.List;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Mechanism;
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.profile.Saml2Profile;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.StringWebResponse;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HTMLParser;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -57,133 +34,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
-public final class TestSaml2Client extends TestClient implements TestsConstants {
+public abstract class TestSaml2Client extends TestClient implements TestsConstants {
 
     public void testSPMetadata() {
 
         Saml2Client client = (Saml2Client) getClient();
         String spMetadata = client.printClientMetadata();
-        assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback?client_name=Saml2Client\""));
+        assertTrue(spMetadata.contains("entityID=\"" + getCallbackUrl() + "\""));
         assertTrue(spMetadata
-                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"http://localhost:8080/callback?client_name=Saml2Client\""));
+                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"" + getCallbackUrl() + "\""));
 
-    }
-    
-    public void testSPMetadataWithRedirectBinding() {
-        Saml2Client client = (Saml2Client) getClient();
-        client.setBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-        String spMetadata = client.printClientMetadata();
-        assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback?client_name=Saml2Client\""));
-        assertTrue(spMetadata
-                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"http://localhost:8080/callback?client_name=Saml2Client\""));
-
-    }
-    
-    public void testSPMetadataWithPostBinding() {
-        Saml2Client client = (Saml2Client) getClient();
-        client.setBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
-        String spMetadata = client.printClientMetadata();
-        assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback?client_name=Saml2Client\""));
-        assertTrue(spMetadata
-                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"http://localhost:8080/callback?client_name=Saml2Client\""));
-    }
-    
-    public void testRelayState() throws RequiresHttpAction {
-        Saml2Client client = (Saml2Client) getClient();
-        WebContext context = MockWebContext.create();
-        context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
-    }
-    
-    private String getDecodedAuthnRequest(String content) throws Exception {
-    	StringWebResponse response = new StringWebResponse(content, new URL("http://localhost:8080/"));
-        WebClient webClient = new WebClient();
-        HtmlPage page = HTMLParser.parseHtml(response, webClient.getCurrentWindow());
-        HtmlForm form = page.getForms().get(0);
-        HtmlInput samlRequest = form.getInputByName("SAMLRequest");
-        return new String(Base64.decodeBase64(samlRequest.getValueAttribute()));
-    }
-    
-    private String getInflatedAuthnRequest(String location) throws Exception {
-    	List<NameValuePair> pairs = URLEncodedUtils.parse(URI.create(location), "UTF-8");
-        Inflater inflater = new Inflater(true);
-        byte[] decodedRequest = Base64.decodeBase64(pairs.get(0).getValue());
-        ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
-        InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
-        BufferedReader reader =new BufferedReader(new InputStreamReader(inputStream));
-        return reader.readLine();
-    }
-    
-    public void testForceAuthIsSetForPostBinding() throws Exception {
-        Saml2Client client = (Saml2Client) getClient();
-        client.setForceAuth(true);
-        client.setBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
-        WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
-    }
-    
-    public void testForceAuthIsSetForRedirectBinding() throws Exception {
-        Saml2Client client = (Saml2Client) getClient();
-        client.setForceAuth(true);
-        client.setBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-        WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
-    }
-    
-    public void testSetComparisonTypeWithPostBinding() throws Exception {
-    	Saml2Client client = (Saml2Client) getClient();
-    	client.setBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
-    	client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-    	WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
-    }
-    
-    public void testSetComparisonTypeWithRedirectBinding() throws Exception {
-    	Saml2Client client = (Saml2Client) getClient();
-    	client.setBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
-    	client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-    	WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
 
     @Override
     protected Mechanism getMechanism() {
-        // TODO Auto-generated method stub
         return Mechanism.SAML_PROTOCOL;
-    }
-
-    @Override
-    protected Client getClient() {
-        final Saml2Client saml2Client = new Saml2Client();
-        saml2Client.setKeystorePath("resource:samlKeystore.jks");
-        saml2Client.setKeystorePassword("pac4j-demo-passwd");
-        saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
-        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
-        saml2Client.setCallbackUrl("http://localhost:8080/callback?client_name=Saml2Client");
-        saml2Client.setMaximumAuthenticationLifetime(3600);
-        return saml2Client;
-    }
-
-    @Override
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client client, final MockWebContext context)
-            throws Exception {
-        final BaseClient baseClient = (BaseClient) client;
-        // force immediate redirection for tests
-        baseClient.redirect(context, true, false);
-        File redirectFile = File.createTempFile("pac4j-saml2", ".html");
-        FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
-        writer.write(context.getResponseContent());
-        writer.close();
-        logger.debug("redirectPage path : {}", redirectFile.getPath());
-        final HtmlPage redirectPage = webClient.getPage(redirectFile.toURI().toURL());
-        final HtmlForm form = redirectPage.getForms().get(0);
-        final HtmlSubmitInput submit = (HtmlSubmitInput) form.getElementsByAttribute("input", "type", "submit").get(0);
-        return submit.click();
     }
 
     @Override
@@ -230,4 +95,21 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
         assertEquals("[Me Myself]", profile.getAttribute("urn:oid:2.5.4.42").toString());
         assertEquals("[And I]", profile.getAttribute("urn:oid:2.5.4.4").toString());
     }
+    
+    @Override
+    protected Client getClient() {
+        final Saml2Client saml2Client = new Saml2Client();
+        saml2Client.setKeystorePath("resource:samlKeystore.jks");
+        saml2Client.setKeystorePassword("pac4j-demo-passwd");
+        saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
+        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
+        saml2Client.setMaximumAuthenticationLifetime(3600);
+        saml2Client.setCallbackUrl(getCallbackUrl());
+        saml2Client.setDestinationBindingType(getDestinationBindingType());
+        return saml2Client;
+    }
+    
+    protected abstract String getCallbackUrl();
+    
+    protected abstract String getDestinationBindingType();
 }
