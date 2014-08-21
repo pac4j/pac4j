@@ -25,8 +25,9 @@ import java.util.Timer;
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
+import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
+import org.opensaml.saml2.binding.encoding.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.AttributeStatement;
@@ -45,6 +46,8 @@ import org.opensaml.util.resource.ClasspathResource;
 import org.opensaml.util.resource.FilesystemResource;
 import org.opensaml.util.resource.Resource;
 import org.opensaml.util.resource.ResourceException;
+import org.opensaml.ws.message.decoder.MessageDecoder;
+import org.opensaml.ws.message.encoder.MessageEncoder;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.encryption.DecryptionException;
@@ -128,6 +131,12 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String spMetadata;
 
+    private boolean forceAuth = false;
+
+    private String comparisonType = null;
+
+    private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+
     @Override
     protected void internalInit() {
 
@@ -209,15 +218,24 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Build the contextProvider
         this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, spEntityId);
 
-        // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
-        VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new Saml2AuthnRequestBuilder();
+        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
-        HTTPPostEncoder postEncoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
-        HTTPPostDecoder postDecoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, postEncoder, postDecoder, parserPool);
+        MessageEncoder encoder = null;
+        if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
+            // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
+            VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
+            encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
+        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
+            encoder = new HTTPRedirectDeflateEncoder();
+        } else {
+            throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported"); 
+        }
+
+        // Do we need binding specific decoder? 
+        MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool, destinationBindingType);
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
@@ -242,6 +260,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setIdpEntityId(this.idpEntityId);
         client.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
         client.setCallbackUrl(this.callbackUrl);
+        client.setCallbackUrl(this.callbackUrl);
+        client.setDestinationBindingType(this.destinationBindingType);
+        client.setComparisonType(this.comparisonType);
         return client;
     }
 
@@ -260,9 +281,14 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         this.handler.sendMessage(context, authnRequest, relayState);
 
-        String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
+        if (destinationBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+            String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
+            return RedirectAction.success(content);
+        } else {
+            String location = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getRedirectUrl();
+            return RedirectAction.redirect(location);
+        }
 
-        return RedirectAction.success(content);
     }
 
     @Override
@@ -427,6 +453,48 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     public String printClientMetadata() {
         init();
         return this.spMetadata;
+    }
+
+    /**
+     * @return the forceAuth
+     */
+    public boolean isForceAuth() {
+        return forceAuth;
+    }
+
+    /**
+     * @param forceAuth the forceAuth to set
+     */
+    public void setForceAuth(boolean forceAuth) {
+        this.forceAuth = forceAuth;
+    }
+
+    /**
+     * @return the comparisonType
+     */
+    public String getComparisonType() {
+        return comparisonType;
+    }
+
+    /**
+     * @param comparisonType the comparisonType to set
+     */
+    public void setComparisonType(String comparisonType) {
+        this.comparisonType = comparisonType;
+    }
+
+    /**
+     * @return the destinationBindingType
+     */
+    public String getDestinationBindingType() {
+        return destinationBindingType;
+    }
+
+    /**
+     * @param destinationBindingType the destinationBindingType to set
+     */
+    public void setDestinationBindingType(String destinationBindingType) {
+        this.destinationBindingType = destinationBindingType;
     }
 
 }

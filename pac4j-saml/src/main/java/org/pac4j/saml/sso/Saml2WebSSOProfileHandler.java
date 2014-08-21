@@ -55,16 +55,19 @@ public class Saml2WebSSOProfileHandler {
     private final MessageDecoder decoder;
 
     private final StaticBasicParserPool parserPool;
+    
+    private String destinationBindingType;
 
     // SAML2 SSO browser profile because not available in opensaml constants
     public static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
     public Saml2WebSSOProfileHandler(final CredentialProvider credentialProvider, final MessageEncoder encoder,
-            final MessageDecoder decoder, final StaticBasicParserPool parserPool) {
+            final MessageDecoder decoder, final StaticBasicParserPool parserPool, String destinationBindingType) {
         this.credentialProvider = credentialProvider;
         this.encoder = encoder;
         this.decoder = decoder;
         this.parserPool = parserPool;
+        this.destinationBindingType = destinationBindingType;
     }
 
     @SuppressWarnings("unchecked")
@@ -72,8 +75,7 @@ public class Saml2WebSSOProfileHandler {
 
         SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
         IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor,
-                SAMLConstants.SAML2_POST_BINDING_URI);
+        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, destinationBindingType);
 
         context.setCommunicationProfileId(SAML2_WEBSSO_PROFILE_URI);
         context.setOutboundMessage(authnRequest);

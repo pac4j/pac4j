@@ -16,12 +16,10 @@
 
 package org.pac4j.saml.client;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.NotImplementedException;
 import org.junit.Test;
 import org.opensaml.DefaultBootstrap;
@@ -29,14 +27,9 @@ import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.parse.StaticBasicParserPool;
-import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Mechanism;
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.profile.Saml2Profile;
@@ -50,7 +43,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
-public final class TestSaml2Client extends TestClient implements TestsConstants {
+public abstract class TestSaml2Client extends TestClient implements TestsConstants {
 
     static {
         try {
@@ -64,18 +57,9 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
     public void testSPMetadata() {
         Saml2Client client = getClient();
         String spMetadata = client.printClientMetadata();
-        assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback?client_name=Saml2Client\""));
+        assertTrue(spMetadata.contains("entityID=\"" + getCallbackUrl() + "\""));
         assertTrue(spMetadata
-                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"http://localhost:8080/callback?client_name=Saml2Client\""));
-    }
-
-    @Test
-    public void testRelayState() throws RequiresHttpAction {
-        Saml2Client client = getClient();
-        WebContext context = MockWebContext.create();
-        context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
+                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"" + getCallbackUrl() + "\""));
     }
 
     @Test
@@ -104,37 +88,7 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
 
     @Override
     protected Mechanism getMechanism() {
-        // TODO Auto-generated method stub
         return Mechanism.SAML_PROTOCOL;
-    }
-
-    @Override
-    protected Saml2Client getClient() {
-        final Saml2Client saml2Client = new Saml2Client();
-        saml2Client.setKeystorePath("resource:samlKeystore.jks");
-        saml2Client.setKeystorePassword("pac4j-demo-passwd");
-        saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
-        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
-        saml2Client.setCallbackUrl("http://localhost:8080/callback?client_name=Saml2Client");
-        saml2Client.setMaximumAuthenticationLifetime(3600);
-        return saml2Client;
-    }
-
-    @Override
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client, final MockWebContext context)
-            throws Exception {
-        final BaseClient<?, ?> baseClient = (BaseClient<?, ?>) client;
-        // force immediate redirection for tests
-        baseClient.redirect(context, true, false);
-        File redirectFile = File.createTempFile("pac4j-saml2", ".html");
-        FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
-        writer.write(context.getResponseContent());
-        writer.close();
-        logger.debug("redirectPage path : {}", redirectFile.getPath());
-        final HtmlPage redirectPage = webClient.getPage(redirectFile.toURI().toURL());
-        final HtmlForm form = redirectPage.getForms().get(0);
-        final HtmlSubmitInput submit = (HtmlSubmitInput) form.getElementsByAttribute("input", "type", "submit").get(0);
-        return submit.click();
     }
 
     @Override
@@ -181,4 +135,21 @@ public final class TestSaml2Client extends TestClient implements TestsConstants 
         assertEquals("[Me Myself]", profile.getAttribute("urn:oid:2.5.4.42").toString());
         assertEquals("[And I]", profile.getAttribute("urn:oid:2.5.4.4").toString());
     }
+    
+    @Override
+    protected Saml2Client getClient() {
+        final Saml2Client saml2Client = new Saml2Client();
+        saml2Client.setKeystorePath("resource:samlKeystore.jks");
+        saml2Client.setKeystorePassword("pac4j-demo-passwd");
+        saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
+        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
+        saml2Client.setMaximumAuthenticationLifetime(3600);
+        saml2Client.setCallbackUrl(getCallbackUrl());
+        saml2Client.setDestinationBindingType(getDestinationBindingType());
+        return saml2Client;
+    }
+    
+    protected abstract String getCallbackUrl();
+    
+    protected abstract String getDestinationBindingType();
 }
