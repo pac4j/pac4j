@@ -61,7 +61,7 @@ public class TestTwitterClient extends TestOAuthClient {
         sessionUsernameOrEmail.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput sessionPassword = form.getInputByName("session[password]");
         sessionPassword.setValueAttribute("testpwdscribeup");
-        final HtmlSubmitInput submit = form.getElementById("allow");
+        final HtmlSubmitInput submit = authorizationPage.getHtmlElementById("allow");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
         logger.debug("callbackUrl : {}", callbackUrl);
@@ -127,8 +127,7 @@ public class TestTwitterClient extends TestOAuthClient {
 
     @Override
     protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(0);
-        final HtmlSubmitInput submit = form.getElementById("cancel");
+        final HtmlSubmitInput submit = authorizationPage.getHtmlElementById("cancel");
         final HtmlPage callbackPage = submit.click();
         final List<HtmlAnchor> anchors = callbackPage.getAnchors();
         String callbackUrl = null;

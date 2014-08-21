@@ -16,8 +16,17 @@
 
 package org.pac4j.saml.client;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
-import org.pac4j.core.client.Client;
+import org.junit.Test;
+import org.opensaml.DefaultBootstrap;
+import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
+import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.TestClient;
 import org.pac4j.core.context.MockWebContext;
@@ -36,14 +45,45 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 public abstract class TestSaml2Client extends TestClient implements TestsConstants {
 
-    public void testSPMetadata() {
+    static {
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-        Saml2Client client = (Saml2Client) getClient();
+    @Test
+    public void testSPMetadata() {
+        Saml2Client client = getClient();
         String spMetadata = client.printClientMetadata();
         assertTrue(spMetadata.contains("entityID=\"" + getCallbackUrl() + "\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"" + getCallbackUrl() + "\""));
+    }
 
+    @Test
+    public void testIdpMetadataParsing_fromString() throws IOException {
+        Saml2Client client = getClient();
+        InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
+        String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
+        client.setIdpMetadata(metadata);
+        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
+        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
+        XMLObject md = client.getXmlObject(provider);
+        String id = client.getIdpEntityId(md);
+        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
+    }
+
+    @Test
+    public void testIdpMetadataParsing_fromFile() {
+        Saml2Client client = getClient();
+        client.setIdpMetadataPath("resource:testshib-providers.xml");
+        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
+        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
+        XMLObject md = client.getXmlObject(provider);
+        String id = client.getIdpEntityId(md);
+        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
     @Override
@@ -97,7 +137,7 @@ public abstract class TestSaml2Client extends TestClient implements TestsConstan
     }
     
     @Override
-    protected Client getClient() {
+    protected Saml2Client getClient() {
         final Saml2Client saml2Client = new Saml2Client();
         saml2Client.setKeystorePath("resource:samlKeystore.jks");
         saml2Client.setKeystorePassword("pac4j-demo-passwd");

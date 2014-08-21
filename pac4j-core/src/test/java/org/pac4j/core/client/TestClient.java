@@ -141,7 +141,7 @@ public abstract class TestClient extends TestCase implements TestsConstants {
 
     protected abstract Client getClient();
 
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client client, final MockWebContext context)
+    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client, final MockWebContext context)
             throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests

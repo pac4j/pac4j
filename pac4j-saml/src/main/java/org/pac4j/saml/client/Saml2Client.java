@@ -16,6 +16,8 @@
 
 package org.pac4j.saml.client;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -37,6 +39,7 @@ import org.opensaml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
 import org.opensaml.saml2.metadata.provider.ChainingMetadataProvider;
+import org.opensaml.saml2.metadata.provider.DOMMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider;
 import org.opensaml.util.resource.ClasspathResource;
@@ -49,6 +52,7 @@ import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.encryption.DecryptionException;
 import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.opensaml.xml.parse.XMLParserException;
 import org.opensaml.xml.security.keyinfo.NamedKeyInfoGeneratorManager;
@@ -78,6 +82,7 @@ import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -101,6 +106,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     private String keystorePassword;
 
     private String privateKeyPassword;
+
+    private String idpMetadata;
 
     private String idpMetadataPath;
 
@@ -136,7 +143,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
         CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
-        CommonHelper.assertNotBlank("idpMetadataPath", this.idpMetadataPath);
+        CommonHelper.assertTrue(
+            CommonHelper.isNotBlank(this.idpMetadata) || CommonHelper.isNotBlank(this.idpMetadataPath),
+            "Either idpMetadata or idpMetadataPath must be provided");
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         if (!this.callbackUrl.startsWith("http")) {
             throw new TechnicalException("SAML callbackUrl must be absolute");
@@ -160,53 +169,19 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                 this.privateKeyPassword);
 
         // required parserPool for XML processing
-        StaticBasicParserPool parserPool = new StaticBasicParserPool();
-        try {
-            parserPool.initialize();
-        } catch (XMLParserException e) {
-            throw new SamlException("Error initializing parserPool", e);
-        }
+        final StaticBasicParserPool parserPool = newStaticBasicParserPool();
+        final AbstractMetadataProvider idpMetadataProvider = idpMetadataProvider(parserPool);
 
-        // load IDP metadata from a file
-        ResourceBackedMetadataProvider idpMetadataProvider;
+        final XMLObject md;
         try {
-            Resource resource = null;
-            if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
-                String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-                resource = new ClasspathResource(path);
-            } else {
-                resource = new FilesystemResource(this.idpMetadataPath);
-            }
-            idpMetadataProvider = new ResourceBackedMetadataProvider(new Timer(true), resource);
-            idpMetadataProvider.setParserPool(parserPool);
-            idpMetadataProvider.initialize();
+          md = idpMetadataProvider.getMetadata();
         } catch (MetadataProviderException e) {
-            throw new SamlException("Error initializing idpMetadataProvider", e);
-        } catch (ResourceException e) {
-            throw new TechnicalException("Error getting idp Metadata resource", e);
+          throw new SamlException("Error initializing idpMetadataProvider", e);
         }
 
         // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
         if (this.idpEntityId == null) {
-            try {
-                XMLObject md = idpMetadataProvider.getMetadata();
-                if (md instanceof EntitiesDescriptor) {
-                    for (EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
-                        this.idpEntityId = entity.getEntityID();
-                        break;
-                    }
-                } else if (md instanceof EntityDescriptor) {
-                    this.idpEntityId = ((EntityDescriptor) md).getEntityID();
-                }
-            } catch (MetadataProviderException e) {
-                throw new SamlException("Error getting idp entityId from IDP metadata", e);
-            }
-            if (this.idpEntityId == null) {
-                throw new SamlException("No idp entityId found");
-            }
+            this.idpEntityId = getIdpEntityId(md);
         }
 
         // Generate our Service Provider metadata
@@ -280,6 +255,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setKeystorePath(this.keystorePath);
         client.setKeystorePassword(this.keystorePassword);
         client.setPrivateKeyPassword(this.privateKeyPassword);
+        client.setIdpMetadata(this.idpMetadata);
         client.setIdpMetadataPath(this.idpMetadataPath);
         client.setIdpEntityId(this.idpEntityId);
         client.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
@@ -332,6 +308,68 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return buildSaml2Credentials(context, decrypter);
 
     }
+    
+    protected StaticBasicParserPool newStaticBasicParserPool() {
+        StaticBasicParserPool parserPool = new StaticBasicParserPool();
+        try {
+            parserPool.initialize();
+        } catch (XMLParserException e) {
+            throw new SamlException("Error initializing parserPool", e);
+        }
+        return parserPool;
+    }
+    
+    protected AbstractMetadataProvider idpMetadataProvider(ParserPool parserPool) {
+        AbstractMetadataProvider idpMetadataProvider;
+        try {
+            if (idpMetadataPath != null) {
+                Resource resource = null;
+                if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
+                    String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
+                    if (!path.startsWith("/")) {
+                        path = "/" + path;
+                    }
+                    resource = new ClasspathResource(path);
+                } else {
+                    resource = new FilesystemResource(this.idpMetadataPath);
+                }
+                idpMetadataProvider = new ResourceBackedMetadataProvider(new Timer(true), resource);
+            } else {
+                InputStream in = new ByteArrayInputStream(idpMetadata.getBytes());
+                Document inCommonMDDoc = parserPool.parse(in);
+                Element metadataRoot = inCommonMDDoc.getDocumentElement();
+                idpMetadataProvider = new DOMMetadataProvider(metadataRoot);
+            }
+            idpMetadataProvider.setParserPool(parserPool);
+            idpMetadataProvider.initialize();
+        } catch (MetadataProviderException e) {
+            throw new SamlException("Error initializing idpMetadataProvider", e);
+        } catch (XMLParserException e) {
+            throw new TechnicalException("Error parsing idp Metadata", e);          
+        } catch (ResourceException e) {
+            throw new TechnicalException("Error getting idp Metadata resource", e);
+        }
+        return idpMetadataProvider;
+    }
+    
+    protected XMLObject getXmlObject(AbstractMetadataProvider idpMetadataProvider) {
+        try {
+            return idpMetadataProvider.getMetadata();
+        } catch (MetadataProviderException e) {
+            throw new SamlException("Error initializing idpMetadataProvider", e);
+        }
+    }
+    
+    protected String getIdpEntityId(XMLObject md) {
+        if (md instanceof EntitiesDescriptor) {
+            for (EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
+                return entity.getEntityID();
+            }
+        } else if (md instanceof EntityDescriptor) {
+            return ((EntityDescriptor) md).getEntityID();
+        }
+        throw new SamlException("No idp entityId found");
+    }
 
     private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context, final Decrypter decrypter) {
 
@@ -382,6 +420,10 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     @Override
     public Mechanism getMechanism() {
         return Mechanism.SAML_PROTOCOL;
+    }
+
+    public void setIdpMetadata(final String idpMetadata) {
+        this.idpMetadata = idpMetadata;
     }
 
     public void setIdpMetadataPath(final String idpMetadataPath) {
