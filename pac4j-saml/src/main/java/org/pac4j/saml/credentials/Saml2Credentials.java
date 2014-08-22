@@ -19,6 +19,7 @@ package org.pac4j.saml.credentials;
 import java.util.List;
 
 import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 
@@ -35,10 +36,13 @@ public class Saml2Credentials extends Credentials {
     private final NameID nameId;
 
     private final List<Attribute> attributes;
+    
+    private final Conditions conditions;
 
-    public Saml2Credentials(final NameID nameId, final List<Attribute> attributes, final String clientName) {
+    public Saml2Credentials(final NameID nameId, final List<Attribute> attributes, Conditions conditions, final String clientName) {
         this.nameId = nameId;
         this.attributes = attributes;
+        this.conditions = conditions;
         setClientName(clientName);
     }
 
@@ -48,6 +52,10 @@ public class Saml2Credentials extends Credentials {
 
     public List<Attribute> getAttributes() {
         return this.attributes;
+    }
+    
+    public Conditions getConditions() {
+        return this.conditions;
     }
 
     @Override

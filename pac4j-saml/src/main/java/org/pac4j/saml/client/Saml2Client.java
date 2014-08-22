@@ -390,7 +390,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             }
         }
 
-        return new Saml2Credentials(nameId, attributes, getName());
+        return new Saml2Credentials(nameId, attributes, subjectAssertion.getConditions(), getName());
     }
 
     @Override
