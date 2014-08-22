@@ -28,7 +28,6 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.credentials.CasCredentials;
-import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.logout.NoLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
@@ -71,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * <p />
  * This client handles CAS logout calls from the CAS server, using the {@link LogoutHandler} interface. It's defined by default as the
  * {@link NoLogoutHandler} class, which does not perform the logout. Though, in J2E context, it can be defined to the
- * {@link CasSingleSignOutHandler} class by using the {@link #setLogoutHandler(LogoutHandler)} method. It must be used in association with
+ * {@link SingleSignOutHandler} class by using the {@link #setLogoutHandler(LogoutHandler)} method. It must be used in association with
  * the CAS client listener : {@link SingleSignOutHttpSessionListener}.
  * <p />
  * To require a proxy granting ticket, the {@link CasProxyReceptor} class must be used and referenced in this class through the
