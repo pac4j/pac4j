@@ -22,9 +22,9 @@ import java.net.URL;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.NotImplementedException;
+import org.junit.Test;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.MockWebContext;
@@ -43,11 +43,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public final class TestPostSaml2Client extends TestSaml2Client implements TestsConstants {
     
     @Override
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client client, final MockWebContext context)
+    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?,?> client, final MockWebContext context)
             throws Exception {
-        final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
-        baseClient.redirect(context, true, false);
+        client.redirect(context, true, false);
         File redirectFile = File.createTempFile("pac4j-saml2", ".html");
         FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
         writer.write(context.getResponseContent());
@@ -60,14 +59,15 @@ public final class TestPostSaml2Client extends TestSaml2Client implements TestsC
     }
 
     private String getDecodedAuthnRequest(String content) throws Exception {
-    	StringWebResponse response = new StringWebResponse(content, new URL("http://localhost:8080/"));
+        StringWebResponse response = new StringWebResponse(content, new URL("http://localhost:8080/"));
         WebClient webClient = new WebClient();
         HtmlPage page = HTMLParser.parseHtml(response, webClient.getCurrentWindow());
         HtmlForm form = page.getForms().get(0);
         HtmlInput samlRequest = form.getInputByName("SAMLRequest");
         return new String(Base64.decodeBase64(samlRequest.getValueAttribute()));
     }
-    
+
+    @Test
     public void testForceAuthIsSetForPostBinding() throws Exception {
         Saml2Client client = (Saml2Client) getClient();
         client.setForceAuth(true);
@@ -76,14 +76,16 @@ public final class TestPostSaml2Client extends TestSaml2Client implements TestsC
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
 
+    @Test
     public void testSetComparisonTypeWithPostBinding() throws Exception {
-    	Saml2Client client = (Saml2Client) getClient();
-    	client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-    	WebContext context = MockWebContext.create();
+        Saml2Client client = (Saml2Client) getClient();
+        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        WebContext context = MockWebContext.create();
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
     
+    @Test
     public void testRelayState() throws RequiresHttpAction {
         Saml2Client client = (Saml2Client) getClient();
         WebContext context = MockWebContext.create();
