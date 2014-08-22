@@ -19,11 +19,15 @@ import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 
 /**
+ * IMPORTANT: Google is removing support for OpenID. OpenID Connect is recommended instead.
+ * https://developers.google.com/+/api/auth-migration
+ * 
  * This class defines the attributes of the {@link GoogleOpenIdProfile}.
  * 
  * @author Stephane Gleizes
  * @since 1.4.1
  */
+@Deprecated
 public class GoogleOpenIdAttributesDefinition extends AttributesDefinition {
     
     public static final String COUNTRY = "country";

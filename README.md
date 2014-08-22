@@ -119,9 +119,9 @@ This module is based on the **pac4j-core** module and the [commons-codec](http:/
 
 This module is dedicated to OpenID protocol support:
 
-* the *GoogleOpenIdClient* is the client for Google
+* the *YahooOpenIdClient* is the client for Yahoo
 * the *OpenIdCredentials* class is the credentials for OpenID support
-* the *GoogleOpenIdProfile* class is the associated profile, returned by the client.
+* the *YahooOpenIdProfile* class is the associated profile, returned by the client.
 
 This module is based on the **pac4j-core** module and the [openid4java](http://code.google.com/p/openid4java/) library.
 
@@ -173,7 +173,7 @@ This module is based on the **pac4j-core** module and the [Google App Engine API
 <tr><td>Bitbucket</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>BitbucketClient</td><td>BitbucketProfile</td></tr>
 <tr><td>Web sites with basic auth authentication</td><td>HTTP</td><td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
 <tr><td>Web sites with form authentication</td><td>HTTP</td><td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
-<tr><td>Google</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
+<tr><td>Google - Deprecated</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
 <tr><td>Yahoo</td><td>OpenID</td><td>pac4j-openid</td><td>YahooOpenIdClient</td><td>YahooOpenIdProfile</td></tr>
 <tr><td>SAML Identity Provider</td><td>SAML 2.0</td><td>pac4j-saml</td><td>Saml2Client</td><td>Saml2Profile</td></tr>
 <tr><td>Google App Engine User Service</td><td>Gae User Service Mechanism</td><td>pac4j-gae</td><td>GaeUserServiceClient</td><td>GaeUserServiceProfile</td></tr>
