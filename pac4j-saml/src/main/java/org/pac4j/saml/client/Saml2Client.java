@@ -127,7 +127,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private SignatureTrustEngineProvider signatureTrustEngineProvider;
 
-    private EncryptionProvider encryptionProvider;
+    private Decrypter decrypter;
 
     private String spMetadata;
 
@@ -140,15 +140,23 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     @Override
     protected void internalInit() {
 
-        CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
-        CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
-        CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
         CommonHelper.assertTrue(
             CommonHelper.isNotBlank(this.idpMetadata) || CommonHelper.isNotBlank(this.idpMetadataPath),
             "Either idpMetadata or idpMetadataPath must be provided");
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         if (!this.callbackUrl.startsWith("http")) {
             throw new TechnicalException("SAML callbackUrl must be absolute");
+        }
+
+        if (CommonHelper.isNotBlank(this.keystorePath) || CommonHelper.isNotBlank(this.keystorePassword)
+                || CommonHelper.isNotBlank(this.privateKeyPassword)) {
+            CommonHelper.assertNotBlank("keystorePath", this.keystorePath);          
+            CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
+            CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
+          
+            // load private key from the keystore and provide it as OpenSAML credentials
+            this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword, this.privateKeyPassword);
+            this.decrypter = new EncryptionProvider(this.credentialProvider).buildDecrypter();
         }
 
         // Bootsrap OpenSAML
@@ -163,10 +171,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         } catch (ConfigurationException e) {
             throw new SamlException("Error bootstrapping OpenSAML", e);
         }
-
-        // load private key from the keystore and provide it as OpenSAML credentials
-        this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword,
-                this.privateKeyPassword);
 
         // required parserPool for XML processing
         final StaticBasicParserPool parserPool = newStaticBasicParserPool();
@@ -186,7 +190,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         // Generate our Service Provider metadata
         Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
-        metadataGenerator.setCredentialProvider(this.credentialProvider);
+        if (this.credentialProvider != null) {
+          metadataGenerator.setCredentialProvider(this.credentialProvider);
+        }
         // for the spEntityId, use the callback url
         String spEntityId = getCallbackUrl();
         metadataGenerator.setEntityId(spEntityId);
@@ -239,7 +245,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
-        this.encryptionProvider = new EncryptionProvider(this.credentialProvider);
 
         // Build the SAML response validator
         this.responseValidator = new Saml2ResponseValidator();
@@ -299,13 +304,12 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         context.setAssertionConsumerUrl(getCallbackUrl());
 
         SignatureTrustEngine trustEngine = this.signatureTrustEngineProvider.build();
-        Decrypter decrypter = this.encryptionProvider.buildDecrypter();
 
         this.handler.receiveMessage(context, trustEngine);
 
         this.responseValidator.validateSamlResponse(context, trustEngine, decrypter);
 
-        return buildSaml2Credentials(context, decrypter);
+        return buildSaml2Credentials(context);
 
     }
     
@@ -371,7 +375,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         throw new SamlException("No idp entityId found");
     }
 
-    private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context, final Decrypter decrypter) {
+    private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
 
         NameID nameId = (NameID) context.getSubjectNameIdentifier();
         Assertion subjectAssertion = context.getSubjectAssertion();
@@ -380,6 +384,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         for (AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
             for (Attribute attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
+            }
+            if (attributeStatement.getEncryptedAttributes().size() > 0) {
+              logger.warn("Encrypted attributes returned, but no keystore was provided.");
             }
             for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
                 try {

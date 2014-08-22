@@ -92,7 +92,9 @@ public class Saml2ResponseValidator {
 
         validateSamlProtocolResponse(response, context, engine);
 
-        decryptEncryptedAssertions(response, decrypter);
+        if (decrypter != null) {
+          decryptEncryptedAssertions(response, decrypter);
+        }
 
         validateSamlSSOResponse(response, context, engine, decrypter);
 
@@ -259,10 +261,14 @@ public class Saml2ResponseValidator {
                 if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
                     NameID nameID = null;
                     if (subject.getEncryptedID() != null) {
-                        try {
-                            nameID = (NameID) decrypter.decrypt(subject.getEncryptedID());
-                        } catch (DecryptionException e) {
-                            throw new SamlException("Decryption of nameID's subject failed", e);
+                        if (decrypter == null) {
+                            logger.warn("Encrypted attributes returned, but no keystore was provided.");
+                        } else {
+                            try {
+                                nameID = (NameID) decrypter.decrypt(subject.getEncryptedID());
+                            } catch (DecryptionException e) {
+                                throw new SamlException("Decryption of nameID's subject failed", e);
+                            }
                         }
                     } else {
                         nameID = subject.getNameID();
