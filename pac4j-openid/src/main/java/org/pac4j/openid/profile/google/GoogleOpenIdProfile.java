@@ -22,6 +22,9 @@ import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
 import org.pac4j.openid.profile.OpenIdProfile;
 
 /**
+ * IMPORTANT: Google is removing support for OpenID. OpenID Connect is recommended instead.
+ * https://developers.google.com/+/api/auth-migration
+ * 
  * This class is the user profile for Google using OpenID with appropriate getters.<br />
  * It is returned by the {@link org.pac4j.openid.client.GoogleOpenIdClient}.
  * <p />
@@ -79,6 +82,7 @@ import org.pac4j.openid.profile.OpenIdProfile;
  * @author Stephane Gleizes
  * @since 1.4.1
  */
+@Deprecated
 public class GoogleOpenIdProfile extends OpenIdProfile {
     
     private static final long serialVersionUID = 7866288887408897456L;
