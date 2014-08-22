@@ -34,6 +34,7 @@ import org.opensaml.ws.security.provider.StaticSecurityPolicyResolver;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.signature.SignatureTrustEngine;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.SamlUtils;
@@ -43,7 +44,6 @@ import org.pac4j.saml.util.SamlUtils;
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 @SuppressWarnings("rawtypes")
 public class Saml2WebSSOProfileHandler {
@@ -89,6 +89,9 @@ public class Saml2WebSSOProfileHandler {
         boolean sign = spDescriptor.isAuthnRequestsSigned() || idpssoDescriptor.getWantAuthnRequestsSigned();
 
         if (sign) {
+            if (credentialProvider == null) {
+               throw new TechnicalException("Signing of requests was requested, but keystore with signing credentials not provided");
+            }
             context.setOutboundSAMLMessageSigningCredential(credentialProvider.getCredential());
         }
 
