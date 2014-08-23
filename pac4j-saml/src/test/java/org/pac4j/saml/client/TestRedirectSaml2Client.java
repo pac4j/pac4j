@@ -28,6 +28,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.junit.Test;
 import org.opensaml.common.xml.SAMLConstants;
 import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.RedirectAction;
@@ -40,24 +41,27 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public final class TestRedirectSaml2Client extends TestSaml2Client implements TestsConstants {
 
-	public void testForceAuthIsSetForRedirectBinding() throws Exception {
-		Saml2Client client = (Saml2Client) getClient();
-		client.setForceAuth(true);
-		WebContext context = MockWebContext.create();
-		RedirectAction action = client.getRedirectAction(context, true, false);
-		assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
-	}
+    @Test
+    public void testForceAuthIsSetForRedirectBinding() throws Exception {
+        Saml2Client client = getClient();
+        client.setForceAuth(true);
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
+    }
 
-	public void testSetComparisonTypeWithRedirectBinding() throws Exception {
-		Saml2Client client = (Saml2Client) getClient();
-		client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-		WebContext context = MockWebContext.create();
-		RedirectAction action = client.getRedirectAction(context, true, false);
-		assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
-	}
-	
-	public void testRelayState() throws Exception {
-        Saml2Client client = (Saml2Client) getClient();
+    @Test
+    public void testSetComparisonTypeWithRedirectBinding() throws Exception {
+        Saml2Client client = getClient();
+        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
+    }
+    
+    @Test
+    public void testRelayState() throws Exception {
+        Saml2Client client = getClient();
         WebContext context = MockWebContext.create();
         context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -75,18 +79,18 @@ public final class TestRedirectSaml2Client extends TestSaml2Client implements Te
     }
 
 
-	@Override
-	protected String getCallbackUrl(WebClient webClient, HtmlPage authorizationPage) throws Exception {
-		throw new NotImplementedException("No callback url in SAML2 Redirect Binding");
-	}
+    @Override
+    protected String getCallbackUrl(WebClient webClient, HtmlPage authorizationPage) throws Exception {
+        throw new NotImplementedException("No callback url in SAML2 Redirect Binding");
+    }
 
-	private String getInflatedAuthnRequest(String location) throws Exception {
-		List<NameValuePair> pairs = URLEncodedUtils.parse(URI.create(location), "UTF-8");
-		Inflater inflater = new Inflater(true);
-		byte[] decodedRequest = Base64.decodeBase64(pairs.get(0).getValue());
-		ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
-		InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		return reader.readLine();
-	}
+    private String getInflatedAuthnRequest(String location) throws Exception {
+        List<NameValuePair> pairs = URLEncodedUtils.parse(URI.create(location), "UTF-8");
+        Inflater inflater = new Inflater(true);
+        byte[] decodedRequest = Base64.decodeBase64(pairs.get(0).getValue());
+        ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
+        InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        return reader.readLine();
+    }
 }
