@@ -144,7 +144,7 @@ public class TestLinkedIn2Client extends TestOAuthClient {
         assertNull(position.getEndDate());
         final LinkedIn2Company company = position.getCompany();
         assertEquals("PAC4J", company.getName());
-        assertEquals("Information Technology and Services", company.getIndustry());
+        assertNull(company.getIndustry());
         assertEquals("http://www.linkedin.com/profile/view?id=167439971&amp;authType=name&amp;authToken=_IWF&amp;trk=api*a167383*s175634*",
                      profile.getSiteStandardProfileRequest());
         assertEquals("167439971", profile.getOAuth10Id());
