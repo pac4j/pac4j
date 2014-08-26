@@ -38,6 +38,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.SamlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handler capable of sending and receiving SAML messages according to the SAML2 SSO Browser profile.
@@ -47,6 +49,8 @@ import org.pac4j.saml.util.SamlUtils;
  */
 @SuppressWarnings("rawtypes")
 public class Saml2WebSSOProfileHandler {
+
+    private final static Logger logger = LoggerFactory.getLogger(Saml2WebSSOProfileHandler.class);
 
     private final CredentialProvider credentialProvider;
 
@@ -86,13 +90,10 @@ public class Saml2WebSSOProfileHandler {
             context.setRelayState(relayState);
         }
 
-        boolean sign = spDescriptor.isAuthnRequestsSigned() || idpssoDescriptor.getWantAuthnRequestsSigned();
-
-        if (sign) {
-            if (credentialProvider == null) {
-               throw new TechnicalException("Signing of requests was requested, but keystore with signing credentials not provided");
-            }
+        if (spDescriptor.isAuthnRequestsSigned()) {
             context.setOutboundSAMLMessageSigningCredential(credentialProvider.getCredential());
+        } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
+            logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
         }
 
         try {

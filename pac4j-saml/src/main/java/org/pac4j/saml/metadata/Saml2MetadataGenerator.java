@@ -71,7 +71,7 @@ public class Saml2MetadataGenerator {
 
     protected String singleLogoutServiceUrl;
 
-    protected boolean authnRequestSigned = true;
+    protected boolean authnRequestSigned = false;
 
     protected boolean wantAssertionSigned = true;
 
