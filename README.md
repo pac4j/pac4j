@@ -445,13 +445,9 @@ See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
 
 ## Testing
 
-pac4j is tested by more than 400 unit, bench and integration tests (authentication processes are completely simulated using the [HtmlUnit](http://htmlunit.sourceforge.net/) library).
-
-To launch the tests, the **nr** Maven profile should be used. For example:
-
-    mvn clean install -Pnr
-
-Use the **js** Maven profile for Javadoc and sources generation.
+pac4j is tested by more than 400:
+- unit and bench tests launched by *mvn test*
+- integration tests (authentication processes are fully simulated using the [HtmlUnit](http://htmlunit.sourceforge.net/) library) launched by *mvn verify*.
 
 
 ## Bugs / Features tracking

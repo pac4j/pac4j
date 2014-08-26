@@ -94,16 +94,33 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.7.v20120910</version>
+				<configuration>
+					<stopKey>foo</stopKey>
+					<stopPort>8085</stopPort>
+					<webApp>
+						<contextPath>/cas</contextPath>
+					</webApp>
+				</configuration>
 				<executions>
 					<execution>
+						<id>start</id>
+						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>test-jar</goal>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<scanIntervalSeconds>0</scanIntervalSeconds>
+							<daemon>true</daemon>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -111,84 +128,4 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>js</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>test-jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>test-jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>nr</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.12.4</version>
-						<configuration>
-							<skipTests>false</skipTests>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty-maven-plugin</artifactId>
-						<version>8.1.7.v20120910</version>
-						<configuration>
-							<stopKey>foo</stopKey>
-							<stopPort>8085</stopPort>
-							<webApp>
-								<contextPath>/cas</contextPath>
-							</webApp>
-						</configuration>
-						<executions>
-							<execution>
-								<id>start</id>
-								<phase>test-compile</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<scanIntervalSeconds>0</scanIntervalSeconds>
-									<daemon>true</daemon>
-								</configuration>
-							</execution>
-							<execution>
-								<id>stop</id>
-								<phase>test</phase>
-								<goals>
-									<goal>stop</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
