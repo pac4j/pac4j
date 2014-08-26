@@ -16,17 +16,10 @@
 
 package org.pac4j.saml.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.junit.Test;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
 import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.MockWebContext;
@@ -72,30 +65,6 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
                         + getCallbackUrl() + "\""));
-    }
-
-    @Test
-    public void testIdpMetadataParsing_fromString() throws IOException {
-        Saml2Client client = getClient();
-        InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
-        String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
-        client.setIdpMetadata(metadata);
-        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
-        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
-        XMLObject md = client.getXmlObject(provider);
-        String id = client.getIdpEntityId(md);
-        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
-    }
-
-    @Test
-    public void testIdpMetadataParsing_fromFile() {
-        Saml2Client client = getClient();
-        client.setIdpMetadataPath("resource:testshib-providers.xml");
-        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
-        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
-        XMLObject md = client.getXmlObject(provider);
-        String id = client.getIdpEntityId(md);
-        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
     @Override
