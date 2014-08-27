@@ -41,10 +41,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
 public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConstants {
-    
+
     @Override
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?,?> client, final MockWebContext context)
-            throws Exception {
+    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
+            final MockWebContext context) throws Exception {
         // force immediate redirection for tests
         client.redirect(context, true, false);
         File redirectFile = File.createTempFile("pac4j-saml2", ".html");
@@ -68,6 +68,17 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     }
 
     @Test
+    public void testCustomSpEntityIdForPostBinding() throws Exception {
+        Saml2Client client = getClient();
+        client.setSpEntityId("http://localhost:8080/callback");
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getDecodedAuthnRequest(action.getContent())
+                .contains(
+                        "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+    }
+
+    @Test
     public void testForceAuthIsSetForPostBinding() throws Exception {
         Saml2Client client = (Saml2Client) getClient();
         client.setForceAuth(true);
@@ -84,7 +95,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
-    
+
     @Test
     public void testRelayState() throws RequiresHttpAction {
         Saml2Client client = (Saml2Client) getClient();
@@ -93,15 +104,15 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
-    
+
     @Override
     protected String getCallbackUrl() {
         return "http://localhost:8080/callback?client_name=Saml2Client";
     }
-    
+
     @Override
     protected String getDestinationBindingType() {
-        return SAMLConstants.SAML2_POST_BINDING_URI;  
+        return SAMLConstants.SAML2_POST_BINDING_URI;
     }
 
     @Override

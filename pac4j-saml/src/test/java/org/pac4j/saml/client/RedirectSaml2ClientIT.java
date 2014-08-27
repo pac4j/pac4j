@@ -42,6 +42,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsConstants {
 
     @Test
+    public void testCustomSpEntityIdForRedirectBinding() throws Exception {
+        Saml2Client client = getClient();
+        client.setSpEntityId("http://localhost:8080/callback");
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation())
+                .contains(
+                        "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+    }
+
+    @Test
     public void testForceAuthIsSetForRedirectBinding() throws Exception {
         Saml2Client client = getClient();
         client.setForceAuth(true);
@@ -58,7 +69,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
-    
+
     @Test
     public void testRelayState() throws Exception {
         Saml2Client client = getClient();
@@ -72,12 +83,11 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
     protected String getCallbackUrl() {
         return "http://localhost:8080/callback?client_name=Saml2Client";
     }
-    
+
     @Override
     protected String getDestinationBindingType() {
-        return SAMLConstants.SAML2_REDIRECT_BINDING_URI;  
+        return SAMLConstants.SAML2_REDIRECT_BINDING_URI;
     }
-
 
     @Override
     protected String getCallbackUrl(WebClient webClient, HtmlPage authorizationPage) throws Exception {

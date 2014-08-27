@@ -27,8 +27,8 @@ import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.parse.StaticBasicParserPool;
-import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.ClientIT;
+import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -59,7 +59,19 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         String spMetadata = client.printClientMetadata();
         assertTrue(spMetadata.contains("entityID=\"" + getCallbackUrl() + "\""));
         assertTrue(spMetadata
-                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"" + getCallbackUrl() + "\""));
+                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
+                        + getCallbackUrl() + "\""));
+    }
+
+    @Test
+    public void testCustomSpEntityId() {
+        Saml2Client client = getClient();
+        client.setSpEntityId("http://localhost:8080/callback");
+        String spMetadata = client.printClientMetadata();
+        assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
+        assertTrue(spMetadata
+                .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
+                        + getCallbackUrl() + "\""));
     }
 
     @Test
@@ -135,7 +147,7 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         assertEquals("[Me Myself]", profile.getAttribute("urn:oid:2.5.4.42").toString());
         assertEquals("[And I]", profile.getAttribute("urn:oid:2.5.4.4").toString());
     }
-    
+
     @Override
     protected Saml2Client getClient() {
         final Saml2Client saml2Client = new Saml2Client();
@@ -148,8 +160,8 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         saml2Client.setDestinationBindingType(getDestinationBindingType());
         return saml2Client;
     }
-    
+
     protected abstract String getCallbackUrl();
-    
+
     protected abstract String getDestinationBindingType();
 }
