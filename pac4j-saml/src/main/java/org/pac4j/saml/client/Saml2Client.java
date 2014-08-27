@@ -113,6 +113,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String idpEntityId;
 
+    private String spEntityId;
+
     private Integer maximumAuthenticationLifetime;
 
     private CredentialProvider credentialProvider;
@@ -141,8 +143,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     protected void internalInit() {
 
         CommonHelper.assertTrue(
-            CommonHelper.isNotBlank(this.idpMetadata) || CommonHelper.isNotBlank(this.idpMetadataPath),
-            "Either idpMetadata or idpMetadataPath must be provided");
+                CommonHelper.isNotBlank(this.idpMetadata) || CommonHelper.isNotBlank(this.idpMetadataPath),
+                "Either idpMetadata or idpMetadataPath must be provided");
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         if (!this.callbackUrl.startsWith("http")) {
             throw new TechnicalException("SAML callbackUrl must be absolute");
@@ -150,12 +152,13 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         if (CommonHelper.isNotBlank(this.keystorePath) || CommonHelper.isNotBlank(this.keystorePassword)
                 || CommonHelper.isNotBlank(this.privateKeyPassword)) {
-            CommonHelper.assertNotBlank("keystorePath", this.keystorePath);          
+            CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
             CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
             CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
-          
+
             // load private key from the keystore and provide it as OpenSAML credentials
-            this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword, this.privateKeyPassword);
+            this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword,
+                    this.privateKeyPassword);
             this.decrypter = new EncryptionProvider(this.credentialProvider).buildDecrypter();
         }
 
@@ -178,9 +181,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         final XMLObject md;
         try {
-          md = idpMetadataProvider.getMetadata();
+            md = idpMetadataProvider.getMetadata();
         } catch (MetadataProviderException e) {
-          throw new SamlException("Error initializing idpMetadataProvider", e);
+            throw new SamlException("Error initializing idpMetadataProvider", e);
         }
 
         // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
@@ -191,11 +194,13 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Generate our Service Provider metadata
         Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
         if (this.credentialProvider != null) {
-          metadataGenerator.setCredentialProvider(this.credentialProvider);
+            metadataGenerator.setCredentialProvider(this.credentialProvider);
         }
-        // for the spEntityId, use the callback url
-        String spEntityId = getCallbackUrl();
-        metadataGenerator.setEntityId(spEntityId);
+        // If the spEntityId is blank, use the callback url
+        if (CommonHelper.isBlank(this.spEntityId)) {
+            this.spEntityId = getCallbackUrl();
+        }
+        metadataGenerator.setEntityId(this.spEntityId);
         // Assertion consumer service url is the callback url
         metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
         // for now same for logout url
@@ -222,7 +227,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // Build the contextProvider
-        this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, spEntityId);
+        this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
 
         // Get an AuthnRequest builder
         this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType);
@@ -236,12 +241,13 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
             encoder = new HTTPRedirectDeflateEncoder();
         } else {
-            throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported"); 
+            throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported");
         }
 
         // Do we need binding specific decoder? 
         MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool, destinationBindingType);
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool,
+                destinationBindingType);
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
@@ -263,8 +269,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setIdpMetadata(this.idpMetadata);
         client.setIdpMetadataPath(this.idpMetadataPath);
         client.setIdpEntityId(this.idpEntityId);
+        client.setSpEntityId(this.spEntityId);
         client.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
-        client.setCallbackUrl(this.callbackUrl);
         client.setCallbackUrl(this.callbackUrl);
         client.setDestinationBindingType(this.destinationBindingType);
         client.setComparisonType(this.comparisonType);
@@ -312,7 +318,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return buildSaml2Credentials(context);
 
     }
-    
+
     protected StaticBasicParserPool newStaticBasicParserPool() {
         StaticBasicParserPool parserPool = new StaticBasicParserPool();
         try {
@@ -322,7 +328,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
         return parserPool;
     }
-    
+
     protected AbstractMetadataProvider idpMetadataProvider(ParserPool parserPool) {
         AbstractMetadataProvider idpMetadataProvider;
         try {
@@ -349,13 +355,13 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         } catch (MetadataProviderException e) {
             throw new SamlException("Error initializing idpMetadataProvider", e);
         } catch (XMLParserException e) {
-            throw new TechnicalException("Error parsing idp Metadata", e);          
+            throw new TechnicalException("Error parsing idp Metadata", e);
         } catch (ResourceException e) {
             throw new TechnicalException("Error getting idp Metadata resource", e);
         }
         return idpMetadataProvider;
     }
-    
+
     protected XMLObject getXmlObject(AbstractMetadataProvider idpMetadataProvider) {
         try {
             return idpMetadataProvider.getMetadata();
@@ -363,7 +369,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             throw new SamlException("Error initializing idpMetadataProvider", e);
         }
     }
-    
+
     protected String getIdpEntityId(XMLObject md) {
         if (md instanceof EntitiesDescriptor) {
             for (EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
@@ -386,7 +392,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                 attributes.add(attribute);
             }
             if (attributeStatement.getEncryptedAttributes().size() > 0) {
-              logger.warn("Encrypted attributes returned, but no keystore was provided.");
+                logger.warn("Encrypted attributes returned, but no keystore was provided.");
             }
             for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
                 try {
@@ -439,6 +445,10 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     public void setIdpEntityId(final String idpEntityId) {
         this.idpEntityId = idpEntityId;
+    }
+
+    public void setSpEntityId(String spEntityId) {
+        this.spEntityId = spEntityId;
     }
 
     public void setKeystorePath(final String keystorePath) {
