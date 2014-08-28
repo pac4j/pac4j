@@ -115,7 +115,7 @@
 			<dependency>
 				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-core</artifactId>
-				<version>3.3.1</version>
+				<version>3.3.3</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
@@ -151,8 +151,8 @@
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.5</version>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
 				<scope>provided</scope>
 			</dependency>
             <dependency>
