@@ -195,6 +195,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
         if (this.credentialProvider != null) {
             metadataGenerator.setCredentialProvider(this.credentialProvider);
+            metadataGenerator.setAuthnRequestSigned(true);
         }
         // If the spEntityId is blank, use the callback url
         if (CommonHelper.isBlank(this.spEntityId)) {
