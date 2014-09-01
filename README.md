@@ -12,7 +12,7 @@
     - [pac4j-http](#pac4j-http)
     - [pac4j-openid](#pac4j-openid)    
     - [pac4j-saml](#pac4j-saml)
-	- [pac4j-gae](#pac4j-gae)
+    - [pac4j-gae](#pac4j-gae)
     - [pac4j-test-cas](#pac4j-test-cas)
 - [Providers supported](#providers-supported)
 - [Code sample](#code-sample)
@@ -49,14 +49,15 @@ It has a **very simple and unified API** to support these 6 authentication mecha
 5. SAML (2.0) (*still experimental*)
 6. GAE UserService
 
-There are 6 libraries implementing **pac4j** for the following environments:
+There are 7 libraries implementing **pac4j** for the following environments:
 
 1. the CAS server (using the *cas-server-support-pac4j* library)
 2. the Play 2.x framework (using the *play-pac4j_java* and *play-pac4j_scala* libraries)
 3. any basic J2E environment (using the *j2e-pac4j* library)
 4. the Apache Shiro library (using the *buji-pac4j* library)
 5. the Spring Security library (using the *spring-security-pac4j* library)
-6. the Ratpack JVM toolkit (using the *ratpack-pac4j* module).
+6. the Ratpack JVM toolkit (using the *ratpack-pac4j* module)
+7. the Vertx framework (using the *vertx-pac4j* module).
 
 It's available under the Apache 2 license.
 
@@ -190,7 +191,7 @@ For example:
     <dependency>
       <groupId>org.pac4j</groupId>
       <artifactId>pac4j-oauth</artifactId>
-      <version>1.5.0</version>
+      <version>1.5.1</version>
     </dependency>
 
 As the pac4j snapshots libraries are stored in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/), this repository may need be added in the Maven *pom.xml* file:
@@ -420,28 +421,27 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
-<tr><td>cas-server-support-pac4j 4.0.0-RC4</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
-<tr><td>cas-server-support-oauth 3.5.2</td><td>OAuth</td><td>scribe-up 1.2.0</td><td><a href="https://github.com/leleuj/cas-oauth-demo-3.5.x">cas-oauth-demo-3.5.x</a></td></tr>
-<tr><td>play-pac4j 1.2.0 / 1.1.2</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.0</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>j2e-pac4j 1.0.2</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
-<tr><td>buji-pac4j 1.2.2</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-pac4j 1.2.2</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.0</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
-<tr><td>ratpack 0.9.3</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
+<tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
+<tr><td>play-pac4j 1.2.1 / 1.1.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
+<tr><td>j2e-pac4j 1.0.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
+<tr><td>buji-pac4j 1.2.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
+<tr><td>spring-security-pac4j 1.2.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
+<tr><td>ratpack 0.9.7</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
 </table>
 
 
 ## Versions
 
-The current version **1.5.1-SNAPSHOT** is under development.  
+The current version **1.6.0-SNAPSHOT** is under development.  
 The build is done on Travis: [https://travis-ci.org/leleuj/pac4j](https://travis-ci.org/leleuj/pac4j).   
 The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
-The last released version is the **1.5.0**:
+The last released version is the **1.5.1**:
 
     <dependency>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-core</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1</version>
     </dependency>
 
 See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
