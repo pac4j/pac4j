@@ -24,8 +24,10 @@ import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Audience;
 import org.opensaml.saml2.core.AudienceRestriction;
 import org.opensaml.saml2.core.AuthnStatement;
+import org.opensaml.saml2.core.BaseID;
 import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml2.core.EncryptedID;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.NameIDType;
@@ -167,8 +169,11 @@ public class Saml2ResponseValidator {
         if (context.getSubjectAssertion() == null) {
             throw new SamlException("No valid subject assertion found in response");
         }
-        if (context.getSubjectNameIdentifier() == null) {
-            throw new SamlException("Subject NameID cannot be null");
+
+        // We do not check EncryptedID here because it has been already decrypted and stored into NameID
+        List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
+        if ((context.getSubjectNameIdentifier() == null) && (context.getBaseID() == null) && ((subjectConfirmations == null)  || (subjectConfirmations.size() == 0))) {
+            throw new SamlException("Subject NameID, BaseID and EncryptedID cannot be both null at the same time if there are no Subject Confirmations.");
         }
     }
 
@@ -245,43 +250,104 @@ public class Saml2ResponseValidator {
     }
 
     /**
-     * Validate the given subject by finding a valid Bearer confirmation. If the subject is valid,
-     * put its nameID in the context.
+     * Validate the given subject by finding a valid Bearer confirmation. If the subject is valid, put its nameID in the context.
+     * 
+     * NameID / BaseID / EncryptedID is first looked up directly in the Subject. If not present there, then all relevant
+     * SubjectConfirmations are parsed and the IDs are taken from them.
      * 
      * @param subject
+     *            The Subject from an assertion.
      * @param context
+     *            SAML message context.
      * @param decrypter
+     *            Decrypter used to decrypt some encrypted IDs, if they are present. May be {@code null}, no decryption will be possible
+     *            then.
      */
     @SuppressWarnings("unchecked")
-    protected void validateSubject(final Subject subject, final ExtendedSAMLMessageContext context,
-            final Decrypter decrypter) {
+    protected void validateSubject(final Subject subject, final ExtendedSAMLMessageContext context, final Decrypter decrypter) {
+        boolean satisfied = false;
 
-        for (SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
-            if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
-                if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
-                    NameID nameID = null;
-                    if (subject.getEncryptedID() != null) {
-                        if (decrypter == null) {
-                            logger.warn("Encrypted attributes returned, but no keystore was provided.");
-                        } else {
-                            try {
-                                nameID = (NameID) decrypter.decrypt(subject.getEncryptedID());
-                            } catch (DecryptionException e) {
-                                throw new SamlException("Decryption of nameID's subject failed", e);
-                            }
-                        }
-                    } else {
-                        nameID = subject.getNameID();
-                    }
-                    context.setSubjectNameIdentifier(nameID);
-                    return;
-                }
-            }
+        // Read NameID/BaseID/EncryptedID from the subject. If not present directly in the subject, try to find it in subject confirmations.
+        NameID nameIdFromSubject = subject.getNameID();
+        final BaseID baseIdFromSubject = subject.getBaseID();
+        final EncryptedID encryptedIdFromSubject = subject.getEncryptedID();
+        
+        // Encrypted ID can overwrite the non-encrypted one, if present
+        final NameID decryptedNameIdFromSubject = decryptEncryptedId(encryptedIdFromSubject, decrypter);
+        if (decryptedNameIdFromSubject != null) {
+            nameIdFromSubject = decryptedNameIdFromSubject;
         }
 
-        throw new SamlException("Subject confirmation validation failed");
+        // If we have a Name ID or a Base ID, we are fine :-)
+        // If we don't have anything, let's go through all subject confirmations and get the IDs from them. At least one should be present but we don't care at this point.
+        if ((nameIdFromSubject != null) || (baseIdFromSubject != null)) {
+            context.setSubjectNameIdentifier(nameIdFromSubject);
+            context.setBaseID(baseIdFromSubject);
+            satisfied = true;
+        } else {
+            for (SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
+                if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
+                    if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
+                        // Always store the confirmation, no matter if it contains an ID or not
+                        context.getSubjectConfirmations().add(confirmation);
+                        
+                        NameID nameIDFromConfirmation = confirmation.getNameID();
+                        final BaseID baseIDFromConfirmation = confirmation.getBaseID();
+                        final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
+
+                        // Encrypted ID can overwrite the non-encrypted one, if present
+                        final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation, decrypter);
+                        if (decryptedNameIdFromConfirmation != null) {
+                            nameIDFromConfirmation = decryptedNameIdFromConfirmation;
+                        }
+                        
+                        if ((nameIDFromConfirmation != null) || (baseIDFromConfirmation != null)) {
+                            context.setSubjectNameIdentifier(nameIDFromConfirmation);
+                            context.setBaseID(baseIDFromConfirmation);
+                            satisfied = true;
+                        }
+                    }
+                }
+            } // for
+        } // else
+        
+        if (!satisfied) {
+            logger.warn("Could not find any Subject NameID/BaseID/EnryptedID, neither directly in the Subject nor in any Subject Confirmation. However, this may still be a valid assertion.");
+        }
     }
 
+    
+    /**
+     * Decrypts an EncryptedID, using a decrypter.
+     * 
+     * @param encryptedId
+     *            The EncryptedID to be decrypted.
+     * @param decrypter
+     *            The decrypter to use.
+     * 
+     * @return Decrypted ID or {@code null} if any input is {@code null}.
+     * 
+     * @throws SamlException
+     *             If the input ID cannot be decrypted.
+     */
+    private NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SamlException {
+        if (encryptedId == null) {
+            return null;
+        }
+        if (decrypter == null) {
+            logger.warn("Encrypted attributes returned, but no keystore was provided.");
+            return null;
+        }
+
+        try {
+            NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
+            return decryptedId;
+        } catch (DecryptionException e) {
+            throw new SamlException("Decryption of an EncryptedID failed.", e);
+        }
+    }
+    
+    
     /**
      * Validate Bearer subject confirmation data
      *  - notBefore

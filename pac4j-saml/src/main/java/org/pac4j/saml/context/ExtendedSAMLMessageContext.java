@@ -16,8 +16,13 @@
 
 package org.pac4j.saml.context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.BaseID;
+import org.opensaml.saml2.core.SubjectConfirmation;
 
 /**
  * Allow to store additional information for SAML processing.
@@ -37,6 +42,13 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     /* endpoint location */
     private String assertionConsumerUrl;
 
+    /** BaseID retrieved either from the Subject or from a SubjectConfirmation */
+    private BaseID baseID;
+    
+    /** SubjectConfirmations used during assertion evaluation. */
+    private List<SubjectConfirmation> subjectConfirmations = new ArrayList<SubjectConfirmation>();
+    
+    
     public Assertion getSubjectAssertion() {
         return this.subjectAssertion;
     }
@@ -60,4 +72,21 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     public void setAssertionConsumerUrl(final String assertionConsumerUrl) {
         this.assertionConsumerUrl = assertionConsumerUrl;
     }
+    
+    public BaseID getBaseID() {
+        return baseID;
+    }
+    
+    public void setBaseID(BaseID baseID) {
+        this.baseID = baseID;
+    }
+
+    public List<SubjectConfirmation> getSubjectConfirmations() {
+        return subjectConfirmations;
+    }
+    
+    public void setSubjectConfirmations(List<SubjectConfirmation> subjectConfirmations) {
+        this.subjectConfirmations = subjectConfirmations;
+    }
+    
 }
