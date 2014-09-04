@@ -22,7 +22,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import static junit.framework.Assert.assertEquals;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
@@ -36,6 +35,7 @@ import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
  */
 public class BitbucketClientIT extends OAuthClientIT {
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
         BitbucketClient client = new BitbucketClient();

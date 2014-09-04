@@ -83,34 +83,31 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
-public class BitbucketProfile extends OAuth10Profile
-{
-
-  @Override
-  protected AttributesDefinition getAttributesDefinition()
-  {
-    return OAuthAttributesDefinitions.bitbucketDefinition;
-  }
-
-  @Override
-  public String getFamilyName()
-  {
-    return (String) getAttribute(BitbucketAttributesDefinition.LAST_NAME);
-  }
-
-  @Override
-  public String getPictureUrl()
-  {
-    return (String) getAttribute(BitbucketAttributesDefinition.AVATAR);
-  }
-
-  @Override
-  public String getProfileUrl()
-  {
-    return (String) getAttribute(BitbucketAttributesDefinition.RESOURCE_URI);
-  }
-  
-  public boolean isTeam(){
-    return (Boolean) getAttribute(BitbucketAttributesDefinition.IS_TEAM);
-  }
+public class BitbucketProfile extends OAuth10Profile {
+    
+    private static final long serialVersionUID = -8943779913358140436L;
+    
+    @Override
+    protected AttributesDefinition getAttributesDefinition() {
+        return OAuthAttributesDefinitions.bitbucketDefinition;
+    }
+    
+    @Override
+    public String getFamilyName() {
+        return (String) getAttribute(BitbucketAttributesDefinition.LAST_NAME);
+    }
+    
+    @Override
+    public String getPictureUrl() {
+        return (String) getAttribute(BitbucketAttributesDefinition.AVATAR);
+    }
+    
+    @Override
+    public String getProfileUrl() {
+        return (String) getAttribute(BitbucketAttributesDefinition.RESOURCE_URI);
+    }
+    
+    public boolean isTeam() {
+        return (Boolean) getAttribute(BitbucketAttributesDefinition.IS_TEAM);
+    }
 }

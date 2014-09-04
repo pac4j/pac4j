@@ -57,7 +57,7 @@ public class GoogleOpenIdClientIT extends ClientIT implements TestsConstants {
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup78");
+        passwd.setValueAttribute("testpwdscribeup89");
         final HtmlSubmitInput submit = form.getInputByName("signIn");
 
         final HtmlPage callbackPage = submit.click();

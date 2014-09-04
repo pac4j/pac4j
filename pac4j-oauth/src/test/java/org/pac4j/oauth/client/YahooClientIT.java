@@ -56,8 +56,8 @@ public class YahooClientIT extends OAuthClientIT {
     protected Client getClient() {
         final YahooClient yahooClient = new YahooClient();
         yahooClient
-            .setKey("dj0yJmk9QUlLcTVINlBpdm5VJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PTJm");
-        yahooClient.setSecret("95220809156c027c0a10c959a04b099da5510b66");
+            .setKey("dj0yJmk9WW1GSjhIRVJPWmNQJmQ9WVdrOVYwNHdkbnBWTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD04NA--");
+        yahooClient.setSecret("2ded0eeec9c8f10d47ab1ad9d99d91b9c91d0290");
         yahooClient.setCallbackUrl(PAC4J_BASE_URL);
         return yahooClient;
     }

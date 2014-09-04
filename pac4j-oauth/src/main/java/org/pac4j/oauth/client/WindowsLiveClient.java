@@ -19,7 +19,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
-import org.scribe.builder.api.LiveApi;
+import org.scribe.builder.api.WindowsLiveApi;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
@@ -56,7 +56,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     @Override
     protected void internalInit() {
         super.internalInit();
-        this.service = new ProxyOAuth20ServiceImpl(new LiveApi(), new OAuthConfig(this.key, this.secret,
+        this.service = new ProxyOAuth20ServiceImpl(new WindowsLiveApi(), new OAuthConfig(this.key, this.secret,
                                                                                   this.callbackUrl,
                                                                                   SignatureType.Header, "wl.basic",
                                                                                   null), this.connectTimeout,

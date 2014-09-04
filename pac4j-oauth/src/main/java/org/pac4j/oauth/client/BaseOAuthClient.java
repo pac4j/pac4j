@@ -216,7 +216,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @param accessToken only used when constructing dynamic urls from data in the token
      * @return the url of the user profile given by the provider
      */
-    @SuppressWarnings("unused")
     protected abstract String getProfileUrl(final Token accessToken);
 
     /**
