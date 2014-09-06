@@ -12,7 +12,8 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */package org.pac4j.http.credentials;
+ */
+package org.pac4j.http.credentials;
 
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
@@ -35,8 +36,13 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
         }
         String username = credentials.getUsername();
         String password = credentials.getPassword();
-        if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)
-            && CommonHelper.areNotEquals(username, password)) {
+        if (CommonHelper.isBlank(username)) {
+            throwsException("Username cannot be blank");
+        }
+        if (CommonHelper.isBlank(password)) {
+            throwsException("Password cannot be blank");
+        }
+        if (CommonHelper.areNotEquals(username, password)) {
             throwsException("Username : '" + username + "' does not match password");
         }
     }
