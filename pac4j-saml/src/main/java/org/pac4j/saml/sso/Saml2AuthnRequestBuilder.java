@@ -24,10 +24,14 @@ import org.opensaml.common.SAMLObjectBuilder;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.binding.SAMLMessageContext;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml2.core.impl.AuthnContextClassRefBuilder;
+import org.opensaml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;
@@ -45,97 +49,118 @@ import org.pac4j.saml.util.SamlUtils;
 @SuppressWarnings("rawtypes")
 public class Saml2AuthnRequestBuilder {
 
-    private boolean forceAuth;
+	private boolean forceAuth;
 
-    private AuthnContextComparisonTypeEnumeration comparisonType;
+	private AuthnContextComparisonTypeEnumeration comparisonType;
 
-    private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+	private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
-    /**
-     * Default constructor
-     */
-    public Saml2AuthnRequestBuilder() {
-    }
+	private String authnContextClassRef = null;
 
-    /**
-     * @param forceAuth
-     * @param comparisonType
-     * @param bindingType
-     */
-    public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType) {
-        this.forceAuth = forceAuth;
-        this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
-        this.bindingType = bindingType;
-    }
+	private String nameIdPolicyFormat = null;
 
-    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+	/**
+	 * Default constructor
+	 */
+	public Saml2AuthnRequestBuilder() {
+	}
 
-    public AuthnRequest build(final SAMLMessageContext context) {
+	/**
+	 * @param forceAuth
+	 * @param comparisonType
+	 * @param bindingType
+	 * @param authnContextClassRef
+	 * @param nameIdPolicyFormat
+	 */
+	public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType, 
+			String authnContextClassRef, String nameIdPolicyFormat) {
+		this.forceAuth = forceAuth;
+		this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
+		this.bindingType = bindingType;
+		this.authnContextClassRef = authnContextClassRef;
+		this.nameIdPolicyFormat = nameIdPolicyFormat;
+	}
 
-        SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
-        IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
+	private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, bindingType);
-        AssertionConsumerService assertionConsumerService = SamlUtils.getAssertionConsumerService(spDescriptor, null);
+	public AuthnRequest build(final SAMLMessageContext context) {
 
-        return buildAuthnRequest(context, assertionConsumerService, ssoService);
-    }
+		SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
+		IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
 
-    @SuppressWarnings("unchecked")
-    protected AuthnRequest buildAuthnRequest(final SAMLMessageContext context,
-            final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
+		SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, bindingType);
+		AssertionConsumerService assertionConsumerService = SamlUtils.getAssertionConsumerService(spDescriptor, null);
 
-        SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
-                .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
-        AuthnRequest request = builder.buildObject();
+		return buildAuthnRequest(context, assertionConsumerService, ssoService);
+	}
 
-        if (comparisonType != null) {
-            RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
-            authnContext.setComparison(comparisonType);
-            request.setRequestedAuthnContext(authnContext);
-        }
+	@SuppressWarnings("unchecked")
+	protected AuthnRequest buildAuthnRequest(final SAMLMessageContext context, 
+			final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
-        request.setID(generateID());
-        request.setIssuer(getIssuer(context.getLocalEntityId()));
-        request.setIssueInstant(new DateTime());
-        request.setVersion(SAMLVersion.VERSION_20);
-        request.setIsPassive(false);
-        request.setForceAuthn(this.forceAuth);
-        request.setProviderName("pac4j-saml");
+		SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
+				.getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
+		AuthnRequest request = builder.buildObject();
+		if (comparisonType != null) {
+			RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
+			authnContext.setComparison(comparisonType);
 
-        request.setDestination(ssoService.getLocation());
-        request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
-        request.setProtocolBinding(assertionConsumerService.getBinding());
+			if (authnContextClassRef != null) {
+				AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
+				classRef.setAuthnContextClassRef(authnContextClassRef);
+				authnContext.getAuthnContextClassRefs().add(classRef);
+			}
+			request.setRequestedAuthnContext(authnContext);
+		}
 
-        return request;
+		request.setID(generateID());
+		request.setIssuer(getIssuer(context.getLocalEntityId()));
+		request.setIssueInstant(new DateTime());
+		request.setVersion(SAMLVersion.VERSION_20);
+		request.setIsPassive(false);
+		request.setForceAuthn(this.forceAuth);
+		request.setProviderName("pac4j-saml");
 
-    }
+		if (nameIdPolicyFormat != null) {
+			NameIDPolicy nameIdPolicy = new NameIDPolicyBuilder().buildObject();
+			nameIdPolicy.setAllowCreate(true);
+			nameIdPolicy.setFormat(nameIdPolicyFormat);
+			request.setNameIDPolicy(nameIdPolicy);
+		}
 
-    @SuppressWarnings("unchecked")
-    protected Issuer getIssuer(final String spEntityId) {
-        SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
-                .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
-        Issuer issuer = issuerBuilder.buildObject();
-        issuer.setValue(spEntityId);
-        return issuer;
-    }
+		request.setDestination(ssoService.getLocation());
+		request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
+		request.setProtocolBinding(assertionConsumerService.getBinding());
 
-    protected String generateID() {
-        Random r = new Random();
-        return '_' + Long.toString(Math.abs(r.nextLong()), 16) + Long.toString(Math.abs(r.nextLong()), 16);
-    }
+		return request;
 
-    protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
-        if ("exact".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.EXACT;
-        } else if ("minimum".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.MINIMUM;
-        } else if ("maximum".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.MAXIMUM;
-        } else if ("better".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.BETTER;
-        } else {
-            return null;
-        }
-    }
+	}
+
+	@SuppressWarnings("unchecked")
+	protected Issuer getIssuer(final String spEntityId) {
+		SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
+				.getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
+		Issuer issuer = issuerBuilder.buildObject();
+		issuer.setValue(spEntityId);
+		return issuer;
+	}
+
+	protected String generateID() {
+		Random r = new Random();
+		return '_' + Long.toString(Math.abs(r.nextLong()), 16) + Long.toString(Math.abs(r.nextLong()), 16);
+	}
+
+	protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
+		if ("exact".equals(comparisonType)) {
+			return AuthnContextComparisonTypeEnumeration.EXACT;
+		} else if ("minimum".equals(comparisonType)) {
+			return AuthnContextComparisonTypeEnumeration.MINIMUM;
+		} else if ("maximum".equals(comparisonType)) {
+			return AuthnContextComparisonTypeEnumeration.MAXIMUM;
+		} else if ("better".equals(comparisonType)) {
+			return AuthnContextComparisonTypeEnumeration.BETTER;
+		} else {
+			return null;
+		}
+	}
 }
