@@ -54,39 +54,39 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testForceAuthIsSetForRedirectBinding() throws Exception {
-    	Saml2Client client = getClient();
-    	client.setForceAuth(true);
-    	WebContext context = MockWebContext.create();
-    	RedirectAction action = client.getRedirectAction(context, true, false);
-    	assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
+        Saml2Client client = getClient();
+        client.setForceAuth(true);
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
     }
-    
+
     @Test
     public void testSetComparisonTypeWithRedirectBinding() throws Exception {
-    	Saml2Client client = getClient();
-    	client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-    	WebContext context = MockWebContext.create();
-    	RedirectAction action = client.getRedirectAction(context, true, false);
-    	assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
+        Saml2Client client = getClient();
+        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
-    
+
     @Test
     public void testNameIdPolicyFormat() throws Exception{
-    	Saml2Client client = getClient();
-    	client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
-    	WebContext context = MockWebContext.create();
-    	RedirectAction action = client.getRedirectAction(context, true, false);
-    	assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
+        Saml2Client client = getClient();
+        client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
     }
-    
+
     @Test
     public void testAuthnContextClassRef() throws Exception {
-    	Saml2Client client = getClient();
-    	client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-    	client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
-    	WebContext context = MockWebContext.create();
-    	RedirectAction action = client.getRedirectAction(context, true, false);
-    	assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>"));
+        Saml2Client client = getClient();
+        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
+        WebContext context = MockWebContext.create();
+        RedirectAction action = client.getRedirectAction(context, true, false);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>"));
     }
 
     @Test

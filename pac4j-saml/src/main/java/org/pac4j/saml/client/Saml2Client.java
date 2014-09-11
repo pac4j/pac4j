@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web 
+ * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
  * Browser SSO profile with HTTP-POST binding. (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
  * 
  * @author Michael Remond
@@ -161,7 +161,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
 
             // load private key from the keystore and provide it as OpenSAML credentials
-            this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword, 
+            this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword,
                     this.privateKeyPassword);
             this.decrypter = new EncryptionProvider(this.credentialProvider).buildDecrypter();
         }
@@ -252,7 +252,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         // Do we need binding specific decoder?
         MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool, 
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool,
                 destinationBindingType);
 
         // Build provider for digital signature validation and encryption
