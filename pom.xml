@@ -27,7 +27,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>1.6.0-SNAPSHOT</version>
+	<version>1.6.0-RC2-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/leleuj/pac4j</url>
 
@@ -52,6 +52,17 @@
 			<email>leleuj@gmail.com</email>
 		</developer>
 	</developers>
+
+	<repositories>
+		<repository>
+			<id>scribe-java-mvn-repo</id>
+			<url>https://raw.github.com/fernandezpablo85/scribe-java/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<modules>
 		<module>pac4j-core</module>
@@ -105,7 +116,7 @@
 			<dependency>
 				<groupId>org.scribe</groupId>
 				<artifactId>scribe</artifactId>
-				<version>1.3.5</version>
+				<version>1.3.6</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -160,6 +171,11 @@
                 <artifactId>kryo</artifactId>
                 <version>1.04</version>
             </dependency>
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.4.01</version>
+            </dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
@@ -177,6 +193,16 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.3.5</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sourceforge.nekohtml</groupId>
+				<artifactId>nekohtml</artifactId>
+				<version>1.9.21</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.htmlunit</groupId>
@@ -239,6 +265,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<skipTests>${skipTests}</skipTests>
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>
@@ -249,33 +276,19 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.5</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.3</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
-							<goal>test-jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -283,13 +296,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
-							<goal>test-jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -297,6 +308,21 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>

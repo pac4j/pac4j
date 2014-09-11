@@ -1,6 +1,6 @@
 language: java
 
-script: "mvn deploy -DskipITs -Pjs --settings travis/settings.xml"
+script: "mvn deploy -DskipITs --settings travis/settings.xml"
 
 jdk:
   - oraclejdk7

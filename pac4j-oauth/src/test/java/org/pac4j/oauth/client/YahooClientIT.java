@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -48,7 +47,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-@Ignore
 public class YahooClientIT extends OAuthClientIT {
     
     @SuppressWarnings("rawtypes")
@@ -56,8 +54,8 @@ public class YahooClientIT extends OAuthClientIT {
     protected Client getClient() {
         final YahooClient yahooClient = new YahooClient();
         yahooClient
-            .setKey("dj0yJmk9QUlLcTVINlBpdm5VJmQ9WVdrOVUxaE5Za3R0TmpJbWNHbzlOVEUyTmpFME1EWXkmcz1jb25zdW1lcnNlY3JldCZ4PTJm");
-        yahooClient.setSecret("95220809156c027c0a10c959a04b099da5510b66");
+            .setKey("dj0yJmk9djFiREdkbHc0dWdMJmQ9WVdrOVYwNHdkbnBWTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD03MQ--");
+        yahooClient.setSecret("227eb8180d8212181a3856969a83e93fa14f1116");
         yahooClient.setCallbackUrl(PAC4J_BASE_URL);
         return yahooClient;
     }
@@ -118,7 +116,7 @@ public class YahooClientIT extends OAuthClientIT {
         assertEquals(1976, profile.getBirthYear().intValue());
         assertEquals("03/10", profile.getBirthdate().toString());
         assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
-        assertEquals(37, profile.getDisplayAge().intValue());
+        assertEquals(38, profile.getDisplayAge().intValue());
         final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
         final YahooDisclosure disclosure = disclosures.get(0);
@@ -147,8 +145,8 @@ public class YahooClientIT extends OAuthClientIT {
         assertTrue(profile.getIsConnected());
         assertEquals("2012-02-06T12:46:36Z", profile.getMemberSince().toString());
         assertEquals("Europe/Paris", profile.getTimeZone());
-        assertEquals("2012-03-05T14:26:25Z", profile.getUpdated().toString());
-        assertEquals("http://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
+        assertEquals("2014-04-21T14:04:30Z", profile.getUpdated().toString());
+        assertEquals("https://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
         assertNotNull(profile.getAccessSecret());
         assertEquals(24, profile.getAttributes().size());
     }

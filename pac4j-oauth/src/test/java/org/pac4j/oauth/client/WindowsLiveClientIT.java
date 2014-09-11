@@ -59,7 +59,7 @@ public class WindowsLiveClientIT extends OAuthClientIT {
         final HtmlTextInput login = authorizationPage.getElementByName("login");
         login.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput password = authorizationPage.getElementByName("passwd");
-        password.setValueAttribute("testpwdscribeup");
+        password.setValueAttribute("testpwdscribe12");
         final HtmlSubmitInput submit = authorizationPage.getElementByName("SI");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();

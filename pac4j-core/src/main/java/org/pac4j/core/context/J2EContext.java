@@ -60,7 +60,6 @@ public class J2EContext implements WebContext {
      *
      * @return all request parameters
      */
-    @SuppressWarnings("unchecked")
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }

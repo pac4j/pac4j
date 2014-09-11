@@ -124,6 +124,7 @@ public final class Clients extends InitializableObject {
      * @param clazz
      * @return the right client
      */
+    @SuppressWarnings("unchecked")
     public <C extends Client> C findClient(final Class<C> clazz) {
         init();
         if (clazz != null) {

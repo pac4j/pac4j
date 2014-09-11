@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-RC2-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
@@ -36,14 +36,6 @@
             <groupId>xml-security</groupId>
             <artifactId>xmlsec</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -59,11 +51,6 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
