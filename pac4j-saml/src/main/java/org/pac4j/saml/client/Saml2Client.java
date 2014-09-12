@@ -304,7 +304,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     @Override
-    protected Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
+    public Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
 
         ExtendedSAMLMessageContext context = this.contextProvider.buildSpContext(wc);
         // assertion consumer url is pac4j callback url
