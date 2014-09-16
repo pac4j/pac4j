@@ -10,7 +10,7 @@
     - [pac4j-oauth](#pac4j-oauth)
     - [pac4j-cas](#pac4j-cas)
     - [pac4j-http](#pac4j-http)
-    - [pac4j-openid](#pac4j-openid)    
+    - [pac4j-openid](#pac4j-openid)
     - [pac4j-saml](#pac4j-saml)
     - [pac4j-gae](#pac4j-gae)
     - [pac4j-test-cas](#pac4j-test-cas)
@@ -32,7 +32,7 @@
 - [Contact](#contact)
 
 
-## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j) 
+## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j)
 
 **pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the authentication mechanisms supporting the following flow:
 
@@ -40,7 +40,7 @@
 2. After successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials
 3. With these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").
 
-It has a **very simple and unified API** to support these 6 authentication mechanisms on client side: 
+It has a **very simple and unified API** to support these 6 authentication mechanisms on client side:
 
 1. OAuth (1.0 & 2.0)
 2. CAS (1.0, 2.0, SAML, logout & proxy)
@@ -172,6 +172,7 @@ This module is based on the **pac4j-core** module and the [Google App Engine API
 <tr><td>Vk</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>VkClient</td><td>VkProfile</td></tr>
 <tr><td>Foursquare</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>FoursquareClient</td><td>FoursquareProfile</td></tr>
 <tr><td>Bitbucket</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>BitbucketClient</td><td>BitbucketProfile</td></tr>
+<tr><td>ORCiD</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>OrcidClient</td><td>OrcidClient</td></tr>
 <tr><td>Web sites with basic auth authentication</td><td>HTTP</td><td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
 <tr><td>Web sites with form authentication</td><td>HTTP</td><td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
 <tr><td>Google - Deprecated</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
@@ -309,7 +310,7 @@ For integrating an application with a SAML2 Identity Provider server, you should
 
     //Generate a keystore for all signature and encryption stuff:
     keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
-    
+
     // declare the client
     Saml2Client client = new Saml2Client();
     // configure keystore
@@ -325,7 +326,7 @@ For integrating an application with a SAML2 Identity Provider server, you should
 
     // generate pac4j SAML2 Service Provider metadata to import on Identity Provider side
     String spMetadata = client.printClientMetadata();
-    
+
     // send the user to the Identity Provider server for authentication
     WebContext context = new J2EContext(request, response);
     client.redirect(context, false, false);
@@ -340,7 +341,7 @@ For integrating an application with a SAML2 Identity Provider server, you should
 #### Additional configuration:
 
 Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate you a new assertion. By default, the SAML pac4j client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the maximumAuthenticationLifetime parameter:
-    
+
     // Lifetime in seconds
     client.setMaximumAuthenticationLifetime(600);
 
@@ -433,7 +434,7 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 ## Versions
 
 The current version **1.6.0-SNAPSHOT** is under development.  
-The build is done on Travis: [https://travis-ci.org/leleuj/pac4j](https://travis-ci.org/leleuj/pac4j).   
+The build is done on Travis: [https://travis-ci.org/leleuj/pac4j](https://travis-ci.org/leleuj/pac4j).
 The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
 The last released version is the **1.5.1**:
@@ -465,4 +466,3 @@ Bugs and new features can now be tracked using [JIRA](https://pac4jos.atlassian.
 If you have any question, please use the following mailing lists:
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
 - [pac4j developers](https://groups.google.com/forum/?hl=en#!forum/pac4j-dev)
-

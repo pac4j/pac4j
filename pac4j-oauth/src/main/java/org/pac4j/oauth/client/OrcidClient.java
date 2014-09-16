@@ -38,7 +38,7 @@ import org.scribe.tokens.OrcidToken;
  *
  * @see org.pac4j.oauth.profile.orcid.OrcidProfile
  * @author Jens Tinglev
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
 

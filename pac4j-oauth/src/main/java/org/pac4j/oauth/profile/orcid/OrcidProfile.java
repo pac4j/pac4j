@@ -67,7 +67,7 @@ import java.util.Locale;
  *
  * @see org.pac4j.oauth.client.OrcidClient
  * @author Jens Tinglev
- * @since 1.5.0
+ * @since 1.6.0
  */
 
 public class OrcidProfile extends OAuth20Profile {

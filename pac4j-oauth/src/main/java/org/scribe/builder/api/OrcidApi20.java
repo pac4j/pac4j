@@ -25,7 +25,7 @@ import org.scribe.utils.OAuthEncoder;
  * This class represents the OAuth API implementation for ORCiD using OAuth protocol version 2.
  *
  * @author Jens Tinglev
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class OrcidApi20 extends DefaultApi20 {
 

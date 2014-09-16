@@ -21,7 +21,7 @@ import org.scribe.model.Token;
  * This class represents a specific Token for ORCiD using OAuth protocol version 2. It could be part of the Scribe library.
  *
  * @author Jens Tinglev
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class OrcidToken extends Token {
 

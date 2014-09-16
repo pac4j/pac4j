@@ -22,7 +22,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * This class defines the attributes of the {@link OrcidProfile}.
  *
  * @author Jens Tinglev
- * @since 1.5.0
+ * @since 1.6.0
  */
 public class OrcidAttributesDefinition extends OAuthAttributesDefinition {
 
