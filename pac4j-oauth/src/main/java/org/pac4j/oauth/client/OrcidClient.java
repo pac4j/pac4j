@@ -76,8 +76,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     @Override
     protected String getProfileUrl(final Token accessToken) {
         if (accessToken instanceof OrcidToken) {
-            // TODO: Change to production urls
-            return String.format("https://api.sandbox.orcid.org/v1.1/%s/orcid-profile",
+            return String.format("https://api.orcid.org/v1.1/%s/orcid-profile",
                     ((OrcidToken) accessToken).getOrcid());
         } else {
             throw new OAuthException("Token in getProfileUrl is not an OrcidToken");

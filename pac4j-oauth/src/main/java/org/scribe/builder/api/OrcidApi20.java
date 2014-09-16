@@ -29,9 +29,8 @@ import org.scribe.utils.OAuthEncoder;
  */
 public class OrcidApi20 extends DefaultApi20 {
 
-    // TODO: Change this production server URLs
-    private static final String AUTH_URL = "http://sandbox.orcid.org/oauth/authorize/";
-    private static final String TOKEN_URL = "https://api.sandbox.orcid.org/oauth/token";
+    private static final String AUTH_URL = "http://www.orcid.org/oauth/authorize/";
+    private static final String TOKEN_URL = "https://api.orcid.org/oauth/token";
 
     @Override
     public String getAccessTokenEndpoint() {
