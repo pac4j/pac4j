@@ -15,7 +15,9 @@
  */
 package org.pac4j.saml.sso;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLObject;
@@ -92,7 +94,9 @@ public class Saml2ResponseValidator {
 
         validateSamlProtocolResponse(response, context, engine);
 
-        decryptEncryptedAssertions(response, decrypter);
+        if (decrypter != null) {
+          decryptEncryptedAssertions(response, decrypter);
+        }
 
         validateSamlSSOResponse(response, context, engine, decrypter);
 
@@ -259,10 +263,14 @@ public class Saml2ResponseValidator {
                 if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
                     NameID nameID = null;
                     if (subject.getEncryptedID() != null) {
-                        try {
-                            nameID = (NameID) decrypter.decrypt(subject.getEncryptedID());
-                        } catch (DecryptionException e) {
-                            throw new SamlException("Decryption of nameID's subject failed", e);
+                        if (decrypter == null) {
+                            logger.warn("Encrypted attributes returned, but no keystore was provided.");
+                        } else {
+                            try {
+                                nameID = (NameID) decrypter.decrypt(subject.getEncryptedID());
+                            } catch (DecryptionException e) {
+                                throw new SamlException("Decryption of nameID's subject failed", e);
+                            }
                         }
                     } else {
                         nameID = subject.getNameID();
@@ -365,10 +373,19 @@ public class Saml2ResponseValidator {
         if (audienceRestrictions == null || audienceRestrictions.size() == 0) {
             throw new SamlException("Audience restrictions cannot be null or empty");
         }
-        if (!matchAudienceRestriction(audienceRestrictions, spEntityId)) {
-            throw new SamlException("Assertion audience does not match SP configuration");
-        }
 
+        Set<String> audienceUris = new HashSet<String>();
+        for (AudienceRestriction audienceRestriction : audienceRestrictions) {
+            if (audienceRestriction.getAudiences() != null) {
+                for (Audience audience : audienceRestriction.getAudiences()) {
+                    audienceUris.add(audience.getAudienceURI());
+                }
+            }
+        }
+        if (!audienceUris.contains(spEntityId)) {
+            throw new SamlException("Assertion audience " + audienceUris
+                + " does not match SP configuration " + spEntityId);
+        }
     }
 
     /**
@@ -442,20 +459,6 @@ public class Saml2ResponseValidator {
         if (!valid) {
             throw new SamlException("Signature is not trusted");
         }
-    }
-
-    private boolean matchAudienceRestriction(final List<AudienceRestriction> audienceRestrictions,
-            final String spEntityId) {
-        for (AudienceRestriction audienceRestriction : audienceRestrictions) {
-            if (audienceRestriction.getAudiences() != null) {
-                for (Audience audience : audienceRestriction.getAudiences()) {
-                    if (spEntityId.equals(audience.getAudienceURI())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     private boolean isDateValid(final DateTime issueInstant, int interval) {

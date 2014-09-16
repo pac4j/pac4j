@@ -234,7 +234,11 @@ public class GitHubProfile extends OAuth20Profile {
     public Date getCreatedAt() {
         return (Date) getAttribute(GitHubAttributesDefinition.CREATED_AT);
     }
-    
+
+    public Date getUpdatedAt() {
+      return (Date) getAttribute(GitHubAttributesDefinition.UPDATED_AT);
+    }
+
     public String getType() {
         return (String) getAttribute(GitHubAttributesDefinition.TYPE);
     }

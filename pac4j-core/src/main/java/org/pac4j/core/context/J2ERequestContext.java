@@ -48,7 +48,6 @@ public class J2ERequestContext extends BaseResponseContext {
      *
      * @return all request parameters
      */
-    @SuppressWarnings("unchecked")
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }

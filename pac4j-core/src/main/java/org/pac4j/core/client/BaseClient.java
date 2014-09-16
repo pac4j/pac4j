@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if it's false, the
  * redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
  * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
- * To force a direct redirection, the {@link #getRedirection(WebContext, boolean, boolean)} must be used with <code>true</code> for the
+ * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean, boolean)} must be used with <code>true</code> for the
  * <code>forceDirectRedirection</code> parameter</li>
  * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
  * required to initialize the client.
  * <p/>
- * The {@link #getProtocol()} method returns the implemented {@link Protocol} by the client.
+ * The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.
  * <p />
  * After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
  * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.
@@ -127,11 +127,12 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
 
-    public final void redirect(final WebContext context, final boolean protectedTarget, final boolean ajaxRequest)
+    public final void redirect(final WebContext context, final boolean requiresAuthentication, final boolean ajaxRequest)
             throws RequiresHttpAction {
-        final RedirectAction action = getRedirectAction(context, protectedTarget, ajaxRequest);
+        final RedirectAction action = getRedirectAction(context, requiresAuthentication, ajaxRequest);
         if (action.getType() == RedirectType.REDIRECT) {
-            context.sendRedirect(action.getLocation());
+            context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
+            context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
         } else if (action.getType() == RedirectType.SUCCESS) {
             context.writeResponseContent(action.getContent());
             context.setResponseStatus(HttpConstants.OK);
@@ -143,12 +144,12 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
      * 
      * @param context
-     * @param protectTarget
+     * @param requiresAuthentication
      * @param ajaxRequest
      * @return the redirection action
      * @throws RequiresHttpAction
      */
-    public final RedirectAction getRedirectAction(final WebContext context, final boolean protectedTarget,
+    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication,
             final boolean ajaxRequest) throws RequiresHttpAction {
         init();
         // it's an AJAX request -> unauthorized (instead of a redirection)
@@ -160,19 +161,33 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
             // protected target -> forbidden
-            if (protectedTarget) {
+            if (requiresAuthentication) {
                 logger.error("authentication already tried and protected target -> forbidden");
                 throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
             }
         }
         // it's a direct redirection or force the redirection -> return the real redirection
-        if (isDirectRedirection() || protectedTarget) {
+        if (isDirectRedirection() || requiresAuthentication) {
             return retrieveRedirectAction(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
             final String intermediateUrl = CommonHelper.addParameter(getContextualCallbackUrl(context),
                     NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
             return RedirectAction.redirect(intermediateUrl);
+        }
+    }
+
+    /**
+     * Return the redirection url to the provider, requested from an anonymous page.
+     *
+     * @param context the current web context
+     * @return the redirection url to the provider.
+     */
+    public String getRedirectionUrl(final WebContext context) {
+        try {
+            return getRedirectAction(context, false, false).getLocation();
+        } catch (final RequiresHttpAction e) {
+            return null;
         }
     }
 
@@ -225,11 +240,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
 
     /**
-     * Return the implemented protocol.
+     * Return the implemented mechanism.
      * 
-     * @return the implemented protocol
+     * @return the implemented mechanism
      */
-    public abstract Protocol getProtocol();
+    public abstract Mechanism getMechanism();
 
     @Override
     public String toString() {
@@ -271,6 +286,15 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         }
 
         return url;
+    }
+
+    /**
+     * Return the state parameter required by some security protocols like SAML or OAuth.
+     * 
+     * @return the state
+     */
+    protected String getStateParameter(WebContext webContext) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void addAuthorizationGenerator(AuthorizationGenerator<U> authorizationGenerator) {

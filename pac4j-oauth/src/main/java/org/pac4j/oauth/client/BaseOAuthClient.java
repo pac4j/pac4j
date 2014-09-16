@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Protocol;
+import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -216,7 +216,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * @param accessToken only used when constructing dynamic urls from data in the token
      * @return the url of the user profile given by the provider
      */
-    @SuppressWarnings("unused")
     protected abstract String getProfileUrl(final Token accessToken);
 
     /**
@@ -352,7 +351,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     }
 
     @Override
-    public Protocol getProtocol() {
-        return Protocol.OAUTH;
+    public Mechanism getMechanism() {
+        return Mechanism.OAUTH_PROTOCOL;
     }
 }

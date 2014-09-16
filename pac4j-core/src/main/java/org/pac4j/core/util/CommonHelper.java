@@ -15,9 +15,10 @@
  */
 package org.pac4j.core.util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import org.pac4j.core.exception.TechnicalException;
@@ -34,9 +35,7 @@ public final class CommonHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
 
-    private static final String RESOURCE_PREFIX = "resource:";
-
-    private static final String FILE_PREFIX = "file:";
+    public static final String RESOURCE_PREFIX = "resource:";
 
     /**
      * Return if the String is not blank.
@@ -84,15 +83,25 @@ public final class CommonHelper {
     }
 
     /**
+     * Verify that a boolean is true otherwise throw an {@link TechnicalException}.
+     * 
+     * @param value the value to be checked for truth
+     * @param message the message to include in the exception if the value is false
+     */
+    public static void assertTrue(final boolean value, final String message) {
+        if (!value) {
+            throw new TechnicalException(message);
+        }
+    }
+
+    /**
      * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
      * 
      * @param name
      * @param value
      */
     public static void assertNotBlank(final String name, final String value) {
-        if (isBlank(value)) {
-            throw new TechnicalException(name + " cannot be blank");
-        }
+        assertTrue(!isBlank(value), name + " cannot be blank");
     }
 
     /**
@@ -102,9 +111,7 @@ public final class CommonHelper {
      * @param obj
      */
     public static void assertNotNull(final String name, final Object obj) {
-        if (obj == null) {
-            throw new TechnicalException(name + " cannot be null");
-        }
+        assertTrue(obj != null, name + " cannot be null");
     }
 
     /**
@@ -180,30 +187,26 @@ public final class CommonHelper {
     }
 
     /**
-     * Returns an {@link URL} from given name depending on its format:
+     * Returns an {@link InputStream} from given name depending on its format:
      * - loads from the classloader if name starts with "resource:"
-     * - loads as standard {@link URL} as fallback
+     * - loads as {@link FileInputStream} otherwise
      * 
      * @param name
-     * @return
+     * @return the input stream
      */
-    public static URL getURLFromName(String name) {
-        try {
-            if (name.startsWith(RESOURCE_PREFIX)) {
-                String path = name.substring(RESOURCE_PREFIX.length());
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-                return CommonHelper.class.getResource(path);
-            } else {
-                String path = name;
-                if (!name.startsWith(FILE_PREFIX)) {
-                    path = FILE_PREFIX + name;
-                }
-                return new URL(path);
+    public static InputStream getInputStreamFromName(String name) {
+        if (name.startsWith(RESOURCE_PREFIX)) {
+            String path = name.substring(RESOURCE_PREFIX.length());
+            if (!path.startsWith("/")) {
+                path = "/" + path;
             }
-        } catch (MalformedURLException e) {
-            throw new TechnicalException(e);
+            return CommonHelper.class.getResourceAsStream(path);
+        } else {
+            try {
+                return new FileInputStream(name);
+            } catch (FileNotFoundException e) {
+                throw new TechnicalException(e);
+            }
         }
     }
 }

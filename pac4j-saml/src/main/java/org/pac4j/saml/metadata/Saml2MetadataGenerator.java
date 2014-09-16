@@ -71,7 +71,7 @@ public class Saml2MetadataGenerator {
 
     protected String singleLogoutServiceUrl;
 
-    protected boolean authnRequestSigned = true;
+    protected boolean authnRequestSigned = false;
 
     protected boolean wantAssertionSigned = true;
 
@@ -133,8 +133,10 @@ public class Saml2MetadataGenerator {
                 getAssertionConsumerService(SAMLConstants.SAML2_POST_BINDING_URI, index++,
                         this.defaultACSIndex == index));
 
-        spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));
-        spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, getKeyInfo()));
+        if (credentialProvider != null) {
+          spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));
+          spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, getKeyInfo()));
+        }
 
         return spDescriptor;
 
@@ -192,7 +194,7 @@ public class Saml2MetadataGenerator {
         return descriptor;
     }
 
-    protected KeyInfo getKeyInfo() {
+    private KeyInfo getKeyInfo() {
         Credential serverCredential = this.credentialProvider.getCredential();
         return generateKeyInfoForCredential(serverCredential);
     }

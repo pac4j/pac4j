@@ -122,12 +122,4 @@ public interface WebContext {
      */
     public String getFullRequestURL();
 
-    /**
-     * Redirect to the given location
-     * 
-     * @param location
-     * @since 1.5.0
-     */
-    public void sendRedirect(String location);
-
 }

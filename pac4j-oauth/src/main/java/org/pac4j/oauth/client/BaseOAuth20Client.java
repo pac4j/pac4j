@@ -34,20 +34,20 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOAuthClient<U> {
-    
+
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth20Client.class);
-    
+
     public static final String OAUTH_CODE = "code";
-    
+
     private static final String STATE_PARAMETER = "#oauth20StateParameter";
-    
+
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) {
         // no request token for OAuth 2.0 -> no need to save it in the context
         final String authorizationUrl;
         // if a state parameter is required
         if (requiresStateParameter()) {
-            String randomState = RandomStringUtils.randomAlphanumeric(10);
+            String randomState = getStateParameter(context);
             logger.debug("Random state parameter: {}", randomState);
             context.setSessionAttribute(getName() + STATE_PARAMETER, randomState);
             authorizationUrl = ((StateOAuth20Service) this.service).getAuthorizationUrl(randomState);
@@ -57,14 +57,19 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         logger.debug("authorizationUrl : {}", authorizationUrl);
         return authorizationUrl;
     }
-    
+
     /**
      * Return if this client requires a state parameter.
      * 
      * @return if this client requires a state parameter.
      */
     protected abstract boolean requiresStateParameter();
-    
+
+    @Override
+    protected String getStateParameter(WebContext webContext) {
+        return RandomStringUtils.randomAlphanumeric(10);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -81,7 +86,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
                 throw new OAuthCredentialsException(message);
             }
         }
-        
+
         final String verifierParameter = context.getRequestParameter(OAUTH_CODE);
         if (verifierParameter != null) {
             final String verifier = OAuthEncoder.decode(verifierParameter);
@@ -93,7 +98,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
             throw new OAuthCredentialsException(message);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -107,7 +112,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
     }
-    
+
     @Override
     protected boolean isDirectRedirection() {
         return true;

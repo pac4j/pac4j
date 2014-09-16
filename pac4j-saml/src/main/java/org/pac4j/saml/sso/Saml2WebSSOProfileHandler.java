@@ -34,19 +34,23 @@ import org.opensaml.ws.security.provider.StaticSecurityPolicyResolver;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.signature.SignatureTrustEngine;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.SamlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handler capable of sending and receiving SAML messages according to the SAML2 SSO Browser profile.
  * 
  * @author Michael Remond
  * @since 1.5.0
- *
  */
 @SuppressWarnings("rawtypes")
 public class Saml2WebSSOProfileHandler {
+
+    private final static Logger logger = LoggerFactory.getLogger(Saml2WebSSOProfileHandler.class);
 
     private final CredentialProvider credentialProvider;
 
@@ -55,16 +59,19 @@ public class Saml2WebSSOProfileHandler {
     private final MessageDecoder decoder;
 
     private final StaticBasicParserPool parserPool;
+    
+    private String destinationBindingType;
 
     // SAML2 SSO browser profile because not available in opensaml constants
     public static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
     public Saml2WebSSOProfileHandler(final CredentialProvider credentialProvider, final MessageEncoder encoder,
-            final MessageDecoder decoder, final StaticBasicParserPool parserPool) {
+            final MessageDecoder decoder, final StaticBasicParserPool parserPool, String destinationBindingType) {
         this.credentialProvider = credentialProvider;
         this.encoder = encoder;
         this.decoder = decoder;
         this.parserPool = parserPool;
+        this.destinationBindingType = destinationBindingType;
     }
 
     @SuppressWarnings("unchecked")
@@ -72,8 +79,7 @@ public class Saml2WebSSOProfileHandler {
 
         SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
         IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor,
-                SAMLConstants.SAML2_POST_BINDING_URI);
+        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, destinationBindingType);
 
         context.setCommunicationProfileId(SAML2_WEBSSO_PROFILE_URI);
         context.setOutboundMessage(authnRequest);
@@ -84,10 +90,10 @@ public class Saml2WebSSOProfileHandler {
             context.setRelayState(relayState);
         }
 
-        boolean sign = spDescriptor.isAuthnRequestsSigned() || idpssoDescriptor.getWantAuthnRequestsSigned();
-
-        if (sign) {
+        if (spDescriptor.isAuthnRequestsSigned()) {
             context.setOutboundSAMLMessageSigningCredential(credentialProvider.getCredential());
+        } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
+            logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
         }
 
         try {

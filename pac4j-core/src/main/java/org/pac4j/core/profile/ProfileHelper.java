@@ -71,6 +71,10 @@ public final class ProfileHelper {
                             completeName = "org.pac4j.openid.profile.myopenid.MyOpenIdProfile";
                         } else if ("GoogleOpenIdProfile".equals(className)) {
                             completeName = "org.pac4j.openid.profile.google.GoogleOpenIdProfile";
+                        } else if ("YahooOpenIdProfile".equals(className)) {
+                        	completeName = "org.pac4j.openid.profile.yahoo.YahooOpenIdProfile";
+                        } else if ("GaeUserServiceProfile".equals(className)) {
+                        	completeName = "org.pac4j.gae.profile.GaeUserServiceProfile";
                         } else {
                             final String packageName = className.substring(0, className.length() - 7).toLowerCase();
                             completeName = "org.pac4j.oauth.profile." + packageName + "." + className;

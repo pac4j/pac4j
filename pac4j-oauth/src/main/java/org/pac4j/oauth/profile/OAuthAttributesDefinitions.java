@@ -16,6 +16,7 @@
 package org.pac4j.oauth.profile;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.oauth.profile.bitbucket.BitbucketAttributesDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.foursquare.FoursquareAttributesDefinition;
@@ -33,37 +34,39 @@ import org.pac4j.oauth.profile.yahoo.YahooAttributesDefinition;
 
 /**
  * This class defines all the attributes definitions.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public final class OAuthAttributesDefinitions {
-    
+
     public final static AttributesDefinition facebookDefinition = new FacebookAttributesDefinition();
-    
+
     public final static AttributesDefinition githubDefinition = new GitHubAttributesDefinition();
-    
+
     public final static AttributesDefinition google2Definition = new Google2AttributesDefinition();
-    
+
     public final static AttributesDefinition linkedinDefinition = new LinkedInAttributesDefinition();
-    
+
     public final static AttributesDefinition twitterDefinition = new TwitterAttributesDefinition();
-    
+
     public final static AttributesDefinition yahooDefinition = new YahooAttributesDefinition();
-    
+
     public final static AttributesDefinition windowsLiveDefinition = new WindowsLiveAttributesDefinition();
-    
+
     public final static AttributesDefinition wordPressDefinition = new WordPressAttributesDefinition();
-    
+
     public final static AttributesDefinition dropBoxDefinition = new DropBoxAttributesDefinition();
-    
+
     public final static AttributesDefinition linkedin2Definition = new LinkedIn2AttributesDefinition();
-    
+
     public final static AttributesDefinition payPalDefinition = new PayPalAttributesDefinition();
-    
+
     public final static AttributesDefinition vkDefinition = new VkAttributesDefinition();
 
     public final static AttributesDefinition foursquareDefinition = new FoursquareAttributesDefinition();
+
+    public final static AttributesDefinition bitbucketDefinition = new BitbucketAttributesDefinition();
 
     public final static AttributesDefinition orcidDefinition = new OrcidAttributesDefinition();
 
