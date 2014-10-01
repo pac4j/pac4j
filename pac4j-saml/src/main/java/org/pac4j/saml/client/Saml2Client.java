@@ -400,10 +400,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             for (Attribute attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
             }
-            // !!!!! Not good -- processed just below.
-//          if (attributeStatement.getEncryptedAttributes().size() > 0) {
-//              logger.warn("Encrypted attributes returned, but no keystore was provided.");
-//          }
             for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
                 try {
                     attributes.add(decrypter.decrypt(encryptedAttribute));
@@ -411,13 +407,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                     logger.warn("Decryption of attribute failed, continue with the next one", e);
                 }
             }
-        }
-
-        // If no NameID available, let's create a dummy one. Later we can implement an attribute picker that will take a selected attribute and use it for NameID.
-        if (nameId == null) {
-            NameIDBuilder b = new NameIDBuilder();
-            nameId = b.buildObject();
-            nameId.setValue("Unknown_SAML_User");
         }
 
         return new Saml2Credentials(nameId, attributes, subjectAssertion.getConditions(), getName());

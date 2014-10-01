@@ -282,7 +282,7 @@ public class Saml2ResponseValidator {
 
         // If we have a Name ID or a Base ID, we are fine :-)
         // If we don't have anything, let's go through all subject confirmations and get the IDs from them. At least one should be present but we don't care at this point.
-        if ((nameIdFromSubject != null) || (baseIdFromSubject != null)) {
+        if (nameIdFromSubject != null || baseIdFromSubject != null) {
             context.setSubjectNameIdentifier(nameIdFromSubject);
             context.setBaseID(baseIdFromSubject);
             satisfied = true;
@@ -290,9 +290,6 @@ public class Saml2ResponseValidator {
             for (SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
                 if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
                     if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
-                        // Always store the confirmation, no matter if it contains an ID or not
-                        context.getSubjectConfirmations().add(confirmation);
-                        
                         NameID nameIDFromConfirmation = confirmation.getNameID();
                         final BaseID baseIDFromConfirmation = confirmation.getBaseID();
                         final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
@@ -306,6 +303,7 @@ public class Saml2ResponseValidator {
                         if ((nameIDFromConfirmation != null) || (baseIDFromConfirmation != null)) {
                             context.setSubjectNameIdentifier(nameIDFromConfirmation);
                             context.setBaseID(baseIDFromConfirmation);
+							context.getSubjectConfirmations().add(confirmation);
                             satisfied = true;
                         }
                     }
@@ -314,7 +312,8 @@ public class Saml2ResponseValidator {
         } // else
         
         if (!satisfied) {
-            logger.warn("Could not find any Subject NameID/BaseID/EnryptedID, neither directly in the Subject nor in any Subject Confirmation. However, this may still be a valid assertion.");
+            logger.warn("Could not find any Subject NameID/BaseID/EnryptedID, neither directly in the Subject nor in any Subject Confirmation.");
+			throw new SamlException("Subject confirmation validation failed");
         }
     }
 
@@ -322,15 +321,12 @@ public class Saml2ResponseValidator {
     /**
      * Decrypts an EncryptedID, using a decrypter.
      * 
-     * @param encryptedId
-     *            The EncryptedID to be decrypted.
-     * @param decrypter
-     *            The decrypter to use.
+     * @param encryptedId The EncryptedID to be decrypted.
+     * @param decrypter The decrypter to use.
      * 
      * @return Decrypted ID or {@code null} if any input is {@code null}.
      * 
-     * @throws SamlException
-     *             If the input ID cannot be decrypted.
+     * @throws SamlException If the input ID cannot be decrypted.
      */
     private NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SamlException {
         if (encryptedId == null) {

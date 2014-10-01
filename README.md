@@ -136,6 +136,9 @@ This module is dedicated to SAML support:
 
 This module is based on the **pac4j-core** module and the [OpenSAML library](https://wiki.shibboleth.net/confluence/display/OpenSAML/Home).
 
+In case you use the library against Microsoft ADFS (Active Directory Federation Services), a SAML Identity Provider server, please have a look into
+file README-ADFS.txt for details on how to setup your client.
+
 #### pac4j-test-cas
 
 This module is made to test CAS support in pac4j.
