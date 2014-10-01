@@ -127,9 +127,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
 
-    public final void redirect(final WebContext context, final boolean protectedTarget, final boolean ajaxRequest)
+    public final void redirect(final WebContext context, final boolean requiresAuthentication, final boolean ajaxRequest)
             throws RequiresHttpAction {
-        final RedirectAction action = getRedirectAction(context, protectedTarget, ajaxRequest);
+        final RedirectAction action = getRedirectAction(context, requiresAuthentication, ajaxRequest);
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
@@ -144,12 +144,12 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
      * 
      * @param context
-     * @param protectedTarget
+     * @param requiresAuthentication
      * @param ajaxRequest
      * @return the redirection action
      * @throws RequiresHttpAction
      */
-    public final RedirectAction getRedirectAction(final WebContext context, final boolean protectedTarget,
+    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication,
             final boolean ajaxRequest) throws RequiresHttpAction {
         init();
         // it's an AJAX request -> unauthorized (instead of a redirection)
@@ -161,13 +161,13 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
             // protected target -> forbidden
-            if (protectedTarget) {
+            if (requiresAuthentication) {
                 logger.error("authentication already tried and protected target -> forbidden");
                 throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
             }
         }
         // it's a direct redirection or force the redirection -> return the real redirection
-        if (isDirectRedirection() || protectedTarget) {
+        if (isDirectRedirection() || requiresAuthentication) {
             return retrieveRedirectAction(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection

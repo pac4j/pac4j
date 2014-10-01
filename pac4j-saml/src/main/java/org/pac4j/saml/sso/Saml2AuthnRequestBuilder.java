@@ -24,10 +24,14 @@ import org.opensaml.common.SAMLObjectBuilder;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.binding.SAMLMessageContext;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml2.core.impl.AuthnContextClassRefBuilder;
+import org.opensaml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml2.metadata.IDPSSODescriptor;
@@ -51,6 +55,10 @@ public class Saml2AuthnRequestBuilder {
 
     private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
+    private String authnContextClassRef = null;
+
+    private String nameIdPolicyFormat = null;
+
     /**
      * Default constructor
      */
@@ -61,11 +69,16 @@ public class Saml2AuthnRequestBuilder {
      * @param forceAuth
      * @param comparisonType
      * @param bindingType
+     * @param authnContextClassRef
+     * @param nameIdPolicyFormat
      */
-    public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType) {
+    public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType, 
+            String authnContextClassRef, String nameIdPolicyFormat) {
         this.forceAuth = forceAuth;
         this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
         this.bindingType = bindingType;
+        this.authnContextClassRef = authnContextClassRef;
+        this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
@@ -82,16 +95,21 @@ public class Saml2AuthnRequestBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    protected AuthnRequest buildAuthnRequest(final SAMLMessageContext context,
+    protected AuthnRequest buildAuthnRequest(final SAMLMessageContext context, 
             final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
         SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
         AuthnRequest request = builder.buildObject();
-
         if (comparisonType != null) {
             RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
             authnContext.setComparison(comparisonType);
+
+            if (authnContextClassRef != null) {
+                AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
+                classRef.setAuthnContextClassRef(authnContextClassRef);
+                authnContext.getAuthnContextClassRefs().add(classRef);
+            }
             request.setRequestedAuthnContext(authnContext);
         }
 
@@ -102,6 +120,13 @@ public class Saml2AuthnRequestBuilder {
         request.setIsPassive(false);
         request.setForceAuthn(this.forceAuth);
         request.setProviderName("pac4j-saml");
+
+        if (nameIdPolicyFormat != null) {
+            NameIDPolicy nameIdPolicy = new NameIDPolicyBuilder().buildObject();
+            nameIdPolicy.setAllowCreate(true);
+            nameIdPolicy.setFormat(nameIdPolicyFormat);
+            request.setNameIDPolicy(nameIdPolicy);
+        }
 
         request.setDestination(ssoService.getLocation());
         request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());

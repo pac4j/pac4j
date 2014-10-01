@@ -140,6 +140,10 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
+    private String authnContextClassRef = null;
+
+    private String nameIdPolicyFormat = null;
+
     @Override
     protected void internalInit() {
 
@@ -163,7 +167,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             this.decrypter = new EncryptionProvider(this.credentialProvider).buildDecrypter();
         }
 
-        // Bootsrap OpenSAML
+        // Bootstrap OpenSAML
         try {
             DefaultBootstrap.bootstrap();
             NamedKeyInfoGeneratorManager manager = Configuration.getGlobalSecurityConfiguration()
@@ -232,7 +236,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
 
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType);
+        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType, 
+                authnContextClassRef, nameIdPolicyFormat);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
         MessageEncoder encoder = null;
@@ -246,7 +251,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported");
         }
 
-        // Do we need binding specific decoder? 
+        // Do we need binding specific decoder?
         MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
         this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool,
                 destinationBindingType);
@@ -276,6 +281,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         client.setCallbackUrl(this.callbackUrl);
         client.setDestinationBindingType(this.destinationBindingType);
         client.setComparisonType(this.comparisonType);
+        client.setAuthnContextClassRef(this.authnContextClassRef);
+        client.setNameIdPolicyFormat(this.nameIdPolicyFormat);
         return client;
     }
 
@@ -522,6 +529,34 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
      */
     public void setDestinationBindingType(String destinationBindingType) {
         this.destinationBindingType = destinationBindingType;
+    }
+
+    /**
+     * @return the authnContextClassRef
+     */
+    public String getAuthnContextClassRef() {
+        return authnContextClassRef;
+    }
+
+    /**
+     * @param authnContextClassRef the authnContextClassRef to set
+     */
+    public void setAuthnContextClassRef(String authnContextClassRef) {
+        this.authnContextClassRef = authnContextClassRef;
+    }
+
+    /**
+     * @return the nameIdPolicyFormat
+     */
+    public String getNameIdPolicyFormat() {
+        return nameIdPolicyFormat;
+    }
+
+    /**
+     * @param nameIdPolicyFormat the nameIdPolicyFormat to set
+     */
+    public void setNameIdPolicyFormat(String nameIdPolicyFormat) {
+        this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
 }
