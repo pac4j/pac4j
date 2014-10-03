@@ -34,7 +34,6 @@ import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.EncryptedAttribute;
 import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.impl.NameIDBuilder;
 import org.opensaml.saml2.encryption.Decrypter;
 import org.opensaml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml2.metadata.EntityDescriptor;
@@ -236,7 +235,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
 
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType, 
+        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType,
                 authnContextClassRef, nameIdPolicyFormat);
 
         // Build the WebSSO handler for sending and receiving SAML2 messages
@@ -400,11 +399,17 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             for (Attribute attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
             }
-            for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
-                try {
-                    attributes.add(decrypter.decrypt(encryptedAttribute));
-                } catch (DecryptionException e) {
-                    logger.warn("Decryption of attribute failed, continue with the next one", e);
+            if (attributeStatement.getEncryptedAttributes().size() > 0) {
+                if (decrypter == null) {
+                    logger.warn("Encrypted attributes returned, but no keystore was provided.");
+                } else {
+                    for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
+                        try {
+                            attributes.add(decrypter.decrypt(encryptedAttribute));
+                        } catch (DecryptionException e) {
+                            logger.warn("Decryption of attribute failed, continue with the next one", e);
+                        }
+                    }
                 }
             }
         }

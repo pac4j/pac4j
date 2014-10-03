@@ -97,7 +97,7 @@ public class Saml2ResponseValidator {
         validateSamlProtocolResponse(response, context, engine);
 
         if (decrypter != null) {
-          decryptEncryptedAssertions(response, decrypter);
+            decryptEncryptedAssertions(response, decrypter);
         }
 
         validateSamlSSOResponse(response, context, engine, decrypter);
@@ -174,8 +174,10 @@ public class Saml2ResponseValidator {
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
-        if ((context.getSubjectNameIdentifier() == null) && (context.getBaseID() == null) && ((subjectConfirmations == null)  || (subjectConfirmations.size() == 0))) {
-            throw new SamlException("Subject NameID, BaseID and EncryptedID cannot be both null at the same time if there are no Subject Confirmations.");
+        if ((context.getSubjectNameIdentifier() == null) && (context.getBaseID() == null)
+                && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
+            throw new SamlException(
+                    "Subject NameID, BaseID and EncryptedID cannot be both null at the same time if there are no Subject Confirmations.");
         }
     }
 
@@ -266,14 +268,15 @@ public class Saml2ResponseValidator {
      *            then.
      */
     @SuppressWarnings("unchecked")
-    protected void validateSubject(final Subject subject, final ExtendedSAMLMessageContext context, final Decrypter decrypter) {
-        boolean satisfied = false;
+    protected void validateSubject(final Subject subject, final ExtendedSAMLMessageContext context,
+            final Decrypter decrypter) {
+        boolean samlIDFound = false;
 
         // Read NameID/BaseID/EncryptedID from the subject. If not present directly in the subject, try to find it in subject confirmations.
         NameID nameIdFromSubject = subject.getNameID();
         final BaseID baseIdFromSubject = subject.getBaseID();
         final EncryptedID encryptedIdFromSubject = subject.getEncryptedID();
-        
+
         // Encrypted ID can overwrite the non-encrypted one, if present
         final NameID decryptedNameIdFromSubject = decryptEncryptedId(encryptedIdFromSubject, decrypter);
         if (decryptedNameIdFromSubject != null) {
@@ -285,39 +288,40 @@ public class Saml2ResponseValidator {
         if (nameIdFromSubject != null || baseIdFromSubject != null) {
             context.setSubjectNameIdentifier(nameIdFromSubject);
             context.setBaseID(baseIdFromSubject);
-            satisfied = true;
-        } else {
-            for (SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
-                if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
-                    if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
-                        NameID nameIDFromConfirmation = confirmation.getNameID();
-                        final BaseID baseIDFromConfirmation = confirmation.getBaseID();
-                        final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
-
-                        // Encrypted ID can overwrite the non-encrypted one, if present
-                        final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation, decrypter);
-                        if (decryptedNameIdFromConfirmation != null) {
-                            nameIDFromConfirmation = decryptedNameIdFromConfirmation;
-                        }
-                        
-                        if ((nameIDFromConfirmation != null) || (baseIDFromConfirmation != null)) {
-                            context.setSubjectNameIdentifier(nameIDFromConfirmation);
-                            context.setBaseID(baseIDFromConfirmation);
-							context.getSubjectConfirmations().add(confirmation);
-                            satisfied = true;
-                        }
-                    }
-                }
-            } // for
-        } // else
-        
-        if (!satisfied) {
-            logger.warn("Could not find any Subject NameID/BaseID/EnryptedID, neither directly in the Subject nor in any Subject Confirmation.");
-			throw new SamlException("Subject confirmation validation failed");
+            samlIDFound = true;
         }
+
+        for (SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
+            if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
+                if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
+                    NameID nameIDFromConfirmation = confirmation.getNameID();
+                    final BaseID baseIDFromConfirmation = confirmation.getBaseID();
+                    final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
+
+                    // Encrypted ID can overwrite the non-encrypted one, if present
+                    final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation,
+                            decrypter);
+                    if (decryptedNameIdFromConfirmation != null) {
+                        nameIDFromConfirmation = decryptedNameIdFromConfirmation;
+                    }
+
+                    if (!samlIDFound && (nameIDFromConfirmation != null || baseIDFromConfirmation != null)) {
+                        context.setSubjectNameIdentifier(nameIDFromConfirmation);
+                        context.setBaseID(baseIDFromConfirmation);
+                        context.getSubjectConfirmations().add(confirmation);
+                        samlIDFound = true;
+                    }
+                    if (!samlIDFound) {
+                        logger.warn("Could not find any Subject NameID/BaseID/EncryptedID, neither directly in the Subject nor in any Subject Confirmation.");
+                    }
+                    return;
+                }
+            }
+        }
+
+        throw new SamlException("Subject confirmation validation failed");
     }
 
-    
     /**
      * Decrypts an EncryptedID, using a decrypter.
      * 
@@ -344,8 +348,7 @@ public class Saml2ResponseValidator {
             throw new SamlException("Decryption of an EncryptedID failed.", e);
         }
     }
-    
-    
+
     /**
      * Validate Bearer subject confirmation data
      *  - notBefore
@@ -445,8 +448,8 @@ public class Saml2ResponseValidator {
             }
         }
         if (!audienceUris.contains(spEntityId)) {
-            throw new SamlException("Assertion audience " + audienceUris
-                + " does not match SP configuration " + spEntityId);
+            throw new SamlException("Assertion audience " + audienceUris + " does not match SP configuration "
+                    + spEntityId);
         }
     }
 
