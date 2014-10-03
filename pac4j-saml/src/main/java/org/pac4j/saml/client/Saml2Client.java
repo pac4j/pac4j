@@ -34,6 +34,7 @@ import org.opensaml.saml2.core.AttributeStatement;
 import org.opensaml.saml2.core.AuthnRequest;
 import org.opensaml.saml2.core.EncryptedAttribute;
 import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml2.core.impl.NameIDBuilder;
 import org.opensaml.saml2.encryption.Decrypter;
 import org.opensaml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml2.metadata.EntityDescriptor;
@@ -398,9 +399,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         for (AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
             for (Attribute attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
-            }
-            if (attributeStatement.getEncryptedAttributes().size() > 0) {
-                logger.warn("Encrypted attributes returned, but no keystore was provided.");
             }
             for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
                 try {
