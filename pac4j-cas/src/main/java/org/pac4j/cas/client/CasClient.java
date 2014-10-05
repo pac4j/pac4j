@@ -103,6 +103,8 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     protected String casLoginUrl;
 
     protected String casPrefixUrl;
+    
+    protected long timeTolerance=1000L;
 
     protected CasProtocol casProtocol = CasProtocol.CAS20;
 
@@ -183,7 +185,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
                         .getProxyGrantingTicketStorage());
             }
         } else if (this.casProtocol == CasProtocol.SAML) {
-            this.ticketValidator = new Saml11TicketValidator(this.casPrefixUrl);
+        	Saml11TicketValidator saml11TicketValidator=new Saml11TicketValidator(this.casPrefixUrl);
+        	saml11TicketValidator.setTolerance(getTimeTolerance());
+            this.ticketValidator = saml11TicketValidator;
         }
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<CasProfile>());
     }
@@ -325,7 +329,15 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
         this.casProxyReceptor = casProxyReceptor;
     }
 
-    @Override
+    public long getTimeTolerance() {
+		return timeTolerance;
+	}
+
+	public void setTimeTolerance(long timeTolerance) {
+		this.timeTolerance = timeTolerance;
+	}
+
+	@Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "casLoginUrl", this.casLoginUrl,
                 "casPrefixUrl", this.casPrefixUrl, "casProtocol", this.casProtocol, "renew", this.renew, "gateway",
