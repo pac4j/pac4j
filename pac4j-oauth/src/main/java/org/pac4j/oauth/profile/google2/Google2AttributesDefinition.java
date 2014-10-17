@@ -20,33 +20,31 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
 
 /**
  * This class defines the attributes of the Google profile (using OAuth 2.0 protocol).
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
 public class Google2AttributesDefinition extends OAuthAttributesDefinition {
-    
-    public static final String EMAIL = "email";
-    public static final String VERIFIED_EMAIL = "verified_email";
-    public static final String NAME = "name";
-    public static final String GIVEN_NAME = "given_name";
-    public static final String FAMILY_NAME = "family_name";
-    public static final String LINK = "link";
-    public static final String PICTURE = "picture";
+
     public static final String GENDER = "gender";
-    public static final String LOCALE = "locale";
+    public static final String DISPLAY_NAME = "displayName";
+    public static final String GIVEN_NAME = "name.givenName";
+    public static final String FAMILY_NAME = "name.familyName";
+    public static final String URL = "url";
+    public static final String PICTURE = "image.url";
+    public static final String LANGUAGE = "language";
     public static final String BIRTHDAY = "birthday";
-    
+    public static final String EMAILS = "emails";
+
     public Google2AttributesDefinition() {
-        addAttribute(EMAIL, Converters.stringConverter);
-        addAttribute(VERIFIED_EMAIL, Converters.booleanConverter);
-        addAttribute(NAME, Converters.stringConverter);
+        addAttribute(GENDER, Converters.genderConverter);
+        addAttribute(DISPLAY_NAME, Converters.stringConverter);
         addAttribute(GIVEN_NAME, Converters.stringConverter);
         addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(LINK, Converters.stringConverter);
+        addAttribute(URL, Converters.stringConverter);
         addAttribute(PICTURE, Converters.stringConverter);
-        addAttribute(GENDER, Converters.genderConverter);
-        addAttribute(LOCALE, Converters.localeConverter);
+        addAttribute(LANGUAGE, Converters.localeConverter);
         addAttribute(BIRTHDAY, Google2Converters.dateConverter);
+        addAttribute(EMAILS, Google2Converters.listEmailConverter);
     }
 }

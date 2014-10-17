@@ -16,6 +16,8 @@
 package org.pac4j.oauth.profile.google2;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
@@ -39,15 +41,15 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * </tr>
  * <tr>
  * <td>String getFirstName()</td>
- * <td>the <i>given_name</i> attribute</td>
+ * <td>the <i>givenName</i> attribute</td>
  * </tr>
  * <tr>
  * <td>String getFamilyName()</td>
- * <td>the <i>family_name</i> attribute</td>
+ * <td>the <i>familyName</i> attribute</td>
  * </tr>
  * <tr>
  * <td>String getDisplayName()</td>
- * <td>the <i>name</i> attribute</td>
+ * <td>the <i>displayName</i> attribute</td>
  * </tr>
  * <tr>
  * <td>String getUsername()</td>
@@ -59,15 +61,15 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * </tr>
  * <tr>
  * <td>Locale getLocale()</td>
- * <td>the <i>locale</i> attribute</td>
+ * <td>the <i>language</i> attribute</td>
  * </tr>
  * <tr>
  * <td>String getPictureUrl()</td>
- * <td>the <i>picture</i> attribute</td>
+ * <td>the <i>image.url</i> attribute</td>
  * </tr>
  * <tr>
  * <td>String getProfileUrl()</td>
- * <td>the <i>link</i> attribute</td>
+ * <td>the <i>url</i> attribute</td>
  * </tr>
  * <tr>
  * <td>String getLocation()</td>
@@ -77,53 +79,74 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * <th colspan="2">More specific attributes</th>
  * </tr>
  * <tr>
- * <td>Boolean getVerifiedEmail()</td>
- * <td>the <i>verified_email</i> attribute</td>
- * </tr>
- * <tr>
  * <td>Date getBirthday()</td>
  * <td>the <i>birthday</i> attribute</td>
  * </tr>
+ * <tr>
+ * <td>List&lt;Google2Email&gt; getEmails()</td>
+ * <td>the <i>emails</i> attribute</td>
+ * </tr>
  * </table>
- * 
+ *
  * @see org.pac4j.oauth.client.Google2Client
  * @author Jerome Leleu
  * @since 1.2.0
  */
 public class Google2Profile extends OAuth20Profile {
-    
-    private static final long serialVersionUID = -8815552294635373736L;
-    
+
+    private static final long serialVersionUID = -7486869356444327783L;
+
     @Override
     protected AttributesDefinition getAttributesDefinition() {
         return OAuthAttributesDefinitions.google2Definition;
     }
-    
+
+    @Override
+    public String getEmail() {
+        final List<Google2Email> list = getEmails();
+        if (list != null && list.size() > 0) {
+            return list.get(0).getEmail();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public String getFirstName() {
         return (String) getAttribute(Google2AttributesDefinition.GIVEN_NAME);
     }
-    
+
+    @Override
+    public String getFamilyName() {
+        return (String) getAttribute(Google2AttributesDefinition.FAMILY_NAME);
+    }
+
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(Google2AttributesDefinition.NAME);
+        return (String) getAttribute(Google2AttributesDefinition.DISPLAY_NAME);
     }
-    
+
+    @Override
+    public Locale getLocale() {
+        return (Locale) getAttribute(Google2AttributesDefinition.LANGUAGE);
+    }
+
     @Override
     public String getPictureUrl() {
         return (String) getAttribute(Google2AttributesDefinition.PICTURE);
     }
-    
+
     @Override
     public String getProfileUrl() {
-        return (String) getAttribute(Google2AttributesDefinition.LINK);
+        return (String) getAttribute(Google2AttributesDefinition.URL);
     }
-    
-    public Boolean getVerifiedEmail() {
-        return (Boolean) getAttribute(Google2AttributesDefinition.VERIFIED_EMAIL);
-    }
-    
+
     public Date getBirthday() {
         return (Date) getAttribute(Google2AttributesDefinition.BIRTHDAY);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Google2Email> getEmails() {
+        return (List<Google2Email>) getAttribute(Google2AttributesDefinition.EMAILS);
     }
 }

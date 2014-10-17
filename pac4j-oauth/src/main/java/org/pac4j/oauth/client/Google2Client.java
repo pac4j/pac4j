@@ -32,8 +32,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.
  * <p />
- * The <i>scope</i> is by default : {@link Google2Scope#EMAIL}, but it can also but set to : {@link Google2Scope#PROFILE} or
- * {@link Google2Scope#EMAIL_AND_PROFILE}.
+ * The <i>scope</i> is by default : {@link Google2Scope#EMAIL_AND_PROFILE}, but it can also but set to : {@link Google2Scope#PROFILE}
+ * or {@link Google2Scope#EMAIL}.
  * <p />
  * It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.
  * <p />
@@ -51,9 +51,9 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         EMAIL_AND_PROFILE
     };
 
-    protected final String PROFILE_SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
+    protected final String PROFILE_SCOPE = "profile";
 
-    protected final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+    protected final String EMAIL_SCOPE = "email";
 
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
 
@@ -95,7 +95,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
 
     @Override
     protected String getProfileUrl(final Token accessToken) {
-        return "https://www.googleapis.com/oauth2/v2/userinfo";
+        return "https://www.googleapis.com/plus/v1/people/me";
     }
 
     @Override
