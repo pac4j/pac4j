@@ -195,7 +195,7 @@ For example:
     <dependency>
       <groupId>org.pac4j</groupId>
       <artifactId>pac4j-oauth</artifactId>
-      <version>1.5.1</version>
+      <version>1.6.0</version>
     </dependency>
 
 As the pac4j snapshots libraries are stored in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/), this repository may need be added in the Maven *pom.xml* file:
@@ -436,16 +436,16 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version **1.6.0-SNAPSHOT** is under development.  
+The current version **1.6.1-SNAPSHOT** is under development.  
 The build is done on Travis: [https://travis-ci.org/leleuj/pac4j](https://travis-ci.org/leleuj/pac4j).
 The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
-The last released version is the **1.5.1**:
+The last released version is the **1.6.0**:
 
     <dependency>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-core</artifactId>
-        <version>1.5.1</version>
+        <version>1.6.0</version>
     </dependency>
 
 See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
