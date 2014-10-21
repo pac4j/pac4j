@@ -28,19 +28,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class is an helper to work with JSON.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class JsonHelper {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
-    
+
     private static ObjectMapper mapper = new ObjectMapper();
-    
+
     /**
      * Return the first node of a JSON response.
-     * 
+     *
      * @param text
      * @return the first node of the JSON response or null if exception is thrown
      */
@@ -56,17 +56,22 @@ public final class JsonHelper {
         }
         return null;
     }
-    
+
     /**
      * Return the field with name in JSON (a string, a boolean, a number or a node).
-     * 
+     *
      * @param json
      * @param name
      * @return the field
      */
     public static Object get(final JsonNode json, final String name) {
-        if (json != null) {
-            final JsonNode node = json.get(name);
+        if (json != null && name != null) {
+            JsonNode node = json;
+            for (String nodeName : name.split("\\.")) {
+                if (node != null) {
+                    node = node.get(nodeName);
+                }
+            }
             if (node != null) {
                 if (node.isNumber()) {
                     return node.numberValue();
@@ -81,10 +86,10 @@ public final class JsonHelper {
         }
         return null;
     }
-    
+
     /**
      * Convert a JSON attribute.
-     * 
+     *
      * @param converter
      * @param json
      * @param name
