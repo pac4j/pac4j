@@ -26,6 +26,8 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.client.Google2Client.Google2Scope;
+import org.pac4j.oauth.profile.JsonList;
+import org.pac4j.oauth.profile.google2.Google2Email;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -38,7 +40,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * This class tests the {@link Google2Client} class by simulating a complete authentication.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
@@ -83,7 +85,7 @@ public class Google2ClientIT extends OAuthClientIT {
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup89");
+        passwd.setValueAttribute("testpwdscribeup90");
         final HtmlSubmitInput submit = form.getInputByName("signIn");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
@@ -94,6 +96,8 @@ public class Google2ClientIT extends OAuthClientIT {
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(Google2Profile.class);
+        kryo.register(JsonList.class);
+        kryo.register(Google2Email.class);
     }
 
     @Override
@@ -109,8 +113,8 @@ public class Google2ClientIT extends OAuthClientIT {
                 Gender.MALE, Locale.ENGLISH,
                 "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                 "https://plus.google.com/113675986756217860428", null);
-        assertTrue(profile.getVerifiedEmail());
         assertNull(profile.getBirthday());
-        assertEquals(10, profile.getAttributes().size());
+        assertTrue(profile.getEmails() != null && profile.getEmails().size() == 1);
+        assertEquals(9, profile.getAttributes().size());
     }
 }

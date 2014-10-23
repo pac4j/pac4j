@@ -16,14 +16,17 @@
 package org.pac4j.oauth.profile.google2;
 
 import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.oauth.profile.converter.JsonListConverter;
 
 /**
  * This class defines all the converters specific to Google (using OAuth 2.0 protocol).
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
 public final class Google2Converters {
-    
+
     public final static FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd");
+
+    public final static JsonListConverter listEmailConverter = new JsonListConverter(Google2Email.class);
 }
