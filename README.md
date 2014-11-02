@@ -46,8 +46,8 @@ It has a **very simple and unified API** to support these 6 authentication mecha
 2. CAS (1.0, 2.0, SAML, logout & proxy)
 3. HTTP (form & basic auth authentications)
 4. OpenID
-5. SAML (2.0) (*still experimental*)
-6. GAE UserService
+5. SAML (2.0)
+6. Google App Engine UserService.
 
 There are 7 libraries implementing **pac4j** for the following environments:
 
@@ -189,7 +189,7 @@ This module is based on the **pac4j-core** module and the [Google App Engine API
 
 ### Maven dependencies
 
-First, you have define the right dependency: pac4j-oauth for OAuth support or/and pac4j-cas for CAS support or/and pac4j-http for HTTP support or/and pac4j-openid for OpenID support or/and pac4j-saml for SAML support.
+First, you have define the right dependency: pac4j-oauth for OAuth support or/and pac4j-cas for CAS support or/and pac4j-http for HTTP support or/and pac4j-openid for OpenID support or/and pac4j-saml for SAML support or/and pac4j-gae for Google App Engine support.
 For example:
 
     <dependency>
@@ -422,15 +422,17 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 3. the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library to add multi-protocols client support to the [Apache Shiro project](http://shiro.apache.org)
 4. the [spring-security-pac4j](https://github.com/leleuj/spring-security-pac4j) library to add multi-protocols client support to [Spring Security](http://static.springsource.org/spring-security/site/)
 5. the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module to add multi-protocols client support to [Ratpack](http://www.ratpack.io/)
+6. the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module to add multi-protocols client support to [Vertx](http://vertx.io/)
 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
 <tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
-<tr><td>play-pac4j 1.2.1 / 1.1.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>j2e-pac4j 1.0.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
-<tr><td>buji-pac4j 1.2.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-pac4j 1.2.3</td><td>OAuth / CAS / OpenID / HTTP / SAML</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
+<tr><td>play-pac4j 1.3.0 / 1.2.2 / 1.1.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
+<tr><td>j2e-pac4j 1.0.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
+<tr><td>buji-pac4j 1.3.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
+<tr><td>spring-security-pac4j 1.2.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
 <tr><td>ratpack 0.9.7</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
+<tr><td>vertx-pac4j 1.0.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/vertx-pac4j-demo">vertx-pac4j-demo</a></td></tr>
 </table>
 
 
