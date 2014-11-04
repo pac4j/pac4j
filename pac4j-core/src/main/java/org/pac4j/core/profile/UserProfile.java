@@ -181,6 +181,36 @@ public class UserProfile implements Serializable {
     public void addPermission(final String permission) {
         this.permissions.add(permission);
     }
+
+    /**
+     * Check if the user has one of the expected roles.
+     *
+     * @param expectedRoles
+     * @return
+     */
+    public boolean hasAnyRole(final String[] expectedRoles) {
+        for (final String role: expectedRoles) {
+            if (this.roles.contains(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the user has all expected roles.
+     *
+     * @param expectedRoles
+     * @return
+     */
+    public boolean hasAllRoles(final String[] expectedRoles) {
+        for (final String role: expectedRoles) {
+            if (!this.roles.contains(role)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
     /**
      * Define if this profile is remembered.
