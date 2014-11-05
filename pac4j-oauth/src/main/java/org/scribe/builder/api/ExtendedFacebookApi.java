@@ -27,12 +27,12 @@ import org.scribe.utils.Preconditions;
  */
 public final class ExtendedFacebookApi extends StateApi20 {
     
-    private static final String AUTHORIZE_URL_WITH_STATE = "https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&state=%s";
+    private static final String AUTHORIZE_URL_WITH_STATE = "https://www.facebook.com/v2.2/dialog/oauth?client_id=%s&redirect_uri=%s&state=%s";
     private static final String SCOPED_AUTHORIZE_URL_WITH_STATE = AUTHORIZE_URL_WITH_STATE + "&scope=%s";
     
     @Override
     public String getAccessTokenEndpoint() {
-        return "https://graph.facebook.com/oauth/access_token";
+        return "https://graph.facebook.com/v2.2/oauth/access_token";
     }
     
     @Override
