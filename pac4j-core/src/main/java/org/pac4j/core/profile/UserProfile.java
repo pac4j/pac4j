@@ -189,6 +189,9 @@ public class UserProfile implements Serializable {
      * @return
      */
     public boolean hasAnyRole(final String[] expectedRoles) {
+        if (expectedRoles == null || expectedRoles.length == 0) {
+            return true;
+        }
         for (final String role: expectedRoles) {
             if (this.roles.contains(role)) {
                 return true;
@@ -204,6 +207,9 @@ public class UserProfile implements Serializable {
      * @return
      */
     public boolean hasAllRoles(final String[] expectedRoles) {
+        if (expectedRoles == null || expectedRoles.length == 0) {
+            return true;
+        }
         for (final String role: expectedRoles) {
             if (!this.roles.contains(role)) {
                 return false;

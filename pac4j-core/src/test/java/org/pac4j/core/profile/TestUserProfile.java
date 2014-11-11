@@ -100,6 +100,18 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         assertTrue(profile.hasAnyRole(new String[] { ROLE1 }));
     }
 
+    public void testHasAnyRoleNull() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        assertTrue(profile.hasAnyRole(null));
+    }
+
+    public void testHasAnyRoleEmpty() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        assertTrue(profile.hasAnyRole(new String[] { }));
+    }
+
     public void testHasAnyRoleOkTwoRoles() {
         final UserProfile profile = new UserProfile();
         profile.addRole(ROLE1);
@@ -118,6 +130,20 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
         assertTrue(profile.hasAllRoles(new String[] { ROLE3, ROLE1 }));
+    }
+
+    public void testHasAllRolesNull() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE3);
+        assertTrue(profile.hasAllRoles(null));
+    }
+
+    public void testHasAllRolesEmpty() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE3);
+        assertTrue(profile.hasAllRoles(new String[] {}));
     }
 
     public void testHasAllRolesFail() {
