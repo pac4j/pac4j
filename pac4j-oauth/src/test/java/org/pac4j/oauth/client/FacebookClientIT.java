@@ -55,7 +55,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @since 1.0.0
  */
 public class FacebookClientIT extends OAuthClientIT {
-    
+
     @Override
     public void testClone() {
         final FacebookClient oldClient = new FacebookClient();
@@ -67,13 +67,13 @@ public class FacebookClientIT extends OAuthClientIT {
         assertEquals(oldClient.getFields(), client.getFields());
         assertEquals(oldClient.getLimit(), client.getLimit());
     }
-    
+
     public void testMissingFields() {
         final FacebookClient client = (FacebookClient) getClient();
         client.setFields(null);
         TestsHelper.initShouldFail(client, "fields cannot be blank");
     }
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {
@@ -82,13 +82,13 @@ public class FacebookClientIT extends OAuthClientIT {
         facebookClient.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
         facebookClient.setCallbackUrl(PAC4J_URL);
         facebookClient
-            .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups,user_actions.music");
+                .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups,user_actions.music");
         facebookClient.setFields(FacebookClient.DEFAULT_FIELDS
-                                 + ",friends,movies,music,books,likes,albums,events,groups,music.listens,picture");
+                + ",friends,movies,music,books,likes,albums,events,groups,music.listens,picture");
         facebookClient.setLimit(100);
         return facebookClient;
     }
-    
+
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
@@ -102,7 +102,7 @@ public class FacebookClientIT extends OAuthClientIT {
         logger.debug("callbackUrl : {}", callbackUrl);
         return callbackUrl;
     }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(FacebookProfile.class);
@@ -120,24 +120,24 @@ public class FacebookClientIT extends OAuthClientIT {
         kryo.register(FacebookPicture.class);
         kryo.register(FacebookPhoto.class);
     }
-    
+
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
         final FacebookProfile profile = (FacebookProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("100003571536393", profile.getId());
         assertEquals(FacebookProfile.class.getSimpleName() + UserProfile.SEPARATOR + "100003571536393",
-                     profile.getTypedId());
+                profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null,
-                            Gender.MALE, Locale.FRANCE, "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-",
-                            "https://www.facebook.com/jerome.testscribeup", "New York, New York");
+        assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null, Gender.MALE,
+                Locale.FRANCE, "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-",
+                "http://www.facebook.com/100003571536393", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertTrue(StringUtils.isNotBlank(profile.getThirdPartyId()));
-        assertEquals(2, profile.getTimezone().intValue());
+        assertEquals(1, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getBio());
         assertEquals("03/10/1979", profile.getBirthday().toString());
@@ -187,14 +187,14 @@ public class FacebookClientIT extends OAuthClientIT {
         final FacebookInfo music = musics.get(0);
         assertEquals("Hard rock", music.getName());
         assertEquals("112175695466436", music.getId());
-        assertEquals("Movie genre", music.getCategory());
+        assertEquals("Musical genre", music.getCategory());
         assertEquals(1330030350000L, music.getCreatedTime().getTime());
         final List<FacebookInfo> books = profile.getBooks();
         assertEquals(1, books.size());
         final FacebookInfo book = books.get(0);
         assertEquals("Science fiction", book.getName());
         assertEquals("108157509212483", book.getId());
-        assertEquals("Tv genre", book.getCategory());
+        assertEquals("Interest", book.getCategory());
         assertEquals(1330030350000L, book.getCreatedTime().getTime());
         final List<FacebookInfo> likes = profile.getLikes();
         assertEquals(8, likes.size());
@@ -212,7 +212,7 @@ public class FacebookClientIT extends OAuthClientIT {
         assertEquals("Jerome Testscribeup", from.getName());
         assertEquals("Profile Pictures", album.getName());
         assertEquals("https://www.facebook.com/album.php?fbid=168023009993416&id=100003571536393&aid=34144",
-                     album.getLink());
+                album.getLink());
         assertEquals("168023156660068", album.getCoverPhoto());
         assertEquals("everyone", album.getPrivacy());
         assertEquals(1, album.getCount().intValue());
@@ -237,9 +237,9 @@ public class FacebookClientIT extends OAuthClientIT {
         assertTrue(group.getAdministrator());
         assertEquals(1, group.getBookmarkOrder().intValue());
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
-        assertEquals(4, musicListens.size());
+        assertNull(musicListens);
         final FacebookPicture picture = profile.getPicture();
         assertFalse(picture.getIsSilhouette());
-        assertEquals(36, profile.getAttributes().size());
+        assertEquals(35, profile.getAttributes().size());
     }
 }
