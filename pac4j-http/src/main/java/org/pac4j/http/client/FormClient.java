@@ -107,7 +107,7 @@ public class FormClient extends BaseHttpClient {
                 redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
                 logger.debug("redirectionUrl : {}", redirectionUrl);
                 final String message = "Credentials validation fails -> return to the form with error";
-                logger.error(message);
+                logger.debug(message);
                 throw RequiresHttpAction.redirect(message, context, redirectionUrl);
             }
             
@@ -117,7 +117,7 @@ public class FormClient extends BaseHttpClient {
         redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         final String message = "Username and password cannot be blank -> return to the form with error";
-        logger.error(message);
+        logger.debug(message);
         throw RequiresHttpAction.redirect(message, context, redirectionUrl);
     }
     
