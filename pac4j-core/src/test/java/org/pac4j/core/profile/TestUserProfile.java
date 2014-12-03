@@ -109,7 +109,7 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
     public void testHasAnyRoleEmpty() {
         final UserProfile profile = new UserProfile();
         profile.addRole(ROLE1);
-        assertTrue(profile.hasAnyRole(new String[] { }));
+        assertTrue(profile.hasAnyRole(new String[] {}));
     }
 
     public void testHasAnyRoleOkTwoRoles() {
@@ -151,5 +151,52 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         profile.addRole(ROLE1);
         profile.addRole(ROLE2);
         assertFalse(profile.hasAllRoles(new String[] { ROLE3, ROLE1 }));
+    }
+
+    public void testHasAccessEmpty() {
+        final UserProfile profile = new UserProfile();
+        assertTrue(profile.hasAccess(null, null));
+    }
+
+    public void testHasAccessAnyRoleOk() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE2);
+        assertTrue(profile.hasAccess(ROLE2, null));
+    }
+
+    public void testHasAccessAnyRoleKo() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE2);
+        assertFalse(profile.hasAccess(ROLE3, null));
+    }
+
+    public void testHasAccessAllRoleOk() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE2);
+        assertTrue(profile.hasAccess(null, ROLE1 + "," + ROLE2));
+    }
+
+    public void testHasAccessAllRoleKo() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE2);
+        assertFalse(profile.hasAccess(null, ROLE1 + "," + ROLE2 + "," + ROLE3));
+    }
+
+    public void testHasAccessAnyRoleOkAndAllRole() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE2);
+        assertTrue(profile.hasAccess(ROLE2, ROLE1 + "," + ROLE2 + "," + ROLE3));
+    }
+
+    public void testHasAccessAnyRoleKoAndAllRole() {
+        final UserProfile profile = new UserProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE2);
+        assertFalse(profile.hasAccess(ROLE3, ROLE1 + "," + ROLE2 + "," + ROLE3));
     }
 }

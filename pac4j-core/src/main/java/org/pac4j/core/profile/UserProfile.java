@@ -35,23 +35,23 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public class UserProfile implements Serializable {
-    
+
     private static final long serialVersionUID = 9020114478664816338L;
-    
+
     protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
-    
+
     private String id;
-    
+
     private final Map<String, Object> attributes = new HashMap<String, Object>();
-    
+
     public transient static final String SEPARATOR = "#";
-    
+
     private boolean isRemembered = false;
-    
+
     private final List<String> roles = new ArrayList<String>();
-    
+
     private final List<String> permissions = new ArrayList<String>();
-    
+
     /**
      * Build a profile from user identifier and attributes.
      * 
@@ -62,7 +62,7 @@ public class UserProfile implements Serializable {
         setId(id);
         addAttributes(attributes);
     }
-    
+
     /**
      * Return the attributes definition for this user profile. Null for this (generic) user profile.
      * 
@@ -71,7 +71,7 @@ public class UserProfile implements Serializable {
     protected AttributesDefinition getAttributesDefinition() {
         return null;
     }
-    
+
     /**
      * Add an attribute and perform conversion if necessary.
      * 
@@ -83,22 +83,20 @@ public class UserProfile implements Serializable {
             final AttributesDefinition definition = getAttributesDefinition();
             // no attributes definition -> no conversion
             if (definition == null) {
-                logger.debug("no conversion => key : {} / value : {} / {}", new Object[] {
-                    key, value, value.getClass()
-                });
+                logger.debug("no conversion => key : {} / value : {} / {}",
+                        new Object[] { key, value, value.getClass() });
                 this.attributes.put(key, value);
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
-                    logger.debug("converted to => key : {} / value : {} / {}", new Object[] {
-                        key, value, value.getClass()
-                    });
+                    logger.debug("converted to => key : {} / value : {} / {}",
+                            new Object[] { key, value, value.getClass() });
                     this.attributes.put(key, value);
                 }
             }
         }
     }
-    
+
     /**
      * Add attributes.
      * 
@@ -109,7 +107,7 @@ public class UserProfile implements Serializable {
             addAttribute(key, attributes.get(key));
         }
     }
-    
+
     /**
      * Set the identifier and convert it if necessary.
      * 
@@ -126,7 +124,7 @@ public class UserProfile implements Serializable {
             this.id = sId;
         }
     }
-    
+
     /**
      * Get the user identifier. This identifier is unique for this provider but not necessarily through all providers.
      * 
@@ -135,7 +133,7 @@ public class UserProfile implements Serializable {
     public String getId() {
         return this.id;
     }
-    
+
     /**
      * Get the user identifier with a prefix which is the profile type. This identifier is unique through all providers.
      * 
@@ -144,7 +142,7 @@ public class UserProfile implements Serializable {
     public String getTypedId() {
         return this.getClass().getSimpleName() + SEPARATOR + this.id;
     }
-    
+
     /**
      * Get attributes as immutable map.
      * 
@@ -153,7 +151,7 @@ public class UserProfile implements Serializable {
     public Map<String, Object> getAttributes() {
         return Collections.unmodifiableMap(this.attributes);
     }
-    
+
     /**
      * Return the attribute with name.
      * 
@@ -163,7 +161,7 @@ public class UserProfile implements Serializable {
     public Object getAttribute(final String name) {
         return this.attributes.get(name);
     }
-    
+
     /**
      * Add a role.
      * 
@@ -172,7 +170,7 @@ public class UserProfile implements Serializable {
     public void addRole(final String role) {
         this.roles.add(role);
     }
-    
+
     /**
      * Add a permission.
      * 
@@ -180,6 +178,30 @@ public class UserProfile implements Serializable {
      */
     public void addPermission(final String permission) {
         this.permissions.add(permission);
+    }
+
+    /**
+     * Check if the user has access to the resource protected by the requireAnyRole or requireAllRoles parameters.
+     * You can pass null values for the parameters you want to ignore.
+     * 
+     * @param requireAnyRole
+     * @param requireAllRoles
+     */
+    public boolean hasAccess(final String requireAnyRole, final String requireAllRoles) {
+        boolean access = true;
+        if (CommonHelper.isNotBlank(requireAnyRole)) {
+            final String[] expectedRoles = requireAnyRole.split(",");
+            if (!this.hasAnyRole(expectedRoles)) {
+                access = false;
+            }
+        } else if (CommonHelper.isNotBlank(requireAllRoles)) {
+            final String[] expectedRoles = requireAllRoles.split(",");
+            if (!this.hasAllRoles(expectedRoles)) {
+                access = false;
+            }
+        }
+
+        return access;
     }
 
     /**
@@ -192,7 +214,7 @@ public class UserProfile implements Serializable {
         if (expectedRoles == null || expectedRoles.length == 0) {
             return true;
         }
-        for (final String role: expectedRoles) {
+        for (final String role : expectedRoles) {
             if (this.roles.contains(role)) {
                 return true;
             }
@@ -210,14 +232,14 @@ public class UserProfile implements Serializable {
         if (expectedRoles == null || expectedRoles.length == 0) {
             return true;
         }
-        for (final String role: expectedRoles) {
+        for (final String role : expectedRoles) {
             if (!this.roles.contains(role)) {
                 return false;
             }
         }
         return true;
     }
-    
+
     /**
      * Define if this profile is remembered.
      * 
@@ -226,7 +248,7 @@ public class UserProfile implements Serializable {
     public void setRemembered(final boolean rme) {
         this.isRemembered = rme;
     }
-    
+
     /**
      * Get the roles of the user.
      * 
@@ -235,7 +257,7 @@ public class UserProfile implements Serializable {
     public List<String> getRoles() {
         return Collections.unmodifiableList(this.roles);
     }
-    
+
     /**
      * Get the permissions of the user.
      * 
@@ -244,7 +266,7 @@ public class UserProfile implements Serializable {
     public List<String> getPermissions() {
         return Collections.unmodifiableList(this.permissions);
     }
-    
+
     /**
      * Is the user remembered?
      * 
@@ -253,10 +275,10 @@ public class UserProfile implements Serializable {
     public boolean isRemembered() {
         return this.isRemembered;
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
-                                     this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered);
+                this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered);
     }
 }
