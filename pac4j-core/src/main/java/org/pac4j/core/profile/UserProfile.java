@@ -191,13 +191,11 @@ public class UserProfile implements Serializable {
         boolean access = true;
         if (CommonHelper.isNotBlank(requireAnyRole)) {
             final String[] expectedRoles = requireAnyRole.split(",");
-            // not the expected role -> 403
             if (!this.hasAnyRole(expectedRoles)) {
                 access = false;
             }
         } else if (CommonHelper.isNotBlank(requireAllRoles)) {
             final String[] expectedRoles = requireAllRoles.split(",");
-            // not all the expected roles -> 403
             if (!this.hasAllRoles(expectedRoles)) {
                 access = false;
             }
