@@ -54,16 +54,12 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * <p />
      * If an authentication has already been tried for this client and has failed (previous <code>null</code> credentials) and if the target
      * is protected (<code>protectedTarget</code> set to <code>true</code>), a forbidden response (403 HTTP status code) is returned.
-     * <p />
-     * If the request is an AJAX one (<code>ajaxRequest</code> parameter set to <code>true</code>), an authorized response (401 HTTP status
-     * code) is returned instead of a redirection.
      * 
      * @param context
      * @param protectedTarget
-     * @param ajaxRequest
      * @throws RequiresHttpAction
      */
-    public void redirect(WebContext context, boolean protectedTarget, boolean ajaxRequest) throws RequiresHttpAction;
+    public void redirect(WebContext context, boolean protectedTarget) throws RequiresHttpAction;
 
     /**
      * Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown instead:<br />

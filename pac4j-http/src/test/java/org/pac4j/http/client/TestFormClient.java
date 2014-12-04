@@ -38,7 +38,7 @@ import org.pac4j.http.profile.UsernameProfileCreator;
  * @since 1.4.0
  */
 public final class TestFormClient extends TestCase implements TestsConstants {
-    
+
     public void testClone() {
         final FormClient oldClient = new FormClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
@@ -57,34 +57,34 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
         assertEquals(oldClient.getUsernamePasswordAuthenticator(), client.getUsernamePasswordAuthenticator());
     }
-    
+
     public void testMissingUsernamePasswordAuthenticator() {
         final FormClient formClient = new FormClient(LOGIN_URL, null, new UsernameProfileCreator());
         TestsHelper.initShouldFail(formClient, "usernamePasswordAuthenticator cannot be null");
     }
-    
+
     public void testMissingProfileCreator() {
         final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
     }
-    
+
     public void testMissingLoginUrl() {
         final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator(),
-                                                     new UsernameProfileCreator());
+                new UsernameProfileCreator());
         TestsHelper.initShouldFail(formClient, "loginUrl cannot be blank");
     }
-    
+
     private FormClient getFormClient() {
         return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator());
     }
-    
+
     public void testRedirectionUrl() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
-        formClient.redirect(context, false, false);
+        formClient.redirect(context, false);
         assertEquals(LOGIN_URL, context.getResponseLocation());
     }
-    
+
     public void testGetCredentialsMissingUsername() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
@@ -95,11 +95,11 @@ public final class TestFormClient extends TestCase implements TestsConstants {
             assertEquals("Username and password cannot be blank -> return to the form with error", e.getMessage());
             assertEquals(302, context.getResponseStatus());
             assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                         + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context
-                .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+                    + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
+                    .get(HttpConstants.LOCATION_HEADER));
         }
     }
-    
+
     public void testGetCredentialsMissingPassword() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
@@ -110,42 +110,40 @@ public final class TestFormClient extends TestCase implements TestsConstants {
             assertEquals("Username and password cannot be blank -> return to the form with error", e.getMessage());
             assertEquals(302, context.getResponseStatus());
             assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
-                             + FormClient.MISSING_FIELD_ERROR,
-                         context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+                    + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
         }
     }
-    
+
     public void testGetCredentials() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
             formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
+                    .addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
             fail("should fail");
         } catch (final RequiresHttpAction e) {
             assertEquals("Credentials validation fails -> return to the form with error", e.getMessage());
             assertEquals(302, context.getResponseStatus());
             assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                         + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
-                .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+                    + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
+                    .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
         }
     }
-    
+
     public void testGetRightCredentials() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
-            .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-            .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
+                .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+                .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }
-    
+
     public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
-                                                                                              formClient.getName()),
-                                                              context);
+                formClient.getName()), context);
         assertEquals(USERNAME, profile.getId());
         assertEquals(HttpProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
