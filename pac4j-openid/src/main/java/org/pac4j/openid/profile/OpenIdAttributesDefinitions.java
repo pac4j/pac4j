@@ -16,7 +16,6 @@
 package org.pac4j.openid.profile;
 
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.openid.profile.google.GoogleOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
 
 /**
@@ -27,6 +26,5 @@ import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
  */
 public final class OpenIdAttributesDefinitions {
     
-    public static final AttributesDefinition googleOpenIdDefinition = new GoogleOpenIdAttributesDefinition();
     public static final AttributesDefinition yahooOpenIdDefinition = new YahooOpenIdAttributesDefinition();
 }

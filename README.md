@@ -178,7 +178,6 @@ This module is based on the **pac4j-core** module and the [Google App Engine API
 <tr><td>ORCiD</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>OrcidClient</td><td>OrcidProfile</td></tr>
 <tr><td>Web sites with basic auth authentication</td><td>HTTP</td><td>pac4j-http</td><td>BasicAuthClient</td><td>HttpProfile</td></tr>
 <tr><td>Web sites with form authentication</td><td>HTTP</td><td>pac4j-http</td><td>FormClient</td><td>HttpProfile</td></tr>
-<tr><td>Google - Deprecated</td><td>OpenID</td><td>pac4j-openid</td><td>GoogleOpenIdClient</td><td>GoogleOpenIdProfile</td></tr>
 <tr><td>Yahoo</td><td>OpenID</td><td>pac4j-openid</td><td>YahooOpenIdClient</td><td>YahooOpenIdProfile</td></tr>
 <tr><td>SAML Identity Provider</td><td>SAML 2.0</td><td>pac4j-saml</td><td>Saml2Client</td><td>Saml2Profile</td></tr>
 <tr><td>Google App Engine User Service</td><td>Gae User Service Mechanism</td><td>pac4j-gae</td><td>GaeUserServiceClient</td><td>GaeUserServiceProfile</td></tr>
@@ -289,12 +288,12 @@ To use basic auth authentication in a web application, you should use the *org.p
 
 ### OpenID support
 
-To use Google and OpenID for authentication, you should use the *org.pac4j.openid.client.GoogleOpenIdClient* class:
+To use Yahoo and OpenID for authentication, you should use the *org.pac4j.openid.client.YahooOpenIdClient* class:
 
     // declare the client
-    GoogleOpenIdClient client = new GoogleOpenIdClient();
+    YahooOpenIdClient client = new YahooOpenIdClient();
     client.setCallbackUrl("/callbackUrl");
-    // send the user to Google for authentication
+    // send the user to Yahoo for authentication
     WebContext context = new J2EContext(request, response);
     // we assume the user identifier is in the "openIdUser" request parameter
     client.redirect(context, false, false);
@@ -303,8 +302,8 @@ To use Google and OpenID for authentication, you should use the *org.pac4j.openi
 
     // get the OpenID credentials
     OpenIdCredentials credentials = client.getCredentials(context);
-    // get the GooglOpenID profile
-    GoogleOpenIdProfile profile = client.getUserProfile(credentials, context);
+    // get the YahooOpenID profile
+    YahooOpenIdProfile profile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + profile.getDisplayName());
 
 ### SAML support
@@ -391,7 +390,7 @@ If you want to interact more with the OAuth providers (like Facebook), you can r
 
 You can also group all clients on a single callback url by using the *org.pac4j.core.client.Clients* class:
 
-    Clients clients = new Clients("http://server/app/callbackUrl", fbClient, casClient, formClient googleOpenIdClient, samlClient);
+    Clients clients = new Clients("http://server/app/callbackUrl", fbClient, casClient, formClient yahooOpenIdClient, samlClient);
     // on the callback url, retrieve the right client
     Client client = clients.findClient(context);
 
