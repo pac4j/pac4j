@@ -34,7 +34,7 @@ import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
  * <p />
  * It returns a {@link org.pac4j.openid.profile.yahoo.YahooOpenIdProfile}.
  * 
- * @see org.pac4j.openid.profile.google.GoogleOpenIdProfile
+ * @see org.pac4j.openid.profile.yahoo.YahooOpenIdProfile
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
@@ -83,7 +83,7 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
-            for (final String name : OpenIdAttributesDefinitions.googleOpenIdDefinition.getAllAttributes()) {
+            for (final String name : OpenIdAttributesDefinitions.yahooOpenIdDefinition.getAllAttributes()) {
                 profile.addAttribute(name, fetchResp.getAttributeValue(name));
             }
         }
