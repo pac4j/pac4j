@@ -46,7 +46,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         Saml2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        RedirectAction action = client.getRedirectAction(context, true);
         assertTrue(getInflatedAuthnRequest(action.getLocation())
                 .contains(
                         "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
@@ -57,7 +57,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         Saml2Client client = getClient();
         client.setForceAuth(true);
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        RedirectAction action = client.getRedirectAction(context, true);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
     }
 
@@ -66,17 +66,19 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         Saml2Client client = getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        RedirectAction action = client.getRedirectAction(context, true);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
 
     @Test
-    public void testNameIdPolicyFormat() throws Exception{
+    public void testNameIdPolicyFormat() throws Exception {
         Saml2Client client = getClient();
         client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
+        RedirectAction action = client.getRedirectAction(context, true);
+        assertTrue(getInflatedAuthnRequest(action.getLocation())
+                .contains(
+                        "<saml2p:NameIDPolicy AllowCreate=\"true\" Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
     }
 
     @Test
@@ -85,8 +87,10 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>"));
+        RedirectAction action = client.getRedirectAction(context, true);
+        assertTrue(getInflatedAuthnRequest(action.getLocation())
+                .contains(
+                        "<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>"));
     }
 
     @Test
@@ -94,7 +98,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         Saml2Client client = getClient();
         WebContext context = MockWebContext.create();
         context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        RedirectAction action = client.getRedirectAction(context, true);
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }
 

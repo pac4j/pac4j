@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
- * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if it's false, the
+ * {@link #redirect(WebContext, boolean)} method will always return the redirection to the provider where as if it's false, the
  * redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
  * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
  * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean, boolean)} must be used with <code>true</code> for the
@@ -127,9 +127,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
 
-    public final void redirect(final WebContext context, final boolean requiresAuthentication, final boolean ajaxRequest)
+    public final void redirect(final WebContext context, final boolean requiresAuthentication)
             throws RequiresHttpAction {
-        final RedirectAction action = getRedirectAction(context, requiresAuthentication, ajaxRequest);
+        final RedirectAction action = getRedirectAction(context, requiresAuthentication);
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
             context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
@@ -141,7 +141,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     /**
      * Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
-     * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
+     * {@link #redirect(WebContext, boolean)} should be generally called instead.
      * 
      * @param context
      * @param requiresAuthentication
@@ -149,13 +149,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @return the redirection action
      * @throws RequiresHttpAction
      */
-    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication,
-            final boolean ajaxRequest) throws RequiresHttpAction {
+    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication)
+            throws RequiresHttpAction {
         init();
-        // it's an AJAX request -> unauthorized (instead of a redirection)
-        if (ajaxRequest) {
-            throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
-        }
+
         // authentication has already been tried
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
@@ -185,7 +182,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     public String getRedirectionUrl(final WebContext context) {
         try {
-            return getRedirectAction(context, false, false).getLocation();
+            return getRedirectAction(context, false).getLocation();
         } catch (final RequiresHttpAction e) {
             return null;
         }
