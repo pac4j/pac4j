@@ -13,6 +13,7 @@
     - [pac4j-openid](#pac4j-openid)
     - [pac4j-saml](#pac4j-saml)
     - [pac4j-gae](#pac4j-gae)
+    - [pac4j-oidc](#pac4j-oidc)
     - [pac4j-test-cas](#pac4j-test-cas)
 - [Providers supported](#providers-supported)
 - [Code sample](#code-sample)
@@ -48,6 +49,7 @@ It has a **very simple and unified API** to support these 6 authentication mecha
 4. OpenID
 5. SAML (2.0)
 6. Google App Engine UserService.
+7. OpenID Connect 1.0
 
 There are 7 libraries implementing **pac4j** for the following environments:
 
@@ -155,6 +157,15 @@ This module is dedicated to Gae connexion login mechanism support:
 
 This module is based on the **pac4j-core** module and the [Google App Engine API](http://appengine.google.com) library.
 
+#### pac4j-oidc
+
+This module is dedicated to OpenID Connect 1.0 support:
+
+* the *OidcClient* class is the client for integrating with an OpenID Connect compliant Provider
+* the *OidcCredentials* class is the credentials for OpenID Connect support
+* the *OidcProfile* class is the user profile returned by the *OidcClient*.
+
+This module is based on the **pac4j-core** module and the excellent [Nimbus OAuth 2.0 SDK with OpenID Connect extensions](http://connect2id.com/products/nimbus-oauth-openid-connect-sdk).
 
 ## Providers supported
 
@@ -181,6 +192,7 @@ This module is based on the **pac4j-core** module and the [Google App Engine API
 <tr><td>Yahoo</td><td>OpenID</td><td>pac4j-openid</td><td>YahooOpenIdClient</td><td>YahooOpenIdProfile</td></tr>
 <tr><td>SAML Identity Provider</td><td>SAML 2.0</td><td>pac4j-saml</td><td>Saml2Client</td><td>Saml2Profile</td></tr>
 <tr><td>Google App Engine User Service</td><td>Gae User Service Mechanism</td><td>pac4j-gae</td><td>GaeUserServiceClient</td><td>GaeUserServiceProfile</td></tr>
+<tr><td>OpenID Connect Provider</td><td>OpenID Connect 1.0</td><td>pac4j-oidc</td><td>OidcClient</td><td>OidcProfile</td></tr>
 </table>
 
 
@@ -370,6 +382,41 @@ To use the Google App Engine authentication, you should use the *org.pac4j.gae.c
     // get the GooglOpenID profile
     GaeUserServiceProfile profile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + profile.getDisplayName());
+
+### OpenID Connect support
+
+For integrating an application with an OpenID Connect Provider server, you should use the *org.pac4j.oidc.client.OidcClient*:
+
+    // build the client
+    final OidcClient client = new OidcClient();
+    // set client ID
+    client.setClientID("xxx.apps.googleusercontent.com");
+    // set secret
+    client.setSecret("yyy");
+    // set discovery URI
+    client.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
+
+    // send the user to the OpenID Connect Provider server for authentication
+    WebContext context = new J2EContext(request, response);
+    client.redirect(context, false);
+
+...after successful authentication, in the client application, on the callback url...
+
+    // get OpenID Connect credentials
+    OidcCredentials credentials = client.getCredentials(context);
+    // get the OpenID Connect profile
+    OidcProfile oidcProfile = client.getUserProfile(credentials, context);
+
+#### Additional configuration:
+
+You can set additional parameters by using the `addCustomParam(String key, String value)` method. For instance:
+
+    // use nonce in authentication request
+    client.addCustomParam("useNonce", "true");
+    // select display mode: page, popup, touch, and wap
+    client.addCustomParam("display", "popup");
+    // select prompt mode: none, consent, select_account
+    client.addCustomParam("prompt", "none");
 
 ### Multiple clients
 

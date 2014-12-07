@@ -73,6 +73,7 @@
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
 		<module>pac4j-gae</module>
+		<module>pac4j-oidc</module>
 	</modules>
 
 	<dependencyManagement>
