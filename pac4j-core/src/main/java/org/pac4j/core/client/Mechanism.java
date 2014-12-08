@@ -22,6 +22,7 @@ package org.pac4j.core.client;
  * @since 1.4.0
  */
 public enum Mechanism {
+    // @formatter:off
     OAUTH_PROTOCOL,
     CAS_PROTOCOL,
     OPENID_PROTOCOL,
@@ -29,5 +30,7 @@ public enum Mechanism {
     BASICAUTH_MECHANISM,
     SAML_PROTOCOL,
     JANRAIN_MECHANISM,
-    GAE_MECHANISM
+    GAE_MECHANISM,
+    OPENID_CONNECT_PROTOCOL
+    // @formatter:on
 }
