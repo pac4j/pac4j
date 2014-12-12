@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class SimpleTestUsernamePasswordAuthenticator implements UsernamePasswordAuthenticator {
-    
+
     protected static final Logger logger = LoggerFactory.getLogger(SimpleTestUsernamePasswordAuthenticator.class);
-    
+
+    @Override
     public void validate(final UsernamePasswordCredentials credentials) {
         if (credentials == null) {
             throwsException("No credential");
@@ -46,7 +47,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
             throwsException("Username : '" + username + "' does not match password");
         }
     }
-    
+
     protected void throwsException(final String message) {
         logger.error(message);
         throw new CredentialsException(message);

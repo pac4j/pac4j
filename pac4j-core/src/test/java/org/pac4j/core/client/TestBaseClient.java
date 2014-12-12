@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package org.pac4j.core.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 
@@ -35,9 +37,23 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
     public void testClone() {
         final BaseClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials>(TYPE);
         oldClient.setCallbackUrl(CALLBACK_URL);
+        oldClient.setAuthenticator(new Authenticator<Credentials>() {
+            @Override
+            public void validate(Credentials credentials) {
+            }
+        });
+        oldClient.setProfileCreator(new ProfileCreator<Credentials, CommonProfile>() {
+            @Override
+            public CommonProfile create(Credentials credentials) {
+                return null;
+            }
+        });
         final BaseClient<Credentials, CommonProfile> newClient = oldClient.clone();
         assertEquals(oldClient.getName(), newClient.getName());
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
+        assertEquals(oldClient.getAuthenticator(), newClient.getAuthenticator());
+        assertEquals(oldClient.getProfileCreator(), newClient.getProfileCreator());
+        assertEquals(oldClient.getAuthorizationGenerators(), newClient.getAuthorizationGenerators());
     }
 
     public void testDirectClient() throws RequiresHttpAction {

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.pac4j.http.client;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -28,8 +27,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.ProfileCreator;
+import org.pac4j.http.profile.UsernameProfileCreator;
 
 /**
  * This class is the client to authenticate users through HTTP basic auth.
@@ -46,35 +44,39 @@ import org.pac4j.http.profile.ProfileCreator;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class BasicAuthClient extends BaseHttpClient {
-
-    private String realmName = "authentication required";
+public class BasicAuthClient extends HeaderClient<UsernamePasswordCredentials> {
 
     public BasicAuthClient() {
+        this(null, null);
     }
 
     public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
-        setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
+        this(usernamePasswordAuthenticator, null);
     }
 
     public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final ProfileCreator profilePopulator) {
-        setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
+            final UsernameProfileCreator profilePopulator) {
+        setRealmName("authentication required");
+        setHeaderName(HttpConstants.AUTHORIZATION_HEADER);
+        setPrefixHeader("Basic");
+        setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
-    }
-
-    @Override
-    protected BaseClient<UsernamePasswordCredentials, HttpProfile> newClient() {
-        final BasicAuthClient newClient = new BasicAuthClient();
-        newClient.setRealmName(this.realmName);
-        return newClient;
     }
 
     @Override
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotBlank("realmName", this.realmName);
+        CommonHelper.assertNotBlank("realmName", getRealmName());
+    }
+
+    @Override
+    protected BasicAuthClient newClient() {
+        final BasicAuthClient newClient = new BasicAuthClient();
+        newClient.setRealmName(getRealmName());
+        newClient.setHeaderName(getHeaderName());
+        newClient.setPrefixHeader(getPrefixHeader());
+        return newClient;
     }
 
     @Override
@@ -83,15 +85,8 @@ public class BasicAuthClient extends BaseHttpClient {
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
-        final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
-        if (header == null || !header.startsWith("Basic ")) {
-            logger.warn("No basic auth found");
-            throw RequiresHttpAction.unauthorized("Requires basic auth (no basic auth header found)", context,
-                    this.realmName);
-        }
-        final String base64Token = header.substring(6);
-        final byte[] decoded = Base64.decodeBase64(base64Token);
+    protected UsernamePasswordCredentials retrieveCredentialsFromHeader(String header) {
+        final byte[] decoded = Base64.decodeBase64(header);
 
         String token;
         try {
@@ -104,41 +99,18 @@ public class BasicAuthClient extends BaseHttpClient {
         if (delim < 0) {
             throw new CredentialsException("Bad format of the basic auth header");
         }
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(token.substring(0, delim),
+        return new UsernamePasswordCredentials(token.substring(0, delim),
                 token.substring(delim + 1), getName());
-        logger.debug("usernamePasswordCredentials : {}", credentials);
-        try {
-            // validate credentials
-            this.usernamePasswordAuthenticator.validate(credentials);
-        } catch (final RuntimeException e) {
-            logger.error("Credentials validation fails", e);
-            throw RequiresHttpAction.unauthorized("Requires basic auth (credentials validation fails)", context,
-                    this.realmName);
-        }
-
-        return credentials;
-    }
-
-    public String getRealmName() {
-        return this.realmName;
-    }
-
-    public void setRealmName(final String realmName) {
-        this.realmName = realmName;
     }
 
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
-                this.realmName, "usernamePasswordAuthenticator", getUsernamePasswordAuthenticator(), "profileCreator",
+                getRealmName(), "headerName", getHeaderName(), "prefixHeader", getPrefixHeader(), "authenticator",
+                getAuthenticator(), "profileCreator",
                 getProfileCreator());
     }
 
-    @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-    
     @Override
     public Mechanism getMechanism() {
         return Mechanism.BASICAUTH_MECHANISM;

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package org.pac4j.http.profile;
 
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileCreator;
+import org.pac4j.http.credentials.UsernamePasswordCredentials;
 
 /**
  * This class is a profile creator which creates a HTTP profile with username set.
@@ -23,15 +25,14 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class UsernameProfileCreator implements ProfileCreator {
-    
+public class UsernameProfileCreator implements ProfileCreator<UsernamePasswordCredentials, HttpProfile> {
+
     /**
-     * Create a HTTP profile.
-     * 
-     * @param username
-     * @return the created profile
+     * {@inheritDoc}
      */
-    public HttpProfile create(final String username) {
+    @Override
+    public HttpProfile create(UsernamePasswordCredentials credentials) {
+        String username = credentials.getUsername();
         final HttpProfile profile = new HttpProfile();
         profile.setId(username);
         profile.addAttribute(CommonProfile.USERNAME, username);
