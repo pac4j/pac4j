@@ -4,28 +4,9 @@
 
 - [What is pac4j ?](#what-is-pac4j--)
 - [The "big picture"](#the-big-picture)
-- [Sequence diagram (example: CAS)](#sequence-diagram-example-cas)
 - [Technical description](#technical-description)
-    - [pac4j-core](#pac4j-core)
-    - [pac4j-oauth](#pac4j-oauth)
-    - [pac4j-cas](#pac4j-cas)
-    - [pac4j-http](#pac4j-http)
-    - [pac4j-openid](#pac4j-openid)
-    - [pac4j-saml](#pac4j-saml)
-    - [pac4j-gae](#pac4j-gae)
-    - [pac4j-oidc](#pac4j-oidc)
-    - [pac4j-test-cas](#pac4j-test-cas)
 - [Providers supported](#providers-supported)
 - [Code sample](#code-sample)
-    - [Maven dependencies](#maven-dependencies)
-    - [OAuth support](#oauth-support)
-    - [CAS support](#cas-support)
-    - [HTTP support](#http-support)
-    - [OpenID support](#openid-support)
-    - [SAML support](#saml-support)
-    - [Multiple clients](#multiple-clients)
-    - [Error handling](#error-handling)
-    - [Authorizations](#authorizations)
 - [Libraries built with pac4j](#libraries-built-with-pac4j)
 - [Versions](#versions)
 - [Testing](#testing)
@@ -35,23 +16,55 @@
 
 ## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j)
 
-**pac4j** is a Profile & Authentication Client for Java (it's a global rebuilding of the *scribe-up* library). It targets all the authentication mechanisms supporting the following flow:
+**pac4j** is a Profile & Authentication Client for Java, it's a general security library to authenticate users, get their profiles, manage their authorizations in order to secure web applications for all Java frameworks.
 
-1. From the client application, redirect the user to the "provider" for authentication (HTTP 302)
-2. After successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials
-3. With these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").
 
-It has a **very simple and unified API** to support these 6 authentication mechanisms on client side:
+### Main concepts
+
+- **Client**: an authentication client is responsible for starting the authentication process, getting the user credentials and the user profile
+- **UserProfile**: it's the profile of an authenticated user (a hierarchy of user profiles exists: CommonProfile, OAuth20Profile, FacebookProfile...)
+- **AttributesDefinition**: it's the attributes definition for a specific type of profile
+- **Credentials**: it's a user credentials (a hierarchy of credentials exists: CasCredentials, Saml2Credentials, UsernamePasswordCredentials...)
+- **Clients**: it's a helper class to define all clients together
+- **Context**: it represents the current HTTP request and response, regardless of the framework
+- **AuthorizationGenerator**: it's a class to compute the roles and permissions of a user from his profile
+- **Authenticator**: it's a method to validate user credentials
+- **ProfileCreator**: it's a method to create a user profile from credentials.
+
+
+### Supported authentication methods
+
+Although **pac4j** historically targets external authentication protocols, it supports direct authentication methods as well.
+
+#### External/stateful authentication protocols
+
+1. From the client application, save the requested url and redirect the user to the identity provider for authentication (HTTP 302)
+2. After a successful authentication, redirect back the user from the identity provider to the client application (HTTP 302) and get the user credentials
+3. With these credentials, get the profile of the authenticated user (direct call from the client application to the identity provider)
+4. Redirect the user to the originally requested url and allow or disallow the access.
+
+Supported protocols are:
 
 1. OAuth (1.0 & 2.0)
 2. CAS (1.0, 2.0, SAML, logout & proxy)
 3. HTTP (form & basic auth authentications)
 4. OpenID
 5. SAML (2.0)
-6. Google App Engine UserService.
+6. Google App Engine UserService
 7. OpenID Connect 1.0
 
-There are 7 libraries implementing **pac4j** for the following environments:
+[Example of the CAS flow](https://github.com/pac4j/pac4j/wiki/CAS-flow)
+
+#### Stateless authentication protocols (REST operations)
+
+The current HTTP request contains the required credentials to validate the user identity and retrieve his profile. It works from a basic authentication.
+
+It relies on specific **Authenticator** to validate user credentials and **ProfileCreator** to create user profiles.
+
+
+### Implementations
+
+**pac4j** is primarily meant to be used through its implementations in the following frameworks and environments:
 
 1. the CAS server (using the *cas-server-support-pac4j* library)
 2. the Play 2.x framework (using the *play-pac4j_java* and *play-pac4j_scala* libraries)
@@ -61,6 +74,9 @@ There are 7 libraries implementing **pac4j** for the following environments:
 6. the Ratpack JVM toolkit (using the *ratpack-pac4j* module)
 7. the Vertx framework (using the *vertx-pac4j* module).
 
+
+### Open source
+
 It's available under the Apache 2 license.
 
 
@@ -69,14 +85,9 @@ It's available under the Apache 2 license.
 <img src="http://www.pac4j.org/img/pac4j.png" />
 
 
-## Sequence diagram (example: CAS)
-
-<img src="http://www.pac4j.org/img/sequence_diagram.jpg" />
-
-
 ## Technical description
 
-This Maven project is composed of 6 modules:
+This Maven project is composed of 9 modules:
 
 #### pac4j-core
 

@@ -37,7 +37,7 @@ import org.pac4j.http.profile.HttpProfile;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public abstract class HeaderClient<C extends Credentials> extends BaseHttpClient<C> {
+public abstract class AbstractHeaderClient<C extends Credentials> extends BaseHttpClient<C> {
 
     private String headerName;
 
@@ -45,14 +45,14 @@ public abstract class HeaderClient<C extends Credentials> extends BaseHttpClient
 
     private String realmName;
 
-    public HeaderClient() {
+    public AbstractHeaderClient() {
     }
 
-    public HeaderClient(final Authenticator<C> authenticator) {
+    public AbstractHeaderClient(final Authenticator<C> authenticator) {
         setAuthenticator(authenticator);
     }
 
-    public HeaderClient(final Authenticator<C> authenticator, final ProfileCreator<C, HttpProfile> profilePopulator) {
+    public AbstractHeaderClient(final Authenticator<C> authenticator, final ProfileCreator<C, HttpProfile> profilePopulator) {
         setAuthenticator(authenticator);
         setProfileCreator(profilePopulator);
     }
@@ -72,13 +72,13 @@ public abstract class HeaderClient<C extends Credentials> extends BaseHttpClient
     @Override
     protected C retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String header = context.getRequestHeader(this.headerName);
-        if (header == null || !header.startsWith(this.prefixHeader+ " ")) {
+        if (header == null || !header.startsWith(this.prefixHeader)) {
             logger.warn("No header found");
             throw RequiresHttpAction.unauthorized("Requires authentication (no header found)", context,
                     this.realmName);
         }
 
-        C credentials = retrieveCredentialsFromHeader(header.substring(this.prefixHeader.length() + 1));
+        C credentials = retrieveCredentialsFromHeader(header.substring(this.prefixHeader.length()));
         logger.debug("credentials : {}", credentials);
         try {
             // validate credentials

@@ -44,7 +44,7 @@ import org.pac4j.http.profile.UsernameProfileCreator;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class BasicAuthClient extends HeaderClient<UsernamePasswordCredentials> {
+public class BasicAuthClient extends AbstractHeaderClient<UsernamePasswordCredentials> {
 
     public BasicAuthClient() {
         this(null, null);
@@ -58,7 +58,7 @@ public class BasicAuthClient extends HeaderClient<UsernamePasswordCredentials> {
             final UsernameProfileCreator profilePopulator) {
         setRealmName("authentication required");
         setHeaderName(HttpConstants.AUTHORIZATION_HEADER);
-        setPrefixHeader("Basic");
+        setPrefixHeader("Basic ");
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
     }

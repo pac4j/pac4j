@@ -41,6 +41,8 @@
          oldClient.setCallbackUrl(CALLBACK_URL);
          oldClient.setName(TYPE);
          oldClient.setRealmName(REALM_NAME);
+         oldClient.setHeaderName(HEADER_NAME);
+         oldClient.setPrefixHeader(PREFIX_HEADER);
          final UsernameProfileCreator profileCreator = new UsernameProfileCreator();
          oldClient.setProfileCreator(profileCreator);
          final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
@@ -51,6 +53,8 @@
          assertEquals(oldClient.getRealmName(), client.getRealmName());
          assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
          assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
+         assertEquals(oldClient.getHeaderName(), client.getHeaderName());
+         assertEquals(oldClient.getPrefixHeader(), client.getPrefixHeader());
      }
 
      public void testMissingUsernamePasswordAuthenticator() {

@@ -44,6 +44,7 @@
          oldClient.setName(TYPE);
          oldClient.setPasswordParameter(PASSWORD);
          oldClient.setUsernameParameter(USERNAME);
+         oldClient.setLoginUrl(LOGIN_URL);
          final UsernameProfileCreator profileCreator = new UsernameProfileCreator();
          oldClient.setProfileCreator(profileCreator);
          final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
@@ -55,6 +56,7 @@
          assertEquals(oldClient.getPasswordParameter(), client.getPasswordParameter());
          assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
          assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
+         assertEquals(oldClient.getLoginUrl(), client.getLoginUrl());
      }
 
      public void testMissingUsernamePasswordAuthenticator() {
