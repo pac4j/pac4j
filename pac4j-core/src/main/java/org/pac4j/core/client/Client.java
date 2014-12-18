@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,12 +16,17 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.ProfileCreator;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * This interface represents a client (whatever the protocol).<br />
+ * This interface represents a client. It is an authentication client in charge of an authentication process.<br />
+ * It is responsible for starting the authentication process (by redirecting the user to the identity provider) and
+ * for retrieving the credentials and the user profile after a successful authentication. It may implement a protocol like OAuth, CAS or SAML
+ * or rely on additional objects: {@link Authenticator} for credentials validation or {@link ProfileCreator} for user profile creation.
  * <br />
  * A client has a type accessible by the {@link #getName()} method.<br />
  * A client supports the authentication process and user profile retrieval through :<br />

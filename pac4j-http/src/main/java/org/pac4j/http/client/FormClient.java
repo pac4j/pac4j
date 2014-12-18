@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client;
 
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -24,8 +23,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.ProfileCreator;
+import org.pac4j.http.profile.UsernameProfileCreator;
 
 /**
  * This class is the client to authenticate users through HTTP form.
@@ -40,67 +38,67 @@ import org.pac4j.http.profile.ProfileCreator;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class FormClient extends BaseHttpClient {
-    
+public class FormClient extends BaseHttpClient<UsernamePasswordCredentials> {
+
     private String loginUrl;
-    
+
     public final static String ERROR_PARAMETER = "error";
-    
+
     public final static String MISSING_FIELD_ERROR = "missing_field";
-    
+
     public final static String DEFAULT_USERNAME_PARAMETER = "username";
-    
+
     private String usernameParameter = DEFAULT_USERNAME_PARAMETER;
-    
+
     public final static String DEFAULT_PASSWORD_PARAMETER = "password";
-    
+
     private String passwordParameter = DEFAULT_PASSWORD_PARAMETER;
-    
+
     public FormClient() {
     }
-    
+
     public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setLoginUrl(loginUrl);
-        setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
+        setAuthenticator(usernamePasswordAuthenticator);
     }
-    
+
     public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                      final ProfileCreator profileCreator) {
+            final UsernameProfileCreator profileCreator) {
         this(loginUrl, usernamePasswordAuthenticator);
         setProfileCreator(profileCreator);
     }
-    
+
     @Override
-    protected BaseClient<UsernamePasswordCredentials, HttpProfile> newClient() {
+    protected BaseHttpClient<UsernamePasswordCredentials> newClient() {
         final FormClient newClient = new FormClient();
         newClient.setLoginUrl(this.loginUrl);
         newClient.setUsernameParameter(this.usernameParameter);
         newClient.setPasswordParameter(this.passwordParameter);
         return newClient;
     }
-    
+
     @Override
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
     }
-    
+
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         return RedirectAction.redirect(this.loginUrl);
     }
-    
+
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
         if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)) {
             final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password,
-                                                                                            getName());
+                    getName());
             logger.debug("usernamePasswordCredentials : {}", credentials);
             try {
                 // validate credentials
-                this.usernamePasswordAuthenticator.validate(credentials);
+                getAuthenticator().validate(credentials);
             } catch (final TechnicalException e) {
                 String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
                 String errorMessage = computeErrorMessage(e);
@@ -110,7 +108,7 @@ public class FormClient extends BaseHttpClient {
                 logger.debug(message);
                 throw RequiresHttpAction.redirect(message, context, redirectionUrl);
             }
-            
+
             return credentials;
         }
         String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
@@ -120,7 +118,7 @@ public class FormClient extends BaseHttpClient {
         logger.debug(message);
         throw RequiresHttpAction.redirect(message, context, redirectionUrl);
     }
-    
+
     /**
      * Return the error message depending on the thrown exception. Can be overriden for other message computation.
      * 
@@ -130,44 +128,44 @@ public class FormClient extends BaseHttpClient {
     protected String computeErrorMessage(final TechnicalException e) {
         return e.getClass().getSimpleName();
     }
-    
+
     public String getLoginUrl() {
         return this.loginUrl;
     }
-    
+
     public void setLoginUrl(final String loginUrl) {
         this.loginUrl = loginUrl;
     }
-    
+
     public String getUsernameParameter() {
         return this.usernameParameter;
     }
-    
+
     public void setUsernameParameter(final String usernameParameter) {
         this.usernameParameter = usernameParameter;
     }
-    
+
     public String getPasswordParameter() {
         return this.passwordParameter;
     }
-    
+
     public void setPasswordParameter(final String passwordParameter) {
         this.passwordParameter = passwordParameter;
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
-                                     this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
-                                     this.passwordParameter, "usernamePasswordAuthenticator",
-                                     getUsernamePasswordAuthenticator(), "profileCreator", getProfileCreator());
+                this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
+                this.passwordParameter, "usernamePasswordAuthenticator", getAuthenticator(), "profileCreator",
+                getProfileCreator());
     }
-    
+
     @Override
     protected boolean isDirectRedirection() {
         return true;
     }
-    
+
     @Override
     public Mechanism getMechanism() {
         return Mechanism.FORM_MECHANISM;

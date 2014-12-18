@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,16 +22,18 @@ import org.pac4j.core.authorization.AuthorizationGenerator;
 import org.pac4j.core.client.RedirectAction.RedirectType;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the default implementation of a client (whatever the protocol). It has the core concepts :
+ * This class is the default implementation of an authentication client (whatever the protocol). It has the core concepts :
  * <ul>
  * <li>the initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()} must be implemented
  * in sub-classes</li>
@@ -49,6 +51,9 @@ import org.slf4j.LoggerFactory;
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
  * </ul>
  * <p />
+ * The {@link #authenticator} and {@link #profileCreator} can be used for some clients where the protocol (like HTTP) does not provide
+ * any defined implementation to validate credentials and create user profiles.
+ * <p />
  * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
  * required to initialize the client.
  * <p/>
@@ -61,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements
-        Client<C, U>, Cloneable {
+Client<C, U>, Cloneable {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseClient.class);
 
@@ -77,6 +82,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<AuthorizationGenerator<U>>();
 
+    private Authenticator<C> authenticator;
+
+    private ProfileCreator<C, U> profileCreator;
+
     /**
      * Clone the current client.
      * 
@@ -87,6 +96,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         final BaseClient<C, U> newClient = newClient();
         newClient.setCallbackUrl(this.callbackUrl);
         newClient.setName(this.name);
+        newClient.setAuthenticator(this.authenticator);
+        newClient.setProfileCreator(this.profileCreator);
         return newClient;
     }
 
@@ -113,6 +124,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.name = name;
     }
 
+    @Override
     public String getName() {
         if (CommonHelper.isBlank(this.name)) {
             return this.getClass().getSimpleName();
@@ -127,6 +139,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
 
+    @Override
     public final void redirect(final WebContext context, final boolean requiresAuthentication)
             throws RequiresHttpAction {
         final RedirectAction action = getRedirectAction(context, requiresAuthentication);
@@ -190,6 +203,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     protected abstract RedirectAction retrieveRedirectAction(final WebContext context);
 
+    @Override
     public final C getCredentials(final WebContext context) throws RequiresHttpAction {
         init();
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
@@ -218,6 +232,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
 
+    @Override
     public final U getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
@@ -314,5 +329,21 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     @Deprecated
     public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
+    }
+
+    public Authenticator<C> getAuthenticator() {
+        return this.authenticator;
+    }
+
+    public void setAuthenticator(Authenticator<C> authenticator) {
+        this.authenticator = authenticator;
+    }
+
+    public ProfileCreator<C, U> getProfileCreator() {
+        return this.profileCreator;
+    }
+
+    public void setProfileCreator(ProfileCreator<C, U> profileCreator) {
+        this.profileCreator = profileCreator;
     }
 }

@@ -15,19 +15,32 @@
  */
 package org.pac4j.http.credentials;
 
-import org.pac4j.core.credentials.Authenticator;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.util.CommonHelper;
 
 /**
- * This interface represents the contract to validate a username / password credentials.
- * 
+ * This credentials represents a token.
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.7.0
  */
-public interface UsernamePasswordAuthenticator extends Authenticator<UsernamePasswordCredentials> {
+public class TokenCredentials extends Credentials {
 
-    /**
-     * {@inheritDoc}
-     */
+    private static final long serialVersionUID = -4270718634364817595L;
+
+    private final String token;
+
+    public TokenCredentials(String token, final String clientName) {
+        this.token = token;
+        setClientName(clientName);
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
     @Override
-    void validate(UsernamePasswordCredentials credentials);
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "token", this.token, "clientName", getClientName());
+    }
 }

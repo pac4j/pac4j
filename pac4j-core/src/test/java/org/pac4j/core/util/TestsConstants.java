@@ -24,35 +24,37 @@ package org.pac4j.core.util;
 public interface TestsConstants {
     
     // simple objects
-    public static final String VALUE = "value";
-    public static final int MILLIS_BETWEEN_CLEANUPS = 30000;
-    public static final String TYPE = "type";
-    public static final String SCOPE = "scope";
-    public static final String FIELDS = "fields";
-    public static final int LIMIT = 112;
-    public static final String REALM_NAME = "realmName";
-    public final static String USERNAME = "username";
-    public final static String PASSWORD = "password";
-    public static final String STRING_ID = "id";
-    public static final String KEY = "key";
-    public static final String PARAMETER_NAME = "parameterName";
-    public static final String FAKE_VALUE = "fakeValue";
-    public static final String SECRET = "secret";
-    public final static String TOKEN = "token";
-    public final static String VERIFIER = "verifier";
-    public static final String CODE = "code";
-    public final static String ELEMENT = "element";
-    public final static String ELEMENT2 = "element2";
-    public static final String NAME = "name";
-    public static final String BAD_JSON = "{ }";
-    public static final String TITLE = "title";
-    public static final String NAMESPACE = "namespace";
-    public static final int INT_ID = 1234;
+    String VALUE = "value";
+    int MILLIS_BETWEEN_CLEANUPS = 30000;
+    String TYPE = "type";
+    String SCOPE = "scope";
+    String FIELDS = "fields";
+    int LIMIT = 112;
+    String REALM_NAME = "realmName";
+    String HEADER_NAME = "headerName";
+    String PREFIX_HEADER = "prefixHeader";
+    String USERNAME = "username";
+    String PASSWORD = "password";
+    String STRING_ID = "id";
+    String KEY = "key";
+    String PARAMETER_NAME = "parameterName";
+    String FAKE_VALUE = "fakeValue";
+    String SECRET = "secret";
+    String TOKEN = "token";
+    String VERIFIER = "verifier";
+    String CODE = "code";
+    String ELEMENT = "element";
+    String ELEMENT2 = "element2";
+    String NAME = "name";
+    String BAD_JSON = "{ }";
+    String TITLE = "title";
+    String NAMESPACE = "namespace";
+    int INT_ID = 1234;
     
     // urls
-    public static final String CALLBACK_URL = "http://myserver/callback";
-    public static final String GOOGLE_URL = "http://www.google.com";
-    public final static String LOGIN_URL = "http://myserver/login";
-    public static final String PAC4J_BASE_URL = "http://www.pac4j.org/";
-    public static final String PAC4J_URL = PAC4J_BASE_URL + "test.html";
+    String CALLBACK_URL = "http://myserver/callback";
+    String GOOGLE_URL = "http://www.google.com";
+    String LOGIN_URL = "http://myserver/login";
+    String PAC4J_BASE_URL = "http://www.pac4j.org/";
+    String PAC4J_URL = PAC4J_BASE_URL + "test.html";
 }
