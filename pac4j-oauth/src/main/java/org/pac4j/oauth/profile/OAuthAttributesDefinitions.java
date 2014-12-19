@@ -26,6 +26,7 @@ import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.orcid.OrcidAttributesDefinition;
 import org.pac4j.oauth.profile.paypal.PayPalAttributesDefinition;
+import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
 import org.pac4j.oauth.profile.twitter.TwitterAttributesDefinition;
 import org.pac4j.oauth.profile.vk.VkAttributesDefinition;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveAttributesDefinition;
@@ -69,5 +70,7 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition bitbucketDefinition = new BitbucketAttributesDefinition();
 
     public final static AttributesDefinition orcidDefinition = new OrcidAttributesDefinition();
+
+    public final static AttributesDefinition stravaDefinition = new StravaAttributesDefinition();
 
 }
