@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,22 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile;
+package org.pac4j.core.credentials;
 
+import org.pac4j.core.exception.CredentialsException;
 
 /**
- * This interface represents the contract to create a HTTP profile.
- * 
+ * An authenticator is responsible for validating {@link Credentials} and should throw a {@link CredentialsException}
+ * if the authentication fails.
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.7.0
  */
-public interface ProfileCreator {
-    
+public interface Authenticator<T extends Credentials> {
+
     /**
-     * Create a HTTP profile.
-     * 
-     * @param username
-     * @return the created profile
+     * Validate the credentials. It should throw a {@link CredentialsException} in case of failure.
+     *
+     * @param credentials the given credentials.
      */
-    public HttpProfile create(String username);
+    void validate(T credentials);
 }

@@ -13,27 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.credentials;
+package org.pac4j.core.profile;
 
-import java.io.Serializable;
+import org.pac4j.core.credentials.Credentials;
 
 /**
- * This class represents the base credentials.
+ * This interface is responsible to create a {@link UserProfile} from a {@link Credentials}.
  * 
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.7.0
  */
-public abstract class Credentials implements Serializable {
+public interface ProfileCreator<C extends Credentials, U extends UserProfile> {
 
-    private static final long serialVersionUID = 4864923514027378583L;
-
-    private String clientName;
-
-    public String getClientName() {
-        return this.clientName;
-    }
-
-    public void setClientName(final String clientName) {
-        this.clientName = clientName;
-    }
+    /**
+     * Create a profile from a credentials.
+     * 
+     * @param credentials the given credentials.
+     * @return the created profile
+     */
+    U create(C credentials);
 }
