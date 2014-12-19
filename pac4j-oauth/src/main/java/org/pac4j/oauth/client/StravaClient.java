@@ -1,3 +1,18 @@
+/*
+  Copyright 2012 - 2014 Jerome Leleu
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,9 +28,13 @@ import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 /**
- * Oauth20Client for Strava
+ * Oauth20Client for Strava. <br>
+ * Use the key as the client_id and secret as the client_secret, both provided by Strava at: <a href="https://www.strava.com/settings/api">https://www.strava.com/settings/api</a> <br>
+ * Set approvalPrompt to "force" if you want to force the authorization dialog to always display on Strava, otherwise let it to "auto" (default value). <br>
+ * More info at: <a href="http://strava.github.io/api/">http://strava.github.io/api/</a>
  *
  * @author Adrian Papusoi
+ * @since 1.7.0
  */
 public class StravaClient extends BaseOAuth20Client<StravaProfile> {
 
@@ -24,8 +43,8 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
      */
     protected String scope = null;
     /**
-     * approvalPrompt by default auto.
-     * If force, then the authorization dialog is always displayed by Strava.
+     * approvalPrompt is by default "auto".   <br>
+     * If "force", then the authorization dialog is always displayed by Strava.
      */
     private String approvalPrompt = "auto";
 

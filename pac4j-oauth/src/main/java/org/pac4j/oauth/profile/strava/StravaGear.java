@@ -21,6 +21,9 @@ import org.pac4j.oauth.profile.JsonObject;
  * @author Adrian Papusoi
  */
 public class StravaGear extends JsonObject {
+
+    private static final long serialVersionUID = -5738356602119292294L;
+
     private String id;
     private Boolean primary;
     private String name;

@@ -15,18 +15,12 @@
  */
 package org.scribe.builder.api;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pac4j.oauth.profile.strava.StravaAccessToken;
-import org.scribe.exceptions.OAuthException;
 import org.scribe.extractors.AccessTokenExtractor;
+import org.scribe.extractors.StravaJsonExtractor;
 import org.scribe.model.OAuthConfig;
-import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.utils.OAuthEncoder;
 import org.scribe.utils.Preconditions;
-
-import java.io.IOException;
 
 /**
  * This class represents the OAuth API implementation for Strava.
@@ -47,30 +41,11 @@ public final class StravaApi extends DefaultApi20 {
     /**
      * Need to redefine the token extractor, because the token comes from Strava in json format.
      */
-    private static final AccessTokenExtractor ACCESS_TOKEN_EXTRACTOR = new AccessTokenExtractor() {
-
-        private ObjectMapper objectMapper = new ObjectMapper();
-
-        public Token extract(String response) {
-            Preconditions.checkEmptyString(response, "Response body is incorrect. Can't extract a token from an empty string");
-
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            try {
-                StravaAccessToken stravaAccessToken = objectMapper.readValue(response, StravaAccessToken.class);
-                if (stravaAccessToken == null || stravaAccessToken.getAccessToken() == null) {
-                    throw new OAuthException("Response body is incorrect. Can't extract a token from this: '" + response + "'", null);
-                }
-                String accessTokenValue = stravaAccessToken.getAccessToken();
-                return new Token(accessTokenValue, "", response);
-            } catch (IOException e) {
-                throw new OAuthException("Response body is incorrect. Can't extract a token from this: '" + response + "'", null);
-            }
-        }
-    };
+    private static AccessTokenExtractor ACCESS_TOKEN_EXTRACTOR = new StravaJsonExtractor();
 
 
     /**
-     * possible values: auto or force. If force, the authorisation dialog is allways displayed by Strava.
+     * possible values: auto or force. If force, the authorisation dialog is always displayed by Strava.
      */
     private String approvalPrompt;
 
@@ -95,8 +70,7 @@ public final class StravaApi extends DefaultApi20 {
 
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
-        Preconditions.checkValidUrl(config.getCallback(),
-                "Must provide a valid url as callback. GitHub does not support OOB");
+        Preconditions.checkValidUrl(config.getCallback(), "Must provide a valid callback url.");
 
         // Append scope if present
         if (config.hasScope()) {
