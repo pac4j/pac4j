@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Encapsulates a Strava athlete profile.
- *
+ * <p/>
  * Exemple of a json sent by Strava:
  * {
  * "id": 1321007,
@@ -95,12 +95,12 @@ import java.util.List;
  * }
  * <p/>
  *
- *
  * @auhtor Adrian Papusoi
  */
 public class StravaProfile extends OAuth20Profile {
 
 
+    private static final long serialVersionUID = 995023712830997358L;
 
     private static final String STRAVA_PROFILE_BASE_URL = "http://www.strava.com/athletes/";
 

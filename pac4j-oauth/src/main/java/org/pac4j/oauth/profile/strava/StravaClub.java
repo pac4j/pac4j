@@ -20,6 +20,9 @@ import org.pac4j.oauth.profile.JsonObject;
  * @author Adrian Papusoi
  */
 public class StravaClub extends JsonObject {
+
+    private static final long serialVersionUID = -1284645916528292643L;
+
     private String id;
     private Integer resourceState;
     private String name;
