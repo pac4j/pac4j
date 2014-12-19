@@ -40,9 +40,9 @@
 	</licenses>
 
 	<scm>
-		<url>http://github.com/leleuj/pac4j.git</url>
-		<connection>scm:git:git@github.com:leleuj/pac4j.git</connection>
-		<developerConnection>scm:git:git@github.com:leleuj/pac4j.git</developerConnection>
+		<url>https://github.com/pac4j/pac4j.git</url>
+		<connection>scm:git:git@github.com:pac4j/pac4j.git</connection>
+		<developerConnection>scm:git:git@github.com:pac4j/pac4j.git</developerConnection>
 	</scm>
 
 	<developers>
@@ -305,6 +305,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>
