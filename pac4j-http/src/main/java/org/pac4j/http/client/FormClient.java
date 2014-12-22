@@ -26,13 +26,11 @@ import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.UsernameProfileCreator;
 
 /**
- * This class is the client to authenticate users through HTTP form.
- * <p />
- * The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is redirected to
+ * <p>This class is the client to authenticate users through HTTP form.</p>
+ * <p>The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is redirected to
  * this login form. The username and password inputs must be posted on the callback url. Their names can be defined by using the
- * {@link #setUsernameParameter(String)} and {@link #setPasswordParameter(String)} methods.
- * <p />
- * It returns a {@link org.pac4j.http.profile.HttpProfile}.
+ * {@link #setUsernameParameter(String)} and {@link #setPasswordParameter(String)} methods.</p>
+ * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu

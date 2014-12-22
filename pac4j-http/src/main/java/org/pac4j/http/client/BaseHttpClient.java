@@ -22,11 +22,9 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.HttpProfile;
 
 /**
- * This class is the base HTTP client to authenticate users through HTTP protocol.
- * <p />
- * The {@link #getAuthenticator()} and {@link #getProfileCreator()} are mandatory for the HTTP protocol.
- * <p />
- * It returns a {@link org.pac4j.http.profile.HttpProfile}.
+ * <p>This class is the base HTTP client to authenticate users through HTTP protocol.</p>
+ * <p>The {@link #getAuthenticator()} and {@link #getProfileCreator()} are mandatory for the HTTP protocol.</p>
+ * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu

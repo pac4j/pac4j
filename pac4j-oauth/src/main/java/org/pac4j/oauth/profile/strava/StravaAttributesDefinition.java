@@ -98,7 +98,6 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * }
  * ],
  * "shoes": [
- * <p/>
  * ]
  * }
  *

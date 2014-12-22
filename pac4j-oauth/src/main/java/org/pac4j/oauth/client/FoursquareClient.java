@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,10 +27,9 @@ import org.scribe.model.Token;
 import org.scribe.oauth.FoursquareOAuth20ServiceImpl;
 
 /**
- * This class is the OAuth client to authenticate users in Foursquare.
- * It returns a {@link org.pac4j.oauth.profile.foursquare.FoursquareProfile}.
- * <p />
- * More information at https://developer.foursquare.com/overview/auth.html
+ * <p>This class is the OAuth client to authenticate users in Foursquare.
+ * It returns a {@link org.pac4j.oauth.profile.foursquare.FoursquareProfile}.</p>
+ * <p>More information at https://developer.foursquare.com/overview/auth.html</p>
  *
  * @see org.pac4j.oauth.profile.foursquare.FoursquareProfile
  * @author Alexey Ogarkov

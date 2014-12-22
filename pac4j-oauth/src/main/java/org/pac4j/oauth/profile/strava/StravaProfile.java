@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Encapsulates a Strava athlete profile.
- * <p/>
+ * <p>Encapsulates a Strava athlete profile.</p>
+ * 
  * Exemple of a json sent by Strava:
  * {
  * "id": 1321007,
@@ -105,12 +105,11 @@ import java.util.List;
  * }
  * ],
  * "shoes": [
- * <p/>
  * ]
  * }
- * <p/>
  *
- * @auhtor Adrian Papusoi
+ * @since 1.7.0
+ * @author Adrian Papusoi
  */
 public class StravaProfile extends OAuth20Profile {
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ public final class XmlList<T> extends XmlObject implements List<T> {
     /**
      * Create a list of XmlObject from a XML text.
      * 
-     * @param xml
-     * @param clazz
+     * @param xml xml
+     * @param clazz class
      */
     public XmlList(final String xml, final Class<T> clazz) {
         this.clazz = clazz;
@@ -92,7 +92,7 @@ public final class XmlList<T> extends XmlObject implements List<T> {
     /**
      * Add a single node to the XmlList.
      * 
-     * @param xml
+     * @param xml xml
      */
     @SuppressWarnings("unchecked")
     private void buildSingleNode(final String xml) {

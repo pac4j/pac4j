@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -35,17 +35,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the CAS proxy receptor.
- * <p />
- * The url of the proxy receptor must be defined through the {@link #setCallbackUrl(String)} method, it's the <code>proxyReceptorUrl</code>
- * concept of the Jasig CAS client.
- * <p />
- * The proxy granting tickets and associations are stored by default in a {@link ProxyGrantingTicketStorageImpl} class, which can be
- * overriden by using the {@link #setProxyGrantingTicketStorage(ProxyGrantingTicketStorage)} method.
- * <p />
- * By default, the tickets and associations are cleaned every minute. The <code>millisBetweenCleanUps</code> property can be defined through
+ * <p>This class is the CAS proxy receptor.</p>
+ * <p>The url of the proxy receptor must be defined through the {@link #setCallbackUrl(String)} method, it's the <code>proxyReceptorUrl</code>
+ * concept of the Jasig CAS client.</p>
+ * <p>The proxy granting tickets and associations are stored by default in a {@link ProxyGrantingTicketStorageImpl} class, which can be
+ * overriden by using the {@link #setProxyGrantingTicketStorage(ProxyGrantingTicketStorage)} method.</p>
+ * <p>By default, the tickets and associations are cleaned every minute. The <code>millisBetweenCleanUps</code> property can be defined through
  * the {@link #setMillisBetweenCleanUps(int)} method (0 means no cleanup, greater than 0 means a cleanup every
- * <code>millisBetweenCleanUps</code> milli-seconds).
+ * <code>millisBetweenCleanUps</code> milli-seconds).</p>
  * 
  * @author Jerome Leleu
  * @since 1.4.0

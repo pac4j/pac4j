@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,7 +38,8 @@ public class J2EContext implements WebContext {
     /**
      * Build a J2E context from the current HTTP request.
      *
-     * @param request
+     * @param request the current request
+     * @param response the current response
      */
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response) {
         this.request = request;
@@ -46,85 +47,63 @@ public class J2EContext implements WebContext {
     }
 
     /**
-     * Return a request parameter.
-     *
-     * @param name
-     * @return the request parameter
+     * {@inheritDoc}
      */
     public String getRequestParameter(final String name) {
         return this.request.getParameter(name);
     }
 
     /**
-     * Return all request parameters.
-     *
-     * @return all request parameters
+     * {@inheritDoc}
      */
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }
 
     /**
-     * Return a request header.
-     *
-     * @param name
-     * @return the request header
+     * {@inheritDoc}
      */
     public String getRequestHeader(final String name) {
         return this.request.getHeader(name);
     }
 
     /**
-     * Save an attribute in session.
-     *
-     * @param name
-     * @param value
+     * {@inheritDoc}
      */
     public void setSessionAttribute(final String name, final Object value) {
         this.request.getSession().setAttribute(name, value);
     }
 
     /**
-     * Get an attribute from session.
-     *
-     * @param name
-     * @return the session attribute
+     * {@inheritDoc}
      */
     public Object getSessionAttribute(final String name) {
         return this.request.getSession().getAttribute(name);
     }
 
     /**
-     * Return the request method : GET, POST...
-     *
-     * @return the request method
+     * {@inheritDoc}
      */
     public String getRequestMethod() {
         return this.request.getMethod();
     }
 
     /**
-     * Return the HTTP request.
-     *
-     * @return the HTTP request
+     * {@inheritDoc}
      */
     public HttpServletRequest getRequest() {
         return this.request;
     }
 
     /**
-     * Return the HTTP response.
-     *
-     * @return the HTTP response
+     * {@inheritDoc}
      */
     public HttpServletResponse getResponse() {
         return this.response;
     }
 
     /**
-     * Write some content in the response.
-     *
-     * @param content
+     * {@inheritDoc}
      */
     public void writeResponseContent(final String content) {
         if (content != null) {
@@ -137,9 +116,7 @@ public class J2EContext implements WebContext {
     }
 
     /**
-     * Set the response status.
-     *
-     * @param code
+     * {@inheritDoc}
      */
     public void setResponseStatus(final int code) {
         if (code == HttpConstants.OK || code == HttpConstants.TEMP_REDIRECT) {
@@ -154,37 +131,28 @@ public class J2EContext implements WebContext {
     }
 
     /**
-     * Add a header to the response.
-     *
-     * @param name
-     * @param value
+     * {@inheritDoc}
      */
     public void setResponseHeader(final String name, final String value) {
         this.response.setHeader(name, value);
     }
 
     /**
-     * Return the server name.
-     *
-     * @return the server name
+     * {@inheritDoc}
      */
     public String getServerName() {
         return this.request.getServerName();
     }
 
     /**
-     * Return the server port.
-     *
-     * @return the server port
+     * {@inheritDoc}
      */
     public int getServerPort() {
         return this.request.getServerPort();
     }
 
     /**
-     * Return the scheme.
-     *
-     * @return the scheme
+     * {@inheritDoc}
      */
     public String getScheme() {
         return this.request.getScheme();

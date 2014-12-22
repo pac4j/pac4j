@@ -23,15 +23,14 @@ import org.pac4j.core.profile.ProfileCreator;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * This interface represents a client. It is an authentication client in charge of an authentication process.<br />
- * It is responsible for starting the authentication process (by redirecting the user to the identity provider) and
+ * <p>This interface represents a client. It is an authentication client in charge of an authentication process.</p>
+ * <p>It is responsible for starting the authentication process (by redirecting the user to the identity provider) and
  * for retrieving the credentials and the user profile after a successful authentication. It may implement a protocol like OAuth, CAS or SAML
- * or rely on additional objects: {@link Authenticator} for credentials validation or {@link ProfileCreator} for user profile creation.
- * <br />
- * A client has a type accessible by the {@link #getName()} method.<br />
- * A client supports the authentication process and user profile retrieval through :<br />
+ * or rely on additional objects: {@link Authenticator} for credentials validation or {@link ProfileCreator} for user profile creation.</p>
+ * <p>A client has a type accessible by the {@link #getName()} method.</p>
+ * <p>A client supports the authentication process and user profile retrieval through :</p>
  * <ul>
- * <li>the {@link #redirect(WebContext, boolean, boolean)} method to get the redirection to perform for the user to start the authentication (at
+ * <li>the {@link #redirect(WebContext, boolean)} method to get the redirection to perform for the user to start the authentication (at
  * the provider)</li>
  * <li>the {@link #getCredentials(WebContext)} method to get the credentials (in the application) after the user has been successfully
  * authenticated at the provider</li>
@@ -51,42 +50,40 @@ public interface Client<C extends Credentials, U extends UserProfile> {
     public String getName();
 
     /**
-     * Redirect to the authentication provider by updating the WebContext accordingly.
-     * <p />
-     * Though, if this client requires an indirect redirection, it will return a redirection to the callback url (with an additionnal parameter requesting a
+     * <p>Redirect to the authentication provider by updating the WebContext accordingly.</p>
+     * <p>Though, if this client requires an indirect redirection, it will return a redirection to the callback url (with an additionnal parameter requesting a
      * redirection). Whatever the kind of client's redirection, the <code>protectedTarget</code> parameter set to <code>true</code> enforces
-     * a direct redirection.
-     * <p />
-     * If an authentication has already been tried for this client and has failed (previous <code>null</code> credentials) and if the target
-     * is protected (<code>protectedTarget</code> set to <code>true</code>), a forbidden response (403 HTTP status code) is returned.
+     * a direct redirection.</p>
+     * <p>If an authentication has already been tried for this client and has failed (previous <code>null</code> credentials) and if the target
+     * is protected (<code>protectedTarget</code> set to <code>true</code>), a forbidden response (403 HTTP status code) is returned.</p>
      * 
-     * @param context
-     * @param protectedTarget
-     * @throws RequiresHttpAction
+     * @param context web context
+     * @param protectedTarget whether the target url is protected
+     * @throws RequiresHttpAction requires an additionnal HTTP action
      */
     public void redirect(WebContext context, boolean protectedTarget) throws RequiresHttpAction;
 
     /**
-     * Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown instead:<br />
+     * <p>Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown instead:</p>
      * <ul>
      * <li>if this client requires an indirect redirection, the redirection will be actually performed by these method and not by the
-     * {@link #redirect(WebContext, boolean, boolean)} one (302 HTTP status code)</li>
+     * {@link #redirect(WebContext, boolean)} one (302 HTTP status code)</li>
      * <li>if the <code>CasClient</code> receives a logout request, it returns a 200 HTTP status code</li>
      * <li>for the <code>BasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response (401 HTTP status
      * code) is returned to request credentials through a popup.</li>
      * </ul>
      * 
-     * @param context
+     * @param context web context
      * @return the credentials
-     * @throws RequiresHttpAction
+     * @throws RequiresHttpAction requires an additionnal HTTP action
      */
     public C getCredentials(WebContext context) throws RequiresHttpAction;
 
     /**
      * Get the user profile from the credentials.
      * 
-     * @param credentials
-     * @param context
+     * @param credentials credentials
+     * @param context web context 
      * @return the user profile
      */
     public U getUserProfile(C credentials, WebContext context);

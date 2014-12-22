@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Patrice de Saint Steban
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.gae.client.GaeUserServiceClient;
 
 /**
- * This class is the user profile for Google using UserService with appropriate getters.<br />
- * It is returned by the {@link GaeUserServiceClient}.
- * <p />
- * <table border="1" cellspacing="2px">
+ * <p>s class is the user profile for Google using UserService with appropriate getters.</p>
+ * <p>It is returned by the {@link GaeUserServiceClient}.</p>
+ * <table summary="" border="1" cellspacing="2px">
  * <tr>
  * <th>Method :</th>
  * <th>Through the attribute exchange extension :</th>
@@ -65,7 +64,7 @@ import org.pac4j.gae.client.GaeUserServiceClient;
  * </tr>
  * </table>
  * 
- * @see org.pac4j.openid.client.GoogleOpenIdClient
+ * @see org.pac4j.gae.client.GaeUserServiceClient
  * @author Patrice de Saint Steban
  * @since 1.0.0
  */

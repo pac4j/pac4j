@@ -29,7 +29,7 @@ public abstract class OAuth10Profile extends OAuth20Profile {
     /**
      * Set the access token secret
      * 
-     * @param accessSecret
+     * @param accessSecret the access token secret
      */
     public void setAccessSecret(final String accessSecret) {
         addAttribute(OAuthAttributesDefinition.ACCESS_SECRET, accessSecret);

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,9 +30,8 @@ import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
 
 /**
- * This class is the OpenID client to authenticate users with their yahoo account.
- * <p />
- * It returns a {@link org.pac4j.openid.profile.yahoo.YahooOpenIdProfile}.
+ * <p>This class is the OpenID client to authenticate users with their yahoo account.</p>
+ * <p>It returns a {@link org.pac4j.openid.profile.yahoo.YahooOpenIdProfile}.</p>
  * 
  * @see org.pac4j.openid.profile.yahoo.YahooOpenIdProfile
  * @author Patrice de Saint Steban
