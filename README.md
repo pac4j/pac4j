@@ -93,7 +93,7 @@ This Maven project is composed of 9 modules:
 
 This is the core module of the project with the core classes/interfaces:
 
-* the *Client* interface is the **main API of the project** as it defines the mechanism that all clients must follow: redirect(WebContext,boolean), getCredentials(WebContext) and getUserProfile(Credentials,WebContext)
+* the *Client* interface is the **main API of the project** as it defines the mechanism that all clients must follow: redirect(WebContext,boolean, boolean), getCredentials(WebContext) and getUserProfile(Credentials,WebContext)
 * the *Credentials* class is the base class for all credentials
 * the *UserProfile* class is the base class for all user profiles (it is associated with attributes definition and converters)
 * the *CommonProfile* class inherits from the *UserProfile* class and implements all the common getters that profiles must have (getFirstName(), getEmail()...)
@@ -244,7 +244,7 @@ If you want to authenticate and get the user profile from Facebook, you have to 
     client.setCallbackUrl("http://myserver/myapp/callbackUrl");
     // send the user to Facebook for authentication and permissions
     WebContext context = new J2EContext(request, response);
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication, in the client application, on the callback url (for Facebook)...
 
@@ -264,7 +264,7 @@ For integrating an application with a CAS server, you should use the *org.pac4j.
     client.setCallbackUrl("http://myserver/myapp/callbackUrl");
     // send the user to the CAS server for authentication
     WebContext context = new J2EContext(request, response);
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication, in the client application, on the callback url...
 
@@ -294,7 +294,7 @@ To use form authentication in a web application, you should use the *org.pac4j.h
     client.setCallbackUrl("http://myserver/myapp/callbackUrl");
     // send the user to the form for authentication
     WebContext context = new J2EContext(request, response);
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication...
 
@@ -319,7 +319,7 @@ To use Yahoo and OpenID for authentication, you should use the *org.pac4j.openid
     // send the user to Yahoo for authentication
     WebContext context = new J2EContext(request, response);
     // we assume the user identifier is in the "openIdUser" request parameter
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication, in the client application, on the callback url...
 
@@ -354,7 +354,7 @@ For integrating an application with a SAML2 Identity Provider server, you should
 
     // send the user to the Identity Provider server for authentication
     WebContext context = new J2EContext(request, response);
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication, in the Service Provider application, on the assertion consumer service url...
 
@@ -384,7 +384,7 @@ To use the Google App Engine authentication, you should use the *org.pac4j.gae.c
     client.setCallbackUrl("/callbackUrl");
     // send the user to Google for authentication
     WebContext context = new J2EContext(request, response);
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication, in the client application, on the callback url...
 
@@ -409,7 +409,7 @@ For integrating an application with an OpenID Connect Provider server, you shoul
 
     // send the user to the OpenID Connect Provider server for authentication
     WebContext context = new J2EContext(request, response);
-    client.redirect(context, false);
+    client.redirect(context, false, false);
 
 ...after successful authentication, in the client application, on the callback url...
 
