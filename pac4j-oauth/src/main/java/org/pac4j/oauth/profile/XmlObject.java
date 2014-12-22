@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public abstract class XmlObject extends RawDataObject {
     /**
      * Build an object from XML.
      * 
-     * @param xml
+     * @param xml xml
      */
     public final void buildFrom(final String xml) {
         if (keepRawData && isRootObject()) {
@@ -42,7 +42,7 @@ public abstract class XmlObject extends RawDataObject {
     /**
      * Build an object from a XML text.
      * 
-     * @param xml
+     * @param xml xml
      */
     protected abstract void buildFromXml(String xml);
 }

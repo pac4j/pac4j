@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the logout handler for the {@link CasClient} class based on the {@link SingleSignOutHandler} class of the Jasig CAS client.<br />
- * It should only be used in J2E context.
+ * <p>This class is the logout handler for the {@link CasClient} class based on the {@link SingleSignOutHandler} class of the Jasig CAS client.</p>
+ * <p>It should only be used in J2E context.</p>
  * 
  * @author Jerome Leleu
  * @since 1.4.0

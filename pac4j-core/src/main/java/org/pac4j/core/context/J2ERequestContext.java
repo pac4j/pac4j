@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,49 +34,35 @@ public class J2ERequestContext extends BaseResponseContext {
     }
 
     /**
-     * Return a request parameter.
-     *
-     * @param name
-     * @return the request parameter
+     * {@inheritDoc}
      */
     public String getRequestParameter(final String name) {
         return this.request.getParameter(name);
     }
 
     /**
-     * Return all request parameters.
-     *
-     * @return all request parameters
+     * {@inheritDoc}
      */
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }
 
     /**
-     * Return a request header.
-     *
-     * @param name
-     * @return the request header
+     * {@inheritDoc}
      */
     public String getRequestHeader(final String name) {
         return this.request.getHeader(name);
     }
 
     /**
-     * Save an attribute in session.
-     *
-     * @param name
-     * @param value
+     * {@inheritDoc}
      */
     public void setSessionAttribute(final String name, final Object value) {
         this.request.getSession().setAttribute(name, value);
     }
 
     /**
-     * Get an attribute from session.
-     *
-     * @param name
-     * @return the session attribute
+     * {@inheritDoc}
      */
     public Object getSessionAttribute(final String name) {
         return this.request.getSession().getAttribute(name);

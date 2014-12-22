@@ -14,7 +14,7 @@
 - [Contact](#contact)
 
 
-## What is pac4j ? [![Build Status](https://travis-ci.org/leleuj/pac4j.png?branch=master)](https://travis-ci.org/leleuj/pac4j)
+## What is pac4j ? [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j)
 
 **pac4j** is a Profile & Authentication Client for Java, it's a general security library to authenticate users, get their profiles, manage their authorizations in order to secure web applications for all Java frameworks.
 
@@ -474,21 +474,21 @@ The generation of this information is controlled by a class implementing the *or
 Even if you can use **pac4j** on its own, this library is used to be integrated with:
 
 1. the [cas-server-support-pac4j](https://wiki.jasig.org/pages/viewpage.action?pageId=57577635) module to add multi-protocols client support to the [CAS server](http://www.jasig.org/cas)
-2. the [play-pac4j](https://github.com/leleuj/play-pac4j) library to add multi-protocols client support to the [Play 2.x framework](http://www.playframework.org/) in Java and Scala
-2. the [j2e-pac4j](https://github.com/leleuj/j2e-pac4j) library to add multi-protocols client support to the [J2E environment](http://docs.oracle.com/javaee/)
+2. the [play-pac4j](https://github.com/pac4j/play-pac4j) library to add multi-protocols client support to the [Play 2.x framework](http://www.playframework.org/) in Java and Scala
+2. the [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) library to add multi-protocols client support to the [J2E environment](http://docs.oracle.com/javaee/)
 3. the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library to add multi-protocols client support to the [Apache Shiro project](http://shiro.apache.org)
-4. the [spring-security-pac4j](https://github.com/leleuj/spring-security-pac4j) library to add multi-protocols client support to [Spring Security](http://static.springsource.org/spring-security/site/)
+4. the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library to add multi-protocols client support to [Spring Security](http://static.springsource.org/spring-security/site/)
 5. the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module to add multi-protocols client support to [Ratpack](http://www.ratpack.io/)
 6. the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module to add multi-protocols client support to [Vertx](http://vertx.io/)
 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
 <tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
-<tr><td>play-pac4j 1.3.0 / 1.2.2 / 1.1.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/leleuj/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>j2e-pac4j 1.0.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
-<tr><td>buji-pac4j 1.3.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-pac4j 1.2.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/leleuj/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
-<tr><td>ratpack 0.9.7</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.5.1</td><td><a href="https://github.com/leleuj/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
+<tr><td>play-pac4j 1.3.0 / 1.2.2 / 1.1.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/pac4j/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
+<tr><td>j2e-pac4j 1.0.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
+<tr><td>buji-pac4j 1.3.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
+<tr><td>spring-security-pac4j 1.2.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
+<tr><td>ratpack 0.9.7</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.5.1</td><td><a href="https://github.com/pac4j/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
 <tr><td>vertx-pac4j 1.0.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/vertx-pac4j-demo">vertx-pac4j-demo</a></td></tr>
 </table>
 
@@ -496,7 +496,7 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 ## Versions
 
 The current version **1.6.1-SNAPSHOT** is under development.  
-The build is done on Travis: [https://travis-ci.org/leleuj/pac4j](https://travis-ci.org/leleuj/pac4j).
+The build is done on Travis: [https://travis-ci.org/pac4j/pac4j](https://travis-ci.org/pac4j/pac4j).
 The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
 The last released version is the **1.6.0**:
@@ -507,7 +507,7 @@ The last released version is the **1.6.0**:
         <version>1.6.0</version>
     </dependency>
 
-See the [release notes](https://github.com/leleuj/pac4j/wiki/Versions).
+See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
 
 

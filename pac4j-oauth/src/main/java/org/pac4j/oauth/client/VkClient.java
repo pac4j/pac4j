@@ -1,3 +1,18 @@
+/*
+  Copyright 2012 - 2014 pac4j organization
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
@@ -14,15 +29,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * This class is the OAuth client to authenticate users in Vk.
- * <p />
- * The <i>scope</i> can be defined to require specific permissions from the user
+ * <p>This class is the OAuth client to authenticate users in Vk.</p>
+ * <p>The <i>scope</i> can be defined to require specific permissions from the user
  * by using the {@link #setScope(String)} method. By default, the <i>scope</i>
- * is : <code>PERMISSIONS</code>.
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.vk.VkProfile}.
- * <p />
- * More information at https://vk.com/dev/users.get
+ * is : <code>PERMISSIONS</code>.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.vk.VkProfile}.</p>
+ * <p>More information at https://vk.com/dev/users.get</p>
  * 
  * @see org.pac4j.oauth.profile.vk.VkProfile
  * @author indvdum (gotoindvdum[at]gmail[dot]com)

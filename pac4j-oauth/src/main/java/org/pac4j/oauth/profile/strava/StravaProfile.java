@@ -15,17 +15,17 @@
  */
 package org.pac4j.oauth.profile.strava;
 
+import java.util.Date;
+import java.util.List;
+
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
-import java.util.Date;
-import java.util.List;
-
 /**
- * Encapsulates a Strava athlete profile.
- * <p/>
+ * <p>Encapsulates a Strava athlete profile.</p>
+ * 
  * Exemple of a json sent by Strava:
  * {
  * "id": 1321007,
@@ -105,15 +105,13 @@ import java.util.List;
  * }
  * ],
  * "shoes": [
- * <p/>
  * ]
  * }
- * <p/>
  *
- * @auhtor Adrian Papusoi
+ * @since 1.7.0
+ * @author Adrian Papusoi
  */
 public class StravaProfile extends OAuth20Profile {
-
 
     private static final long serialVersionUID = 995023712830997358L;
 
@@ -149,7 +147,6 @@ public class StravaProfile extends OAuth20Profile {
         return (String) getAttribute(StravaAttributesDefinition.PROFILE);
     }
 
-
     @Override
     public String getProfileUrl() {
         return STRAVA_PROFILE_BASE_URL + (String) getAttribute(StravaAttributesDefinition.ID);
@@ -175,7 +172,6 @@ public class StravaProfile extends OAuth20Profile {
     public Integer getResourceState() {
         return (Integer) getAttribute(StravaAttributesDefinition.RESOURCE_STATE);
     }
-
 
     public String getProfileMedium() {
         return (String) getAttribute(StravaAttributesDefinition.PROFILE_MEDIUM);
@@ -208,7 +204,6 @@ public class StravaProfile extends OAuth20Profile {
     public Integer getFriendCount() {
         return (Integer) getAttribute(StravaAttributesDefinition.FRIEND_COUNT);
     }
-
 
     public String getDatePreference() {
         return (String) getAttribute(StravaAttributesDefinition.DATE_PREFERENCE);

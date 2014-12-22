@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package org.pac4j.oauth.profile.casoauthwrapper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
- * This class is the user profile for sites using OAuth wrapper for CAS.<br />
- * It is returned by the {@link org.pac4j.oauth.client.CasOAuthWrapperClient}.
- * <p />
- * <table border="1" cellspacing="2px">
+ * <p>This class is the user profile for sites using OAuth wrapper for CAS.</p>
+ * <p>It is returned by the {@link org.pac4j.oauth.client.CasOAuthWrapperClient}.</p>
+ * <table summary="" border="1" cellspacing="2px">
  * <tr>
  * <th>Method :</th>
  * <th>From the JSON profile response :</th>
@@ -70,8 +69,7 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * <td>the <i>location</i> attribute</td>
  * </tr>
  * </table>
- * <p />
- * All other attributes must be retrieved using the {@link #getAttributes()} method.
+ * <p>All other attributes must be retrieved using the {@link #getAttributes()} method.</p>
  * 
  * @see org.pac4j.oauth.client.CasOAuthWrapperClient
  * @author Jerome Leleu

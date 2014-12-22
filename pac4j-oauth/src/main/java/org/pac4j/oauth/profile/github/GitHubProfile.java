@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,10 +22,9 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
- * This class is the user profile for GitHub with appropriate getters.<br />
- * It is returned by the {@link org.pac4j.oauth.client.GitHubClient}.
- * <p />
- * <table border="1" cellspacing="2px">
+ * <p>This class is the user profile for GitHub with appropriate getters.</p>
+ * <p>It is returned by the {@link org.pac4j.oauth.client.GitHubClient}.</p>
+ * <table summary="" border="1" cellspacing="2px">
  * <tr>
  * <th>Method :</th>
  * <th>From the JSON profile response :</th>

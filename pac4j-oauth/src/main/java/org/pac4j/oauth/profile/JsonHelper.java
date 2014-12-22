@@ -41,7 +41,7 @@ public final class JsonHelper {
     /**
      * Return the first node of a JSON response.
      *
-     * @param text
+     * @param text JSON text
      * @return the first node of the JSON response or null if exception is thrown
      */
     public static JsonNode getFirstNode(final String text) {
@@ -60,8 +60,8 @@ public final class JsonHelper {
     /**
      * Return the field with name in JSON (a string, a boolean, a number or a node).
      *
-     * @param json
-     * @param name
+     * @param json json
+     * @param name node name
      * @return the field
      */
     public static Object get(final JsonNode json, final String name) {
@@ -90,9 +90,9 @@ public final class JsonHelper {
     /**
      * Convert a JSON attribute.
      *
-     * @param converter
-     * @param json
-     * @param name
+     * @param converter converter
+     * @param json json
+     * @param name attribute name
      * @return the converted JSON attribute
      */
     public static Object convert(final AttributeConverter<? extends Object> converter, final JsonNode json,

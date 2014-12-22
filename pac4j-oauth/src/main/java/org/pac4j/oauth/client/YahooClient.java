@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,11 +30,9 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth client to authenticate users in Yahoo.
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.yahoo.YahooProfile}.
- * <p />
- * More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html
+ * <p>This class is the OAuth client to authenticate users in Yahoo.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.yahoo.YahooProfile}.</p>
+ * <p>More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html</p>
  * 
  * @see org.pac4j.oauth.profile.yahoo.YahooProfile
  * @author Jerome Leleu

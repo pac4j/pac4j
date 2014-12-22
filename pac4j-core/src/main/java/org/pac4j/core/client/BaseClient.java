@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the default implementation of an authentication client (whatever the protocol). It has the core concepts :
+ * <p>This class is the default implementation of an authentication client (whatever the protocol). It has the core concepts :</p>
  * <ul>
  * <li>the initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()} must be implemented
  * in sub-classes</li>
@@ -44,23 +44,19 @@ import org.slf4j.LoggerFactory;
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
  * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if it's false, the
  * redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
- * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
+ * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.
  * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean, boolean)} must be used with <code>true</code> for the
  * <code>forceDirectRedirection</code> parameter</li>
  * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
  * </ul>
- * <p />
- * The {@link #authenticator} and {@link #profileCreator} can be used for some clients where the protocol (like HTTP) does not provide
- * any defined implementation to validate credentials and create user profiles.
- * <p />
- * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
- * required to initialize the client.
- * <p/>
- * The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.
- * <p />
- * After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
- * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.
+ * <p>The {@link #authenticator} and {@link #profileCreator} can be used for some clients where the protocol (like HTTP) does not provide
+ * any defined implementation to validate credentials and create user profiles.</p>
+ * <p>The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
+ * required to initialize the client.</p>
+ * <p>The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.</p>
+ * <p>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
+ * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.</p>
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -156,11 +152,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
      * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
      * 
-     * @param context
-     * @param requiresAuthentication
-     * @param ajaxRequest
+     * @param context context
+     * @param requiresAuthentication requires authentication
      * @return the redirection action
-     * @throws RequiresHttpAction
+     * @throws RequiresHttpAction requires an additional HTTP action
      */
     public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication,
             final boolean ajaxRequest) throws RequiresHttpAction {
@@ -279,6 +274,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     /**
      * Sets whether contextual redirects are enabled for this client
+     * 
+     * @param enableContextualRedirects enable contextual redirects
      */
     public void setEnableContextualRedirects(final boolean enableContextualRedirects) {
         this.enableContextualRedirects = enableContextualRedirects;
@@ -306,6 +303,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     /**
      * Return the state parameter required by some security protocols like SAML or OAuth.
      * 
+     * @param webContext web context
      * @return the state
      */
     protected String getStateParameter(WebContext webContext) {
@@ -328,6 +326,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     /**
      * Use addAuthorizationGenerator instead.
+     * 
+     * @param authorizationGenerator an authorizations generator
      */
     @Deprecated
     public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {

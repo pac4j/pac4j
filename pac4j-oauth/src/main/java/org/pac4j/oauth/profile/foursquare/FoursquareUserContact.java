@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
 
 /**
- * This class is the user profile for Foursquare with appropriate getters.<br />
- * It is returned by the {@link org.pac4j.oauth.client.FoursquareClient}.
+ * <p>This class is the user profile for Foursquare with appropriate getters.</p>
+ * <p>It is returned by the {@link org.pac4j.oauth.client.FoursquareClient}.</p>
  * 
  * @author Alexey Ogarkov
  * @since 1.5.0

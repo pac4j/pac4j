@@ -55,8 +55,8 @@ public class UserProfile implements Serializable {
     /**
      * Build a profile from user identifier and attributes.
      * 
-     * @param id
-     * @param attributes
+     * @param id user identifier
+     * @param attributes user attributes
      */
     public void build(final Object id, final Map<String, Object> attributes) {
         setId(id);
@@ -75,8 +75,8 @@ public class UserProfile implements Serializable {
     /**
      * Add an attribute and perform conversion if necessary.
      * 
-     * @param key
-     * @param value
+     * @param key key of the attribute
+     * @param value value of the attribute
      */
     public void addAttribute(final String key, Object value) {
         if (value != null) {
@@ -100,7 +100,7 @@ public class UserProfile implements Serializable {
     /**
      * Add attributes.
      * 
-     * @param attributes
+     * @param attributes use attributes
      */
     public void addAttributes(final Map<String, Object> attributes) {
         for (final String key : attributes.keySet()) {
@@ -111,7 +111,7 @@ public class UserProfile implements Serializable {
     /**
      * Set the identifier and convert it if necessary.
      * 
-     * @param id
+     * @param id user identifier
      */
     public void setId(final Object id) {
         if (id != null) {
@@ -155,7 +155,7 @@ public class UserProfile implements Serializable {
     /**
      * Return the attribute with name.
      * 
-     * @param name
+     * @param name attribute name
      * @return the attribute with name
      */
     public Object getAttribute(final String name) {
@@ -184,8 +184,9 @@ public class UserProfile implements Serializable {
      * Check if the user has access to the resource protected by the requireAnyRole or requireAllRoles parameters.
      * You can pass null values for the parameters you want to ignore.
      * 
-     * @param requireAnyRole
-     * @param requireAllRoles
+     * @param requireAnyRole any of the required roles
+     * @param requireAllRoles all the required roles
+     * @return if the user has access to the resource protected by the requireAnyRole or requireAllRoles parameters
      */
     public boolean hasAccess(final String requireAnyRole, final String requireAllRoles) {
         boolean access = true;
@@ -207,8 +208,8 @@ public class UserProfile implements Serializable {
     /**
      * Check if the user has one of the expected roles.
      *
-     * @param expectedRoles
-     * @return
+     * @param expectedRoles expected roles
+     * @return if the user has one of the expected roles
      */
     public boolean hasAnyRole(final String[] expectedRoles) {
         if (expectedRoles == null || expectedRoles.length == 0) {
@@ -225,8 +226,8 @@ public class UserProfile implements Serializable {
     /**
      * Check if the user has all expected roles.
      *
-     * @param expectedRoles
-     * @return
+     * @param expectedRoles expected roles
+     * @return if the user has all expected roles
      */
     public boolean hasAllRoles(final String[] expectedRoles) {
         if (expectedRoles == null || expectedRoles.length == 0) {

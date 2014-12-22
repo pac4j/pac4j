@@ -25,13 +25,11 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.HttpProfile;
 
 /**
- * This class is the client to authenticate users through HTTP given a provided header.
- * <p />
- * For authentication, the user is redirected to the callback url. If the user is not authenticated by a provided header,
+ * <p>This class is the client to authenticate users through HTTP given a provided header.</p>
+ * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by a provided header,
  * a specific exception : {@link RequiresHttpAction} is returned which must be handled by the application to force
- * authentication.
- * <p />
- * It returns a {@link org.pac4j.http.profile.HttpProfile}.
+ * authentication.</p>
+ * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu

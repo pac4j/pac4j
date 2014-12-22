@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,11 +29,9 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth client to authenticate users in DropBox.
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.dropbox.DropBoxProfile}.
- * <p />
- * More information at https://www.dropbox.com/developers/reference/api#account-info
+ * <p>This class is the OAuth client to authenticate users in DropBox.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.dropbox.DropBoxProfile}.</p>
+ * <p>More information at https://www.dropbox.com/developers/reference/api#account-info</p>
  * 
  * @see org.pac4j.oauth.profile.dropbox.DropBoxProfile
  * @author Jerome Leleu

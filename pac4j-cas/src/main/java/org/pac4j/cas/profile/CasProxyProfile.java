@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ package org.pac4j.cas.profile;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 
 /**
- * This class is the user profile for sites using CAS protocol with proxy capabilities.
- * <p />
- * It is returned by the {@link org.pac4j.cas.client.CasClient} coupled with the {@link org.pac4j.cas.client.CasProxyReceptor}.
- * <p />
- * After the CAS principal has been set through the {@link #setPrincipal(AttributePrincipal)} method, proxy tickets can be retrieved for
- * various CAS services by using the {@link #getProxyTicketFor(String)} method.
+ * <p>This class is the user profile for sites using CAS protocol with proxy capabilities.</p>
+ * <p>It is returned by the {@link org.pac4j.cas.client.CasClient} coupled with the {@link org.pac4j.cas.client.CasProxyReceptor}.</p>
+ * <p>After the CAS principal has been set through the {@link #setPrincipal(AttributePrincipal)} method, proxy tickets can be retrieved for
+ * various CAS services by using the {@link #getProxyTicketFor(String)} method.</p>
  * 
  * @see org.pac4j.cas.client.CasClient
  * @see org.pac4j.cas.client.CasProxyReceptor

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,15 +30,12 @@ import org.scribe.oauth.PayPalOAuth20ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth client to authenticate users in PayPal.
- * <p />
- * By default, the following <i>scope</i> is requested to PayPal : openid profile email address.<br />
- * The <i>scope</i> can be defined to require permissions from the user and retrieve attributes from PayPal, by using the
- * {@link #setScope(String)} method.<br />
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.paypal.PayPalProfile}.
- * <p />
- * More information at https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/
+ * <p>This class is the OAuth client to authenticate users in PayPal.</p>
+ * <p>By default, the following <i>scope</i> is requested to PayPal : openid profile email address.</p>
+ * <p>The <i>scope</i> can be defined to require permissions from the user and retrieve attributes from PayPal, by using the
+ * {@link #setScope(String)} method.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.paypal.PayPalProfile}.</p>
+ * <p>More information at https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/</p>
  * 
  * @see org.pac4j.oauth.profile.paypal.PayPalProfile
  * @author Jerome Leleu

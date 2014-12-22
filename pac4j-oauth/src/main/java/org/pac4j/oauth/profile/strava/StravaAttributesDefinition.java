@@ -98,7 +98,6 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * }
  * ],
  * "shoes": [
- * <p/>
  * ]
  * }
  *
@@ -134,10 +133,8 @@ public class StravaAttributesDefinition extends OAuthAttributesDefinition {
     public static final String SHOES = "shoes";
 
     public StravaAttributesDefinition() {
-        final String[] names = new String[]{
-                FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, PROFILE, CITY, STATE, COUNTRY, SEX, DATE_PREFERENCE, MEASUREMENT_PREFERENCE,
-                EMAIL
-        };
+        final String[] names = new String[] { FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, PROFILE, CITY, STATE, COUNTRY,
+                SEX, DATE_PREFERENCE, MEASUREMENT_PREFERENCE, EMAIL };
         for (final String name : names) {
             addAttribute(name, Converters.stringConverter);
         }
