@@ -3,7 +3,7 @@ language: java
 script: "mvn deploy -DskipITs --settings travis/settings.xml"
 
 jdk:
-  - openjdk7
+  - oraclejdk8
 
 env:
   global:
