@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,16 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
- * callback url.
- * <p />
- * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the
+ * <p>This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
+ * callback url.</p>
+ * <p>The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the
  * clients group if empty and a specific parameter added to define the client targeted. It is implicitly called by the
- * "finders" methods and doesn't need to be called explicitly.
- * <p />
- * The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called
+ * "finders" methods and doesn't need to be called explicitly.</p>
+ * <p>The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called
  * to find the right client according to the input context or type. The {@link #findAllClients()} method returns all the
- * clients.
+ * clients.</p>
  * 
  * @author Jerome Leleu
  * @since 1.3.0
@@ -91,7 +89,7 @@ public final class Clients extends InitializableObject {
     /**
      * Return the right client according to the web context.
      * 
-     * @param context
+     * @param context web context
      * @return the right client
      */
     public Client findClient(final WebContext context) {
@@ -103,7 +101,7 @@ public final class Clients extends InitializableObject {
     /**
      * Return the right client according to the specific name.
      * 
-     * @param name
+     * @param name name of the client
      * @return the right client
      */
     public Client findClient(final String name) {
@@ -121,7 +119,7 @@ public final class Clients extends InitializableObject {
     /**
      * Return the right client according to the specific class.
      *
-     * @param clazz
+     * @param clazz class of the client
      * @return the right client
      */
     @SuppressWarnings("unchecked")

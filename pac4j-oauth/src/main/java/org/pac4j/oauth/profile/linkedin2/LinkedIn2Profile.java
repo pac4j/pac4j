@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,10 +23,9 @@ import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
- * This class is the user profile for LinkedIn with appropriate getters.<br />
- * It is returned by the {@link org.pac4j.oauth.client.LinkedIn2Client}.
- * <p />
- * <table border="1" cellspacing="2px">
+ * <p>This class is the user profile for LinkedIn with appropriate getters.</p>
+ * <p>It is returned by the {@link org.pac4j.oauth.client.LinkedIn2Client}.</p>
+ * <table summary="" border="1" cellspacing="2px">
  * <tr>
  * <th>Method :</th>
  * <th>From the JSON profile response :</th>
@@ -110,7 +109,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
  * <td>the <i>specialties</i> attribute</td>
  * </tr>
  * <tr>
- * <td>List<LinkedIn2Position> getPositions()</td>
+ * <td>List&lt;LinkedIn2Position&gt; getPositions()</td>
  * <td>the <i>positions</i> attribute</td>
  * </tr>
  * <tr>

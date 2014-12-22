@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,14 +30,11 @@ import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.
- * <p />
- * The <i>scope</i> is by default : {@link Google2Scope#EMAIL_AND_PROFILE}, but it can also but set to : {@link Google2Scope#PROFILE}
- * or {@link Google2Scope#EMAIL}.
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.
- * <p />
- * More information at https://developers.google.com/accounts/docs/OAuth2Login
+ * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
+ * <p>The <i>scope</i> is by default : {@link Google2Scope#EMAIL_AND_PROFILE}, but it can also but set to : {@link Google2Scope#PROFILE}
+ * or {@link Google2Scope#EMAIL}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.</p>
+ * <p>More information at https://developers.google.com/accounts/docs/OAuth2Login</p>
  *
  * @see org.pac4j.oauth.profile.google2.Google2Profile
  * @author Jerome Leleu

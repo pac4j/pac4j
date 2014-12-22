@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,11 +28,9 @@ import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is the OAuth client to authenticate users in Windows Live (SkyDrive, Hotmail and Messenger).
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.windowslive.WindowsLiveProfile}.
- * <p />
- * More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx
+ * <p>This class is the OAuth client to authenticate users in Windows Live (SkyDrive, Hotmail and Messenger).</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.windowslive.WindowsLiveProfile}.</p>
+ * <p>More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx</p>
  * 
  * @see org.pac4j.oauth.profile.windowslive.WindowsLiveProfile
  * @author Jerome Leleu

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Patrice de Saint Steban
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,8 +30,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 /**
- * This class is the OpenID client to authenticate users with UserService on App Engine
- * <p />
+ * <p>This class is the OpenID client to authenticate users with UserService on App Engine</p>
  * 
  * @author Patrice de Saint Steban
  * @since 1.6.0

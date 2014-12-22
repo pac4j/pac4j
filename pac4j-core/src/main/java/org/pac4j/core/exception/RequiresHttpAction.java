@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,9 +39,9 @@ public class RequiresHttpAction extends Exception {
     /**
      * Build a redirection.
      * 
-     * @param message
-     * @param context
-     * @param url
+     * @param message message
+     * @param context context
+     * @param url url
      * @return an HTTP redirection
      */
     public static RequiresHttpAction redirect(final String message, final WebContext context, final String url) {
@@ -53,8 +53,8 @@ public class RequiresHttpAction extends Exception {
     /**
      * Build an HTTP Ok.
      * 
-     * @param message
-     * @param context
+     * @param message message
+     * @param context context
      * @return an HTTP ok
      */
     public static RequiresHttpAction ok(final String message, final WebContext context) {
@@ -64,9 +64,9 @@ public class RequiresHttpAction extends Exception {
     /**
      * Build an HTTP Ok.
      * 
-     * @param message
-     * @param context
-     * @param content
+     * @param message message
+     * @param context context
+     * @param content content
      * @return an HTTP ok
      */
     public static RequiresHttpAction ok(final String message, final WebContext context, String content) {
@@ -78,9 +78,9 @@ public class RequiresHttpAction extends Exception {
     /**
      * Build a basic auth popup credentials.
      * 
-     * @param message
-     * @param context
-     * @param realmName
+     * @param message message
+     * @param context context
+     * @param realmName realm name
      * @return a basic auth popup credentials
      */
     public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
@@ -94,8 +94,8 @@ public class RequiresHttpAction extends Exception {
     /**
      * Build a forbidden response.
      * 
-     * @param message
-     * @param context
+     * @param message message
+     * @param context context
      * @return a forbidden response
      */
     public static RequiresHttpAction forbidden(final String message, final WebContext context) {

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,10 +18,9 @@ package org.pac4j.http.profile;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * This class is the user profile for sites using HTTP protocol.<br />
- * It is returned by the {@link org.pac4j.http.client.FormClient} or the {@link org.pac4j.http.client.BasicAuthClient}.
- * <p />
- * <table border="1" cellspacing="2px">
+ * <p>This class is the user profile for sites using HTTP protocol.</p>
+ * <p>It is returned by the {@link org.pac4j.http.client.FormClient} or the {@link org.pac4j.http.client.BasicAuthClient}.</p>
+ * <table summary="" border="1" cellspacing="2px">
  * <tr>
  * <th>Method :</th>
  * <th>From the JSON profile response :</th>
@@ -70,8 +69,7 @@ import org.pac4j.core.profile.CommonProfile;
  * <td>the <i>location</i> attribute</td>
  * </tr>
  * </table>
- * <p />
- * All other attributes must be retrieved using the {@link #getAttributes()} method.
+ * <p>All other attributes must be retrieved using the {@link #getAttributes()} method.</p>
  * 
  * @see org.pac4j.http.client.FormClient
  * @see org.pac4j.http.client.BasicAuthClient

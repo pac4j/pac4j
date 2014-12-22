@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,13 +27,10 @@ import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 /**
- * Deprecated ! Upgrade to {@link LinkedIn2Client} !
- * <p />
- * This class is the OAuth client to authenticate user in LinkedIn.
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.linkedin.LinkedInProfile}.
- * <p />
- * More information at https://developer.linkedin.com/documents/profile-api
+ * <p>Deprecated! Upgrade to {@link LinkedIn2Client}!</p>
+ * <p>This class is the OAuth client to authenticate user in LinkedIn.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.linkedin.LinkedInProfile}.</p>
+ * <p>More information at https://developer.linkedin.com/documents/profile-api</p>
  * 
  * @see org.pac4j.oauth.profile.linkedin.LinkedInProfile
  * @author Jerome Leleu

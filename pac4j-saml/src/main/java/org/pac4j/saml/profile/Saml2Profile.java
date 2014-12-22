@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.saml.client.Saml2Client;
 
 /**
- * This class is the user profile for sites using SAML2 protocol.<br />
- * It is returned by the {@link Saml2Client}.
+ * <p>This class is the user profile for sites using SAML2 protocol.</p>
+ * <p>It is returned by the {@link Saml2Client}.</p>
  * 
  * @author Michael Remond
  * @version 1.5.0

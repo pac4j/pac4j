@@ -30,8 +30,6 @@ import org.pac4j.oauth.profile.JsonObject;
  * "resource_state": 2,
  * "distance": 1303618
  * }
- * <p/>
- * <p/>
  *
  * @author Adrian Papusoi
  */

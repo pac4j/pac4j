@@ -24,8 +24,8 @@ import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 
 /**
- * This class is the user profile for sites using OpenID Connect protocol.<br />
- * It is returned by the {@link OidcClient}.
+ * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
+ * <p>It is returned by the {@link OidcClient}.</p>
  * 
  * @author Michael Remond
  * @version 1.7.0

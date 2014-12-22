@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -68,8 +68,8 @@ public class AttributesDefinition {
     /**
      * Add an attribute as a primary one and its converter to this attributes definition.
      * 
-     * @param name
-     * @param converter
+     * @param name name of the attribute
+     * @param converter converter
      */
     protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter) {
         addAttribute(name, converter, true);
@@ -78,9 +78,9 @@ public class AttributesDefinition {
     /**
      * Add an attribute, its primary aspect and its converter to this attributes definition.
      * 
-     * @param name
-     * @param converter
-     * @param principal
+     * @param name name of the attribute
+     * @param converter converter
+     * @param principal whether the attribute is principal
      */
     protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter,
                                 final boolean principal) {
@@ -97,8 +97,8 @@ public class AttributesDefinition {
      * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is ignored and null is
      * returned.
      * 
-     * @param name
-     * @param value
+     * @param name name of the attribute
+     * @param value value of the attribute
      * @return the converted attribute or null if no converter exists for this attribute name
      */
     public Object convert(final String name, final Object value) {
