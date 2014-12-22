@@ -1,8 +1,7 @@
 package org.pac4j.oauth.client;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import java.util.List;
+
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.MockWebContext;
@@ -13,7 +12,13 @@ import org.pac4j.oauth.profile.strava.StravaClub;
 import org.pac4j.oauth.profile.strava.StravaGear;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 
-import java.util.List;
+import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * Strava integration test. It performs authentication on Strava and retrieves a StravaProfile.
@@ -45,10 +50,10 @@ public class StravaClientIT extends OAuthClientIT {
 
     @Override
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
-                                          final MockWebContext context) throws Exception {
+            final MockWebContext context) throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
-        baseClient.redirect(context, true);
+        baseClient.redirect(context, true, false);
         final String redirectionUrl = context.getResponseLocation();
         logger.debug("redirectionUrl : {}", redirectionUrl);
         final HtmlPage loginPage = webClient.getPage(redirectionUrl);
@@ -62,7 +67,6 @@ public class StravaClientIT extends OAuthClientIT {
         List<HtmlElement> submitButtons = form.getElementsByAttribute("button", "type", "submit");
 
         final HtmlPage authorizationPage = submitButtons.get(0).click();
-
 
         return authorizationPage;
     }
@@ -82,7 +86,7 @@ public class StravaClientIT extends OAuthClientIT {
         assertEquals("avatar/athlete/medium.png", profile.getProfileMedium());
         assertEquals("Hem", profile.getLocation());
         assertEquals("France", profile.getCountry());
-        assertEquals("testscribeup@yahoo.fr",profile.getEmail());
+        assertEquals("testscribeup@yahoo.fr", profile.getEmail());
         assertEquals("avatar/athlete/large.png", profile.getPictureUrl());
 
         assertEquals(1, profile.getBikes().size());
@@ -90,7 +94,6 @@ public class StravaClientIT extends OAuthClientIT {
         assertEquals(Boolean.TRUE, profile.getBikes().get(0).isPrimary());
         assertEquals("BH G5", profile.getBikes().get(0).getName());
         assertEquals(Integer.valueOf(2), profile.getBikes().get(0).getResourceState());
-
 
         assertEquals(1, profile.getShoes().size());
         assertEquals("g592532", profile.getShoes().get(0).getId());
