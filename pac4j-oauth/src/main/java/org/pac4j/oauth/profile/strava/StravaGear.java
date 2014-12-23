@@ -15,10 +15,11 @@
  */
 package org.pac4j.oauth.profile.strava;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Encapsulates a strava bike or shoe.
@@ -43,7 +44,6 @@ public class StravaGear extends JsonObject {
 
     private Integer resourceState;
     private Long distance;
-
 
     public Boolean isPrimary() {
         return primary;
@@ -85,15 +85,13 @@ public class StravaGear extends JsonObject {
         this.distance = distance;
     }
 
-
     @Override
     protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.primary = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "primary");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.resourceState = (Integer) JsonHelper.convert(Converters.integerConverter, json, "resource_state");
-        this.distance = (Long) JsonHelper.convert(Converters.longConverter, json, "distance");
+        id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
+        primary = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "primary");
+        name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
+        resourceState = (Integer) JsonHelper.convert(Converters.integerConverter, json, "resource_state");
+        distance = (Long) JsonHelper.convert(Converters.longConverter, json, "distance");
     }
-
 
 }

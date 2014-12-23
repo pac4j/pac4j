@@ -15,7 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
@@ -26,6 +25,8 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>OAuth20Client for Strava.</p>
@@ -75,18 +76,15 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     @Override
     protected StravaClient newClient() {
         StravaClient client = new StravaClient();
-        client.setScope(this.scope);
+        client.setScope(scope);
         return client;
     }
 
     @Override
     protected void internalInit() {
         super.internalInit();
-        this.service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(this.key, this.secret,
-                this.callbackUrl,
-                SignatureType.Header, this.scope,
-                null), this.connectTimeout,
-                this.readTimeout, this.proxyHost, this.proxyPort, false, false);
+        service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(key, secret, callbackUrl,
+                SignatureType.Header, scope, null), connectTimeout, readTimeout, proxyHost, proxyPort, false, false);
     }
 
     @Override
@@ -117,6 +115,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         return profile;
     }
 
+    @Override
     protected boolean isDirectRedirection() {
         return false;
     }
