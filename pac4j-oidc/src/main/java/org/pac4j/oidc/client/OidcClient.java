@@ -290,12 +290,13 @@ public class OidcClient extends BaseClient<OidcCredentials, OidcProfile> {
             }
             logger.debug("Token response successful");
             OIDCAccessTokenResponse tokenSuccessResponse = (OIDCAccessTokenResponse) response;
+            BearerAccessToken accessToken = (BearerAccessToken) tokenSuccessResponse.getAccessToken();
 
             // User Info request
             UserInfo userInfo = null;
             if (this.oidcProvider.getUserInfoEndpointURI() != null) {
                 UserInfoRequest userInfoRequest = new UserInfoRequest(this.oidcProvider.getUserInfoEndpointURI(),
-                        (BearerAccessToken) tokenSuccessResponse.getAccessToken());
+                        accessToken);
                 httpResponse = userInfoRequest.toHTTPRequest().send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
@@ -323,8 +324,10 @@ public class OidcClient extends BaseClient<OidcCredentials, OidcProfile> {
             }
 
             // Return profile with Claims Set, User Info and Access Token
-            OidcProfile profile = new OidcProfile(claimsSet, userInfo, tokenSuccessResponse.getAccessToken());
-            profile.updateState();
+            OidcProfile profile = new OidcProfile(accessToken);
+            profile.setId(claimsSet.getSubject());
+            profile.addAttributes(claimsSet.getAllClaims());
+            profile.addAttributes(userInfo.toJWTClaimsSet().getAllClaims());
 
             return profile;
 
