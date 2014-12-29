@@ -19,9 +19,7 @@ package org.pac4j.oidc.profile;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
-import com.nimbusds.oauth2.sdk.token.AccessToken;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -34,35 +32,17 @@ public class OidcProfile extends CommonProfile {
 
     private static final long serialVersionUID = -52855988661742374L;
 
-    private final ReadOnlyJWTClaimsSet claimsSet;
-    private final UserInfo userInfo;
-    private final AccessToken accessToken;
+    private BearerAccessToken accessToken;
 
-    public OidcProfile(ReadOnlyJWTClaimsSet claimsSet, UserInfo userInfo, AccessToken accessToken) {
-        this.claimsSet = claimsSet;
-        this.userInfo = userInfo;
+    public OidcProfile() {
+    }
+
+    public OidcProfile(BearerAccessToken accessToken) {
         this.accessToken = accessToken;
     }
 
-    public ReadOnlyJWTClaimsSet getClaimsSet() {
-        return this.claimsSet;
-    }
-
-    public AccessToken getAccessToken() {
+    public BearerAccessToken getAccessToken() {
         return this.accessToken;
-    }
-
-    public UserInfo getUserInfo() {
-        return this.userInfo;
-    }
-
-    public void updateState() {
-        setId(this.claimsSet.getSubject());
-        if (this.userInfo != null) {
-            for (String name : UserInfo.getStandardClaimNames()) {
-                addAttribute(name, this.userInfo.getClaim(name));
-            }
-        }
     }
 
 }
