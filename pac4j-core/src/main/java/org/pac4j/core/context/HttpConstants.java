@@ -43,8 +43,12 @@ public interface HttpConstants {
 
     public final static String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
+    /* Use Pac4jConstants.REQUESTED_URL instead */
+    @Deprecated
     public final static String REQUESTED_URL = "pac4jRequestedUrl";
 
+    /* Use Pac4jConstants.USER_PROFILE instead */
+    @Deprecated
     public final static String USER_PROFILE = "pac4jUserProfile";
 
 }
