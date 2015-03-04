@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="http://www.pac4j.org/img/logo.png" />
+  <img src="//pac4j.github.io/pac4j/img/logo.png" />
 </p>
 
 - [What is pac4j ?](#what-is-pac4j--)
@@ -82,7 +82,7 @@ It's available under the Apache 2 license.
 
 ## The "big picture"
 
-<img src="http://www.pac4j.org/img/pac4j.png" />
+<img src="//pac4j.github.io/pac4j/img/pac4j.png" />
 
 
 ## Technical description
@@ -156,7 +156,7 @@ file README-ADFS.txt for details on how to setup your client.
 
 This module is made to test CAS support in pac4j.
 
-Learn more by browsing the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html).
+Learn more by browsing the [Javadoc](//pac4j.github.io/pac4j/apidocs/pac4j/index.html).
 
 #### pac4j-gae
 
