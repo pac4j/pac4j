@@ -25,7 +25,7 @@ import org.scribe.builder.api.GoogleApi20;
 import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+import org.scribe.oauth.StateOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -46,7 +46,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         EMAIL,
         PROFILE,
         EMAIL_AND_PROFILE
-    };
+    }
 
     protected final String PROFILE_SCOPE = "profile";
 
@@ -82,7 +82,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         } else {
             this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
-        this.service = new ProxyOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
+        this.service = new StateOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
                 this.callbackUrl,
                 SignatureType.Header,
                 this.scopeValue, null),
@@ -118,7 +118,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
 
     @Override
     protected boolean requiresStateParameter() {
-        return false;
+        return true;
     }
 
     @Override
@@ -127,8 +127,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
         // user has denied permissions
         if ("access_denied".equals(error)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }
