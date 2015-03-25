@@ -28,7 +28,7 @@ public class YahooOpenIdAttributesDefinition extends AttributesDefinition {
     
     public static final String EMAIL = "email";
     public static final String LANGUAGE = "language";
-    public static final String FULLNAME = "display_name";
+    public static final String FULLNAME = "fullname";
     public static final String PROFILEPICTURE = "picture_url";
     
     public YahooOpenIdAttributesDefinition() {
