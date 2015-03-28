@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.pac4j.http.credentials;
 
+import org.pac4j.core.credentials.Authenticator;
 
 /**
  * This interface represents the contract to validate a username / password credentials.
@@ -22,12 +23,11 @@ package org.pac4j.http.credentials;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public interface UsernamePasswordAuthenticator {
-    
+public interface UsernamePasswordAuthenticator extends Authenticator<UsernamePasswordCredentials> {
+
     /**
-     * Validate username/password credentials.
-     * 
-     * @param credentials
+     * {@inheritDoc}
      */
-    public void validate(UsernamePasswordCredentials credentials);
+    @Override
+    void validate(UsernamePasswordCredentials credentials);
 }

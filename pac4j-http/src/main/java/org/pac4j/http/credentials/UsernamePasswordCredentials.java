@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,30 +25,30 @@ import org.pac4j.core.util.CommonHelper;
  * @since 1.4.0
  */
 public class UsernamePasswordCredentials extends Credentials {
-    
+
     private static final long serialVersionUID = -7229878989627796565L;
-    
+
     private final String username;
-    
+
     private final String password;
-    
+
     public UsernamePasswordCredentials(final String username, final String password, final String clientName) {
         this.username = username;
         this.password = password;
         setClientName(clientName);
     }
-    
+
     public String getUsername() {
         return this.username;
     }
-    
+
     public String getPassword() {
         return this.password;
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "password", "[PROTECTED]",
-                                     "clientName", getClientName());
+                "clientName", getClientName());
     }
 }

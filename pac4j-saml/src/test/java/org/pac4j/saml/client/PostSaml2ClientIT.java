@@ -46,7 +46,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
             final MockWebContext context) throws Exception {
         // force immediate redirection for tests
-        client.redirect(context, true);
+        client.redirect(context, true, false);
         File redirectFile = File.createTempFile("pac4j-saml2", ".html");
         FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
         writer.write(context.getResponseContent());
@@ -72,7 +72,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         Saml2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true);
+        RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent())
                 .contains(
                         "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
@@ -83,7 +83,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         Saml2Client client = (Saml2Client) getClient();
         client.setForceAuth(true);
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true);
+        RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
 
@@ -92,7 +92,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         Saml2Client client = (Saml2Client) getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = MockWebContext.create();
-        RedirectAction action = client.getRedirectAction(context, true);
+        RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
 
@@ -101,7 +101,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         Saml2Client client = (Saml2Client) getClient();
         WebContext context = MockWebContext.create();
         context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        RedirectAction action = client.getRedirectAction(context, true);
+        RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 

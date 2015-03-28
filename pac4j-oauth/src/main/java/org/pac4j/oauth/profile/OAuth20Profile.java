@@ -31,7 +31,7 @@ public abstract class OAuth20Profile extends CommonProfile {
     /**
      * Set the access token
      * 
-     * @param accessToken
+     * @param accessToken the access token secret
      */
     public void setAccessToken(final String accessToken) {
         addAttribute(OAuthAttributesDefinition.ACCESS_TOKEN, accessToken);

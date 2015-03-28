@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package org.pac4j.core.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 
@@ -35,16 +37,30 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
     public void testClone() {
         final BaseClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials>(TYPE);
         oldClient.setCallbackUrl(CALLBACK_URL);
+        oldClient.setAuthenticator(new Authenticator<Credentials>() {
+            @Override
+            public void validate(Credentials credentials) {
+            }
+        });
+        oldClient.setProfileCreator(new ProfileCreator<Credentials, CommonProfile>() {
+            @Override
+            public CommonProfile create(Credentials credentials) {
+                return null;
+            }
+        });
         final BaseClient<Credentials, CommonProfile> newClient = oldClient.clone();
         assertEquals(oldClient.getName(), newClient.getName());
         assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
+        assertEquals(oldClient.getAuthenticator(), newClient.getAuthenticator());
+        assertEquals(oldClient.getProfileCreator(), newClient.getProfileCreator());
+        assertEquals(oldClient.getAuthorizationGenerators(), newClient.getAuthorizationGenerators());
     }
 
     public void testDirectClient() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context, false);
+        client.redirect(context, false, false);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
         final Credentials credentials = client.getCredentials(context);
@@ -55,7 +71,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context, false);
+        client.redirect(context, false, false);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(CommonHelper.addParameter(CALLBACK_URL, BaseClient.NEEDS_CLIENT_REDIRECTION_PARAMETER, "true"),
                 redirectionUrl);
@@ -74,7 +90,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context, true);
+        client.redirect(context, true, false);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
@@ -146,13 +162,26 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         assertEquals("/cas/login", result);
     }
 
+    public void testAjaxRequest() {
+        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        client.setCallbackUrl(CALLBACK_URL);
+        final MockWebContext context = MockWebContext.create();
+        try {
+            client.redirect(context, false, true);
+            fail("should fail");
+        } catch (RequiresHttpAction e) {
+            assertEquals(401, e.getCode());
+            assertEquals(401, context.getResponseStatus());
+        }
+    }
+
     public void testAlreadyTried() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         context.setSessionAttribute(client.getName() + BaseClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         try {
-            client.redirect(context, true);
+            client.redirect(context, true, false);
             fail("should fail");
         } catch (RequiresHttpAction e) {
             assertEquals(403, e.getCode());

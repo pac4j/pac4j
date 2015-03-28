@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,12 +28,11 @@ import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.ProfileCreator;
 import org.pac4j.http.profile.UsernameProfileCreator;
 
 /**
  * This class tests the {@link FormClient} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -45,22 +44,24 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         oldClient.setName(TYPE);
         oldClient.setPasswordParameter(PASSWORD);
         oldClient.setUsernameParameter(USERNAME);
-        final ProfileCreator profileCreator = new UsernameProfileCreator();
+        oldClient.setLoginUrl(LOGIN_URL);
+        final UsernameProfileCreator profileCreator = new UsernameProfileCreator();
         oldClient.setProfileCreator(profileCreator);
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
-        oldClient.setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
+        oldClient.setAuthenticator(usernamePasswordAuthenticator);
         final FormClient client = (FormClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getName(), client.getName());
         assertEquals(oldClient.getUsernameParameter(), client.getUsernameParameter());
         assertEquals(oldClient.getPasswordParameter(), client.getPasswordParameter());
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getUsernamePasswordAuthenticator(), client.getUsernamePasswordAuthenticator());
+        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
+        assertEquals(oldClient.getLoginUrl(), client.getLoginUrl());
     }
 
     public void testMissingUsernamePasswordAuthenticator() {
         final FormClient formClient = new FormClient(LOGIN_URL, null, new UsernameProfileCreator());
-        TestsHelper.initShouldFail(formClient, "usernamePasswordAuthenticator cannot be null");
+        TestsHelper.initShouldFail(formClient, "authenticator cannot be null");
     }
 
     public void testMissingProfileCreator() {
@@ -81,7 +82,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
     public void testRedirectionUrl() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
-        formClient.redirect(context, false);
+        formClient.redirect(context, false, false);
         assertEquals(LOGIN_URL, context.getResponseLocation());
     }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
  * This class is the OAuth client to authenticate users in Bitbucket.
  * 
  * It returns a {@link org.pac4j.oauth.profile.bitbucket.BitbucketProfile}.
- * <p />
  * 
  * @see org.pac4j.oauth.profile.bitbucket.BitbucketProfile
  * @author Sebastian Sdorra

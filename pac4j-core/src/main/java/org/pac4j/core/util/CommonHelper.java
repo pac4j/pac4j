@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public final class CommonHelper {
     /**
      * Return if the String is not blank.
      * 
-     * @param s
+     * @param s string
      * @return if the String is not blank
      */
     public static boolean isNotBlank(final String s) {
@@ -53,7 +53,7 @@ public final class CommonHelper {
     /**
      * Return if the String is blank.
      * 
-     * @param s
+     * @param s string
      * @return if the String is blank
      */
     public static boolean isBlank(final String s) {
@@ -63,8 +63,8 @@ public final class CommonHelper {
     /**
      * Compare two String to see if they are equals (both null is ok).
      * 
-     * @param s1
-     * @param s2
+     * @param s1 string
+     * @param s2 string
      * @return if two String are equals
      */
     public static boolean areEquals(final String s1, final String s2) {
@@ -74,8 +74,8 @@ public final class CommonHelper {
     /**
      * Compare two String to see if they are not equals.
      * 
-     * @param s1
-     * @param s2
+     * @param s1 string
+     * @param s2 string
      * @return if two String are not equals
      */
     public static boolean areNotEquals(final String s1, final String s2) {
@@ -97,8 +97,8 @@ public final class CommonHelper {
     /**
      * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
      * 
-     * @param name
-     * @param value
+     * @param name name if the string
+     * @param value value of the string
      */
     public static void assertNotBlank(final String name, final String value) {
         assertTrue(!isBlank(value), name + " cannot be blank");
@@ -107,8 +107,8 @@ public final class CommonHelper {
     /**
      * Verify that an Object is not <code>null</code> otherwise throw an {@link TechnicalException}.
      * 
-     * @param name
-     * @param obj
+     * @param name name of the object
+     * @param obj object
      */
     public static void assertNotNull(final String name, final Object obj) {
         assertTrue(obj != null, name + " cannot be null");
@@ -117,9 +117,9 @@ public final class CommonHelper {
     /**
      * Add a new parameter to an url.
      * 
-     * @param url
-     * @param name
-     * @param value
+     * @param url url
+     * @param name name of the parameter
+     * @param value value of the parameter
      * @return the new url with the parameter appended
      */
     public static String addParameter(final String url, final String name, final String value) {
@@ -146,7 +146,7 @@ public final class CommonHelper {
     /**
      * Encode a text using UTF-8.
      * 
-     * @param url
+     * @param text text to encode
      * @return the encoded text
      */
     private static String encodeText(final String text) {
@@ -161,8 +161,8 @@ public final class CommonHelper {
     /**
      * Build a normalized "toString" text for an object.
      * 
-     * @param clazz
-     * @param args
+     * @param clazz class
+     * @param args arguments
      * @return a normalized "toString" text
      */
     public static String toString(final Class<?> clazz, final Object... args) {
@@ -191,7 +191,7 @@ public final class CommonHelper {
      * - loads from the classloader if name starts with "resource:"
      * - loads as {@link FileInputStream} otherwise
      * 
-     * @param name
+     * @param name name of the resource
      * @return the input stream
      */
     public static InputStream getInputStreamFromName(String name) {

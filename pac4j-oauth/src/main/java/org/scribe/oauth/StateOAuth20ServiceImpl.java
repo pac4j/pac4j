@@ -30,7 +30,14 @@ public class StateOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl implements 
                                    final int readTimeout, final String proxyHost, final int proxyPort) {
         super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort);
     }
-    
+
+    public StateOAuth20ServiceImpl(final StateApi20 api, final OAuthConfig config, final int connectTimeout,
+                                   final int readTimeout, final String proxyHost, final int proxyPort,
+                                   final boolean getParameter, final boolean addGrantType) {
+    	super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort, getParameter, addGrantType);
+    }
+
+    @Override
     public String getAuthorizationUrl(final String state) {
         return ((StateApi20) this.api).getAuthorizationUrl(this.config, state);
     }

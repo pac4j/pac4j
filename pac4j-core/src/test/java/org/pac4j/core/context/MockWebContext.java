@@ -57,7 +57,7 @@ public class MockWebContext extends BaseResponseContext {
     /**
      * Add request parameters for mock purpose.
      *
-     * @param parameters
+     * @param parameters parameters
      * @return this mock web context
      */
     public MockWebContext addRequestParameters(final Map<String, String> parameters) {
@@ -68,8 +68,8 @@ public class MockWebContext extends BaseResponseContext {
     /**
      * Add a request parameter for mock purpose.
      *
-     * @param key
-     * @param value
+     * @param key parameter name
+     * @param value parameter value
      * @return this mock web context
      */
     public MockWebContext addRequestParameter(final String key, final String value) {
@@ -80,8 +80,8 @@ public class MockWebContext extends BaseResponseContext {
     /**
      * Add a request header for mock purpose.
      *
-     * @param key
-     * @param value
+     * @param key request name
+     * @param value request value
      * @return this mock web context
      */
     public MockWebContext addRequestHeader(final String key, final String value) {
@@ -92,8 +92,8 @@ public class MockWebContext extends BaseResponseContext {
     /**
      * Add a session attribute for mock purpose.
      *
-     * @param name
-     * @param value
+     * @param name session attribute name
+     * @param value session attribute value
      * @return this mock web context
      */
     public MockWebContext addSessionAttribute(final String name, final Object value) {
@@ -104,7 +104,7 @@ public class MockWebContext extends BaseResponseContext {
     /**
      * Set the request method for mock purpose.
      *
-     * @param method
+     * @param method request method
      * @return this mock web context
      */
     public MockWebContext setRequestMethod(final String method) {

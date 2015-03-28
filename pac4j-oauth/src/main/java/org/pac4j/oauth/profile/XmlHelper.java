@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -67,9 +67,9 @@ public final class XmlHelper {
     /**
      * Convert a XML attribute.
      * 
-     * @param converter
-     * @param xml
-     * @param name
+     * @param converter converter
+     * @param xml xml
+     * @param name attribute name
      * @return the converted XML attribute
      */
     public static Object convert(final AttributeConverter<? extends Object> converter, final String xml,

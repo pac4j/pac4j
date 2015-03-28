@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -26,12 +26,11 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.ProfileCreator;
 import org.pac4j.http.profile.UsernameProfileCreator;
 
 /**
  * This class tests the {@link BasicAuthClient} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -42,22 +41,26 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setName(TYPE);
         oldClient.setRealmName(REALM_NAME);
-        final ProfileCreator profileCreator = new UsernameProfileCreator();
+        oldClient.setHeaderName(HEADER_NAME);
+        oldClient.setPrefixHeader(PREFIX_HEADER);
+        final UsernameProfileCreator profileCreator = new UsernameProfileCreator();
         oldClient.setProfileCreator(profileCreator);
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
-        oldClient.setUsernamePasswordAuthenticator(usernamePasswordAuthenticator);
+        oldClient.setAuthenticator(usernamePasswordAuthenticator);
         final BasicAuthClient client = (BasicAuthClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getName(), client.getName());
         assertEquals(oldClient.getRealmName(), client.getRealmName());
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getUsernamePasswordAuthenticator(), client.getUsernamePasswordAuthenticator());
+        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
+        assertEquals(oldClient.getHeaderName(), client.getHeaderName());
+        assertEquals(oldClient.getPrefixHeader(), client.getPrefixHeader());
     }
 
     public void testMissingUsernamePasswordAuthenticator() {
         final BasicAuthClient basicAuthClient = new BasicAuthClient(null, new UsernameProfileCreator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(basicAuthClient, "usernamePasswordAuthenticator cannot be null");
+        TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
 
     public void testMissingProfileCreator() {
@@ -82,7 +85,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
     public void testRedirectionUrl() throws RequiresHttpAction {
         final BasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
-        basicAuthClient.redirect(context, false);
+        basicAuthClient.redirect(context, false, false);
         assertEquals(CALLBACK_URL, context.getResponseLocation());
     }
 
@@ -96,7 +99,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",
                     context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires basic auth (no basic auth header found)", e.getMessage());
+            assertEquals("Requires authentication (no header found)", e.getMessage());
         }
     }
 
@@ -110,7 +113,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",
                     context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires basic auth (no basic auth header found)", e.getMessage());
+            assertEquals("Requires authentication (no header found)", e.getMessage());
         }
     }
 
@@ -148,7 +151,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
             assertEquals(401, context.getResponseStatus());
             assertEquals("Basic realm=\"authentication required\"",
                     context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires basic auth (credentials validation fails)", e.getMessage());
+            assertEquals("Requires authentication (credentials validation fails)", e.getMessage());
         }
     }
 

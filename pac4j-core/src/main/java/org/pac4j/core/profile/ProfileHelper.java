@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ public final class ProfileHelper {
     /**
      * Indicate if the user identifier matches this kind of profile.
      * 
-     * @param id
-     * @param clazz
+     * @param id user identifier
+     * @param clazz profile class
      * @return if the user identifier matches this kind of profile
      */
     public static boolean isTypedIdOf(final String id, final Class<? extends UserProfile> clazz) {
@@ -49,8 +49,8 @@ public final class ProfileHelper {
     /**
      * Build a profile from a typed id and a map of attributes.
      * 
-     * @param typedId
-     * @param attributes
+     * @param typedId typed identifier
+     * @param attributes user attributes
      * @return the user profile built
      */
     public static UserProfile buildProfile(final String typedId, final Map<String, Object> attributes) {
@@ -97,7 +97,7 @@ public final class ProfileHelper {
      * Set whether the input data should be stored in object to be restored for CAS serialization when toString() is called. Save memory
      * also.
      * 
-     * @param keepRawData
+     * @param keepRawData should we keep the raw data (for CAS)
      */
     public static void setKeepRawData(final boolean keepRawData) {
         RawDataObject.setKeepRawData(keepRawData);

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,21 +18,21 @@ package org.pac4j.core.credentials;
 import java.io.Serializable;
 
 /**
- * This class represents the base credentials. It is always associated to a client name.
+ * This class represents the base credentials.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public abstract class Credentials implements Serializable {
-    
+
     private static final long serialVersionUID = 4864923514027378583L;
-    
+
     private String clientName;
-    
+
     public String getClientName() {
         return this.clientName;
     }
-    
+
     public void setClientName(final String clientName) {
         this.clientName = clientName;
     }

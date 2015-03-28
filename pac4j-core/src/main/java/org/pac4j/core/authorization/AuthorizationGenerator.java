@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package org.pac4j.core.authorization;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * Generate the authorization information for this user profile.
+ * Generate the authorization information (roles and permissions) for this user profile.
  * 
  * @author Jerome Leleu
  * @since 1.5.0
  */
 public interface AuthorizationGenerator<U extends CommonProfile> {
-    
+
     /**
      * Generate the authorization information from and for the user profile.
      * 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,72 +16,33 @@
 package org.pac4j.http.client;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.ProfileCreator;
-import org.pac4j.http.profile.UsernameProfileCreator;
 
 /**
- * This class is the base HTTP client to authenticate users through HTTP protocol.
- * <p />
- * The username and password inputs must be retrieved through HTTP protocol.
- * <p />
- * To validate credentials, an {@link UsernamePasswordAuthenticator} must be defined through the
- * {@link #setUsernamePasswordAuthenticator(UsernamePasswordAuthenticator)} method.
- * <p />
- * To create the profile, a {@link ProfileCreator} must be defined through the {@link #setProfileCreator(ProfileCreator)} method.
- * <p />
- * It returns a {@link org.pac4j.http.profile.HttpProfile}.
+ * <p>This class is the base HTTP client to authenticate users through HTTP protocol.</p>
+ * <p>The {@link #getAuthenticator()} and {@link #getProfileCreator()} are mandatory for the HTTP protocol.</p>
+ * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseHttpClient extends BaseClient<UsernamePasswordCredentials, HttpProfile> {
-    
-    protected UsernamePasswordAuthenticator usernamePasswordAuthenticator;
-    
-    private ProfileCreator profileCreator = new UsernameProfileCreator();
-    
-    @Override
-    public BaseHttpClient clone() {
-        final BaseHttpClient newClient = (BaseHttpClient) super.clone();
-        newClient.setUsernamePasswordAuthenticator(this.usernamePasswordAuthenticator);
-        newClient.setProfileCreator(this.profileCreator);
-        return newClient;
-    }
-    
+public abstract class BaseHttpClient<C extends Credentials> extends BaseClient<C, HttpProfile> {
+
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("usernamePasswordAuthenticator", this.usernamePasswordAuthenticator);
-        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        CommonHelper.assertNotNull("profileCreator", getProfileCreator());
     }
-    
+
     @Override
-    protected HttpProfile retrieveUserProfile(final UsernamePasswordCredentials credentials, final WebContext context) {
-        // create user profile
-        final HttpProfile profile = this.profileCreator.create(credentials.getUsername());
+    protected HttpProfile retrieveUserProfile(final C credentials, final WebContext context) {
+        // create the user profile
+        final HttpProfile profile = getProfileCreator().create(credentials);
         logger.debug("profile : {}", profile);
         return profile;
-    }
-    
-    public UsernamePasswordAuthenticator getUsernamePasswordAuthenticator() {
-        return this.usernamePasswordAuthenticator;
-    }
-    
-    public void setUsernamePasswordAuthenticator(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
-        this.usernamePasswordAuthenticator = usernamePasswordAuthenticator;
-    }
-    
-    public ProfileCreator getProfileCreator() {
-        return this.profileCreator;
-    }
-    
-    public void setProfileCreator(final ProfileCreator profileCreator) {
-        this.profileCreator = profileCreator;
     }
 }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public interface WebContext {
     /**
      * Return a request parameter.
      *
-     * @param name
+     * @param name name of the parameter
      * @return the request parameter
      */
     public String getRequestParameter(String name);
@@ -43,7 +43,7 @@ public interface WebContext {
     /**
      * Return a request header.
      *
-     * @param name
+     * @param name name of the header
      * @return the request header
      */
     public String getRequestHeader(String name);
@@ -51,15 +51,15 @@ public interface WebContext {
     /**
      * Save an attribute in session.
      *
-     * @param name
-     * @param value
+     * @param name name of the session attribute
+     * @param value value of the session attribute
      */
     public void setSessionAttribute(String name, Object value);
 
     /**
      * Get an attribute from session.
      *
-     * @param name
+     * @param name name of the session attribute
      * @return the session attribute
      */
     public Object getSessionAttribute(String name);
@@ -74,22 +74,22 @@ public interface WebContext {
     /**
      * Write some content in the response.
      *
-     * @param content
+     * @param content content to write in response
      */
     public void writeResponseContent(String content);
 
     /**
      * Set the response status.
      *
-     * @param code
+     * @param code status code to set for the response 
      */
     public void setResponseStatus(int code);
 
     /**
      * Add a header to the response.
      *
-     * @param name
-     * @param value
+     * @param name name of the header
+     * @param value value of the header
      */
     public void setResponseHeader(String name, String value);
 

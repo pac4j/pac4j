@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -58,8 +58,8 @@ public final class JsonList<T> extends JsonObject implements List<T> {
     /**
      * Create a list of JsonObject from various inputs.
      * 
-     * @param o
-     * @param clazz
+     * @param o object
+     * @param clazz class
      */
     public JsonList(Object o, final Class<T> clazz) {
         this.clazz = clazz;
@@ -111,7 +111,7 @@ public final class JsonList<T> extends JsonObject implements List<T> {
     /**
      * Add a single node to the JsonList.
      * 
-     * @param node
+     * @param node JSON node
      */
     private void buildSingleNode(final JsonNode node) {
         if (this.clazz == String.class) {

@@ -65,7 +65,7 @@ public class Google2ClientIT extends OAuthClientIT {
         google2Client.setKey(KEY);
         google2Client.setSecret(SECRET);
         google2Client.setCallbackUrl(CALLBACK_URL);
-        google2Client.redirect(MockWebContext.create(), false);
+        google2Client.redirect(MockWebContext.create(), false, false);
     }
 
     @SuppressWarnings("rawtypes")

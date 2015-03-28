@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,16 +22,18 @@ import org.pac4j.core.authorization.AuthorizationGenerator;
 import org.pac4j.core.client.RedirectAction.RedirectType;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the default implementation of a client (whatever the protocol). It has the core concepts :
+ * <p>This class is the default implementation of an authentication client (whatever the protocol). It has the core concepts :</p>
  * <ul>
  * <li>the initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()} must be implemented
  * in sub-classes</li>
@@ -40,22 +42,21 @@ import org.slf4j.LoggerFactory;
  * <li>the callback url is handled through the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods</li>
  * <li>the name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
  * <li>the concept of "direct" redirection is defined through the {@link #isDirectRedirection()} method : if true, the
- * {@link #redirect(WebContext, boolean)} method will always return the redirection to the provider where as if it's false, the
+ * {@link #redirect(WebContext, boolean, boolean)} method will always return the redirection to the provider where as if it's false, the
  * redirection url will be the callback url with an additionnal parameter : {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
- * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.<br />
+ * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.
  * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean, boolean)} must be used with <code>true</code> for the
  * <code>forceDirectRedirection</code> parameter</li>
  * <li>if you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
  * </ul>
- * <p />
- * The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
- * required to initialize the client.
- * <p/>
- * The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.
- * <p />
- * After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
- * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.
+ * <p>The {@link #authenticator} and {@link #profileCreator} can be used for some clients where the protocol (like HTTP) does not provide
+ * any defined implementation to validate credentials and create user profiles.</p>
+ * <p>The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
+ * required to initialize the client.</p>
+ * <p>The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.</p>
+ * <p>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
+ * the appropriate {@link AuthorizationGenerator}, which is by default <code>null</code>.</p>
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -77,6 +78,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<AuthorizationGenerator<U>>();
 
+    private Authenticator<C> authenticator;
+
+    private ProfileCreator<C, U> profileCreator;
+
     /**
      * Clone the current client.
      * 
@@ -87,6 +92,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         final BaseClient<C, U> newClient = newClient();
         newClient.setCallbackUrl(this.callbackUrl);
         newClient.setName(this.name);
+        newClient.setAuthenticator(this.authenticator);
+        newClient.setProfileCreator(this.profileCreator);
         return newClient;
     }
 
@@ -113,6 +120,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.name = name;
     }
 
+    @Override
     public String getName() {
         if (CommonHelper.isBlank(this.name)) {
             return this.getClass().getSimpleName();
@@ -127,9 +135,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract boolean isDirectRedirection();
 
-    public final void redirect(final WebContext context, final boolean requiresAuthentication)
+    @Override
+    public final void redirect(final WebContext context, final boolean requiresAuthentication, final boolean ajaxRequest)
             throws RequiresHttpAction {
-        final RedirectAction action = getRedirectAction(context, requiresAuthentication);
+        final RedirectAction action = getRedirectAction(context, requiresAuthentication, ajaxRequest);
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
             context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
@@ -141,18 +150,20 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     /**
      * Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
-     * {@link #redirect(WebContext, boolean)} should be generally called instead.
+     * {@link #redirect(WebContext, boolean, boolean)} should be generally called instead.
      * 
-     * @param context
-     * @param requiresAuthentication
-     * @param ajaxRequest
+     * @param context context
+     * @param requiresAuthentication requires authentication
      * @return the redirection action
-     * @throws RequiresHttpAction
+     * @throws RequiresHttpAction requires an additional HTTP action
      */
-    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication)
-            throws RequiresHttpAction {
+    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication,
+            final boolean ajaxRequest) throws RequiresHttpAction {
         init();
-
+        // it's an AJAX request -> unauthorized (instead of a redirection)
+        if (ajaxRequest) {
+            throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
+        }
         // authentication has already been tried
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
@@ -182,7 +193,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     public String getRedirectionUrl(final WebContext context) {
         try {
-            return getRedirectAction(context, false).getLocation();
+            return getRedirectAction(context, false, false).getLocation();
         } catch (final RequiresHttpAction e) {
             return null;
         }
@@ -190,6 +201,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     protected abstract RedirectAction retrieveRedirectAction(final WebContext context);
 
+    @Override
     public final C getCredentials(final WebContext context) throws RequiresHttpAction {
         init();
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
@@ -218,6 +230,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
 
+    @Override
     public final U getUserProfile(final C credentials, final WebContext context) {
         init();
         logger.debug("credentials : {}", credentials);
@@ -261,6 +274,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     /**
      * Sets whether contextual redirects are enabled for this client
+     * 
+     * @param enableContextualRedirects enable contextual redirects
      */
     public void setEnableContextualRedirects(final boolean enableContextualRedirects) {
         this.enableContextualRedirects = enableContextualRedirects;
@@ -288,6 +303,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     /**
      * Return the state parameter required by some security protocols like SAML or OAuth.
      * 
+     * @param webContext web context
      * @return the state
      */
     protected String getStateParameter(WebContext webContext) {
@@ -310,9 +326,27 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     /**
      * Use addAuthorizationGenerator instead.
+     * 
+     * @param authorizationGenerator an authorizations generator
      */
     @Deprecated
     public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
+    }
+
+    public Authenticator<C> getAuthenticator() {
+        return this.authenticator;
+    }
+
+    public void setAuthenticator(Authenticator<C> authenticator) {
+        this.authenticator = authenticator;
+    }
+
+    public ProfileCreator<C, U> getProfileCreator() {
+        return this.profileCreator;
+    }
+
+    public void setProfileCreator(ProfileCreator<C, U> profileCreator) {
+        this.profileCreator = profileCreator;
     }
 }

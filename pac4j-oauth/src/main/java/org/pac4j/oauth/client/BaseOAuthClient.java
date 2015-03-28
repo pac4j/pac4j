@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -84,10 +84,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     }
 
     /**
-     * Get the redirection url.
-     * 
-     * @param context
-     * @return the redirection url
+     * {@inheritDoc}
      */
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
@@ -101,10 +98,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     protected abstract String retrieveAuthorizationUrl(final WebContext context);
 
     /**
-     * Get the credentials from the web context.
-     * 
-     * @param context
-     * @return the credentials
+     * {@inheritDoc}
      */
     @Override
     protected OAuthCredentials retrieveCredentials(final WebContext context) {
@@ -149,16 +143,13 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Get the OAuth credentials from the web context.
      * 
-     * @param context
+     * @param context the web context
      * @return the OAuth credentials
      */
     protected abstract OAuthCredentials getOAuthCredentials(final WebContext context);
 
     /**
-     * Get the user profile from the credentials.
-     * 
-     * @param credentials
-     * @return the user profile
+     * {@inheritDoc}
      */
     @Override
     protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) {
@@ -173,7 +164,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Get the user profile from the access token.
      * 
-     * @param accessToken
+     * @param accessToken the access token
      * @return the user profile
      */
     public U getUserProfile(final String accessToken) {
@@ -189,7 +180,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Get the access token from OAuth credentials.
      * 
-     * @param credentials
+     * @param credentials credentials
      * @return the access token
      */
     protected abstract Token getAccessToken(OAuthCredentials credentials);
@@ -197,7 +188,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Retrieve the user profile from the access token.
      * 
-     * @param accessToken
+     * @param accessToken the access token
      * @return the user profile
      */
     protected U retrieveUserProfileFromToken(final Token accessToken) {
@@ -221,8 +212,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Make a request to get the data of the authenticated user for the provider.
      * 
-     * @param accessToken
-     * @param dataUrl
+     * @param accessToken the access token
+     * @param dataUrl url of the data
      * @return the user data response
      */
     protected String sendRequestForData(final Token accessToken, final String dataUrl) {
@@ -251,8 +242,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
      * Make a request to the OAuth provider to access a protected resource. The profile should contain a valid access token (and secret if
      * needed).
      * 
-     * @param profile
-     * @param dataUrl
+     * @param profile user profile
+     * @param dataUrl url of the data
      * @return the body of the requested resource
      */
     public String sendRequestForData(final OAuth10Profile profile, final String dataUrl) {
@@ -264,7 +255,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Create a proxy request.
      * 
-     * @param url
+     * @param url url of the data
      * @return a proxy request
      */
     protected ProxyOAuthRequest createProxyRequest(final String url) {
@@ -275,7 +266,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Extract the user profile from the response (JSON, XML...) of the profile url.
      * 
-     * @param body
+     * @param body the response body
      * @return the user profile object
      */
     protected abstract U extractUserProfile(String body);
@@ -283,8 +274,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
     /**
      * Add the access token to the profile (as an attribute).
      * 
-     * @param profile
-     * @param accessToken
+     * @param profile the user profile
+     * @param accessToken the access token
      */
     protected void addAccessTokenToProfile(final U profile, final Token accessToken) {
         if (profile != null) {

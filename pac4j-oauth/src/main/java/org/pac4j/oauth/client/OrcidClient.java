@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -30,11 +30,9 @@ import org.scribe.tokens.OrcidToken;
 
 
 /**
- * This class is the OAuth client to authenticate users in ORCiD.
- * <p />
- * It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.
- * <p />
- * More information at http://support.orcid.org/knowledgebase/articles/175079-tutorial-retrieve-data-from-an-orcid-record-with
+ * <p>This class is the OAuth client to authenticate users in ORCiD.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.</p>
+ * <p>More information at http://support.orcid.org/knowledgebase/articles/175079-tutorial-retrieve-data-from-an-orcid-record-with</p>
  *
  * @see org.pac4j.oauth.profile.orcid.OrcidProfile
  * @author Jens Tinglev
