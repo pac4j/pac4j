@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 - 2014 Jerome Leleu
+  Copyright 2012 - 2015 pac4j organization
 
    import org.pac4j.openid.profile.OpenIdProfile;
 (the "License");
