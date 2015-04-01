@@ -72,7 +72,9 @@ It relies on specific **Authenticator** to validate user credentials and **Profi
 4. the Apache Shiro library (using the *buji-pac4j* library)
 5. the Spring Security library (using the *spring-security-pac4j* library)
 6. the Ratpack JVM toolkit (using the *ratpack-pac4j* module)
-7. the Vertx framework (using the *vertx-pac4j* module).
+7. the Vertx framework (using the *vertx-pac4j* module)
+8. the Undertow web server (using the *undertow-pac4j* module)
+9. the Spark Java framework (using the *spark-pac4j* module).
 
 
 ### Open source
@@ -152,12 +154,6 @@ This module is based on the **pac4j-core** module and the [OpenSAML library](htt
 In case you use the library against Microsoft ADFS (Active Directory Federation Services), a SAML Identity Provider server, please have a look into
 file README-ADFS.txt for details on how to setup your client.
 
-#### pac4j-test-cas
-
-This module is made to test CAS support in pac4j.
-
-Learn more by browsing the [Javadoc](https://pac4j.github.io/pac4j/apidocs/pac4j/index.html).
-
 #### pac4j-gae
 
 This module is dedicated to Gae connexion login mechanism support:
@@ -177,6 +173,13 @@ This module is dedicated to OpenID Connect 1.0 support:
 * the *OidcProfile* class is the user profile returned by the *OidcClient*.
 
 This module is based on the **pac4j-core** module and the excellent [Nimbus OAuth 2.0 SDK with OpenID Connect extensions](http://connect2id.com/products/nimbus-oauth-openid-connect-sdk).
+
+#### pac4j-test-cas
+
+This module is made to test CAS support in pac4j.
+
+Learn more by browsing the [Javadoc](https://pac4j.github.io/pac4j/apidocs/pac4j/index.html).
+
 
 ## Providers supported
 
@@ -211,13 +214,13 @@ This module is based on the **pac4j-core** module and the excellent [Nimbus OAut
 
 ### Maven dependencies
 
-First, you have define the right dependency: pac4j-oauth for OAuth support or/and pac4j-cas for CAS support or/and pac4j-http for HTTP support or/and pac4j-openid for OpenID support or/and pac4j-saml for SAML support or/and pac4j-gae for Google App Engine support.
+First, you have define the right dependency: pac4j-oauth for OAuth support or/and pac4j-cas for CAS support or/and pac4j-http for HTTP support or/and pac4j-openid for OpenID support or/and pac4j-saml for SAML support or/and pac4j-gae for Google App Engine support or/and pac4j-oidc for OpenID Connect support.
 For example:
 
     <dependency>
       <groupId>org.pac4j</groupId>
       <artifactId>pac4j-oauth</artifactId>
-      <version>1.6.0</version>
+      <version>1.7.0</version>
     </dependency>
 
 As the pac4j snapshots libraries are stored in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/), this repository may need be added in the Maven *pom.xml* file:
@@ -480,7 +483,8 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 4. the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library to add multi-protocols client support to [Spring Security](http://static.springsource.org/spring-security/site/)
 5. the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module to add multi-protocols client support to [Ratpack](http://www.ratpack.io/)
 6. the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module to add multi-protocols client support to [Vertx](http://vertx.io/)
-
+7. the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) module to add multi-protocols client support to [Undertow](http://undertow.io/)
+ 
 <table>
 <tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
 <tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
@@ -495,16 +499,16 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version **1.6.1-SNAPSHOT** is under development.  
+The current version **1.7.1-SNAPSHOT** is under development.  
 The build is done on Travis: [https://travis-ci.org/pac4j/pac4j](https://travis-ci.org/pac4j/pac4j).
 The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
-The last released version is the **1.6.0**:
+The last released version is the **1.7.0**:
 
     <dependency>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j-core</artifactId>
-        <version>1.6.0</version>
+        <version>1.7.0</version>
     </dependency>
 
 See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
