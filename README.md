@@ -524,7 +524,7 @@ pac4j is tested by more than 400:
 
 ## Bugs / Features tracking
 
-Bugs and new features can now be tracked using [JIRA](https://pac4jos.atlassian.net/secure/Dashboard.jspa?selectPageId=10100).
+Bugs and new features can be tracked using Github issues.
 
 
 ## Contact
