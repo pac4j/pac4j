@@ -75,6 +75,8 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     private String name;
 
     private boolean enableContextualRedirects = false;
+    
+    private boolean includeClientNameInCallbackUrl = true;
 
     private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<AuthorizationGenerator<U>>();
 
@@ -281,6 +283,24 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.enableContextualRedirects = enableContextualRedirects;
     }
 
+    /**
+     * Returns if the client name should be implicitly added to the callback url if it is not already specified
+     * 
+     * @return if the client name should be implicitly added to the callback url if it is not already specified
+     */
+    public boolean isIncludeClientNameInCallbackUrl() {
+    	return this.includeClientNameInCallbackUrl;
+    }
+    
+    /**
+     * Sets whether the client name should be implicitly added to the callback url for this client.
+     * 
+     * @param enableContextualRedirects enable inclusion of the client name in the callback url.
+     */
+    public void setIncludeClientNameInCallbackUrl(final boolean includeClientNameInCallbackUrl) {
+    	this.includeClientNameInCallbackUrl = includeClientNameInCallbackUrl;
+    }
+    
     protected String prependHostToUrlIfNotPresent(final String url, final WebContext webContext) {
         if (webContext != null && this.enableContextualRedirects && url != null && !url.startsWith("http://")
                 && !url.startsWith("https://")) {
