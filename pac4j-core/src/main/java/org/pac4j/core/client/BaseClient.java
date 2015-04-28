@@ -295,7 +295,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     /**
      * Sets whether the client name should be implicitly added to the callback url for this client.
      * 
-     * @param enableContextualRedirects enable inclusion of the client name in the callback url.
+     * @param includeClientNameInCallbackUrl enable inclusion of the client name in the callback url.
      */
     public void setIncludeClientNameInCallbackUrl(final boolean includeClientNameInCallbackUrl) {
     	this.includeClientNameInCallbackUrl = includeClientNameInCallbackUrl;
