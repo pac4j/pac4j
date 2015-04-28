@@ -73,13 +73,16 @@ public final class Clients extends InitializableObject {
         CommonHelper.assertNotNull("clients", this.clients);
         for (final Client client : this.clients) {
             final BaseClient baseClient = (BaseClient) client;
-            final String baseClientCallbackUrl = baseClient.getCallbackUrl();
-            // no callback url defined for the client -> set it with the group callback url + the "clientName" parameter
+            String baseClientCallbackUrl = baseClient.getCallbackUrl();
+            // no callback url defined for the client -> set it with the group callback url
             if (baseClientCallbackUrl == null) {
-                baseClient.setCallbackUrl(CommonHelper.addParameter(this.callbackUrl, this.clientNameParameter,
-                        baseClient.getName()));
-                // a callback url is already defined for the client without the "clientName" parameter -> just add it
-            } else if (baseClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                baseClient.setCallbackUrl(this.callbackUrl);
+                baseClientCallbackUrl = this.callbackUrl;
+            }
+            // if the "clientName" parameter is not already part of the callback url, add it unless the client 
+            // has indicated to not include it.
+        	if (baseClient.isIncludeClientNameInCallbackUrl() && 
+        			baseClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
                 baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientNameParameter,
                         baseClient.getName()));
             }

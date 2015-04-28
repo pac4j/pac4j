@@ -114,6 +114,19 @@ public final class TestClients extends TestCase implements TestsConstants {
         assertEquals(CALLBACK_URL + "?" + group.getClientNameParameter() + "=" + yahooClient.getName(),
                 yahooClient.getCallbackUrl());
     }
+    
+    public void testClientWithCallbackUrlWithoutClientName() {
+        final MockBaseClient facebookClient = newFacebookClient();
+        facebookClient.setCallbackUrl(LOGIN_URL);
+        facebookClient.setIncludeClientNameInCallbackUrl(false);
+        final MockBaseClient yahooClient = newYahooClient();
+        yahooClient.setIncludeClientNameInCallbackUrl(false);
+        final Clients group = new Clients(CALLBACK_URL, facebookClient, yahooClient);
+        group.setClientNameParameter(KEY);
+        group.init();
+        assertEquals(LOGIN_URL, facebookClient.getCallbackUrl());
+        assertEquals(CALLBACK_URL, yahooClient.getCallbackUrl());
+    }
 
     public void testByClass1() {
         final MockBaseClient facebookClient = newFacebookClient();
