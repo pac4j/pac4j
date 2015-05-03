@@ -491,10 +491,10 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 <tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
 <tr><td>play-pac4j 1.4.0 / 1.2.3 / 1.1.5</td><td>OAuth / CAS / OpenID Connect / HTTP / SAML / GAE</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/pac4j/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
 <tr><td>j2e-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
-<tr><td>buji-pac4j 1.3.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-pac4j 1.2.4</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
+<tr><td>buji-pac4j 1.3.1</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
+<tr><td>spring-security-pac4j 1.2.5</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
 <tr><td>ratpack 0.9.7</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.5.1</td><td><a href="https://github.com/pac4j/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
-<tr><td>vertx-pac4j 1.0.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE</td><td>pac4j 1.6.0</td><td><a href="https://github.com/pac4j/vertx-pac4j-demo">vertx-pac4j-demo</a></td></tr>
+<tr><td>vertx-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/vertx-pac4j-demo">vertx-pac4j-demo</a></td></tr>
 </table>
 
 
