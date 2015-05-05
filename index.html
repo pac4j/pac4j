@@ -18,22 +18,24 @@
 
 <article><h3>Why do we absolutely need the <strong>pac4j</strong> library ?</h3>
 <ul>
- <li>Today, in Java applications, using client side authentication mechanisms (for authentication and profile retrieval) is very complex: almost every framework and protocol requires a dedicated solution !</li>
- <li><strong>pac4j</strong>, as the Profile and Authentication Client for Java, aims to be a <i>simple and unified library</i> for all Java frameworks and authentication mechanisms.</li>
+ <li>Today, in Java applications, handling authentication, authorization and user profile retrieval is very complex: almost every framework and protocol requires a dedicated solution !</li>
+ <li><strong>pac4j</strong>, as the Profile and Authentication Client for Java, aims to be a <i>simple and unified <strong>security</strong> library</i> for all Java frameworks and authentication mechanisms.</li>
 </ul>
 </article>
 
-<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>authentication mechanisms (OAuth, CAS, OpenID, HTTP, SAML)</i>...</q>
+<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>authentication mechanisms (OAuth, CAS, OpenID, HTTP, SAML...)</i>...</q>
 <div class='author'> J&eacute;r&ocirc;me Leleu ;-)</div></article>
 
 <article><h3>What kind of authentication mechanisms is supported by <strong>pac4j</strong> ?</h3>
 <ul>
- <li>It targets all the authentication mechanisms supporting the following flow:</li>
- <ol>
-  <li>from the client application, redirect the user to the "provider" for authentication (mostly HTTP 302)</li>
-  <li>after successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
-  <li>with these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").</li>
- </ol>
+  <li>Direct authenticated calls (REST, stateless)</li>
+  <li>Client protocol authentication (stateful, redirection back and forth to an identity provider for login):
+   <ol>
+    <li>from the client application, redirect the user to the "provider" for authentication (mostly HTTP 302)</li>
+    <li>after successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
+    <li>with these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").</li>
+   </ol>
+  </li>
 </ul>
 </article>
 
