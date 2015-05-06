@@ -29,7 +29,7 @@
 	<name>pac4j</name>
 	<version>1.7.1-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
-	<url>https://github.com/leleuj/pac4j</url>
+	<url>https://github.com/pac4j/pac4j</url>
 
 	<licenses>
 		<license>
