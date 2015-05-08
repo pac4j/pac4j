@@ -500,7 +500,7 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version **1.7.1-SNAPSHOT** is under development.  
+The current version **1.8.0-SNAPSHOT** is under development.  
 The build is done on Travis: [https://travis-ci.org/pac4j/pac4j](https://travis-ci.org/pac4j/pac4j).
 The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
 
