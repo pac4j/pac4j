@@ -172,12 +172,30 @@ public class UserProfile implements Serializable {
     }
 
     /**
+     * Add roles.
+     *
+     * @param roles the roles to add.
+     */
+    public void addRoles(final List<String> roles) {
+        this.roles.addAll(roles);
+    }
+
+    /**
      * Add a permission.
      * 
      * @param permission the permission to add.
      */
     public void addPermission(final String permission) {
         this.permissions.add(permission);
+    }
+
+    /**
+     * Add permissions.
+     *
+     * @param permissions the permissions to add.
+     */
+    public void addPermissions(final List<String> permissions) {
+        this.permissions.addAll(permissions);
     }
 
     /**
