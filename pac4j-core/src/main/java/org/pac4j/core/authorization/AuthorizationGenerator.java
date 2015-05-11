@@ -18,7 +18,7 @@ package org.pac4j.core.authorization;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * Generate the authorization information (roles and permissions) for this user profile.
+ * Generate the authorization roles and permissions for this user profile.
  * 
  * @author Jerome Leleu
  * @since 1.5.0
