@@ -199,67 +199,6 @@ public class UserProfile implements Serializable {
     }
 
     /**
-     * Check if the user has access to the resource protected by the requireAnyRole or requireAllRoles parameters.
-     * You can pass null values for the parameters you want to ignore.
-     * 
-     * @param requireAnyRole any of the required roles
-     * @param requireAllRoles all the required roles
-     * @return if the user has access to the resource protected by the requireAnyRole or requireAllRoles parameters
-     */
-    public boolean hasAccess(final String requireAnyRole, final String requireAllRoles) {
-        boolean access = true;
-        if (CommonHelper.isNotBlank(requireAnyRole)) {
-            final String[] expectedRoles = requireAnyRole.split(",");
-            if (!this.hasAnyRole(expectedRoles)) {
-                access = false;
-            }
-        } else if (CommonHelper.isNotBlank(requireAllRoles)) {
-            final String[] expectedRoles = requireAllRoles.split(",");
-            if (!this.hasAllRoles(expectedRoles)) {
-                access = false;
-            }
-        }
-
-        return access;
-    }
-
-    /**
-     * Check if the user has one of the expected roles.
-     *
-     * @param expectedRoles expected roles
-     * @return if the user has one of the expected roles
-     */
-    public boolean hasAnyRole(final String[] expectedRoles) {
-        if (expectedRoles == null || expectedRoles.length == 0) {
-            return true;
-        }
-        for (final String role : expectedRoles) {
-            if (this.roles.contains(role)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check if the user has all expected roles.
-     *
-     * @param expectedRoles expected roles
-     * @return if the user has all expected roles
-     */
-    public boolean hasAllRoles(final String[] expectedRoles) {
-        if (expectedRoles == null || expectedRoles.length == 0) {
-            return true;
-        }
-        for (final String role : expectedRoles) {
-            if (!this.roles.contains(role)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Define if this profile is remembered.
      * 
      * @param rme whether the user is remembered.
