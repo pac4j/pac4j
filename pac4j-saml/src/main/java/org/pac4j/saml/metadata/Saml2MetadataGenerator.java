@@ -19,28 +19,23 @@ package org.pac4j.saml.metadata;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.opensaml.Configuration;
-import org.opensaml.common.SAMLObjectBuilder;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.NameIDType;
-import org.opensaml.saml2.metadata.AssertionConsumerService;
-import org.opensaml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml2.metadata.KeyDescriptor;
-import org.opensaml.saml2.metadata.NameIDFormat;
-import org.opensaml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml2.metadata.SingleLogoutService;
-import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
-import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.MarshallerFactory;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.security.SecurityHelper;
-import org.opensaml.xml.security.credential.Credential;
-import org.opensaml.xml.security.credential.UsageType;
-import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
-import org.opensaml.xml.signature.KeyInfo;
-import org.opensaml.xml.util.XMLHelper;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.core.xml.io.MarshallerFactory;
+import org.opensaml.saml.common.SAMLObjectBuilder;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.NameIDType;
+import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.KeyDescriptor;
+import org.opensaml.saml.saml2.metadata.NameIDFormat;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.security.*;
+import org.opensaml.security.credential.Credential;
+import org.opensaml.security.credential.UsageType;
+import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
+import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.client.Saml2Client;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
@@ -111,7 +106,7 @@ public class Saml2MetadataGenerator {
             KeyInfoGenerator keyInfoGenerator = SecurityHelper.getKeyInfoGenerator(credential, null,
                     Saml2Client.SAML_METADATA_KEY_INFO_GENERATOR);
             return keyInfoGenerator.generate(credential);
-        } catch (org.opensaml.xml.security.SecurityException e) {
+        } catch (org.opensaml.security.SecurityException e) {
             throw new SamlException("Unable to generate keyInfo from given credential", e);
         }
     }

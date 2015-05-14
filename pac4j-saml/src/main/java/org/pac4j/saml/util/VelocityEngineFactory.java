@@ -21,6 +21,8 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.JdkLogChute;
 import org.pac4j.core.exception.TechnicalException;
 
+import java.util.Properties;
+
 /**
  * Factory returning a well configured {@link VelocityEngine} instance required for
  * generating an HTML form used to POST SAML messages.
@@ -33,14 +35,15 @@ public class VelocityEngineFactory {
     public static VelocityEngine getEngine() {
 
         try {
-            VelocityEngine velocityEngine = new VelocityEngine();
+
+            Properties props =
+                    new Properties(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
+            VelocityEngine velocityEngine = net.shibboleth.utilities.java.support.velocity.VelocityEngine
+                    .newVelocityEngine(props);
             velocityEngine.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
             velocityEngine.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
             velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-            velocityEngine.setProperty("classpath.resource.loader.class",
-                    "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            velocityEngine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, new JdkLogChute());
-            velocityEngine.init();
+            velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new JdkLogChute());
             return velocityEngine;
         } catch (Exception e) {
             throw new TechnicalException("Error configuring velocity", e);

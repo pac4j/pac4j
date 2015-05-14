@@ -19,7 +19,6 @@ package org.pac4j.saml.context;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;

@@ -24,11 +24,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opensaml.xml.security.CriteriaSet;
-import org.opensaml.xml.security.credential.Credential;
-import org.opensaml.security.credential.impl.CredentialResolver;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import org.opensaml.core.criterion.EntityIdCriterion;
+
+import org.opensaml.security.credential.Credential;
+import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
-import org.opensaml.xml.security.criteria.EntityIDCriteria;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SamlException;
 import org.slf4j.Logger;
@@ -61,10 +62,10 @@ public class CredentialProvider {
     public Credential getCredential() {
         try {
             CriteriaSet cs = new CriteriaSet();
-            EntityIDCriteria criteria = new EntityIDCriteria(this.privateKey);
+            EntityIdCriterion criteria = new EntityIdCriterion(this.privateKey);
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
-        } catch (org.opensaml.xml.security.SecurityException e) {
+        } catch (org.opensaml.security.SecurityException e) {
             throw new SamlException("Can't obtain SP private key", e);
         }
     }

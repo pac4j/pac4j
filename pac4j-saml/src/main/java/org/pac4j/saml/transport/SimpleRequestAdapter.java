@@ -19,8 +19,7 @@ package org.pac4j.saml.transport;
 import java.io.InputStream;
 import java.util.List;
 
-import org.opensaml.ws.transport.http.HTTPInTransport;
-import org.opensaml.xml.security.credential.Credential;
+import org.opensaml.security.credential.Credential;
 import org.pac4j.core.context.WebContext;
 
 /**

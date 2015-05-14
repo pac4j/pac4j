@@ -16,14 +16,11 @@
 
 package org.pac4j.saml.context;
 
-import org.opensaml.common.binding.BasicSAMLMessageContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.provider.MetadataProvider;
-import org.opensaml.saml.saml2.metadata.provider.MetadataProviderException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.transport.SimpleRequestAdapter;

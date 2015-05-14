@@ -16,14 +16,14 @@
 
 package org.pac4j.saml.crypto;
 
-import org.opensaml.saml2.encryption.Decrypter;
-import org.opensaml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
-import org.opensaml.xml.encryption.ChainingEncryptedKeyResolver;
-import org.opensaml.xml.encryption.InlineEncryptedKeyResolver;
-import org.opensaml.xml.encryption.SimpleRetrievalMethodEncryptedKeyResolver;
-import org.opensaml.xml.security.credential.Credential;
-import org.opensaml.xml.security.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xml.security.keyinfo.StaticKeyInfoCredentialResolver;
+import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
+import org.opensaml.security.credential.Credential;
+import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
+import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
+import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
 
 /**
  * Provider returning well configured decrypter instances.

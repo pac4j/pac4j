@@ -16,12 +16,9 @@
 
 package org.pac4j.saml.transport;
 
-import org.opensaml.common.binding.SAMLMessageContext;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.transport.InTransport;
-import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.xml.parse.StaticBasicParserPool;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
 import org.pac4j.core.context.WebContext;
 
 /**
@@ -39,7 +36,7 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
     }
 
     @Override
-    protected String getActualReceiverEndpointURI(final SAMLMessageContext messageContext)
+    protected String getActualReceiverEndpointURI(final MessageContext<SAMLObject> messageContext)
             throws MessageDecodingException {
         InTransport inTransport = messageContext.getInboundMessageTransport();
         if (!(inTransport instanceof SimpleRequestAdapter)) {

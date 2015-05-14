@@ -16,11 +16,9 @@
 
 package org.pac4j.saml.crypto;
 
-import org.opensaml.saml2.metadata.provider.MetadataProvider;
-import org.opensaml.security.MetadataCredentialResolver;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.signature.SignatureTrustEngine;
-import org.opensaml.xml.signature.impl.ExplicitKeySignatureTrustEngine;
+import org.opensaml.saml.security.impl.MetadataCredentialResolver;
+import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 
 /**
  * Provider returning well configured {@link SignatureTrustEngine} instances.
