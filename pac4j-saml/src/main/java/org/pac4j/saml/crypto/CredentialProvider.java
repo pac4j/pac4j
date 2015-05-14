@@ -26,8 +26,8 @@ import java.util.Map;
 
 import org.opensaml.xml.security.CriteriaSet;
 import org.opensaml.xml.security.credential.Credential;
-import org.opensaml.xml.security.credential.CredentialResolver;
-import org.opensaml.xml.security.credential.KeyStoreCredentialResolver;
+import org.opensaml.security.credential.impl.CredentialResolver;
+import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.xml.security.criteria.EntityIDCriteria;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SamlException;

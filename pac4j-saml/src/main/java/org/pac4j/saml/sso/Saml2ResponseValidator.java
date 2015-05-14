@@ -20,38 +20,39 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.opensaml.common.SAMLObject;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.BaseID;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.EncryptedAssertion;
-import org.opensaml.saml2.core.EncryptedID;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.NameIDType;
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.core.StatusCode;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.encryption.Decrypter;
-import org.opensaml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.security.MetadataCriteria;
-import org.opensaml.security.SAMLSignatureProfileValidator;
-import org.opensaml.xml.encryption.DecryptionException;
-import org.opensaml.xml.security.CriteriaSet;
-import org.opensaml.xml.security.SecurityException;
-import org.opensaml.xml.security.credential.UsageType;
-import org.opensaml.xml.security.criteria.EntityIDCriteria;
-import org.opensaml.xml.security.criteria.UsageCriteria;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureTrustEngine;
-import org.opensaml.xml.validation.ValidationException;
+import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.criterion.EntityRoleCriterion;
+import org.opensaml.saml.criterion.ProtocolCriterion;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Audience;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.BaseID;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml.saml2.core.EncryptedID;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.NameIDType;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import org.opensaml.security.SecurityException;
+import org.opensaml.security.credential.UsageType;
+import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.security.criteria.UsageCriterion;
+import org.opensaml.xmlsec.signature.Signature;
+import org.opensaml.xmlsec.signature.support.SignatureException;
+import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.exceptions.SamlException;
 import org.slf4j.Logger;
@@ -128,7 +129,7 @@ public class Saml2ResponseValidator {
             validateIssuer(response.getIssuer(), context);
         }
 
-        if (!StatusCode.SUCCESS_URI.equals(response.getStatus().getStatusCode().getValue())) {
+        if (!StatusCode.SUCCESS.equals(response.getStatus().getStatusCode().getValue())) {
             String status = response.getStatus().getStatusCode().getValue();
             if (response.getStatus().getStatusMessage() != null) {
                 status += " / " + response.getStatus().getStatusMessage().getMessage();
@@ -506,14 +507,15 @@ public class Saml2ResponseValidator {
         SAMLSignatureProfileValidator validator = new SAMLSignatureProfileValidator();
         try {
             validator.validate(signature);
-        } catch (ValidationException e) {
+        } catch (SignatureException e) {
             throw new SamlException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
         CriteriaSet criteriaSet = new CriteriaSet();
-        criteriaSet.add(new UsageCriteria(UsageType.SIGNING));
-        criteriaSet.add(new MetadataCriteria(IDPSSODescriptor.DEFAULT_ELEMENT_NAME, SAMLConstants.SAML20P_NS));
-        criteriaSet.add(new EntityIDCriteria(idpEntityId));
+        criteriaSet.add(new UsageCriterion(UsageType.SIGNING));
+        criteriaSet.add(new EntityRoleCriterion(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
+        criteriaSet.add(new ProtocolCriterion(SAMLConstants.SAML20P_NS));
+        criteriaSet.add(new EntityIdCriterion(idpEntityId));
 
         boolean valid = false;
         try {
