@@ -123,6 +123,12 @@
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${velocity.version}</version>
+        </dependency>
+
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -172,5 +178,6 @@
     <properties>
         <opensaml.version>3.1.1</opensaml.version>
         <joda-time.version>2.7</joda-time.version>
+        <velocity.version>1.7</velocity.version>
     </properties>
 </project>

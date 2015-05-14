@@ -16,12 +16,12 @@
 
 package org.pac4j.saml.transport;
 
+import org.opensaml.security.credential.Credential;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.opensaml.ws.transport.http.HTTPOutTransport;
-import org.opensaml.xml.security.credential.Credential;
 
 /**
  * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
