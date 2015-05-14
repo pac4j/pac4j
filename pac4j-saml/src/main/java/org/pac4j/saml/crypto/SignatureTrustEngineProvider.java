@@ -16,7 +16,11 @@
 
 package org.pac4j.saml.crypto;
 
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.BasicRoleDescriptorResolver;
 import org.opensaml.saml.security.impl.MetadataCredentialResolver;
+import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 
@@ -28,15 +32,22 @@ import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngin
  */
 public class SignatureTrustEngineProvider {
 
-    private final MetadataProvider metadataProvider;
+    private final MetadataResolver metadataResolver;
 
-    public SignatureTrustEngineProvider(final MetadataProvider metadataProvider) {
-        this.metadataProvider = metadataProvider;
+    public SignatureTrustEngineProvider(final MetadataResolver metadataResolver) {
+        this.metadataResolver = metadataResolver;
     }
 
     public SignatureTrustEngine build() {
-        MetadataCredentialResolver metadataResolver = new MetadataCredentialResolver(this.metadataProvider);
-        return new ExplicitKeySignatureTrustEngine(metadataResolver, Configuration.getGlobalSecurityConfiguration()
-                .getDefaultKeyInfoCredentialResolver());
+        MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
+        BasicRoleDescriptorResolver roleResolver = new BasicRoleDescriptorResolver(metadataResolver);
+
+        KeyInfoCredentialResolver keyResolver =
+                DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
+
+        metadataCredentialResolver.setKeyInfoCredentialResolver(keyResolver);
+        metadataCredentialResolver.setRoleDescriptorResolver(roleResolver);
+
+        return new ExplicitKeySignatureTrustEngine(metadataCredentialResolver, keyResolver);
     }
 }

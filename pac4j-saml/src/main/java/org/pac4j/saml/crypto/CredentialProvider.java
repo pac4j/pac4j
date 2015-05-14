@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 
 import org.opensaml.security.credential.Credential;
@@ -65,7 +66,7 @@ public class CredentialProvider {
             EntityIdCriterion criteria = new EntityIdCriterion(this.privateKey);
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
-        } catch (org.opensaml.security.SecurityException e) {
+        } catch (ResolverException e) {
             throw new SamlException("Can't obtain SP private key", e);
         }
     }
