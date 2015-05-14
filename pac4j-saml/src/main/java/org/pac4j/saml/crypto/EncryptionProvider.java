@@ -20,10 +20,14 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
+import org.opensaml.xmlsec.encryption.support.EncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provider returning well configured decrypter instances.
@@ -33,12 +37,16 @@ import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
  */
 public class EncryptionProvider {
 
-    private static ChainingEncryptedKeyResolver encryptedKeyResolver = new ChainingEncryptedKeyResolver();
+    private static ChainingEncryptedKeyResolver encryptedKeyResolver;
 
     static {
-        encryptedKeyResolver.getResolverChain().add(new InlineEncryptedKeyResolver());
-        encryptedKeyResolver.getResolverChain().add(new EncryptedElementTypeEncryptedKeyResolver());
-        encryptedKeyResolver.getResolverChain().add(new SimpleRetrievalMethodEncryptedKeyResolver());
+        List<EncryptedKeyResolver> list = new ArrayList<EncryptedKeyResolver>();
+        list.add(new InlineEncryptedKeyResolver());
+        list.add(new EncryptedElementTypeEncryptedKeyResolver());
+        list.add(new SimpleRetrievalMethodEncryptedKeyResolver());
+
+        encryptedKeyResolver = new ChainingEncryptedKeyResolver(list);
+
     }
 
     private final CredentialProvider credentialProvider;
