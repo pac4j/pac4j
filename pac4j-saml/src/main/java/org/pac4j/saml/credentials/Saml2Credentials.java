@@ -18,9 +18,9 @@ package org.pac4j.saml.credentials;
 
 import java.util.List;
 
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 
 /**

@@ -19,6 +19,9 @@ package org.pac4j.saml.context;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
@@ -30,7 +33,7 @@ import org.opensaml.saml.saml2.core.SubjectConfirmation;
  * @version 1.5.0
  */
 @SuppressWarnings("rawtypes")
-public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
+public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
@@ -47,7 +50,8 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     /** SubjectConfirmations used during assertion evaluation. */
     private List<SubjectConfirmation> subjectConfirmations = new ArrayList<SubjectConfirmation>();
     
-    
+    private MetadataResolver metadataProvider;
+
     public Assertion getSubjectAssertion() {
         return this.subjectAssertion;
     }
@@ -87,5 +91,8 @@ public class ExtendedSAMLMessageContext extends BasicSAMLMessageContext {
     public void setSubjectConfirmations(List<SubjectConfirmation> subjectConfirmations) {
         this.subjectConfirmations = subjectConfirmations;
     }
-    
+
+    public void setMetadataProvider(MetadataResolver metadataProvider) {
+        this.metadataProvider = metadataProvider;
+    }
 }

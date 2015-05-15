@@ -16,25 +16,19 @@
 
 package org.pac4j.saml.sso;
 
-import org.opensaml.common.binding.SAMLMessageContext;
-import org.opensaml.common.binding.security.SAMLProtocolMessageXMLSignatureSecurityPolicyRule;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.binding.security.SAML2HTTPPostSimpleSignRule;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml2.metadata.SingleSignOnService;
-import org.opensaml.ws.message.decoder.MessageDecoder;
-import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.message.encoder.MessageEncoder;
-import org.opensaml.ws.message.encoder.MessageEncodingException;
-import org.opensaml.ws.security.SecurityPolicy;
-import org.opensaml.ws.security.provider.BasicSecurityPolicy;
-import org.opensaml.ws.security.provider.StaticSecurityPolicyResolver;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.messaging.decoder.MessageDecoder;
+import org.opensaml.messaging.decoder.MessageDecodingException;
+import org.opensaml.messaging.encoder.MessageEncoder;
+import org.opensaml.messaging.encoder.MessageEncodingException;
+import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xml.parse.StaticBasicParserPool;
 import org.opensaml.xml.security.SecurityException;
 import org.opensaml.xml.signature.SignatureTrustEngine;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.SamlUtils;
@@ -75,7 +69,7 @@ public class Saml2WebSSOProfileHandler {
     }
 
     @SuppressWarnings("unchecked")
-    public void sendMessage(final SAMLMessageContext context, final AuthnRequest authnRequest, final String relayState) {
+    public void sendMessage(final MessageContext<SAMLObject> context, final AuthnRequest authnRequest, final String relayState) {
 
         SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
         IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
@@ -97,7 +91,8 @@ public class Saml2WebSSOProfileHandler {
         }
 
         try {
-            encoder.encode(context);
+            encoder.setMessageContext(context);
+            encoder.encode();
         } catch (MessageEncodingException e) {
             throw new SamlException("Error encoding saml message", e);
         }
