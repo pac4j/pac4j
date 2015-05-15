@@ -19,11 +19,15 @@ package org.pac4j.saml.metadata;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.opensaml.core.xml.XMLObject;
+
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -31,14 +35,16 @@ import org.opensaml.saml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
-import org.opensaml.security.*;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.UsageType;
+import org.opensaml.xml.util.XMLHelper;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
+import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.client.Saml2Client;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -72,15 +78,11 @@ public class Saml2MetadataGenerator {
 
     protected int defaultACSIndex = 0;
 
-    public AbstractMetadataProvider buildMetadataProvider() {
+    public MetadataResolver buildMetadataProvider() throws ComponentInitializationException {
         final EntityDescriptor md = buildMetadata();
-        return new AbstractMetadataProvider() {
-
-            @Override
-            protected XMLObject doGetMetadata() throws MetadataProviderException {
-                return md;
-            }
-        };
+        DOMMetadataResolver resolver = new DOMMetadataResolver(md.getDOM());
+        resolver.initialize();
+        return resolver;
     }
 
     public String printMetadata() throws MarshallingException {
@@ -103,8 +105,8 @@ public class Saml2MetadataGenerator {
 
     protected KeyInfo generateKeyInfoForCredential(final Credential credential) {
         try {
-            KeyInfoGenerator keyInfoGenerator = SecurityHelper.getKeyInfoGenerator(credential, null,
-                    Saml2Client.SAML_METADATA_KEY_INFO_GENERATOR);
+            BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
+            KeyInfoGenerator keyInfoGenerator = factory.newInstance();
             return keyInfoGenerator.generate(credential);
         } catch (org.opensaml.security.SecurityException e) {
             throw new SamlException("Unable to generate keyInfo from given credential", e);

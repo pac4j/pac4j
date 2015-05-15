@@ -17,47 +17,49 @@
 package org.pac4j.saml.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
+import net.shibboleth.ext.spring.resource.ResourceHelper;
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.resource.Resource;
+import net.shibboleth.utilities.java.support.xml.ParserPool;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.apache.velocity.app.VelocityEngine;
-import org.opensaml.Configuration;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.binding.encoding.HTTPPostEncoder;
-import org.opensaml.saml2.binding.encoding.HTTPRedirectDeflateEncoder;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.AuthnRequest;
-import org.opensaml.saml2.core.EncryptedAttribute;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.encryption.Decrypter;
-import org.opensaml.saml2.metadata.EntitiesDescriptor;
-import org.opensaml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
-import org.opensaml.saml2.metadata.provider.ChainingMetadataProvider;
-import org.opensaml.saml2.metadata.provider.DOMMetadataProvider;
-import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider;
-import org.opensaml.util.resource.ClasspathResource;
-import org.opensaml.util.resource.FilesystemResource;
-import org.opensaml.util.resource.Resource;
-import org.opensaml.util.resource.ResourceException;
-import org.opensaml.ws.message.decoder.MessageDecoder;
-import org.opensaml.ws.message.encoder.MessageEncoder;
-import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.encryption.DecryptionException;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.parse.ParserPool;
-import org.opensaml.xml.parse.StaticBasicParserPool;
-import org.opensaml.xml.parse.XMLParserException;
-import org.opensaml.xml.security.keyinfo.NamedKeyInfoGeneratorManager;
-import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
-import org.opensaml.xml.signature.SignatureTrustEngine;
+
+
+import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.messaging.decoder.MessageDecoder;
+import org.opensaml.messaging.encoder.MessageEncoder;
+import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
+
+import org.opensaml.saml.metadata.resolver.impl.AbstractMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.ResourceBackedMetadataResolver;
+import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
+import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.AttributeStatement;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.EncryptedAttribute;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
+import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
@@ -77,11 +79,13 @@ import org.pac4j.saml.profile.Saml2Profile;
 import org.pac4j.saml.sso.Saml2AuthnRequestBuilder;
 import org.pac4j.saml.sso.Saml2ResponseValidator;
 import org.pac4j.saml.sso.Saml2WebSSOProfileHandler;
-import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
+import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -95,9 +99,6 @@ import org.w3c.dom.Element;
 public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     protected static final Logger logger = LoggerFactory.getLogger(Saml2Client.class);
-
-    // Identify the KeyInfoGenerator factory created during opensaml boostrap
-    public static final String SAML_METADATA_KEY_INFO_GENERATOR = "MetadataKeyInfoGenerator";
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
@@ -166,34 +167,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             this.decrypter = new EncryptionProvider(this.credentialProvider).buildDecrypter();
         }
 
-        // Bootstrap OpenSAML
-        try {
-            DefaultBootstrap.bootstrap();
-            NamedKeyInfoGeneratorManager manager = Configuration.getGlobalSecurityConfiguration()
-                    .getKeyInfoGeneratorManager();
-            X509KeyInfoGeneratorFactory generator = new X509KeyInfoGeneratorFactory();
-            generator.setEmitEntityCertificate(true);
-            generator.setEmitEntityCertificateChain(true);
-            manager.registerFactory(Saml2Client.SAML_METADATA_KEY_INFO_GENERATOR, generator);
-        } catch (ConfigurationException e) {
-            throw new SamlException("Error bootstrapping OpenSAML", e);
-        }
-
         // required parserPool for XML processing
-        final StaticBasicParserPool parserPool = newStaticBasicParserPool();
-        final AbstractMetadataProvider idpMetadataProvider = idpMetadataProvider(parserPool);
-
-        final XMLObject md;
-        try {
-            md = idpMetadataProvider.getMetadata();
-        } catch (MetadataProviderException e) {
-            throw new SamlException("Error initializing idpMetadataProvider", e);
-        }
-
-        // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
-        if (this.idpEntityId == null) {
-            this.idpEntityId = getIdpEntityId(md);
-        }
+        MetadataResolver idpMetadataProvider = idpMetadataProvider(Configuration.getParserPool());
 
         // Generate our Service Provider metadata
         Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
@@ -210,24 +185,27 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
         // for now same for logout url
         metadataGenerator.setSingleLogoutServiceUrl(getCallbackUrl());
-        AbstractMetadataProvider spMetadataProvider = metadataGenerator.buildMetadataProvider();
+        MetadataResolver spMetadataProvider = null;
 
         // Initialize metadata provider for our SP and get the XML as a String
         try {
-            spMetadataProvider.initialize();
+            spMetadataProvider = metadataGenerator.buildMetadataProvider();
             this.spMetadata = metadataGenerator.printMetadata();
-        } catch (MetadataProviderException e) {
+        } catch (ComponentInitializationException e) {
             throw new TechnicalException("Error initializing spMetadataProvider", e);
         } catch (MarshallingException e) {
             logger.warn("Unable to print SP metadata", e);
         }
 
         // Put IDP and SP metadata together
-        ChainingMetadataProvider metadataManager = new ChainingMetadataProvider();
+
+        ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
         try {
-            metadataManager.addMetadataProvider(idpMetadataProvider);
-            metadataManager.addMetadataProvider(spMetadataProvider);
-        } catch (MetadataProviderException e) {
+            List<MetadataResolver> list = new ArrayList<MetadataResolver>();
+            list.add(idpMetadataProvider);
+            list.add(spMetadataProvider);
+            metadataManager.setResolvers(list);
+        } catch (ResolverException e) {
             throw new TechnicalException("Error adding idp or sp metadatas to manager", e);
         }
 
@@ -243,7 +221,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
             // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
             VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
-            encoder = new HTTPPostEncoder(velocityEngine, "/templates/saml2-post-binding.vm");
+            encoder = new HTTPPostEncoder();
         } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
             encoder = new HTTPRedirectDeflateEncoder();
         } else {
@@ -251,8 +229,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         }
 
         // Do we need binding specific decoder?
-        MessageDecoder decoder = new Pac4jHTTPPostDecoder(parserPool);
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, parserPool,
+        MessageDecoder decoder = new Pac4jHTTPPostDecoder(Configuration.getParserPool());
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, Configuration.getParserPool(),
                 destinationBindingType);
 
         // Build provider for digital signature validation and encryption
@@ -327,18 +305,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     }
 
-    protected StaticBasicParserPool newStaticBasicParserPool() {
-        StaticBasicParserPool parserPool = new StaticBasicParserPool();
-        try {
-            parserPool.initialize();
-        } catch (XMLParserException e) {
-            throw new SamlException("Error initializing parserPool", e);
-        }
-        return parserPool;
-    }
-
-    protected AbstractMetadataProvider idpMetadataProvider(ParserPool parserPool) {
-        AbstractMetadataProvider idpMetadataProvider;
+    protected MetadataResolver idpMetadataProvider(ParserPool parserPool) {
+        AbstractMetadataResolver idpMetadataProvider;
         try {
             if (idpMetadataPath != null) {
                 Resource resource = null;
@@ -347,33 +315,33 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                     if (!path.startsWith("/")) {
                         path = "/" + path;
                     }
-                    resource = new ClasspathResource(path);
+                    resource = ResourceHelper.of(new ClassPathResource(path));
                 } else {
-                    resource = new FilesystemResource(this.idpMetadataPath);
+                    resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
                 }
-                idpMetadataProvider = new ResourceBackedMetadataProvider(new Timer(true), resource);
+                idpMetadataProvider = new ResourceBackedMetadataResolver(new Timer(true), resource);
             } else {
                 InputStream in = new ByteArrayInputStream(idpMetadata.getBytes());
                 Document inCommonMDDoc = parserPool.parse(in);
                 Element metadataRoot = inCommonMDDoc.getDocumentElement();
-                idpMetadataProvider = new DOMMetadataProvider(metadataRoot);
+                idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
             }
-            idpMetadataProvider.setParserPool(parserPool);
             idpMetadataProvider.initialize();
-        } catch (MetadataProviderException e) {
+
+        } catch (ComponentInitializationException e) {
             throw new SamlException("Error initializing idpMetadataProvider", e);
         } catch (XMLParserException e) {
             throw new TechnicalException("Error parsing idp Metadata", e);
-        } catch (ResourceException e) {
+        } catch (IOException e) {
             throw new TechnicalException("Error getting idp Metadata resource", e);
         }
         return idpMetadataProvider;
     }
 
-    protected XMLObject getXmlObject(AbstractMetadataProvider idpMetadataProvider) {
+    protected XMLObject getXmlObject(MetadataResolver idpMetadataProvider, String et) {
         try {
-            return idpMetadataProvider.getMetadata();
-        } catch (MetadataProviderException e) {
+            return idpMetadataProvider.resolveSingle(new CriteriaSet(new EntityIdCriterion(this.spEntityId)));
+        } catch (ResolverException e) {
             throw new SamlException("Error initializing idpMetadataProvider", e);
         }
     }
@@ -391,7 +359,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
 
-        NameID nameId = (NameID) context.getSubjectNameIdentifier();
+        NameID nameId = context.getSubcontext(SAMLSubjectNameIdentifierContext.class).getSAML2SubjectNameID();
         Assertion subjectAssertion = context.getSubjectAssertion();
 
         List<Attribute> attributes = new ArrayList<Attribute>();
