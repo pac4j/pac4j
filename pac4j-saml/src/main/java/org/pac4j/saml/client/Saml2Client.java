@@ -36,6 +36,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.decoder.MessageDecoder;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
@@ -58,8 +59,8 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 
-import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
@@ -79,6 +80,7 @@ import org.pac4j.saml.profile.Saml2Profile;
 import org.pac4j.saml.sso.Saml2AuthnRequestBuilder;
 import org.pac4j.saml.sso.Saml2ResponseValidator;
 import org.pac4j.saml.sso.Saml2WebSSOProfileHandler;
+import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.VelocityEngineFactory;
@@ -278,11 +280,12 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         this.handler.sendMessage(context, authnRequest, relayState);
 
+        InOutOperationContext inOutCtx = context.getSubcontext(InOutOperationContext.class);
         if (destinationBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            String content = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getOutgoingContent();
+            String content = ((SimpleResponseAdapter) inOutCtx.getInboundMessageContext()).getOutgoingContent();
             return RedirectAction.success(content);
         } else {
-            String location = ((SimpleResponseAdapter) context.getOutboundMessageTransport()).getRedirectUrl();
+            String location = ((SimpleResponseAdapter) inOutCtx.getOutboundMessageContext()).getRedirectUrl();
             return RedirectAction.redirect(location);
         }
 
@@ -338,7 +341,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return idpMetadataProvider;
     }
 
-    protected XMLObject getXmlObject(MetadataResolver idpMetadataProvider, String et) {
+    protected XMLObject getXmlObject(MetadataResolver idpMetadataProvider) {
         try {
             return idpMetadataProvider.resolveSingle(new CriteriaSet(new EntityIdCriterion(this.spEntityId)));
         } catch (ResolverException e) {

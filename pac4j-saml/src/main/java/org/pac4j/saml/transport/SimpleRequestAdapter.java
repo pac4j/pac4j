@@ -16,10 +16,7 @@
 
 package org.pac4j.saml.transport;
 
-import java.io.InputStream;
-import java.util.List;
-
-import org.opensaml.security.credential.Credential;
+import org.opensaml.messaging.context.MessageContext;
 import org.pac4j.core.context.WebContext;
 
 /**
@@ -30,7 +27,7 @@ import org.pac4j.core.context.WebContext;
  * @since 1.5.0
  *
  */
-public class SimpleRequestAdapter implements HTTPInTransport {
+public class SimpleRequestAdapter extends MessageContext<SimpleRequestAdapter> {
 
     private final WebContext wc;
 
@@ -42,80 +39,11 @@ public class SimpleRequestAdapter implements HTTPInTransport {
         this.wc = wc;
     }
 
-    public InputStream getIncomingStream() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Object getAttribute(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getCharacterEncoding() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getLocalCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getPeerCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isAuthenticated() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isConfidential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isIntegrityProtected() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setAuthenticated(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setConfidential(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setIntegrityProtected(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     public String getHTTPMethod() {
         return wc.getRequestMethod();
-    }
-
-    public String getHeaderValue(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public String getParameterValue(final String arg0) {
         return wc.getRequestParameter(arg0);
     }
-
-    public List<String> getParameterValues(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public int getStatusCode() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public HTTP_VERSION getVersion() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getPeerAddress() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getPeerDomainName() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
 }

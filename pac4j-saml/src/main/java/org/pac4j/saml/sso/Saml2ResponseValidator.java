@@ -15,12 +15,15 @@
  */
 package org.pac4j.saml.sso;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.joda.time.DateTime;
+import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.messaging.context.InOutOperationContext;
+import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
+import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
+import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
@@ -44,12 +47,10 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
-import org.opensaml.xmlsec.encryption.support.DecryptionException;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.UsageType;
-import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.security.criteria.UsageCriterion;
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
@@ -57,6 +58,11 @@ import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.exceptions.SamlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.namespace.QName;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
@@ -88,12 +94,12 @@ public class Saml2ResponseValidator {
     public void validateSamlResponse(final ExtendedSAMLMessageContext context, final SignatureTrustEngine engine,
             final Decrypter decrypter) {
 
-        SAMLObject message = context.getInboundSAMLMessage();
+        MessageContext<SAMLObject> message = context.getSubcontext(InOutOperationContext.class).getInboundMessageContext();
 
         if (!(message instanceof Response)) {
             throw new SamlException("Response instance is an unsupported type");
         }
-        Response response = (Response) message;
+        Response response = (Response) message.getMessage();
 
         validateSamlProtocolResponse(response, context, engine);
 
@@ -138,8 +144,9 @@ public class Saml2ResponseValidator {
         }
 
         if (response.getSignature() != null) {
-            validateSignature(response.getSignature(), context.getPeerEntityId(), engine);
-            context.setInboundSAMLMessageAuthenticated(true);
+            String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
+            validateSignature(response.getSignature(), entityId, engine);
+            context.getSubcontext(SAMLPeerEntityContext.class).setAuthenticated(true);
         }
 
     }
@@ -175,10 +182,11 @@ public class Saml2ResponseValidator {
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
-        if ((context.getSubjectNameIdentifier() == null) && (context.getBaseID() == null)
+        NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class).getSubjectNameIdentifier();
+        if ((nameIdentifier.getValue() == null) && (context.getBaseID() == null)
                 && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
             throw new SamlException(
-                    "Subject NameID, BaseID and EncryptedID cannot be both null at the same time if there are no Subject Confirmations.");
+                    "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
         }
     }
 
@@ -211,9 +219,10 @@ public class Saml2ResponseValidator {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
             throw new SamlException("Issuer type is not entity but " + issuer.getFormat());
         }
-        if (!context.getPeerEntityMetadata().getEntityID().equals(issuer.getValue())) {
-            throw new SamlException("Issuer " + issuer.getValue() + " does not match idp entityId "
-                    + context.getPeerEntityMetadata().getEntityID());
+
+        String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
+        if (!entityId.equals(issuer.getValue())) {
+            throw new SamlException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
     }
 
@@ -287,7 +296,10 @@ public class Saml2ResponseValidator {
         // If we have a Name ID or a Base ID, we are fine :-)
         // If we don't have anything, let's go through all subject confirmations and get the IDs from them. At least one should be present but we don't care at this point.
         if (nameIdFromSubject != null || baseIdFromSubject != null) {
-            context.setSubjectNameIdentifier(nameIdFromSubject);
+
+            NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
+                    .getSubjectNameIdentifier();
+            nameIdentifier.setValue(nameIdFromSubject.getValue());
             context.setBaseID(baseIdFromSubject);
             samlIDFound = true;
         }
@@ -307,7 +319,10 @@ public class Saml2ResponseValidator {
                     }
 
                     if (!samlIDFound && (nameIDFromConfirmation != null || baseIDFromConfirmation != null)) {
-                        context.setSubjectNameIdentifier(nameIDFromConfirmation);
+
+                        NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
+                                .getSubjectNameIdentifier();
+                        nameIdentifier.setValue(nameIDFromConfirmation.getValue());
                         context.setBaseID(baseIDFromConfirmation);
                         context.getSubjectConfirmations().add(confirmation);
                         samlIDFound = true;
@@ -423,7 +438,8 @@ public class Saml2ResponseValidator {
             }
         }
 
-        validateAudienceRestrictions(conditions.getAudienceRestrictions(), context.getLocalEntityId());
+        String entityId = context.getSubcontext(SAMLSelfEntityContext.class).getEntityId();
+        validateAudienceRestrictions(conditions.getAudienceRestrictions(), entityId);
 
     }
 
@@ -486,10 +502,16 @@ public class Saml2ResponseValidator {
      */
     protected void validateAssertionSignature(final Signature signature, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine) {
+
+        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
+        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
+
+        QName role = selfContext.getRole();
         if (signature != null) {
-            validateSignature(signature, context.getPeerEntityMetadata().getEntityID(), engine);
-        } else if (((SPSSODescriptor) context.getLocalEntityRoleMetadata()).getWantAssertionsSigned()
-                && !context.isInboundSAMLMessageAuthenticated()) {
+            String entityId = peerContext.getEntityId();
+            validateSignature(signature, entityId, engine);
+        } else if (((SPSSODescriptor) role).getWantAssertionsSigned()
+                && !peerContext.isAuthenticated()) {
             throw new SamlException("Assertion or response must be signed");
         }
     }

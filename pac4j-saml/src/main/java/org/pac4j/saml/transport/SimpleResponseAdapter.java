@@ -16,6 +16,8 @@
 
 package org.pac4j.saml.transport;
 
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.security.credential.Credential;
 
 import java.io.ByteArrayOutputStream;
@@ -31,7 +33,7 @@ import java.util.List;
  * @since 1.5.0
  *
  */
-public class SimpleResponseAdapter implements HTTPOutTransport {
+public class SimpleResponseAdapter extends MessageContext<SAMLObject> {
 
     private final OutputStream outputStream = new ByteArrayOutputStream();
 
@@ -45,103 +47,14 @@ public class SimpleResponseAdapter implements HTTPOutTransport {
         return outputStream;
     }
 
-    public void setAttribute(final String arg0, final Object arg1) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setCharacterEncoding(final String arg0) {
-        // TODO implement
-    }
-
-    public Object getAttribute(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getCharacterEncoding() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getLocalCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getPeerCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isAuthenticated() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isConfidential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isIntegrityProtected() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setAuthenticated(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setConfidential(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setIntegrityProtected(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getHTTPMethod() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getHeaderValue(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getParameterValue(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public List<String> getParameterValues(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public int getStatusCode() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public HTTP_VERSION getVersion() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void addParameter(final String arg0, final String arg1) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     public void sendRedirect(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
-    }
-
-    public void setHeader(final String arg0, final String arg1) {
-        // TODO implement
-    }
-
-    public void setStatusCode(final int arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setVersion(final HTTP_VERSION arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
      * @return the redirectUrl
      */
     public String getRedirectUrl() {
-        return redirectUrl;
+        return this.redirectUrl;
     }
-
 }
