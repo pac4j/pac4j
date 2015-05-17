@@ -20,8 +20,12 @@ import java.util.Random;
 
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
+import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
@@ -36,10 +40,11 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.saml.util.Configuration;
 import org.pac4j.saml.util.SamlUtils;
 
 /**
- * Build a SAML2 Authn Request from the given {@link SAMLMessageContext}.
+ * Build a SAML2 Authn Request from the given {@link MessageContext}.
  * 
  * @author Michael Remond
  * @since 1.5.0
@@ -81,10 +86,13 @@ public class Saml2AuthnRequestBuilder {
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
-    public AuthnRequest build(final SAMLMessageContext context) {
+    public AuthnRequest build(final MessageContext<SAMLObject> context) {
 
-        SPSSODescriptor spDescriptor = (SPSSODescriptor) context.getLocalEntityRoleMetadata();
-        IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) context.getPeerEntityRoleMetadata();
+        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
+        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
+
+        SPSSODescriptor spDescriptor = (SPSSODescriptor) selfContext.getRole();
+        IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRole();
 
         SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, bindingType);
         AssertionConsumerService assertionConsumerService = SamlUtils.getAssertionConsumerService(spDescriptor, null);
@@ -93,7 +101,7 @@ public class Saml2AuthnRequestBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    protected AuthnRequest buildAuthnRequest(final SAMLMessageContext context,
+    protected AuthnRequest buildAuthnRequest(final MessageContext<SAMLObject> context,
             final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
         SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
@@ -111,8 +119,10 @@ public class Saml2AuthnRequestBuilder {
             request.setRequestedAuthnContext(authnContext);
         }
 
+        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
+
         request.setID(generateID());
-        request.setIssuer(getIssuer(context.getLocalEntityId()));
+        request.setIssuer(getIssuer(selfContext.getEntityId()));
         request.setIssueInstant(new DateTime());
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIsPassive(false);

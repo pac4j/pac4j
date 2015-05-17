@@ -22,7 +22,10 @@ public final class Configuration {
     private Configuration() {}
 
     static {
+        bootstrap();
+    }
 
+    public static void bootstrap() {
         parserPool = new BasicParserPool();
         parserPool.setMaxPoolSize(100);
         parserPool.setCoalescing(true);

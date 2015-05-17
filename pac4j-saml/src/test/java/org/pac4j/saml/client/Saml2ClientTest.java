@@ -23,11 +23,9 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
-import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.parse.StaticBasicParserPool;
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.core.xml.XMLObject;
+import org.pac4j.saml.util.Configuration;
 
 /**
  * Unit tests for the Saml2Client.
@@ -35,11 +33,7 @@ import org.opensaml.xml.parse.StaticBasicParserPool;
 public class Saml2ClientTest {
 
     static {
-        try {
-            DefaultBootstrap.bootstrap();
-        } catch (ConfigurationException e) {
-            throw new IllegalStateException(e);
-        }
+        Configuration.bootstrap();
     }
 
     @Test
@@ -48,8 +42,7 @@ public class Saml2ClientTest {
         InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
         String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
         client.setIdpMetadata(metadata);
-        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
-        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
+        MetadataResolver provider = client.idpMetadataProvider(Configuration.getParserPool());
         XMLObject md = client.getXmlObject(provider);
         String id = client.getIdpEntityId(md);
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
@@ -59,8 +52,7 @@ public class Saml2ClientTest {
     public void testIdpMetadataParsing_fromFile() {
         Saml2Client client = new Saml2Client();
         client.setIdpMetadataPath("resource:testshib-providers.xml");
-        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
-        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
+        MetadataResolver provider = client.idpMetadataProvider(Configuration.getParserPool());
         XMLObject md = client.getXmlObject(provider);
         String id = client.getIdpEntityId(md);
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);

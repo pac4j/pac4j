@@ -18,8 +18,6 @@ package org.pac4j.saml.client;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.junit.Test;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.xml.ConfigurationException;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.MockWebContext;
@@ -35,15 +33,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import org.pac4j.saml.util.Configuration;
 
 public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
 
     static {
-        try {
-            DefaultBootstrap.bootstrap();
-        } catch (ConfigurationException e) {
-            throw new IllegalStateException(e);
-        }
+        Configuration.bootstrap();
     }
 
     @Test

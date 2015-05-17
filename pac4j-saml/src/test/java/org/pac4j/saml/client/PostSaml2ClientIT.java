@@ -16,22 +16,6 @@
 
 package org.pac4j.saml.client;
 
-import java.io.File;
-import java.net.URL;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.output.FileWriterWithEncoding;
-import org.apache.commons.lang.NotImplementedException;
-import org.junit.Test;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.AuthnContextComparisonTypeEnumeration;
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.RedirectAction;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.util.TestsConstants;
-
 import com.gargoylesoftware.htmlunit.StringWebResponse;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HTMLParser;
@@ -39,6 +23,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.output.FileWriterWithEncoding;
+import org.apache.commons.lang.NotImplementedException;
+import org.junit.Test;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.util.TestsConstants;
+
+import java.io.File;
+import java.net.URL;
 
 public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConstants {
 
