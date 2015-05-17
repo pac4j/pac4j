@@ -43,7 +43,7 @@ public class Saml2ClientTest {
         String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
         client.setIdpMetadata(metadata);
         MetadataResolver provider = client.idpMetadataProvider(Configuration.getParserPool());
-        XMLObject md = client.getXmlObject(provider);
+        XMLObject md = client.getXmlObject(provider, "https://idp.testshib.org/idp/shibboleth");
         String id = client.getIdpEntityId(md);
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
@@ -53,7 +53,7 @@ public class Saml2ClientTest {
         Saml2Client client = new Saml2Client();
         client.setIdpMetadataPath("resource:testshib-providers.xml");
         MetadataResolver provider = client.idpMetadataProvider(Configuration.getParserPool());
-        XMLObject md = client.getXmlObject(provider);
+        XMLObject md = client.getXmlObject(provider, "https://idp.testshib.org/idp/shibboleth");
         String id = client.getIdpEntityId(md);
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
