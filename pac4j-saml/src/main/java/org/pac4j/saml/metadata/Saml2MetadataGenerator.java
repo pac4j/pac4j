@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 
+import net.shibboleth.ext.spring.resource.ResourceHelper;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
@@ -28,6 +29,7 @@ import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.metadata.resolver.impl.ResourceBackedMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -47,6 +49,7 @@ import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
 import org.w3c.dom.Element;
 
 /**
@@ -78,9 +81,13 @@ public class Saml2MetadataGenerator {
 
     protected int defaultACSIndex = 0;
 
-    public MetadataResolver buildMetadataProvider() throws ComponentInitializationException {
+    public MetadataResolver buildMetadataProvider() throws ComponentInitializationException, MarshallingException {
         final EntityDescriptor md = buildMetadata();
-        DOMMetadataResolver resolver = new DOMMetadataResolver(md.getDOM());
+        Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+        DOMMetadataResolver resolver = new DOMMetadataResolver(entityDescriptorElement);
+        resolver.setRequireValidMetadata(true);
+        resolver.setFailFastInitialization(true);
+        resolver.setId(resolver.getClass().getCanonicalName());
         resolver.initialize();
         return resolver;
     }
@@ -95,6 +102,7 @@ public class Saml2MetadataGenerator {
 
         SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
                 .getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
+
         EntityDescriptor descriptor = builder.buildObject();
         descriptor.setEntityID(this.entityId);
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
