@@ -329,6 +329,10 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                 Element metadataRoot = inCommonMDDoc.getDocumentElement();
                 idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
             }
+            idpMetadataProvider.setParserPool(parserPool);
+            idpMetadataProvider.setFailFastInitialization(true);
+            idpMetadataProvider.setRequireValidMetadata(true);
+            idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
             idpMetadataProvider.initialize();
 
         } catch (ComponentInitializationException e) {
@@ -341,9 +345,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return idpMetadataProvider;
     }
 
-    protected XMLObject getXmlObject(MetadataResolver idpMetadataProvider) {
+    protected EntityDescriptor getXmlObject(MetadataResolver idpMetadataProvider, String entityId) {
         try {
-            return idpMetadataProvider.resolveSingle(new CriteriaSet(new EntityIdCriterion(this.spEntityId)));
+            return idpMetadataProvider.resolveSingle(new CriteriaSet(new EntityIdCriterion(entityId)));
         } catch (ResolverException e) {
             throw new SamlException("Error initializing idpMetadataProvider", e);
         }

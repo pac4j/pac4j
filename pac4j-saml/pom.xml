@@ -117,13 +117,21 @@
             <artifactId>opensaml-messaging-impl</artifactId>
             <version>${opensaml.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml-xmlsec-impl</artifactId>
             <version>${opensaml.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cryptacular</groupId>
+            <artifactId>cryptacular</artifactId>
+            <version>${cryptacular.version}</version>
+        </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -171,6 +179,12 @@
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -207,5 +221,7 @@
         <velocity.version>1.7</velocity.version>
         <spring.version>4.1.5.RELEASE</spring.version>
         <spring.extensions.version>5.1.1</spring.extensions.version>
+        <guava.version>18.0</guava.version>
+        <cryptacular.version>1.0</cryptacular.version>
     </properties>
 </project>
