@@ -36,9 +36,9 @@ public class VelocityEngineFactory {
 
         try {
 
-            Properties props =
+            final Properties props =
                     new Properties(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
-            VelocityEngine velocityEngine = net.shibboleth.utilities.java.support.velocity.VelocityEngine
+            final VelocityEngine velocityEngine = net.shibboleth.utilities.java.support.velocity.VelocityEngine
                     .newVelocityEngine(props);
             velocityEngine.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
             velocityEngine.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");

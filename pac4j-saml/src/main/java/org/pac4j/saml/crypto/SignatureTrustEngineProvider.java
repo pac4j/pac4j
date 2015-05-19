@@ -39,10 +39,10 @@ public class SignatureTrustEngineProvider {
     }
 
     public SignatureTrustEngine build() {
-        MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
-        BasicRoleDescriptorResolver roleResolver = new BasicRoleDescriptorResolver(metadataResolver);
+        final MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
+        final BasicRoleDescriptorResolver roleResolver = new BasicRoleDescriptorResolver(metadataResolver);
 
-        KeyInfoCredentialResolver keyResolver =
+        final KeyInfoCredentialResolver keyResolver =
                 DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
 
         metadataCredentialResolver.setKeyInfoCredentialResolver(keyResolver);

@@ -52,18 +52,18 @@ public class CredentialProvider {
     private final String privateKey;
 
     public CredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-        InputStream inputStream = CommonHelper.getInputStreamFromName(name);
-        KeyStore keyStore = loadKeyStore(inputStream, storePasswd);
+        final InputStream inputStream = CommonHelper.getInputStreamFromName(name);
+        final KeyStore keyStore = loadKeyStore(inputStream, storePasswd);
         this.privateKey = getPrivateKeyAlias(keyStore);
-        Map<String, String> passwords = new HashMap<String, String>();
+        final Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(this.privateKey, privateKeyPasswd);
         this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
     }
 
     public Credential getCredential() {
         try {
-            CriteriaSet cs = new CriteriaSet();
-            EntityIdCriterion criteria = new EntityIdCriterion(this.privateKey);
+            final CriteriaSet cs = new CriteriaSet();
+            final EntityIdCriterion criteria = new EntityIdCriterion(this.privateKey);
             cs.add(criteria);
             return this.credentialResolver.resolveSingle(cs);
         } catch (ResolverException e) {
@@ -73,7 +73,7 @@ public class CredentialProvider {
 
     private KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd) {
         try {
-            KeyStore ks = KeyStore.getInstance("JKS");
+            final KeyStore ks = KeyStore.getInstance("JKS");
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             return ks;
         } catch (Exception e) {
@@ -92,12 +92,13 @@ public class CredentialProvider {
 
     private String getPrivateKeyAlias(final KeyStore keyStore) {
         try {
-            Enumeration<String> aliases = keyStore.aliases();
+            final Enumeration<String> aliases = keyStore.aliases();
             if (aliases.hasMoreElements()) {
                 return aliases.nextElement();
-            } else {
-                throw new SamlException("Keystore has no private keys");
             }
+
+            throw new SamlException("Keystore has no private keys");
+
         } catch (KeyStoreException e) {
             throw new SamlException("Unable to get aliases from keyStore", e);
         }

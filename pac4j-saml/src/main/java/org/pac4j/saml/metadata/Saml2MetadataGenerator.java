@@ -16,11 +16,6 @@
 
 package org.pac4j.saml.metadata;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
-
-import net.shibboleth.ext.spring.resource.ResourceHelper;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
@@ -29,7 +24,6 @@ import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.ResourceBackedMetadataResolver;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -43,14 +37,15 @@ import org.opensaml.xml.util.XMLHelper;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.saml.client.Saml2Client;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ByteArrayResource;
 import org.w3c.dom.Element;
+
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Generates metadata object with standard values and overriden user defined values.
@@ -83,8 +78,8 @@ public class Saml2MetadataGenerator {
 
     public MetadataResolver buildMetadataProvider() throws ComponentInitializationException, MarshallingException {
         final EntityDescriptor md = buildMetadata();
-        Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
-        DOMMetadataResolver resolver = new DOMMetadataResolver(entityDescriptorElement);
+        final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+        final DOMMetadataResolver resolver = new DOMMetadataResolver(entityDescriptorElement);
         resolver.setRequireValidMetadata(true);
         resolver.setFailFastInitialization(true);
         resolver.setId(resolver.getClass().getCanonicalName());
@@ -93,17 +88,16 @@ public class Saml2MetadataGenerator {
     }
 
     public String printMetadata() throws MarshallingException {
-        EntityDescriptor md = buildMetadata();
-        Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
+        final EntityDescriptor md = buildMetadata();
+        final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
         return XMLHelper.nodeToString(entityDescriptorElement);
     }
 
     public EntityDescriptor buildMetadata() {
-
-        SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
+        final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
                 .getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
 
-        EntityDescriptor descriptor = builder.buildObject();
+        final EntityDescriptor descriptor = builder.buildObject();
         descriptor.setEntityID(this.entityId);
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
 
@@ -113,8 +107,8 @@ public class Saml2MetadataGenerator {
 
     protected KeyInfo generateKeyInfoForCredential(final Credential credential) {
         try {
-            BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
-            KeyInfoGenerator keyInfoGenerator = factory.newInstance();
+            final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
+            final KeyInfoGenerator keyInfoGenerator = factory.newInstance();
             return keyInfoGenerator.generate(credential);
         } catch (org.opensaml.security.SecurityException e) {
             throw new SamlException("Unable to generate keyInfo from given credential", e);
@@ -122,10 +116,9 @@ public class Saml2MetadataGenerator {
     }
 
     protected SPSSODescriptor buildSPSSODescriptor() {
-
-        SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) this.builderFactory
+        final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) this.builderFactory
                 .getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
-        SPSSODescriptor spDescriptor = builder.buildObject();
+        final SPSSODescriptor spDescriptor = builder.buildObject();
 
         spDescriptor.setAuthnRequestsSigned(this.authnRequestSigned);
         spDescriptor.setWantAssertionsSigned(this.wantAssertionSigned);
@@ -149,19 +142,19 @@ public class Saml2MetadataGenerator {
 
     protected Collection<NameIDFormat> buildNameIDFormat() {
 
-        SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
+        final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
                 .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
-        Collection<NameIDFormat> formats = new LinkedList<NameIDFormat>();
-        NameIDFormat transientNameID = builder.buildObject();
+        final Collection<NameIDFormat> formats = new LinkedList<NameIDFormat>();
+        final NameIDFormat transientNameID = builder.buildObject();
         transientNameID.setFormat(NameIDType.TRANSIENT);
         formats.add(transientNameID);
-        NameIDFormat persistentNameID = builder.buildObject();
+        final NameIDFormat persistentNameID = builder.buildObject();
         persistentNameID.setFormat(NameIDType.PERSISTENT);
         formats.add(persistentNameID);
-        NameIDFormat emailNameID = builder.buildObject();
+        final NameIDFormat emailNameID = builder.buildObject();
         emailNameID.setFormat(NameIDType.EMAIL);
         formats.add(emailNameID);
-        NameIDFormat unspecNameID = builder.buildObject();
+        final NameIDFormat unspecNameID = builder.buildObject();
         unspecNameID.setFormat(NameIDType.UNSPECIFIED);
         formats.add(unspecNameID);
         return formats;
@@ -169,9 +162,9 @@ public class Saml2MetadataGenerator {
 
     protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
             final boolean isDefault) {
-        SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
+        final SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
                 .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
-        AssertionConsumerService consumer = builder.buildObject();
+        final AssertionConsumerService consumer = builder.buildObject();
         consumer.setLocation(this.assertionConsumerServiceUrl);
         consumer.setBinding(binding);
         if (isDefault) {
@@ -182,25 +175,25 @@ public class Saml2MetadataGenerator {
     }
 
     protected SingleLogoutService getSingleLogoutService(final String binding) {
-        SAMLObjectBuilder<SingleLogoutService> builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
+        final SAMLObjectBuilder<SingleLogoutService> builder = (SAMLObjectBuilder<SingleLogoutService>) this.builderFactory
                 .getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
-        SingleLogoutService logoutService = builder.buildObject();
+        final SingleLogoutService logoutService = builder.buildObject();
         logoutService.setLocation(this.singleLogoutServiceUrl);
         logoutService.setBinding(binding);
         return logoutService;
     }
 
     protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
-        SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>) Configuration.getBuilderFactory()
+        final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>) Configuration.getBuilderFactory()
                 .getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
-        KeyDescriptor descriptor = builder.buildObject();
+        final KeyDescriptor descriptor = builder.buildObject();
         descriptor.setUse(type);
         descriptor.setKeyInfo(key);
         return descriptor;
     }
 
     private KeyInfo getKeyInfo() {
-        Credential serverCredential = this.credentialProvider.getCredential();
+        final Credential serverCredential = this.credentialProvider.getCredential();
         return generateKeyInfoForCredential(serverCredential);
     }
 

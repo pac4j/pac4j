@@ -99,11 +99,11 @@ public class Saml2AuthnRequestBuilder {
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
         final AuthnRequest request = builder.buildObject();
         if (comparisonType != null) {
-            RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
+            final RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
             authnContext.setComparison(comparisonType);
 
             if (authnContextClassRef != null) {
-                AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
+                final AuthnContextClassRef classRef = new AuthnContextClassRefBuilder().buildObject();
                 classRef.setAuthnContextClassRef(authnContextClassRef);
                 authnContext.getAuthnContextClassRefs().add(classRef);
             }
@@ -121,7 +121,7 @@ public class Saml2AuthnRequestBuilder {
         request.setProviderName("pac4j-saml");
 
         if (nameIdPolicyFormat != null) {
-            NameIDPolicy nameIdPolicy = new NameIDPolicyBuilder().buildObject();
+            final NameIDPolicy nameIdPolicy = new NameIDPolicyBuilder().buildObject();
             nameIdPolicy.setAllowCreate(true);
             nameIdPolicy.setFormat(nameIdPolicyFormat);
             request.setNameIDPolicy(nameIdPolicy);
@@ -135,9 +135,9 @@ public class Saml2AuthnRequestBuilder {
 
     @SuppressWarnings("unchecked")
     protected Issuer getIssuer(final String spEntityId) {
-        SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
+        final SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
                 .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
-        Issuer issuer = issuerBuilder.buildObject();
+        final Issuer issuer = issuerBuilder.buildObject();
         issuer.setValue(spEntityId);
         return issuer;
     }
