@@ -27,7 +27,6 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.TestsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -60,7 +59,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
     public void testForceAuthIsSetForRedirectBinding() throws Exception {
         Saml2Client client = getClient();
         client.setForceAuth(true);
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
     }
@@ -69,7 +68,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
     public void testSetComparisonTypeWithRedirectBinding() throws Exception {
         Saml2Client client = getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
@@ -78,7 +77,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
     public void testNameIdPolicyFormat() throws Exception{
         Saml2Client client = getClient();
         client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
     }
@@ -88,7 +87,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         Saml2Client client = getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>"));
     }
@@ -96,7 +95,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
     @Test
     public void testRelayState() throws Exception {
         Saml2Client client = getClient();
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getLocation().contains("RelayState=relayState"));
