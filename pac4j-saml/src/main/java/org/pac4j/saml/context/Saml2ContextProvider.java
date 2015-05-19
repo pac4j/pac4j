@@ -19,8 +19,10 @@ package org.pac4j.saml.context;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.messaging.context.BaseContext;
 import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
@@ -38,6 +40,7 @@ import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.namespace.QName;
 import java.util.List;
 
 /**
@@ -76,7 +79,7 @@ public class Saml2ContextProvider {
 
     public ExtendedSAMLMessageContext buildSpAndIdpContext(final WebContext webContext) {
 
-        ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
+        final ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
         context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
@@ -85,80 +88,61 @@ public class Saml2ContextProvider {
         return context;
     }
 
-    protected void addTransportContext(final WebContext webContext, final MessageContext<SAMLObject> context) {
+    protected void addTransportContext(final WebContext webContext, final ExtendedSAMLMessageContext context) {
 
-        SimpleRequestAdapter inTransport = new SimpleRequestAdapter(webContext);
-        MessageContext<SimpleRequestAdapter> inCtx = new MessageContext<SimpleRequestAdapter>();
+        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(webContext);
+        final MessageContext<SimpleRequestAdapter> inCtx = new MessageContext<SimpleRequestAdapter>();
         inCtx.setMessage(inTransport);
 
-        SimpleResponseAdapter outTransport = new SimpleResponseAdapter();
-        MessageContext<SimpleResponseAdapter> outCtx = new MessageContext<SimpleResponseAdapter>();
+        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter();
+        final MessageContext<SimpleResponseAdapter> outCtx = new MessageContext<SimpleResponseAdapter>();
         outCtx.setMessage(outTransport);
 
-        context.getSubcontext(InOutOperationContext.class).setInboundMessageContext(inCtx);
-        context.getSubcontext(InOutOperationContext.class).setInboundMessageContext(outCtx);
+        final ProfileRequestContext profile = context.getProfileRequestContext();
+        profile.setInboundMessageContext(inCtx);
+        profile.setInboundMessageContext(outCtx);
     }
 
-    protected void addSPContext(final MessageContext<SAMLObject> context) {
-        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
+    protected void addSPContext(final ExtendedSAMLMessageContext context) {
+        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
         selfContext.setEntityId(this.spEntityId);
         selfContext.setRole(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
-
-        EntityDescriptor entityDescriptor = null;
-        RoleDescriptor roleDescriptor = null;
-        try {
-            CriteriaSet set = new CriteriaSet();
-            set.add(new EntityIdCriterion(this.spEntityId));
-
-            entityDescriptor = this.metadata.resolveSingle(set);
-
-            List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(SPSSODescriptor.DEFAULT_ELEMENT_NAME,
-                    SAMLConstants.SAML20P_NS);
-            roleDescriptor = !list.isEmpty() ? list.get(0) : null;
-
-        } catch (ResolverException e) {
-            throw new SamlException("An error occured while getting SP descriptors", e);
-        }
-
-        if (entityDescriptor == null || roleDescriptor == null) {
-            throw new SamlException("Cannot find entity " + this.idpEntityId + " or role "
-                    + IDPSSODescriptor.DEFAULT_ELEMENT_NAME + " in metadata provider");
-        }
-
-
-        selfContext.getSubcontext(SAMLMetadataContext.class).setEntityDescriptor(entityDescriptor);
-        selfContext.getSubcontext(SAMLMetadataContext.class).setRoleDescriptor(roleDescriptor);
+        addContext(this.spEntityId, selfContext, SPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
-    protected void addIDPContext(final MessageContext<SAMLObject> context) {
-
-        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
+    protected void addIDPContext(final ExtendedSAMLMessageContext context) {
+        final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
         peerContext.setEntityId(this.idpEntityId);
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
+        addContext(this.idpEntityId, peerContext, IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
+    }
 
-        EntityDescriptor entityDescriptor = null;
-        RoleDescriptor roleDescriptor = null;
+    protected void addContext(final String entityId, final BaseContext parentContext,
+                              final QName elementName) {
+        EntityDescriptor entityDescriptor;
+        RoleDescriptor roleDescriptor;
         try {
-            CriteriaSet set = new CriteriaSet();
-            set.add(new EntityIdCriterion(this.idpEntityId));
+            final CriteriaSet set = new CriteriaSet();
+            set.add(new EntityIdCriterion(entityId));
 
             entityDescriptor = this.metadata.resolveSingle(set);
-
-            List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(IDPSSODescriptor.DEFAULT_ELEMENT_NAME,
+            if (entityDescriptor == null) {
+                throw new SamlException("Cannot find entity " + entityId + " in metadata provider");
+            }
+            final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
-            roleDescriptor = !list.isEmpty() ? list.get(0) : null;
+            roleDescriptor = (list != null && !list.isEmpty()) ? list.get(0) : null;
+
+            if (roleDescriptor == null) {
+                throw new SamlException("Cannot find entity " + entityId + " or role "
+                        + elementName + " in metadata provider");
+            }
 
         } catch (ResolverException e) {
             throw new SamlException("An error occured while getting IDP descriptors", e);
         }
-
-        if (entityDescriptor == null || roleDescriptor == null) {
-            throw new SamlException("Cannot find entity " + this.idpEntityId + " or role "
-                    + IDPSSODescriptor.DEFAULT_ELEMENT_NAME + " in metadata provider");
-        }
-
-        peerContext.getSubcontext(SAMLMetadataContext.class).setEntityDescriptor(entityDescriptor);
-        peerContext.getSubcontext(SAMLMetadataContext.class).setRoleDescriptor(roleDescriptor);
+        final SAMLMetadataContext mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);
+        mdCtx.setEntityDescriptor(entityDescriptor);
+        mdCtx.setRoleDescriptor(roleDescriptor);
     }
-
 }

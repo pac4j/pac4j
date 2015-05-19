@@ -16,15 +16,11 @@
 
 package org.pac4j.saml.sso;
 
-import java.util.Random;
-
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
-import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextClassRef;
@@ -37,11 +33,11 @@ import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
-import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.util.Configuration;
-import org.pac4j.saml.util.SamlUtils;
+
+import java.util.Random;
 
 /**
  * Build a SAML2 Authn Request from the given {@link MessageContext}.
@@ -86,27 +82,20 @@ public class Saml2AuthnRequestBuilder {
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
-    public AuthnRequest build(final MessageContext<SAMLObject> context) {
-
-        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
-        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
-
-        SPSSODescriptor spDescriptor = (SPSSODescriptor) selfContext.getRole();
-        IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRole();
-
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, bindingType);
-        AssertionConsumerService assertionConsumerService = SamlUtils.getAssertionConsumerService(spDescriptor, null);
+    public AuthnRequest build(final ExtendedSAMLMessageContext context) {
+        final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
+        final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService();
 
         return buildAuthnRequest(context, assertionConsumerService, ssoService);
     }
 
     @SuppressWarnings("unchecked")
-    protected AuthnRequest buildAuthnRequest(final MessageContext<SAMLObject> context,
+    protected AuthnRequest buildAuthnRequest(final ExtendedSAMLMessageContext context,
             final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
-        SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
+        final SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
-        AuthnRequest request = builder.buildObject();
+        final AuthnRequest request = builder.buildObject();
         if (comparisonType != null) {
             RequestedAuthnContext authnContext = new RequestedAuthnContextBuilder().buildObject();
             authnContext.setComparison(comparisonType);
@@ -119,7 +108,7 @@ public class Saml2AuthnRequestBuilder {
             request.setRequestedAuthnContext(authnContext);
         }
 
-        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
+        SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
 
         request.setID(generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
@@ -139,9 +128,7 @@ public class Saml2AuthnRequestBuilder {
         request.setDestination(ssoService.getLocation());
         request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
         request.setProtocolBinding(assertionConsumerService.getBinding());
-
         return request;
-
     }
 
     @SuppressWarnings("unchecked")
@@ -159,16 +146,18 @@ public class Saml2AuthnRequestBuilder {
     }
 
     protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
-        if ("exact".equals(comparisonType)) {
+        if ("exact".equalsIgnoreCase(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.EXACT;
-        } else if ("minimum".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.MINIMUM;
-        } else if ("maximum".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.MAXIMUM;
-        } else if ("better".equals(comparisonType)) {
-            return AuthnContextComparisonTypeEnumeration.BETTER;
-        } else {
-            return null;
         }
+        if ("minimum".equalsIgnoreCase(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.MINIMUM;
+        }
+        if ("maximum".equalsIgnoreCase(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.MAXIMUM;
+        }
+        if ("better".equalsIgnoreCase(comparisonType)) {
+            return AuthnContextComparisonTypeEnumeration.BETTER;
+        }
+        return null;
     }
 }

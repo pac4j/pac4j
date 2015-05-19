@@ -40,13 +40,11 @@ public class EncryptionProvider {
     private static ChainingEncryptedKeyResolver encryptedKeyResolver;
 
     static {
-        List<EncryptedKeyResolver> list = new ArrayList<EncryptedKeyResolver>();
+        final List<EncryptedKeyResolver> list = new ArrayList<EncryptedKeyResolver>();
         list.add(new InlineEncryptedKeyResolver());
         list.add(new EncryptedElementTypeEncryptedKeyResolver());
         list.add(new SimpleRetrievalMethodEncryptedKeyResolver());
-
         encryptedKeyResolver = new ChainingEncryptedKeyResolver(list);
-
     }
 
     private final CredentialProvider credentialProvider;
@@ -56,9 +54,9 @@ public class EncryptionProvider {
     }
 
     public Decrypter buildDecrypter() {
-        Credential encryptionCredential = this.credentialProvider.getCredential();
-        KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
-        Decrypter decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
+        final Credential encryptionCredential = this.credentialProvider.getCredential();
+        final KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
+        final Decrypter decrypter = new Decrypter(null, resolver, encryptedKeyResolver);
         decrypter.setRootInNewDocument(true);
 
         return decrypter;

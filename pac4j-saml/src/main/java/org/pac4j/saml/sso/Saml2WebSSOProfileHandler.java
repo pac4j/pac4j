@@ -16,6 +16,7 @@
 
 package org.pac4j.saml.sso;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.decoder.MessageDecoder;
@@ -23,13 +24,8 @@ import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
 import org.opensaml.profile.context.ProfileRequestContext;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.SAMLMessageSecuritySupport;
-import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
-import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
-import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
-import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -37,16 +33,13 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.SecurityException;
+import org.opensaml.xmlsec.EncryptionParameters;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
-import org.opensaml.xmlsec.EncryptionParameters;
-import org.opensaml.xmlsec.context.SecurityParametersContext;
+import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SamlException;
-import org.pac4j.saml.util.SamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,68 +77,69 @@ public class Saml2WebSSOProfileHandler {
     }
 
     @SuppressWarnings("unchecked")
-    public void sendMessage(final MessageContext<SAMLObject> context, final AuthnRequest authnRequest, final String relayState) {
+    public void sendMessage(final ExtendedSAMLMessageContext context, final AuthnRequest authnRequest, final String relayState) {
 
-        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
-        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
+        final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
+        final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
 
-        SPSSODescriptor spDescriptor = (SPSSODescriptor) selfContext.getRole();
-        IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRole();
-        SingleSignOnService ssoService = SamlUtils.getSingleSignOnService(idpssoDescriptor, destinationBindingType);
+        SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
 
-        ProfileRequestContext request = context.getSubcontext(ProfileRequestContext.class);
+        final ProfileRequestContext request = context.getProfileRequestContext();
         request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
 
-        MessageContext<AuthnRequest> outboundContext = new MessageContext<AuthnRequest>();
+        final MessageContext<AuthnRequest> outboundContext = new MessageContext<AuthnRequest>();
         outboundContext.setMessage(authnRequest);
         request.setOutboundMessageContext(outboundContext);
-        peerContext.getSubcontext(SAMLEndpointContext.class).setEndpoint(ssoService);
+
+        context.getSAMLPeerEndpointContext().setEndpoint(ssoService);
 
         if (relayState != null) {
-            context.getSubcontext(SAMLBindingContext.class).setRelayState(relayState);
+            context.getSAMLBindingContext().setRelayState(relayState);
         }
 
         if (spDescriptor.isAuthnRequestsSigned()) {
-            EncryptionParameters params = context.getSubcontext(SecurityParametersContext.class).getEncryptionParameters();
-            params.setKeyTransportEncryptionCredential(credentialProvider.getCredential());
+            final EncryptionParameters params = new EncryptionParameters();
+            params.setKeyTransportEncryptionCredential(this.credentialProvider.getCredential());
+            context.getSecurityParametersContext().setEncryptionParameters(params);
         } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
             logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
         }
 
         try {
-            encoder.setMessageContext(context);
-            encoder.encode();
-        } catch (MessageEncodingException e) {
+            this.encoder.setMessageContext(context);
+            this.encoder.initialize();
+            this.encoder.encode();
+        } catch (final MessageEncodingException e) {
             throw new SamlException("Error encoding saml message", e);
+        } catch (ComponentInitializationException e) {
+            throw new SamlException("Error initializing saml encoder", e);
         }
 
     }
 
-    public void receiveMessage(final MessageContext<SAMLObject> context, final SignatureTrustEngine engine) {
+    public void receiveMessage(final ExtendedSAMLMessageContext context, final SignatureTrustEngine engine) {
 
-        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
-        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
+        final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
 
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
-        selfContext.getSubcontext(SAMLProtocolContext.class).setProtocol(SAMLConstants.SAML20P_NS);
-
+        context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
         try {
-            BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
-            KeyInfoGenerator keyInfoGenerator = factory.newInstance();
+            final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
+            final KeyInfoGenerator keyInfoGenerator = factory.newInstance();
             SAMLMessageSecuritySupport.getContextSigningParameters(context).setKeyInfoGenerator(keyInfoGenerator);
             decoder.decode();
         } catch (MessageDecodingException e) {
             throw new SamlException("Error decoding saml message", e);
         }
 
-        final EntityDescriptor metadata = peerContext.getSubcontext(SAMLMetadataContext.class).getEntityDescriptor();
+        final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
         if (metadata == null) {
             throw new SamlException("IDP Metadata cannot be null");
         }
 
         peerContext.setEntityId(metadata.getEntityID());
-        context.getSubcontext(ProfileRequestContext.class).setProfileId(SAML2_WEBSSO_PROFILE_URI);
+        context.getProfileRequestContext().setProfileId(SAML2_WEBSSO_PROFILE_URI);
     }
 
 }
