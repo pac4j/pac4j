@@ -36,6 +36,8 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.saml.exceptions.SamlException;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.File;
@@ -56,7 +58,11 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         writer.close();
         logger.debug("redirectPage path : {}", redirectFile.getPath());
         final HtmlPage redirectPage = webClient.getPage(redirectFile.toURI().toURL());
+        if (redirectPage.getForms().isEmpty()) {
+            throw new SamlException("Page " + redirectPage.getUrl() + " did not produce a form");
+        }
         final HtmlForm form = redirectPage.getForms().get(0);
+
         final HtmlSubmitInput submit = (HtmlSubmitInput) form.getElementsByAttribute("input", "type", "submit").get(0);
         return submit.click();
     }
@@ -65,6 +71,9 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         StringWebResponse response = new StringWebResponse(content, new URL("http://localhost:8080/"));
         WebClient webClient = new WebClient();
         HtmlPage page = HTMLParser.parseHtml(response, webClient.getCurrentWindow());
+        if (page.getForms().isEmpty()) {
+            throw new SamlException("Page " + page.getUrl() + " did not produce a form");
+        }
         HtmlForm form = page.getForms().get(0);
         HtmlInput samlRequest = form.getInputByName("SAMLRequest");
         return new String(Base64.decodeBase64(samlRequest.getValueAttribute()));
@@ -74,7 +83,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     public void testCustomSpEntityIdForPostBinding() throws Exception {
         Saml2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent())
                 .contains(
@@ -85,7 +94,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     public void testForceAuthIsSetForPostBinding() throws Exception {
         Saml2Client client = (Saml2Client) getClient();
         client.setForceAuth(true);
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
@@ -94,7 +103,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     public void testSetComparisonTypeWithPostBinding() throws Exception {
         Saml2Client client = (Saml2Client) getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
@@ -102,7 +111,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     @Test
     public void testRelayState() throws RequiresHttpAction {
         Saml2Client client = (Saml2Client) getClient();
-        WebContext context = MockWebContext.create();
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));

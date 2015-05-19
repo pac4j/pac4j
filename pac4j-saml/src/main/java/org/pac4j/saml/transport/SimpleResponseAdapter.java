@@ -21,6 +21,7 @@ import org.pac4j.core.context.J2EContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,7 +36,7 @@ import java.io.OutputStream;
  *
  */
 public class SimpleResponseAdapter extends HttpServletResponseWrapper {
-    private ServletOutputStream outputStream = new Pac4jServletOutputStream();
+    private Pac4jServletOutputStream outputStream = new Pac4jServletOutputStream();
     private String redirectUrl;
 
     /**
@@ -49,7 +50,7 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
     }
 
     public String getOutgoingContent() {
-        return outputStream.toString();
+        return outputStream.getOutgoingContent();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
 
 
     private static class Pac4jServletOutputStream extends ServletOutputStream {
-        private final OutputStream outputStream = new ByteArrayOutputStream();
+        private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         @Override
         public void write(int b) throws IOException {
@@ -76,7 +77,13 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
         }
 
         public String getOutgoingContent() {
-            return outputStream.toString();
+            try {
+                String result = new String(this.outputStream.toByteArray(), "UTF-8");
+                return result;
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+
         }
     }
 }
