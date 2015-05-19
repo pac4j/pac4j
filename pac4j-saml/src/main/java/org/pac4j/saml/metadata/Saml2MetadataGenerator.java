@@ -18,13 +18,13 @@ package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.joda.time.DateTime;
-import org.opensaml.core.xml.Namespace;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
+import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.binding.artifact.SAML2ArtifactType0004;
@@ -49,7 +49,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.xml.namespace.QName;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Collection;
@@ -83,6 +82,8 @@ public class Saml2MetadataGenerator {
     protected boolean wantAssertionSigned = true;
 
     protected int defaultACSIndex = 0;
+
+    protected String requestInitiatorLocation = null;
 
     public MetadataResolver buildMetadataProvider() throws ComponentInitializationException, MarshallingException {
         final EntityDescriptor md = buildMetadata();
@@ -193,20 +194,6 @@ public class Saml2MetadataGenerator {
         }
     }
 
-    protected KeyInfo generateKeyInfoForCredential(final Credential credential) {
-        try {
-            final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
-            factory.setEmitKeyNames(true);
-            factory.setEmitEntityIDAsKeyName(true);
-            factory.setEmitPublicDEREncodedKeyValue(true);
-            factory.setEmitPublicKeyValue(true);
-            final KeyInfoGenerator keyInfoGenerator = factory.newInstance();
-            return keyInfoGenerator.generate(credential);
-        } catch (org.opensaml.security.SecurityException e) {
-            throw new SamlException("Unable to generate keyInfo from given credential", e);
-        }
-    }
-
     protected SPSSODescriptor buildSPSSODescriptor() {
         final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) this.builderFactory
                 .getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
@@ -215,6 +202,26 @@ public class Saml2MetadataGenerator {
         spDescriptor.setAuthnRequestsSigned(this.authnRequestSigned);
         spDescriptor.setWantAssertionsSigned(this.wantAssertionSigned);
         spDescriptor.addSupportedProtocol(SAMLConstants.SAML20P_NS);
+        spDescriptor.addSupportedProtocol(SAMLConstants.SAML10P_NS);
+        spDescriptor.addSupportedProtocol(SAMLConstants.SAML11P_NS);
+
+        final SAMLObjectBuilder<Extensions> builderExt =
+                (SAMLObjectBuilder<Extensions>) this.builderFactory
+                        .getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
+
+        final Extensions extensions = builderExt.buildObject();
+        extensions.getNamespaceManager().registerAttributeName(RequestInitiator.DEFAULT_ELEMENT_NAME);
+
+        final SAMLObjectBuilder<RequestInitiator> builderReq =
+                (SAMLObjectBuilder<RequestInitiator>) this.builderFactory
+                        .getBuilder(RequestInitiator.DEFAULT_ELEMENT_NAME);
+
+        final RequestInitiator requestInitiator = builderReq.buildObject();
+        requestInitiator.setLocation(this.requestInitiatorLocation);
+        requestInitiator.setBinding(RequestInitiator.DEFAULT_ELEMENT_NAME.getNamespaceURI());
+
+        extensions.getUnknownXMLObjects().add(requestInitiator);
+        spDescriptor.setExtensions(extensions);
 
         spDescriptor.getNameIDFormats().addAll(buildNameIDFormat());
 
@@ -224,8 +231,10 @@ public class Saml2MetadataGenerator {
                         this.defaultACSIndex == index));
 
         if (credentialProvider != null) {
-            spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));
-            spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, getKeyInfo()));
+            spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING,
+                    this.credentialProvider.getKeyInfo()));
+            spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION,
+                    this.credentialProvider.getKeyInfo()));
         }
 
         return spDescriptor;
@@ -285,11 +294,6 @@ public class Saml2MetadataGenerator {
         return descriptor;
     }
 
-    private KeyInfo getKeyInfo() {
-        final Credential serverCredential = this.credentialProvider.getCredential();
-        return generateKeyInfoForCredential(serverCredential);
-    }
-
     public CredentialProvider getCredentialProvider() {
         return this.credentialProvider;
     }
@@ -336,5 +340,9 @@ public class Saml2MetadataGenerator {
 
     public void setSingleLogoutServiceUrl(final String singleLogoutServiceUrl) {
         this.singleLogoutServiceUrl = singleLogoutServiceUrl;
+    }
+
+    public void setRequestInitiatorLocation(String requestInitiatorLocation) {
+        this.requestInitiatorLocation = requestInitiatorLocation;
     }
 }
