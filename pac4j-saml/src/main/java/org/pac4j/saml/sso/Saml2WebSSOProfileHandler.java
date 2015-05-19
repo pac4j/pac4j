@@ -129,8 +129,9 @@ public class Saml2WebSSOProfileHandler {
         BaseSAML2MessageEncoder encoder;
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
             // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
-            VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
+            final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
             encoder = new HTTPPostEncoder();
+            ((HTTPPostEncoder) encoder).setVelocityEngine(velocityEngine);
         } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
             encoder = new HTTPRedirectDeflateEncoder();
         } else {
