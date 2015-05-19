@@ -79,8 +79,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -139,6 +142,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     private String authnContextClassRef = null;
 
     private String nameIdPolicyFormat = null;
+
+    private String spMeadataPath;
 
     @Override
     protected void internalInit() {
@@ -217,32 +222,45 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     private MetadataResolver generateServiceProviderMetadata() {
-        final Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
-        if (this.credentialProvider != null) {
-            metadataGenerator.setCredentialProvider(this.credentialProvider);
-            metadataGenerator.setAuthnRequestSigned(true);
-        }
-        // If the spEntityId is blank, use the callback url
-        if (CommonHelper.isBlank(this.spEntityId)) {
-            this.spEntityId = getCallbackUrl();
-        }
-        metadataGenerator.setEntityId(this.spEntityId);
-        // Assertion consumer service url is the callback url
-        metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
-        // for now same for logout url
-        metadataGenerator.setSingleLogoutServiceUrl(getCallbackUrl());
-        MetadataResolver spMetadataProvider = null;
-
-        // Initialize metadata provider for our SP and get the XML as a String
         try {
-            spMetadataProvider = metadataGenerator.buildMetadataProvider();
+            final Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
+            if (this.credentialProvider != null) {
+                metadataGenerator.setCredentialProvider(this.credentialProvider);
+                metadataGenerator.setAuthnRequestSigned(true);
+            }
+            // If the spEntityId is blank, use the callback url
+            if (CommonHelper.isBlank(this.spEntityId)) {
+                final URL url = new URL(getCallbackUrl());
+                if (url.getQuery() != null) {
+                    this.spEntityId = url.toString().replace("?" + url.getQuery(), "");
+                } else {
+                    this.spEntityId = url.toString();
+                }
+            }
+            metadataGenerator.setEntityId(this.spEntityId);
+            // Assertion consumer service url is the callback url
+            metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
+            // for now same for logout url
+            metadataGenerator.setSingleLogoutServiceUrl(getCallbackUrl());
+            final MetadataResolver spMetadataProvider = metadataGenerator.buildMetadataProvider();
+
+            // Initialize metadata provider for our SP and get the XML as a String
             this.spMetadata = metadataGenerator.printMetadata();
+            if (this.spMeadataPath != null) {
+                logger.info("Writing sp metadata to {}", this.spMeadataPath);
+                FileWriter writer = new FileWriter(this.spMeadataPath);
+                writer.write(this.spMetadata);
+                writer.close();
+            }
+            return spMetadataProvider;
         } catch (ComponentInitializationException e) {
             throw new TechnicalException("Error initializing spMetadataProvider", e);
         } catch (MarshallingException e) {
+            logger.warn("Unable to marshal SP metadata", e);
+        } catch (IOException e) {
             logger.warn("Unable to print SP metadata", e);
         }
-        return spMetadataProvider;
+        return null;
     }
 
     private MessageDecoder getMessageDecoder() {
@@ -482,6 +500,22 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return this.spMetadata;
     }
 
+    public String getIdpMetadata() {
+        return idpMetadata;
+    }
+
+    public String getIdpMetadataPath() {
+        return idpMetadataPath;
+    }
+
+    public String getIdpEntityId() {
+        return idpEntityId;
+    }
+
+    public String getSpEntityId() {
+        return spEntityId;
+    }
+
     /**
      * @return the forceAuth
      */
@@ -552,4 +586,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
+    public void setSpMeadataPath(final String spMeadataPath) {
+        this.spMeadataPath = spMeadataPath;
+    }
 }

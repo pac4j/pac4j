@@ -17,16 +17,21 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import org.joda.time.DateTime;
+import org.opensaml.core.xml.Namespace;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.saml2.binding.artifact.SAML2ArtifactType0004;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.Extensions;
 import org.opensaml.saml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
@@ -44,6 +49,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.xml.namespace.QName;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -94,20 +102,104 @@ public class Saml2MetadataGenerator {
     }
 
     public EntityDescriptor buildMetadata() {
-        final SAMLObjectBuilder<EntityDescriptor> builder = (SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
+        final SAMLObjectBuilder<EntityDescriptor> builder = (
+                SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
                 .getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
 
         final EntityDescriptor descriptor = builder.buildObject();
         descriptor.setEntityID(this.entityId);
+        descriptor.setValidUntil(DateTime.now().plusYears(20));
+        descriptor.setID(generateEntityDescriptorId());
+        descriptor.setExtensions(generateMetadataExtensions());
         descriptor.getRoleDescriptors().add(buildSPSSODescriptor());
 
         return descriptor;
 
     }
 
+    protected Extensions generateMetadataExtensions() {
+
+        final SAMLObjectBuilder<Extensions> builderExt =
+                (SAMLObjectBuilder<Extensions>) this.builderFactory
+                        .getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
+
+        final Extensions extensions = builderExt.buildObject();
+        extensions.getNamespaceManager().registerAttributeName(DigestMethod.TYPE_NAME);
+
+        final SAMLObjectBuilder<DigestMethod> builder =
+                (SAMLObjectBuilder<DigestMethod>) this.builderFactory
+                .getBuilder(DigestMethod.DEFAULT_ELEMENT_NAME);
+
+        DigestMethod method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmlenc#sha512");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#sha384");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmlenc#sha256");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#sha224");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2000/09/xmldsig#sha1");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+        extensions.getUnknownXMLObjects().add(method);
+
+        method = builder.buildObject();
+        method.setAlgorithm("http://www.w3.org/2000/09/xmldsig#dsa-sha1");
+        extensions.getUnknownXMLObjects().add(method);
+
+        return extensions;
+    }
+
+
+    protected String generateEntityDescriptorId() {
+        try {
+            final MessageDigest messageDigest = MessageDigest.getInstance("SHA");
+            messageDigest.update(this.entityId.getBytes("8859_1"));
+            final byte[] sourceIdDigest = messageDigest.digest();
+
+            final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            final byte[] handle = new byte[20];
+            random.nextBytes(handle);
+
+            byte[] ENDPOINT_ID = {0, 1};
+            final String id = new SAML2ArtifactType0004(ENDPOINT_ID, handle, sourceIdDigest).base64Encode();
+
+            return id;
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected KeyInfo generateKeyInfoForCredential(final Credential credential) {
         try {
             final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
+            factory.setEmitKeyNames(true);
+            factory.setEmitEntityIDAsKeyName(true);
+            factory.setEmitPublicDEREncodedKeyValue(true);
+            factory.setEmitPublicKeyValue(true);
             final KeyInfoGenerator keyInfoGenerator = factory.newInstance();
             return keyInfoGenerator.generate(credential);
         } catch (org.opensaml.security.SecurityException e) {
@@ -132,8 +224,8 @@ public class Saml2MetadataGenerator {
                         this.defaultACSIndex == index));
 
         if (credentialProvider != null) {
-          spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));
-          spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, getKeyInfo()));
+            spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.SIGNING, getKeyInfo()));
+            spDescriptor.getKeyDescriptors().add(getKeyDescriptor(UsageType.ENCRYPTION, getKeyInfo()));
         }
 
         return spDescriptor;
@@ -184,7 +276,8 @@ public class Saml2MetadataGenerator {
     }
 
     protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
-        final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>) Configuration.getBuilderFactory()
+        final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>)
+                Configuration.getBuilderFactory()
                 .getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
         final KeyDescriptor descriptor = builder.buildObject();
         descriptor.setUse(type);
