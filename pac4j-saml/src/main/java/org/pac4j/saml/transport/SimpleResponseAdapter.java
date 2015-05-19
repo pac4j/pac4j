@@ -41,7 +41,7 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
     /**
      * Constructs a response adaptor wrapping the given response.
      *
-     * @param response
+     * @param response the response
      * @throws IllegalArgumentException if the response is null
      */
     public SimpleResponseAdapter(J2EContext response) {

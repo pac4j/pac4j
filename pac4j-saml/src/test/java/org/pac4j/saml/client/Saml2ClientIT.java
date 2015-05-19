@@ -24,6 +24,7 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.profile.Saml2Profile;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -72,6 +73,10 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     @Override
     protected void updateContextForAuthn(WebClient webClient, HtmlPage authorizationPage, J2EContext context)
             throws Exception {
+        if (authorizationPage.getForms().isEmpty()) {
+            throw new SamlException("Authorization page " + authorizationPage.getUrl() + " does not produce any forms");
+        }
+
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("j_username");
         email.setValueAttribute("myself");

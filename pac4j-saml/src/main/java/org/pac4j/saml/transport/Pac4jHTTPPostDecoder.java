@@ -24,8 +24,7 @@ import org.opensaml.saml.saml2.metadata.Endpoint;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 
 /**
- * Extends {@link HTTPPostDecoder} to override getActualReceiverEndpointURI() because we
- * do not have an {@link HttpServletRequestAdapter} as input in pac4j.
+ * Decodes the post response.
  * 
  * @author Michael Remond
  * @since 1.5.0

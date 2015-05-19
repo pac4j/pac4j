@@ -1,6 +1,5 @@
 package org.pac4j.saml.util;
 
-import com.sun.org.apache.xerces.internal.util.SecurityManager;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.xml.BasicParserPool;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
@@ -12,6 +11,7 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +37,6 @@ public final class Configuration {
         parserPool.setNamespaceAware(true);
 
         Map<String, Object> builderAttributes = new HashMap<String, Object>();
-        SecurityManager secMgmr = new SecurityManager();
-        builderAttributes.put("http://apache.org/xml/properties/security-manager", secMgmr);
         parserPool.setBuilderAttributes(builderAttributes);
 
         Map<String, Boolean> features = new HashMap<String, Boolean>();

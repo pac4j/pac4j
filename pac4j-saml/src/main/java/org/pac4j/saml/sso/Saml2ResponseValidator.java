@@ -86,10 +86,10 @@ public class Saml2ResponseValidator {
     /**
      * Validates the SAML protocol response and the SAML SSO response.
      * The method decrypt encrypted assertions if any.
-     * 
-     * @param context
-     * @param engine
-     * @param decrypter
+     *
+     * @param context the context
+     * @param engine the engine
+     * @param decrypter the decrypter
      */
     public void validateSamlResponse(final ExtendedSAMLMessageContext context, final SignatureTrustEngine engine,
             final Decrypter decrypter) {
@@ -117,10 +117,10 @@ public class Saml2ResponseValidator {
      *  - Issuer
      *  - StatusCode
      *  - Signature
-     * 
-     * @param response
-     * @param context
-     * @param engine
+     *
+     * @param response the response
+     * @param context the context
+     * @param engine the engine
      */
     public void validateSamlProtocolResponse(final Response response, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine) {
@@ -154,11 +154,11 @@ public class Saml2ResponseValidator {
     /**
      * Validates the SAML SSO response by finding a valid assertion with authn statements.
      * Populates the {@link ExtendedSAMLMessageContext} with a subjectAssertion and a subjectNameIdentifier.
-     * 
-     * @param response
-     * @param context
-     * @param engine
-     * @param decrypter
+     *
+     * @param response the response
+     * @param context the context
+     * @param engine the engine
+     * @param decrypter the decrypter
      */
     public void validateSamlSSOResponse(final Response response, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine, final Decrypter decrypter) {
@@ -192,9 +192,9 @@ public class Saml2ResponseValidator {
 
     /**
      * Decrypt encrypted assertions and add them to the assertions list of the response.
-     * 
-     * @param response
-     * @param decrypter
+     *
+     * @param response the response
+     * @param decrypter the decrypter
      */
     protected void decryptEncryptedAssertions(final Response response, final Decrypter decrypter) {
 
@@ -211,9 +211,9 @@ public class Saml2ResponseValidator {
 
     /**
      * Validate issuer format and value.
-     * 
-     * @param issuer
-     * @param context
+     *
+     * @param issuer the issuer
+     * @param context the context
      */
     protected void validateIssuer(final Issuer issuer, final ExtendedSAMLMessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
@@ -234,11 +234,11 @@ public class Saml2ResponseValidator {
      *  - conditions
      *  - authnStatements
      *  - signature
-     * 
-     * @param assertion
-     * @param context
-     * @param engine
-     * @param decrypter
+     *
+     * @param assertion the assertion
+     * @param context the context
+     * @param engine the engine
+     * @param decrypter the decrypter
      */
     protected void validateAssertion(final Assertion assertion, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine, final Decrypter decrypter) {
@@ -370,9 +370,9 @@ public class Saml2ResponseValidator {
      *  - notBefore
      *  - NotOnOrAfter
      *  - recipient
-     * 
-     * @param data
-     * @param context
+     *
+     * @param data the data
+     * @param context the context
      * @return true if all Bearer subject checks are passing
      */
     protected boolean isValidBearerSubjectConfirmationData(final SubjectConfirmationData data,
@@ -416,9 +416,9 @@ public class Saml2ResponseValidator {
      * Validate assertionConditions
      *  - notBefore
      *  - notOnOrAfter
-     * 
-     * @param conditions
-     * @param context
+     *
+     * @param conditions the conditions
+     * @param context the context
      */
     protected void validateAssertionConditions(final Conditions conditions, final ExtendedSAMLMessageContext context) {
 
@@ -445,9 +445,9 @@ public class Saml2ResponseValidator {
 
     /**
      * Validate audience by matching the SP entityId.
-     * 
-     * @param audienceRestrictions
-     * @param spEntityId
+     *
+     * @param audienceRestrictions the audience restrictions
+     * @param spEntityId the sp entity id
      */
     protected void validateAudienceRestrictions(final List<AudienceRestriction> audienceRestrictions,
             final String spEntityId) {
@@ -474,9 +474,9 @@ public class Saml2ResponseValidator {
      * Validate the given authnStatements:
      *  - authnInstant
      *  - sessionNotOnOrAfter
-     * 
-     * @param authnStatements
-     * @param context
+     *
+     * @param authnStatements the authn statements
+     * @param context the context
      */
     protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
             final ExtendedSAMLMessageContext context) {
@@ -495,10 +495,10 @@ public class Saml2ResponseValidator {
     /**
      * Validate assertion signature. If none is found and the SAML response did not have one and the SP requires
      * the assertions to be signed, the validation fails.
-     * 
-     * @param signature
-     * @param context
-     * @param engine
+     *
+     * @param signature the signature
+     * @param context the context
+     * @param engine the engine
      */
     protected void validateAssertionSignature(final Signature signature, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine) {
@@ -518,10 +518,10 @@ public class Saml2ResponseValidator {
 
     /**
      * Validate the given digital signature by checking its profile and value.
-     * 
-     * @param signature
-     * @param idpEntityId
-     * @param trustEngine
+     *
+     * @param signature the signature
+     * @param idpEntityId the idp entity id
+     * @param trustEngine the trust engine
      */
     protected void validateSignature(final Signature signature, final String idpEntityId,
             final SignatureTrustEngine trustEngine) {
