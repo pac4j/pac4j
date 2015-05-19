@@ -16,17 +16,6 @@
 
 package org.pac4j.saml.client;
 
-import org.apache.commons.lang.NotImplementedException;
-import org.junit.Test;
-import org.pac4j.core.client.ClientIT;
-import org.pac4j.core.client.Mechanism;
-import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.saml.exceptions.SamlException;
-import org.pac4j.saml.profile.Saml2Profile;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -35,8 +24,19 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import org.apache.commons.lang.NotImplementedException;
+import org.junit.Test;
+import org.pac4j.core.client.ClientIT;
+import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.TestsConstants;
+import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.profile.Saml2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import java.io.File;
 
 public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
 
@@ -48,7 +48,7 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     public void testSPMetadata() {
         Saml2Client client = getClient();
         String spMetadata = client.printClientMetadata();
-        assertTrue(spMetadata.contains("entityID=\"" + getCallbackUrl() + "\""));
+        assertTrue(spMetadata.contains("entityID=\"" + client.getSpEntityId() + "\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
                         + getCallbackUrl() + "\""));
@@ -130,6 +130,8 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         saml2Client.setMaximumAuthenticationLifetime(3600);
         saml2Client.setCallbackUrl(getCallbackUrl());
         saml2Client.setDestinationBindingType(getDestinationBindingType());
+        saml2Client.setSpEntityId("urn:mace:saml:pac4j.org");
+        saml2Client.setSpMeadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
         return saml2Client;
     }
 
