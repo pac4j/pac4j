@@ -35,7 +35,7 @@ public class SimpleRequestAdapter extends HttpServletRequestWrapper {
     private J2EContext context;
 
 
-    public SimpleRequestAdapter(J2EContext request) {
+    public SimpleRequestAdapter(final J2EContext request) {
         super(request.getRequest());
     }
 

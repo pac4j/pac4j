@@ -94,12 +94,12 @@ public class Saml2ResponseValidator {
     public void validateSamlResponse(final ExtendedSAMLMessageContext context, final SignatureTrustEngine engine,
             final Decrypter decrypter) {
 
-        MessageContext<SAMLObject> message = context.getSubcontext(InOutOperationContext.class).getInboundMessageContext();
+        final MessageContext<SAMLObject> message = context.getSubcontext(InOutOperationContext.class).getInboundMessageContext();
 
         if (!(message instanceof Response)) {
             throw new SamlException("Response instance is an unsupported type");
         }
-        Response response = (Response) message.getMessage();
+        final Response response = (Response) message.getMessage();
 
         validateSamlProtocolResponse(response, context, engine);
 
@@ -144,7 +144,7 @@ public class Saml2ResponseValidator {
         }
 
         if (response.getSignature() != null) {
-            String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
+            final String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
             validateSignature(response.getSignature(), entityId, engine);
             context.getSubcontext(SAMLPeerEntityContext.class).setAuthenticated(true);
         }
@@ -163,11 +163,11 @@ public class Saml2ResponseValidator {
     public void validateSamlSSOResponse(final Response response, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine, final Decrypter decrypter) {
 
-        for (Assertion assertion : response.getAssertions()) {
+        for (final Assertion assertion : response.getAssertions()) {
             if (assertion.getAuthnStatements().size() > 0) {
                 try {
                     validateAssertion(assertion, context, engine, decrypter);
-                } catch (SamlException e) {
+                } catch (final SamlException e) {
                     logger.error("Current assertion validation failed, continue with the next one", e);
                     continue;
                 }
@@ -181,8 +181,8 @@ public class Saml2ResponseValidator {
         }
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
-        List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
-        NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class).getSubjectNameIdentifier();
+        final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
+        final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class).getSubjectNameIdentifier();
         if ((nameIdentifier.getValue() == null) && (context.getBaseID() == null)
                 && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
             throw new SamlException(
@@ -198,9 +198,9 @@ public class Saml2ResponseValidator {
      */
     protected void decryptEncryptedAssertions(final Response response, final Decrypter decrypter) {
 
-        for (EncryptedAssertion encryptedAssertion : response.getEncryptedAssertions()) {
+        for (final EncryptedAssertion encryptedAssertion : response.getEncryptedAssertions()) {
             try {
-                Assertion decryptedAssertion = decrypter.decrypt(encryptedAssertion);
+                final Assertion decryptedAssertion = decrypter.decrypt(encryptedAssertion);
                 response.getAssertions().add(decryptedAssertion);
             } catch (DecryptionException e) {
                 logger.error("Decryption of assertion failed, continue with the next one", e);
@@ -220,7 +220,7 @@ public class Saml2ResponseValidator {
             throw new SamlException("Issuer type is not entity but " + issuer.getFormat());
         }
 
-        String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
+        final String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
         if (!entityId.equals(issuer.getValue())) {
             throw new SamlException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
@@ -297,14 +297,14 @@ public class Saml2ResponseValidator {
         // If we don't have anything, let's go through all subject confirmations and get the IDs from them. At least one should be present but we don't care at this point.
         if (nameIdFromSubject != null || baseIdFromSubject != null) {
 
-            NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
+            final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
                     .getSubjectNameIdentifier();
             nameIdentifier.setValue(nameIdFromSubject.getValue());
             context.setBaseID(baseIdFromSubject);
             samlIDFound = true;
         }
 
-        for (SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
+        for (final SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
             if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
                 if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
                     NameID nameIDFromConfirmation = confirmation.getNameID();
@@ -320,7 +320,7 @@ public class Saml2ResponseValidator {
 
                     if (!samlIDFound && (nameIDFromConfirmation != null || baseIDFromConfirmation != null)) {
 
-                        NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
+                        final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
                                 .getSubjectNameIdentifier();
                         nameIdentifier.setValue(nameIDFromConfirmation.getValue());
                         context.setBaseID(baseIDFromConfirmation);
@@ -358,7 +358,7 @@ public class Saml2ResponseValidator {
         }
 
         try {
-            NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
+            final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (DecryptionException e) {
             throw new SamlException("Decryption of an EncryptedID failed.", e);
@@ -456,10 +456,10 @@ public class Saml2ResponseValidator {
             throw new SamlException("Audience restrictions cannot be null or empty");
         }
 
-        Set<String> audienceUris = new HashSet<String>();
-        for (AudienceRestriction audienceRestriction : audienceRestrictions) {
+        final Set<String> audienceUris = new HashSet<String>();
+        for (final AudienceRestriction audienceRestriction : audienceRestrictions) {
             if (audienceRestriction.getAudiences() != null) {
-                for (Audience audience : audienceRestriction.getAudiences()) {
+                for (final Audience audience : audienceRestriction.getAudiences()) {
                     audienceUris.add(audience.getAudienceURI());
                 }
             }
@@ -503,10 +503,10 @@ public class Saml2ResponseValidator {
     protected void validateAssertionSignature(final Signature signature, final ExtendedSAMLMessageContext context,
             final SignatureTrustEngine engine) {
 
-        SAMLSelfEntityContext selfContext = context.getSubcontext(SAMLSelfEntityContext.class);
-        SAMLPeerEntityContext peerContext = context.getSubcontext(SAMLPeerEntityContext.class);
+        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
+        final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
 
-        QName role = selfContext.getRole();
+        final QName role = selfContext.getRole();
         if (signature != null) {
             String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
@@ -526,14 +526,14 @@ public class Saml2ResponseValidator {
     protected void validateSignature(final Signature signature, final String idpEntityId,
             final SignatureTrustEngine trustEngine) {
 
-        SAMLSignatureProfileValidator validator = new SAMLSignatureProfileValidator();
+        final SAMLSignatureProfileValidator validator = new SAMLSignatureProfileValidator();
         try {
             validator.validate(signature);
         } catch (SignatureException e) {
             throw new SamlException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
-        CriteriaSet criteriaSet = new CriteriaSet();
+        final CriteriaSet criteriaSet = new CriteriaSet();
         criteriaSet.add(new UsageCriterion(UsageType.SIGNING));
         criteriaSet.add(new EntityRoleCriterion(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
         criteriaSet.add(new ProtocolCriterion(SAMLConstants.SAML20P_NS));

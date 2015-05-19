@@ -217,7 +217,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     private MetadataResolver generateServiceProviderMetadata() {
-        Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
+        final Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
         if (this.credentialProvider != null) {
             metadataGenerator.setCredentialProvider(this.credentialProvider);
             metadataGenerator.setAuthnRequestSigned(true);
@@ -252,7 +252,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     @Override
     protected BaseClient<Saml2Credentials, Saml2Profile> newClient() {
-        Saml2Client client = new Saml2Client();
+        final Saml2Client client = new Saml2Client();
         client.setKeystorePath(this.keystorePath);
         client.setKeystorePassword(this.keystorePassword);
         client.setPrivateKeyPassword(this.privateKeyPassword);
@@ -301,7 +301,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // assertion consumer url is pac4j callback url
         context.setAssertionConsumerUrl(getCallbackUrl());
 
-        SignatureTrustEngine trustEngine = this.signatureTrustEngineProvider.build();
+        final SignatureTrustEngine trustEngine = this.signatureTrustEngineProvider.build();
 
         this.handler.receiveMessage(context, trustEngine);
 
@@ -390,19 +390,19 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
 
-        NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
-        Assertion subjectAssertion = context.getSubjectAssertion();
+        final NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
+        final Assertion subjectAssertion = context.getSubjectAssertion();
 
-        List<Attribute> attributes = new ArrayList<Attribute>();
-        for (AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
-            for (Attribute attribute : attributeStatement.getAttributes()) {
+        final List<Attribute> attributes = new ArrayList<Attribute>();
+        for (final AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
+            for (final Attribute attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
             }
             if (attributeStatement.getEncryptedAttributes().size() > 0) {
                 if (decrypter == null) {
                     logger.warn("Encrypted attributes returned, but no keystore was provided.");
                 } else {
-                    for (EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
+                    for (final EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
                         try {
                             attributes.add(decrypter.decrypt(encryptedAttribute));
                         } catch (DecryptionException e) {
@@ -419,13 +419,13 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     @Override
     protected Saml2Profile retrieveUserProfile(final Saml2Credentials credentials, final WebContext context) {
 
-        Saml2Profile profile = new Saml2Profile();
+        final Saml2Profile profile = new Saml2Profile();
         profile.setId(credentials.getNameId().getValue());
-        for (Attribute attribute : credentials.getAttributes()) {
-            List<String> values = new ArrayList<String>();
-            for (XMLObject attributeValue : attribute.getAttributeValues()) {
-                Element attributeValueElement = attributeValue.getDOM();
-                String value = attributeValueElement.getTextContent();
+        for (final Attribute attribute : credentials.getAttributes()) {
+            final List<String> values = new ArrayList<String>();
+            for (final XMLObject attributeValue : attribute.getAttributeValues()) {
+                final Element attributeValueElement = attributeValue.getDOM();
+                final String value = attributeValueElement.getTextContent();
                 values.add(value);
             }
             profile.addAttribute(attribute.getName(), values);
@@ -435,8 +435,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     @Override
-    protected String getStateParameter(WebContext webContext) {
-        String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
+    protected String getStateParameter(final WebContext webContext) {
+        final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
         return (relayState == null) ? getContextualCallbackUrl(webContext) : relayState;
     }
 
@@ -473,7 +473,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         this.privateKeyPassword = privateKeyPassword;
     }
 
-    public void setMaximumAuthenticationLifetime(Integer maximumAuthenticationLifetime) {
+    public void setMaximumAuthenticationLifetime(final Integer maximumAuthenticationLifetime) {
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
 
@@ -492,7 +492,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     /**
      * @param forceAuth the forceAuth to set
      */
-    public void setForceAuth(boolean forceAuth) {
+    public void setForceAuth(final boolean forceAuth) {
         this.forceAuth = forceAuth;
     }
 
@@ -506,7 +506,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     /**
      * @param comparisonType the comparisonType to set
      */
-    public void setComparisonType(String comparisonType) {
+    public void setComparisonType(final String comparisonType) {
         this.comparisonType = comparisonType;
     }
 
@@ -520,7 +520,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     /**
      * @param destinationBindingType the destinationBindingType to set
      */
-    public void setDestinationBindingType(String destinationBindingType) {
+    public void setDestinationBindingType(final String destinationBindingType) {
         this.destinationBindingType = destinationBindingType;
     }
 
@@ -534,7 +534,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     /**
      * @param authnContextClassRef the authnContextClassRef to set
      */
-    public void setAuthnContextClassRef(String authnContextClassRef) {
+    public void setAuthnContextClassRef(final String authnContextClassRef) {
         this.authnContextClassRef = authnContextClassRef;
     }
 
@@ -548,7 +548,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     /**
      * @param nameIdPolicyFormat the nameIdPolicyFormat to set
      */
-    public void setNameIdPolicyFormat(String nameIdPolicyFormat) {
+    public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 

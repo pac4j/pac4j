@@ -37,11 +37,6 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
     }
 
     @Override
-    public void setMessageContext(MessageContext<SAMLObject> context) {
-        super.setMessageContext(context);
-    }
-
-    @Override
     protected void populateBindingContext(MessageContext<SAMLObject> messageContext) {
         super.populateBindingContext(messageContext);
 

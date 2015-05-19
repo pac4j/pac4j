@@ -89,7 +89,7 @@ public class Saml2WebSSOProfileHandler {
         final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
         final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
 
-        SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
+        final SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
 
         final MessageEncoder encoder = getMessageEncoder(context);
 

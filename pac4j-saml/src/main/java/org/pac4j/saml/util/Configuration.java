@@ -36,10 +36,10 @@ public final class Configuration {
         parserPool.setIgnoreComments(true);
         parserPool.setNamespaceAware(true);
 
-        Map<String, Object> builderAttributes = new HashMap<String, Object>();
+        final Map<String, Object> builderAttributes = new HashMap<String, Object>();
         parserPool.setBuilderAttributes(builderAttributes);
 
-        Map<String, Boolean> features = new HashMap<String, Boolean>();
+        final Map<String, Boolean> features = new HashMap<String, Boolean>();
         features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
         features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
         features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
