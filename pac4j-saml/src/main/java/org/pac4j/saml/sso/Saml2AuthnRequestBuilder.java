@@ -65,11 +65,13 @@ public class Saml2AuthnRequestBuilder {
     }
 
     /**
-     * @param forceAuth
-     * @param comparisonType
-     * @param bindingType
-     * @param authnContextClassRef
-     * @param nameIdPolicyFormat
+     * Instantiates a new Saml 2 authn request builder.
+     *
+     * @param forceAuth the force auth
+     * @param comparisonType the comparison type
+     * @param bindingType the binding type
+     * @param authnContextClassRef the authn context class ref
+     * @param nameIdPolicyFormat the name id policy format
      */
     public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType, 
             String authnContextClassRef, String nameIdPolicyFormat) {
