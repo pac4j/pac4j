@@ -20,6 +20,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.junit.Test;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -34,6 +35,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import org.pac4j.saml.util.Configuration;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
 
@@ -68,9 +70,8 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected void updateContextForAuthn(WebClient webClient, HtmlPage authorizationPage, MockWebContext context)
+    protected void updateContextForAuthn(WebClient webClient, HtmlPage authorizationPage, J2EContext context)
             throws Exception {
-        final MockWebContext mockWebContext = context;
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("j_username");
         email.setValueAttribute("myself");
@@ -80,10 +81,12 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         final HtmlPage callbackPage = submit.click();
         String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
         String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
-        mockWebContext.addRequestParameter("SAMLResponse", samlResponse);
-        mockWebContext.addRequestParameter("RelayState", relayState);
-        mockWebContext.setRequestMethod("POST");
-        mockWebContext.setFullRequestURL(callbackPage.getForms().get(0).getActionAttribute());
+
+        MockHttpServletRequest request = (MockHttpServletRequest)context.getRequest();
+        request.addParameter("SAMLResponse", samlResponse);
+        request.addParameter("RelayState", relayState);
+        request.setMethod("POST");
+        request.setRequestURI(callbackPage.getForms().get(0).getActionAttribute());
     }
 
     @Override

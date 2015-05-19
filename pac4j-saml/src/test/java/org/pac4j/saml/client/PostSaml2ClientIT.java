@@ -31,10 +31,12 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.File;
 import java.net.URL;
@@ -43,12 +45,14 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
 
     @Override
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
-            final MockWebContext context) throws Exception {
+            final J2EContext context) throws Exception {
         // force immediate redirection for tests
         client.redirect(context, true, false);
         File redirectFile = File.createTempFile("pac4j-saml2", ".html");
         FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
-        writer.write(context.getResponseContent());
+
+        MockHttpServletResponse response = (MockHttpServletResponse) context.getResponse();
+        writer.write(response.getContentAsString());
         writer.close();
         logger.debug("redirectPage path : {}", redirectFile.getPath());
         final HtmlPage redirectPage = webClient.getPage(redirectFile.toURI().toURL());

@@ -23,6 +23,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -43,6 +45,8 @@ import org.slf4j.LoggerFactory;
 import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * This class is the generic test case for client.
@@ -81,7 +85,7 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
         try {
             final Client client = getClient();
 
-            final MockWebContext context = MockWebContext.create();
+            final J2EContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
             final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
 
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
@@ -125,11 +129,11 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
     }
 
     // Default implementation use getCallbackUrl method
-    protected void updateContextForAuthn(WebClient webClient, HtmlPage redirectionPage, MockWebContext context)
+    protected void updateContextForAuthn(WebClient webClient, HtmlPage redirectionPage, J2EContext context)
             throws Exception {
         final String callbackUrl = getCallbackUrl(webClient, redirectionPage);
-        final MockWebContext mockWebContext = context;
-        mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
+        final MockHttpServletRequest request = (MockHttpServletRequest) context.getRequest();
+        request.addParameters(TestsHelper.getParametersFromUrl(callbackUrl));
     }
 
     protected void registerForKryo(final Kryo kryo) {
@@ -141,12 +145,12 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
 
     protected abstract Client getClient();
 
-    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client, final MockWebContext context)
+    protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client, final J2EContext context)
             throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
         baseClient.redirect(context, true, false);
-        final String redirectionUrl = context.getResponseLocation();
+        final String redirectionUrl = context.getResponse().getHeader(HttpConstants.LOCATION_HEADER);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         final HtmlPage loginPage = webClient.getPage(redirectionUrl);
         return loginPage;
@@ -198,7 +202,7 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
         if (isCancellable()) {
             final Client client = getClient();
 
-            final MockWebContext context = MockWebContext.create();
+            final J2EContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
             final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
 
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);

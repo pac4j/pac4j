@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.UserProfile;
@@ -19,6 +21,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * Strava integration test. It performs authentication on Strava and retrieves a StravaProfile.
@@ -50,11 +53,13 @@ public class StravaClientIT extends OAuthClientIT {
 
     @Override
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
-            final MockWebContext context) throws Exception {
+            final J2EContext context) throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
         baseClient.redirect(context, true, false);
-        final String redirectionUrl = context.getResponseLocation();
+
+        MockHttpServletResponse response = (MockHttpServletResponse) context.getResponse();
+        final String redirectionUrl = response.getHeader(HttpConstants.LOCATION_HEADER);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         final HtmlPage loginPage = webClient.getPage(redirectionUrl);
 
