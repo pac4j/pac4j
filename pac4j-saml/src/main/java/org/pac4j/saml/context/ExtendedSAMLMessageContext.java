@@ -29,6 +29,7 @@ import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
+import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
@@ -38,7 +39,10 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.transport.SimpleRequestAdapter;
+import org.pac4j.saml.transport.SimpleResponseAdapter;
 
 /**
  * Allow to store additional information for SAML processing.
@@ -48,6 +52,14 @@ import org.pac4j.saml.exceptions.SamlException;
  */
 @SuppressWarnings("rawtypes")
 public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
+
+    public ExtendedSAMLMessageContext() {
+
+    }
+
+    public ExtendedSAMLMessageContext(MessageContext<SAMLObject> ctx) {
+        super.setParent(ctx);
+    }
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
@@ -209,5 +221,17 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
 
     public SAMLProtocolContext getSAMLSelfProtocolContext() {
         return this.getSAMLSelfEntityContext().getSubcontext(SAMLProtocolContext.class, true);
+    }
+
+    public SimpleResponseAdapter getProfileRequestContextOutboundMessageTransportResponse() {
+        return (SimpleResponseAdapter) getProfileRequestContext().getOutboundMessageContext().getMessage();
+    }
+
+    public SimpleRequestAdapter getProfileRequestContextInboundMessageTransportRequest() {
+        return (SimpleRequestAdapter) getProfileRequestContext().getInboundMessageContext().getMessage();
+    }
+
+    public SAMLEndpointContext getSAMLEndpointContext() {
+        return this.getSubcontext(SAMLEndpointContext.class, true);
     }
 }

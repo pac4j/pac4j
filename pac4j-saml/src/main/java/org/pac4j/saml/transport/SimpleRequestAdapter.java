@@ -16,8 +16,11 @@
 
 package org.pac4j.saml.transport;
 
-import org.opensaml.messaging.context.MessageContext;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Basic RequestAdapter returning an inputStream from the input content of
@@ -27,23 +30,38 @@ import org.pac4j.core.context.WebContext;
  * @since 1.5.0
  *
  */
-public class SimpleRequestAdapter extends MessageContext<SimpleRequestAdapter> {
+public class SimpleRequestAdapter extends HttpServletRequestWrapper {
+    private HttpServletRequest request;
+    private J2EContext context;
 
-    private final WebContext wc;
 
-    public WebContext getWebContext() {
-        return wc;
+    public SimpleRequestAdapter(J2EContext request) {
+        super(request.getRequest());
     }
 
-    public SimpleRequestAdapter(final WebContext wc) {
-        this.wc = wc;
+    @Override
+    public HttpServletRequest getRequest() {
+        return request;
     }
 
-    public String getHTTPMethod() {
-        return wc.getRequestMethod();
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    public J2EContext getContext() {
+        return context;
+    }
+
+    public void setContext(J2EContext context) {
+        this.context = context;
+    }
+
+    @Override
+    public String getMethod() {
+        return getContext().getRequestMethod();
     }
 
     public String getParameterValue(final String arg0) {
-        return wc.getRequestParameter(arg0);
+        return getContext().getRequestParameter(arg0);
     }
 }

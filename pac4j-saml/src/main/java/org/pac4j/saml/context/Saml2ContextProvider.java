@@ -33,6 +33,7 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.transport.SimpleRequestAdapter;
@@ -90,17 +91,18 @@ public class Saml2ContextProvider {
 
     protected void addTransportContext(final WebContext webContext, final ExtendedSAMLMessageContext context) {
 
-        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(webContext);
+        final J2EContext j2EContext = (J2EContext) webContext;
+        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(j2EContext);
         final MessageContext<SimpleRequestAdapter> inCtx = new MessageContext<SimpleRequestAdapter>();
         inCtx.setMessage(inTransport);
 
-        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter();
+        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter(j2EContext);
         final MessageContext<SimpleResponseAdapter> outCtx = new MessageContext<SimpleResponseAdapter>();
         outCtx.setMessage(outTransport);
 
         final ProfileRequestContext profile = context.getProfileRequestContext();
         profile.setInboundMessageContext(inCtx);
-        profile.setInboundMessageContext(outCtx);
+        profile.setOutboundMessageContext(outCtx);
     }
 
     protected void addSPContext(final ExtendedSAMLMessageContext context) {

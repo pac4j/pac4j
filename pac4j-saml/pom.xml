@@ -162,6 +162,11 @@
             <artifactId>xmltooling</artifactId>
             <version>1.4.4</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- for testing -->
         <dependency>
@@ -196,6 +201,13 @@
             <artifactId>kryo</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- for testing -->
     </dependencies>
 
