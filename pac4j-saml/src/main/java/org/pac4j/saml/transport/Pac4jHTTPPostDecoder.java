@@ -17,14 +17,11 @@
 package org.pac4j.saml.transport;
 
 import net.shibboleth.utilities.java.support.xml.ParserPool;
-import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
-import org.opensaml.saml.common.messaging.context.SAMLEndpointContext;
 import org.opensaml.saml.saml1.binding.decoding.impl.HTTPPostDecoder;
 import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 
 /**
  * Extends {@link HTTPPostDecoder} to override getActualReceiverEndpointURI() because we
@@ -49,13 +46,11 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
     protected void populateBindingContext(MessageContext<SAMLObject> messageContext) {
         super.populateBindingContext(messageContext);
 
-        InOutOperationContext ctx = messageContext.getSubcontext(InOutOperationContext.class);
-        if (!(ctx.getInboundMessageContext() instanceof SimpleRequestAdapter)) {
-            throw new RuntimeException("Message context InTransport instance was an unsupported type");
-        }
-        WebContext webContext = ((SimpleRequestAdapter) ctx.getInboundMessageContext()).getWebContext();
-        Endpoint intendedEndpoint = messageContext.getSubcontext(SAMLEndpointContext.class).getEndpoint();
-        intendedEndpoint.setLocation(webContext.getFullRequestURL());
+        final ExtendedSAMLMessageContext ctx = new ExtendedSAMLMessageContext(messageContext);
+        final SimpleRequestAdapter adapter = ctx.getProfileRequestContextInboundMessageTransportRequest();
+
+        final Endpoint intendedEndpoint = ctx.getSAMLEndpointContext().getEndpoint();
+        intendedEndpoint.setLocation(adapter.getContext().getFullRequestURL());
 
     }
 }

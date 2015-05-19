@@ -26,9 +26,12 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.TestsConstants;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -44,11 +47,13 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
     public void testCustomSpEntityIdForRedirectBinding() throws Exception {
         Saml2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
-        WebContext context = MockWebContext.create();
+
+        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation())
-                .contains(
-                        "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
+        final String inflated = getInflatedAuthnRequest(action.getLocation());
+        System.out.println(inflated);
+        assertTrue(inflated.contains(
+                "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
     }
 
     @Test
@@ -119,6 +124,12 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
         ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
         InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        return reader.readLine();
+        String line;
+        StringBuilder bldr = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            bldr.append(line);
+        }
+
+        return bldr.toString();
     }
 }

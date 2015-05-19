@@ -16,13 +16,14 @@
 
 package org.pac4j.saml.transport;
 
-import org.opensaml.messaging.context.MessageContext;
-import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.security.credential.Credential;
+import org.pac4j.core.context.J2EContext;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 
 /**
@@ -33,28 +34,49 @@ import java.util.List;
  * @since 1.5.0
  *
  */
-public class SimpleResponseAdapter extends MessageContext<SAMLObject> {
-
-    private final OutputStream outputStream = new ByteArrayOutputStream();
-
+public class SimpleResponseAdapter extends HttpServletResponseWrapper {
+    private ServletOutputStream outputStream = new Pac4jServletOutputStream();
     private String redirectUrl;
+
+    /**
+     * Constructs a response adaptor wrapping the given response.
+     *
+     * @param response
+     * @throws IllegalArgumentException if the response is null
+     */
+    public SimpleResponseAdapter(J2EContext response) {
+        super(response.getResponse());
+    }
 
     public String getOutgoingContent() {
         return outputStream.toString();
     }
 
-    public OutputStream getOutgoingStream() {
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
         return outputStream;
     }
 
+    @Override
     public void sendRedirect(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
-    /**
-     * @return the redirectUrl
-     */
     public String getRedirectUrl() {
         return this.redirectUrl;
+    }
+
+
+    private static class Pac4jServletOutputStream extends ServletOutputStream {
+        private final OutputStream outputStream = new ByteArrayOutputStream();
+
+        @Override
+        public void write(int b) throws IOException {
+            outputStream.write(b);
+        }
+
+        public String getOutgoingContent() {
+            return outputStream.toString();
+        }
     }
 }

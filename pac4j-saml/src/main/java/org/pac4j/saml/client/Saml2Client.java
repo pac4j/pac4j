@@ -16,13 +16,6 @@
 
 package org.pac4j.saml.client;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import net.shibboleth.ext.spring.resource.ResourceHelper;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -31,19 +24,16 @@ import net.shibboleth.utilities.java.support.resource.Resource;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.apache.velocity.app.VelocityEngine;
-
-
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.messaging.decoder.MessageDecoder;
 import org.opensaml.messaging.encoder.MessageEncoder;
-import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
-
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.saml2.binding.encoding.impl.BaseSAML2MessageEncoder;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.Assertion;
@@ -55,12 +45,12 @@ import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-
-import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.opensaml.xmlsec.encryption.support.DecryptionException;
+import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -87,6 +77,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
@@ -167,16 +164,14 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         // Build the contextProvider
         this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
-
         // Get an AuthnRequest builder
         this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType,
                 authnContextClassRef, nameIdPolicyFormat);
 
-        final MessageEncoder encoder = getMessageEncoder();
         // Do we need binding specific decoder?
         final MessageDecoder decoder = getMessageDecoder();
 
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, encoder, decoder, Configuration.getParserPool(),
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, decoder, Configuration.getParserPool(),
                 destinationBindingType);
 
         // Build provider for digital signature validation and encryption
@@ -255,22 +250,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return decoder;
     }
 
-    private MessageEncoder getMessageEncoder() {
-        // Build the WebSSO handler for sending and receiving SAML2 messages
-        MessageEncoder encoder = null;
-        if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
-            // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
-            VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
-            encoder = new HTTPPostEncoder();
-        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            encoder = new HTTPRedirectDeflateEncoder();
-        } else {
-            throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported");
-        }
-
-        return encoder;
-    }
-
     @Override
     protected BaseClient<Saml2Credentials, Saml2Profile> newClient() {
         Saml2Client client = new Saml2Client();
@@ -305,12 +284,12 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
         this.handler.sendMessage(context, authnRequest, relayState);
 
-        ProfileRequestContext inOutCtx = context.getProfileRequestContext();
+        final SimpleResponseAdapter adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
         if (destinationBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            final String content = ((SimpleResponseAdapter) inOutCtx.getInboundMessageContext()).getOutgoingContent();
+            final String content = adapter.getOutgoingContent();
             return RedirectAction.success(content);
         }
-        final String location = ((SimpleResponseAdapter) inOutCtx.getOutboundMessageContext()).getRedirectUrl();
+        final String location = adapter.getRedirectUrl();
         return RedirectAction.redirect(location);
 
     }
