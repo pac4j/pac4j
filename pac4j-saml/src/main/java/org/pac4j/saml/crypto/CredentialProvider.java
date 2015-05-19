@@ -31,6 +31,10 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
+import org.opensaml.security.x509.X509Credential;
+import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
+import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
+import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SamlException;
 import org.slf4j.Logger;
@@ -60,12 +64,33 @@ public class CredentialProvider {
         this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
     }
 
+    public KeyInfo getKeyInfo() {
+        final Credential serverCredential = getCredential();
+        final KeyInfo keyInfo = generateKeyInfoForCredential(serverCredential);
+        return keyInfo;
+    }
+
+    protected KeyInfo generateKeyInfoForCredential(final Credential credential) {
+        try {
+            final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
+            factory.setEmitKeyNames(true);
+            factory.setEmitEntityIDAsKeyName(true);
+            factory.setEmitPublicDEREncodedKeyValue(true);
+            factory.setEmitPublicKeyValue(true);
+            final KeyInfoGenerator keyInfoGenerator = factory.newInstance();
+            return keyInfoGenerator.generate(credential);
+        } catch (org.opensaml.security.SecurityException e) {
+            throw new SamlException("Unable to generate keyInfo from given credential", e);
+        }
+    }
+
     public Credential getCredential() {
         try {
             final CriteriaSet cs = new CriteriaSet();
             final EntityIdCriterion criteria = new EntityIdCriterion(this.privateKey);
             cs.add(criteria);
-            return this.credentialResolver.resolveSingle(cs);
+            final X509Credential creds = (X509Credential) this.credentialResolver.resolveSingle(cs);
+            return creds;
         } catch (ResolverException e) {
             throw new SamlException("Can't obtain SP private key", e);
         }

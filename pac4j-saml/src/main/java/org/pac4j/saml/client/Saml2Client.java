@@ -238,6 +238,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                 }
             }
             metadataGenerator.setEntityId(this.spEntityId);
+            metadataGenerator.setRequestInitiatorLocation(this.getCallbackUrl());
             // Assertion consumer service url is the callback url
             metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
             // for now same for logout url
