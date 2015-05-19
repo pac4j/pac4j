@@ -273,7 +273,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<skipTests>true</skipTests>
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>
