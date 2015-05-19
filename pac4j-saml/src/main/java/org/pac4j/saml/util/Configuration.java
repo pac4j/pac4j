@@ -16,7 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * OpenSAML configuration bean to bootstrap the parser pool.
  * @author Misagh Moayyed
+ * @since 1.7
  */
 public final class Configuration {
     private static BasicParserPool parserPool;
