@@ -50,16 +50,20 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
-import org.pac4j.saml.context.Saml2ContextProvider;
+import org.pac4j.saml.context.SAML2ContextProvider;
+import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.Saml2Credentials;
 import org.pac4j.saml.crypto.CredentialProvider;
-import org.pac4j.saml.crypto.EncryptionProvider;
-import org.pac4j.saml.crypto.SignatureTrustEngineProvider;
-import org.pac4j.saml.exceptions.SamlException;
-import org.pac4j.saml.metadata.Saml2MetadataGenerator;
+import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
+import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
+import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
+import org.pac4j.saml.crypto.SAMLSignatureTrustEngineProvider;
+import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.profile.Saml2Profile;
-import org.pac4j.saml.sso.Saml2AuthnRequestBuilder;
-import org.pac4j.saml.sso.Saml2ResponseValidator;
+import org.pac4j.saml.sso.AuthnRequestBuilder;
+import org.pac4j.saml.sso.SAML2AuthnRequestBuilder;
+import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.sso.Saml2WebSSOProfileHandler;
 import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
@@ -119,15 +123,15 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private CredentialProvider credentialProvider;
 
-    private Saml2ContextProvider contextProvider;
+    private SAMLContextProvider contextProvider;
 
-    private Saml2AuthnRequestBuilder authnRequestBuilder;
+    private AuthnRequestBuilder authnRequestBuilder;
 
     private Saml2WebSSOProfileHandler handler;
 
-    private Saml2ResponseValidator responseValidator;
+    private SAML2ResponseValidator responseValidator;
 
-    private SignatureTrustEngineProvider signatureTrustEngineProvider;
+    private SAMLSignatureTrustEngineProvider signatureTrustEngineProvider;
 
     private Decrypter decrypter;
 
@@ -170,19 +174,19 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         final ChainingMetadataResolver metadataManager = getChainingMetadataResolver(idpMetadataProvider, spMetadataProvider);
 
         // Build the contextProvider
-        this.contextProvider = new Saml2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
+        this.contextProvider = new SAML2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new Saml2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType,
+        this.authnRequestBuilder = new SAML2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType,
                 authnContextClassRef, nameIdPolicyFormat);
 
         // Do we need binding specific decoder?
         final MessageDecoder decoder = getMessageDecoder();
 
         // Build provider for digital signature validation and encryption
-        this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
 
         // Build the SAML response validator
-        this.responseValidator = new Saml2ResponseValidator();
+        this.responseValidator = new SAML2ResponseValidator();
         if (this.maximumAuthenticationLifetime != null) {
             this.responseValidator.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
         }
@@ -199,9 +203,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
 
             // load private key from the keystore and provide it as OpenSAML credentials
-            this.credentialProvider = new CredentialProvider(this.keystorePath, this.keystorePassword,
+            this.credentialProvider = new KeyStoreCredentialProvider(this.keystorePath, this.keystorePassword,
                     this.privateKeyPassword);
-            this.decrypter = new EncryptionProvider(this.credentialProvider).buildDecrypter();
+            this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();
         }
     }
 
@@ -224,7 +228,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private MetadataResolver generateServiceProviderMetadata() {
         try {
-            final Saml2MetadataGenerator metadataGenerator = new Saml2MetadataGenerator();
+            final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
             if (this.credentialProvider != null) {
                 metadataGenerator.setCredentialProvider(this.credentialProvider);
                 metadataGenerator.setAuthnRequestSigned(true);
@@ -244,10 +248,10 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             metadataGenerator.setAssertionConsumerServiceUrl(getCallbackUrl());
             // for now same for logout url
             metadataGenerator.setSingleLogoutServiceUrl(getCallbackUrl());
-            final MetadataResolver spMetadataProvider = metadataGenerator.buildMetadataProvider();
+            final MetadataResolver spMetadataProvider = metadataGenerator.buildMetadataResolver();
 
             // Initialize metadata provider for our SP and get the XML as a String
-            this.spMetadata = metadataGenerator.printMetadata();
+            this.spMetadata = metadataGenerator.getMetadata();
             if (this.spMeadataPath != null) {
 
                 final File file = new File(this.spMeadataPath);
@@ -312,7 +316,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
 
-        final ExtendedSAMLMessageContext context = this.contextProvider.buildSpAndIdpContext(wc);
+        final ExtendedSAMLMessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
         final AuthnRequest authnRequest = this.authnRequestBuilder.build(context);
@@ -332,7 +336,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     @Override
     protected Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
 
-        final ExtendedSAMLMessageContext context = this.contextProvider.buildSpContext(wc);
+        final ExtendedSAMLMessageContext context = this.contextProvider.buildServiceProviderContext(wc);
         // assertion consumer url is pac4j callback url
         context.setAssertionConsumerUrl(getCallbackUrl());
 
@@ -391,11 +395,11 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             }
 
             if (this.idpEntityId == null) {
-                throw new SamlException("No idp entityId found");
+                throw new SAMLException("No idp entityId found");
             }
 
         } catch (ComponentInitializationException e) {
-            throw new SamlException("Error initializing idpMetadataProvider", e);
+            throw new SAMLException("Error initializing idpMetadataProvider", e);
         } catch (XMLParserException e) {
             throw new TechnicalException("Error parsing idp Metadata", e);
         } catch (IOException e) {
@@ -408,7 +412,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         try {
             return idpMetadataProvider.resolveSingle(new CriteriaSet(new EntityIdCriterion(entityId)));
         } catch (ResolverException e) {
-            throw new SamlException("Error initializing idpMetadataProvider", e);
+            throw new SAMLException("Error initializing idpMetadataProvider", e);
         }
     }
 
@@ -420,7 +424,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         } else if (md instanceof EntityDescriptor) {
             return ((EntityDescriptor) md).getEntityID();
         }
-        throw new SamlException("No idp entityId found");
+        throw new SAMLException("No idp entityId found");
     }
 
     private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {

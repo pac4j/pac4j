@@ -39,7 +39,8 @@ public class Saml2Credentials extends Credentials {
     
     private final Conditions conditions;
 
-    public Saml2Credentials(final NameID nameId, final List<Attribute> attributes, Conditions conditions, final String clientName) {
+    public Saml2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
+                            final String clientName) {
         this.nameId = nameId;
         this.attributes = attributes;
         this.conditions = conditions;

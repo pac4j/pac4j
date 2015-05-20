@@ -20,10 +20,8 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.messaging.context.BaseContext;
-import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
-import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
@@ -35,7 +33,7 @@ import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.transport.SimpleRequestAdapter;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.slf4j.Logger;
@@ -52,9 +50,9 @@ import java.util.List;
  * @since 1.5.0
  */
 @SuppressWarnings("rawtypes")
-public class Saml2ContextProvider {
+public class SAML2ContextProvider implements SAMLContextProvider {
 
-    protected final static Logger logger = LoggerFactory.getLogger(Saml2ContextProvider.class);
+    protected final static Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
     protected MetadataResolver metadata;
 
@@ -62,30 +60,26 @@ public class Saml2ContextProvider {
 
     protected String spEntityId;
 
-    public Saml2ContextProvider(final MetadataResolver metadata, final String idpEntityId, final String spEntityId) {
+    public SAML2ContextProvider(final MetadataResolver metadata,
+                                final String idpEntityId, final String spEntityId) {
         this.metadata = metadata;
         this.idpEntityId = idpEntityId;
         this.spEntityId = spEntityId;
     }
 
-    public ExtendedSAMLMessageContext buildSpContext(final WebContext webContext) {
-
-        ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
-        context.setMetadataProvider(this.metadata);
-        addTransportContext(webContext, context);
-        addSPContext(context);
-
-        return context;
-    }
-
-    public ExtendedSAMLMessageContext buildSpAndIdpContext(final WebContext webContext) {
-
+    @Override
+    public ExtendedSAMLMessageContext buildServiceProviderContext(final WebContext webContext) {
         final ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
         context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
-        addIDPContext(context);
+        return context;
+    }
 
+    @Override
+    public ExtendedSAMLMessageContext buildContext(final WebContext webContext) {
+        final ExtendedSAMLMessageContext context = buildServiceProviderContext(webContext);
+        addIDPContext(context);
         return context;
     }
 
@@ -130,19 +124,19 @@ public class Saml2ContextProvider {
 
             entityDescriptor = this.metadata.resolveSingle(set);
             if (entityDescriptor == null) {
-                throw new SamlException("Cannot find entity " + entityId + " in metadata provider");
+                throw new SAMLException("Cannot find entity " + entityId + " in metadata provider");
             }
             final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
             roleDescriptor = (list != null && !list.isEmpty()) ? list.get(0) : null;
 
             if (roleDescriptor == null) {
-                throw new SamlException("Cannot find entity " + entityId + " or role "
+                throw new SAMLException("Cannot find entity " + entityId + " or role "
                         + elementName + " in metadata provider");
             }
 
         } catch (ResolverException e) {
-            throw new SamlException("An error occured while getting IDP descriptors", e);
+            throw new SAMLException("An error occured while getting IDP descriptors", e);
         }
         final SAMLMetadataContext mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);
         mdCtx.setEntityDescriptor(entityDescriptor);

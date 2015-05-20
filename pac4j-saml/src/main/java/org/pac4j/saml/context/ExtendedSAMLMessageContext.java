@@ -35,7 +35,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
-import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.transport.SimpleRequestAdapter;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 
@@ -99,7 +99,7 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
                 return service;
             }
         }
-        throw new SamlException("Identity provider has no single sign on service available for the selected profile"
+        throw new SAMLException("Identity provider has no single sign on service available for the selected profile"
                 + getIDPSSODescriptor());
     }
 
@@ -119,7 +119,7 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
                     return service;
                 }
             }
-            throw new SamlException("Assertion consumer service with index " + acsIndex
+            throw new SAMLException("Assertion consumer service with index " + acsIndex
                     + " could not be found for spDescriptor " + spssoDescriptor);
         }
 
@@ -133,7 +133,7 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
             return services.iterator().next();
         }
 
-        throw new SamlException("No assertion consumer services could be found for " + spssoDescriptor);
+        throw new SAMLException("No assertion consumer services could be found for " + spssoDescriptor);
     }
 
     public ProfileRequestContext getProfileRequestContext() {

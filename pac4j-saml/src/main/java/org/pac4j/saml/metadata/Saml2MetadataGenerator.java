@@ -16,19 +16,16 @@
 
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
-import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.ext.saml2alg.DigestMethod;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-import org.opensaml.saml.saml2.binding.artifact.SAML2ArtifactType0004;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -37,21 +34,15 @@ import org.opensaml.saml.saml2.metadata.KeyDescriptor;
 import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
-import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xml.util.XMLHelper;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.crypto.CredentialProvider;
-import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -62,9 +53,9 @@ import java.util.LinkedList;
  * @since 1.5.0
  */
 @SuppressWarnings("unchecked")
-public class Saml2MetadataGenerator {
+public class SAML2MetadataGenerator implements MetadataGenerator {
 
-    protected final static Logger logger = LoggerFactory.getLogger(Saml2MetadataGenerator.class);
+    protected final static Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
 
     protected XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
@@ -86,8 +77,9 @@ public class Saml2MetadataGenerator {
 
     protected String requestInitiatorLocation = null;
 
-    public MetadataResolver buildMetadataProvider() throws ComponentInitializationException, MarshallingException {
-        final EntityDescriptor md = buildMetadata();
+    @Override
+    public MetadataResolver buildMetadataResolver() throws Exception {
+        final EntityDescriptor md = buildEntityDescriptor();
         final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
         final DOMMetadataResolver resolver = new DOMMetadataResolver(entityDescriptorElement);
         resolver.setRequireValidMetadata(true);
@@ -97,13 +89,15 @@ public class Saml2MetadataGenerator {
         return resolver;
     }
 
-    public String printMetadata() throws MarshallingException {
-        final EntityDescriptor md = buildMetadata();
+    @Override
+    public String getMetadata() throws Exception {
+        final EntityDescriptor md = buildEntityDescriptor();
         final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
         return XMLHelper.nodeToString(entityDescriptorElement);
     }
 
-    public EntityDescriptor buildMetadata() {
+    @Override
+    public EntityDescriptor buildEntityDescriptor() {
         final SAMLObjectBuilder<EntityDescriptor> builder = (
                 SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
                 .getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);

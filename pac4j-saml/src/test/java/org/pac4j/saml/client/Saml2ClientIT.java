@@ -31,7 +31,7 @@ import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.Saml2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -74,7 +74,7 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     protected void updateContextForAuthn(WebClient webClient, HtmlPage authorizationPage, J2EContext context)
             throws Exception {
         if (authorizationPage.getForms().isEmpty()) {
-            throw new SamlException("Authorization page " + authorizationPage.getUrl() + " does not produce any forms");
+            throw new SAMLException("Authorization page " + authorizationPage.getUrl() + " does not produce any forms");
         }
 
         final HtmlForm form = authorizationPage.getForms().get(0);
