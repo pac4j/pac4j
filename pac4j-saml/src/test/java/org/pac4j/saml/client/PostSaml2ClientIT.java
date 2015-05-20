@@ -32,7 +32,6 @@ import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
@@ -40,6 +39,7 @@ import org.pac4j.saml.exceptions.SamlException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.URL;
 
@@ -130,5 +130,12 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
     @Override
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         throw new NotImplementedException("No callback url in SAML2 POST Binding");
+    }
+
+    @Override
+    protected HttpServletRequest getHttpServletRequest() {
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setMethod("POST");
+        return request;
     }
 }

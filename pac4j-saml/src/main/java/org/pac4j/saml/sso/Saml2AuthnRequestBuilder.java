@@ -16,6 +16,7 @@
 
 package org.pac4j.saml.sso;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.messaging.context.MessageContext;
@@ -37,6 +38,7 @@ import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.util.Configuration;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -57,6 +59,8 @@ public class Saml2AuthnRequestBuilder {
     private String authnContextClassRef = null;
 
     private String nameIdPolicyFormat = null;
+
+    private int issueInstantSkewSeconds = 0;
 
     /**
      * Default constructor
@@ -110,11 +114,11 @@ public class Saml2AuthnRequestBuilder {
             request.setRequestedAuthnContext(authnContext);
         }
 
-        SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
+        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
 
         request.setID(generateID());
         request.setIssuer(getIssuer(selfContext.getEntityId()));
-        request.setIssueInstant(new DateTime());
+        request.setIssueInstant(DateTime.now().plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIsPassive(false);
         request.setForceAuthn(this.forceAuth);
@@ -143,8 +147,7 @@ public class Saml2AuthnRequestBuilder {
     }
 
     protected String generateID() {
-        Random r = new Random();
-        return '_' + Long.toString(Math.abs(r.nextLong()), 16) + Long.toString(Math.abs(r.nextLong()), 16);
+        return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
     }
 
     protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
@@ -161,5 +164,9 @@ public class Saml2AuthnRequestBuilder {
             return AuthnContextComparisonTypeEnumeration.BETTER;
         }
         return null;
+    }
+
+    public void setIssueInstantSkewSeconds(int issueInstantSkewSeconds) {
+        this.issueInstantSkewSeconds = issueInstantSkewSeconds;
     }
 }

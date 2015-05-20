@@ -17,6 +17,7 @@
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.io.MarshallerFactory;
@@ -174,21 +175,9 @@ public class Saml2MetadataGenerator {
         return extensions;
     }
 
-
     protected String generateEntityDescriptorId() {
         try {
-            final MessageDigest messageDigest = MessageDigest.getInstance("SHA");
-            messageDigest.update(this.entityId.getBytes("8859_1"));
-            final byte[] sourceIdDigest = messageDigest.digest();
-
-            final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            final byte[] handle = new byte[20];
-            random.nextBytes(handle);
-
-            byte[] ENDPOINT_ID = {0, 1};
-            final String id = new SAML2ArtifactType0004(ENDPOINT_ID, handle, sourceIdDigest).base64Encode();
-
-            return id;
+            return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }

@@ -103,6 +103,7 @@ public class Saml2ContextProvider {
         final ProfileRequestContext profile = context.getProfileRequestContext();
         profile.setInboundMessageContext(inCtx);
         profile.setOutboundMessageContext(outCtx);
+        context.getSAMLProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
     }
 
     protected void addSPContext(final ExtendedSAMLMessageContext context) {

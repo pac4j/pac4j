@@ -48,6 +48,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * This class is the generic test case for client.
  * 
@@ -85,7 +88,7 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
         try {
             final Client client = getClient();
 
-            final J2EContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+            final J2EContext context = getJ2EContext();
             final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
 
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);
@@ -126,6 +129,18 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
         } finally {
             ProfileHelper.setKeepRawData(false);
         }
+    }
+
+    protected J2EContext getJ2EContext() {
+        return new J2EContext(getHttpServletRequest(), getHttpServletResponse());
+    }
+
+    protected HttpServletRequest getHttpServletRequest() {
+        return new MockHttpServletRequest();
+    }
+
+    protected HttpServletResponse getHttpServletResponse() {
+        return new MockHttpServletResponse();
     }
 
     // Default implementation use getCallbackUrl method
@@ -202,7 +217,7 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
         if (isCancellable()) {
             final Client client = getClient();
 
-            final J2EContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+            final J2EContext context = getJ2EContext();
             final WebClient webClient = TestsHelper.newWebClient(isJavascriptEnabled());
 
             final HtmlPage redirectionPage = getRedirectionPage(webClient, client, context);

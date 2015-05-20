@@ -19,6 +19,7 @@ package org.pac4j.saml.transport;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -31,9 +32,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  *
  */
 public class SimpleRequestAdapter extends HttpServletRequestWrapper {
-    private HttpServletRequest request;
     private J2EContext context;
-
 
     public SimpleRequestAdapter(final J2EContext request) {
         super(request.getRequest());
@@ -41,11 +40,7 @@ public class SimpleRequestAdapter extends HttpServletRequestWrapper {
 
     @Override
     public HttpServletRequest getRequest() {
-        return request;
-    }
-
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
+        return (HttpServletRequest) super.getRequest();
     }
 
     public J2EContext getContext() {

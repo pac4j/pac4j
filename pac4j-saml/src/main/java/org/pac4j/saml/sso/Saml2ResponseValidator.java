@@ -508,7 +508,7 @@ public class Saml2ResponseValidator {
 
         final QName role = selfContext.getRole();
         if (signature != null) {
-            String entityId = peerContext.getEntityId();
+            final String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
         } else if (((SPSSODescriptor) role).getWantAssertionsSigned()
                 && !peerContext.isAuthenticated()) {

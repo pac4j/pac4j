@@ -32,8 +32,10 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.security.x509.X509Credential;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
+import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SamlException;
@@ -70,15 +72,28 @@ public class CredentialProvider {
         return keyInfo;
     }
 
+    public CredentialResolver getCredentialResolver() {
+        return credentialResolver;
+    }
+
+    public KeyInfoCredentialResolver getKeyInfoCredentialResolver() {
+        final KeyInfoCredentialResolver resolver = new
+                StaticKeyInfoCredentialResolver(this.getCredential());
+        return resolver;
+    }
+
+    public KeyInfoGenerator getKeyInfoGenerator() {
+        final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
+        factory.setEmitKeyNames(true);
+        factory.setEmitEntityIDAsKeyName(true);
+        factory.setEmitPublicDEREncodedKeyValue(true);
+        factory.setEmitPublicKeyValue(true);
+        return factory.newInstance();
+    }
+
     protected KeyInfo generateKeyInfoForCredential(final Credential credential) {
         try {
-            final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
-            factory.setEmitKeyNames(true);
-            factory.setEmitEntityIDAsKeyName(true);
-            factory.setEmitPublicDEREncodedKeyValue(true);
-            factory.setEmitPublicKeyValue(true);
-            final KeyInfoGenerator keyInfoGenerator = factory.newInstance();
-            return keyInfoGenerator.generate(credential);
+            return getKeyInfoGenerator().generate(credential);
         } catch (org.opensaml.security.SecurityException e) {
             throw new SamlException("Unable to generate keyInfo from given credential", e);
         }

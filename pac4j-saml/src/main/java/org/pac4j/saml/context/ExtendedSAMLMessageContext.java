@@ -16,9 +16,6 @@
 
 package org.pac4j.saml.context;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.SAMLObject;
@@ -29,7 +26,6 @@ import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
-import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
@@ -39,10 +35,12 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.saml.exceptions.SamlException;
 import org.pac4j.saml.transport.SimpleRequestAdapter;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Allow to store additional information for SAML processing.
@@ -95,8 +93,8 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
     }
 
     public SingleSignOnService getIDPSingleSignOnService(final String binding) {
-        List<SingleSignOnService> services = getIDPSSODescriptor().getSingleSignOnServices();
-        for (SingleSignOnService service : services) {
+        final List<SingleSignOnService> services = getIDPSSODescriptor().getSingleSignOnServices();
+        for (final SingleSignOnService service : services) {
             if (service.getBinding().equals(binding)) {
                 return service;
             }
@@ -153,7 +151,6 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
     public SAMLMetadataContext getSAMLPeerMetadataContext() {
         return getSAMLPeerEntityContext().getSubcontext(SAMLMetadataContext.class, true);
     }
-
 
     public SAMLMetadataContext getSAMLMetadataContext() {
         return this.getSubcontext(SAMLMetadataContext.class, true);
@@ -221,6 +218,10 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
 
     public SAMLProtocolContext getSAMLSelfProtocolContext() {
         return this.getSAMLSelfEntityContext().getSubcontext(SAMLProtocolContext.class, true);
+    }
+
+    public SAMLProtocolContext getSAMLProtocolContext() {
+        return this.getSubcontext(SAMLProtocolContext.class, true);
     }
 
     public SimpleResponseAdapter getProfileRequestContextOutboundMessageTransportResponse() {
