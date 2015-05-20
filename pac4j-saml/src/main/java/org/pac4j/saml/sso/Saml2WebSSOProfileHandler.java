@@ -31,7 +31,6 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.binding.encoding.impl.BaseSAML2MessageEncoder;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
-import org.opensaml.saml.saml2.binding.security.impl.SAML2HTTPPostSimpleSignSecurityHandler;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -44,14 +43,12 @@ import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.crypto.CredentialProvider;
-import org.pac4j.saml.crypto.SignatureTrustEngineProvider;
-import org.pac4j.saml.exceptions.SamlException;
-import org.pac4j.saml.util.Configuration;
+import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
+import org.pac4j.saml.crypto.SAMLSignatureTrustEngineProvider;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Handler capable of sending and receiving SAML messages according to the SAML2 SSO Browser profile.
@@ -66,7 +63,7 @@ public class Saml2WebSSOProfileHandler {
 
     private final CredentialProvider credentialProvider;
 
-    private final SignatureTrustEngineProvider signatureTrustEngineProvider;
+    private final SAMLSignatureTrustEngineProvider signatureTrustEngineProvider;
 
     private final MessageDecoder decoder;
 
@@ -80,7 +77,7 @@ public class Saml2WebSSOProfileHandler {
     public Saml2WebSSOProfileHandler(final CredentialProvider credentialProvider,
                                      final MessageDecoder decoder, final ParserPool parserPool,
                                      final String destinationBindingType,
-                                     final SignatureTrustEngineProvider trustEngineProvider) {
+                                     final SAMLSignatureTrustEngineProvider trustEngineProvider) {
         this.credentialProvider = credentialProvider;
         this.decoder = decoder;
         this.parserPool = parserPool;
@@ -105,8 +102,10 @@ public class Saml2WebSSOProfileHandler {
 
         final ExtendedSAMLMessageContext outboundContext = new ExtendedSAMLMessageContext(context);
         outboundContext.getProfileRequestContext().setProfileId(SAML2_WEBSSO_PROFILE_URI);
-        outboundContext.getProfileRequestContext().setInboundMessageContext(context.getProfileRequestContext().getInboundMessageContext());
-        outboundContext.getProfileRequestContext().setOutboundMessageContext(context.getProfileRequestContext().getOutboundMessageContext());
+        outboundContext.getProfileRequestContext().setInboundMessageContext(
+                context.getProfileRequestContext().getInboundMessageContext());
+        outboundContext.getProfileRequestContext().setOutboundMessageContext(
+                context.getProfileRequestContext().getOutboundMessageContext());
 
         outboundContext.setMessage(authnRequest);
         outboundContext.getSAMLPeerEndpointContext().setEndpoint(ssoService);
@@ -135,9 +134,9 @@ public class Saml2WebSSOProfileHandler {
             encoder.prepareContext();
             encoder.encode();
         } catch (final MessageEncodingException e) {
-            throw new SamlException("Error encoding saml message", e);
+            throw new SAMLException("Error encoding saml message", e);
         } catch (ComponentInitializationException e) {
-            throw new SamlException("Error initializing saml encoder", e);
+            throw new SAMLException("Error initializing saml encoder", e);
         }
 
     }
@@ -207,12 +206,12 @@ public class Saml2WebSSOProfileHandler {
             SAMLMessageSecuritySupport.getContextSigningParameters(context).setKeyInfoGenerator(keyInfoGenerator);
             decoder.decode();
         } catch (MessageDecodingException e) {
-            throw new SamlException("Error decoding saml message", e);
+            throw new SAMLException("Error decoding saml message", e);
         }
 
         final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
         if (metadata == null) {
-            throw new SamlException("IDP Metadata cannot be null");
+            throw new SAMLException("IDP Metadata cannot be null");
         }
 
         peerContext.setEntityId(metadata.getEntityID());

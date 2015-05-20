@@ -30,14 +30,15 @@ import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngin
  * @author Michael Remond
  * @since 1.5.0
  */
-public class SignatureTrustEngineProvider {
+public class ExplicitSignatureTrustEngineProvider implements SAMLSignatureTrustEngineProvider {
 
     private final MetadataResolver metadataResolver;
 
-    public SignatureTrustEngineProvider(final MetadataResolver metadataResolver) {
+    public ExplicitSignatureTrustEngineProvider(final MetadataResolver metadataResolver) {
         this.metadataResolver = metadataResolver;
     }
 
+    @Override
     public SignatureTrustEngine build() {
         final MetadataCredentialResolver metadataCredentialResolver = new MetadataCredentialResolver();
         final BasicRoleDescriptorResolver roleResolver = new BasicRoleDescriptorResolver(metadataResolver);

@@ -22,7 +22,7 @@ pac4j has the default maximum time set to 1 hour while ADFS has it set to 8 hour
 an assertion which is still valid on ADFS side but evaluated as invalid on pac4j side.
 
 You can see the following error message:
-org.pac4j.saml.exceptions.SamlException: Authentication issue instant is too old or in the future
+org.pac4j.saml.exceptions.SAMLException: Authentication issue instant is too old or in the future
 
 There are two possibilities how to make the values equal:
 - Change the value in ADFS management console in the trust properties dialog.

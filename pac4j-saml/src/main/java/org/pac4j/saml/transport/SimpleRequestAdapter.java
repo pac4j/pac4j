@@ -19,7 +19,6 @@ package org.pac4j.saml.transport;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 

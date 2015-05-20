@@ -55,7 +55,7 @@ import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
-import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,9 +73,9 @@ import java.util.Set;
  * @since 1.5.0
  *
  */
-public class Saml2ResponseValidator {
+public class SAML2ResponseValidator {
 
-    private final static Logger logger = LoggerFactory.getLogger(Saml2ResponseValidator.class);
+    private final static Logger logger = LoggerFactory.getLogger(SAML2ResponseValidator.class);
 
     /* maximum skew in seconds between SP and IDP clocks */
     private int acceptedSkew = 120;
@@ -97,7 +97,7 @@ public class Saml2ResponseValidator {
         final MessageContext<SAMLObject> message = context.getSubcontext(InOutOperationContext.class).getInboundMessageContext();
 
         if (!(message instanceof Response)) {
-            throw new SamlException("Response instance is an unsupported type");
+            throw new SAMLException("Response instance is an unsupported type");
         }
         final Response response = (Response) message.getMessage();
 
@@ -126,7 +126,7 @@ public class Saml2ResponseValidator {
             final SignatureTrustEngine engine) {
 
         if (!isIssueInstantValid(response.getIssueInstant())) {
-            throw new SamlException("Response issue instant is too old or in the future");
+            throw new SAMLException("Response issue instant is too old or in the future");
         }
 
         // TODO add Destination and inResponseTo Validation
@@ -140,7 +140,7 @@ public class Saml2ResponseValidator {
             if (response.getStatus().getStatusMessage() != null) {
                 status += " / " + response.getStatus().getStatusMessage().getMessage();
             }
-            throw new SamlException("Authentication response is not success ; actual " + status);
+            throw new SAMLException("Authentication response is not success ; actual " + status);
         }
 
         if (response.getSignature() != null) {
@@ -167,7 +167,7 @@ public class Saml2ResponseValidator {
             if (assertion.getAuthnStatements().size() > 0) {
                 try {
                     validateAssertion(assertion, context, engine, decrypter);
-                } catch (final SamlException e) {
+                } catch (final SAMLException e) {
                     logger.error("Current assertion validation failed, continue with the next one", e);
                     continue;
                 }
@@ -177,7 +177,7 @@ public class Saml2ResponseValidator {
         }
 
         if (context.getSubjectAssertion() == null) {
-            throw new SamlException("No valid subject assertion found in response");
+            throw new SAMLException("No valid subject assertion found in response");
         }
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
@@ -185,7 +185,7 @@ public class Saml2ResponseValidator {
         final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class).getSubjectNameIdentifier();
         if ((nameIdentifier.getValue() == null) && (context.getBaseID() == null)
                 && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
-            throw new SamlException(
+            throw new SAMLException(
                     "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
         }
     }
@@ -217,12 +217,12 @@ public class Saml2ResponseValidator {
      */
     protected void validateIssuer(final Issuer issuer, final ExtendedSAMLMessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
-            throw new SamlException("Issuer type is not entity but " + issuer.getFormat());
+            throw new SAMLException("Issuer type is not entity but " + issuer.getFormat());
         }
 
         final String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
         if (!entityId.equals(issuer.getValue())) {
-            throw new SamlException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
+            throw new SAMLException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
     }
 
@@ -244,7 +244,7 @@ public class Saml2ResponseValidator {
             final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         if (!isIssueInstantValid(assertion.getIssueInstant())) {
-            throw new SamlException("Assertion issue instant is too old or in the future");
+            throw new SAMLException("Assertion issue instant is too old or in the future");
         }
 
         validateIssuer(assertion.getIssuer(), context);
@@ -252,7 +252,7 @@ public class Saml2ResponseValidator {
         if (assertion.getSubject() != null) {
             validateSubject(assertion.getSubject(), context, decrypter);
         } else {
-            throw new SamlException("Assertion subject cannot be null");
+            throw new SAMLException("Assertion subject cannot be null");
         }
 
         validateAssertionConditions(assertion.getConditions(), context);
@@ -335,7 +335,7 @@ public class Saml2ResponseValidator {
             }
         }
 
-        throw new SamlException("Subject confirmation validation failed");
+        throw new SAMLException("Subject confirmation validation failed");
     }
 
     /**
@@ -346,9 +346,9 @@ public class Saml2ResponseValidator {
      * 
      * @return Decrypted ID or {@code null} if any input is {@code null}.
      * 
-     * @throws SamlException If the input ID cannot be decrypted.
+     * @throws SAMLException If the input ID cannot be decrypted.
      */
-    private NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SamlException {
+    private NameID decryptEncryptedId(final EncryptedID encryptedId, final Decrypter decrypter) throws SAMLException {
         if (encryptedId == null) {
             return null;
         }
@@ -361,7 +361,7 @@ public class Saml2ResponseValidator {
             final NameID decryptedId = (NameID) decrypter.decrypt(encryptedId);
             return decryptedId;
         } catch (DecryptionException e) {
-            throw new SamlException("Decryption of an EncryptedID failed.", e);
+            throw new SAMLException("Decryption of an EncryptedID failed.", e);
         }
     }
 
@@ -423,18 +423,18 @@ public class Saml2ResponseValidator {
     protected void validateAssertionConditions(final Conditions conditions, final ExtendedSAMLMessageContext context) {
 
         if (conditions == null) {
-            throw new SamlException("Assertion conditions cannot be null");
+            throw new SAMLException("Assertion conditions cannot be null");
         }
 
         if (conditions.getNotBefore() != null) {
             if (conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {
-                throw new SamlException("Assertion condition notBefore is not valid");
+                throw new SAMLException("Assertion condition notBefore is not valid");
             }
         }
 
         if (conditions.getNotOnOrAfter() != null) {
             if (conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
-                throw new SamlException("Assertion condition notOnOrAfter is not valid");
+                throw new SAMLException("Assertion condition notOnOrAfter is not valid");
             }
         }
 
@@ -453,7 +453,7 @@ public class Saml2ResponseValidator {
             final String spEntityId) {
 
         if (audienceRestrictions == null || audienceRestrictions.size() == 0) {
-            throw new SamlException("Audience restrictions cannot be null or empty");
+            throw new SAMLException("Audience restrictions cannot be null or empty");
         }
 
         final Set<String> audienceUris = new HashSet<String>();
@@ -465,7 +465,7 @@ public class Saml2ResponseValidator {
             }
         }
         if (!audienceUris.contains(spEntityId)) {
-            throw new SamlException("Assertion audience " + audienceUris + " does not match SP configuration "
+            throw new SAMLException("Assertion audience " + audienceUris + " does not match SP configuration "
                     + spEntityId);
         }
     }
@@ -483,10 +483,10 @@ public class Saml2ResponseValidator {
 
         for (AuthnStatement statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
-                throw new SamlException("Authentication issue instant is too old or in the future");
+                throw new SAMLException("Authentication issue instant is too old or in the future");
             }
             if (statement.getSessionNotOnOrAfter() != null && statement.getSessionNotOnOrAfter().isBeforeNow()) {
-                throw new SamlException("Authentication session between IDP and subject has ended");
+                throw new SAMLException("Authentication session between IDP and subject has ended");
             }
             // TODO implement authnContext validation
         }
@@ -512,7 +512,7 @@ public class Saml2ResponseValidator {
             validateSignature(signature, entityId, engine);
         } else if (((SPSSODescriptor) role).getWantAssertionsSigned()
                 && !peerContext.isAuthenticated()) {
-            throw new SamlException("Assertion or response must be signed");
+            throw new SAMLException("Assertion or response must be signed");
         }
     }
 
@@ -530,7 +530,7 @@ public class Saml2ResponseValidator {
         try {
             validator.validate(signature);
         } catch (SignatureException e) {
-            throw new SamlException("SAMLSignatureProfileValidator failed to validate signature", e);
+            throw new SAMLException("SAMLSignatureProfileValidator failed to validate signature", e);
         }
 
         final CriteriaSet criteriaSet = new CriteriaSet();
@@ -543,10 +543,10 @@ public class Saml2ResponseValidator {
         try {
             valid = trustEngine.validate(signature, criteriaSet);
         } catch (SecurityException e) {
-            throw new SamlException("An error occured during signature validation", e);
+            throw new SAMLException("An error occured during signature validation", e);
         }
         if (!valid) {
-            throw new SamlException("Signature is not trusted");
+            throw new SAMLException("Signature is not trusted");
         }
     }
 

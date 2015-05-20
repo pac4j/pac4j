@@ -38,9 +38,6 @@ import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.util.Configuration;
 
-import java.security.SecureRandom;
-import java.util.Random;
-
 /**
  * Build a SAML2 Authn Request from the given {@link MessageContext}.
  * 
@@ -48,7 +45,7 @@ import java.util.Random;
  * @since 1.5.0
  */
 @SuppressWarnings("rawtypes")
-public class Saml2AuthnRequestBuilder {
+public class SAML2AuthnRequestBuilder implements AuthnRequestBuilder {
 
     private boolean forceAuth;
 
@@ -62,11 +59,7 @@ public class Saml2AuthnRequestBuilder {
 
     private int issueInstantSkewSeconds = 0;
 
-    /**
-     * Default constructor
-     */
-    public Saml2AuthnRequestBuilder() {
-    }
+    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     /**
      * Instantiates a new Saml 2 authn request builder.
@@ -77,8 +70,8 @@ public class Saml2AuthnRequestBuilder {
      * @param authnContextClassRef the authn context class ref
      * @param nameIdPolicyFormat the name id policy format
      */
-    public Saml2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType, 
-            String authnContextClassRef, String nameIdPolicyFormat) {
+    public SAML2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType,
+                                    String authnContextClassRef, String nameIdPolicyFormat) {
         this.forceAuth = forceAuth;
         this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
         this.bindingType = bindingType;
@@ -86,8 +79,7 @@ public class Saml2AuthnRequestBuilder {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
-    private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-
+    @Override
     public AuthnRequest build(final ExtendedSAMLMessageContext context) {
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService();

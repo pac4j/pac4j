@@ -35,7 +35,7 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.saml.exceptions.SamlException;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -59,7 +59,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         logger.debug("redirectPage path : {}", redirectFile.getPath());
         final HtmlPage redirectPage = webClient.getPage(redirectFile.toURI().toURL());
         if (redirectPage.getForms().isEmpty()) {
-            throw new SamlException("Page " + redirectPage.getUrl() + " did not produce a form");
+            throw new SAMLException("Page " + redirectPage.getUrl() + " did not produce a form");
         }
         final HtmlForm form = redirectPage.getForms().get(0);
 
@@ -72,7 +72,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
         WebClient webClient = new WebClient();
         HtmlPage page = HTMLParser.parseHtml(response, webClient.getCurrentWindow());
         if (page.getForms().isEmpty()) {
-            throw new SamlException("Page " + page.getUrl() + " did not produce a form");
+            throw new SAMLException("Page " + page.getUrl() + " did not produce a form");
         }
         HtmlForm form = page.getForms().get(0);
         HtmlInput samlRequest = form.getInputByName("SAMLRequest");
