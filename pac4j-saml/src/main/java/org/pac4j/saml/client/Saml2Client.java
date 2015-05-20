@@ -23,19 +23,14 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.resource.Resource;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
-import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.messaging.decoder.MessageDecoder;
-import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-import org.opensaml.saml.saml2.binding.encoding.impl.BaseSAML2MessageEncoder;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AttributeStatement;
@@ -50,7 +45,6 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
-import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -70,7 +64,6 @@ import org.pac4j.saml.sso.Saml2WebSSOProfileHandler;
 import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.pac4j.saml.util.Configuration;
-import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -78,11 +71,18 @@ import org.springframework.core.io.FileSystemResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +145,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private String spMeadataPath;
 
+    private boolean forceSpMetadataGeneration;
+
     @Override
     protected void internalInit() {
 
@@ -176,9 +178,6 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Do we need binding specific decoder?
         final MessageDecoder decoder = getMessageDecoder();
 
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, decoder, Configuration.getParserPool(),
-                destinationBindingType);
-
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new SignatureTrustEngineProvider(metadataManager);
 
@@ -188,6 +187,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             this.responseValidator.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
         }
 
+        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, decoder, Configuration.getParserPool(),
+                destinationBindingType, this.signatureTrustEngineProvider);
     }
 
     private void initialCredentialProviderAndDecryption() {
@@ -248,10 +249,23 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             // Initialize metadata provider for our SP and get the XML as a String
             this.spMetadata = metadataGenerator.printMetadata();
             if (this.spMeadataPath != null) {
-                logger.info("Writing sp metadata to {}", this.spMeadataPath);
-                FileWriter writer = new FileWriter(this.spMeadataPath);
-                writer.write(this.spMetadata);
-                writer.close();
+
+                final File file = new File(this.spMeadataPath);
+                if (file.exists() && !this.forceSpMetadataGeneration) {
+                    logger.info("Metadata file already exists at {}.", this.spMeadataPath);
+                } else {
+                    logger.info("Writing sp metadata to {}", this.spMeadataPath);
+
+                    final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+                    StreamResult result = new StreamResult(new StringWriter());
+                    final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
+                    transformer.transform(source, result);
+                    final FileWriter writer = new FileWriter(this.spMeadataPath);
+                    writer.write(result.getWriter().toString());
+                    writer.close();
+                }
             }
             return spMetadataProvider;
         } catch (ComponentInitializationException e) {
@@ -260,6 +274,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             logger.warn("Unable to marshal SP metadata", e);
         } catch (IOException e) {
             logger.warn("Unable to print SP metadata", e);
+        } catch (Exception e) {
+            logger.warn("Unable to transform metadata", e);
         }
         return null;
     }
@@ -336,7 +352,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             InputStream in;
 
             if (idpMetadataPath != null) {
-                Resource resource = null;
+                Resource resource;
                 if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
                     String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
                     if (!path.startsWith("/")) {
@@ -589,5 +605,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     public void setSpMeadataPath(final String spMeadataPath) {
         this.spMeadataPath = spMeadataPath;
+    }
+
+    public void setForceSpMetadataGeneration(boolean forceSpMetadataGeneration) {
+        this.forceSpMetadataGeneration = forceSpMetadataGeneration;
     }
 }

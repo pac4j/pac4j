@@ -16,6 +16,7 @@
 
 package org.pac4j.saml.util;
 
+import net.shibboleth.utilities.java.support.velocity.SLF4JLogChute;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.JdkLogChute;
@@ -38,12 +39,14 @@ public class VelocityEngineFactory {
 
             final Properties props =
                     new Properties(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
-            final VelocityEngine velocityEngine = net.shibboleth.utilities.java.support.velocity.VelocityEngine
+            props.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
+            props.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
+            props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+            props.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, SLF4JLogChute.class.getName());
+
+            final VelocityEngine velocityEngine =
+                    net.shibboleth.utilities.java.support.velocity.VelocityEngine
                     .newVelocityEngine(props);
-            velocityEngine.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
-            velocityEngine.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
-            velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-            velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new JdkLogChute());
             return velocityEngine;
         } catch (Exception e) {
             throw new TechnicalException("Error configuring velocity", e);
