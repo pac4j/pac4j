@@ -107,7 +107,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
 
     @Override
     protected String getCallbackUrl() {
-        return "http://localhost:8080/callback?client_name=SAML2Client";
+        return "http://localhost:8080/callback?client_name=" + SAML2Client.class.getSimpleName();
     }
 
     @Override
