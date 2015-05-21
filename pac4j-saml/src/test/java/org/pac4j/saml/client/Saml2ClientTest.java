@@ -32,10 +32,6 @@ import org.pac4j.saml.util.Configuration;
  */
 public class SAML2ClientTest {
 
-    static {
-        Configuration.bootstrap();
-    }
-
     @Test
     public void testIdpMetadataParsing_fromString() throws IOException {
         SAML2Client client = new SAML2Client();

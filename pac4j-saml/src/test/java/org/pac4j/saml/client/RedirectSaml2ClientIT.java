@@ -40,7 +40,11 @@ import java.util.List;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsConstants {
+public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsConstants {
+
+    public RedirectSAML2ClientIT() {
+        super();
+    }
 
     @Test
     public void testCustomSpEntityIdForRedirectBinding() throws Exception {
