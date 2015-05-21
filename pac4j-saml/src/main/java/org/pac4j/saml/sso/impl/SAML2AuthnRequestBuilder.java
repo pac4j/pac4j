@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-package org.pac4j.saml.sso;
+package org.pac4j.saml.sso.impl;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
@@ -36,6 +36,7 @@ import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
 
 /**
@@ -44,8 +45,8 @@ import org.pac4j.saml.util.Configuration;
  * @author Michael Remond
  * @since 1.5.0
  */
-@SuppressWarnings("rawtypes")
-public class SAML2AuthnRequestBuilder implements AuthnRequestBuilder {
+
+public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
 
     private boolean forceAuth;
 

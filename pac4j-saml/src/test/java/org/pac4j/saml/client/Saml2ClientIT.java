@@ -17,6 +17,7 @@
 package org.pac4j.saml.client;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -46,7 +47,7 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
 
     @Test
     public void testSPMetadata() {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         String spMetadata = client.printClientMetadata();
         assertTrue(spMetadata.contains("entityID=\"" + client.getSpEntityId() + "\""));
         assertTrue(spMetadata
@@ -56,7 +57,7 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
 
     @Test
     public void testCustomSpEntityId() {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
         String spMetadata = client.printClientMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
@@ -84,14 +85,18 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         password.setValueAttribute("myself");
         final HtmlSubmitInput submit = form.getInputByValue("Login");
         final HtmlPage callbackPage = submit.click();
-        String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
-        String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
+        try {
+            String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
+            String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
 
-        MockHttpServletRequest request = (MockHttpServletRequest)context.getRequest();
-        request.addParameter("SAMLResponse", samlResponse);
-        request.addParameter("RelayState", relayState);
-        request.setMethod("POST");
-        request.setRequestURI(callbackPage.getForms().get(0).getActionAttribute());
+            MockHttpServletRequest request = (MockHttpServletRequest) context.getRequest();
+            request.addParameter("SAMLResponse", samlResponse);
+            request.addParameter("RelayState", relayState);
+            request.setMethod("POST");
+            request.setRequestURI(callbackPage.getForms().get(0).getActionAttribute());
+        } catch (ElementNotFoundException e) {
+            throw new SAMLException("Saml response and/or relay state not found", e);
+        }
     }
 
     @Override
@@ -121,8 +126,8 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected Saml2Client getClient() {
-        final Saml2Client saml2Client = new Saml2Client();
+    protected SAML2Client getClient() {
+        final SAML2Client saml2Client = new SAML2Client();
         saml2Client.setKeystorePath("resource:samlKeystore.jks");
         saml2Client.setKeystorePassword("pac4j-demo-passwd");
         saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");

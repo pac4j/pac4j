@@ -26,22 +26,15 @@ import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
-import org.opensaml.messaging.decoder.MessageDecoder;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Attribute;
-import org.opensaml.saml.saml2.core.AttributeStatement;
 import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.opensaml.saml.saml2.core.EncryptedAttribute;
-import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.opensaml.xmlsec.encryption.support.DecryptionException;
-import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
@@ -54,18 +47,23 @@ import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.Saml2Credentials;
 import org.pac4j.saml.crypto.CredentialProvider;
+import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
+import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
-import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.SAMLSignatureTrustEngineProvider;
+import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
+import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataGenerator;
 import org.pac4j.saml.profile.Saml2Profile;
-import org.pac4j.saml.sso.AuthnRequestBuilder;
-import org.pac4j.saml.sso.SAML2AuthnRequestBuilder;
+import org.pac4j.saml.sso.SAML2ObjectBuilder;
+import org.pac4j.saml.sso.SAML2ProfileHandler;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
-import org.pac4j.saml.sso.Saml2WebSSOProfileHandler;
-import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
+import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
+import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
+import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
+import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
+import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
@@ -99,9 +97,9 @@ import java.util.function.Consumer;
  * @author Michael Remond
  * @since 1.5.0
  */
-public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
+public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
-    protected static final Logger logger = LoggerFactory.getLogger(Saml2Client.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
@@ -125,13 +123,15 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     private SAMLContextProvider contextProvider;
 
-    private AuthnRequestBuilder authnRequestBuilder;
+    private SAML2ObjectBuilder<AuthnRequest> saml2ObjectBuilder;
 
-    private Saml2WebSSOProfileHandler handler;
+    private SignatureSigningParametersProvider signatureSigningParametersProvider;
+
+    private SAML2ProfileHandler handler;
 
     private SAML2ResponseValidator responseValidator;
 
-    private SAMLSignatureTrustEngineProvider signatureTrustEngineProvider;
+    private SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
     private Decrypter decrypter;
 
@@ -176,23 +176,24 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(metadataManager, this.idpEntityId, this.spEntityId);
         // Get an AuthnRequest builder
-        this.authnRequestBuilder = new SAML2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType,
+        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(forceAuth, comparisonType, destinationBindingType,
                 authnContextClassRef, nameIdPolicyFormat);
-
-        // Do we need binding specific decoder?
-        final MessageDecoder decoder = getMessageDecoder();
 
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
 
-        // Build the SAML response validator
-        this.responseValidator = new SAML2ResponseValidator();
-        if (this.maximumAuthenticationLifetime != null) {
-            this.responseValidator.setMaximumAuthenticationLifetime(this.maximumAuthenticationLifetime);
-        }
 
-        this.handler = new Saml2WebSSOProfileHandler(this.credentialProvider, decoder, Configuration.getParserPool(),
-                destinationBindingType, this.signatureTrustEngineProvider);
+        // Build the SAML response validator
+        this.responseValidator = new SAML2DefaultResponseValidator(
+                this.signatureTrustEngineProvider,
+                this.decrypter,
+                this.maximumAuthenticationLifetime);
+
+
+        this.handler = new SAML2WebSSOProfileHandler(
+                new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider, this.destinationBindingType, false),
+                new SAML2WebSSOMessageReceiver(this.responseValidator, this.credentialProvider));
+
     }
 
     private void initialCredentialProviderAndDecryption() {
@@ -206,6 +207,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             this.credentialProvider = new KeyStoreCredentialProvider(this.keystorePath, this.keystorePassword,
                     this.privateKeyPassword);
             this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();
+            this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(this.credentialProvider);
         }
     }
 
@@ -284,14 +286,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return null;
     }
 
-    private MessageDecoder getMessageDecoder() {
-        final MessageDecoder decoder = new Pac4jHTTPPostDecoder(Configuration.getParserPool());
-        return decoder;
-    }
-
     @Override
     protected BaseClient<Saml2Credentials, Saml2Profile> newClient() {
-        final Saml2Client client = new Saml2Client();
+        final SAML2Client client = new SAML2Client();
         client.setKeystorePath(this.keystorePath);
         client.setKeystorePassword(this.keystorePassword);
         client.setPrivateKeyPassword(this.privateKeyPassword);
@@ -319,9 +316,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         final ExtendedSAMLMessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
-        final AuthnRequest authnRequest = this.authnRequestBuilder.build(context);
-
-        this.handler.sendMessage(context, authnRequest, relayState);
+        final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
+        this.handler.send(context, authnRequest, relayState);
 
         final SimpleResponseAdapter adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
         if (destinationBindingType.equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
@@ -335,19 +331,9 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     @Override
     protected Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
-
         final ExtendedSAMLMessageContext context = this.contextProvider.buildServiceProviderContext(wc);
-        // assertion consumer url is pac4j callback url
         context.setAssertionConsumerUrl(getCallbackUrl());
-
-        final SignatureTrustEngine trustEngine = this.signatureTrustEngineProvider.build();
-
-        this.handler.receiveMessage(context, trustEngine);
-
-        this.responseValidator.validateSamlResponse(context, trustEngine, decrypter);
-
-        return buildSaml2Credentials(context);
-
+        return (Saml2Credentials) this.handler.receive(context);
     }
 
     protected MetadataResolver generateIdentityProviderMetadata(ParserPool parserPool) {
@@ -387,8 +373,8 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
                 idpMetadataProvider.forEach(new Consumer<EntityDescriptor>() {
                     @Override
                     public void accept(final EntityDescriptor entityDescriptor) {
-                        if (Saml2Client.this.idpEntityId == null) {
-                            Saml2Client.this.idpEntityId = entityDescriptor.getEntityID();
+                        if (SAML2Client.this.idpEntityId == null) {
+                            SAML2Client.this.idpEntityId = entityDescriptor.getEntityID();
                         }
                     }
                 });
@@ -427,33 +413,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         throw new SAMLException("No idp entityId found");
     }
 
-    private Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
 
-        final NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
-        final Assertion subjectAssertion = context.getSubjectAssertion();
-
-        final List<Attribute> attributes = new ArrayList<Attribute>();
-        for (final AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
-            for (final Attribute attribute : attributeStatement.getAttributes()) {
-                attributes.add(attribute);
-            }
-            if (attributeStatement.getEncryptedAttributes().size() > 0) {
-                if (decrypter == null) {
-                    logger.warn("Encrypted attributes returned, but no keystore was provided.");
-                } else {
-                    for (final EncryptedAttribute encryptedAttribute : attributeStatement.getEncryptedAttributes()) {
-                        try {
-                            attributes.add(decrypter.decrypt(encryptedAttribute));
-                        } catch (DecryptionException e) {
-                            logger.warn("Decryption of attribute failed, continue with the next one", e);
-                        }
-                    }
-                }
-            }
-        }
-
-        return new Saml2Credentials(nameId, attributes, subjectAssertion.getConditions(), getName());
-    }
 
     @Override
     protected Saml2Profile retrieveUserProfile(final Saml2Credentials credentials, final WebContext context) {

@@ -30,7 +30,7 @@ import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngin
  * @author Michael Remond
  * @since 1.5.0
  */
-public class ExplicitSignatureTrustEngineProvider implements SAMLSignatureTrustEngineProvider {
+public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrustEngineProvider {
 
     private final MetadataResolver metadataResolver;
 

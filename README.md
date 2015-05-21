@@ -335,7 +335,7 @@ To use Yahoo and OpenID for authentication, you should use the *org.pac4j.openid
 
 ### SAML support
 
-For integrating an application with a SAML2 Identity Provider server, you should use the *org.pac4j.saml.client.Saml2Client*:
+For integrating an application with a SAML2 Identity Provider server, you should use the *org.pac4j.saml.client.SAML2Client*:
 
     //Generate a keystore for all signature and encryption stuff:
     keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
