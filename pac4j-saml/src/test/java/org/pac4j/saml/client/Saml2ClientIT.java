@@ -52,7 +52,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     @Test
     public void testSPMetadata() {
         SAML2Client client = getClient();
-        String spMetadata = client.printClientMetadata();
+        String spMetadata = client.getSpMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"" + client.getSpEntityId() + "\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
@@ -63,7 +63,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     public void testCustomSpEntityId() {
         SAML2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
-        String spMetadata = client.printClientMetadata();
+        String spMetadata = client.getSpMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""

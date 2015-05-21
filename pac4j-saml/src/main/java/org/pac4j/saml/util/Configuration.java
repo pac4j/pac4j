@@ -11,6 +11,8 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,11 +23,14 @@ import java.util.Map;
  * @since 1.7
  */
 public final class Configuration {
+    protected static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+
     private static BasicParserPool parserPool;
 
     private Configuration() {}
 
     static {
+        logger.info("Bootstrapping OpenSAML configuration via Pac4j...");
         bootstrap();
     }
 

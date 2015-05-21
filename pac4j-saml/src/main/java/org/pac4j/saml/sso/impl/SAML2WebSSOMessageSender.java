@@ -111,14 +111,11 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
             handlerDest.invoke(outboundContext);
 
             if (spDescriptor.isAuthnRequestsSigned()) {
-                if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
-                    final SAMLOutboundProtocolMessageSigningHandler handler = new
-                            SAMLOutboundProtocolMessageSigningHandler();
-                    handler.setSignErrorResponses(this.signErrorResponses);
-                    handler.invoke(outboundContext);
-                } else {
-                    throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported");
-                }
+                final SAMLOutboundProtocolMessageSigningHandler handler = new
+                        SAMLOutboundProtocolMessageSigningHandler();
+                handler.setSignErrorResponses(this.signErrorResponses);
+                handler.invoke(outboundContext);
+
             } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
                 logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
             }

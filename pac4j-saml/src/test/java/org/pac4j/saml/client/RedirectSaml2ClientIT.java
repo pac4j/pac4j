@@ -83,7 +83,10 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
         client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\"/></saml2p:AuthnRequest>"));
+        String loc = action.getLocation();
+        assertTrue(getInflatedAuthnRequest(loc).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" " +
+                "Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\" " +
+                "xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"/></saml2p:AuthnRequest>"));
     }
 
     @Test
@@ -93,7 +96,15 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
         client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
-        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("<saml2p:RequestedAuthnContext Comparison=\"exact\"><saml2:AuthnContextClassRef xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>"));
+
+        final String checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\" " +
+                "xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"><saml2:AuthnContextClassRef " +
+                "xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">" +
+                "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>" +
+                "</saml2p:RequestedAuthnContext>";
+
+        logger.debug("Checking for authn class {}", checkClass);
+        assertTrue(getInflatedAuthnRequest(action.getLocation()).contains(checkClass));
     }
 
     @Test
@@ -133,6 +144,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
             bldr.append(line);
         }
 
+        logger.debug("Inflated authn request {}", bldr.toString());
         return bldr.toString();
     }
 }
