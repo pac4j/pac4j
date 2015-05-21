@@ -11,14 +11,8 @@ import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.MarshallerFactory;
 import org.opensaml.core.xml.io.UnmarshallerFactory;
-import org.opensaml.xml.signature.SignatureConstants;
-import org.opensaml.xmlsec.SignatureSigningConfiguration;
-import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
-import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +29,7 @@ public final class Configuration {
         bootstrap();
     }
 
-    public static void bootstrap() {
+    private static void bootstrap() {
         parserPool = new BasicParserPool();
         parserPool.setMaxPoolSize(100);
         parserPool.setCoalescing(true);

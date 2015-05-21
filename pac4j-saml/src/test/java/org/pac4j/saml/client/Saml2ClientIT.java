@@ -37,14 +37,16 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.Saml2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.w3c.dom.html.HTMLButtonElement;
 
 import java.io.File;
 
-public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
+public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
 
-    static {
-        Configuration.bootstrap();
+    public SAML2ClientIT() {
+        assertNotNull(Configuration.getParserPool());
+        assertNotNull(Configuration.getMarshallerFactory());
+        assertNotNull(Configuration.getUnmarshallerFactory());
+        assertNotNull(Configuration.getBuilderFactory());
     }
 
     @Test

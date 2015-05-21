@@ -43,7 +43,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.URL;
 
-public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConstants {
+public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConstants {
+
+    public PostSAML2ClientIT() {
+        super();
+    }
 
     @Override
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
