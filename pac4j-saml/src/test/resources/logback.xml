@@ -25,6 +25,7 @@
     <logger name="org.opensaml" level="info" />
     <logger name="org.opensaml.messaging" level="info" />
     <logger name="org.apache.xml" level="info" />
+    <logger name="org.apache.http" level="info" />
     <logger name="org.opensaml.xmlsec.algorithm" level="warn" />
     <logger name="com.gargoylesoftware.htmlunit" level="warn" />
     <logger name="org.apache.velocity" level="warn" />
