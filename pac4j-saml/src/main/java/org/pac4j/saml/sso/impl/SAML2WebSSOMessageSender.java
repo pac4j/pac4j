@@ -13,6 +13,7 @@ import org.opensaml.saml.saml2.binding.encoding.impl.BaseSAML2MessageEncoder;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
@@ -54,6 +55,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
 
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
+        final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
 
         final MessageEncoder encoder = getMessageEncoder(context);
 
@@ -68,7 +70,9 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
                 context.getProfileRequestContext().getOutboundMessageContext());
 
         outboundContext.setMessage(authnRequest);
+        outboundContext.getSAMLEndpointContext().setEndpoint(acsService);
         outboundContext.getSAMLPeerEndpointContext().setEndpoint(ssoService);
+
         outboundContext.getSAMLPeerEntityContext().setRole(context.getSAMLPeerEntityContext().getRole());
         outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());
         outboundContext.getSAMLProtocolContext().setProtocol(context.getSAMLProtocolContext().getProtocol());

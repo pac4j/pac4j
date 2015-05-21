@@ -1,10 +1,12 @@
 package org.pac4j.saml.sso.impl;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.opensaml.messaging.decoder.MessageDecoder;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.messaging.SAMLMessageSecuritySupport;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.saml1.binding.decoding.impl.HTTPPostDecoder;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
@@ -26,7 +28,7 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
-    private final MessageDecoder decoder;
+    private final Pac4jHTTPPostDecoder decoder;
 
     private final SAML2ResponseValidator validator;
 
@@ -34,7 +36,7 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
     public SAML2WebSSOMessageReceiver(final SAML2ResponseValidator validator,
                                       final CredentialProvider credentialProvider) {
-        this.decoder = new Pac4jHTTPPostDecoder(Configuration.getParserPool());
+        this.decoder = new Pac4jHTTPPostDecoder();
         this.validator = validator;
         this.credentialProvider = credentialProvider;
     }
@@ -47,10 +49,16 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
         context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
         try {
-            final KeyInfoGenerator keyInfoGenerator = this.credentialProvider.getKeyInfoGenerator();
+            decoder.setHttpServletRequest(context.getProfileRequestContextInboundMessageTransportRequest().getRequest());
+            decoder.setParserPool(Configuration.getParserPool());
+            decoder.setMessageContext(context);
+            decoder.initialize();
+
             decoder.decode();
         } catch (MessageDecodingException e) {
             throw new SAMLException("Error decoding saml message", e);
+        } catch (ComponentInitializationException e) {
+            throw new SAMLException("Error initializing the decoder", e);
         }
 
         final EntityDescriptor metadata = context.getSAMLPeerMetadataContext().getEntityDescriptor();
