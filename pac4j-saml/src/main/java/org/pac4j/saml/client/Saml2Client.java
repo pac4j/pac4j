@@ -282,11 +282,11 @@ public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
         return responseValidator;
     }
 
-    public SAML2MetadataResolver getSpMetadataResolver() {
+    public SAML2MetadataResolver getServiceProviderMetadataResolver() {
         return spMetadataResolver;
     }
 
-    public SAML2MetadataResolver getIdpMetadataResolver() {
+    public SAML2MetadataResolver getIdentityProviderMetadataResolver() {
         return idpMetadataResolver;
     }
 
@@ -328,11 +328,11 @@ public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     public String getIdpEntityId() {
-        return idpEntityId;
+        return this.idpMetadataResolver.getEntityId();
     }
 
     public String getSpEntityId() {
-        return spEntityId;
+        return this.spMetadataResolver.getEntityId();
     }
 
     /**

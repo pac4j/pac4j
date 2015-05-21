@@ -32,8 +32,8 @@ public class SAML2ClientTest {
         client.setCallbackUrl("http://localhost:8080");
         client.init();
 
-        client.getIdpMetadataResolver().resolve();
-        String id = client.getIdpMetadataResolver().getEntityId();
+        client.getIdentityProviderMetadataResolver().resolve();
+        String id = client.getIdentityProviderMetadataResolver().getEntityId();
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
