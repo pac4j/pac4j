@@ -58,7 +58,7 @@ import org.opensaml.xml.parse.XMLParserException;
 import org.opensaml.xml.security.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
 import org.opensaml.xml.signature.SignatureTrustEngine;
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -92,7 +92,7 @@ import org.w3c.dom.Element;
  * @author Michael Remond
  * @since 1.5.0
  */
-public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
+public class Saml2Client extends IndirectClient<Saml2Credentials, Saml2Profile> {
 
     protected static final Logger logger = LoggerFactory.getLogger(Saml2Client.class);
 
@@ -267,7 +267,7 @@ public class Saml2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     @Override
-    protected BaseClient<Saml2Credentials, Saml2Profile> newClient() {
+    protected IndirectClient<Saml2Credentials, Saml2Profile> newClient() {
         Saml2Client client = new Saml2Client();
         client.setKeystorePath(this.keystorePath);
         client.setKeystorePassword(this.keystorePassword);

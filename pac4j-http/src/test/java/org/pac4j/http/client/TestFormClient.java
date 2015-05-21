@@ -24,7 +24,7 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;

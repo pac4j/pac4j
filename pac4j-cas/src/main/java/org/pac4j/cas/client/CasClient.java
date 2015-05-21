@@ -33,7 +33,7 @@ import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.logout.NoLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends BaseClient<CasCredentials, CasProfile> {
+public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     protected static final Logger logger = LoggerFactory.getLogger(CasClient.class);
 
@@ -129,8 +129,9 @@ public class CasClient extends BaseClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    protected BaseClient<CasCredentials, CasProfile> newClient() {
+    protected IndirectClient<CasCredentials, CasProfile> newClient() {
         final CasClient casClient = new CasClient();
+        casClient.setCallbackUrl(this.callbackUrl);
         casClient.setCasLoginUrl(this.casLoginUrl);
         casClient.setCasPrefixUrl(this.casPrefixUrl);
         casClient.setCasProtocol(this.casProtocol);

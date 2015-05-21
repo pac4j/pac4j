@@ -18,9 +18,11 @@ package org.pac4j.http.client;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.http.credentials.FormExtractor;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.UsernameProfileCreator;
@@ -36,7 +38,7 @@ import org.pac4j.http.profile.UsernameProfileCreator;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class FormClient extends BaseHttpClient<UsernamePasswordCredentials> {
+public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> {
 
     private String loginUrl;
 
@@ -67,7 +69,7 @@ public class FormClient extends BaseHttpClient<UsernamePasswordCredentials> {
     }
 
     @Override
-    protected BaseHttpClient<UsernamePasswordCredentials> newClient() {
+    protected IndirectHttpClient<UsernamePasswordCredentials> newClient() {
         final FormClient newClient = new FormClient();
         newClient.setLoginUrl(this.loginUrl);
         newClient.setUsernameParameter(this.usernameParameter);
@@ -79,6 +81,7 @@ public class FormClient extends BaseHttpClient<UsernamePasswordCredentials> {
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
+        extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
     }
 
     @Override
@@ -89,32 +92,32 @@ public class FormClient extends BaseHttpClient<UsernamePasswordCredentials> {
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         final String username = context.getRequestParameter(this.usernameParameter);
-        final String password = context.getRequestParameter(this.passwordParameter);
-        if (CommonHelper.isNotBlank(username) && CommonHelper.isNotBlank(password)) {
-            final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password,
-                    getName());
+        UsernamePasswordCredentials credentials;
+        try {
+            // retrieve credentials
+            credentials = extractor.extract(context);
             logger.debug("usernamePasswordCredentials : {}", credentials);
-            try {
-                // validate credentials
-                getAuthenticator().validate(credentials);
-            } catch (final TechnicalException e) {
+            if (credentials == null) {
                 String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-                String errorMessage = computeErrorMessage(e);
-                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
+                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
                 logger.debug("redirectionUrl : {}", redirectionUrl);
-                final String message = "Credentials validation fails -> return to the form with error";
+                final String message = "Username and password cannot be blank -> return to the form with error";
                 logger.debug(message);
                 throw RequiresHttpAction.redirect(message, context, redirectionUrl);
             }
-
-            return credentials;
+            // validate credentials
+            getAuthenticator().validate(credentials);
+        } catch (final CredentialsException e) {
+            String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+            String errorMessage = computeErrorMessage(e);
+            redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
+            logger.debug("redirectionUrl : {}", redirectionUrl);
+            final String message = "Credentials validation fails -> return to the form with error";
+            logger.debug(message);
+            throw RequiresHttpAction.redirect(message, context, redirectionUrl);
         }
-        String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-        redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
-        logger.debug("redirectionUrl : {}", redirectionUrl);
-        final String message = "Username and password cannot be blank -> return to the form with error";
-        logger.debug(message);
-        throw RequiresHttpAction.redirect(message, context, redirectionUrl);
+
+        return credentials;
     }
 
     /**
@@ -155,7 +158,7 @@ public class FormClient extends BaseHttpClient<UsernamePasswordCredentials> {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
-                this.passwordParameter, "usernamePasswordAuthenticator", getAuthenticator(), "profileCreator",
+                this.passwordParameter, "authenticator", getAuthenticator(), "profileCreator",
                 getProfileCreator());
     }
 

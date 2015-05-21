@@ -15,8 +15,6 @@
  */
 package org.pac4j.http.credentials;
 
-import org.pac4j.core.credentials.Authenticator;
-
 /**
  * This interface represents the contract to validate a username / password credentials.
  * 

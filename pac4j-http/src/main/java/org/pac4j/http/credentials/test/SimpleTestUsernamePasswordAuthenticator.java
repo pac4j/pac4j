@@ -13,10 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.credentials.test;
 
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

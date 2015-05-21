@@ -15,14 +15,18 @@
  */
 package org.pac4j.http.client;
 
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.http.credentials.Authenticator;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.http.credentials.Extractor;
+import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.profile.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.HttpProfile;
 
 /**
- * <p>This class is the base HTTP client to authenticate users through HTTP protocol.</p>
+ * <p>This class is the base HTTP client to authenticate <b>indirectly</b> users through HTTP protocol.</p>
  * <p>The {@link #getAuthenticator()} and {@link #getProfileCreator()} are mandatory for the HTTP protocol.</p>
  * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  * 
@@ -30,7 +34,23 @@ import org.pac4j.http.profile.HttpProfile;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseHttpClient<C extends Credentials> extends BaseClient<C, HttpProfile> {
+public abstract class IndirectHttpClient<C extends Credentials> extends IndirectClient<C, HttpProfile> {
+
+    protected Extractor<UsernamePasswordCredentials> extractor;
+
+    private Authenticator<C> authenticator;
+
+    private ProfileCreator<C, HttpProfile> profileCreator;
+
+    @Override
+    public IndirectHttpClient<C> clone() {
+        final IndirectHttpClient<C> newClient = (IndirectHttpClient<C>) super.clone();
+        newClient.setCallbackUrl(this.callbackUrl);
+        newClient.setAuthenticator(this.authenticator);
+        newClient.setProfileCreator(this.profileCreator);
+        return newClient;
+    }
+
 
     @Override
     protected void internalInit() {
@@ -42,7 +62,23 @@ public abstract class BaseHttpClient<C extends Credentials> extends BaseClient<C
     protected HttpProfile retrieveUserProfile(final C credentials, final WebContext context) {
         // create the user profile
         final HttpProfile profile = getProfileCreator().create(credentials);
-        logger.debug("profile : {}", profile);
+        logger.debug("profile: {}", profile);
         return profile;
+    }
+
+    public Authenticator<C> getAuthenticator() {
+        return authenticator;
+    }
+
+    public void setAuthenticator(Authenticator<C> authenticator) {
+        this.authenticator = authenticator;
+    }
+
+    public ProfileCreator<C, HttpProfile> getProfileCreator() {
+        return profileCreator;
+    }
+
+    public void setProfileCreator(ProfileCreator<C, HttpProfile> profileCreator) {
+        this.profileCreator = profileCreator;
     }
 }

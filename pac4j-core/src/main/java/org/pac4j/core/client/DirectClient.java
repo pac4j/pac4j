@@ -13,28 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile;
+package org.pac4j.core.client;
 
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
 
 /**
- * This class is a profile creator which creates a HTTP profile with username set.
- * 
+ * <p>This class is the default direct (stateless) implementation of an authentication client (whatever the protocol).
+ * In that case, redirecting does not have any sense.</p>
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
  */
-public class UsernameProfileCreator implements ProfileCreator<UsernamePasswordCredentials, HttpProfile> {
+public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public HttpProfile create(UsernamePasswordCredentials credentials) {
-        String username = credentials.getUsername();
-        final HttpProfile profile = new HttpProfile();
-        profile.setId(username);
-        profile.addAttribute(CommonProfile.USERNAME, username);
-        return profile;
+    public final void redirect(final WebContext context, final boolean requiresAuthentication, final boolean ajaxRequest) {
+        throw new TechnicalException("direct clients do not support redirections");
     }
 }

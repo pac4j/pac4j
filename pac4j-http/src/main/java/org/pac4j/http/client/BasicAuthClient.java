@@ -25,6 +25,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.http.credentials.BasicAuthExtractor;
+import org.pac4j.http.credentials.Extractor;
 import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.UsernameProfileCreator;
@@ -34,14 +36,19 @@ import org.pac4j.http.profile.UsernameProfileCreator;
  * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
  * specific exception : {@link RequiresHttpAction} is returned which must be handled by the application to force
  * authentication.</p>
- * <p>The realm name can be defined using the {@link #setRealmName(String)} method.</p>
  * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class BasicAuthClient extends AbstractHeaderClient<UsernamePasswordCredentials> {
+public class BasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
+
+    private String headerName = HttpConstants.AUTHORIZATION_HEADER;
+
+    private String prefixHeader = "Basic ";
+
+    private String realmName = "authentication required";
 
     public BasicAuthClient() {
         this(null, null);
@@ -53,9 +60,6 @@ public class BasicAuthClient extends AbstractHeaderClient<UsernamePasswordCreden
 
     public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
             final UsernameProfileCreator profilePopulator) {
-        setRealmName("authentication required");
-        setHeaderName(HttpConstants.AUTHORIZATION_HEADER);
-        setPrefixHeader("Basic ");
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
     }
@@ -64,16 +68,13 @@ public class BasicAuthClient extends AbstractHeaderClient<UsernamePasswordCreden
     protected void internalInit() {
         super.internalInit();
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotBlank("realmName", getRealmName());
+        CommonHelper.assertNotBlank("realmName", this.realmName);
+        extractor = new BasicAuthExtractor(headerName, prefixHeader, getName());
     }
 
     @Override
     protected BasicAuthClient newClient() {
-        final BasicAuthClient newClient = new BasicAuthClient();
-        newClient.setRealmName(getRealmName());
-        newClient.setHeaderName(getHeaderName());
-        newClient.setPrefixHeader(getPrefixHeader());
-        return newClient;
+        return new BasicAuthClient();
     }
 
     @Override
@@ -82,30 +83,33 @@ public class BasicAuthClient extends AbstractHeaderClient<UsernamePasswordCreden
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentialsFromHeader(String header) {
-        final byte[] decoded = Base64.decodeBase64(header);
-
-        String token;
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+        final UsernamePasswordCredentials credentials;
         try {
-            token = new String(decoded, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-            throw new CredentialsException("Bad format of the basic auth header");
+            // retrieve credentials
+            credentials = extractor.extract(context);
+            logger.debug("credentials : {}", credentials);
+            // validate credentials
+            getAuthenticator().validate(credentials);
+        } catch (final CredentialsException e) {
+            logger.error("Credentials retrieval / validation failed", e);
+            throw RequiresHttpAction.unauthorized("Requires authentication", context,
+                    this.realmName);
         }
 
-        final int delim = token.indexOf(":");
-        if (delim < 0) {
-            throw new CredentialsException("Bad format of the basic auth header");
-        }
-        return new UsernamePasswordCredentials(token.substring(0, delim),
-                token.substring(delim + 1), getName());
+        return credentials;
     }
 
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
-                getRealmName(), "headerName", getHeaderName(), "prefixHeader", getPrefixHeader(), "authenticator",
-                getAuthenticator(), "profileCreator",
-                getProfileCreator());
+                this.realmName, "headerName", this.headerName, "prefixHeader", this.prefixHeader, "authenticator",
+                getAuthenticator(), "profileCreator", getProfileCreator());
+    }
+
+    @Override
+    protected boolean isDirectRedirection() {
+        return true;
     }
 
     @Override

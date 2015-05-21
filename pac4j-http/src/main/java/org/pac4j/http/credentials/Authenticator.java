@@ -15,31 +15,22 @@
  */
 package org.pac4j.http.credentials;
 
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.CredentialsException;
 
 /**
- * This credentials represents a token.
+ * An authenticator is responsible for validating {@link Credentials} and should throw a {@link CredentialsException}
+ * if the authentication fails.
  *
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class TokenCredentials extends HttpCredentials {
+public interface Authenticator<T extends Credentials> {
 
-    private static final long serialVersionUID = -4270718634364817595L;
-
-    private final String token;
-
-    public TokenCredentials(String token, final String clientName) {
-        this.token = token;
-        setClientName(clientName);
-    }
-
-    public String getToken() {
-        return this.token;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "token", this.token, "clientName", getClientName());
-    }
+    /**
+     * Validate the credentials. It should throw a {@link CredentialsException} in case of failure.
+     *
+     * @param credentials the given credentials.
+     */
+    void validate(T credentials);
 }

@@ -24,7 +24,7 @@ import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfile> {
+public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasProfile> {
     
     private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
     
@@ -64,8 +64,9 @@ public final class CasProxyReceptor extends BaseClient<CasCredentials, CasProfil
     private TimerTask timerTask;
     
     @Override
-    protected BaseClient<CasCredentials, CasProfile> newClient() {
+    protected IndirectClient<CasCredentials, CasProfile> newClient() {
         final CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
+        casProxyReceptor.setCallbackUrl(this.callbackUrl);
         casProxyReceptor.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
         casProxyReceptor.setMillisBetweenCleanUps(this.millisBetweenCleanUps);
         return casProxyReceptor;

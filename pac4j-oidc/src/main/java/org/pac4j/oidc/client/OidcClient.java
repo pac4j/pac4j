@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -85,7 +85,7 @@ import com.nimbusds.openid.connect.sdk.util.DefaultResourceRetriever;
  * @author Michael Remond
  * @since 1.7.0
  */
-public class OidcClient extends BaseClient<OidcCredentials, OidcProfile> {
+public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     /* Parameter to indicate to send nonce in the authentication request */
     private static final String USE_NONCE_PARAM = "useNonce";
@@ -194,7 +194,7 @@ public class OidcClient extends BaseClient<OidcCredentials, OidcProfile> {
     }
 
     @Override
-    protected BaseClient<OidcCredentials, OidcProfile> newClient() {
+    protected IndirectClient<OidcCredentials, OidcProfile> newClient() {
         OidcClient client = new OidcClient();
         client.setClientID(this.clientId);
         client.setSecret(this.secret);

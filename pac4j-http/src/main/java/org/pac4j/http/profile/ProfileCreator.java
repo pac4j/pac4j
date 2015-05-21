@@ -13,33 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.profile;
 
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.profile.UserProfile;
 
 /**
- * This credentials represents a token.
- *
+ * This interface is responsible to create a {@link UserProfile} from a {@link Credentials}.
+ * Return <code>null</code> if no profile can be found / created.
+ * 
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class TokenCredentials extends HttpCredentials {
+public interface ProfileCreator<C extends Credentials, U extends UserProfile> {
 
-    private static final long serialVersionUID = -4270718634364817595L;
-
-    private final String token;
-
-    public TokenCredentials(String token, final String clientName) {
-        this.token = token;
-        setClientName(clientName);
-    }
-
-    public String getToken() {
-        return this.token;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "token", this.token, "clientName", getClientName());
-    }
+    /**
+     * Create a profile from a credentials.
+     * 
+     * @param credentials the given credentials.
+     * @return the created profile
+     */
+    U create(C credentials);
 }
