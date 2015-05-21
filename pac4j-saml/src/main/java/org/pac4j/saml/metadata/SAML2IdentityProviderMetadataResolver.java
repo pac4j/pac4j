@@ -19,6 +19,7 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -47,16 +48,23 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     public MetadataResolver resolve() {
 
         try {
-            Resource resource;
+            Resource resource = null;
             if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
                 String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
                 if (!path.startsWith("/")) {
                     path = "/" + path;
                 }
                 resource = ResourceHelper.of(new ClassPathResource(path));
-            } else {
+            } else if (this.idpMetadataPath.startsWith("file:")) {
                 resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
+            } else if (this.idpMetadataPath.startsWith("http")) {
+                resource = ResourceHelper.of(new UrlResource(this.idpMetadataPath));
             }
+
+            if (resource == null) {
+                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataPath);
+            }
+
             final InputStream in = resource.getInputStream();
             final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
             final Element metadataRoot = inCommonMDDoc.getDocumentElement();

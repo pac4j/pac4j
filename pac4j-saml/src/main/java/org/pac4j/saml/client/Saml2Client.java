@@ -181,7 +181,6 @@ public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
             CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
             CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
 
-            // load private key from the keystore and provide it as OpenSAML credentials
             this.credentialProvider = new KeyStoreCredentialProvider(this.keystorePath, this.keystorePassword,
                     this.privateKeyPassword);
             this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();

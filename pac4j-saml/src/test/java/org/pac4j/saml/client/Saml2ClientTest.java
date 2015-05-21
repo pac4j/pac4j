@@ -37,4 +37,17 @@ public class SAML2ClientTest {
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
+    @Test
+    public void testIdpMetadataParsing_fromUrl() {
+        SAML2Client client = new SAML2Client();
+        client.setIdpMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
+        client.setCallbackUrl("http://localhost:8080");
+        client.init();
+
+        client.getIdentityProviderMetadataResolver().resolve();
+        String id = client.getIdentityProviderMetadataResolver().getEntityId();
+        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
+    }
+
+
 }
