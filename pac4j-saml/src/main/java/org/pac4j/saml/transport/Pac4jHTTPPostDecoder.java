@@ -32,19 +32,21 @@ import org.pac4j.saml.context.ExtendedSAMLMessageContext;
  */
 public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
 
-    public Pac4jHTTPPostDecoder(final ParserPool parserPool) {
-        super();
+    @Override
+    public void setMessageContext(final MessageContext<SAMLObject> context) {
+        super.setMessageContext(context);
     }
 
     @Override
-    protected void populateBindingContext(MessageContext<SAMLObject> messageContext) {
+    protected void populateBindingContext(final MessageContext<SAMLObject> messageContext) {
         super.populateBindingContext(messageContext);
 
+        /*
         final ExtendedSAMLMessageContext ctx = new ExtendedSAMLMessageContext(messageContext);
         final SimpleRequestAdapter adapter = ctx.getProfileRequestContextInboundMessageTransportRequest();
 
         final Endpoint intendedEndpoint = ctx.getSAMLEndpointContext().getEndpoint();
         intendedEndpoint.setLocation(adapter.getContext().getFullRequestURL());
-
+        */
     }
 }

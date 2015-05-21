@@ -110,7 +110,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
 
     @Test
     public void testRelayState() throws RequiresHttpAction {
-        SAML2Client client = (SAML2Client) getClient();
+        SAML2Client client = getClient();
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
