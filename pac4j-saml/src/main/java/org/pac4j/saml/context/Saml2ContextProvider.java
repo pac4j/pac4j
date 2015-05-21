@@ -51,6 +51,7 @@ import java.util.List;
  */
 @SuppressWarnings("rawtypes")
 public class SAML2ContextProvider implements SAMLContextProvider {
+    private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
     protected final static Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
@@ -98,6 +99,9 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         profile.setInboundMessageContext(inCtx);
         profile.setOutboundMessageContext(outCtx);
         context.getSAMLProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
+
+        final ProfileRequestContext request = context.getProfileRequestContext();
+        request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
     }
 
     protected void addSPContext(final ExtendedSAMLMessageContext context) {

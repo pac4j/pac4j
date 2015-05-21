@@ -16,6 +16,7 @@
 
 package org.pac4j.saml.crypto;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.BasicRoleDescriptorResolver;
 import org.opensaml.saml.security.impl.MetadataCredentialResolver;
@@ -23,6 +24,7 @@ import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
+import org.pac4j.saml.exceptions.SAMLException;
 
 /**
  * Provider returning well configured {@link SignatureTrustEngine} instances.
@@ -48,6 +50,13 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
 
         metadataCredentialResolver.setKeyInfoCredentialResolver(keyResolver);
         metadataCredentialResolver.setRoleDescriptorResolver(roleResolver);
+
+        try {
+            metadataCredentialResolver.initialize();
+            roleResolver.initialize();
+        } catch (ComponentInitializationException e) {
+            throw new SAMLException(e);
+        }
 
         return new ExplicitKeySignatureTrustEngine(metadataCredentialResolver, keyResolver);
     }

@@ -65,9 +65,6 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
     /* id of the authn request */
     private String requestId;
 
-    /* endpoint location */
-    private String assertionConsumerUrl;
-
     /** BaseID retrieved either from the Subject or from a SubjectConfirmation */
     private BaseID baseID;
     
@@ -176,14 +173,6 @@ public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
         this.requestId = requestId;
     }
 
-    public String getAssertionConsumerUrl() {
-        return this.assertionConsumerUrl;
-    }
-
-    public void setAssertionConsumerUrl(final String assertionConsumerUrl) {
-        this.assertionConsumerUrl = assertionConsumerUrl;
-    }
-    
     public BaseID getBaseID() {
         return baseID;
     }

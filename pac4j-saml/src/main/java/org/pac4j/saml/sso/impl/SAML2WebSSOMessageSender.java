@@ -32,7 +32,6 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     private final static Logger logger = LoggerFactory.getLogger(SAML2WebSSOProfileHandler.class);
 
-    private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
     private String destinationBindingType;
@@ -59,11 +58,9 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
         final MessageEncoder encoder = getMessageEncoder(context);
 
-        final ProfileRequestContext request = context.getProfileRequestContext();
-        request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
-
         final ExtendedSAMLMessageContext outboundContext = new ExtendedSAMLMessageContext(context);
-        outboundContext.getProfileRequestContext().setProfileId(SAML2_WEBSSO_PROFILE_URI);
+        outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
+
         outboundContext.getProfileRequestContext().setInboundMessageContext(
                 context.getProfileRequestContext().getInboundMessageContext());
         outboundContext.getProfileRequestContext().setOutboundMessageContext(

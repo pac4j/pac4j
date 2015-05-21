@@ -331,8 +331,7 @@ public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
 
     @Override
     protected Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
-        final ExtendedSAMLMessageContext context = this.contextProvider.buildServiceProviderContext(wc);
-        context.setAssertionConsumerUrl(getCallbackUrl());
+        final ExtendedSAMLMessageContext context = this.contextProvider.buildContext(wc);
         return (Saml2Credentials) this.handler.receive(context);
     }
 
