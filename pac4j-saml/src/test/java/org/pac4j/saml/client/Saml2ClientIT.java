@@ -19,6 +19,7 @@ package org.pac4j.saml.client;
 import com.esotericsoftware.kryo.Kryo;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -36,6 +37,7 @@ import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.Saml2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.w3c.dom.html.HTMLButtonElement;
 
 import java.io.File;
 
@@ -83,8 +85,18 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
         email.setValueAttribute("myself");
         final HtmlPasswordInput password = form.getInputByName("j_password");
         password.setValueAttribute("myself");
-        final HtmlSubmitInput submit = form.getInputByValue("Login");
-        final HtmlPage callbackPage = submit.click();
+
+        HtmlPage callbackPage;
+
+        try {
+            HtmlSubmitInput submit = form.getInputByValue("Login");
+            callbackPage = submit.click();
+        } catch (ElementNotFoundException e) {
+            HtmlButton btn = form.getButtonByName("_eventId_proceed");
+            callbackPage = btn.click();
+        }
+
+         ;
         try {
             String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
             String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
