@@ -6,6 +6,6 @@ import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 /**
  * @author Misagh Moayyed
  */
-public interface SAML2ResponseValidator {
-    Credentials validate(ExtendedSAMLMessageContext context);
+public interface SAML2MessageReceiver {
+    Credentials receiveMessage(ExtendedSAMLMessageContext context);
 }

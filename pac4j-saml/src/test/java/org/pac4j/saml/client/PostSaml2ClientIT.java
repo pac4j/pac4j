@@ -81,7 +81,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
 
     @Test
     public void testCustomSpEntityIdForPostBinding() throws Exception {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -92,7 +92,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
 
     @Test
     public void testForceAuthIsSetForPostBinding() throws Exception {
-        Saml2Client client = (Saml2Client) getClient();
+        SAML2Client client = (SAML2Client) getClient();
         client.setForceAuth(true);
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -101,7 +101,7 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
 
     @Test
     public void testSetComparisonTypeWithPostBinding() throws Exception {
-        Saml2Client client = (Saml2Client) getClient();
+        SAML2Client client = (SAML2Client) getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -110,16 +110,16 @@ public final class PostSaml2ClientIT extends Saml2ClientIT implements TestsConst
 
     @Test
     public void testRelayState() throws RequiresHttpAction {
-        Saml2Client client = (Saml2Client) getClient();
+        SAML2Client client = (SAML2Client) getClient();
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 
     @Override
     protected String getCallbackUrl() {
-        return "http://localhost:8080/callback?client_name=Saml2Client";
+        return "http://localhost:8080/callback?client_name=SAML2Client";
     }
 
     @Override

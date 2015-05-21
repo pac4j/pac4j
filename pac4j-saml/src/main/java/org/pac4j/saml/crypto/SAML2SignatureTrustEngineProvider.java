@@ -6,6 +6,6 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
  * Builds the signature trust engine.
  * @author Misagh Moayyed
  */
-public interface SAMLSignatureTrustEngineProvider {
+public interface SAML2SignatureTrustEngineProvider {
     SignatureTrustEngine build();
 }

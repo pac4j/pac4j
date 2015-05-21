@@ -28,9 +28,9 @@ import org.opensaml.core.xml.XMLObject;
 import org.pac4j.saml.util.Configuration;
 
 /**
- * Unit tests for the Saml2Client.
+ * Unit tests for the SAML2Client.
  */
-public class Saml2ClientTest {
+public class SAML2ClientTest {
 
     static {
         Configuration.bootstrap();
@@ -38,7 +38,7 @@ public class Saml2ClientTest {
 
     @Test
     public void testIdpMetadataParsing_fromString() throws IOException {
-        Saml2Client client = new Saml2Client();
+        SAML2Client client = new SAML2Client();
         InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
         String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
         client.setIdpMetadata(metadata);
@@ -50,7 +50,7 @@ public class Saml2ClientTest {
 
     @Test
     public void testIdpMetadataParsing_fromFile() {
-        Saml2Client client = new Saml2Client();
+        SAML2Client client = new SAML2Client();
         client.setIdpMetadataPath("resource:testshib-providers.xml");
         MetadataResolver provider = client.generateIdentityProviderMetadata(Configuration.getParserPool());
         XMLObject md = client.getXmlObject(provider, "https://idp.testshib.org/idp/shibboleth");

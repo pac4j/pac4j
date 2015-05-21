@@ -44,7 +44,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testCustomSpEntityIdForRedirectBinding() throws Exception {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setSpEntityId("http://localhost:8080/callback");
 
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -57,7 +57,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testForceAuthIsSetForRedirectBinding() throws Exception {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setForceAuth(true);
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -66,7 +66,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testSetComparisonTypeWithRedirectBinding() throws Exception {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -75,7 +75,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testNameIdPolicyFormat() throws Exception{
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -84,7 +84,7 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testAuthnContextClassRef() throws Exception {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
@@ -94,16 +94,16 @@ public final class RedirectSaml2ClientIT extends Saml2ClientIT implements TestsC
 
     @Test
     public void testRelayState() throws Exception {
-        Saml2Client client = getClient();
+        SAML2Client client = getClient();
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        context.setSessionAttribute(Saml2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
+        context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }
 
     @Override
     protected String getCallbackUrl() {
-        return "http://localhost:8080/callback?client_name=Saml2Client";
+        return "http://localhost:8080/callback?client_name=SAML2Client";
     }
 
     @Override

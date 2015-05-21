@@ -32,8 +32,10 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.security.x509.X509Credential;
+import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
+import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.KeyInfo;
@@ -80,19 +82,14 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     @Override
     public KeyInfoCredentialResolver getKeyInfoCredentialResolver() {
-        final KeyInfoCredentialResolver resolver = new
-                StaticKeyInfoCredentialResolver(this.getCredential());
-        return resolver;
+        return DefaultSecurityConfigurationBootstrap.buildBasicInlineKeyInfoCredentialResolver();
     }
 
     @Override
     public KeyInfoGenerator getKeyInfoGenerator() {
-        final BasicKeyInfoGeneratorFactory factory = new BasicKeyInfoGeneratorFactory();
-        factory.setEmitKeyNames(true);
-        factory.setEmitEntityIDAsKeyName(true);
-        factory.setEmitPublicDEREncodedKeyValue(true);
-        factory.setEmitPublicKeyValue(true);
-        return factory.newInstance();
+        final NamedKeyInfoGeneratorManager mgmr = DefaultSecurityConfigurationBootstrap.buildBasicKeyInfoGeneratorManager();
+        final Credential credential = getCredential();
+        return mgmr.getDefaultManager().getFactory(credential).newInstance();
     }
 
     @Override
