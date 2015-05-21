@@ -18,8 +18,6 @@ package org.pac4j.saml.sso.impl;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import org.joda.time.DateTime;
 import org.opensaml.core.criterion.EntityIdCriterion;
-import org.pac4j.core.credentials.Credentials;
-import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
@@ -57,6 +55,7 @@ import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.credentials.Saml2Credentials;
@@ -88,7 +87,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     /* maximum skew in seconds between SP and IDP clocks */
     private int acceptedSkew = 120;
 
-    /* maximum lifetime after a successfull authentication on an IDP */
+    /* maximum lifetime after a successful authentication on an IDP */
     private int maximumAuthenticationLifetime = 3600;
 
     private final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
@@ -115,12 +114,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     @Override
     public Credentials validate(final ExtendedSAMLMessageContext context) {
 
-        final MessageContext<SAMLObject> message = context.getProfileRequestContext().getInboundMessageContext();
+        final SAMLObject message = context.getMessage();
 
         if (!(message instanceof Response)) {
             throw new SAMLException("Response instance is an unsupported type");
         }
-        final Response response = (Response) message.getMessage();
+        final Response response = (Response) message;
         final SignatureTrustEngine engine = this.signatureTrustEngineProvider.build();
         validateSamlProtocolResponse(response, context, engine);
 
@@ -193,9 +192,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         }
 
         if (response.getSignature() != null) {
-            final String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
+            final String entityId = context.getSAMLPeerEntityContext().getEntityId();
             validateSignature(response.getSignature(), entityId, engine);
-            context.getSubcontext(SAMLPeerEntityContext.class).setAuthenticated(true);
+            context.getSAMLPeerEntityContext().setAuthenticated(true);
         }
 
     }
@@ -231,7 +230,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
-        final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class).getSubjectNameIdentifier();
+        final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
         if ((nameIdentifier.getValue() == null) && (context.getBaseID() == null)
                 && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
             throw new SAMLException(
@@ -342,13 +341,11 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             nameIdFromSubject = decryptedNameIdFromSubject;
         }
 
-        // If we have a Name ID or a Base ID, we are fine :-)
-        // If we don't have anything, let's go through all subject confirmations and get the IDs from them. At least one should be present but we don't care at this point.
+        // If we have a Name ID or a Base ID, we are fine
+        // If we don't have anything, let's go through all subject confirmations and get the IDs from them.
+        // At least one should be present but we don't care at this point.
         if (nameIdFromSubject != null || baseIdFromSubject != null) {
-
-            final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
-                    .getSubjectNameIdentifier();
-            nameIdentifier.setValue(nameIdFromSubject.getValue());
+            context.getSAMLSubjectNameIdentifierContext().setSubjectNameIdentifier(nameIdFromSubject);
             context.setBaseID(baseIdFromSubject);
             samlIDFound = true;
         }
@@ -368,10 +365,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                     }
 
                     if (!samlIDFound && (nameIDFromConfirmation != null || baseIDFromConfirmation != null)) {
-
-                        final NameID nameIdentifier = (NameID) context.getSubcontext(SAMLSubjectNameIdentifierContext.class)
-                                .getSubjectNameIdentifier();
-                        nameIdentifier.setValue(nameIDFromConfirmation.getValue());
+                        context.getSAMLSubjectNameIdentifierContext().setSubjectNameIdentifier(nameIDFromConfirmation);
                         context.setBaseID(baseIDFromConfirmation);
                         context.getSubjectConfirmations().add(confirmation);
                         samlIDFound = true;
@@ -452,7 +446,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
             return false;
         } else {
-            if (!data.getRecipient().equals(context.getAssertionConsumerUrl())) {
+            final String url = context.getSAMLEndpointContext().getEndpoint().getLocation();
+            if (!data.getRecipient().equals(url)) {
                 logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found",
                         data.getRecipient());
                 return false;
@@ -487,7 +482,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             }
         }
 
-        String entityId = context.getSubcontext(SAMLSelfEntityContext.class).getEntityId();
+        final String entityId = context.getSAMLSelfEntityContext().getEntityId();
         validateAudienceRestrictions(conditions.getAudienceRestrictions(), entityId);
 
     }
@@ -587,12 +582,11 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         criteriaSet.add(new EntityRoleCriterion(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
         criteriaSet.add(new ProtocolCriterion(SAMLConstants.SAML20P_NS));
         criteriaSet.add(new EntityIdCriterion(idpEntityId));
-
-        boolean valid = false;
+        boolean valid;
         try {
             valid = trustEngine.validate(signature, criteriaSet);
         } catch (SecurityException e) {
-            throw new SAMLException("An error occured during signature validation", e);
+            throw new SAMLException("An error occurred during signature validation", e);
         }
         if (!valid) {
             throw new SAMLException("Signature is not trusted");

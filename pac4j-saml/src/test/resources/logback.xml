@@ -23,6 +23,7 @@
     <!-- logger name="org.pac4j" level="DEBUG"/-->
     <logger name="ch.qos" level="warn" />
     <logger name="org.opensaml" level="info" />
+    <logger name="org.opensaml.messaging" level="info" />
     <logger name="org.apache.xml" level="info" />
     <logger name="org.opensaml.xmlsec.algorithm" level="warn" />
     <logger name="com.gargoylesoftware.htmlunit" level="warn" />
