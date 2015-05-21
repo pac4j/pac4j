@@ -34,6 +34,7 @@ import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.transport.SimpleRequestAdapter;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.slf4j.Logger;
@@ -57,12 +58,13 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected MetadataResolver metadata;
 
-    protected String idpEntityId;
+    protected SAML2MetadataResolver idpEntityId;
 
-    protected String spEntityId;
+    protected SAML2MetadataResolver spEntityId;
 
     public SAML2ContextProvider(final MetadataResolver metadata,
-                                final String idpEntityId, final String spEntityId) {
+                                final SAML2MetadataResolver idpEntityId,
+                                final SAML2MetadataResolver spEntityId) {
         this.metadata = metadata;
         this.idpEntityId = idpEntityId;
         this.spEntityId = spEntityId;
@@ -106,25 +108,25 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected void addSPContext(final ExtendedSAMLMessageContext context) {
         final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
-        selfContext.setEntityId(this.spEntityId);
+        selfContext.setEntityId(this.spEntityId.getEntityId());
         selfContext.setRole(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.spEntityId, selfContext, SPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
     protected void addIDPContext(final ExtendedSAMLMessageContext context) {
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
-        peerContext.setEntityId(this.idpEntityId);
+        peerContext.setEntityId(this.idpEntityId.getEntityId());
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.idpEntityId, peerContext, IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
-    protected void addContext(final String entityId, final BaseContext parentContext,
+    protected void addContext(final SAML2MetadataResolver entityId, final BaseContext parentContext,
                               final QName elementName) {
         EntityDescriptor entityDescriptor;
         RoleDescriptor roleDescriptor;
         try {
             final CriteriaSet set = new CriteriaSet();
-            set.add(new EntityIdCriterion(entityId));
+            set.add(new EntityIdCriterion(entityId.getEntityId()));
 
             entityDescriptor = this.metadata.resolveSingle(set);
             if (entityDescriptor == null) {

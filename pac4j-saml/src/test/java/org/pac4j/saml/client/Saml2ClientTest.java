@@ -16,16 +16,9 @@
 
 package org.pac4j.saml.client;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.opensaml.saml.metadata.resolver.MetadataResolver;
-import org.opensaml.core.xml.XMLObject;
-import org.pac4j.saml.util.Configuration;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for the SAML2Client.
@@ -33,24 +26,14 @@ import org.pac4j.saml.util.Configuration;
 public class SAML2ClientTest {
 
     @Test
-    public void testIdpMetadataParsing_fromString() throws IOException {
-        SAML2Client client = new SAML2Client();
-        InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
-        String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
-        client.setIdpMetadata(metadata);
-        MetadataResolver provider = client.generateIdentityProviderMetadata(Configuration.getParserPool());
-        XMLObject md = client.getXmlObject(provider, "https://idp.testshib.org/idp/shibboleth");
-        String id = client.getIdpEntityId(md);
-        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
-    }
-
-    @Test
     public void testIdpMetadataParsing_fromFile() {
         SAML2Client client = new SAML2Client();
         client.setIdpMetadataPath("resource:testshib-providers.xml");
-        MetadataResolver provider = client.generateIdentityProviderMetadata(Configuration.getParserPool());
-        XMLObject md = client.getXmlObject(provider, "https://idp.testshib.org/idp/shibboleth");
-        String id = client.getIdpEntityId(md);
+        client.setCallbackUrl("http://localhost:8080");
+        client.init();
+
+        client.getIdpMetadataResolver().resolve();
+        String id = client.getIdpMetadataResolver().getEntityId();
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
