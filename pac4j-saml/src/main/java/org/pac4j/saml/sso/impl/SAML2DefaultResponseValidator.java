@@ -21,7 +21,6 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
-import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
@@ -58,7 +57,7 @@ import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
-import org.pac4j.saml.credentials.Saml2Credentials;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
@@ -131,7 +130,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         return buildSaml2Credentials(context);
     }
 
-    protected Saml2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
+    protected SAML2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
 
         final NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
         final Assertion subjectAssertion = context.getSubjectAssertion();
@@ -155,7 +154,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                 }
             }
         }
-        return new Saml2Credentials(nameId, attributes, subjectAssertion.getConditions(),
+        return new SAML2Credentials(nameId, attributes, subjectAssertion.getConditions(),
                 SAML2Client.class.getSimpleName());
     }
 

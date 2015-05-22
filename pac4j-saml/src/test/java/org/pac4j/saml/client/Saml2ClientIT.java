@@ -34,7 +34,7 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.profile.Saml2Profile;
+import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -122,12 +122,12 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
 
     @Override
     protected void registerForKryo(final Kryo kryo) {
-        kryo.register(Saml2Profile.class);
+        kryo.register(SAML2Profile.class);
     }
 
     @Override
     protected void verifyProfile(UserProfile userProfile) {
-        Saml2Profile profile = (Saml2Profile) userProfile;
+        SAML2Profile profile = (SAML2Profile) userProfile;
         assertEquals("[Member, Staff]", profile.getAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").toString());
         assertEquals("[myself]", profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.1").toString());
         assertEquals("[Me Myself And I]", profile.getAttribute("urn:oid:2.5.4.3").toString());

@@ -7,7 +7,7 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.signature.KeyInfo;
 
 /**
- * Defines operations requierd to provide and resolve credentials.
+ * Defines operations required to provide and resolve credentials.
  * @author Misagh Moayyed
  * @since 1.7
  */

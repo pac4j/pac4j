@@ -48,7 +48,8 @@ import java.util.List;
  * manager) and current {@link WebContext}.
  * 
  * @author Michael Remond
- * @since 1.5.0
+ * @author Misagh Moayyed
+ * @since 1.7
  */
 @SuppressWarnings("rawtypes")
 public class SAML2ContextProvider implements SAMLContextProvider {

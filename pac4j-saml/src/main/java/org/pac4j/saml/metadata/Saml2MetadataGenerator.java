@@ -53,7 +53,7 @@ import java.util.LinkedList;
  * @since 1.5.0
  */
 @SuppressWarnings("unchecked")
-public class SAML2MetadataGenerator implements MetadataGenerator {
+public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected final static Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
 

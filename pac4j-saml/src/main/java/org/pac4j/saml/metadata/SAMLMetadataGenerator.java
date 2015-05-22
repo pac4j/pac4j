@@ -7,7 +7,7 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
  * Builds metadata and the relevant resolvers.
  * @author Misagh Moayyed
  */
-public interface MetadataGenerator {
+public interface SAMLMetadataGenerator {
     MetadataResolver buildMetadataResolver() throws Exception;
 
     String getMetadata() throws Exception;
