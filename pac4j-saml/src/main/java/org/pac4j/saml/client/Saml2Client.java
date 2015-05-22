@@ -25,8 +25,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
@@ -37,7 +35,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.ExtendedSAMLMessageContext;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
-import org.pac4j.saml.credentials.Saml2Credentials;
+import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
@@ -45,11 +43,10 @@ import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
-import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
-import org.pac4j.saml.profile.Saml2Profile;
+import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.SAML2ProfileHandler;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
@@ -71,9 +68,10 @@ import java.util.List;
  * Browser SSO profile with HTTP-POST binding. (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
  * 
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @since 1.5.0
  */
-public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
+public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
 
     protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
 
@@ -206,7 +204,7 @@ public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     @Override
-    protected BaseClient<Saml2Credentials, Saml2Profile> newClient() {
+    protected BaseClient<SAML2Credentials, SAML2Profile> newClient() {
         final SAML2Client client = new SAML2Client();
         client.setKeystorePath(this.keystorePath);
         client.setKeystorePassword(this.keystorePassword);
@@ -248,15 +246,15 @@ public class SAML2Client extends BaseClient<Saml2Credentials, Saml2Profile> {
     }
 
     @Override
-    protected Saml2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
+    protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
         final ExtendedSAMLMessageContext context = this.contextProvider.buildContext(wc);
-        return (Saml2Credentials) this.handler.receive(context);
+        return (SAML2Credentials) this.handler.receive(context);
     }
 
     @Override
-    protected Saml2Profile retrieveUserProfile(final Saml2Credentials credentials, final WebContext context) {
+    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
 
-        final Saml2Profile profile = new Saml2Profile();
+        final SAML2Profile profile = new SAML2Profile();
         profile.setId(credentials.getNameId().getValue());
         for (final Attribute attribute : credentials.getAttributes()) {
             final List<String> values = new ArrayList<String>();

@@ -23,9 +23,10 @@ import org.pac4j.saml.client.SAML2Client;
  * <p>It is returned by the {@link SAML2Client}.</p>
  * 
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @version 1.5.0
  */
-public class Saml2Profile extends CommonProfile {
+public class SAML2Profile extends CommonProfile {
 
     private static final long serialVersionUID = -7811733390277407623L;
 }

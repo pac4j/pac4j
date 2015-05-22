@@ -29,6 +29,7 @@ import java.io.IOException;
  * the saml messages. The content can be retrieved as a String from getOutgoingContent().
  * 
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @since 1.5.0
  *
  */
@@ -63,7 +64,6 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
     public String getRedirectUrl() {
         return this.redirectUrl;
     }
-
 
     private static class Pac4jServletOutputStream extends ServletOutputStream {
         private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

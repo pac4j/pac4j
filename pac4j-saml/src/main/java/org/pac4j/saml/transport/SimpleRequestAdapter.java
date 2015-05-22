@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the {@link WebContext}.
  * 
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @since 1.5.0
  *
  */

@@ -5,6 +5,7 @@ import org.pac4j.core.context.WebContext;
 /**
  * Builds the saml context for SP and the IDP.
  * @author Misagh Moayyed
+ * @author Misagh Moayyed
  * @since 1.7
  */
 public interface SAMLContextProvider {

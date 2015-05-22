@@ -29,7 +29,7 @@ import org.pac4j.core.credentials.Credentials;
  * @author Michael Remond
  * @since 1.5.0
  */
-public class Saml2Credentials extends Credentials {
+public class SAML2Credentials extends Credentials {
 
     private static final long serialVersionUID = 5040516205957826527L;
 
@@ -39,7 +39,7 @@ public class Saml2Credentials extends Credentials {
     
     private final Conditions conditions;
 
-    public Saml2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
+    public SAML2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
                             final String clientName) {
         this.nameId = nameId;
         this.attributes = attributes;

@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Provide the signature parameters required for signing.
  * @author Misagh Moayyed
+ * @since 1.7
  */
 public class DefaultSignatureSigningParametersProvider implements SignatureSigningParametersProvider {
 
