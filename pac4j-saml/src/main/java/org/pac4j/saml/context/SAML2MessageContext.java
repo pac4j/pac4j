@@ -52,10 +52,11 @@ import java.util.List;
 public class SAML2MessageContext extends MessageContext<SAMLObject> {
 
     public SAML2MessageContext() {
-
+        super();
     }
 
     public SAML2MessageContext(MessageContext<SAMLObject> ctx) {
+        this();
         super.setParent(ctx);
     }
 

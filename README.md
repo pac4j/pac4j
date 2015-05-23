@@ -374,7 +374,7 @@ Once you have an authenticated web session on the Identity Provider, usually it 
     // Lifetime in seconds
     client.setMaximumAuthenticationLifetime(600);
 
-By default, the entity ID of your application (the Service Provider) will be equals to the pac4j callback url. This can lead to problems with some IDP because of the query string not being accepted (like ADFS2.0). You can force your own entity ID with the spEntityId parameter:
+By default, the entity ID of your application (the Service Provider) will be equals to the pac4j callback url. This can lead to problems with some IDP because of the query string not being accepted (like ADFS2.0). You can force your own entity ID with the serviceProviderEntityId parameter:
 
     // custom SP entity ID
     client.setSpEntityId("http://localhost:8080/callback");
