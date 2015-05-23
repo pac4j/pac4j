@@ -56,7 +56,7 @@ import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.client.SAML2Client;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -72,7 +72,7 @@ import java.util.Set;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
- * The method validate populates the given {@link ExtendedSAMLMessageContext}
+ * The method validate populates the given {@link SAML2MessageContext}
  * with the correct SAML assertion and the corresponding nameID's Bearer subject if every checks succeeds.
  * 
  * @author Michael Remond
@@ -111,7 +111,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param context the context
      */
     @Override
-    public Credentials validate(final ExtendedSAMLMessageContext context) {
+    public Credentials validate(final SAML2MessageContext context) {
 
         final SAMLObject message = context.getMessage();
 
@@ -130,7 +130,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         return buildSaml2Credentials(context);
     }
 
-    protected SAML2Credentials buildSaml2Credentials(final ExtendedSAMLMessageContext context) {
+    protected SAML2Credentials buildSaml2Credentials(final SAML2MessageContext context) {
 
         final NameID nameId = context.getSAMLSubjectNameIdentifierContext().getSAML2SubjectNameID();
         final Assertion subjectAssertion = context.getSubjectAssertion();
@@ -169,7 +169,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param context the context
      * @param engine the engine
      */
-    protected void validateSamlProtocolResponse(final Response response, final ExtendedSAMLMessageContext context,
+    protected void validateSamlProtocolResponse(final Response response, final SAML2MessageContext context,
             final SignatureTrustEngine engine) {
 
         if (!isIssueInstantValid(response.getIssueInstant())) {
@@ -200,14 +200,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     /**
      * Validates the SAML SSO response by finding a valid assertion with authn statements.
-     * Populates the {@link ExtendedSAMLMessageContext} with a subjectAssertion and a subjectNameIdentifier.
+     * Populates the {@link SAML2MessageContext} with a subjectAssertion and a subjectNameIdentifier.
      *
      * @param response the response
      * @param context the context
      * @param engine the engine
      * @param decrypter the decrypter
      */
-    protected void validateSamlSSOResponse(final Response response, final ExtendedSAMLMessageContext context,
+    protected void validateSamlSSOResponse(final Response response, final SAML2MessageContext context,
             final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         for (final Assertion assertion : response.getAssertions()) {
@@ -262,7 +262,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param issuer the issuer
      * @param context the context
      */
-    protected void validateIssuer(final Issuer issuer, final ExtendedSAMLMessageContext context) {
+    protected void validateIssuer(final Issuer issuer, final SAML2MessageContext context) {
         if (issuer.getFormat() != null && !issuer.getFormat().equals(NameIDType.ENTITY)) {
             throw new SAMLException("Issuer type is not entity but " + issuer.getFormat());
         }
@@ -287,7 +287,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param engine the engine
      * @param decrypter the decrypter
      */
-    protected void validateAssertion(final Assertion assertion, final ExtendedSAMLMessageContext context,
+    protected void validateAssertion(final Assertion assertion, final SAML2MessageContext context,
             final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         if (!isIssueInstantValid(assertion.getIssueInstant())) {
@@ -325,7 +325,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      *            then.
      */
     @SuppressWarnings("unchecked")
-    protected void validateSubject(final Subject subject, final ExtendedSAMLMessageContext context,
+    protected void validateSubject(final Subject subject, final SAML2MessageContext context,
             final Decrypter decrypter) {
         boolean samlIDFound = false;
 
@@ -418,7 +418,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @return true if all Bearer subject checks are passing
      */
     protected boolean isValidBearerSubjectConfirmationData(final SubjectConfirmationData data,
-            final ExtendedSAMLMessageContext context) {
+            final SAML2MessageContext context) {
         if (data == null) {
             logger.debug("SubjectConfirmationData cannot be null for Bearer confirmation");
             return false;
@@ -463,7 +463,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param conditions the conditions
      * @param context the context
      */
-    protected void validateAssertionConditions(final Conditions conditions, final ExtendedSAMLMessageContext context) {
+    protected void validateAssertionConditions(final Conditions conditions, final SAML2MessageContext context) {
 
         if (conditions == null) {
             throw new SAMLException("Assertion conditions cannot be null");
@@ -522,7 +522,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param context the context
      */
     protected void validateAuthenticationStatements(final List<AuthnStatement> authnStatements,
-            final ExtendedSAMLMessageContext context) {
+            final SAML2MessageContext context) {
 
         for (AuthnStatement statement : authnStatements) {
             if (!isAuthnInstantValid(statement.getAuthnInstant())) {
@@ -543,7 +543,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      * @param context the context
      * @param engine the engine
      */
-    protected void validateAssertionSignature(final Signature signature, final ExtendedSAMLMessageContext context,
+    protected void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
             final SignatureTrustEngine engine) {
 
         final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();

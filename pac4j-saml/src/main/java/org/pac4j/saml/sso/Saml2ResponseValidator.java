@@ -1,7 +1,7 @@
 package org.pac4j.saml.sso;
 
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
  * Defines operations needed to validate the response
@@ -11,5 +11,5 @@ import org.pac4j.saml.context.ExtendedSAMLMessageContext;
  */
 public interface SAML2ResponseValidator {
 
-    Credentials validate(ExtendedSAMLMessageContext context);
+    Credentials validate(SAML2MessageContext context);
 }

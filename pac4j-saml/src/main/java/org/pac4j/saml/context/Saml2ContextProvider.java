@@ -44,7 +44,7 @@ import javax.xml.namespace.QName;
 import java.util.List;
 
 /**
- * Responsible for building a {@link ExtendedSAMLMessageContext} from given SAML2 properties (idpEntityId and metadata
+ * Responsible for building a {@link SAML2MessageContext} from given SAML2 properties (idpEntityId and metadata
  * manager) and current {@link WebContext}.
  * 
  * @author Michael Remond
@@ -72,8 +72,8 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     }
 
     @Override
-    public ExtendedSAMLMessageContext buildServiceProviderContext(final WebContext webContext) {
-        final ExtendedSAMLMessageContext context = new ExtendedSAMLMessageContext();
+    public SAML2MessageContext buildServiceProviderContext(final WebContext webContext) {
+        final SAML2MessageContext context = new SAML2MessageContext();
         context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
@@ -81,13 +81,13 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     }
 
     @Override
-    public ExtendedSAMLMessageContext buildContext(final WebContext webContext) {
-        final ExtendedSAMLMessageContext context = buildServiceProviderContext(webContext);
+    public SAML2MessageContext buildContext(final WebContext webContext) {
+        final SAML2MessageContext context = buildServiceProviderContext(webContext);
         addIDPContext(context);
         return context;
     }
 
-    protected void addTransportContext(final WebContext webContext, final ExtendedSAMLMessageContext context) {
+    protected void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
 
         final J2EContext j2EContext = (J2EContext) webContext;
         final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(j2EContext);
@@ -107,14 +107,14 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
     }
 
-    protected void addSPContext(final ExtendedSAMLMessageContext context) {
+    protected void addSPContext(final SAML2MessageContext context) {
         final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
         selfContext.setEntityId(this.spEntityId.getEntityId());
         selfContext.setRole(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.spEntityId, selfContext, SPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
-    protected void addIDPContext(final ExtendedSAMLMessageContext context) {
+    protected void addIDPContext(final SAML2MessageContext context) {
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
         peerContext.setEntityId(this.idpEntityId.getEntityId());
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);

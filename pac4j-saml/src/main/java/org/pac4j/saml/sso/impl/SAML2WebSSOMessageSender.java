@@ -4,7 +4,6 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
 import org.apache.velocity.app.VelocityEngine;
 import org.opensaml.messaging.encoder.MessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
-import org.opensaml.profile.context.ProfileRequestContext;
 import org.opensaml.saml.common.binding.impl.SAMLOutboundDestinationHandler;
 import org.opensaml.saml.common.binding.security.impl.EndpointURLSchemeSecurityHandler;
 import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
@@ -17,7 +16,7 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageSender;
@@ -46,7 +45,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
     }
 
     @Override
-    public void sendMessage(final ExtendedSAMLMessageContext context,
+    public void sendMessage(final SAML2MessageContext context,
                             final AuthnRequest authnRequest,
                             final Object relayState) {
 
@@ -58,7 +57,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
         final MessageEncoder encoder = getMessageEncoder(context);
 
-        final ExtendedSAMLMessageContext outboundContext = new ExtendedSAMLMessageContext(context);
+        final SAML2MessageContext outboundContext = new SAML2MessageContext(context);
         outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
 
         outboundContext.getProfileRequestContext().setInboundMessageContext(
@@ -97,7 +96,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     protected void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
                                                  final IDPSSODescriptor idpssoDescriptor,
-                                                 final ExtendedSAMLMessageContext outboundContext) {
+                                                 final SAML2MessageContext outboundContext) {
 
         try {
             final EndpointURLSchemeSecurityHandler handlerEnd =
@@ -125,7 +124,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     }
 
-    private MessageEncoder getMessageEncoder(final ExtendedSAMLMessageContext ctx) {
+    private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
         // Build the WebSSO handler for sending and receiving SAML2 messages
         BaseSAML2MessageEncoder encoder;
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {

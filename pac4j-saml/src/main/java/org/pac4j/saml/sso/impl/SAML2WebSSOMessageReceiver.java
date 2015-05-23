@@ -9,7 +9,7 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageReceiver;
@@ -35,7 +35,7 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
     }
 
     @Override
-    public Credentials receiveMessage(final ExtendedSAMLMessageContext context) {
+    public Credentials receiveMessage(final SAML2MessageContext context) {
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
 
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
@@ -55,7 +55,7 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
             throw new SAMLException("Error initializing the decoder", e);
         }
 
-        final ExtendedSAMLMessageContext decodedCtx = new ExtendedSAMLMessageContext(decoder.getMessageContext());
+        final SAML2MessageContext decodedCtx = new SAML2MessageContext(decoder.getMessageContext());
         decodedCtx.setMessage(decoder.getMessageContext().getMessage());
 
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();

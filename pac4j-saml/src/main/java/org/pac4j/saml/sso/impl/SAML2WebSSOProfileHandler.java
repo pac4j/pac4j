@@ -18,7 +18,7 @@ package org.pac4j.saml.sso.impl;
 
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2MessageReceiver;
 import org.pac4j.saml.sso.SAML2MessageSender;
 import org.pac4j.saml.sso.SAML2ProfileHandler;
@@ -46,11 +46,11 @@ public class SAML2WebSSOProfileHandler implements SAML2ProfileHandler<AuthnReque
     }
 
     @Override
-    public void send(ExtendedSAMLMessageContext context, final AuthnRequest msg, final Object data) {
+    public void send(SAML2MessageContext context, final AuthnRequest msg, final Object data) {
         this.messageSender.sendMessage(context, msg, data);
     }
 
-    public Credentials receive(final ExtendedSAMLMessageContext context) {
+    public Credentials receive(final SAML2MessageContext context) {
         return this.messageReceiver.receiveMessage(context);
     }
 
