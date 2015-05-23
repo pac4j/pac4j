@@ -18,6 +18,8 @@ package org.pac4j.saml.client;
 
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.junit.Assert.*;
 
 /**
@@ -27,27 +29,41 @@ public class SAML2ClientTest {
 
     @Test
     public void testIdpMetadataParsing_fromFile() {
-        SAML2Client client = new SAML2Client();
-        client.setIdpMetadataPath("resource:testshib-providers.xml");
-        client.setCallbackUrl("http://localhost:8080");
+        final SAML2Client client = getClient();
+        client.getConfiguration().setIdentityProviderMetadataPath("resource:testshib-providers.xml");
         client.init();
 
         client.getIdentityProviderMetadataResolver().resolve();
-        String id = client.getIdentityProviderMetadataResolver().getEntityId();
+        final String id = client.getIdentityProviderMetadataResolver().getEntityId();
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
     @Test
     public void testIdpMetadataParsing_fromUrl() {
-        SAML2Client client = new SAML2Client();
-        client.setIdpMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
-        client.setCallbackUrl("http://localhost:8080");
+        final SAML2Client client = getClient();
+        client.getConfiguration().setIdentityProviderMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
         client.init();
 
         client.getIdentityProviderMetadataResolver().resolve();
-        String id = client.getIdentityProviderMetadataResolver().getEntityId();
+        final String id = client.getIdentityProviderMetadataResolver().getEntityId();
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
+
+    protected SAML2Client getClient() {
+
+        final SAML2ClientConfiguration cfg =
+                new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                        "pac4j-demo-passwd",
+                        "pac4j-demo-passwd",
+                        "resource:testshib-providers.xml");
+        cfg.setMaximumAuthenticationLifetime(3600);
+        cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+
+        final SAML2Client saml2Client = new SAML2Client(cfg);
+        saml2Client.setCallbackUrl("http://localhost:8080/something");
+        return saml2Client;
+    }
 
 }

@@ -63,7 +63,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     @Test
     public void testCustomSpEntityId() {
         SAML2Client client = getClient();
-        client.setSpEntityId("http://localhost:8080/callback");
+        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
         client.init();
         String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
@@ -143,16 +143,21 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
 
     @Override
     protected SAML2Client getClient() {
-        final SAML2Client saml2Client = new SAML2Client();
-        saml2Client.setKeystorePath("resource:samlKeystore.jks");
-        saml2Client.setKeystorePassword("pac4j-demo-passwd");
-        saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
-        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
-        saml2Client.setMaximumAuthenticationLifetime(3600);
+
+        final SAML2ClientConfiguration cfg =
+                new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                        "pac4j-demo-passwd",
+                        "pac4j-demo-passwd",
+                        "resource:testshib-providers.xml");
+
+        cfg.setMaximumAuthenticationLifetime(3600);
+        cfg.setDestinationBindingType(getDestinationBindingType());
+        cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+
+        final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
-        saml2Client.setDestinationBindingType(getDestinationBindingType());
-        saml2Client.setSpEntityId("urn:mace:saml:pac4j.org");
-        saml2Client.setSpMeadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+
         return saml2Client;
     }
 
