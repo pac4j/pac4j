@@ -54,7 +54,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
         SAML2Client client = getClient();
         client.init();
         String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
-        assertTrue(spMetadata.contains("entityID=\"" + client.getSpEntityId() + "\""));
+        assertTrue(spMetadata.contains("entityID=\"" + client.getServiceProviderResolvedEntityId() + "\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
                         + getCallbackUrl() + "\""));

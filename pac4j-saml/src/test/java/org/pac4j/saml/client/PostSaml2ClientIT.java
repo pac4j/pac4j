@@ -96,7 +96,7 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
 
     @Test
     public void testForceAuthIsSetForPostBinding() throws Exception {
-        SAML2Client client = (SAML2Client) getClient();
+        SAML2Client client =  getClient();
         client.setForceAuth(true);
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -105,7 +105,7 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
 
     @Test
     public void testSetComparisonTypeWithPostBinding() throws Exception {
-        SAML2Client client = (SAML2Client) getClient();
+        SAML2Client client =  getClient();
         client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
