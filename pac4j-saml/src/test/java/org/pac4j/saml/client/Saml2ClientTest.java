@@ -17,6 +17,7 @@
 package org.pac4j.saml.client;
 
 import org.junit.Test;
+import org.pac4j.saml.util.Configuration;
 
 import java.io.File;
 
@@ -26,6 +27,14 @@ import static org.junit.Assert.*;
  * Unit tests for the SAML2Client.
  */
 public class SAML2ClientTest {
+
+
+    public SAML2ClientTest() {
+        assertNotNull(Configuration.getParserPool());
+        assertNotNull(Configuration.getMarshallerFactory());
+        assertNotNull(Configuration.getUnmarshallerFactory());
+        assertNotNull(Configuration.getBuilderFactory());
+    }
 
     @Test
     public void testIdpMetadataParsing_fromFile() {
