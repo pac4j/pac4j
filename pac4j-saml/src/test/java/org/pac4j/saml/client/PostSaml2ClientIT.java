@@ -86,7 +86,7 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
     @Test
     public void testCustomSpEntityIdForPostBinding() throws Exception {
         SAML2Client client = getClient();
-        client.setSpEntityId("http://localhost:8080/callback");
+        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent())
@@ -97,7 +97,7 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
     @Test
     public void testForceAuthIsSetForPostBinding() throws Exception {
         SAML2Client client =  getClient();
-        client.setForceAuth(true);
+        client.getConfiguration().setForceAuth(true);
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
@@ -106,7 +106,7 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
     @Test
     public void testSetComparisonTypeWithPostBinding() throws Exception {
         SAML2Client client =  getClient();
-        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));

@@ -49,7 +49,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     @Test
     public void testCustomSpEntityIdForRedirectBinding() throws Exception {
         SAML2Client client = getClient();
-        client.setSpEntityId("http://localhost:8080/callback");
+        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
 
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
@@ -62,7 +62,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     @Test
     public void testForceAuthIsSetForRedirectBinding() throws Exception {
         SAML2Client client = getClient();
-        client.setForceAuth(true);
+        client.getConfiguration().setForceAuth(true);
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
@@ -71,7 +71,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     @Test
     public void testSetComparisonTypeWithRedirectBinding() throws Exception {
         SAML2Client client = getClient();
-        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
@@ -80,7 +80,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     @Test
     public void testNameIdPolicyFormat() throws Exception{
         SAML2Client client = getClient();
-        client.setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
+        client.getConfiguration().setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
         String loc = action.getLocation();
@@ -92,8 +92,8 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     @Test
     public void testAuthnContextClassRef() throws Exception {
         SAML2Client client = getClient();
-        client.setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        client.setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
+        client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
+        client.getConfiguration().setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
         WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         RedirectAction action = client.getRedirectAction(context, true, false);
 
