@@ -9,7 +9,7 @@ import org.pac4j.core.context.WebContext;
  * @since 1.7
  */
 public interface SAMLContextProvider {
-    ExtendedSAMLMessageContext buildServiceProviderContext(WebContext webContext);
+    SAML2MessageContext buildServiceProviderContext(WebContext webContext);
 
-    ExtendedSAMLMessageContext buildContext(WebContext webContext);
+    SAML2MessageContext buildContext(WebContext webContext);
 }

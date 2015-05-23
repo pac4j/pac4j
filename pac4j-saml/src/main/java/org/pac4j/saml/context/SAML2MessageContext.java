@@ -49,13 +49,13 @@ import java.util.List;
  * @version 1.5.0
  */
 @SuppressWarnings("rawtypes")
-public class ExtendedSAMLMessageContext extends MessageContext<SAMLObject> {
+public class SAML2MessageContext extends MessageContext<SAMLObject> {
 
-    public ExtendedSAMLMessageContext() {
+    public SAML2MessageContext() {
 
     }
 
-    public ExtendedSAMLMessageContext(MessageContext<SAMLObject> ctx) {
+    public SAML2MessageContext(MessageContext<SAMLObject> ctx) {
         super.setParent(ctx);
     }
 

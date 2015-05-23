@@ -32,7 +32,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.SAML2Credentials;
@@ -229,7 +229,7 @@ public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
 
-        final ExtendedSAMLMessageContext context = this.contextProvider.buildContext(wc);
+        final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
         final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
@@ -247,7 +247,7 @@ public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
 
     @Override
     protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
-        final ExtendedSAMLMessageContext context = this.contextProvider.buildContext(wc);
+        final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         return (SAML2Credentials) this.handler.receive(context);
     }
 

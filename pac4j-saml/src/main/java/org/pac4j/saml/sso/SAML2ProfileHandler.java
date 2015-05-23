@@ -1,7 +1,7 @@
 package org.pac4j.saml.sso;
 
 import org.opensaml.saml.common.SAMLObject;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.core.credentials.Credentials;
 
 /**
@@ -10,7 +10,7 @@ import org.pac4j.core.credentials.Credentials;
  * @since 1.7
  */
 public interface SAML2ProfileHandler<T extends SAMLObject> {
-    void send(ExtendedSAMLMessageContext context, T msg, Object state);
+    void send(SAML2MessageContext context, T msg, Object state);
 
-    Credentials receive(ExtendedSAMLMessageContext context);
+    Credentials receive(SAML2MessageContext context);
 }

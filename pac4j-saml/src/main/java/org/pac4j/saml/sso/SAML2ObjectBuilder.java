@@ -1,8 +1,7 @@
 package org.pac4j.saml.sso;
 
 import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.saml.saml2.core.AuthnRequest;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
  * Builds an authentication request for the idp.
@@ -11,5 +10,5 @@ import org.pac4j.saml.context.ExtendedSAMLMessageContext;
  */
 public interface SAML2ObjectBuilder<T extends SAMLObject> {
 
-    <T> T build(final ExtendedSAMLMessageContext context);
+    <T> T build(final SAML2MessageContext context);
 }

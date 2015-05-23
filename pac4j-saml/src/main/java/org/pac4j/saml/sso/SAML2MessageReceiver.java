@@ -1,7 +1,7 @@
 package org.pac4j.saml.sso;
 
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
  * Defined ops to handle receiving saml messages from IdPs.
@@ -9,5 +9,5 @@ import org.pac4j.saml.context.ExtendedSAMLMessageContext;
  * @since 1.7
  */
 public interface SAML2MessageReceiver {
-    Credentials receiveMessage(ExtendedSAMLMessageContext context);
+    Credentials receiveMessage(SAML2MessageContext context);
 }

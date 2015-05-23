@@ -35,7 +35,7 @@ import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-import org.pac4j.saml.context.ExtendedSAMLMessageContext;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
 
@@ -81,7 +81,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     }
 
     @Override
-    public AuthnRequest build(final ExtendedSAMLMessageContext context) {
+    public AuthnRequest build(final SAML2MessageContext context) {
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService();
 
@@ -89,7 +89,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     }
 
     @SuppressWarnings("unchecked")
-    protected AuthnRequest buildAuthnRequest(final ExtendedSAMLMessageContext context,
+    protected AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
             final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
         final SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
