@@ -24,11 +24,11 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.UsernameProfileCreator;
+import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
 /**
  * This class tests the {@link FormClient} class.
@@ -45,7 +45,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         oldClient.setPasswordParameter(PASSWORD);
         oldClient.setUsernameParameter(USERNAME);
         oldClient.setLoginUrl(LOGIN_URL);
-        final UsernameProfileCreator profileCreator = new UsernameProfileCreator();
+        final SimpleTestUsernameProfileCreator profileCreator = new SimpleTestUsernameProfileCreator();
         oldClient.setProfileCreator(profileCreator);
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setAuthenticator(usernamePasswordAuthenticator);
@@ -60,7 +60,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
     }
 
     public void testMissingUsernamePasswordAuthenticator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, null, new UsernameProfileCreator());
+        final FormClient formClient = new FormClient(LOGIN_URL, null, new SimpleTestUsernameProfileCreator());
         TestsHelper.initShouldFail(formClient, "authenticator cannot be null");
     }
 
@@ -71,12 +71,12 @@ public final class TestFormClient extends TestCase implements TestsConstants {
 
     public void testMissingLoginUrl() {
         final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator(),
-                new UsernameProfileCreator());
+                new SimpleTestUsernameProfileCreator());
         TestsHelper.initShouldFail(formClient, "loginUrl cannot be blank");
     }
 
     private FormClient getFormClient() {
-        return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator());
+        return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new SimpleTestUsernameProfileCreator());
     }
 
     public void testRedirectionUrl() throws RequiresHttpAction {

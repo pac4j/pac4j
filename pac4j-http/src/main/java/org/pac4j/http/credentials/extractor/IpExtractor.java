@@ -13,19 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.credentials.extractor;
+
+import org.pac4j.core.context.WebContext;
+import org.pac4j.http.credentials.TokenCredentials;
 
 /**
- * This interface represents the contract to validate a username / password credentials.
- * 
+ * To extract a remote IP address.
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
  */
-public interface UsernamePasswordAuthenticator extends Authenticator<UsernamePasswordCredentials> {
+public class IpExtractor implements Extractor<TokenCredentials> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    void validate(UsernamePasswordCredentials credentials);
+    private final String clientName;
+
+    public IpExtractor(final String clientName) {
+        this.clientName = clientName;
+    }
+
+    public TokenCredentials extract(WebContext context) {
+        final String ip = context.getRemoteAddr();
+        if (ip == null) {
+            return null;
+        }
+
+        return new TokenCredentials(ip, clientName);
+    }
 }

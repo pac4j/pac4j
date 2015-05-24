@@ -15,9 +15,6 @@
  */
 package org.pac4j.http.client;
 
-import java.io.UnsupportedEncodingException;
-
-import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -25,11 +22,10 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.BasicAuthExtractor;
-import org.pac4j.http.credentials.Extractor;
-import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.UsernameProfileCreator;
+import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth.</p>
@@ -59,17 +55,17 @@ public class BasicAuthClient extends IndirectHttpClient<UsernamePasswordCredenti
     }
 
     public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final UsernameProfileCreator profilePopulator) {
+            final SimpleTestUsernameProfileCreator profilePopulator) {
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
     }
 
     @Override
     protected void internalInit() {
+        extractor = new BasicAuthExtractor(headerName, prefixHeader, getName());
         super.internalInit();
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
-        extractor = new BasicAuthExtractor(headerName, prefixHeader, getName());
     }
 
     @Override

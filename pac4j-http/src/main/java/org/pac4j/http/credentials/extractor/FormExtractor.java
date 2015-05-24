@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.http.credentials.UsernamePasswordCredentials;
 
 /**
  * To extract a username and password posted from a form.

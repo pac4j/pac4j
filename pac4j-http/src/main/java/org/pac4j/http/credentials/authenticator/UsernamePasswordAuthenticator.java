@@ -13,27 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.http.credentials.authenticator;
+
+import org.pac4j.http.credentials.UsernamePasswordCredentials;
 
 /**
- * This enum lists all available connection mechanism.
+ * This interface represents the contract to validate a username / password credentials.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public enum Mechanism {
-    // @formatter:off
-    OAUTH_PROTOCOL,
-    CAS_PROTOCOL,
-    OPENID_PROTOCOL,
-    FORM_MECHANISM,
-    BASICAUTH_MECHANISM,
-    SAML_PROTOCOL,
-    JANRAIN_MECHANISM,
-    GAE_MECHANISM,
-    OPENID_CONNECT_PROTOCOL,
-    HEADER_MECHANISM,
-    PARAMETER_MECHANISM,
-    IP_MECHANISM
-    // @formatter:on
+public interface UsernamePasswordAuthenticator extends Authenticator<UsernamePasswordCredentials> {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void validate(UsernamePasswordCredentials credentials);
 }

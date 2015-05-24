@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;

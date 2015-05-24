@@ -13,26 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.credentials.authenticator;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.http.credentials.TokenCredentials;
 
 /**
- * An extractor gets the {@link Credentials} from a {@link WebContext} and should return <code>null</code> if no credentials are present
- * or should throw a {@link CredentialsException} if it cannot get it.
- *
+ * This interface represents the contract to validate a token credentials.
+ * 
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface Extractor<C extends Credentials> {
+public interface TokenAuthenticator extends Authenticator<TokenCredentials> {
 
     /**
-     * Extract the right credentials. It should throw a {@link CredentialsException} in case of failure.
-     *
-     * @param context the current web context
-     * @return the credentials.
+     * {@inheritDoc}
      */
-    C extract(WebContext context);
+    @Override
+    void validate(TokenCredentials credentials);
 }

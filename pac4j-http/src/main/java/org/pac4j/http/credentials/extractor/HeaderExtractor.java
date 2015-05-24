@@ -13,21 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials;
+package org.pac4j.http.credentials.extractor;
 
-import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
-
-import java.io.UnsupportedEncodingException;
+import org.pac4j.http.credentials.TokenCredentials;
 
 /**
- * To extract basic auth header.
+ * To extract header value.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class BasicAuthExtractor implements Extractor<UsernamePasswordCredentials> {
+public class HeaderExtractor implements Extractor<TokenCredentials> {
 
     private final String headerName;
 
@@ -35,13 +33,13 @@ public class BasicAuthExtractor implements Extractor<UsernamePasswordCredentials
 
     private final String clientName;
 
-    public BasicAuthExtractor(final String headerName, final String prefixHeader, final String clientName) {
+    public HeaderExtractor(final String headerName, final String prefixHeader, final String clientName) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
         this.clientName = clientName;
     }
 
-    public UsernamePasswordCredentials extract(WebContext context) {
+    public TokenCredentials extract(WebContext context) {
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
             return null;
@@ -52,20 +50,6 @@ public class BasicAuthExtractor implements Extractor<UsernamePasswordCredentials
         }
 
         final String headerWithoutPrefix = header.substring(this.prefixHeader.length());
-        final byte[] decoded = Base64.decodeBase64(headerWithoutPrefix);
-
-        String token;
-        try {
-            token = new String(decoded, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-            throw new CredentialsException("Bad format of the basic auth header");
-        }
-
-        final int delim = token.indexOf(":");
-        if (delim < 0) {
-            throw new CredentialsException("Bad format of the basic auth header");
-        }
-        return new UsernamePasswordCredentials(token.substring(0, delim),
-                token.substring(delim + 1), clientName);
+        return new TokenCredentials(headerWithoutPrefix, clientName);
     }
 }

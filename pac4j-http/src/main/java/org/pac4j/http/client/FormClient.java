@@ -22,10 +22,10 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.FormExtractor;
-import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.extractor.FormExtractor;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.UsernameProfileCreator;
+import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
 /**
  * <p>This class is the client to authenticate users through HTTP form.</p>
@@ -63,7 +63,7 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     }
 
     public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final UsernameProfileCreator profileCreator) {
+            final SimpleTestUsernameProfileCreator profileCreator) {
         this(loginUrl, usernamePasswordAuthenticator);
         setProfileCreator(profileCreator);
     }
@@ -79,9 +79,9 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
 
     @Override
     protected void internalInit() {
+        extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
         super.internalInit();
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
-        extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
     }
 
     @Override

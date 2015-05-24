@@ -20,13 +20,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.UsernameProfileCreator;
+import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
 /**
  * This class tests the {@link BasicAuthClient} class.
@@ -40,7 +39,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
         final BasicAuthClient oldClient = new BasicAuthClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setName(TYPE);
-        final UsernameProfileCreator profileCreator = new UsernameProfileCreator();
+        final SimpleTestUsernameProfileCreator profileCreator = new SimpleTestUsernameProfileCreator();
         oldClient.setProfileCreator(profileCreator);
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setAuthenticator(usernamePasswordAuthenticator);
@@ -52,7 +51,7 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
     }
 
     public void testMissingUsernamePasswordAuthenticator() {
-        final BasicAuthClient basicAuthClient = new BasicAuthClient(null, new UsernameProfileCreator());
+        final BasicAuthClient basicAuthClient = new BasicAuthClient(null, new SimpleTestUsernameProfileCreator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
@@ -65,13 +64,13 @@ public final class TestBasicAuthClient extends TestCase implements TestsConstant
 
     public void testMissingLoginUrl() {
         final BasicAuthClient basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
-                new UsernameProfileCreator());
+                new SimpleTestUsernameProfileCreator());
         TestsHelper.initShouldFail(basicAuthClient, "callbackUrl cannot be blank");
     }
 
     private BasicAuthClient getBasicAuthClient() {
         final BasicAuthClient basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
-                new UsernameProfileCreator());
+                new SimpleTestUsernameProfileCreator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         return basicAuthClient;
     }

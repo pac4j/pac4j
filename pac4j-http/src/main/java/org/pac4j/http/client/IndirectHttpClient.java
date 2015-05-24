@@ -17,11 +17,11 @@ package org.pac4j.http.client;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.http.credentials.Authenticator;
+import org.pac4j.http.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.http.credentials.Extractor;
+import org.pac4j.http.credentials.extractor.Extractor;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.ProfileCreator;
+import org.pac4j.http.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.HttpProfile;
 
@@ -54,6 +54,7 @@ public abstract class IndirectHttpClient<C extends Credentials> extends Indirect
 
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("extractor", this.extractor);
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
         CommonHelper.assertNotNull("profileCreator", getProfileCreator());
     }

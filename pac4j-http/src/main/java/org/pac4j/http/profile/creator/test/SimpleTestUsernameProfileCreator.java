@@ -13,10 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile;
+package org.pac4j.http.profile.creator.test;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
  * This class is a profile creator which creates a HTTP profile with username set.
@@ -24,7 +26,7 @@ import org.pac4j.http.credentials.UsernamePasswordCredentials;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class UsernameProfileCreator implements ProfileCreator<UsernamePasswordCredentials, HttpProfile> {
+public class SimpleTestUsernameProfileCreator implements ProfileCreator<UsernamePasswordCredentials, HttpProfile> {
 
     /**
      * {@inheritDoc}
