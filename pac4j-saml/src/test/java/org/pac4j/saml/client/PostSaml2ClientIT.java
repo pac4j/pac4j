@@ -54,10 +54,10 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
             final J2EContext context) throws Exception {
         // force immediate redirection for tests
         client.redirect(context, true, false);
-        File redirectFile = File.createTempFile("pac4j-saml2", ".html");
-        FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
+        final File redirectFile = File.createTempFile("pac4j-saml2", ".html");
+        final FileWriterWithEncoding writer = new FileWriterWithEncoding(redirectFile, "UTF-8");
 
-        MockHttpServletResponse response = (MockHttpServletResponse) context.getResponse();
+        final MockHttpServletResponse response = (MockHttpServletResponse) context.getResponse();
         writer.write(response.getContentAsString());
         writer.close();
         logger.debug("redirectPage path : {}", redirectFile.getPath());
@@ -71,24 +71,24 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
         return submit.click();
     }
 
-    private String getDecodedAuthnRequest(String content) throws Exception {
-        StringWebResponse response = new StringWebResponse(content, new URL("http://localhost:8080/"));
-        WebClient webClient = new WebClient();
-        HtmlPage page = HTMLParser.parseHtml(response, webClient.getCurrentWindow());
+    private String getDecodedAuthnRequest(final String content) throws Exception {
+        final StringWebResponse response = new StringWebResponse(content, new URL("http://localhost:8080/"));
+        final WebClient webClient = new WebClient();
+        final HtmlPage page = HTMLParser.parseHtml(response, webClient.getCurrentWindow());
         if (page.getForms().isEmpty()) {
             throw new SAMLException("Page " + page.getUrl() + " did not produce a form");
         }
-        HtmlForm form = page.getForms().get(0);
-        HtmlInput samlRequest = form.getInputByName("SAMLRequest");
+        final HtmlForm form = page.getForms().get(0);
+        final HtmlInput samlRequest = form.getInputByName("SAMLRequest");
         return new String(Base64.decodeBase64(samlRequest.getValueAttribute()));
     }
 
     @Test
     public void testCustomSpEntityIdForPostBinding() throws Exception {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent())
                 .contains(
                         "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
@@ -96,28 +96,28 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
 
     @Test
     public void testForceAuthIsSetForPostBinding() throws Exception {
-        SAML2Client client =  getClient();
+        final SAML2Client client =  getClient();
         client.getConfiguration().setForceAuth(true);
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("ForceAuthn=\"true\""));
     }
 
     @Test
     public void testSetComparisonTypeWithPostBinding() throws Exception {
-        SAML2Client client =  getClient();
+        final SAML2Client client =  getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getDecodedAuthnRequest(action.getContent()).contains("Comparison=\"exact\""));
     }
 
     @Test
     public void testRelayState() throws RequiresHttpAction {
-        SAML2Client client = getClient();
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final SAML2Client client = getClient();
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getContent().contains("<input type=\"hidden\" name=\"RelayState\" value=\"relayState\"/>"));
     }
 

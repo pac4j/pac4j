@@ -34,7 +34,7 @@ import java.io.IOException;
  *
  */
 public class SimpleResponseAdapter extends HttpServletResponseWrapper {
-    private Pac4jServletOutputStream outputStream = new Pac4jServletOutputStream();
+    private final Pac4jServletOutputStream outputStream = new Pac4jServletOutputStream();
     private String redirectUrl;
 
     /**
@@ -47,21 +47,21 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
         super(response.getResponse());
     }
 
-    public String getOutgoingContent() {
+    public final String getOutgoingContent() {
         return outputStream.getOutgoingContent();
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
+    public final ServletOutputStream getOutputStream() throws IOException {
         return outputStream;
     }
 
     @Override
-    public void sendRedirect(final String redirectUrl) {
+    public final void sendRedirect(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
-    public String getRedirectUrl() {
+    public final String getRedirectUrl() {
         return this.redirectUrl;
     }
 
@@ -69,13 +69,13 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
         private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         @Override
-        public void write(int b) throws IOException {
+        public final void write(final int b) throws IOException {
             outputStream.write(b);
         }
 
-        public String getOutgoingContent() {
+        public final String getOutgoingContent() {
             try {
-                String result = new String(this.outputStream.toByteArray(), "UTF-8");
+                final String result = new String(this.outputStream.toByteArray(), "UTF-8");
                 return result;
             } catch (final Exception e) {
                 throw new RuntimeException(e);

@@ -20,6 +20,7 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageSender;
+import org.pac4j.saml.storage.SAMLMessageStorage;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,8 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
 
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
-    private String destinationBindingType;
-    private boolean signErrorResponses;
+    private final String destinationBindingType;
+    private final boolean signErrorResponses;
 
     public SAML2WebSSOMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
                                     final String destinationBindingType,
@@ -86,17 +87,23 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
             encoder.initialize();
             encoder.prepareContext();
             encoder.encode();
+
+            final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
+            if (messageStorage != null) {
+                messageStorage.storeMessage(authnRequest.getID(), authnRequest);
+            }
+
         } catch (final MessageEncodingException e) {
             throw new SAMLException("Error encoding saml message", e);
-        } catch (ComponentInitializationException e) {
+        } catch (final ComponentInitializationException e) {
             throw new SAMLException("Error initializing saml encoder", e);
         }
 
     }
 
-    protected void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
-                                                 final IDPSSODescriptor idpssoDescriptor,
-                                                 final SAML2MessageContext outboundContext) {
+    protected final void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
+                                                       final IDPSSODescriptor idpssoDescriptor,
+                                                       final SAML2MessageContext outboundContext) {
 
         try {
             final EndpointURLSchemeSecurityHandler handlerEnd =
@@ -126,7 +133,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
         // Build the WebSSO handler for sending and receiving SAML2 messages
-        BaseSAML2MessageEncoder encoder;
+        final BaseSAML2MessageEncoder encoder;
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
             // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
             final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();

@@ -54,7 +54,7 @@ public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrust
         try {
             metadataCredentialResolver.initialize();
             roleResolver.initialize();
-        } catch (ComponentInitializationException e) {
+        } catch (final ComponentInitializationException e) {
             throw new SAMLException(e);
         }
 

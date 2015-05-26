@@ -40,7 +40,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String spMetadataPath;
     private String spMetadata;
     private final String callbackUrl;
-    private boolean forceSpMetadataGeneration;
+    private final boolean forceSpMetadataGeneration;
 
     public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath,
                                                 final String callbackUrl) {
@@ -69,13 +69,13 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 }
             }
             logger.info("Using SP entity ID {}", this.spEntityId);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new SAMLException(e);
         }
     }
 
     @Override
-    public MetadataResolver resolve() {
+    public final MetadataResolver resolve() {
         try {
             final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
             if (this.credentialProvider != null) {
@@ -104,7 +104,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-                    StreamResult result = new StreamResult(new StringWriter());
+                    final StreamResult result = new StreamResult(new StringWriter());
                     final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
                     transformer.transform(source, result);
                     final FileWriter writer = new FileWriter(this.spMetadataPath);
@@ -113,20 +113,20 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 }
             }
             return spMetadataProvider;
-        } catch (ComponentInitializationException e) {
+        } catch (final ComponentInitializationException e) {
             throw new TechnicalException("Error initializing spMetadataProvider", e);
-        } catch (MarshallingException e) {
+        } catch (final MarshallingException e) {
             logger.warn("Unable to marshal SP metadata", e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.warn("Unable to print SP metadata", e);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.warn("Unable to transform metadata", e);
         }
         return null;
     }
 
     @Override
-    public String getEntityId() {
+    public final String getEntityId() {
         return this.spEntityId;
     }
 
@@ -144,7 +144,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     public XMLObject getEntityDescriptorElement() {
         try {
             return resolve().resolveSingle(new CriteriaSet(new EntityIdCriterion(getEntityId())));
-        } catch (ResolverException e) {
+        } catch (final ResolverException e) {
             throw new SAMLException("Error initializing idpMetadataProvider", e);
         }
     }

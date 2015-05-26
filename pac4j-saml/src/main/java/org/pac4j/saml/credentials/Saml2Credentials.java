@@ -47,11 +47,11 @@ public class SAML2Credentials extends Credentials {
         setClientName(clientName);
     }
 
-    public NameID getNameId() {
+    public final NameID getNameId() {
         return this.nameId;
     }
 
-    public List<Attribute> getAttributes() {
+    public final List<Attribute> getAttributes() {
         return this.attributes;
     }
     
@@ -60,7 +60,7 @@ public class SAML2Credentials extends Credentials {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
     }
 

@@ -39,20 +39,20 @@ public class SimpleRequestAdapter extends HttpServletRequestWrapper {
     }
 
     @Override
-    public HttpServletRequest getRequest() {
+    public final HttpServletRequest getRequest() {
         return (HttpServletRequest) super.getRequest();
     }
 
-    public J2EContext getContext() {
+    public final J2EContext getContext() {
         return context;
     }
 
-    public void setContext(J2EContext context) {
+    public void setContext(final J2EContext context) {
         this.context = context;
     }
 
     @Override
-    public String getMethod() {
+    public final String getMethod() {
         return getContext().getRequestMethod();
     }
 

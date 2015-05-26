@@ -59,7 +59,7 @@ public class SAML2ClientTest {
     }
 
 
-    protected SAML2Client getClient() {
+    protected final SAML2Client getClient() {
 
         final SAML2ClientConfiguration cfg =
                 new SAML2ClientConfiguration("resource:samlKeystore.jks",

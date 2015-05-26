@@ -52,14 +52,14 @@ public final class Configuration {
 
         try {
             parserPool.initialize();
-        } catch (ComponentInitializationException e) {
+        } catch (final ComponentInitializationException e) {
             throw new RuntimeException("Exception initializing parserPool", e);
         }
 
 
         try {
             InitializationService.initialize();
-        } catch (InitializationException e) {
+        } catch (final InitializationException e) {
             throw new RuntimeException("Exception initializing OpenSAML", e);
         }
 

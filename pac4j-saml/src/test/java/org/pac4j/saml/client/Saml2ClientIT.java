@@ -35,6 +35,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.profile.SAML2Profile;
+import org.pac4j.saml.storage.HttpSessionStorageFactory;
 import org.pac4j.saml.util.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -51,9 +52,9 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
 
     @Test
     public void testSPMetadata() {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.init();
-        String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
+        final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"" + client.getServiceProviderResolvedEntityId() + "\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
@@ -62,10 +63,10 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
 
     @Test
     public void testCustomSpEntityId() {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
         client.init();
-        String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
+        final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
@@ -73,12 +74,12 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected Mechanism getMechanism() {
+    protected final Mechanism getMechanism() {
         return Mechanism.SAML_PROTOCOL;
     }
 
     @Override
-    protected void updateContextForAuthn(WebClient webClient, HtmlPage authorizationPage, J2EContext context)
+    protected final void updateContextForAuthn(final WebClient webClient, final HtmlPage authorizationPage, final J2EContext context)
             throws Exception {
         if (authorizationPage.getForms().isEmpty()) {
             throw new SAMLException("Authorization page " + authorizationPage.getUrl() + " does not produce any forms");
@@ -93,24 +94,24 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
         HtmlPage callbackPage;
 
         try {
-            HtmlSubmitInput submit = form.getInputByValue("Login");
+            final HtmlSubmitInput submit = form.getInputByValue("Login");
             callbackPage = submit.click();
-        } catch (ElementNotFoundException e) {
-            HtmlButton btn = form.getButtonByName("_eventId_proceed");
+        } catch (final ElementNotFoundException e) {
+            final HtmlButton btn = form.getButtonByName("_eventId_proceed");
             callbackPage = btn.click();
         }
 
          ;
         try {
-            String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
-            String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
+            final String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
+            final String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
 
-            MockHttpServletRequest request = (MockHttpServletRequest) context.getRequest();
+            final MockHttpServletRequest request = (MockHttpServletRequest) context.getRequest();
             request.addParameter("SAMLResponse", samlResponse);
             request.addParameter("RelayState", relayState);
             request.setMethod("POST");
             request.setRequestURI(callbackPage.getForms().get(0).getActionAttribute());
-        } catch (ElementNotFoundException e) {
+        } catch (final ElementNotFoundException e) {
             throw new SAMLException("Saml response and/or relay state not found", e);
         }
     }
@@ -121,13 +122,13 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
+    protected final void registerForKryo(final Kryo kryo) {
         kryo.register(SAML2Profile.class);
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        SAML2Profile profile = (SAML2Profile) userProfile;
+    protected final void verifyProfile(final UserProfile userProfile) {
+        final SAML2Profile profile = (SAML2Profile) userProfile;
         assertEquals("[Member, Staff]", profile.getAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").toString());
         assertEquals("[myself]", profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.1").toString());
         assertEquals("[Me Myself And I]", profile.getAttribute("urn:oid:2.5.4.3").toString());
@@ -142,7 +143,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected SAML2Client getClient() {
+    protected final SAML2Client getClient() {
 
         final SAML2ClientConfiguration cfg =
                 new SAML2ClientConfiguration("resource:samlKeystore.jks",
@@ -154,7 +155,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
         cfg.setDestinationBindingType(getDestinationBindingType());
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
-
+        cfg.setSamlMessageStorageFactory(new HttpSessionStorageFactory());
         final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
 
