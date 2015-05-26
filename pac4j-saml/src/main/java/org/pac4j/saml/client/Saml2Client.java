@@ -56,6 +56,7 @@ import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
+import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -98,6 +99,13 @@ public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
     protected Decrypter decrypter;
 
     protected final SAML2ClientConfiguration configuration;
+
+    static {
+        CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
+        CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
+        CommonHelper.assertNotNull("unmarshallerFactory", Configuration.getUnmarshallerFactory());
+        CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
+    }
 
     public SAML2Client(final SAML2ClientConfiguration configuration) {
         this.configuration = configuration;
@@ -205,7 +213,6 @@ public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
         }
         return metadataManager;
     }
-
     @Override
     protected final BaseClient<SAML2Credentials, SAML2Profile> newClient() {
         return new SAML2Client(this.configuration.clone());

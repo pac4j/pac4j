@@ -46,26 +46,24 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-                                    final String privateKeyPassword, final String idpMetadataPath) {
-        this(keystorePath, keystorePassword, privateKeyPassword, idpMetadataPath, null, null);
+                                    final String privateKeyPassword, final String identityProviderMetadataPath) {
+        this(keystorePath, keystorePassword, privateKeyPassword, identityProviderMetadataPath, null, null);
     }
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-                                    final String privateKeyPassword, final String idpMetadataPath,
-                                    final String idpEntityId, final String spEntityId) {
+                                    final String privateKeyPassword, final String identityProviderMetadataPath,
+                                    final String identityProviderEntityId, final String serviceProviderEntityId) {
         this.keystorePath = keystorePath;
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
-        this.identityProviderMetadataPath = idpMetadataPath;
-        this.identityProviderEntityId = idpEntityId;
-        this.serviceProviderEntityId = spEntityId;
+        this.identityProviderMetadataPath = identityProviderMetadataPath;
+        this.identityProviderEntityId = identityProviderEntityId;
+        this.serviceProviderEntityId = serviceProviderEntityId;
 
         CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
         CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
         CommonHelper.assertNotBlank("identityProviderMetadataPath", this.identityProviderMetadataPath);
-
-
     }
 
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
