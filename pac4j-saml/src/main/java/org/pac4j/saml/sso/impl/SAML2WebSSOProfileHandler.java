@@ -46,7 +46,7 @@ public class SAML2WebSSOProfileHandler implements SAML2ProfileHandler<AuthnReque
     }
 
     @Override
-    public void send(SAML2MessageContext context, final AuthnRequest msg, final Object data) {
+    public void send(final SAML2MessageContext context, final AuthnRequest msg, final Object data) {
         this.messageSender.sendMessage(context, msg, data);
     }
 

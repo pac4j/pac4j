@@ -57,9 +57,9 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     protected final static Logger logger = LoggerFactory.getLogger(SAML2MetadataGenerator.class);
 
-    protected XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
+    protected final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
-    protected MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+    protected final MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
 
     protected CredentialProvider credentialProvider;
 
@@ -78,7 +78,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     protected String requestInitiatorLocation = null;
 
     @Override
-    public MetadataResolver buildMetadataResolver() throws Exception {
+    public final MetadataResolver buildMetadataResolver() throws Exception {
         final EntityDescriptor md = buildEntityDescriptor();
         final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
         final DOMMetadataResolver resolver = new DOMMetadataResolver(entityDescriptorElement);
@@ -90,14 +90,14 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     }
 
     @Override
-    public String getMetadata() throws Exception {
+    public final String getMetadata() throws Exception {
         final EntityDescriptor md = buildEntityDescriptor();
         final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
         return XMLHelper.nodeToString(entityDescriptorElement);
     }
 
     @Override
-    public EntityDescriptor buildEntityDescriptor() {
+    public final EntityDescriptor buildEntityDescriptor() {
         final SAMLObjectBuilder<EntityDescriptor> builder = (
                 SAMLObjectBuilder<EntityDescriptor>) this.builderFactory
                 .getBuilder(EntityDescriptor.DEFAULT_ELEMENT_NAME);
@@ -113,7 +113,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     }
 
-    protected Extensions generateMetadataExtensions() {
+    protected final Extensions generateMetadataExtensions() {
 
         final SAMLObjectBuilder<Extensions> builderExt =
                 (SAMLObjectBuilder<Extensions>) this.builderFactory
@@ -169,7 +169,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return extensions;
     }
 
-    protected String generateEntityDescriptorId() {
+    protected final String generateEntityDescriptorId() {
         try {
             return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
         } catch (final Exception e) {
@@ -177,7 +177,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         }
     }
 
-    protected SPSSODescriptor buildSPSSODescriptor() {
+    protected final SPSSODescriptor buildSPSSODescriptor() {
         final SAMLObjectBuilder<SPSSODescriptor> builder = (SAMLObjectBuilder<SPSSODescriptor>) this.builderFactory
                 .getBuilder(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         final SPSSODescriptor spDescriptor = builder.buildObject();
@@ -224,7 +224,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
 
     }
 
-    protected Collection<NameIDFormat> buildNameIDFormat() {
+    protected final Collection<NameIDFormat> buildNameIDFormat() {
 
         final SAMLObjectBuilder<NameIDFormat> builder = (SAMLObjectBuilder<NameIDFormat>) this.builderFactory
                 .getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
@@ -244,8 +244,8 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return formats;
     }
 
-    protected AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
-            final boolean isDefault) {
+    protected final AssertionConsumerService getAssertionConsumerService(final String binding, final int index,
+                                                                         final boolean isDefault) {
         final SAMLObjectBuilder<AssertionConsumerService> builder = (SAMLObjectBuilder<AssertionConsumerService>) this.builderFactory
                 .getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
         final AssertionConsumerService consumer = builder.buildObject();
@@ -267,7 +267,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return logoutService;
     }
 
-    protected KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
+    protected final KeyDescriptor getKeyDescriptor(final UsageType type, final KeyInfo key) {
         final SAMLObjectBuilder<KeyDescriptor> builder = (SAMLObjectBuilder<KeyDescriptor>)
                 Configuration.getBuilderFactory()
                 .getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
@@ -281,7 +281,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return this.credentialProvider;
     }
 
-    public void setCredentialProvider(final CredentialProvider credentialProvider) {
+    public final void setCredentialProvider(final CredentialProvider credentialProvider) {
         this.credentialProvider = credentialProvider;
     }
 
@@ -289,7 +289,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return this.entityId;
     }
 
-    public void setEntityId(final String entityId) {
+    public final void setEntityId(final String entityId) {
         this.entityId = entityId;
     }
 
@@ -297,7 +297,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         return this.authnRequestSigned;
     }
 
-    public void setAuthnRequestSigned(final boolean authnRequestSigned) {
+    public final void setAuthnRequestSigned(final boolean authnRequestSigned) {
         this.authnRequestSigned = authnRequestSigned;
     }
 
@@ -317,15 +317,15 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
         this.defaultACSIndex = defaultACSIndex;
     }
 
-    public void setAssertionConsumerServiceUrl(final String assertionConsumerServiceUrl) {
+    public final void setAssertionConsumerServiceUrl(final String assertionConsumerServiceUrl) {
         this.assertionConsumerServiceUrl = assertionConsumerServiceUrl;
     }
 
-    public void setSingleLogoutServiceUrl(final String singleLogoutServiceUrl) {
+    public final void setSingleLogoutServiceUrl(final String singleLogoutServiceUrl) {
         this.singleLogoutServiceUrl = singleLogoutServiceUrl;
     }
 
-    public void setRequestInitiatorLocation(String requestInitiatorLocation) {
+    public final void setRequestInitiatorLocation(final String requestInitiatorLocation) {
         this.requestInitiatorLocation = requestInitiatorLocation;
     }
 }

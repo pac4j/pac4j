@@ -48,7 +48,7 @@ public class VelocityEngineFactory {
                     net.shibboleth.utilities.java.support.velocity.VelocityEngine
                     .newVelocityEngine(props);
             return velocityEngine;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new TechnicalException("Error configuring velocity", e);
         }
 

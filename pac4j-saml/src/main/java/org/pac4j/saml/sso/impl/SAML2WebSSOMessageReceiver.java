@@ -1,7 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import org.opensaml.messaging.decoder.MessageDecodingException;
+import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
@@ -46,17 +45,24 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
             decoder.setHttpServletRequest(context.getProfileRequestContextInboundMessageTransportRequest().getRequest());
             decoder.setParserPool(Configuration.getParserPool());
             decoder.initialize();
-
             decoder.decode();
 
-        } catch (MessageDecodingException e) {
+        } catch (final Exception e) {
             throw new SAMLException("Error decoding saml message", e);
-        } catch (ComponentInitializationException e) {
-            throw new SAMLException("Error initializing the decoder", e);
         }
 
         final SAML2MessageContext decodedCtx = new SAML2MessageContext(decoder.getMessageContext());
         decodedCtx.setMessage(decoder.getMessageContext().getMessage());
+        decodedCtx.setSAMLMessageStorage(context.getSAMLMessageStorage());
+
+        final SAMLBindingContext bindingContext = decodedCtx.getParent()
+                .getSubcontext(SAMLBindingContext.class);
+
+        decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
+        decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
+        decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
+        decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext.isIntendedDestinationEndpointURIRequired());
+        decodedCtx.getSAMLBindingContext().setRelayState(bindingContext.getRelayState());
 
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
         decodedCtx.getSAMLEndpointContext().setEndpoint(acsService);
@@ -67,8 +73,11 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
         }
 
         decodedCtx.getSAMLPeerEntityContext().setEntityId(metadata.getEntityID());
+
         decodedCtx.getSAMLSelfEntityContext().setEntityId(context.getSAMLSelfEntityContext().getEntityId());
+        decodedCtx.getSAMLSelfEndpointContext().setEndpoint(context.getSAMLSelfEndpointContext().getEndpoint());
         decodedCtx.getSAMLSelfEntityContext().setRole(context.getSAMLSelfEntityContext().getRole());
+
         decodedCtx.getProfileRequestContext().setProfileId(SAML2_WEBSSO_PROFILE_URI);
 
         return this.validator.validate(decodedCtx);

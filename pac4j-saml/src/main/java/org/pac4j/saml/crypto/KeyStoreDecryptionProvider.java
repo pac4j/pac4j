@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class KeyStoreDecryptionProvider implements DecryptionProvider {
 
-    private static ChainingEncryptedKeyResolver encryptedKeyResolver;
+    private static final ChainingEncryptedKeyResolver encryptedKeyResolver;
     private final CredentialProvider credentialProvider;
 
     static {
@@ -52,7 +52,7 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
         this.credentialProvider = credentialProvider;
     }
 
-    public Decrypter build() {
+    public final Decrypter build() {
         final Credential encryptionCredential = this.credentialProvider.getCredential();
         final KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
         final Decrypter decrypter = new Decrypter(null, resolver, encryptedKeyResolver);

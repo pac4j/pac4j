@@ -2,6 +2,8 @@ package org.pac4j.saml.client;
 
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.storage.EmptyStorageFactory;
+import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 
 import java.io.Serializable;
 
@@ -11,7 +13,8 @@ import java.io.Serializable;
  * @author Misagh Moayyed
  * @since 1.7
  */
-public final class SAML2ClientConfiguration implements Serializable, Cloneable {
+public final class SAML2ClientConfiguration implements Cloneable {
+
     private String keystorePath;
 
     private String keystorePassword;
@@ -39,6 +42,8 @@ public final class SAML2ClientConfiguration implements Serializable, Cloneable {
     private String serviceProviderMetadataPath;
 
     private boolean forceServiceProviderMetadataGeneration;
+
+    private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
                                     final String privateKeyPassword, final String idpMetadataPath) {
@@ -71,7 +76,7 @@ public final class SAML2ClientConfiguration implements Serializable, Cloneable {
         this.identityProviderEntityId = identityProviderEntityId;
     }
 
-    public void setServiceProviderEntityId(String serviceProviderEntityId) {
+    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
         this.serviceProviderEntityId = serviceProviderEntityId;
     }
 
@@ -87,7 +92,7 @@ public final class SAML2ClientConfiguration implements Serializable, Cloneable {
         this.privateKeyPassword = privateKeyPassword;
     }
 
-    public void setMaximumAuthenticationLifetime(final Integer maximumAuthenticationLifetime) {
+    public void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
 
@@ -165,7 +170,7 @@ public final class SAML2ClientConfiguration implements Serializable, Cloneable {
         this.serviceProviderMetadataPath = serviceProviderMetadataPath;
     }
 
-    public void setForceServiceProviderMetadataGeneration(boolean forceServiceProviderMetadataGeneration) {
+    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
         this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
     }
 
@@ -205,11 +210,19 @@ public final class SAML2ClientConfiguration implements Serializable, Cloneable {
         return forceServiceProviderMetadataGeneration;
     }
 
+    public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
+        return samlMessageStorageFactory;
+    }
+
+    public void setSamlMessageStorageFactory(final SAMLMessageStorageFactory samlMessageStorageFactory) {
+        this.samlMessageStorageFactory = samlMessageStorageFactory;
+    }
+
     @Override
     public SAML2ClientConfiguration clone() {
         try {
             return (SAML2ClientConfiguration) super.clone();
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
     }

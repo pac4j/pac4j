@@ -48,9 +48,9 @@ import org.pac4j.saml.util.Configuration;
 
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
 
-    private boolean forceAuth;
+    private final boolean forceAuth;
 
-    private AuthnContextComparisonTypeEnumeration comparisonType;
+    private final AuthnContextComparisonTypeEnumeration comparisonType;
 
     private String bindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
@@ -71,8 +71,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
      * @param authnContextClassRef the authn context class ref
      * @param nameIdPolicyFormat the name id policy format
      */
-    public SAML2AuthnRequestBuilder(boolean forceAuth, String comparisonType, String bindingType,
-                                    String authnContextClassRef, String nameIdPolicyFormat) {
+    public SAML2AuthnRequestBuilder(final boolean forceAuth, final String comparisonType, final String bindingType,
+                                    final String authnContextClassRef, final String nameIdPolicyFormat) {
         this.forceAuth = forceAuth;
         this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
         this.bindingType = bindingType;
@@ -89,8 +89,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     }
 
     @SuppressWarnings("unchecked")
-    protected AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
-            final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
+    protected final AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
+                                                   final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
 
         final SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);
@@ -131,7 +131,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     }
 
     @SuppressWarnings("unchecked")
-    protected Issuer getIssuer(final String spEntityId) {
+    protected final Issuer getIssuer(final String spEntityId) {
         final SAMLObjectBuilder<Issuer> issuerBuilder = (SAMLObjectBuilder<Issuer>) this.builderFactory
                 .getBuilder(Issuer.DEFAULT_ELEMENT_NAME);
         final Issuer issuer = issuerBuilder.buildObject();
@@ -139,11 +139,11 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return issuer;
     }
 
-    protected String generateID() {
+    protected final String generateID() {
         return "_".concat(RandomStringUtils.randomAlphanumeric(39)).toLowerCase();
     }
 
-    protected AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(String comparisonType) {
+    protected final AuthnContextComparisonTypeEnumeration getComparisonTypeEnumFromString(final String comparisonType) {
         if ("exact".equalsIgnoreCase(comparisonType)) {
             return AuthnContextComparisonTypeEnumeration.EXACT;
         }
@@ -159,7 +159,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         return null;
     }
 
-    public void setIssueInstantSkewSeconds(int issueInstantSkewSeconds) {
+    public void setIssueInstantSkewSeconds(final int issueInstantSkewSeconds) {
         this.issueInstantSkewSeconds = issueInstantSkewSeconds;
     }
 }

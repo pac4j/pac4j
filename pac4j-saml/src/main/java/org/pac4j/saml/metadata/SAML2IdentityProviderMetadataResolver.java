@@ -45,7 +45,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     @Override
-    public MetadataResolver resolve() {
+    public final MetadataResolver resolve() {
 
         try {
             Resource resource = null;
@@ -93,11 +93,11 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 throw new SAMLException("No idp entityId found");
             }
 
-        } catch (ComponentInitializationException e) {
+        } catch (final ComponentInitializationException e) {
             throw new SAMLException("Error initializing idpMetadataProvider", e);
-        } catch (XMLParserException e) {
+        } catch (final XMLParserException e) {
             throw new TechnicalException("Error parsing idp Metadata", e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new TechnicalException("Error getting idp Metadata resource", e);
         }
         return idpMetadataProvider;
@@ -107,7 +107,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     public String getEntityId() {
         final XMLObject md = getEntityDescriptorElement();
         if (md instanceof EntitiesDescriptor) {
-            for (EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
+            for (final EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
                 return entity.getEntityID();
             }
         } else if (md instanceof EntityDescriptor) {
@@ -127,10 +127,10 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     @Override
-    public XMLObject getEntityDescriptorElement() {
+    public final XMLObject getEntityDescriptorElement() {
         try {
             return resolve().resolveSingle(new CriteriaSet(new EntityIdCriterion(this.idpEntityId)));
-        } catch (ResolverException e) {
+        } catch (final ResolverException e) {
             throw new SAMLException("Error initializing idpMetadataProvider", e);
         }
     }

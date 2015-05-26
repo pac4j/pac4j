@@ -35,11 +35,13 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
+import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 import org.pac4j.saml.transport.SimpleRequestAdapter;
 import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 import java.util.List;
 
@@ -57,22 +59,32 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final static Logger logger = LoggerFactory.getLogger(SAML2ContextProvider.class);
 
-    protected MetadataResolver metadata;
+    protected final MetadataResolver metadata;
 
-    protected SAML2MetadataResolver idpEntityId;
+    protected final SAML2MetadataResolver idpEntityId;
 
-    protected SAML2MetadataResolver spEntityId;
+    protected final SAML2MetadataResolver spEntityId;
+
+    protected final SAMLMessageStorageFactory samlMessageStorageFactory;
 
     public SAML2ContextProvider(final MetadataResolver metadata,
                                 final SAML2MetadataResolver idpEntityId,
                                 final SAML2MetadataResolver spEntityId) {
+        this(metadata, idpEntityId, spEntityId, null);
+    }
+
+    public SAML2ContextProvider(final MetadataResolver metadata,
+                                final SAML2MetadataResolver idpEntityId,
+                                final SAML2MetadataResolver spEntityId,
+                                @Nullable final SAMLMessageStorageFactory samlMessageStorageFactory) {
         this.metadata = metadata;
         this.idpEntityId = idpEntityId;
         this.spEntityId = spEntityId;
+        this.samlMessageStorageFactory = samlMessageStorageFactory;
     }
 
     @Override
-    public SAML2MessageContext buildServiceProviderContext(final WebContext webContext) {
+    public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext) {
         final SAML2MessageContext context = new SAML2MessageContext();
         context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
@@ -87,7 +99,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
         return context;
     }
 
-    protected void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
+    protected final void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
 
         final J2EContext j2EContext = (J2EContext) webContext;
         final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(j2EContext);
@@ -105,26 +117,31 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
         final ProfileRequestContext request = context.getProfileRequestContext();
         request.setProfileId(SAML2_WEBSSO_PROFILE_URI);
+
+        if (this.samlMessageStorageFactory != null) {
+            logger.debug("Creating message storage by {}", this.samlMessageStorageFactory.getClass().getName());
+            context.setSAMLMessageStorage(this.samlMessageStorageFactory.getMessageStorage(inTransport.getRequest()));
+        }
     }
 
-    protected void addSPContext(final SAML2MessageContext context) {
+    protected final void addSPContext(final SAML2MessageContext context) {
         final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
         selfContext.setEntityId(this.spEntityId.getEntityId());
         selfContext.setRole(SPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.spEntityId, selfContext, SPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
-    protected void addIDPContext(final SAML2MessageContext context) {
+    protected final void addIDPContext(final SAML2MessageContext context) {
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
         peerContext.setEntityId(this.idpEntityId.getEntityId());
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         addContext(this.idpEntityId, peerContext, IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
     }
 
-    protected void addContext(final SAML2MetadataResolver entityId, final BaseContext parentContext,
-                              final QName elementName) {
-        EntityDescriptor entityDescriptor;
-        RoleDescriptor roleDescriptor;
+    protected final void addContext(final SAML2MetadataResolver entityId, final BaseContext parentContext,
+                                    final QName elementName) {
+        final EntityDescriptor entityDescriptor;
+        final RoleDescriptor roleDescriptor;
         try {
             final CriteriaSet set = new CriteriaSet();
             set.add(new EntityIdCriterion(entityId.getEntityId()));
@@ -142,7 +159,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
                         + elementName + " in metadata provider");
             }
 
-        } catch (ResolverException e) {
+        } catch (final ResolverException e) {
             throw new SAMLException("An error occured while getting IDP descriptors", e);
         }
         final SAMLMetadataContext mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);

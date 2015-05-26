@@ -48,42 +48,42 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
 
     @Test
     public void testCustomSpEntityIdForRedirectBinding() throws Exception {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
 
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         final String inflated = getInflatedAuthnRequest(action.getLocation());
-        System.out.println(inflated);
+
         assertTrue(inflated.contains(
                 "<saml2:Issuer xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">http://localhost:8080/callback</saml2:Issuer>"));
     }
 
     @Test
     public void testForceAuthIsSetForRedirectBinding() throws Exception {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setForceAuth(true);
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("ForceAuthn=\"true\""));
     }
 
     @Test
     public void testSetComparisonTypeWithRedirectBinding() throws Exception {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(getInflatedAuthnRequest(action.getLocation()).contains("Comparison=\"exact\""));
     }
 
     @Test
     public void testNameIdPolicyFormat() throws Exception{
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setNameIdPolicyFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
-        String loc = action.getLocation();
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
+        final String loc = action.getLocation();
         assertTrue(getInflatedAuthnRequest(loc).contains("<saml2p:NameIDPolicy AllowCreate=\"true\" " +
                 "Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\" " +
                 "xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"/></saml2p:AuthnRequest>"));
@@ -91,11 +91,11 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
 
     @Test
     public void testAuthnContextClassRef() throws Exception {
-        SAML2Client client = getClient();
+        final SAML2Client client = getClient();
         client.getConfiguration().setComparisonType(AuthnContextComparisonTypeEnumeration.EXACT.toString());
         client.getConfiguration().setAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final RedirectAction action = client.getRedirectAction(context, true, false);
 
         final String checkClass = "<saml2p:RequestedAuthnContext Comparison=\"exact\" " +
                 "xmlns:saml2p=\"urn:oasis:names:tc:SAML:2.0:protocol\"><saml2:AuthnContextClassRef " +
@@ -109,10 +109,10 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
 
     @Test
     public void testRelayState() throws Exception {
-        SAML2Client client = getClient();
-        WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
+        final SAML2Client client = getClient();
+        final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");
-        RedirectAction action = client.getRedirectAction(context, true, false);
+        final RedirectAction action = client.getRedirectAction(context, true, false);
         assertTrue(action.getLocation().contains("RelayState=relayState"));
     }
 
@@ -127,19 +127,19 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     }
 
     @Override
-    protected String getCallbackUrl(WebClient webClient, HtmlPage authorizationPage) throws Exception {
+    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         throw new NotImplementedException("No callback url in SAML2 Redirect Binding");
     }
 
-    private String getInflatedAuthnRequest(String location) throws Exception {
-        List<NameValuePair> pairs = URLEncodedUtils.parse(URI.create(location), "UTF-8");
-        Inflater inflater = new Inflater(true);
-        byte[] decodedRequest = Base64.decodeBase64(pairs.get(0).getValue());
-        ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
-        InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    private String getInflatedAuthnRequest(final String location) throws Exception {
+        final List<NameValuePair> pairs = URLEncodedUtils.parse(URI.create(location), "UTF-8");
+        final Inflater inflater = new Inflater(true);
+        final byte[] decodedRequest = Base64.decodeBase64(pairs.get(0).getValue());
+        final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
+        final InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        StringBuilder bldr = new StringBuilder();
+        final StringBuilder bldr = new StringBuilder();
         while ((line = reader.readLine()) != null) {
             bldr.append(line);
         }

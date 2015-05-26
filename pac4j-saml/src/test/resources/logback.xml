@@ -29,6 +29,7 @@
     <logger name="org.opensaml.xmlsec.algorithm" level="warn" />
     <logger name="com.gargoylesoftware.htmlunit" level="warn" />
     <logger name="org.apache.velocity" level="warn" />
+    <logger name="org.pac4j.saml" level="info" />
 
     <root level="debug">
         <appender-ref ref="STDOUT" />
