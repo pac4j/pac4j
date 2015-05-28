@@ -136,11 +136,6 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>org.opensaml</groupId>
-				<artifactId>opensaml</artifactId>
-				<version>2.5.1-1</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.7</version>
@@ -206,6 +201,13 @@
 				<version>1.9.21</version>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
 				<groupId>net.sourceforge.htmlunit</groupId>
 				<artifactId>htmlunit</artifactId>
 				<version>2.15</version>
@@ -214,7 +216,12 @@
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
+					</exclusion>
 				</exclusions>
+
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -364,6 +371,7 @@
 	</profiles>
 
 	<properties>
+		<spring.version>4.1.5.RELEASE</spring.version>
 		<cas.version>3.5.1</cas.version>
 		<slf4j.version>1.7.2</slf4j.version>
 	</properties>

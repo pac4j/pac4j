@@ -335,7 +335,7 @@ To use Yahoo and OpenID for authentication, you should use the *org.pac4j.openid
 
 ### SAML support
 
-For integrating an application with a SAML2 Identity Provider server, you should use the *org.pac4j.saml.client.Saml2Client*:
+For integrating an application with a SAML2 Identity Provider server, you should use the *org.pac4j.saml.client.SAML2Client*:
 
     //Generate a keystore for all signature and encryption stuff:
     keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
@@ -374,7 +374,7 @@ Once you have an authenticated web session on the Identity Provider, usually it 
     // Lifetime in seconds
     client.setMaximumAuthenticationLifetime(600);
 
-By default, the entity ID of your application (the Service Provider) will be equals to the pac4j callback url. This can lead to problems with some IDP because of the query string not being accepted (like ADFS2.0). You can force your own entity ID with the spEntityId parameter:
+By default, the entity ID of your application (the Service Provider) will be equals to the pac4j callback url. This can lead to problems with some IDP because of the query string not being accepted (like ADFS2.0). You can force your own entity ID with the serviceProviderEntityId parameter:
 
     // custom SP entity ID
     client.setSpEntityId("http://localhost:8080/callback");
