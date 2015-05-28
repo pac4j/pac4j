@@ -18,9 +18,9 @@ package org.pac4j.saml.credentials;
 
 import java.util.List;
 
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.NameID;
 import org.pac4j.core.credentials.Credentials;
 
 /**
@@ -29,7 +29,7 @@ import org.pac4j.core.credentials.Credentials;
  * @author Michael Remond
  * @since 1.5.0
  */
-public class Saml2Credentials extends Credentials {
+public class SAML2Credentials extends Credentials {
 
     private static final long serialVersionUID = 5040516205957826527L;
 
@@ -39,18 +39,19 @@ public class Saml2Credentials extends Credentials {
     
     private final Conditions conditions;
 
-    public Saml2Credentials(final NameID nameId, final List<Attribute> attributes, Conditions conditions, final String clientName) {
+    public SAML2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
+                            final String clientName) {
         this.nameId = nameId;
         this.attributes = attributes;
         this.conditions = conditions;
         setClientName(clientName);
     }
 
-    public NameID getNameId() {
+    public final NameID getNameId() {
         return this.nameId;
     }
 
-    public List<Attribute> getAttributes() {
+    public final List<Attribute> getAttributes() {
         return this.attributes;
     }
     
@@ -59,7 +60,7 @@ public class Saml2Credentials extends Credentials {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
     }
 
