@@ -24,7 +24,6 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.oauth.profile.JsonList;
 import org.pac4j.oauth.profile.ok.OkProfile;
 
 import java.util.Locale;
@@ -36,29 +35,75 @@ import java.util.Locale;
  * @since 1.8
  */
 public class OkClientIT extends OAuthClientIT {
+    /////////////////////////////////////////////
+    /**
+     * Real profile login.
+     */
+    private static final String OK_LOGIN = "";
+    /**
+     * Real profile password.
+     */
+    private static final String OK_PASSWORD = "";
+    /////////////////////////////////////////////
+    /**
+     * Real profile id.
+     */
+    private static final String TEST_PROFILE_ID = "";
+    /**
+     * Real profile location.
+     */
+    private static final String TEST_LOCATION = "";
+    /**
+     * Real profile locale.
+     */
+    private static final java.lang.String TEST_LOCALE = "ru";
+    /**
+     * Real profile first name.
+     */
+    private static final String TEST_FIRST_NAME = "";
+    /**
+     * Real profile last name.
+     */
+    private static final String TEST_LAST_NAME = "";
+    /**
+     * Real profile picture url.
+     */
+    private static final String TEST_PROFILE_PICTURE_URL = "";
+    /**
+     * Application id.
+     */
+    /////////////////////////////////////////////
+    private static final String TEST_APP_ID = "1139019264";
+    /**
+     * Application public key.
+     */
+    private static final String TEST_APP_PUBLIC_KEY = "CBAPAFOEEBABABABA";
+    /**
+     * Application secret key.
+     */
+    private static final String TEST_APP_SECRET_KEY = "479452FD7CA726DF558B4303";
+    /////////////////////////////////////////////
 
     @Override
     public void testClone() {
         final OkClient oldClient = new OkClient();
-        oldClient.setPublicKey(PUBLIC_KEY);
-        final OkClient client = (OkClient) internalTestClone(oldClient);
-        assertEquals(oldClient.getPublicKey(), client.getPublicKey());
+        final OkClient clone = (OkClient) internalTestClone(oldClient);
+        assertEquals(oldClient.getPublicKey(), clone.getPublicKey());
     }
 
     public void testMissingFields() {
         final OkClient client = (OkClient) getClient();
         client.setPublicKey(null);
-        TestsHelper.initShouldFail(client, "fields cannot be blank");
+        TestsHelper.initShouldFail(client, "publicKey cannot be blank");
     }
 
     @Override
     protected Client getClient() {
         final OkClient okClient = new OkClient();
-        okClient.setKey("1139019264");
-        okClient.setPublicKey("CBAPAFOEEBABABABA");
-        okClient.setSecret("479452FD7CA726DF558B4303");
-        //FIXME
-        okClient.setCallbackUrl("");
+        okClient.setKey(TEST_APP_ID);
+        okClient.setPublicKey(TEST_APP_PUBLIC_KEY);
+        okClient.setSecret(TEST_APP_SECRET_KEY);
+        okClient.setCallbackUrl(PAC4J_URL);
         return okClient;
     }
 
@@ -66,11 +111,9 @@ public class OkClientIT extends OAuthClientIT {
     protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("fr.email");
-        //TODO change to real
-        email.setValueAttribute("");
+        email.setValueAttribute(OK_LOGIN);
         final HtmlPasswordInput password = form.getInputByName("fr.password");
-        //TODO  set to read
-        password.setValueAttribute("");
+        password.setValueAttribute(OK_PASSWORD);
         HtmlSubmitInput submit = (HtmlSubmitInput) form.getByXPath("//input[@type='submit']").get(0);
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();
@@ -81,22 +124,29 @@ public class OkClientIT extends OAuthClientIT {
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(OkProfile.class);
-        kryo.register(JsonList.class);
     }
 
     @Override
     protected void verifyProfile(final UserProfile userProfile) {
-        //TODO change to real profile details
         final OkProfile profile = (OkProfile) userProfile;
         logger.debug("userProfile : {}", profile);
-        assertEquals("579337065742", profile.getId());
-        assertEquals(OkProfile.class.getSimpleName() + UserProfile.SEPARATOR + "579337065742",
+        assertEquals(TEST_PROFILE_ID, profile.getId());
+        assertEquals(OkProfile.class.getSimpleName() + UserProfile.SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), OkProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile, null, "Vitaly", "Parkhomenko", "Vitaly Parkhomenko", "579337065742", Gender.MALE,
-                new Locale("ru"), "http://i500.mycdn.me/res/stub_50x50.gif",
-                "http://ok.ru/profile/579337065742", "Odessa, UKRAINE");
+        assertCommonProfile(
+                userProfile,
+                null,
+                TEST_FIRST_NAME,
+                TEST_LAST_NAME,
+                TEST_FIRST_NAME + " " + TEST_LAST_NAME,
+                TEST_PROFILE_ID,
+                Gender.MALE,
+                new Locale(TEST_LOCALE),
+                TEST_PROFILE_PICTURE_URL,
+                OkProfile.BASE_PROFILE_URL + TEST_PROFILE_ID,
+                TEST_LOCATION);
 
     }
 }

@@ -130,4 +130,11 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
+
+    @Override
+    public BaseOAuthClient<OkProfile> clone() {
+        OkClient clone = (OkClient) super.clone();
+        clone.setPublicKey(publicKey);
+        return clone;
+    }
 }
