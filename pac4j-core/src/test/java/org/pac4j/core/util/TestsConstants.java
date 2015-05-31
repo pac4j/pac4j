@@ -37,6 +37,7 @@ public interface TestsConstants {
     String PASSWORD = "password";
     String STRING_ID = "id";
     String KEY = "key";
+    String PUBLIC_KEY = "public_key";
     String PARAMETER_NAME = "parameterName";
     String FAKE_VALUE = "fakeValue";
     String SECRET = "secret";
