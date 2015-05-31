@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.client;
+package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
@@ -25,7 +25,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.extractor.FormExtractor;
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
+import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
  * <p>This class is the client to authenticate users through HTTP form.</p>
@@ -57,14 +57,10 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     public FormClient() {
     }
 
-    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+            final ProfileCreator profileCreator) {
         setLoginUrl(loginUrl);
         setAuthenticator(usernamePasswordAuthenticator);
-    }
-
-    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final SimpleTestUsernameProfileCreator profileCreator) {
-        this(loginUrl, usernamePasswordAuthenticator);
         setProfileCreator(profileCreator);
     }
 

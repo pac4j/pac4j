@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is a simple test authenticator : password must match username.
+ * This class is a simple test authenticator: password must match username.
  * 
  * @author Jerome Leleu
  * @since 1.4.0

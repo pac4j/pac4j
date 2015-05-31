@@ -13,32 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials.authenticator;
+package org.pac4j.http.credentials.authenticator.test;
 
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
-
-import java.util.regex.Pattern;
+import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 
 /**
- * Authenticates users based on their IP and a regexp pattern.
- *
+ * This class is a simple test authenticator: token must not be blank.
+ * 
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator implements TokenAuthenticator {
+public class SimpleTestTokenAuthenticator implements TokenAuthenticator {
 
-    private final Pattern pattern;
-
-    public IpRegexpAuthenticator(final String pattern) {
-        this.pattern = Pattern.compile(pattern);
-    }
-
+    @Override
     public void validate(final TokenCredentials credentials) {
-        final String ip = credentials.getToken();
-
-        if (!this.pattern.matcher(ip).matches()) {
-            throw new CredentialsException("Unauthorized IP address: " + ip);
+        if (credentials == null) {
+            throw new CredentialsException("credentials must not be null");
+        }
+        if (CommonHelper.isBlank(credentials.getToken())) {
+            throw new CredentialsException("token must not be blank");
         }
     }
 }

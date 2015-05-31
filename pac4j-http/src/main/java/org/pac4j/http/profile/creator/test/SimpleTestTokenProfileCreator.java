@@ -13,32 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials.authenticator;
+package org.pac4j.http.profile.creator.test;
 
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.http.credentials.TokenCredentials;
-
-import java.util.regex.Pattern;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
- * Authenticates users based on their IP and a regexp pattern.
- *
+ * This profile creator creates a HTTP profile where the identifier is the token.
+ * 
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator implements TokenAuthenticator {
+public class SimpleTestTokenProfileCreator implements ProfileCreator<TokenCredentials, HttpProfile> {
 
-    private final Pattern pattern;
-
-    public IpRegexpAuthenticator(final String pattern) {
-        this.pattern = Pattern.compile(pattern);
-    }
-
-    public void validate(final TokenCredentials credentials) {
-        final String ip = credentials.getToken();
-
-        if (!this.pattern.matcher(ip).matches()) {
-            throw new CredentialsException("Unauthorized IP address: " + ip);
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public HttpProfile create(final TokenCredentials credentials) {
+        final String token = credentials.getToken();
+        final HttpProfile profile = new HttpProfile();
+        profile.setId(token);
+        return profile;
     }
 }

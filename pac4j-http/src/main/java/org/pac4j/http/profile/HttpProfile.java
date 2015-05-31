@@ -16,10 +16,12 @@
 package org.pac4j.http.profile;
 
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.http.client.indirect.BasicAuthClient;
+import org.pac4j.http.client.indirect.FormClient;
 
 /**
  * <p>This class is the user profile for sites using HTTP protocol.</p>
- * <p>It is returned by the {@link org.pac4j.http.client.FormClient} or the {@link org.pac4j.http.client.BasicAuthClient}.</p>
+ * <p>It is returned by the {@link FormClient} or the {@link BasicAuthClient}.</p>
  * <table summary="" border="1" cellspacing="2px">
  * <tr>
  * <th>Method :</th>
@@ -71,8 +73,8 @@ import org.pac4j.core.profile.CommonProfile;
  * </table>
  * <p>All other attributes must be retrieved using the {@link #getAttributes()} method.</p>
  * 
- * @see org.pac4j.http.client.FormClient
- * @see org.pac4j.http.client.BasicAuthClient
+ * @see FormClient
+ * @see BasicAuthClient
  * @author Jerome Leleu
  * @since 1.4.0
  */

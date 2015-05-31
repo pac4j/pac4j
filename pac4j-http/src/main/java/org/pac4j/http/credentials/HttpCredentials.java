@@ -16,14 +16,26 @@
 package org.pac4j.http.credentials;
 
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.http.profile.HttpProfile;
 
 /**
- * This credentials is retrieved from a HTTP request.
+ * <p>This credentials is retrieved from a HTTP request.</p>
+ * <p>A user profile can be attached with the credentials if it has been created by a {@link org.pac4j.http.credentials.authenticator.Authenticator}.
+ * In that case, the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator} must be used to retrieve the attached user profile.</p>
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
 public abstract class HttpCredentials extends Credentials {
 
+    private HttpProfile userProfile = null;
+
+    public HttpProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(HttpProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 }
+
