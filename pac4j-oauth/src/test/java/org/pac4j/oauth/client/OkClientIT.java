@@ -16,7 +16,6 @@
 package org.pac4j.oauth.client;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 import org.apache.commons.lang3.StringUtils;
@@ -26,11 +25,9 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.JsonList;
-import org.pac4j.oauth.profile.facebook.*;
+import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.ok.OkProfile;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**

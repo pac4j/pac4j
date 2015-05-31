@@ -31,6 +31,7 @@ import java.util.Locale;
 public class OkProfile extends OAuth20Profile {
 
     private static final long serialVersionUID = -810631113167677397L;
+    private static final String BASE_PROFILE_URL = "http://ok.ru/profile/";
 
     @Override
     protected AttributesDefinition getAttributesDefinition() {
@@ -79,7 +80,7 @@ public class OkProfile extends OAuth20Profile {
 
     @Override
     public String getProfileUrl() {
-        return (String) getAttribute(OkAttributesDefinition.PIC_2);
+        return BASE_PROFILE_URL + getId();
     }
 
     @Override
