@@ -30,17 +30,17 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DirectBasicAuthClient extends DirectHttpClient<UsernamePasswordCredentials> {
+public class BasicAuthClient extends DirectHttpClient<UsernamePasswordCredentials> {
 
     private String headerName = HttpConstants.AUTHORIZATION_HEADER;
 
     private String prefixHeader = "Basic ";
 
-    public DirectBasicAuthClient() {
+    public BasicAuthClient() {
     }
 
-    public DirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                                 final ProfileCreator profilePopulator) {
+    public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+                           final ProfileCreator profilePopulator) {
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
     }
@@ -52,8 +52,8 @@ public class DirectBasicAuthClient extends DirectHttpClient<UsernamePasswordCred
     }
 
     @Override
-    protected DirectBasicAuthClient newClient() {
-        return new DirectBasicAuthClient();
+    protected BasicAuthClient newClient() {
+        return new BasicAuthClient();
     }
 
     @Override

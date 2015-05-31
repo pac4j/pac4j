@@ -28,7 +28,7 @@ import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
- * <p>This class is the client to authenticate users through HTTP basic auth.</p>
+ * <p>This class is the client to authenticate users through HTTP basic auth. It was previously named: <code>BasicAuthClient</code>.</p>
  * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
  * specific exception : {@link RequiresHttpAction} is returned which must be handled by the application to force
  * authentication.</p>
@@ -38,7 +38,7 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class BasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
+public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
 
     private String headerName = HttpConstants.AUTHORIZATION_HEADER;
 
@@ -46,12 +46,12 @@ public class BasicAuthClient extends IndirectHttpClient<UsernamePasswordCredenti
 
     private String realmName = "authentication required";
 
-    public BasicAuthClient() {
+    public IndirectBasicAuthClient() {
         this(null, null);
     }
 
-    public BasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final ProfileCreator profilePopulator) {
+    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+                                   final ProfileCreator profilePopulator) {
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profilePopulator);
     }
@@ -65,8 +65,8 @@ public class BasicAuthClient extends IndirectHttpClient<UsernamePasswordCredenti
     }
 
     @Override
-    protected BasicAuthClient newClient() {
-        return new BasicAuthClient();
+    protected IndirectBasicAuthClient newClient() {
+        return new IndirectBasicAuthClient();
     }
 
     @Override
