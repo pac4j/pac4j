@@ -25,7 +25,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.JsonList;
-import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.oauth.profile.ok.OkProfile;
 
 import java.util.Locale;
@@ -91,7 +90,7 @@ public class OkClientIT extends OAuthClientIT {
         final OkProfile profile = (OkProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("579337065742", profile.getId());
-        assertEquals(FacebookProfile.class.getSimpleName() + UserProfile.SEPARATOR + "579337065742",
+        assertEquals(OkProfile.class.getSimpleName() + UserProfile.SEPARATOR + "579337065742",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), OkProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
