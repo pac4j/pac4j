@@ -91,6 +91,11 @@ public class J2EContext implements WebContext {
     /**
      * {@inheritDoc}
      */
+    public String getRemoteAddr() { return this.request.getRemoteAddr(); }
+
+    /**
+     * {@inheritDoc}
+     */
     public HttpServletRequest getRequest() {
         return this.request;
     }

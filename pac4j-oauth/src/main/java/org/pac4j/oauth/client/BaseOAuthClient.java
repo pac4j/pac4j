@@ -15,7 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClient<OAuthCredentials, U> {
+public abstract class BaseOAuthClient<U extends OAuth20Profile> extends IndirectClient<OAuthCredentials, U> {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthClient.class);
 
@@ -76,6 +76,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends BaseClie
         final BaseOAuthClient<U> newClient = (BaseOAuthClient<U>) super.clone();
         newClient.setKey(this.key);
         newClient.setSecret(this.secret);
+        newClient.setCallbackUrl(this.callbackUrl);
         newClient.setConnectTimeout(this.connectTimeout);
         newClient.setReadTimeout(this.readTimeout);
         newClient.setProxyHost(this.proxyHost);

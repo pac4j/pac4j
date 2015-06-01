@@ -292,7 +292,7 @@ In this case, the *org.pac4j.cas.profile.CasProxyProfile* must be used to get pr
 
 ### HTTP support
 
-To use form authentication in a web application, you should use the *org.pac4j.http.client.FormClient* class:
+To use form authentication in a web application, you should use the *org.pac4j.http.client.indirect.FormClient* class:
 
     // declare the client
     FormClient client = new FormClient("/myloginurl", new MyUsernamePasswordAuthenticator());
@@ -309,7 +309,7 @@ To use form authentication in a web application, you should use the *org.pac4j.h
     HttpProfile httpProfile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + httpProfile.getUsername());</code></pre>
 
-To use basic auth authentication in a web application, you should use the *org.pac4j.http.client.BasicAuthClient* class the same way:
+To use basic auth authentication in a web application, you should use the *org.pac4j.http.client.indirect.IndirectBasicAuthClient* class the same way:
 
     // declare the client
     BasicAuthClient client = new BasicAuthClient(new MyUsernamePasswordAuthenticator(), new UsernameProfileCreator());

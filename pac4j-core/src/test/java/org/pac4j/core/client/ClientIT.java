@@ -63,14 +63,14 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
     }
 
     public void testMissingCallbackUrl() {
-        final BaseClient client = (BaseClient) getClient();
+        final IndirectClient client = (IndirectClient) getClient();
         client.setCallbackUrl(null);
         TestsHelper.initShouldFail(client, "callbackUrl cannot be blank");
     }
 
-    protected BaseClient internalTestClone(final BaseClient oldClient) {
+    protected IndirectClient internalTestClone(final IndirectClient oldClient) {
         oldClient.setCallbackUrl(CALLBACK_URL);
-        final BaseClient client = oldClient.clone();
+        final IndirectClient client = (IndirectClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getName(), client.getName());
         return client;
