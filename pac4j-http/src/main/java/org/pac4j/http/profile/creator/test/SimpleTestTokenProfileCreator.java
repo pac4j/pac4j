@@ -13,29 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile;
+package org.pac4j.http.profile.creator.test;
 
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileCreator;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
- * This class is a profile creator which creates a HTTP profile with username set.
+ * This profile creator creates a HTTP profile where the identifier is the token.
  * 
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
  */
-public class UsernameProfileCreator implements ProfileCreator<UsernamePasswordCredentials, HttpProfile> {
+public class SimpleTestTokenProfileCreator implements ProfileCreator<TokenCredentials, HttpProfile> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public HttpProfile create(UsernamePasswordCredentials credentials) {
-        String username = credentials.getUsername();
+    public HttpProfile create(final TokenCredentials credentials) {
+        final String token = credentials.getToken();
         final HttpProfile profile = new HttpProfile();
-        profile.setId(username);
-        profile.addAttribute(CommonProfile.USERNAME, username);
+        profile.setId(token);
         return profile;
     }
 }

@@ -13,23 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.profile;
+package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.CredentialsException;
 
 /**
- * This interface is responsible to create a {@link UserProfile} from a {@link Credentials}.
- * 
+ * An authenticator is responsible for validating {@link Credentials} and should throw a {@link CredentialsException}
+ * if the authentication fails.
+ *
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public interface ProfileCreator<C extends Credentials, U extends UserProfile> {
+public interface Authenticator<T extends Credentials> {
 
     /**
-     * Create a profile from a credentials.
-     * 
+     * Validate the credentials. It should throw a {@link CredentialsException} in case of failure.
+     *
      * @param credentials the given credentials.
-     * @return the created profile
      */
-    U create(C credentials);
+    void validate(T credentials);
 }

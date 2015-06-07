@@ -19,6 +19,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 
 /**
@@ -27,7 +28,7 @@ import org.pac4j.core.util.TestsConstants;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonProfile> implements TestsConstants {
+public class MockBaseClient<C extends Credentials> extends IndirectClient<C, CommonProfile> implements TestsConstants {
     
     private boolean isDirect = true;
     
@@ -41,12 +42,15 @@ public class MockBaseClient<C extends Credentials> extends BaseClient<C, CommonP
     }
     
     @Override
-    protected BaseClient<C, CommonProfile> newClient() {
-        return new MockBaseClient<C>(getName());
+    protected IndirectClient<C, CommonProfile> newClient() {
+        MockBaseClient<C> client = new MockBaseClient<C>(getName());
+        client.setCallbackUrl(getCallbackUrl());
+        return client;
     }
     
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("callbackUrl", getCallbackUrl());
     }
     
     @Override

@@ -48,8 +48,7 @@ public abstract class OAuthClientIT extends ClientIT {
         client.setSecret(null);
         TestsHelper.initShouldFail(client, "secret cannot be blank");
     }
-    
-    @Override
+
     protected BaseClient internalTestClone(final BaseClient oldBaseClient) {
         BaseOAuthClient oldClient = (BaseOAuthClient) oldBaseClient;
         oldClient.setKey(KEY);

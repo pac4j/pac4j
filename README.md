@@ -189,6 +189,7 @@ Learn more by browsing the [Javadoc](https://pac4j.github.io/pac4j/apidocs/pac4j
 <tr><td>CAS server using OAuth Wrapper</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>CasOAuthWrapperClient</td><td>CasOAuthWrapperProfile</td></tr>
 <tr><td>DropBox</td><td>OAuth 1.0</td><td>pac4j-oauth</td><td>DropBoxClient</td><td>DropBoxProfile</td></tr>
 <tr><td>Facebook</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>FacebookClient</td><td>FacebookProfile</td></tr>
+<tr><td>Odnoklassniki</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>OkClient</td><td>OkProfile</td></tr>
 <tr><td>GitHub</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>GitHubClient</td><td>GitHubProfile</td></tr>
 <tr><td>Google</td><td>OAuth 2.0</td><td>pac4j-oauth</td><td>Google2Client</td><td>Google2Profile</td></tr>
 <tr><td>LinkedIn</td><td>OAuth 1.0 & 2.0</td><td>pac4j-oauth</td><td>LinkedInClient & LinkedIn2Client</td><td>LinkedInProfile & LinkedIn2Profile</td></tr>
@@ -291,7 +292,7 @@ In this case, the *org.pac4j.cas.profile.CasProxyProfile* must be used to get pr
 
 ### HTTP support
 
-To use form authentication in a web application, you should use the *org.pac4j.http.client.FormClient* class:
+To use form authentication in a web application, you should use the *org.pac4j.http.client.indirect.FormClient* class:
 
     // declare the client
     FormClient client = new FormClient("/myloginurl", new MyUsernamePasswordAuthenticator());
@@ -308,7 +309,7 @@ To use form authentication in a web application, you should use the *org.pac4j.h
     HttpProfile httpProfile = client.getUserProfile(credentials, context);
     System.out.println("Hello: " + httpProfile.getUsername());</code></pre>
 
-To use basic auth authentication in a web application, you should use the *org.pac4j.http.client.BasicAuthClient* class the same way:
+To use basic auth authentication in a web application, you should use the *org.pac4j.http.client.indirect.IndirectBasicAuthClient* class the same way:
 
     // declare the client
     BasicAuthClient client = new BasicAuthClient(new MyUsernamePasswordAuthenticator(), new UsernameProfileCreator());
