@@ -26,6 +26,7 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -72,7 +73,7 @@ import java.util.List;
  * @author Misagh Moayyed
  * @since 1.5.0
  */
-public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
+public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
 
     protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
 
