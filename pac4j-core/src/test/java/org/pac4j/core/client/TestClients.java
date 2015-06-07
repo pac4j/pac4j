@@ -47,11 +47,11 @@ public final class TestClients extends TestCase implements TestsConstants {
         TestsHelper.initShouldFail(clientsGroup, "clients cannot be null");
     }
 
-    public void testMissingCallbackUrl() {
-        final Clients clientsGroup = new Clients();
-        final List<Client> clients = new ArrayList<Client>();
-        clients.add(newFacebookClient());
-        TestsHelper.initShouldFail(clientsGroup, "callbackUrl cannot be blank");
+    public void testNoCallbackUrl() {
+        MockBaseClient facebookClient = newFacebookClient();
+        final Clients clientsGroup = new Clients(facebookClient);
+        clientsGroup.init();
+        assertNull(facebookClient.getCallbackUrl());
     }
 
     public void testTwoClients() {

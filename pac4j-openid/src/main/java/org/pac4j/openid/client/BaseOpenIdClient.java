@@ -27,7 +27,7 @@ import org.openid4java.message.AuthSuccess;
 import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -44,7 +44,7 @@ import org.pac4j.openid.credentials.OpenIdCredentials;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseOpenIdClient<U extends CommonProfile> extends BaseClient<OpenIdCredentials, U> {
+public abstract class BaseOpenIdClient<U extends CommonProfile> extends IndirectClient<OpenIdCredentials, U> {
 
     private static final String OPENID_MODE = "openid.mode";
 

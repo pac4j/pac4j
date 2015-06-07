@@ -72,6 +72,13 @@ public interface WebContext {
     public String getRequestMethod();
 
     /**
+     * Return the remote address.
+     *
+     * @return the remote address.
+     */
+    public String getRemoteAddr();
+
+    /**
      * Write some content in the response.
      *
      * @param content content to write in response

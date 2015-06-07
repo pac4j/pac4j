@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.credentials;
 
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -24,7 +23,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class UsernamePasswordCredentials extends Credentials {
+public class UsernamePasswordCredentials extends HttpCredentials {
 
     private static final long serialVersionUID = -7229878989627796565L;
 

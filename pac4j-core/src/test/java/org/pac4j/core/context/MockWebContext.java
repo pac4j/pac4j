@@ -42,6 +42,8 @@ public class MockWebContext extends BaseResponseContext {
 
     protected String fullRequestURL = null;
 
+    protected String ip = null;
+
     protected MockWebContext() {
     }
 
@@ -112,8 +114,14 @@ public class MockWebContext extends BaseResponseContext {
         return this;
     }
 
+
     public String getRequestParameter(final String name) {
         return this.parameters.get(name);
+    }
+
+    public MockWebContext setRemoteAddress(final String ip) {
+        this.ip = ip;
+        return this;
     }
 
     public String getRequestHeader(final String name) {
@@ -131,6 +139,8 @@ public class MockWebContext extends BaseResponseContext {
     public String getRequestMethod() {
         return this.method;
     }
+
+    public String getRemoteAddr() { return this.ip; }
 
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<String, String[]>();

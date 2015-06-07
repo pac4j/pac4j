@@ -15,7 +15,7 @@
  */
 package org.pac4j.gae.client;
 
-import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -35,14 +35,14 @@ import com.google.appengine.api.users.UserServiceFactory;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public class GaeUserServiceClient extends BaseClient<GaeUserCredentials, GaeUserServiceProfile> {
+public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, GaeUserServiceProfile> {
 	UserService service;
 	String authDomain = null;
 	public GaeUserServiceClient() {
 		setName("GaeUserServiceClient");
 	}
 	@Override
-	protected BaseClient<GaeUserCredentials, GaeUserServiceProfile> newClient() {
+	protected IndirectClient<GaeUserCredentials, GaeUserServiceProfile> newClient() {
 		GaeUserServiceClient gaeUserServiceClient = new GaeUserServiceClient();
 		gaeUserServiceClient.setAuthDomain(authDomain);
 		return gaeUserServiceClient;

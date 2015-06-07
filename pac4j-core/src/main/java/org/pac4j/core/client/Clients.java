@@ -49,7 +49,7 @@ public final class Clients extends InitializableObject {
 
     private List<Client> clients;
 
-    private String callbackUrl;
+    private String callbackUrl = null;
 
     public Clients() {
     }
@@ -64,27 +64,38 @@ public final class Clients extends InitializableObject {
         setClients(clients);
     }
 
+    public Clients(final List<Client> clients) {
+        setClientsList(clients);
+    }
+
+    public Clients(final Client... clients) {
+        setClients(clients);
+    }
+
     /**
      * Initialize all clients by computing callback urls.
      */
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("clients", this.clients);
-        for (final Client client : this.clients) {
-            final BaseClient baseClient = (BaseClient) client;
-            String baseClientCallbackUrl = baseClient.getCallbackUrl();
-            // no callback url defined for the client -> set it with the group callback url
-            if (baseClientCallbackUrl == null) {
-                baseClient.setCallbackUrl(this.callbackUrl);
-                baseClientCallbackUrl = this.callbackUrl;
-            }
-            // if the "clientName" parameter is not already part of the callback url, add it unless the client 
-            // has indicated to not include it.
-        	if (baseClient.isIncludeClientNameInCallbackUrl() && 
-        			baseClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-                baseClient.setCallbackUrl(CommonHelper.addParameter(baseClientCallbackUrl, this.clientNameParameter,
-                        baseClient.getName()));
+        if (CommonHelper.isNotBlank(this.callbackUrl)) {
+            for (final Client client : this.clients) {
+                if (client instanceof IndirectClient) {
+                    final IndirectClient indirectClient = (IndirectClient) client;
+                    String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+                    // no callback url defined for the client -> set it with the group callback url
+                    if (indirectClientCallbackUrl == null) {
+                        indirectClient.setCallbackUrl(this.callbackUrl);
+                        indirectClientCallbackUrl = this.callbackUrl;
+                    }
+                    // if the "clientName" parameter is not already part of the callback url, add it unless the client
+                    // has indicated to not include it.
+                    if (indirectClient.isIncludeClientNameInCallbackUrl() &&
+                            indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                        indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
+                                indirectClient.getName()));
+                    }
+                }
             }
         }
     }
