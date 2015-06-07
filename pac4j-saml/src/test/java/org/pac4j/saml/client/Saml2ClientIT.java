@@ -16,41 +16,46 @@
 
 package org.pac4j.saml.client;
 
-import org.apache.commons.lang.NotImplementedException;
-import org.junit.Test;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.xml.ConfigurationException;
-import org.pac4j.core.client.ClientIT;
-import org.pac4j.core.client.Mechanism;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.saml.profile.Saml2Profile;
-
 import com.esotericsoftware.kryo.Kryo;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import org.apache.commons.lang.NotImplementedException;
+import org.junit.Test;
+import org.pac4j.core.client.ClientIT;
+import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.TestsConstants;
+import org.pac4j.saml.exceptions.SAMLException;
+import org.pac4j.saml.profile.SAML2Profile;
+import org.pac4j.saml.storage.HttpSessionStorageFactory;
+import org.pac4j.saml.util.Configuration;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
+import java.io.File;
 
-    static {
-        try {
-            DefaultBootstrap.bootstrap();
-        } catch (ConfigurationException e) {
-            throw new IllegalStateException(e);
-        }
+public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
+
+    public SAML2ClientIT() {
+        assertNotNull(Configuration.getParserPool());
+        assertNotNull(Configuration.getMarshallerFactory());
+        assertNotNull(Configuration.getUnmarshallerFactory());
+        assertNotNull(Configuration.getBuilderFactory());
     }
 
     @Test
     public void testSPMetadata() {
-        Saml2Client client = getClient();
-        String spMetadata = client.printClientMetadata();
-        assertTrue(spMetadata.contains("entityID=\"" + getCallbackUrl() + "\""));
+        final SAML2Client client = getClient();
+        client.init();
+        final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
+        assertTrue(spMetadata.contains("entityID=\"" + client.getServiceProviderResolvedEntityId() + "\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
                         + getCallbackUrl() + "\""));
@@ -58,9 +63,10 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
 
     @Test
     public void testCustomSpEntityId() {
-        Saml2Client client = getClient();
-        client.setSpEntityId("http://localhost:8080/callback");
-        String spMetadata = client.printClientMetadata();
+        final SAML2Client client = getClient();
+        client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
+        client.init();
+        final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
         assertTrue(spMetadata
                 .contains("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\""
@@ -68,27 +74,46 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected Mechanism getMechanism() {
+    protected final Mechanism getMechanism() {
         return Mechanism.SAML_PROTOCOL;
     }
 
     @Override
-    protected void updateContextForAuthn(WebClient webClient, HtmlPage authorizationPage, MockWebContext context)
+    protected final void updateContextForAuthn(final WebClient webClient, final HtmlPage authorizationPage, final J2EContext context)
             throws Exception {
-        final MockWebContext mockWebContext = context;
+        if (authorizationPage.getForms().isEmpty()) {
+            throw new SAMLException("Authorization page " + authorizationPage.getUrl() + " does not produce any forms");
+        }
+
         final HtmlForm form = authorizationPage.getForms().get(0);
         final HtmlTextInput email = form.getInputByName("j_username");
         email.setValueAttribute("myself");
         final HtmlPasswordInput password = form.getInputByName("j_password");
         password.setValueAttribute("myself");
-        final HtmlSubmitInput submit = form.getInputByValue("Login");
-        final HtmlPage callbackPage = submit.click();
-        String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
-        String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
-        mockWebContext.addRequestParameter("SAMLResponse", samlResponse);
-        mockWebContext.addRequestParameter("RelayState", relayState);
-        mockWebContext.setRequestMethod("POST");
-        mockWebContext.setFullRequestURL(callbackPage.getForms().get(0).getActionAttribute());
+
+        HtmlPage callbackPage;
+
+        try {
+            final HtmlSubmitInput submit = form.getInputByValue("Login");
+            callbackPage = submit.click();
+        } catch (final ElementNotFoundException e) {
+            final HtmlButton btn = form.getButtonByName("_eventId_proceed");
+            callbackPage = btn.click();
+        }
+
+         ;
+        try {
+            final String samlResponse = ((HtmlInput) callbackPage.getElementByName("SAMLResponse")).getValueAttribute();
+            final String relayState = ((HtmlInput) callbackPage.getElementByName("RelayState")).getValueAttribute();
+
+            final MockHttpServletRequest request = (MockHttpServletRequest) context.getRequest();
+            request.addParameter("SAMLResponse", samlResponse);
+            request.addParameter("RelayState", relayState);
+            request.setMethod("POST");
+            request.setRequestURI(callbackPage.getForms().get(0).getActionAttribute());
+        } catch (final ElementNotFoundException e) {
+            throw new SAMLException("Saml response and/or relay state not found", e);
+        }
     }
 
     @Override
@@ -97,13 +122,13 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(Saml2Profile.class);
+    protected final void registerForKryo(final Kryo kryo) {
+        kryo.register(SAML2Profile.class);
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
-        Saml2Profile profile = (Saml2Profile) userProfile;
+    protected final void verifyProfile(final UserProfile userProfile) {
+        final SAML2Profile profile = (SAML2Profile) userProfile;
         assertEquals("[Member, Staff]", profile.getAttribute("urn:oid:1.3.6.1.4.1.5923.1.1.1.1").toString());
         assertEquals("[myself]", profile.getAttribute("urn:oid:0.9.2342.19200300.100.1.1").toString());
         assertEquals("[Me Myself And I]", profile.getAttribute("urn:oid:2.5.4.3").toString());
@@ -118,15 +143,22 @@ public abstract class Saml2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected Saml2Client getClient() {
-        final Saml2Client saml2Client = new Saml2Client();
-        saml2Client.setKeystorePath("resource:samlKeystore.jks");
-        saml2Client.setKeystorePassword("pac4j-demo-passwd");
-        saml2Client.setPrivateKeyPassword("pac4j-demo-passwd");
-        saml2Client.setIdpMetadataPath("resource:testshib-providers.xml");
-        saml2Client.setMaximumAuthenticationLifetime(3600);
+    protected final SAML2Client getClient() {
+
+        final SAML2ClientConfiguration cfg =
+                new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                        "pac4j-demo-passwd",
+                        "pac4j-demo-passwd",
+                        "resource:testshib-providers.xml");
+
+        cfg.setMaximumAuthenticationLifetime(3600);
+        cfg.setDestinationBindingType(getDestinationBindingType());
+        cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+        cfg.setSamlMessageStorageFactory(new HttpSessionStorageFactory());
+        final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
-        saml2Client.setDestinationBindingType(getDestinationBindingType());
+
         return saml2Client;
     }
 
