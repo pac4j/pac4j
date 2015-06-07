@@ -16,54 +16,63 @@
 
 package org.pac4j.saml.client;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.opensaml.DefaultBootstrap;
-import org.opensaml.saml2.metadata.provider.AbstractMetadataProvider;
-import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.parse.StaticBasicParserPool;
+import org.pac4j.saml.util.Configuration;
+
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 /**
- * Unit tests for the Saml2Client.
+ * Unit tests for the SAML2Client.
  */
-public class Saml2ClientTest {
+public class SAML2ClientTest {
 
-    static {
-        try {
-            DefaultBootstrap.bootstrap();
-        } catch (ConfigurationException e) {
-            throw new IllegalStateException(e);
-        }
-    }
 
-    @Test
-    public void testIdpMetadataParsing_fromString() throws IOException {
-        Saml2Client client = new Saml2Client();
-        InputStream metaDataInputStream = getClass().getClassLoader().getResourceAsStream("testshib-providers.xml");
-        String metadata = IOUtils.toString(metaDataInputStream, "UTF-8");
-        client.setIdpMetadata(metadata);
-        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
-        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
-        XMLObject md = client.getXmlObject(provider);
-        String id = client.getIdpEntityId(md);
-        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
+    public SAML2ClientTest() {
+        assertNotNull(Configuration.getParserPool());
+        assertNotNull(Configuration.getMarshallerFactory());
+        assertNotNull(Configuration.getUnmarshallerFactory());
+        assertNotNull(Configuration.getBuilderFactory());
     }
 
     @Test
     public void testIdpMetadataParsing_fromFile() {
-        Saml2Client client = new Saml2Client();
-        client.setIdpMetadataPath("resource:testshib-providers.xml");
-        StaticBasicParserPool parserPool = client.newStaticBasicParserPool();
-        AbstractMetadataProvider provider = client.idpMetadataProvider(parserPool);
-        XMLObject md = client.getXmlObject(provider);
-        String id = client.getIdpEntityId(md);
+        final SAML2Client client = getClient();
+        client.getConfiguration().setIdentityProviderMetadataPath("resource:testshib-providers.xml");
+        client.init();
+
+        client.getIdentityProviderMetadataResolver().resolve();
+        final String id = client.getIdentityProviderMetadataResolver().getEntityId();
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
+    }
+
+    @Test
+    public void testIdpMetadataParsing_fromUrl() {
+        final SAML2Client client = getClient();
+        client.getConfiguration().setIdentityProviderMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
+        client.init();
+
+        client.getIdentityProviderMetadataResolver().resolve();
+        final String id = client.getIdentityProviderMetadataResolver().getEntityId();
+        assertEquals("https://idp.testshib.org/idp/shibboleth", id);
+    }
+
+
+    protected final SAML2Client getClient() {
+
+        final SAML2ClientConfiguration cfg =
+                new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                        "pac4j-demo-passwd",
+                        "pac4j-demo-passwd",
+                        "resource:testshib-providers.xml");
+        cfg.setMaximumAuthenticationLifetime(3600);
+        cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
+        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+
+        final SAML2Client saml2Client = new SAML2Client(cfg);
+        saml2Client.setCallbackUrl("http://localhost:8080/something");
+        return saml2Client;
     }
 
 }
