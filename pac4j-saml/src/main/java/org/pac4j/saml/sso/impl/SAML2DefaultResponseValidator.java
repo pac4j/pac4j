@@ -28,16 +28,25 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
 import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.AttributeStatement;
+import org.opensaml.saml.saml2.core.Audience;
 import org.opensaml.saml.saml2.core.AudienceRestriction;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.AuthnStatement;
 import org.opensaml.saml.saml2.core.BaseID;
+import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.EncryptedAssertion;
 import org.opensaml.saml.saml2.core.EncryptedAttribute;
 import org.opensaml.saml.saml2.core.EncryptedID;
+import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.NameIDType;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.Subject;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.Endpoint;
@@ -63,6 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -200,7 +210,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
         AuthnRequest request = null;
         final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
-        if (messageStorage != null && response.getInResponseTo() != null) {
+        if (messageStorage != null) {
             final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
             if (xmlObject == null) {
                 throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " + response.getInResponseTo());
@@ -340,8 +350,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             throw new SAMLException("Issuer type is not entity but " + issuer.getFormat());
         }
 
-        final String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
-        if (!entityId.equals(issuer.getValue())) {
+        final String entityId = context.getSAMLPeerEntityContext().getEntityId();
+        if (entityId == null || !entityId.equals(issuer.getValue())) {
             throw new SAMLException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
     }
