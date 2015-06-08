@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -36,8 +36,6 @@ import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
-import org.opensaml.xmlsec.keyinfo.impl.BasicKeyInfoGeneratorFactory;
-import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -48,8 +46,8 @@ import org.slf4j.LoggerFactory;
  * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
  * opensaml object.
  * 
- * @author Michael Remond
- * @since 1.5.0
+ * @author Misagh Moayyed
+ * @since 1.8.0
  */
 public class KeyStoreCredentialProvider implements CredentialProvider {
 

@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import org.pac4j.saml.exceptions.SAMLException;
 /**
  * Provider returning well configured {@link SignatureTrustEngine} instances.
  * 
- * @author Michael Remond
- * @since 1.5.0
+ * @author Misagh Moayyed
+ * @since 1.8.0
  */
 public class ExplicitSignatureTrustEngineProvider implements SAML2SignatureTrustEngineProvider {
 
