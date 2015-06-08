@@ -258,12 +258,21 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
             final List<String> values = new ArrayList<String>();
             for (final XMLObject attributeValue : attribute.getAttributeValues()) {
                 final Element attributeValueElement = attributeValue.getDOM();
-                final String value = attributeValueElement.getTextContent();
-                logger.debug("Adding attribute value {} for attribute {}", value,
-                        attribute.getFriendlyName());
-                values.add(value);
+                if (attributeValueElement != null) {
+                    final String value = attributeValueElement.getTextContent();
+                    logger.debug("Adding attribute value {} for attribute {}", value,
+                            attribute.getFriendlyName());
+                    values.add(value);
+                } else {
+                    logger.warn("Attribute value DOM element is null for {}", attribute);
+                }
             }
-            profile.addAttribute(attribute.getName(), values);
+
+            if (!values.isEmpty()) {
+                profile.addAttribute(attribute.getName(), values);
+            } else {
+                logger.debug("No attribute values found for {}", attribute.getName());
+            }
         }
 
         return profile;
