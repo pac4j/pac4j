@@ -13,28 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.crypto;
+package org.pac4j.saml.sso;
 
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.credential.CredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
- * Defines operations required to provide and resolve credentials.
+ * Defines operations needed to validate the response
+ * from IdP.
  * @author Misagh Moayyed
  * @since 1.7
  */
-public interface CredentialProvider {
+public interface SAML2ResponseValidator {
 
-    KeyInfo getKeyInfo();
-
-    CredentialResolver getCredentialResolver();
-
-    KeyInfoCredentialResolver getKeyInfoCredentialResolver();
-
-    KeyInfoGenerator getKeyInfoGenerator();
-
-    Credential getCredential();
+    Credentials validate(SAML2MessageContext context);
 }

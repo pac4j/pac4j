@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,19 +24,19 @@ import org.pac4j.core.exception.TechnicalException;
  * @author Michael Remond
  * @since 1.5.0
  */
-public class SamlException extends TechnicalException {
+public class SAMLException extends TechnicalException {
 
     private static final long serialVersionUID = -2963580056603469743L;
 
-    public SamlException(final String message) {
+    public SAMLException(final String message) {
         super(message);
     }
 
-    public SamlException(final Throwable t) {
+    public SAMLException(final Throwable t) {
         super(t);
     }
 
-    public SamlException(final String message, final Throwable t) {
+    public SAMLException(final String message, final Throwable t) {
         super(message, t);
     }
 }

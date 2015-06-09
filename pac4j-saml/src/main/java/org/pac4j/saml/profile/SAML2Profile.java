@@ -13,28 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.crypto;
+package org.pac4j.saml.profile;
 
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.credential.CredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.saml.client.SAML2Client;
 
 /**
- * Defines operations required to provide and resolve credentials.
+ * <p>This class is the user profile for sites using SAML2 protocol.</p>
+ * <p>It is returned by the {@link SAML2Client}.</p>
+ * 
+ * @author Michael Remond
  * @author Misagh Moayyed
- * @since 1.7
+ * @version 1.5.0
  */
-public interface CredentialProvider {
+public class SAML2Profile extends CommonProfile {
 
-    KeyInfo getKeyInfo();
-
-    CredentialResolver getCredentialResolver();
-
-    KeyInfoCredentialResolver getKeyInfoCredentialResolver();
-
-    KeyInfoGenerator getKeyInfoGenerator();
-
-    Credential getCredential();
+    private static final long serialVersionUID = -7811733390277407623L;
 }

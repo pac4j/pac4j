@@ -15,26 +15,15 @@
  */
 package org.pac4j.saml.crypto;
 
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.credential.CredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.signature.KeyInfo;
+import org.opensaml.saml.saml2.metadata.SSODescriptor;
+import org.opensaml.xmlsec.SignatureSigningParameters;
 
 /**
- * Defines operations required to provide and resolve credentials.
+ * Provider to allow building of signature parameters.
  * @author Misagh Moayyed
  * @since 1.7
  */
-public interface CredentialProvider {
+public interface SignatureSigningParametersProvider {
 
-    KeyInfo getKeyInfo();
-
-    CredentialResolver getCredentialResolver();
-
-    KeyInfoCredentialResolver getKeyInfoCredentialResolver();
-
-    KeyInfoGenerator getKeyInfoGenerator();
-
-    Credential getCredential();
+    SignatureSigningParameters build(final SSODescriptor descriptor);
 }
