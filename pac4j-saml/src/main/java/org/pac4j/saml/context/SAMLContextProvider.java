@@ -13,19 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.profile;
+package org.pac4j.saml.context;
 
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.saml.client.Saml2Client;
+import org.pac4j.core.context.WebContext;
 
 /**
- * <p>This class is the user profile for sites using SAML2 protocol.</p>
- * <p>It is returned by the {@link Saml2Client}.</p>
- * 
- * @author Michael Remond
- * @version 1.5.0
+ * Builds the saml context for SP and the IDP.
+ * @author Misagh Moayyed
+ * @since 1.7
  */
-public class Saml2Profile extends CommonProfile {
+public interface SAMLContextProvider {
+    SAML2MessageContext buildServiceProviderContext(WebContext webContext);
 
-    private static final long serialVersionUID = -7811733390277407623L;
+    SAML2MessageContext buildContext(WebContext webContext);
 }

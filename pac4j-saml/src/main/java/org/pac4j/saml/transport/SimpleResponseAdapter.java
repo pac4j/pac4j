@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,132 +16,71 @@
 
 package org.pac4j.saml.transport;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.List;
+import org.pac4j.core.context.J2EContext;
 
-import org.opensaml.ws.transport.http.HTTPOutTransport;
-import org.opensaml.xml.security.credential.Credential;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 
 /**
  * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
  * the saml messages. The content can be retrieved as a String from getOutgoingContent().
  * 
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @since 1.5.0
  *
  */
-public class SimpleResponseAdapter implements HTTPOutTransport {
-
-    private final OutputStream outputStream = new ByteArrayOutputStream();
-
+public class SimpleResponseAdapter extends HttpServletResponseWrapper {
+    private final Pac4jServletOutputStream outputStream = new Pac4jServletOutputStream();
     private String redirectUrl;
 
-    public String getOutgoingContent() {
-        return outputStream.toString();
+    /**
+     * Constructs a response adaptor wrapping the given response.
+     *
+     * @param response the response
+     * @throws IllegalArgumentException if the response is null
+     */
+    public SimpleResponseAdapter(final J2EContext response) {
+        super(response.getResponse());
     }
 
-    public OutputStream getOutgoingStream() {
+    public final String getOutgoingContent() {
+        return outputStream.getOutgoingContent();
+    }
+
+    @Override
+    public final ServletOutputStream getOutputStream() throws IOException {
         return outputStream;
     }
 
-    public void setAttribute(final String arg0, final Object arg1) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setCharacterEncoding(final String arg0) {
-        // TODO implement
-    }
-
-    public Object getAttribute(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getCharacterEncoding() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getLocalCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getPeerCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isAuthenticated() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isConfidential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isIntegrityProtected() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setAuthenticated(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setConfidential(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setIntegrityProtected(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getHTTPMethod() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getHeaderValue(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getParameterValue(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public List<String> getParameterValues(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public int getStatusCode() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public HTTP_VERSION getVersion() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void addParameter(final String arg0, final String arg1) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void sendRedirect(final String redirectUrl) {
+    @Override
+    public final void sendRedirect(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
-    public void setHeader(final String arg0, final String arg1) {
-        // TODO implement
+    public final String getRedirectUrl() {
+        return this.redirectUrl;
     }
 
-    public void setStatusCode(final int arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+    private static class Pac4jServletOutputStream extends ServletOutputStream {
+        private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-    public void setVersion(final HTTP_VERSION arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+        @Override
+        public final void write(final int b) throws IOException {
+            outputStream.write(b);
+        }
 
-    /**
-     * @return the redirectUrl
-     */
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
+        public final String getOutgoingContent() {
+            try {
+                final String result = new String(this.outputStream.toByteArray(), "UTF-8");
+                return result;
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
 
+        }
+    }
 }

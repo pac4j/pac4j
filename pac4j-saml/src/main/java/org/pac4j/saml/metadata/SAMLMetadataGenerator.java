@@ -13,28 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.crypto;
+package org.pac4j.saml.metadata;
 
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.credential.CredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.signature.KeyInfo;
+import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 
 /**
- * Defines operations required to provide and resolve credentials.
+ * Builds metadata and the relevant resolvers.
  * @author Misagh Moayyed
- * @since 1.7
  */
-public interface CredentialProvider {
+public interface SAMLMetadataGenerator {
+    MetadataResolver buildMetadataResolver() throws Exception;
 
-    KeyInfo getKeyInfo();
+    String getMetadata() throws Exception;
 
-    CredentialResolver getCredentialResolver();
-
-    KeyInfoCredentialResolver getKeyInfoCredentialResolver();
-
-    KeyInfoGenerator getKeyInfoGenerator();
-
-    Credential getCredential();
+    EntityDescriptor buildEntityDescriptor();
 }

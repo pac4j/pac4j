@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,107 +16,47 @@
 
 package org.pac4j.saml.transport;
 
-import java.io.InputStream;
-import java.util.List;
-
-import org.opensaml.ws.transport.http.HTTPInTransport;
-import org.opensaml.xml.security.credential.Credential;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Basic RequestAdapter returning an inputStream from the input content of
  * the {@link WebContext}.
  * 
  * @author Michael Remond
+ * @author Misagh Moayyed
  * @since 1.5.0
  *
  */
-public class SimpleRequestAdapter implements HTTPInTransport {
+public class SimpleRequestAdapter extends HttpServletRequestWrapper {
+    private J2EContext context;
 
-    private final WebContext wc;
-
-    public WebContext getWebContext() {
-        return wc;
+    public SimpleRequestAdapter(final J2EContext request) {
+        super(request.getRequest());
     }
 
-    public SimpleRequestAdapter(final WebContext wc) {
-        this.wc = wc;
+    @Override
+    public final HttpServletRequest getRequest() {
+        return (HttpServletRequest) super.getRequest();
     }
 
-    public InputStream getIncomingStream() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public final J2EContext getContext() {
+        return context;
     }
 
-    public Object getAttribute(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void setContext(final J2EContext context) {
+        this.context = context;
     }
 
-    public String getCharacterEncoding() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getLocalCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public Credential getPeerCredential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isAuthenticated() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isConfidential() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public boolean isIntegrityProtected() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setAuthenticated(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setConfidential(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void setIntegrityProtected(final boolean arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getHTTPMethod() {
-        return wc.getRequestMethod();
-    }
-
-    public String getHeaderValue(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Override
+    public final String getMethod() {
+        return getContext().getRequestMethod();
     }
 
     public String getParameterValue(final String arg0) {
-        return wc.getRequestParameter(arg0);
+        return getContext().getRequestParameter(arg0);
     }
-
-    public List<String> getParameterValues(final String arg0) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public int getStatusCode() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public HTTP_VERSION getVersion() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getPeerAddress() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public String getPeerDomainName() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
 }

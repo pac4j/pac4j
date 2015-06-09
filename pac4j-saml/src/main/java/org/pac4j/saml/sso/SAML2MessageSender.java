@@ -13,28 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.crypto;
+package org.pac4j.saml.sso;
 
-import org.opensaml.security.credential.Credential;
-import org.opensaml.security.credential.CredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
-import org.opensaml.xmlsec.signature.KeyInfo;
+import org.opensaml.saml.common.SAMLObject;
+import org.pac4j.saml.context.SAML2MessageContext;
 
 /**
- * Defines operations required to provide and resolve credentials.
+ * Sends a SAML object to the context given.
  * @author Misagh Moayyed
  * @since 1.7
  */
-public interface CredentialProvider {
-
-    KeyInfo getKeyInfo();
-
-    CredentialResolver getCredentialResolver();
-
-    KeyInfoCredentialResolver getKeyInfoCredentialResolver();
-
-    KeyInfoGenerator getKeyInfoGenerator();
-
-    Credential getCredential();
+public interface SAML2MessageSender<T extends SAMLObject> {
+    void sendMessage(SAML2MessageContext context,
+                     T request,
+                     Object state);
 }

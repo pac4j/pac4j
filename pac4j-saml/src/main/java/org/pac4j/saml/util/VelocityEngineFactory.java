@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 Michael Remond
+  Copyright 2012 -2014 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@
 
 package org.pac4j.saml.util;
 
+import net.shibboleth.utilities.java.support.velocity.SLF4JLogChute;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.log.JdkLogChute;
 import org.pac4j.core.exception.TechnicalException;
+
+import java.util.Properties;
 
 /**
  * Factory returning a well configured {@link VelocityEngine} instance required for
@@ -33,16 +35,19 @@ public class VelocityEngineFactory {
     public static VelocityEngine getEngine() {
 
         try {
-            VelocityEngine velocityEngine = new VelocityEngine();
-            velocityEngine.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
-            velocityEngine.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
-            velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-            velocityEngine.setProperty("classpath.resource.loader.class",
-                    "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            velocityEngine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, new JdkLogChute());
-            velocityEngine.init();
+
+            final Properties props =
+                    new Properties(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
+            props.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
+            props.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
+            props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+            props.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, SLF4JLogChute.class.getName());
+
+            final VelocityEngine velocityEngine =
+                    net.shibboleth.utilities.java.support.velocity.VelocityEngine
+                    .newVelocityEngine(props);
             return velocityEngine;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new TechnicalException("Error configuring velocity", e);
         }
 
