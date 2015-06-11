@@ -74,6 +74,7 @@
 		<module>pac4j-saml</module>
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
+		<module>pac4j-jwt</module>
 	</modules>
 
 	<dependencyManagement>
@@ -172,6 +173,21 @@
                 <artifactId>xml-apis</artifactId>
                 <version>1.4.01</version>
             </dependency>
+			<dependency>
+				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-http</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-jwt</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nimbusds</groupId>
+				<artifactId>nimbus-jose-jwt</artifactId>
+				<version>3.10</version>
+			</dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
@@ -221,7 +237,6 @@
 						<artifactId>xercesImpl</artifactId>
 					</exclusion>
 				</exclusions>
-
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
