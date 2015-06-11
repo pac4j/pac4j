@@ -18,6 +18,7 @@
 package org.pac4j.cas.client.rest;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.Authenticator;
 
@@ -35,21 +36,24 @@ import java.net.URL;
  */
 public class CasRestAuthenticator implements Authenticator<UsernamePasswordCredentials> {
     private final URL endpointURL;
+    private final TicketValidator ticketValidator;
 
-    public CasRestAuthenticator(final URL endpointURL) {
+    public CasRestAuthenticator(final URL endpointURL, final TicketValidator ticketValidator) {
         this.endpointURL = endpointURL;
+        this.ticketValidator = ticketValidator;
     }
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials) {
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword());
-        final HttpTGTProfile profile = new HttpTGTProfile(ticketGrantingTicketId, credentials.getUsername());
+        final HttpTGTProfile profile = new HttpTGTProfile(ticketGrantingTicketId);
         credentials.setUserProfile(profile);
     }
 
     private String requestTicketGrantingTicket(final String username, final String password)  {
-
-        try (final HttpURLConnection connection = HttpUtils.openConnection(endpointURL)) {
+        HttpURLConnection connection = null;
+        try {
+            connection = HttpUtils.openConnection(endpointURL);
             final String payload = HttpUtils.encodeQueryParam("username", username)
                     + "&" + HttpUtils.encodeQueryParam("password", password);
 
@@ -64,10 +68,16 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
             }
 
             throw new IllegalStateException("Ticket granting ticket request failed: " +
-                    HttpUtils.statusCodeAndErrorMessage(connection));
+                    HttpUtils.buildHttpErrorMessage(connection));
         } catch (final IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            HttpUtils.closeConnection(connection);
         }
+    }
+
+    public TicketValidator getTicketValidator() {
+        return ticketValidator;
     }
 
     public URL getEndpointURL() {

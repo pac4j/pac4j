@@ -19,11 +19,20 @@ package org.pac4j.cas.client.rest;
 
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.jasig.cas.client.authentication.AttributePrincipal;
+import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.TicketValidationException;
+import org.pac4j.cas.credentials.CasCredentials;
+import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.http.client.direct.DirectHttpClient;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.extractor.Extractor;
+import org.pac4j.http.credentials.extractor.FormExtractor;
 import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,7 +54,15 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
     }
 
     public CasRestClient(final CasRestAuthenticator authenticator) {
+        this(authenticator, new FormExtractor("username", "password",
+                CasRestClient.class.getSimpleName()));
+    }
+
+    public CasRestClient(final CasRestAuthenticator authenticator,
+                         final Extractor<UsernamePasswordCredentials> extractor) {
         setAuthenticator(authenticator);
+        setProfileCreator(new AuthenticatorProfileCreator());
+        this.extractor = extractor;
     }
 
     @Override
@@ -55,42 +72,72 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
         return client;
     }
 
-    public String requestServiceTicket(final URL serviceURL, final String ticketGrantingTicket) {
-        HttpURLConnection connection = null;
+    public HttpProfile requestTicketGrantingTicket(final WebContext context) {
+        final UsernamePasswordCredentials creds = this.extractor.extract(context);
+        getAuthenticator().validate(creds);
+        return getProfileCreator().create(creds);
+    }
 
+    public CasCredentials requestServiceTicket(final URL serviceURL, final HttpProfile profile) {
+        HttpURLConnection connection = null;
         try {
             final URL endpointURL = getAuthenticator().getEndpointURL();
-            final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + ticketGrantingTicket);
-            connection = openConnection(ticketURL);
-            final String payload = encodeQueryParam("service", serviceURL.toString());
+            final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile);
+
+            connection = HttpUtils.openConnection(ticketURL);
+            final String payload = HttpUtils.encodeQueryParam("service", serviceURL.toString());
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             out.write(payload);
             out.close();
 
             final int responseCode = connection.getResponseCode();
-
             if (responseCode == HttpStatus.SC_OK) {
                 final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                return in.readLine();
+                return new CasCredentials(in.readLine(), getClass().getSimpleName());
             }
-
-            throw new IllegalStateException("Service ticket request for `" + ticketGrantingTicket + "` failed: " +
-                    statusCodeAndErrorMessage(connection));
+            throw new IllegalStateException("Service ticket request for `" + profile + "` failed: " +
+                    HttpUtils.buildHttpErrorMessage(connection));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } finally {
-            closeConnection(connection);
+            HttpUtils.closeConnection(connection);
+        }
+    }
+
+    public CasProfile validateServiceTicket(final URL serviceURL, final CasCredentials ticket) {
+        try {
+            final Assertion assertion = getAuthenticator().getTicketValidator()
+                    .validate(ticket.getServiceTicket(), serviceURL.toExternalForm());
+            final AttributePrincipal principal = assertion.getPrincipal();
+            final CasProfile casProfile = new CasProfile();
+            casProfile.setId(principal.getName());
+            casProfile.addAttributes(principal.getAttributes());
+            return casProfile;
+        } catch (TicketValidationException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public Mechanism getMechanism() {
-        return Mechanism.CAS_REST_PROTOCOL;
+        return Mechanism.FORM_MECHANISM;
     }
 
     @Override
     public CasRestAuthenticator getAuthenticator() {
         return (CasRestAuthenticator) super.getAuthenticator();
+    }
+
+    public FormExtractor getExtractor() {
+        return (FormExtractor) this.extractor;
+    }
+
+    public String getUsernameParameter() {
+        return getExtractor().getUsernameParameter();
+    }
+
+    public String getPasswordParameter() {
+        return getExtractor().getPasswordParameter();
     }
 }
