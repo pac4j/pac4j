@@ -27,19 +27,18 @@ import org.pac4j.http.profile.HttpProfile;
  */
 public final class HttpTGTProfile extends HttpProfile {
     private final String ticketGrantingTicketId;
-    private  final String userId;
 
-    public HttpTGTProfile(final String ticketGrantingTicketId, final String userId) {
+    public HttpTGTProfile(final String ticketGrantingTicketId) {
         super();
         this.ticketGrantingTicketId = ticketGrantingTicketId;
-        this.userId = userId;
     }
 
     public String getTicketGrantingTicketId() {
         return ticketGrantingTicketId;
     }
 
-    public String getUserId() {
-        return userId;
+    @Override
+    public String toString() {
+        return getTicketGrantingTicketId();
     }
 }

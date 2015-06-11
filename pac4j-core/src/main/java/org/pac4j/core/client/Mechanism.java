@@ -25,7 +25,6 @@ public enum Mechanism {
     // @formatter:off
     OAUTH_PROTOCOL,
     CAS_PROTOCOL,
-    CAS_REST_PROTOCOL,
     OPENID_PROTOCOL,
     FORM_MECHANISM,
     BASICAUTH_MECHANISM,

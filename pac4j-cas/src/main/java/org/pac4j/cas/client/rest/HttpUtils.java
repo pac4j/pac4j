@@ -33,9 +33,10 @@ import java.net.URLEncoder;
 public final class HttpUtils {
     private static final String DEFAULT_QUERY_PARAM_ENCODING = "UTF-8";
 
-    private HttpUtils() {}
+    private HttpUtils() {
+    }
 
-    String statusCodeAndErrorMessage(final HttpURLConnection connection) throws IOException {
+    static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
         final StringBuilder messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
         if (connection.getResponseMessage() != null) {
             messageBuilder.append(" ");
@@ -54,5 +55,11 @@ public final class HttpUtils {
 
     static String encodeQueryParam(final String paramName, final String paramValue) throws UnsupportedEncodingException {
         return URLEncoder.encode(paramName, DEFAULT_QUERY_PARAM_ENCODING) + "=" + URLEncoder.encode(paramValue, DEFAULT_QUERY_PARAM_ENCODING);
+    }
+
+    static void closeConnection(final HttpURLConnection connection) {
+        if (connection != null) {
+            connection.disconnect();
+        }
     }
 }

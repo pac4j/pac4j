@@ -15,9 +15,7 @@
  */
 package org.pac4j.http.profile.creator;
 
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.credentials.HttpCredentials;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
 
 /**
@@ -26,7 +24,8 @@ import org.pac4j.http.profile.HttpProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class AuthenticatorProfileCreator implements ProfileCreator<HttpCredentials, HttpProfile> {
+public final class AuthenticatorProfileCreator<C extends HttpCredentials, P extends HttpProfile>
+        implements ProfileCreator<C, P> {
 
     /**
      * {@inheritDoc}
