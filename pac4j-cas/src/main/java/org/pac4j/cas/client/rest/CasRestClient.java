@@ -27,6 +27,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.client.direct.DirectHttpClient;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.extractor.Extractor;
@@ -54,15 +55,11 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
     }
 
     public CasRestClient(final CasRestAuthenticator authenticator) {
-        this(authenticator, new FormExtractor("username", "password",
-                CasRestClient.class.getSimpleName()));
-    }
-
-    public CasRestClient(final CasRestAuthenticator authenticator,
-                         final Extractor<UsernamePasswordCredentials> extractor) {
         setAuthenticator(authenticator);
         setProfileCreator(new AuthenticatorProfileCreator());
-        this.extractor = extractor;
+        this.extractor = new FormExtractor(authenticator.getUsernameParameter(),
+                                            authenticator.getPasswordParameter(),
+                                            CasRestClient.class.getSimpleName());
     }
 
     @Override
@@ -96,10 +93,10 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
                 final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 return new CasCredentials(in.readLine(), getClass().getSimpleName());
             }
-            throw new IllegalStateException("Service ticket request for `" + profile + "` failed: " +
+            throw new TechnicalException("Service ticket request for `" + profile + "` failed: " +
                     HttpUtils.buildHttpErrorMessage(connection));
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         } finally {
             HttpUtils.closeConnection(connection);
         }
@@ -114,8 +111,8 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
             casProfile.setId(principal.getName());
             casProfile.addAttributes(principal.getAttributes());
             return casProfile;
-        } catch (TicketValidationException e) {
-            throw new RuntimeException(e);
+        } catch (final TicketValidationException e) {
+            throw new TechnicalException(e);
         }
     }
 
@@ -127,17 +124,5 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
     @Override
     public CasRestAuthenticator getAuthenticator() {
         return (CasRestAuthenticator) super.getAuthenticator();
-    }
-
-    public FormExtractor getExtractor() {
-        return (FormExtractor) this.extractor;
-    }
-
-    public String getUsernameParameter() {
-        return getExtractor().getUsernameParameter();
-    }
-
-    public String getPasswordParameter() {
-        return getExtractor().getPasswordParameter();
     }
 }

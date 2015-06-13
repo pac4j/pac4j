@@ -94,6 +94,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-http</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.jasig.cas</groupId>
 				<artifactId>cas-server-webapp</artifactId>
 				<version>${cas.version}</version>

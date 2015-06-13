@@ -16,8 +16,8 @@
 package org.pac4j.http.profile;
 
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
 import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
 
 /**
  * <p>This class is the user profile for sites using HTTP protocol.</p>

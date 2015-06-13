@@ -35,9 +35,7 @@
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-http</artifactId>
-			<scope>compile</scope>
 			<optional>true</optional>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
