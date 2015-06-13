@@ -56,7 +56,7 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
 
     public CasRestClient(final CasRestAuthenticator authenticator) {
         setAuthenticator(authenticator);
-        setProfileCreator(new AuthenticatorProfileCreator());
+        setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
         this.extractor = new FormExtractor(authenticator.getUsernameParameter(),
                                             authenticator.getPasswordParameter(),
                                             CasRestClient.class.getSimpleName());

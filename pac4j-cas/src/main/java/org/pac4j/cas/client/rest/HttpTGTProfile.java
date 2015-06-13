@@ -47,4 +47,9 @@ public final class HttpTGTProfile extends HttpProfile {
     public String toString() {
         return getTicketGrantingTicketId();
     }
+
+    @Override
+    public String getId() {
+        return getTicketGrantingTicketId();
+    }
 }

@@ -17,7 +17,6 @@
 
 package org.pac4j.cas.client.rest;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -48,7 +47,7 @@ public final class HttpUtils {
     }
 
     static HttpURLConnection openConnection(final URL url) throws IOException {
-        final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");

@@ -68,7 +68,7 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }
 
-            throw new TechnicalException("Ticket granting ticket request failed: " +
+            throw new TechnicalException("Ticket granting ticket request failed: " + locationHeader + " " + responseCode +
                     HttpUtils.buildHttpErrorMessage(connection));
         } catch (final IOException e) {
             throw new TechnicalException(e);
