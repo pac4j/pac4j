@@ -25,7 +25,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * This is {@link HttpUtils}.
+ * This is {@link HttpUtils} that provides utility functions
+ * to deal with opening connections, building error messages
+ * and closing connections, etc.
  *
  * @author Misagh Moayyed
  * @since 1.8.0

@@ -20,13 +20,19 @@ package org.pac4j.cas.client.rest;
 import org.pac4j.http.profile.HttpProfile;
 
 /**
- * This is {@link HttpTGTProfile}.
+ * This is {@link HttpTGTProfile} that represents
+ * the CAS TGT when it's obtained via the rest api.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
 public final class HttpTGTProfile extends HttpProfile {
+    private static final long serialVersionUID = -1688563185891330018L;
     private final String ticketGrantingTicketId;
+
+    public HttpTGTProfile() {
+        this.ticketGrantingTicketId = null;
+    }
 
     public HttpTGTProfile(final String ticketGrantingTicketId) {
         super();

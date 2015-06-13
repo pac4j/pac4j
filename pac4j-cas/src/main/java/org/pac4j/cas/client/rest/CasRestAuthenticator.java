@@ -19,6 +19,7 @@ package org.pac4j.cas.client.rest;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.Authenticator;
 
@@ -54,8 +55,8 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openConnection(endpointURL);
-            final String payload = HttpUtils.encodeQueryParam("username", username)
-                    + "&" + HttpUtils.encodeQueryParam("password", password);
+            final String payload = HttpUtils.encodeQueryParam(getUsernameParameter(), username)
+                    + "&" + HttpUtils.encodeQueryParam(getPasswordParameter(), password);
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             out.write(payload);
@@ -67,13 +68,21 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }
 
-            throw new IllegalStateException("Ticket granting ticket request failed: " +
+            throw new TechnicalException("Ticket granting ticket request failed: " +
                     HttpUtils.buildHttpErrorMessage(connection));
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         } finally {
             HttpUtils.closeConnection(connection);
         }
+    }
+
+    public String getUsernameParameter() {
+        return "username";
+    }
+
+    public String getPasswordParameter() {
+        return "password";
     }
 
     public TicketValidator getTicketValidator() {
