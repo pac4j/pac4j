@@ -108,7 +108,18 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
-	
+
+  <servlet>
+    <servlet-name>restlet</servlet-name>
+    <servlet-class>com.noelios.restlet.ext.spring.RestletFrameworkServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>restlet</servlet-name>
+    <url-pattern>/v1/*</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>cas</servlet-name>
     <url-pattern>/login</url-pattern>
