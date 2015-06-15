@@ -57,17 +57,17 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
         setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
     }
 
-    public HttpProfile requestTicketGrantingTicket(final WebContext context) {
+    public HttpTGTProfile requestTicketGrantingTicket(final WebContext context) {
         final UsernamePasswordCredentials creds = this.extractor.extract(context);
         getAuthenticator().validate(creds);
-        return getProfileCreator().create(creds);
+        return (HttpTGTProfile) getProfileCreator().create(creds);
     }
 
-    public CasCredentials requestServiceTicket(final String serviceURL, final HttpProfile profile) {
+    public CasCredentials requestServiceTicket(final String serviceURL, final HttpTGTProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
-            final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile);
+            final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
 
             connection = HttpUtils.openConnection(ticketURL);
             final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
