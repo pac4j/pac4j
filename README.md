@@ -362,9 +362,7 @@ The current version **1.8.0-SNAPSHOT** is under development. Maven artefacts are
 
 The source code can be cloned and built locally via the Maven command: `mvn clean compile`. See the [tests strategy](/pac4j/pac4j/wiki/Tests).
 
-The latest released version is the **1.7.0**, available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-).
-
-See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
+The latest released version is the **1.7.0**, available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](/pac4j/pac4j/wiki/Versions).
 
 
 ## Contact
