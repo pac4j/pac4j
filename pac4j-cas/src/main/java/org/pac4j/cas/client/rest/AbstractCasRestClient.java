@@ -17,7 +17,6 @@
 
 package org.pac4j.cas.client.rest;
 
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
@@ -25,13 +24,10 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Mechanism;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.client.direct.DirectHttpClient;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.extractor.Extractor;
-import org.pac4j.http.credentials.extractor.FormExtractor;
 import org.pac4j.http.profile.HttpProfile;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
@@ -44,29 +40,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * This is {@link CasRestClient}.
+ * This is {@link CasRestFormClient} able to communicate to
+ * a CAS server via its REST api, to retrieve TGTs and STs
+ * and to construct CAS principals.
  *
  * @author Misagh Moayyed
- * @author Daniel Pacak
  * @since 1.8.0
  */
-public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials> {
-    public CasRestClient() {
+public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePasswordCredentials> {
+    public AbstractCasRestClient() {
+        super();
     }
 
-    public CasRestClient(final CasRestAuthenticator authenticator) {
+    public AbstractCasRestClient(final CasRestAuthenticator authenticator) {
         setAuthenticator(authenticator);
         setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
-        this.extractor = new FormExtractor(authenticator.getUsernameParameter(),
-                                            authenticator.getPasswordParameter(),
-                                            CasRestClient.class.getSimpleName());
-    }
-
-    @Override
-    protected BaseClient<UsernamePasswordCredentials, HttpProfile> newClient() {
-        final CasRestClient client = new CasRestClient();
-        client.setAuthenticator(getAuthenticator());
-        return client;
     }
 
     public HttpProfile requestTicketGrantingTicket(final WebContext context) {
@@ -75,14 +63,14 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
         return getProfileCreator().create(creds);
     }
 
-    public CasCredentials requestServiceTicket(final URL serviceURL, final HttpProfile profile) {
+    public CasCredentials requestServiceTicket(final String serviceURL, final HttpProfile profile) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = getAuthenticator().getEndpointURL();
+            final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
             final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile);
 
             connection = HttpUtils.openConnection(ticketURL);
-            final String payload = HttpUtils.encodeQueryParam("service", serviceURL.toString());
+            final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             out.write(payload);
@@ -102,10 +90,10 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
         }
     }
 
-    public CasProfile validateServiceTicket(final URL serviceURL, final CasCredentials ticket) {
+    public CasProfile validateServiceTicket(final String serviceURL, final CasCredentials ticket) {
         try {
             final Assertion assertion = getAuthenticator().getTicketValidator()
-                    .validate(ticket.getServiceTicket(), serviceURL.toExternalForm());
+                    .validate(ticket.getServiceTicket(), serviceURL);
             final AttributePrincipal principal = assertion.getPrincipal();
             final CasProfile casProfile = new CasProfile();
             casProfile.setId(principal.getName());
@@ -117,12 +105,16 @@ public class CasRestClient extends DirectHttpClient<UsernamePasswordCredentials>
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.FORM_MECHANISM;
-    }
-
-    @Override
     public CasRestAuthenticator getAuthenticator() {
         return (CasRestAuthenticator) super.getAuthenticator();
     }
+
+    @Override
+    protected BaseClient<UsernamePasswordCredentials, HttpProfile> newClient() {
+        final AbstractCasRestClient client = newClientType();
+        client.setAuthenticator(getAuthenticator());
+        return client;
+    }
+
+    protected abstract AbstractCasRestClient newClientType();
 }

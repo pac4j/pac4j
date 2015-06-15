@@ -28,6 +28,7 @@ import org.pac4j.http.profile.HttpProfile;
  */
 public final class HttpTGTProfile extends HttpProfile {
     private static final long serialVersionUID = -1688563185891330018L;
+
     private final String ticketGrantingTicketId;
 
     public HttpTGTProfile() {
@@ -43,4 +44,21 @@ public final class HttpTGTProfile extends HttpProfile {
         return ticketGrantingTicketId;
     }
 
+    @Override
+    public int hashCode() {
+        return this.ticketGrantingTicketId.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof HttpTGTProfile)) {
+            return false;
+        }
+
+        return (obj == this) ||
+                this.ticketGrantingTicketId.equals(((HttpTGTProfile)obj).ticketGrantingTicketId);
+    }
 }

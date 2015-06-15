@@ -18,6 +18,7 @@
 package org.pac4j.cas.client.rest;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -36,12 +37,25 @@ import java.net.URL;
  * @since 1.8.0
  */
 public class CasRestAuthenticator implements Authenticator<UsernamePasswordCredentials> {
-    private final URL endpointURL;
-    private final TicketValidator ticketValidator;
+    private final String casServerPrefixUrl;
+    private final String casRestUrl;
 
-    public CasRestAuthenticator(final URL endpointURL, final TicketValidator ticketValidator) {
-        this.endpointURL = endpointURL;
-        this.ticketValidator = ticketValidator;
+    public CasRestAuthenticator(final String casServerPrefixUrl) {
+        this(casServerPrefixUrl, buildCasRestUrlFromCasServerPrefixUrl(casServerPrefixUrl));
+    }
+
+    private static String buildCasRestUrlFromCasServerPrefixUrl(final String casServerPrefixUrl) {
+        String restUrl = casServerPrefixUrl;
+        if (!restUrl.endsWith("/")) {
+            restUrl += "/";
+        }
+        restUrl += "v1/tickets";
+        return restUrl;
+    }
+
+    public CasRestAuthenticator(final String casServerPrefixUrl, final String casRestUrl) {
+        this.casServerPrefixUrl = casServerPrefixUrl;
+        this.casRestUrl = casRestUrl;
     }
 
     @Override
@@ -51,10 +65,10 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         credentials.setUserProfile(profile);
     }
 
-    private String requestTicketGrantingTicket(final String username, final String password)  {
+    private String requestTicketGrantingTicket(final String username, final String password) {
         HttpURLConnection connection = null;
         try {
-            connection = HttpUtils.openConnection(endpointURL);
+            connection = HttpUtils.openConnection(new URL(getCasRestUrl()));
             final String payload = HttpUtils.encodeQueryParam(getUsernameParameter(), username)
                     + "&" + HttpUtils.encodeQueryParam(getPasswordParameter(), password);
 
@@ -85,11 +99,16 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         return "password";
     }
 
-    public TicketValidator getTicketValidator() {
-        return ticketValidator;
+    public String getCasServerPrefixUrl() {
+        return casServerPrefixUrl;
     }
 
-    public URL getEndpointURL() {
-        return endpointURL;
+    public String getCasRestUrl() {
+        return casRestUrl;
+    }
+
+    TicketValidator getTicketValidator() {
+        return new Cas20ServiceTicketValidator(getCasServerPrefixUrl());
     }
 }
+
