@@ -3,9 +3,7 @@
 </p>
 
 - [What is pac4j ?](#what-is-pac4j--)
-- [The "big picture"](#the-big-picture)
 - [Technical description](#technical-description)
-- [Providers supported](#providers-supported)
 - [Code sample](#code-sample)
 - [Libraries built with pac4j](#libraries-built-with-pac4j)
 - [Versions](#versions)
@@ -79,11 +77,6 @@ See [all clients](https://github.com/pac4j/pac4j/wiki/Clients).
 ### Open source
 
 It's available under the Apache 2 license.
-
-
-## The "big picture"
-
-<img src="https://pac4j.github.io/pac4j/img/pac4j.png" />
 
 
 ## Technical description
