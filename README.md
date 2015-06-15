@@ -34,7 +34,7 @@
 
 ### Supported authentication methods
 
-Although **pac4j** historically targets external authentication protocols, it supports direct authentication methods as well. See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows) / or the [example of the CAS flow](https://github.com/pac4j/pac4j/wiki/CAS-flow).
+Although **pac4j** historically targets external authentication protocols, it supports direct authentication methods as well. See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows) or the [example of the CAS flow](https://github.com/pac4j/pac4j/wiki/CAS-flow).
 
 #### External/stateful authentication protocols
 
