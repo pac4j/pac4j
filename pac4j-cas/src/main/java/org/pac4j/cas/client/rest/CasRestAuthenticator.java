@@ -60,6 +60,9 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials) {
+        if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
+            throw new TechnicalException("Credentials are required");
+        }
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword());
         final HttpTGTProfile profile = new HttpTGTProfile(ticketGrantingTicketId);
         credentials.setUserProfile(profile);
