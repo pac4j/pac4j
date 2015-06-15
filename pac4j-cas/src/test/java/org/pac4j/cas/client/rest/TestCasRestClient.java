@@ -4,7 +4,7 @@ import org.pac4j.core.profile.CommonProfile;
 
 /**
  * The {@link TestCasRestClient} is responsible for
- * executing tests against {@link CasRestClient}.
+ * executing tests against {@link CasRestFormClient}.
  *
  * @author Misagh Moayyed
  */

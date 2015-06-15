@@ -4,7 +4,7 @@ import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.client.rest.CasRestAuthenticator;
-import org.pac4j.cas.client.rest.CasRestClient;
+import org.pac4j.cas.client.rest.CasRestFormClient;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
@@ -27,13 +27,11 @@ public class CasClientRestProtocolIT extends CasClientIT {
     }
 
     @Test
-    public void testRestProtocol() throws Exception {
-        final URL endpointURL = new URL("http://localhost:8080/cas/v1/tickets");
+    public void testRestProtocolForm() throws Exception {
         final String casUrlPrefix = "http://localhost:8080/cas";
 
-        final CasRestAuthenticator authenticator = new CasRestAuthenticator(endpointURL,
-                new Cas20ServiceTicketValidator(casUrlPrefix));
-        final CasRestClient client = new CasRestClient(authenticator);
+        final CasRestAuthenticator authenticator = new CasRestAuthenticator(casUrlPrefix);
+        final CasRestFormClient client = new CasRestFormClient(authenticator);
         final UsernamePasswordCredentials creds = new UsernamePasswordCredentials("casuser", "casuser", client.getName());
 
         final MockWebContext context = MockWebContext.create();
@@ -41,7 +39,7 @@ public class CasClientRestProtocolIT extends CasClientIT {
         context.addRequestParameter(client.getAuthenticator().getPasswordParameter(), creds.getPassword());
 
         final HttpProfile profile = client.requestTicketGrantingTicket(context);
-        final CasCredentials casCreds = client.requestServiceTicket(new URL("http://www.pac4j.org/"), profile);
-        final CasProfile casProfile = client.validateServiceTicket(new URL("http://www.pac4j.org/"), casCreds);
+        final CasCredentials casCreds = client.requestServiceTicket("http://www.pac4j.org/", profile);
+        final CasProfile casProfile = client.validateServiceTicket("http://www.pac4j.org/", casCreds);
     }
 }
