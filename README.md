@@ -2,15 +2,6 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" />
 </p>
 
-- [What is pac4j ?](#what-is-pac4j--)
-- [Code sample](#code-sample)
-- [Libraries built with pac4j](#libraries-built-with-pac4j)
-- [Versions](#versions)
-- [Testing](#testing)
-- [Bugs / Features tracking](#bugs--features-tracking)
-- [Contact](#contact)
-
-
 ## What is pac4j ? [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j)
 
 **pac4j** is a Profile & Authentication Client for Java, it's a general security library to authenticate users, get their profiles, manage their authorizations in order to secure web applications for all Java frameworks.
