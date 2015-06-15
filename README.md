@@ -2,7 +2,7 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="50%" height="50%" />
 </p>
 
-## What is pac4j ? [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j)
+## What is pac4j ?
 
 **pac4j** is a Profile & Authentication Client for Java, it's a general security library to authenticate users, get their profiles, manage their authorizations in order to secure web applications for all Java frameworks.
 
@@ -358,20 +358,11 @@ Even if you can use **pac4j** on its own, this library is used to be integrated 
 
 ## Versions
 
-The current version **1.8.0-SNAPSHOT** is under development.  
-The build is done on Travis: [https://travis-ci.org/pac4j/pac4j](https://travis-ci.org/pac4j/pac4j).
-The generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j) as a Maven dependency.
+The current version **1.8.0-SNAPSHOT** is under development, built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and Maven generated artifacts are available on the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
-The last released version is the **1.7.0**:
-
-    <dependency>
-        <groupId>org.pac4j</groupId>
-        <artifactId>pac4j-core</artifactId>
-        <version>1.7.0</version>
-    </dependency>
+The latest released version is the **1.7.0**, available in the [Maven central repository](http://search.maven.org).
 
 See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
-
 
 
 ## Testing
