@@ -381,11 +381,6 @@ pac4j is tested by more than 400:
 - integration tests (authentication processes are fully simulated using the [HtmlUnit](http://htmlunit.sourceforge.net/) library) launched by *mvn verify*.
 
 
-## Bugs / Features tracking
-
-Bugs and new features can be tracked using Github issues.
-
-
 ## Contact
 
 If you have any question, please use the following mailing lists:
