@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://pac4j.github.io/pac4j/img/logo.png" />
+  <img src="https://pac4j.github.io/pac4j/img/logo.png" width="50%" height="50%" />
 </p>
 
 ## What is pac4j ? [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j)
