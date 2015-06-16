@@ -142,8 +142,9 @@ Browse some [code samples](https://github.com/pac4j/pac4j/wiki/Code-samples) and
 7. [WebContext](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java): it represents the current HTTP request and response, regardless of the framework
 8. [AuthorizationGenerator](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/AuthorizationGenerator.java): it's a class to compute the roles and permissions for a user profile
 9. [Authorizer](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/Authorizer.java): it's a generic concept to manage authorizations given a user profile and a web context
-10. [Authenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/Authenticator.java): it's the interface to implement to validate user credentials. Several implementations exist
-11. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. Several implementations exist.
+10. [Extractor](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/extractor/Extractor.java): it's a way to get user credentials from a HTTP request
+11. [Authenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/Authenticator.java): it's the interface to implement to validate user credentials. Several implementations exist
+12. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. Several implementations exist.
 
 
 ## Need help?
