@@ -42,7 +42,7 @@ The source code can be cloned and built locally via the Maven command: `mvn clea
 
 The latest released version is the **1.7.0**, available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-### Implementation
+### Implementations
 
 `pac4j` is a powerful yet easy security engine which can be used in many ways.
 
