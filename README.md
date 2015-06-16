@@ -32,7 +32,7 @@ It is actually **implemented by many frameworks and supports many authentication
 See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
 
 
-## How to use `pac4j`
+## How to use `pac4j`?
 
 ### Versions
 
@@ -44,7 +44,7 @@ The latest released version is the **1.7.0**, available in the [Maven central re
 
 ### Implementation
 
-`pac4j` is a powerful and easy security engine which can be used in many ways.
+`pac4j` is a powerful yet easy security engine which can be used in many ways.
 
 To secure your Java web application, a good implementation is to create two filters: one to protect urls, the other one to receive callback calls for stateful authentication processes ("indirect clients").
 
