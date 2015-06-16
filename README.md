@@ -17,7 +17,7 @@ It is actually **implemented by many frameworks and supports many authentication
 9. the [Spark Java framework](http://sparkjava.com) using the [spark-pac4j](https://github.com/pac4j/spark-pac4j) library (demo: [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo))
 10. the [Jooby framework](http://jooby.org) using the [jooby-pac4j](https://github.com/jooby-project/jooby/tree/master/jooby-pac4j) module (demo: [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)).
 
-### Supported authentication mechanisms
+### Supported authentication mechanisms:
 
 `pac4j` supports stateful and stateless [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows) using external identity providers or direct internal credentials authenticator and user profile creator:
 
@@ -31,7 +31,7 @@ It is actually **implemented by many frameworks and supports many authentication
 
 See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
 
-### Core concepts
+### Core concepts:
 
 1. [Client](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java): a client is a way to authenticate, it is responsible for starting the authentication process if necessary (stateful use case), validating the user credentials and getting the user profile (all cases). A hierarchy of user profile exists: DirectClient, IndirectClient, FacebookClient, CasClient...
 2. [Clients](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Clients.java): it's a helper class to define all clients together and reuse the same callback url
@@ -46,6 +46,7 @@ See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients)
 11. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. Several implementations exist.
 
 
+## How to use `pac4j`
 
 ## Code sample
 
