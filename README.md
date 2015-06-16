@@ -63,7 +63,7 @@ In your protection filter, use the following logic:
     EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
     UserProfile profile = manager.get();
     if (profile != null) {
-      return grantAccess();
+      grantAccess();
     } else {
       saveRequestedUrl();
       Client client = clients.findClient(configName);
