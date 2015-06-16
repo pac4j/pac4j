@@ -57,7 +57,7 @@ Gather all your clients via the `Clients` class to share the same callback url:
     casClient.setCasLoginUrl("http://mycasserver/login");
     Clients clients = new Clients("http://localhost:8080/callback", facebookClient, twitterClient, formClient, casClient);
 
-In your protection filter, use the following logic with `pac4j` **version <= 1.7**:
+In your protection filter, you may implement this simple logic:
 
     EnvSpecificWebContext context = new EnvSpecificWebContex(...);
     EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
@@ -74,7 +74,7 @@ In your protection filter, use the following logic with `pac4j` **version <= 1.7
       }
     }
 
-With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can implement a more evolved algorithm:
+With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can use a more evolved algorithm:
 
     EnvSpecificWebContext context = new EnvSpecificWebContex(...);
     EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
