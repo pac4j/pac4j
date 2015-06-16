@@ -1,8 +1,8 @@
 ## What is pac4j ?
 
-`pac4j` (for Profile & Authentication Client for Java) is an **authentication / authorization engine to authenticate users, get their profiles and manage their authorizations** in order to secure your Java web applications.  
-It is actually **implemented by many frameworks and supports many authentication mechanisms**.  
-See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture). It's available under the Apache 2 license.
+`pac4j` (for Profile & Authentication Client for Java) is an **authentication / authorization engine to authenticate users, get their profiles and manage their authorizations** in order to secure your Java web applications. It's available under the Apache 2 license.
+
+It is actually **implemented by many frameworks and supports many authentication mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture).
 
 It is available in the following frameworks / tools:
 
