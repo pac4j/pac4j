@@ -129,6 +129,8 @@ In your callback filter:
     }
     redirectToTheOriginallyRequestedUrl();
 
+Browse some [code samples](https://github.com/pac4j/pac4j/wiki/Code-samples) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components).
+
 ### Core concepts:
 
 1. [Client](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java): a client is a way to authenticate, it is responsible for starting the authentication process if necessary (stateful use case), validating the user credentials and getting the user profile (all cases). A hierarchy of user profile exists: DirectClient, IndirectClient, FacebookClient, CasClient...
