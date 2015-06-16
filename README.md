@@ -34,7 +34,7 @@ See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients)
 
 ## How to use `pac4j`
 
-### Current versions
+### Versions
 
 The current version **1.8.0-SNAPSHOT** is under development. Maven artefacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
@@ -42,7 +42,7 @@ The source code can be cloned and built locally via the Maven command: `mvn clea
 
 The latest released version is the **1.7.0**, available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-### Right implementations
+### Implementation
 
 `pac4j` is a powerful and easy security engine which can be used in many ways.
 
@@ -144,7 +144,7 @@ In your callback filter:
 11. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. Several implementations exist.
 
 
-## Any questions / Need help?
+## Need help?
 
 If you have any question, please use the following mailing lists:
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
