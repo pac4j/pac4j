@@ -1,10 +1,19 @@
-<p align="center">
-  <img src="https://pac4j.github.io/pac4j/img/logo.png" width="50%" height="50%" />
-</p>
-
 ## What is pac4j ?
 
-**pac4j** is a Profile & Authentication Client for Java, it's a general security library to authenticate users, get their profiles, manage their authorizations in order to secure web applications for all Java frameworks.
+**pac4j** (for Profile & Authentication Client for Java) is a general authentication / authorization engine to authenticate users, get their profiles and manage their authorizations in order to secure Java web applications. It is actually implemented by many frameworks and supports many authentication mechanisms. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture). It's available under the Apache 2 license.
+
+It is available in the following frameworks / tools:
+
+1. in the SSO [CAS server](https://github.com/Jasig/cas) using the [cas-server-support-pac4j](https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j) module (demo: [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo))
+2. for the [Play 2.x framework](http://www.playframework.org) using the the [play-pac4j](https://github.com/pac4j/play-pac4j) library (demos: [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) & [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo))
+3. in any [J2E environment](http://docs.oracle.com/javaee/) using the [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) library (demo: [j2e-pac4j-demo](https://github.com/pac4j/j2e-pac4j-demo))
+4. for the [Apache Shiro project](http://shiro.apache.org) library using the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library (demo: [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo))
+5. for the [Spring Security](http://static.springsource.org/spring-security/site/) library using the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library (demo: [spring-security-pac4j-demo](https://github.com/pac4j/spring-security-pac4j-demo))
+6. for the [Ratpack](http://www.ratpack.io/) JVM toolkit using the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module (demo: [ratpack-pac4j-demo](https://github.com/pac4j/ratpack-pac4j-demo))
+7. for the [Vertx](http://vertx.io/) framework using the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module (demo: [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo))
+8. for the [Undertow](http://undertow.io/) web server using the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) module (demo: [undertow-pac4j-demo](https://github.com/pac4j/undertow-pac4j-demo))
+9. for the [Spark Java framework](http://sparkjava.com) using the [spark-pac4j](https://github.com/pac4j/spark-pac4j) library (demo: [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo))
+10. for the [Jooby framework](http://jooby.org) using the [jooby-pac4j](https://github.com/jooby-project/jooby/tree/master/jooby-pac4j) module (demo: [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)).
 
 
 ### Main concepts
@@ -48,25 +57,6 @@ The current HTTP request contains the required credentials to validate the user 
 It relies on specific **Authenticator** to validate user credentials and **ProfileCreator** to create user profiles.
 
 See [all clients](https://github.com/pac4j/pac4j/wiki/Clients).
-
-### Implementations
-
-**pac4j** is primarily meant to be used through its implementations in the following frameworks and environments:
-
-1. the CAS server (using the *cas-server-support-pac4j* library)
-2. the Play 2.x framework (using the *play-pac4j_java* and *play-pac4j_scala* libraries)
-3. any basic J2E environment (using the *j2e-pac4j* library)
-4. the Apache Shiro library (using the *buji-pac4j* library)
-5. the Spring Security library (using the *spring-security-pac4j* library)
-6. the Ratpack JVM toolkit (using the *ratpack-pac4j* module)
-7. the Vertx framework (using the *vertx-pac4j* module)
-8. the Undertow web server (using the *undertow-pac4j* module)
-9. the Spark Java framework (using the *spark-pac4j* module).
-
-
-### Open source
-
-It's available under the Apache 2 license.
 
 
 ## Code sample
@@ -331,31 +321,6 @@ The generation of this information is controlled by a class implementing the *or
     client.setAuthorizationGenerator(authGenerator);
 
 
-## Libraries built with pac4j
-
-Even if you can use **pac4j** on its own, this library is used to be integrated with:
-
-1. the [cas-server-support-pac4j](https://wiki.jasig.org/pages/viewpage.action?pageId=57577635) module to add multi-protocols client support to the [CAS server](http://www.jasig.org/cas)
-2. the [play-pac4j](https://github.com/pac4j/play-pac4j) library to add multi-protocols client support to the [Play 2.x framework](http://www.playframework.org/) in Java and Scala
-2. the [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) library to add multi-protocols client support to the [J2E environment](http://docs.oracle.com/javaee/)
-3. the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library to add multi-protocols client support to the [Apache Shiro project](http://shiro.apache.org)
-4. the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library to add multi-protocols client support to [Spring Security](http://static.springsource.org/spring-security/site/)
-5. the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module to add multi-protocols client support to [Ratpack](http://www.ratpack.io/)
-6. the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module to add multi-protocols client support to [Vertx](http://vertx.io/)
-7. the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) module to add multi-protocols client support to [Undertow](http://undertow.io/)
- 
-<table>
-<tr><th>Integration library</th><th>Protocol(s) supported</th><th>Based on</th><th>Demo webapp</th></tr>
-<tr><td>cas-server-support-pac4j 4.0.0</td><td>OAuth / CAS / OpenID</td><td>pac4j 1.4.1</td><td><a href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4-oauth-demo</a></td></tr>
-<tr><td>play-pac4j 1.4.0 / 1.2.3 / 1.1.5</td><td>OAuth / CAS / OpenID Connect / HTTP / SAML / GAE</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/play-pac4j-java-demo">play-pac4j-java-demo</a><br /><a href="https://github.com/pac4j/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
-<tr><td>j2e-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
-<tr><td>buji-pac4j 1.3.1</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
-<tr><td>spring-security-pac4j 1.2.5</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/spring-security-pac4j-demo">spring-security-pac4j-demo</a></td></tr>
-<tr><td>ratpack 0.9.7</td><td>OAuth / CAS / OpenID / HTTP</td><td>pac4j 1.5.1</td><td><a href="https://github.com/pac4j/ratpack-pac4j-demo">ratpack-pac4j-demo</a></td></tr>
-<tr><td>vertx-pac4j 1.1.0</td><td>OAuth / CAS / OpenID / HTTP / SAML / GAE / OpenID Connect</td><td>pac4j 1.7.0</td><td><a href="https://github.com/pac4j/vertx-pac4j-demo">vertx-pac4j-demo</a></td></tr>
-</table>
-
-
 ## Versions
 
 The current version **1.8.0-SNAPSHOT** is under development. Maven artefacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
@@ -370,3 +335,7 @@ The latest released version is the **1.7.0**, available in the [Maven central re
 If you have any question, please use the following mailing lists:
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
 - [pac4j developers](https://groups.google.com/forum/?hl=en#!forum/pac4j-dev)
+
+<p align="center">
+  <img src="https://pac4j.github.io/pac4j/img/logo.png" />
+</p>
