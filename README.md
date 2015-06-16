@@ -34,7 +34,7 @@ See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients)
 
 ## How to use `pac4j`
 
-### Versions
+### Current versions
 
 The current version **1.8.0-SNAPSHOT** is under development. Maven artefacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
@@ -42,7 +42,7 @@ The source code can be cloned and built locally via the Maven command: `mvn clea
 
 The latest released version is the **1.7.0**, available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-### Implementation
+### Right implementations
 
 `pac4j` is a powerful and easy security engine which can be used in many ways.
 
@@ -57,7 +57,7 @@ Gather all your clients via the `Clients` class to share the same callback url:
     casClient.setCasLoginUrl("http://mycasserver/login");
     Clients clients = new Clients("http://localhost:8080/callback", facebookClient, twitterClient, formClient, casClient);
 
-In your protection filter, use the following logic:
+In your protection filter, use the following logic with `pac4j` **version <= 1.7**:
 
     EnvSpecificWebContext context = new EnvSpecificWebContex(...);
     EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
@@ -74,6 +74,44 @@ In your protection filter, use the following logic:
       }
     }
 
+With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can implement a more evolved algorithm:
+
+    EnvSpecificWebContext context = new EnvSpecificWebContex(...);
+    EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
+    UserProfile profile = manager.get();
+    Client client = clients.findClient(context);
+    if (client == null) {
+      client = clients.findClient(configName);
+    }
+    boolean isDirectClient = client instanceof DirectClient;
+    if (profile == null && isDirectClient) {
+      try {
+        credentials = client.getCredentials(context);
+      } catch (RequiresHttpAction e) { }
+      profile = client.getUserProfile(credentials, context);
+      if (profile != null) {
+        manager.save(profile);
+      }
+    }
+    if (profile != null) {
+      if (configAuthorizer.isAuthorized(context, profile) {
+        grantAccess();
+      } else {
+        errorHttp403Forbidden();
+      }
+    } else {
+      if (isDirectClient) {
+        errorHttp401NotAuthenticated();
+      } else {
+        saveRequestedUrl();
+        try {
+          client.redirect(context);
+        } catch (RequiresHttpAction e) {
+          handleSpecialHttpBehaviours();
+        }
+      }
+    }
+
 In your callback filter:
 
     EnvSpecificWebContext context = new EnvSpecificWebContex(...);
@@ -87,7 +125,7 @@ In your callback filter:
     }
     UserProfile profile = client.getUserProfile(credentials, context);
     if (profile != null) {
-      maager.save(profile);
+      manager.save(profile);
     }
     redirectToTheOriginallyRequestedUrl();
 
