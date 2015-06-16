@@ -4,7 +4,7 @@
 
 It is actually **implemented by many frameworks and supports many authentication mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture).
 
-It is available in the following frameworks / tools:
+`pac4j` is available in the following frameworks / tools:
 
 1. in the SSO [CAS server](https://github.com/Jasig/cas) using the [cas-server-support-pac4j](https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j) module (demo: [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo))
 2. for the [Play 2.x framework](http://www.playframework.org) using the the [play-pac4j](https://github.com/pac4j/play-pac4j) library (demos: [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) & [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo))
@@ -17,18 +17,19 @@ It is available in the following frameworks / tools:
 9. for the [Spark Java framework](http://sparkjava.com) using the [spark-pac4j](https://github.com/pac4j/spark-pac4j) library (demo: [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo))
 10. for the [Jooby framework](http://jooby.org) using the [jooby-pac4j](https://github.com/jooby-project/jooby/tree/master/jooby-pac4j) module (demo: [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)).
 
+`pac4j` has the following core concepts:
 
-### Main concepts
-
-- **Client**: an authentication client is responsible for starting the authentication process, getting the user credentials and the user profile
-- **UserProfile**: it's the profile of an authenticated user (a hierarchy of user profiles exists: CommonProfile, OAuth20Profile, FacebookProfile...)
-- **AttributesDefinition**: it's the attributes definition for a specific type of profile
-- **Credentials**: it's a user credentials (a hierarchy of credentials exists: CasCredentials, Saml2Credentials, UsernamePasswordCredentials...)
-- **Clients**: it's a helper class to define all clients together
-- **Context**: it represents the current HTTP request and response, regardless of the framework
-- **AuthorizationGenerator**: it's a class to compute the roles and permissions of a user from his profile
-- **Authenticator**: it's a method to validate user credentials
-- **ProfileCreator**: it's a method to create a user profile from credentials.
+1. [Client](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java): a client is a way to authenticate, it is responsible for starting the authentication process if necessary (stateful use case), validating the user credentials and getting the user profile (all cases). A hierarchy of user profile exists: DirectClient, IndirectClient, FacebookClient, CasClient...
+2. [Clients](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Clients.java): it's a helper class to define all clients together and reuse the same callback url
+3. [UserProfile](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java): it's the profile of an authenticated . A hierarchy of user profiles exists: CommonProfile, OAuth20Profile, FacebookProfile...
+4. [AttributesDefinition](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/AttributesDefinition.java): it's the attributes definition for a specific type of profile
+5. [ProfileManager](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileManager.java): it's a manager to get/set/remove the current user profile
+6. [Credentials](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java): it's a user credentials. A hierarchy of credentials exists: CasCredentials, Saml2Credentials, UsernamePasswordCredentials...
+7. [WebContext](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java): it represents the current HTTP request and response, regardless of the framework
+8. [AuthorizationGenerator](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/AuthorizationGenerator.java): it's a class to compute the roles and permissions for a user profile
+9. [Authorizer](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/Authorizer.java): it's a generic concept to manage authorizations given a user profile and a web context
+10. [Authenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/Authenticator.java): it's the interface to implement to validate user credentials. Several implementations exist
+11. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. Several implementations exist.
 
 
 ### Supported authentication methods
