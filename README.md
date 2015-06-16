@@ -1,4 +1,4 @@
-## What is pac4j ?
+## What is `pac4j`?
 
 `pac4j` is a **Java authentication / authorization engine to authenticate users, get their profiles and manage their authorizations** in order to secure your Java web applications. It's available under the Apache 2 license.
 
