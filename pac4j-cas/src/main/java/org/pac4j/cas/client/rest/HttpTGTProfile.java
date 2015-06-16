@@ -30,18 +30,26 @@ public final class HttpTGTProfile extends HttpProfile {
     private static final long serialVersionUID = -1688563185891330018L;
 
     private final String ticketGrantingTicketId;
+    private final String userName;
 
     public HttpTGTProfile() {
         this.ticketGrantingTicketId = null;
+        this.userName = null;
     }
 
-    public HttpTGTProfile(final String ticketGrantingTicketId) {
+    public HttpTGTProfile(final String ticketGrantingTicketId, final String userName) {
         super();
         this.ticketGrantingTicketId = ticketGrantingTicketId;
+        this.userName = userName;
     }
 
     public String getTicketGrantingTicketId() {
         return ticketGrantingTicketId;
+    }
+
+    @Override
+    public String toString() {
+        return this.userName;
     }
 
     @Override
@@ -54,6 +62,7 @@ public final class HttpTGTProfile extends HttpProfile {
         if (obj == null) {
             return false;
         }
+
         if (!(obj instanceof HttpTGTProfile)) {
             return false;
         }

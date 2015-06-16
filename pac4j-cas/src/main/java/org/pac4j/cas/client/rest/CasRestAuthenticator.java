@@ -64,7 +64,7 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
             throw new TechnicalException("Credentials are required");
         }
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword());
-        final HttpTGTProfile profile = new HttpTGTProfile(ticketGrantingTicketId);
+        final HttpTGTProfile profile = new HttpTGTProfile(ticketGrantingTicketId, credentials.getUsername());
         credentials.setUserProfile(profile);
     }
 
