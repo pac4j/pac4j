@@ -4,20 +4,34 @@
 
 It is actually **implemented by many frameworks and supports many authentication mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture).
 
-`pac4j` is available in the following frameworks / tools:
+### Frameworks / tools implementing pacj:
 
-1. in the SSO [CAS server](https://github.com/Jasig/cas) using the [cas-server-support-pac4j](https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j) module (demo: [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo))
-2. for the [Play 2.x framework](http://www.playframework.org) using the the [play-pac4j](https://github.com/pac4j/play-pac4j) library (demos: [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) & [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo))
-3. in any [J2E environment](http://docs.oracle.com/javaee/) using the [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) library (demo: [j2e-pac4j-demo](https://github.com/pac4j/j2e-pac4j-demo))
-4. for the [Apache Shiro project](http://shiro.apache.org) library using the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library (demo: [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo))
-5. for the [Spring Security](http://projects.spring.io/spring-security/) library using the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library (demo: [spring-security-pac4j-demo](https://github.com/pac4j/spring-security-pac4j-demo))
-6. for the [Ratpack](http://www.ratpack.io/) JVM toolkit using the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module (demo: [ratpack-pac4j-demo](https://github.com/pac4j/ratpack-pac4j-demo))
-7. for the [Vertx](http://vertx.io/) framework using the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module (demo: [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo))
-8. for the [Undertow](http://undertow.io/) web server using the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) module (demo: [undertow-pac4j-demo](https://github.com/pac4j/undertow-pac4j-demo))
-9. for the [Spark Java framework](http://sparkjava.com) using the [spark-pac4j](https://github.com/pac4j/spark-pac4j) library (demo: [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo))
-10. for the [Jooby framework](http://jooby.org) using the [jooby-pac4j](https://github.com/jooby-project/jooby/tree/master/jooby-pac4j) module (demo: [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)).
+1. the SSO [CAS server](https://github.com/Jasig/cas) using the [cas-server-support-pac4j](https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j) module (demo: [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo))
+2. the [Play 2.x framework](http://www.playframework.org) using the the [play-pac4j](https://github.com/pac4j/play-pac4j) library (demos: [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) & [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo))
+3. any [J2E environment](http://docs.oracle.com/javaee/) using the [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) library (demo: [j2e-pac4j-demo](https://github.com/pac4j/j2e-pac4j-demo))
+4. the [Apache Shiro project](http://shiro.apache.org) library using the [buji-pac4j](https://github.com/bujiio/buji-pac4j) library (demo: [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo))
+5. the [Spring Security](http://projects.spring.io/spring-security/) library using the [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) library (demo: [spring-security-pac4j-demo](https://github.com/pac4j/spring-security-pac4j-demo))
+6. the [Ratpack](http://www.ratpack.io/) JVM toolkit using the [ratpack-pac4j](https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j) module (demo: [ratpack-pac4j-demo](https://github.com/pac4j/ratpack-pac4j-demo))
+7. the [Vertx](http://vertx.io/) framework using the [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) module (demo: [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo))
+8. the [Undertow](http://undertow.io/) web server using the [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) module (demo: [undertow-pac4j-demo](https://github.com/pac4j/undertow-pac4j-demo))
+9. the [Spark Java framework](http://sparkjava.com) using the [spark-pac4j](https://github.com/pac4j/spark-pac4j) library (demo: [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo))
+10. the [Jooby framework](http://jooby.org) using the [jooby-pac4j](https://github.com/jooby-project/jooby/tree/master/jooby-pac4j) module (demo: [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)).
 
-`pac4j` has the following core concepts:
+### Supported authentication mechanisms
+
+`pac4j` supports stateful and stateless [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows) using external identity providers or direct internal credentials authenticator and user profile creator:
+
+1. OAuth (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... using the `pac4j-oauth` module
+2. CAS (1.0, 2.0, SAML, logout & proxy) + REST API support using the `pac4j-cas` module
+3. HTTP (form, basic auth, IP, header, GET/POST parameter authentications) using the `pac4j-http` module
+4. OpenID using the `pac4j-openid` module
+5. SAML (2.0) using the `pac4j-saml` module
+6. Google App Engine UserService using the `pac4j-gae` module
+7. OpenID Connect 1.0 using the `pac4j-oidc` module
+
+See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
+
+### Core concepts
 
 1. [Client](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java): a client is a way to authenticate, it is responsible for starting the authentication process if necessary (stateful use case), validating the user credentials and getting the user profile (all cases). A hierarchy of user profile exists: DirectClient, IndirectClient, FacebookClient, CasClient...
 2. [Clients](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Clients.java): it's a helper class to define all clients together and reuse the same callback url
@@ -31,35 +45,6 @@ It is actually **implemented by many frameworks and supports many authentication
 10. [Authenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/Authenticator.java): it's the interface to implement to validate user credentials. Several implementations exist
 11. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. Several implementations exist.
 
-
-### Supported authentication methods
-
-Although **pac4j** historically targets external authentication protocols, it supports direct authentication methods as well. See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows).
-
-#### External/stateful authentication protocols
-
-1. From the client application, save the requested url and redirect the user to the identity provider for authentication (HTTP 302)
-2. After a successful authentication, redirect back the user from the identity provider to the client application (HTTP 302) and get the user credentials
-3. With these credentials, get the profile of the authenticated user (direct call from the client application to the identity provider)
-4. Redirect the user to the originally requested url and allow or disallow the access.
-
-Supported protocols are:
-
-1. OAuth (1.0 & 2.0)
-2. CAS (1.0, 2.0, SAML, logout & proxy)
-3. HTTP (form & basic auth authentications)
-4. OpenID
-5. SAML (2.0)
-6. Google App Engine UserService
-7. OpenID Connect 1.0
-
-#### Stateless authentication protocols (REST operations)
-
-The current HTTP request contains the required credentials to validate the user identity and retrieve his profile. It works from a basic authentication.
-
-It relies on specific **Authenticator** to validate user credentials and **ProfileCreator** to create user profiles.
-
-See [all clients](https://github.com/pac4j/pac4j/wiki/Clients).
 
 
 ## Code sample
