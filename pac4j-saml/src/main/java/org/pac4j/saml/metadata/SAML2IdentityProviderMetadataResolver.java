@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Consumer;
+import java.util.Iterator;
 
 /**
  * @author Misagh Moayyed
@@ -79,14 +79,14 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
             if (this.idpEntityId == null) {
-                idpMetadataProvider.forEach(new Consumer<EntityDescriptor>() {
-                    @Override
-                    public void accept(final EntityDescriptor entityDescriptor) {
-                        if (SAML2IdentityProviderMetadataResolver.this.idpEntityId == null) {
-                            SAML2IdentityProviderMetadataResolver.this.idpEntityId = entityDescriptor.getEntityID();
-                        }
+                final Iterator<EntityDescriptor> it = idpMetadataProvider.iterator();
+
+                while (it.hasNext()) {
+                    final EntityDescriptor entityDescriptor = it.next();
+                    if (SAML2IdentityProviderMetadataResolver.this.idpEntityId == null) {
+                        SAML2IdentityProviderMetadataResolver.this.idpEntityId = entityDescriptor.getEntityID();
                     }
-                });
+                }
             }
 
             if (this.idpEntityId == null) {
