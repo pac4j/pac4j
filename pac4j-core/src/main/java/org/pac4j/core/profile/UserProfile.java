@@ -117,7 +117,7 @@ public class UserProfile implements Serializable {
         if (id != null) {
             String sId = id.toString();
             final String type = this.getClass().getSimpleName();
-            if (type != null && sId.startsWith(type + SEPARATOR)) {
+            if (sId.startsWith(type + SEPARATOR)) {
                 sId = sId.substring(type.length() + SEPARATOR.length());
             }
             logger.debug("identifier : {}", sId);
