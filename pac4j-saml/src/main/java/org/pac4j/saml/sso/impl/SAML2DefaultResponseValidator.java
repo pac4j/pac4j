@@ -27,7 +27,26 @@ import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.AttributeStatement;
+import org.opensaml.saml.saml2.core.Audience;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.BaseID;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml.saml2.core.EncryptedAttribute;
+import org.opensaml.saml.saml2.core.EncryptedID;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.NameIDType;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.Endpoint;
@@ -53,7 +72,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Class responsible for executing every required checks for validating a SAML response.
@@ -328,8 +350,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             throw new SAMLException("Issuer type is not entity but " + issuer.getFormat());
         }
 
-        final String entityId = context.getSubcontext(SAMLPeerEntityContext.class).getEntityId();
-        if (!entityId.equals(issuer.getValue())) {
+        final String entityId = context.getSAMLPeerEntityContext().getEntityId();
+        if (entityId == null || !entityId.equals(issuer.getValue())) {
             throw new SAMLException("Issuer " + issuer.getValue() + " does not match idp entityId " + entityId);
         }
     }
@@ -506,7 +528,13 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
             return false;
         } else {
-            final String url = context.getSAMLEndpointContext().getEndpoint().getLocation();
+            final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
+            if (endpoint == null) {
+                logger.warn("No endpoint was found in the SAML endpoint context");
+                return false;
+            }
+
+            final String url = endpoint.getLocation();
             if (!data.getRecipient().equals(url)) {
                 logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found",
                         data.getRecipient());
