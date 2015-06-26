@@ -136,6 +136,11 @@
             <version>${joda-time.version}</version>
         </dependency>
         <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>${xalan.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>${velocity.version}</version>
@@ -190,8 +195,8 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
+                    <artifactId>xalan</artifactId>
+                    <groupId>xalan</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -238,6 +243,7 @@
         <spring.extensions.version>5.1.1</spring.extensions.version>
         <guava.version>18.0</guava.version>
         <cryptacular.version>1.0</cryptacular.version>
+        <xalan.version>2.7.2</xalan.version>
     </properties>
 
     <repositories>
