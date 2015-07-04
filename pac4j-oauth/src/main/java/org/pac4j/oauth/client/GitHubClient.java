@@ -55,6 +55,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     protected GitHubClient newClient() {
         GitHubClient client = new GitHubClient();
         client.setScope(this.scope);
+        return client;
     }
   
     @Override
