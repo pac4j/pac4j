@@ -38,35 +38,40 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.0.0
  */
 public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
-    
+  
+    public final static String DEFAULT_SCOPE = "user";
+  
+    protected String scope = DEFAULT_SCOPE;
+
     public GitHubClient() {
     }
-    
+  
     public GitHubClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
-    
+  
     @Override
     protected GitHubClient newClient() {
-        return new GitHubClient();
+        GitHubClient client = new GitHubClient();
+        client.setScope(this.scope);
     }
-    
+  
     @Override
     protected void internalInit() {
         super.internalInit();
         this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(),
                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
-                                                                   SignatureType.Header, "user", null),
+                                                                   SignatureType.Header, this.scope, null),
                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
                                                    this.proxyPort);
     }
-    
+  
     @Override
     protected String getProfileUrl() {
         return "https://api.github.com/user";
     }
-    
+  
     @Override
     protected GitHubProfile extractUserProfile(final String body) {
         final GitHubProfile profile = new GitHubProfile();
@@ -79,14 +84,22 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
         }
         return profile;
     }
-    
+  
     @Override
     protected boolean requiresStateParameter() {
         return false;
     }
-    
+  
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
+    }
+
+    public String getScope() {
+        return this.scope;
+    }
+
+    public void setScope(final String scope) {
+        this.scope = scope;
     }
 }
