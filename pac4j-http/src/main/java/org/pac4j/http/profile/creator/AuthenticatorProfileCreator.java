@@ -15,8 +15,8 @@
  */
 package org.pac4j.http.profile.creator;
 
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.HttpCredentials;
-import org.pac4j.http.profile.HttpProfile;
 
 /**
  * This profile creator retrieves the user profile attached with the {@link HttpCredentials}.
@@ -24,14 +24,14 @@ import org.pac4j.http.profile.HttpProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class AuthenticatorProfileCreator<C extends HttpCredentials, P extends HttpProfile>
+public final class AuthenticatorProfileCreator<C extends HttpCredentials, P extends UserProfile>
         implements ProfileCreator<C, P> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public HttpProfile create(final HttpCredentials credentials) {
+    public UserProfile create(final HttpCredentials credentials) {
         return credentials.getUserProfile();
     }
 }

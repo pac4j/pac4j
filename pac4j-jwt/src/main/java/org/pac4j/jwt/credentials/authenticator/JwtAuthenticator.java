@@ -22,15 +22,16 @@ import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
-import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Authenticator for JWT. It creates a {@link org.pac4j.jwt.profile.JwtProfile} and
- * stores it in the credentials for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * Authenticator for JWT. It creates the user profile and stores it in the credentials
+ * for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -79,9 +80,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
         try {
             final ReadOnlyJWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-            final JwtProfile profile = new JwtProfile();
-            profile.setId(claimSet.getSubject());
-            profile.addAttributes(claimSet.getCustomClaims());
+            final UserProfile profile = ProfileHelper.buildProfile(claimSet.getSubject(), claimSet.getCustomClaims());
             credentials.setUserProfile(profile);
         } catch (final Exception e) {
             logger.error("Cannot get claimSet", e);
