@@ -16,7 +16,7 @@
 package org.pac4j.http.credentials;
 
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.core.profile.UserProfile;
 
 /**
  * <p>This credentials is retrieved from a HTTP request.</p>
@@ -28,13 +28,13 @@ import org.pac4j.http.profile.HttpProfile;
  */
 public abstract class HttpCredentials extends Credentials {
 
-    private HttpProfile userProfile = null;
+    private UserProfile userProfile = null;
 
-    public HttpProfile getUserProfile() {
+    public UserProfile getUserProfile() {
         return userProfile;
     }
 
-    public void setUserProfile(HttpProfile userProfile) {
+    public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
     }
 }

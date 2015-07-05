@@ -57,7 +57,7 @@ public class JwtGenerator<U extends UserProfile> {
 
             // Prepare JWT with claims set
             JWTClaimsSet claimsSet = new JWTClaimsSet();
-            claimsSet.setSubject(profile.getId());
+            claimsSet.setSubject(profile.getTypedId());
             claimsSet.setIssueTime(new Date());
             claimsSet.setIssuer(this.getClass().getSimpleName());
             claimsSet.setCustomClaims(profile.getAttributes());

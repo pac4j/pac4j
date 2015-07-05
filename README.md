@@ -34,6 +34,7 @@ They depend on the `pac4j-core` module (groupId: `org.pac4j`):
 5. **SAML** (2.0) using the `pac4j-saml` module
 6. **Google App Engine** UserService using the `pac4j-gae` module
 7. **OpenID Connect** 1.0 using the `pac4j-oidc` module
+8. **JWT** using the `pac4j-jwt` module.
 
 See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
 
@@ -76,7 +77,7 @@ FormClient formClient = new FormClient("http://localhost:8080/theForm.jsp", new 
 CasClient casClient = new CasClient();
 casClient.setCasLoginUrl("http://mycasserver/login");
 Clients clients = new Clients("http://localhost:8080/callback", facebookClient, twitterClient, formClient, casClient);
-````
+```
 
 In your protection filter, you may implement this simple logic:
 
@@ -181,4 +182,3 @@ Browse some [code samples](https://github.com/pac4j/pac4j/wiki/Code-samples) and
 If you have any question, please use the following mailing lists:
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
 - [pac4j developers](https://groups.google.com/forum/?hl=en#!forum/pac4j-dev)
-
