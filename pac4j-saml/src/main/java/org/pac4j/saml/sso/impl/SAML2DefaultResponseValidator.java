@@ -528,7 +528,13 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
             return false;
         } else {
-            final String url = context.getSAMLEndpointContext().getEndpoint().getLocation();
+            final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
+            if (endpoint == null) {
+                logger.warn("No endpoint was found in the SAML endpoint context");
+                return false;
+            }
+
+            final String url = endpoint.getLocation();
             if (!data.getRecipient().equals(url)) {
                 logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found",
                         data.getRecipient());

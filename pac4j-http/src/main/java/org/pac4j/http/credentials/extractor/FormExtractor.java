@@ -48,4 +48,12 @@ public class FormExtractor implements Extractor<UsernamePasswordCredentials> {
 
         return new UsernamePasswordCredentials(username, password, clientName);
     }
+
+    public String getUsernameParameter() {
+        return usernameParameter;
+    }
+
+    public String getPasswordParameter() {
+        return passwordParameter;
+    }
 }
