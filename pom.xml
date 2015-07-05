@@ -95,6 +95,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-http</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.jasig.cas</groupId>
 				<artifactId>cas-server-webapp</artifactId>
 				<version>${cas.version}</version>
@@ -105,6 +110,11 @@
 				<artifactId>cas-server-support-oauth</artifactId>
 				<version>${cas.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>org.jasig.cas</groupId>
+                <artifactId>cas-server-integration-restlet</artifactId>
+                <version>${cas.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -232,10 +242,6 @@
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
-					<exclusion>
-						<groupId>xerces</groupId>
-						<artifactId>xercesImpl</artifactId>
-					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -289,6 +295,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<!-- skipTests>true</skipTests -->
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>
@@ -299,8 +306,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -390,5 +397,7 @@
 		<spring.version>4.1.5.RELEASE</spring.version>
 		<cas.version>3.5.1</cas.version>
 		<slf4j.version>1.7.2</slf4j.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 </project>
