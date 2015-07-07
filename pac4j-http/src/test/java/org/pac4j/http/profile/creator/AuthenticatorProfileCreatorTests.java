@@ -16,9 +16,9 @@
 package org.pac4j.http.profile.creator;
 
 import org.junit.Test;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.HttpCredentials;
 import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.profile.HttpProfile;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -43,10 +43,10 @@ public final class AuthenticatorProfileCreatorTests {
 
     @Test
     public void testReturnProfile() {
-        final HttpProfile profile = new HttpProfile();
+        final UserProfile profile = new UserProfile();
         final HttpCredentials credentials = new TokenCredentials(TOKEN, CLIENT_NAME);
         credentials.setUserProfile(profile);
-        final HttpProfile profile2 = creator.create(credentials);
+        final UserProfile profile2 = creator.create(credentials);
         assertEquals(profile, profile2);
     }
 }
