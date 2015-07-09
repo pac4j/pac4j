@@ -113,7 +113,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected final void internalInit() {
+    protected void internalInit() {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         if (!this.callbackUrl.startsWith("http")) {
             throw new TechnicalException("SAML callbackUrl must be absolute");
@@ -133,14 +133,14 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     }
 
-    private void initSAMLProfileHandler() {
+    protected void initSAMLProfileHandler() {
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getDestinationBindingType(), false),
                 new SAML2WebSSOMessageReceiver(this.responseValidator, this.credentialProvider));
     }
 
-    protected final void initSAMLResponseValidator() {
+    protected void initSAMLResponseValidator() {
         // Build the SAML response validator
         this.responseValidator = new SAML2DefaultResponseValidator(
                 this.signatureTrustEngineProvider,
@@ -148,12 +148,12 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.configuration.getMaximumAuthenticationLifetime());
     }
 
-    protected final void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
+    protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
         // Build provider for digital signature validation and encryption
         this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
     }
 
-    protected final void initSAMLObjectBuilder() {
+    protected void initSAMLObjectBuilder() {
         this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(this.configuration.isForceAuth(),
                 this.configuration.getComparisonType(),
                 this.configuration.getDestinationBindingType(),
@@ -161,14 +161,14 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.configuration.getNameIdPolicyFormat());
     }
 
-    protected final void initSAMLContextProvider(final MetadataResolver metadataManager) {
+    protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
         // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(metadataManager,
                 this.idpMetadataResolver, this.spMetadataResolver,
                 this.configuration.getSamlMessageStorageFactory());
     }
 
-    protected final MetadataResolver initServiceProviderMetadataResolver() {
+    protected MetadataResolver initServiceProviderMetadataResolver() {
         this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration.getServiceProviderMetadataPath(),
                 getCallbackUrl(),
                 this.configuration.getServiceProviderEntityId(),
@@ -177,27 +177,27 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return this.spMetadataResolver.resolve();
     }
 
-    protected final MetadataResolver initIdentityProviderMetadataResolver() {
+    protected MetadataResolver initIdentityProviderMetadataResolver() {
         this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration.getIdentityProviderMetadataPath(),
                 this.configuration.getIdentityProviderEntityId());
         return this.idpMetadataResolver.resolve();
     }
 
-    protected final void initCredentialProvider() {
+    protected void initCredentialProvider() {
         this.credentialProvider = new KeyStoreCredentialProvider(this.configuration.getKeystorePath(),
                 this.configuration.getKeystorePassword(),
                 this.configuration.getPrivateKeyPassword());
     }
 
-    protected final void initDecrypter() {
+    protected void initDecrypter() {
         this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();
     }
 
-    protected final void initSignatureSigningParametersProvider() {
+    protected void initSignatureSigningParametersProvider() {
         this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(this.credentialProvider);
     }
 
-    protected final ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
+    protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
                                                                           final MetadataResolver spMetadataProvider) {
         final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
         metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
@@ -215,17 +215,17 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return metadataManager;
     }
     @Override
-    protected final BaseClient<SAML2Credentials, SAML2Profile> newClient() {
+    protected BaseClient<SAML2Credentials, SAML2Profile> newClient() {
         return new SAML2Client(this.configuration.clone());
     }
 
     @Override
-    protected final boolean isDirectRedirection() {
+    protected boolean isDirectRedirection() {
         return false;
     }
 
     @Override
-    protected final RedirectAction retrieveRedirectAction(final WebContext wc) {
+    protected RedirectAction retrieveRedirectAction(final WebContext wc) {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
@@ -243,13 +243,13 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected final SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
+    protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         return (SAML2Credentials) this.profileHandler.receive(context);
     }
 
     @Override
-    protected final SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
+    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
         final SAML2Profile profile = new SAML2Profile();
         profile.setId(credentials.getNameId().getValue());
         for (final Attribute attribute : credentials.getAttributes()) {
@@ -279,7 +279,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected final String getStateParameter(final WebContext webContext) {
+    protected String getStateParameter(final WebContext webContext) {
         final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
         return (relayState == null) ? getContextualCallbackUrl(webContext) : relayState;
     }
