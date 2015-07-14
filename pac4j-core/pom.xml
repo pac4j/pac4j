@@ -24,7 +24,7 @@
 	</parent>
 
 	<artifactId>pac4j-core</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 	<name>pac4j core</name>
 	<dependencies>
 		<dependency>
@@ -108,18 +108,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>						
 		</plugins>
 	</build>
 
