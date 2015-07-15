@@ -75,6 +75,7 @@
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
+		<module>pac4j-ldap</module>
 	</modules>
 
 	<dependencyManagement>
@@ -198,6 +199,11 @@
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>3.10</version>
 			</dependency>
+			<dependency>
+				<groupId>org.ldaptive</groupId>
+				<artifactId>ldaptive</artifactId>
+				<version>1.0.6</version>
+			</dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
@@ -232,7 +238,6 @@
 				<version>${spring.version}</version>
 				<scope>test</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>net.sourceforge.htmlunit</groupId>
 				<artifactId>htmlunit</artifactId>
@@ -263,6 +268,12 @@
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
 				<version>1.9.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.unboundid</groupId>
+				<artifactId>unboundid-ldapsdk</artifactId>
+				<version>2.3.8</version>
+				<scope>test</scope>
 			</dependency>
 			<!-- for testing -->
 		</dependencies>
