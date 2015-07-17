@@ -67,7 +67,7 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
         final String[] ldapAttributes = attributes.split(",");
         final AuthenticationResponse response;
         try {
-            logger.debug("Attempting LDAP authentication for {}", credentials);
+            logger.debug("Attempting LDAP authentication for: {}", credentials);
             final AuthenticationRequest request = new AuthenticationRequest(username,
                     new org.ldaptive.Credential(credentials.getPassword()),
                     ldapAttributes);
@@ -84,7 +84,7 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
         }
 
         if (AuthenticationResultCode.DN_RESOLUTION_FAILURE == response.getAuthenticationResultCode()) {
-            throw new AccountNotFoundException(username + " not found.");
+            throw new AccountNotFoundException(username + " not found");
         }
         throw new BadCredentialsException("Invalid credentials for: " + username);
     }

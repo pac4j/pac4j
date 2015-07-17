@@ -16,8 +16,7 @@
 package org.pac4j.ldap.profile;
 
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.http.client.indirect.FormClient;
-import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
+
 
 /**
  * <p>The user profile returned by a LDAP authentication.</p>
@@ -27,4 +26,6 @@ import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
  * @since 1.8.0
  */
 public class LdapProfile extends CommonProfile {
+
+	private static final long serialVersionUID = 4745130273071234466L;	
 }

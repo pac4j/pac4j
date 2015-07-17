@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.ldap.test;
+package org.pac4j.ldap.test.tools;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
@@ -42,24 +42,29 @@ public class LdapServer {
 
     private InMemoryDirectoryServer ds;
 
-    public void start() throws Exception {
-        final InMemoryDirectoryServerConfig dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
-        dsConfig.setSchema(null);
-        dsConfig.setEnforceAttributeSyntaxCompliance(false);
-        dsConfig.setEnforceSingleStructuralObjectClass(false);
-        dsConfig.setListenerConfigs(new InMemoryListenerConfig("myListener", null, PORT, null, null, null));
-        dsConfig.addAdditionalBindCredentials(CN + "=" + USERNAME + "," + BASE_PEOPLE_DN, PASSWORD);
-        this.ds = new InMemoryDirectoryServer(dsConfig);
-        this.ds.add("dn: " + BASE_DN, "objectClass: organizationalUnit", "objectClass: top");
-        this.ds.add("dn: " + BASE_PEOPLE_DN, "objectClass: organizationalUnit");
-        this.ds.add("dn: " + CN + "=" + USERNAME + "," + BASE_PEOPLE_DN, CN + ": " + USERNAME, SN + ": "
-                + FIRSTNAME, "objectClass: person");
-        this.ds.add("dn: " + CN + "=" + USERNAME2 + "," + BASE_PEOPLE_DN, ROLE + ": " + ROLE1, ROLE + ": " + ROLE2,
-                "objectClass: person");
+    public void start() {
+        try {
+            final InMemoryDirectoryServerConfig dsConfig = new InMemoryDirectoryServerConfig(BASE_DN);
+            dsConfig.setSchema(null);
+            dsConfig.setEnforceAttributeSyntaxCompliance(false);
+            dsConfig.setEnforceSingleStructuralObjectClass(false);
+            dsConfig.setListenerConfigs(new InMemoryListenerConfig("myListener", null, PORT, null, null, null));
+            dsConfig.addAdditionalBindCredentials(CN + "=" + USERNAME + "," + BASE_PEOPLE_DN, PASSWORD);
+            dsConfig.addAdditionalBindCredentials(CN + "=" + USERNAME2 + "," + BASE_PEOPLE_DN, PASSWORD);
+            this.ds = new InMemoryDirectoryServer(dsConfig);
+            this.ds.add("dn: " + BASE_DN, "objectClass: organizationalUnit", "objectClass: top");
+            this.ds.add("dn: " + BASE_PEOPLE_DN, "objectClass: organizationalUnit");
+            this.ds.add("dn: " + CN + "=" + USERNAME + "," + BASE_PEOPLE_DN, CN + ": " + USERNAME, SN + ": "
+                    + FIRSTNAME, "objectClass: person");
+            this.ds.add("dn: " + CN + "=" + USERNAME2 + "," + BASE_PEOPLE_DN, ROLE + ": " + ROLE1, ROLE + ": " + ROLE2,
+                    "objectClass: person");
 
-        //Debug.setEnabled(true);
+            //Debug.setEnabled(true);
 
-        this.ds.startListening();
+            this.ds.startListening();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void stop() {
