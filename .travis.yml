@@ -1,5 +1,7 @@
 language: java
 
+sudo: false
+
 script: "mvn package -DskipITs --settings travis/settings.xml"
 
 jdk:

@@ -204,13 +204,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             throw new SAMLException("Response issue instant is too old or in the future");
         }
 
-        if (response.getInResponseTo() == null) {
-            throw new SAMLException("InResponseTo field cannot be empty");
-        }
-
         AuthnRequest request = null;
         final SAMLMessageStorage messageStorage = context.getSAMLMessageStorage();
-        if (messageStorage != null) {
+        if (messageStorage != null && response.getInResponseTo() != null) {
             final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
             if (xmlObject == null) {
                 throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " + response.getInResponseTo());
