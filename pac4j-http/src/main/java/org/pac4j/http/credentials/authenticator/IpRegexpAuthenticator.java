@@ -16,6 +16,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 
 import java.util.regex.Pattern;
@@ -28,17 +29,26 @@ import java.util.regex.Pattern;
  */
 public class IpRegexpAuthenticator implements TokenAuthenticator {
 
-    private final Pattern pattern;
+    private Pattern pattern;
 
-    public IpRegexpAuthenticator(final String pattern) {
-        this.pattern = Pattern.compile(pattern);
+    public IpRegexpAuthenticator() {
+    }
+
+    public IpRegexpAuthenticator(final String regexpPattern) {
+        setRegexpPattern(regexpPattern);
     }
 
     public void validate(final TokenCredentials credentials) {
+        CommonHelper.assertNotNull("pattern", pattern);
+
         final String ip = credentials.getToken();
 
         if (!this.pattern.matcher(ip).matches()) {
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
+    }
+
+    public void setRegexpPattern(final String regexpPattern) {
+        this.pattern = Pattern.compile(regexpPattern);
     }
 }

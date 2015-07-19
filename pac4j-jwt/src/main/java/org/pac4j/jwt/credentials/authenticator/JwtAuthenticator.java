@@ -24,6 +24,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.slf4j.Logger;
@@ -40,7 +41,9 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String secret;
+    private String secret;
+
+    public JwtAuthenticator() {}
 
     public JwtAuthenticator(final String secret) {
         this.secret = secret;
@@ -51,6 +54,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
      */
     @Override
     public void validate(TokenCredentials credentials) {
+        CommonHelper.assertNotBlank("secret", secret);
 
         final String token = credentials.getToken();
         boolean verified = false;
@@ -86,5 +90,13 @@ public class JwtAuthenticator implements TokenAuthenticator {
             logger.error("Cannot get claimSet", e);
             throw new TechnicalException("Cannot get claimSet: " + e.getMessage());
         }
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }
