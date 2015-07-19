@@ -16,20 +16,20 @@
 package org.pac4j.core.exception;
 
 /**
- * Exception when an account is not found.
+ * Exception when multiple accounts are found.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AccountNotFoundException extends CredentialsException {
+public class MultipleAccountsFoundException extends CredentialsException {
 
-	private static final long serialVersionUID = -2405351263139588633L;
+	private static final long serialVersionUID = 1430582289490541876L;
 
-	public AccountNotFoundException(final String message) {
+	public MultipleAccountsFoundException(final String message) {
         super(message);
     }
 
-    public AccountNotFoundException(final Throwable t) {
+    public MultipleAccountsFoundException(final Throwable t) {
         super(t);
     }
 }

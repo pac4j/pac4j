@@ -76,6 +76,7 @@
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
 		<module>pac4j-ldap</module>
+		<module>pac4j-sql</module>
 	</modules>
 
 	<dependencyManagement>
@@ -150,7 +151,7 @@
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.7</version>
+				<version>1.10</version>
 			</dependency>
 			<dependency>
 				<groupId>xml-security</groupId>
@@ -203,6 +204,11 @@
 				<groupId>org.ldaptive</groupId>
 				<artifactId>ldaptive</artifactId>
 				<version>1.0.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jdbi</groupId>
+				<artifactId>jdbi</artifactId>
+				<version>2.63</version>
 			</dependency>
 			<!-- for testing -->
 			<dependency>
