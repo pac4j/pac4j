@@ -18,6 +18,7 @@ package org.pac4j.http.credentials.authenticator;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.extractor.HeaderExtractor;
 
@@ -37,6 +38,12 @@ public final class IpRegexpAuthenticatorTests {
     private final static String CLIENT_NAME = "clientName";
 
     private final static IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator(GOOD_IP);
+
+    @Test(expected = TechnicalException.class)
+    public void testNoPattern() {
+        IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
+        authenticator.validate(null);
+    }
 
     @Test
     public void testValidateGoodIP() {
