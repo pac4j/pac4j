@@ -13,23 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.exception;
+package org.pac4j.sql.credentials.authenticator;
+
+import org.junit.*;
+import org.pac4j.core.exception.TechnicalException;
+
+import static org.junit.Assert.*;
 
 /**
- * Exception when an account is not found.
+ * Tests the {@link DbAuthenticator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AccountNotFoundException extends CredentialsException {
+public class DbAuthenticatorTests {
 
-	private static final long serialVersionUID = -2405351263139588633L;
-
-	public AccountNotFoundException(final String message) {
-        super(message);
+    @Before
+    public void setUp() {
     }
 
-    public AccountNotFoundException(final Throwable t) {
-        super(t);
+    @After
+    public void tearDown() {
+
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testNullAuthenticator() {
+        final DbAuthenticator ldapAuthenticator = new DbAuthenticator();
+
+        ldapAuthenticator.validate(null);
     }
 }

@@ -13,23 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.exception;
+package org.pac4j.http.credentials.authenticator;
+
+import org.pac4j.http.credentials.password.PasswordEncoder;
 
 /**
- * Exception when an account is not found.
- *
+ * An abstract username / password authenticator having a password encoder.
+ * 
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AccountNotFoundException extends CredentialsException {
+public abstract class AbstractUsernamePasswordAuthenticator implements UsernamePasswordAuthenticator {
 
-	private static final long serialVersionUID = -2405351263139588633L;
+    protected PasswordEncoder passwordEncoder;
 
-	public AccountNotFoundException(final String message) {
-        super(message);
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
     }
 
-    public AccountNotFoundException(final Throwable t) {
-        super(t);
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 }
