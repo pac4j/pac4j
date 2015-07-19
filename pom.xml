@@ -187,11 +187,6 @@
             </dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-http</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-jwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
