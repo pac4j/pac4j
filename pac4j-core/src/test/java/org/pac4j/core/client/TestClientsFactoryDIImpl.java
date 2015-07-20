@@ -22,20 +22,20 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 /**
- * This class tests the {@link ClientsFactoryDIImpl} class.
+ * This class tests the {@link DefaultClientsFactory} class.
  * 
  * @author Daniel Hankins
  * @since 1.8.0
  *
  */
 public class TestClientsFactoryDIImpl {
-    /**
-     * Test method for
-     * {@link org.pac4j.core.client.ClientsFactoryDIImpl}
+    /*
+     * Test method for DefaultClientsFactory class
+     * {@link org.pac4j.core.client.DefaultClientsFactory}
      * .
      */
     @Test
-    public final void testClientsFactoryDIImpl() {
+    public final void testDefaultClientsFactory() {
         Client clientA = new MockBaseClient("client a");
         Client clientB = new MockBaseClient("client b");
         Client clientC = new MockBaseClient("client c");
@@ -43,7 +43,7 @@ public class TestClientsFactoryDIImpl {
         clientList.add(clientA);
         clientList.add(clientB);
         clientList.add(clientC);
-        ClientsFactory clientsFactory = new ClientsFactoryDIImpl(clientList);
+        ClientsFactory clientsFactory = new DefaultClientsFactory(clientList);
         Clients clients = clientsFactory.build(null);
         assertEquals(clientA, clients.findClient("client a"));
         assertEquals(clientB, clients.findClient("client b"));
