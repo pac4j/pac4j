@@ -28,7 +28,7 @@ import org.junit.Test;
  * @since 1.8.0
  *
  */
-public class TestClientsFactoryDIImpl {
+public class TestDefaultClientsFactory {
     /*
      * Test method for DefaultClientsFactory class
      * {@link org.pac4j.core.client.DefaultClientsFactory}
