@@ -40,7 +40,7 @@ public class DefaultClientsFactory implements ClientsFactory {
      * Constructor meant for dependency injection to inject the
      * client list to be returned by build()
      * 
-     * @param clientList
+     * @param clientList The list of clients to be returned by build().
      */
     public DefaultClientsFactory(final List<Client> clientList) {
         this.clientList = new Clients(clientList);
@@ -50,7 +50,7 @@ public class DefaultClientsFactory implements ClientsFactory {
      * Constructor meant for dependency injection to inject the
      * client list to be returned by build()
      * 
-     * @param clientList
+     * @param client The list of clients to be returned by build().
      */
     public DefaultClientsFactory(final Client... client) {
         this.clientList = new Clients(client);
@@ -60,8 +60,8 @@ public class DefaultClientsFactory implements ClientsFactory {
      * Constructor meant for dependency injection to inject the
      * client list to be returned by build()
      * 
-     * @param callbackUrl
-     * @param clientList
+     * @param callbackUrl The URL to be forwarded to for authentication.
+     * @param clientList The list of clients to be returned by build().
     */
     public DefaultClientsFactory(final String callbackUrl, final List<Client> clientList) {
         this.clientList = new Clients(callbackUrl, clientList);
@@ -71,8 +71,8 @@ public class DefaultClientsFactory implements ClientsFactory {
      * Constructor meant for dependency injection to inject the
      * client list to be returned by build()
      * 
-     * @param callbackUrl
-     * @param clientList
+     * @param callbackUrl The URL to be forwarded to for authentication.
+     * @param client The list of clients to be returned by build().
      */
     public DefaultClientsFactory(final String callbackUrl, final Client... client) {
         this.clientList = new Clients(callbackUrl, client);
