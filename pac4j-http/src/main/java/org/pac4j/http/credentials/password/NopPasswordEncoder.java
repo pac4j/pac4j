@@ -24,10 +24,7 @@ package org.pac4j.http.credentials.password;
 public class NopPasswordEncoder implements PasswordEncoder {
 
     /**
-     * Encode a password.
-     *
-     * @param password
-     * @return the encoded password
+     * {@inheritDoc}
      */
     public String encode(final String password) {
         return password;
