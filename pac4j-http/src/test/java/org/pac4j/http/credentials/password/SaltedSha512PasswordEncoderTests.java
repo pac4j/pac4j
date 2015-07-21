@@ -21,7 +21,7 @@ import org.pac4j.core.exception.TechnicalException;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class tests the {@link NopPasswordEncoder}.
+ * This class tests the {@link SaltedSha512PasswordEncoder}.
  * 
  * @author Jerome Leleu
  * @since 1.8.0
