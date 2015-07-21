@@ -22,6 +22,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.password.PasswordEncoder;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -64,10 +65,13 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         this.attributes = attributes;
     }
 
-    public void validate(UsernamePasswordCredentials credentials) {
-        CommonHelper.assertNotNull("dataSource", this.dataSource);
-        CommonHelper.assertNotNull("attributes", this.attributes);
+    public DbAuthenticator(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
+        this.dataSource = dataSource;
+        this.attributes = attributes;
+        this.passwordEncoder = passwordEncoder;
+    }
 
+    protected void initDbi() {
         if (this.dbi == null) {
             synchronized (this) {
                 if (this.dbi == null) {
@@ -75,6 +79,14 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
                 }
             }
         }
+    }
+
+    public void validate(UsernamePasswordCredentials credentials) {
+        CommonHelper.assertNotNull("dataSource", this.dataSource);
+        CommonHelper.assertNotNull("attributes", this.attributes);
+        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
+
+        initDbi();
 
         Handle h = null;
         try {
@@ -105,6 +117,9 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
                 }
             }
 
+        } catch (final TechnicalException e) {
+            logger.error("Authentication error", e);
+            throw e;
         } catch (final RuntimeException e) {
             logger.error("Cannot fetch username / password from DB", e);
             throw new TechnicalException(e);
