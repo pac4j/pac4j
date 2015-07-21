@@ -23,9 +23,9 @@ package org.pac4j.core.exception;
  */
 public class MultipleAccountsFoundException extends CredentialsException {
 
-	private static final long serialVersionUID = 1430582289490541876L;
+    private static final long serialVersionUID = 1430582289490541876L;
 
-	public MultipleAccountsFoundException(final String message) {
+    public MultipleAccountsFoundException(final String message) {
         super(message);
     }
 

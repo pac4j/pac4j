@@ -28,4 +28,6 @@ import org.pac4j.sql.credentials.authenticator.DbAuthenticator;
  */
 public class DbProfile extends CommonProfile {
 
+    private static final long serialVersionUID = 4740352872728540613L;
+
 }

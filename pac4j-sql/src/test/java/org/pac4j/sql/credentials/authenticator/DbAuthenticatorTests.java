@@ -16,7 +16,18 @@
 package org.pac4j.sql.credentials.authenticator;
 
 import org.junit.*;
+import org.pac4j.core.exception.AccountNotFoundException;
+import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.password.NopPasswordEncoder;
+import org.pac4j.http.credentials.password.SaltedSha512PasswordEncoder;
+import org.pac4j.sql.profile.DbProfile;
+import org.pac4j.sql.test.tools.DbServer;
+
+import javax.sql.DataSource;
 
 import static org.junit.Assert.*;
 
@@ -28,19 +39,79 @@ import static org.junit.Assert.*;
  */
 public class DbAuthenticatorTests {
 
-    @Before
-    public void setUp() {
-    }
+    private final static String CLIENT_NAME = "clientname";
 
-    @After
-    public void tearDown() {
+    private DataSource ds = DbServer.getInstance();
 
+    @Test(expected = TechnicalException.class)
+    public void testNullPasswordEncoder() {
+        final DbAuthenticator authenticator = new DbAuthenticator(ds, DbServer.ATTRIBUTE);
+
+        authenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
-    public void testNullAuthenticator() {
-        final DbAuthenticator ldapAuthenticator = new DbAuthenticator();
+    public void testNullAttribute() {
+        final DbAuthenticator authenticator = new DbAuthenticator(ds, null);
+        authenticator.setPasswordEncoder(new NopPasswordEncoder());
 
-        ldapAuthenticator.validate(null);
+        authenticator.validate(null);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testNullDataSource() {
+        final DbAuthenticator authenticator = new DbAuthenticator(null, DbServer.ATTRIBUTE);
+        authenticator.setPasswordEncoder(new NopPasswordEncoder());
+
+        authenticator.validate(null);
+    }
+
+    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
+        final DbAuthenticator authenticator = new DbAuthenticator(ds, attribute);
+        authenticator.setPasswordEncoder(new SaltedSha512PasswordEncoder(DbServer.SALT));
+
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
+        authenticator.validate(credentials);
+
+        return credentials;
+    }
+
+    @Test
+    public void testGoodUsernameAttribute() {
+        final UsernamePasswordCredentials credentials =  login(DbServer.GOOD_USERNAME, DbServer.PASSWORD, DbServer.ATTRIBUTE);
+
+        final UserProfile profile = credentials.getUserProfile();
+        assertNotNull(profile);
+        assertTrue(profile instanceof DbProfile);
+        final DbProfile dbProfile = (DbProfile) profile;
+        assertEquals(DbServer.GOOD_USERNAME, dbProfile.getId());
+        assertEquals(DbServer.NICKNAME, dbProfile.getAttribute(DbServer.ATTRIBUTE));
+    }
+
+    @Test
+    public void testGoodUsernameNoAttribute() {
+        final UsernamePasswordCredentials credentials =  login(DbServer.GOOD_USERNAME, DbServer.PASSWORD, "");
+
+        final UserProfile profile = credentials.getUserProfile();
+        assertNotNull(profile);
+        assertTrue(profile instanceof DbProfile);
+        final DbProfile dbProfile = (DbProfile) profile;
+        assertEquals(DbServer.GOOD_USERNAME, dbProfile.getId());
+        assertNull(dbProfile.getAttribute(DbServer.ATTRIBUTE));
+    }
+
+    @Test(expected = MultipleAccountsFoundException.class)
+    public void testMultipleUsername() {
+        final UsernamePasswordCredentials credentials =  login(DbServer.MULTIPLE_USERNAME, DbServer.PASSWORD, "");
+    }
+
+    @Test(expected = AccountNotFoundException.class)
+    public void testBadUsername() {
+        final UsernamePasswordCredentials credentials =  login(DbServer.BAD_USERNAME, DbServer.PASSWORD, "");
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void testBadPassword() {
+        final UsernamePasswordCredentials credentials =  login(DbServer.GOOD_USERNAME, DbServer.PASSWORD + "bad", "");
     }
 }

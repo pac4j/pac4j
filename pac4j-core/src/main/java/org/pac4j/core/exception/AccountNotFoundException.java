@@ -23,9 +23,9 @@ package org.pac4j.core.exception;
  */
 public class AccountNotFoundException extends CredentialsException {
 
-	private static final long serialVersionUID = -2405351263139588633L;
+    private static final long serialVersionUID = -2405351263139588633L;
 
-	public AccountNotFoundException(final String message) {
+    public AccountNotFoundException(final String message) {
         super(message);
     }
 
