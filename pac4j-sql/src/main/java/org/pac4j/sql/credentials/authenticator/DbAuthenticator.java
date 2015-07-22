@@ -48,6 +48,9 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
 
     protected DataSource dataSource;
 
+    /**
+     * This must a list of attribute names separated by commas. No aliasing (AS).
+     */
     protected String attributes = "";
 
     protected String startQuery = "select username, password";
