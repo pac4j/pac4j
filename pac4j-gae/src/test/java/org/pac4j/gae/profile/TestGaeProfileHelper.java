@@ -13,35 +13,32 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.cas.profile;
+package org.pac4j.gae.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 
 /**
- * This class tests the {@link ProfileHelper} class for the {@link CasProfile}.
+ * This class tests the {@link ProfileHelper} class for the appengine client.
  * 
- * @author Jerome Leleu
- * @since 1.4.0
+ * @author Patrice de Saint Steban
+ * @since 1.6.0
  */
-public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+public final class TestGaeProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+
     
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {
-        return CasProfile.class;
-    }
-    
-    public void testBuildProfileCasProxyProfile() {
-        assertNotNull(ProfileHelper.buildProfile("CasProxyProfile" + "#" + STRING_ID, EMPTY_MAP));
+        return GaeUserServiceProfile.class;
     }
     
     @Override
     protected String getProfileType() {
-        return "CasProfile";
+        return "GaeUserServiceProfile";
     }
     
     @Override
     protected String getAttributeName() {
-        return "whatever";
+        return GaeUserServiceAttributesDefinition.DISPLAYNAME;
     }
 }
