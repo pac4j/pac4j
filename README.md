@@ -117,6 +117,9 @@ if (profile == null && isDirectClient) {
     credentials = client.getCredentials(context);
   } catch (RequiresHttpAction e) { }
   profile = client.getUserProfile(credentials, context);
+  if (useSessionForRest && profile != null) {
+    manager.save(profile);
+  }
 }
 if (profile != null) {
   if (configAuthorizer.isAuthorized(context, profile) {
