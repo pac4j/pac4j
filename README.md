@@ -107,7 +107,10 @@ With `pac4j` **version 1.8** which supports direct authentication (REST) and aut
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
 EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
-UserProfile profile = manager.get();
+UserProfile profile = null;
+if (useSession != null) {
+  profile = manager.get();
+}
 Client client = clients.findClient(context);
 if (client == null) {
   client = clients.findClient(configName);
@@ -116,9 +119,11 @@ boolean isDirectClient = client instanceof DirectClient;
 if (profile == null && isDirectClient) {
   try {
     credentials = client.getCredentials(context);
-  } catch (RequiresHttpAction e) { }
+  } catch (RequiresHttpAction e) {
+    throw new TechnicalException("Unexpected http action", e);
+  }
   profile = client.getUserProfile(credentials, context);
-  if (useSessionForRest && profile != null) {
+  if (useSession && profile != null) {
     manager.save(profile);
   }
 }
