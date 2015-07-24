@@ -13,23 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.exception;
+package org.pac4j.http.credentials.password;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
- * Exception when an account is not found.
- *
+ * This class tests the {@link NopPasswordEncoder}.
+ * 
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AccountNotFoundException extends CredentialsException {
+public final class NopPasswordEncoderTests {
 
-    private static final long serialVersionUID = -2405351263139588633L;
+    private final static String PASSWORD = "password";
 
-    public AccountNotFoundException(final String message) {
-        super(message);
-    }
-
-    public AccountNotFoundException(final Throwable t) {
-        super(t);
+    @Test
+    public void test() {
+        final PasswordEncoder encoder = new NopPasswordEncoder();
+        final String encodedPwd = encoder.encode(PASSWORD);
+        assertEquals(PASSWORD, encodedPwd);
     }
 }

@@ -69,8 +69,12 @@ public final class ProfileHelper {
                             completeName = "org.pac4j.saml.profile.SAML2Profile";
                         } else if ("HttpProfile".equals(className)) {
                             completeName = "org.pac4j.http.profile.HttpProfile";
-                        } else if ("MyOpenIdProfile".equals(className)) {
-                            completeName = "org.pac4j.openid.profile.myopenid.MyOpenIdProfile";
+                        } else if ("OidcProfile".equals(className)) {
+                            completeName = "org.pac4j.oidc.profile.OidcProfile";
+                        } else if ("LdapProfile".equals(className)) {
+                            completeName = "org.pac4j.ldap.profile.LdapProfile";
+                        } else if ("DbProfile".equals(className)) {
+                            completeName = "org.pac4j.sql.profile.DbProfile";
                         } else if ("YahooOpenIdProfile".equals(className)) {
                         	completeName = "org.pac4j.openid.profile.yahoo.YahooOpenIdProfile";
                         } else if ("GaeUserServiceProfile".equals(className)) {

@@ -13,27 +13,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile;
+package org.pac4j.ldap.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 
 /**
- * This class tests the {@link ProfileHelper} class for the {@link HttpProfile}.
+ * This class tests the {@link ProfileHelper} class for the {@link LdapProfile}.
  * 
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
  */
-public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+public final class TestLdapProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
     
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {
-        return HttpProfile.class;
+        return LdapProfile.class;
     }
     
     @Override
     protected String getProfileType() {
-        return "HttpProfile";
+        return "LdapProfile";
     }
     
     @Override

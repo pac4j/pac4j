@@ -13,23 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.exception;
+package org.pac4j.oidc.profile;
+
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileHelper;
 
 /**
- * Exception when an account is not found.
- *
+ * This class tests the {@link ProfileHelper} class for the {@link OidcProfile}.
+ * 
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AccountNotFoundException extends CredentialsException {
-
-    private static final long serialVersionUID = -2405351263139588633L;
-
-    public AccountNotFoundException(final String message) {
-        super(message);
+public final class TestOidcProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+    
+    @Override
+    protected Class<? extends CommonProfile> getProfileClass() {
+        return OidcProfile.class;
     }
-
-    public AccountNotFoundException(final Throwable t) {
-        super(t);
+    
+    @Override
+    protected String getProfileType() {
+        return "OidcProfile";
+    }
+    
+    @Override
+    protected String getAttributeName() {
+        return "whatever";
     }
 }
