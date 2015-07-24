@@ -13,23 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.exception;
+package org.pac4j.sql.profile;
+
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.sql.credentials.authenticator.DbAuthenticator;
+
 
 /**
- * Exception when an account is not found.
+ * <p>The user profile returned by a DB authentication.</p>
  *
+ * @see DbAuthenticator
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AccountNotFoundException extends CredentialsException {
+public class DbProfile extends CommonProfile {
 
-    private static final long serialVersionUID = -2405351263139588633L;
+    private static final long serialVersionUID = 4740352872728540613L;
 
-    public AccountNotFoundException(final String message) {
-        super(message);
-    }
-
-    public AccountNotFoundException(final Throwable t) {
-        super(t);
-    }
 }

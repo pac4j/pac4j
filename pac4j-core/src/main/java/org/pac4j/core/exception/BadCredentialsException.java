@@ -23,6 +23,8 @@ package org.pac4j.core.exception;
  */
 public class BadCredentialsException extends CredentialsException {
 
+    private static final long serialVersionUID = 106849753775292065L;
+
     public BadCredentialsException(final String message) {
         super(message);
     }
@@ -31,5 +33,3 @@ public class BadCredentialsException extends CredentialsException {
         super(t);
     }
 }
-
-
