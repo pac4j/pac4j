@@ -41,6 +41,22 @@ public interface WebContext {
     public Map<String, String[]> getRequestParameters();
 
     /**
+     * Return a request attribute.
+     *
+     * @param name the name of the attribute
+     * @return the attribute
+     */
+    public Object getRequestAttribute(String name);
+
+    /**
+     * Save a request attribute.
+     *
+     * @param name the name of the attribute
+     * @param value the attribute
+     */
+    public void setRequestAttribute(String name, Object value);
+
+    /**
      * Return a request header.
      *
      * @param name name of the header

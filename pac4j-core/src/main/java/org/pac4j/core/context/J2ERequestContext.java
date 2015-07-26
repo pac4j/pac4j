@@ -50,6 +50,16 @@ public class J2ERequestContext extends BaseResponseContext {
     /**
      * {@inheritDoc}
      */
+    public Object getRequestAttribute(final String name) { return this.request.getAttribute(name); }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRequestAttribute(final String name, final Object value) { this.request.setAttribute(name, value); }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getRequestHeader(final String name) {
         return this.request.getHeader(name);
     }

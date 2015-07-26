@@ -16,7 +16,7 @@
 package org.pac4j.core.authorization;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 /**
  * Checks an access if the user profile has all the roles.
@@ -25,7 +25,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAllRolesAuthorizer<U extends CommonProfile> implements Authorizer<U> {
+public class RequireAllRolesAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
     private final String[] expectedRoles;
 
