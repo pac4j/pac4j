@@ -47,6 +47,14 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
         setProfileCreator(profilePopulator);
     }
 
+    public ParameterClient(final String parameterName,
+                           final TokenAuthenticator tokenAuthenticator,
+                           final ProfileCreator profilePopulator) {
+        this.parameterName = parameterName;
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profilePopulator);
+    }
+
     @Override
     protected void internalInit() {
         extractor = new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName());

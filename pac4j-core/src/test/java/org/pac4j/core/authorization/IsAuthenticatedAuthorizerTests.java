@@ -15,35 +15,29 @@
  */
 package org.pac4j.core.authorization;
 
-import org.pac4j.core.context.WebContext;
+import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
- * Multi authorizers check based on OR logic.
+ * Tests {@link IsAuthenticatedAuthorizer}.
  *
- * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class OrMultiAuthorizer<U extends CommonProfile> implements Authorizer<U> {
+public class IsAuthenticatedAuthorizerTests {
 
-    protected final Authorizer<U>[] authorizers;
+    private final IsAuthenticatedAuthorizer authorizer = new IsAuthenticatedAuthorizer();
 
-    public OrMultiAuthorizer(final Authorizer<U>[] authorizers) {
-        this.authorizers = authorizers;
+    @Test
+    public void testIsAuthenticated() {
+        assertTrue(authorizer.isAuthorized(null, new CommonProfile()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAuthorized(WebContext context, U profile) {
-        if (authorizers != null) {
-            for (Authorizer authorizer : authorizers) {
-                if (authorizer != null && authorizer.isAuthorized(context, profile)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    @Test
+    public void testIsNotAuthenticated() {
+        assertFalse(authorizer.isAuthorized(null, null));
     }
 }

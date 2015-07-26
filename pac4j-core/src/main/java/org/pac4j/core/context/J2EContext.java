@@ -56,6 +56,16 @@ public class J2EContext implements WebContext {
     /**
      * {@inheritDoc}
      */
+    public Object getRequestAttribute(final String name) { return this.request.getAttribute(name); }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRequestAttribute(final String name, final Object value) { this.request.setAttribute(name, value); }
+
+    /**
+     * {@inheritDoc}
+     */
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }
