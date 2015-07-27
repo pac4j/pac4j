@@ -15,6 +15,10 @@
  */
 package org.pac4j.core.profile;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile implements Serializable {
+public class UserProfile implements Serializable, Externalizable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
@@ -42,15 +46,15 @@ public class UserProfile implements Serializable {
 
     private String id;
 
-    private final Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     public transient static final String SEPARATOR = "#";
 
     private boolean isRemembered = false;
 
-    private final List<String> roles = new ArrayList<String>();
+    private List<String> roles = new ArrayList<String>();
 
-    private final List<String> permissions = new ArrayList<String>();
+    private List<String> permissions = new ArrayList<String>();
 
     /**
      * Build a profile from user identifier and attributes.
@@ -238,5 +242,23 @@ public class UserProfile implements Serializable {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
                 this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered);
+    }
+
+    @Override
+    public void writeExternal(final ObjectOutput out) throws IOException {
+        out.writeObject(this.id);
+        out.writeObject(this.attributes);
+        out.writeBoolean(this.isRemembered);
+        out.writeObject(this.roles);
+        out.writeObject(this.permissions);
+    }
+
+    @Override
+    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+        this.id = (String) in.readObject();
+        this.attributes = (Map) in.readObject();
+        this.isRemembered = (boolean) in.readBoolean();
+        this.roles = (List) in.readObject();
+        this.permissions = (List) in.readObject();
     }
 }

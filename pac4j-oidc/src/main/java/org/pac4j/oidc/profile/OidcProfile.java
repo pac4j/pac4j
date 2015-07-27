@@ -16,10 +16,17 @@
 
 package org.pac4j.oidc.profile;
 
+import com.nimbusds.oauth2.sdk.Scope;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -28,7 +35,7 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
  * @author Michael Remond
  * @version 1.7.0
  */
-public class OidcProfile extends CommonProfile {
+public class OidcProfile extends CommonProfile implements Externalizable {
 
     private static final long serialVersionUID = -52855988661742374L;
 
@@ -45,4 +52,41 @@ public class OidcProfile extends CommonProfile {
         return this.accessToken;
     }
 
+
+    @Override
+    public void writeExternal(final ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        final BearerAccessTokenBean bean = BearerAccessTokenBean.toBean(this.accessToken);
+        out.writeObject(bean);
+    }
+
+    @Override
+    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
+        this.accessToken = BearerAccessTokenBean.fromBean(bean);
+    }
+
+    private static class BearerAccessTokenBean implements Serializable {
+        private String value;
+        private long lifetime;
+        private List<String> scope;
+
+        public BearerAccessTokenBean(final String value, final long lifetime,
+                                     final List<String> scope) {
+            this.value = value;
+            this.lifetime = lifetime;
+            this.scope = scope;
+        }
+
+        public static BearerAccessTokenBean toBean(final BearerAccessToken token) {
+            return new BearerAccessTokenBean(token.getValue(),
+                    token.getLifetime(), token.getScope().toStringList());
+        }
+
+        public static BearerAccessToken fromBean(final BearerAccessTokenBean token) {
+            return new BearerAccessToken(token.value, token.lifetime,
+                    Scope.parse(token.scope));
+        }
+    }
 }
