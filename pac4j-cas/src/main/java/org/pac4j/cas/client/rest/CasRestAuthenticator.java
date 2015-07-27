@@ -71,7 +71,7 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
     private String requestTicketGrantingTicket(final String username, final String password) {
         HttpURLConnection connection = null;
         try {
-            connection = HttpUtils.openConnection(new URL(getCasRestUrl()));
+            connection = HttpUtils.openPostConnection(new URL(getCasRestUrl()));
             final String payload = HttpUtils.encodeQueryParam(getUsernameParameter(), username)
                     + "&" + HttpUtils.encodeQueryParam(getPasswordParameter(), password);
 

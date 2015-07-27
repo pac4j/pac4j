@@ -46,11 +46,19 @@ public final class HttpUtils {
         return messageBuilder.toString();
     }
 
-    static HttpURLConnection openConnection(final URL url) throws IOException {
+    static HttpURLConnection openPostConnection(final URL url) throws IOException {
+        return openConnection(url, "POST");
+    }
+
+    static HttpURLConnection openDeleteConnection(final URL url) throws IOException {
+        return openConnection(url, "DELETE");
+    }
+
+    static HttpURLConnection openConnection(final URL url, final String requestMethod) throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(requestMethod);
         return connection;
     }
 
