@@ -68,7 +68,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
         try {
             final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
             final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
-            connection = HttpUtils.openPostConnection(deleteURL);
+            connection = HttpUtils.openDeleteConnection(deleteURL);
             final int responseCode = connection.getResponseCode();
             if (responseCode != HttpStatus.SC_OK) {
                 throw new TechnicalException("TGT delete request for `" + profile + "` failed: " +
