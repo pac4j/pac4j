@@ -63,13 +63,31 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
         return (HttpTGTProfile) getProfileCreator().create(creds);
     }
 
+    public void destroyTicketGrantingTicket(final WebContext context, final HttpTGTProfile profile) {
+        HttpURLConnection connection = null;
+        try {
+            final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
+            final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
+            connection = HttpUtils.openDeleteConnection(deleteURL);
+            final int responseCode = connection.getResponseCode();
+            if (responseCode != HttpStatus.SC_OK) {
+                throw new TechnicalException("TGT delete request for `" + profile + "` failed: " +
+                        HttpUtils.buildHttpErrorMessage(connection));
+            }
+        } catch (final IOException e) {
+            throw new TechnicalException(e);
+        } finally {
+            HttpUtils.closeConnection(connection);
+        }
+    }
+
     public CasCredentials requestServiceTicket(final String serviceURL, final HttpTGTProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
             final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
 
-            connection = HttpUtils.openConnection(ticketURL);
+            connection = HttpUtils.openPostConnection(ticketURL);
             final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));

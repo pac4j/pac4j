@@ -40,6 +40,7 @@ public class CasClientRestProtocolIT extends CasClientIT {
         final HttpTGTProfile profile = client.requestTicketGrantingTicket(context);
         final CasCredentials casCreds = client.requestServiceTicket("http://www.pac4j.org/", profile);
         final CasProfile casProfile = client.validateServiceTicket("http://www.pac4j.org/", casCreds);
+        client.destroyTicketGrantingTicket(context, profile);
     }
 
     @Test
@@ -57,6 +58,7 @@ public class CasClientRestProtocolIT extends CasClientIT {
         final HttpTGTProfile profile = client.requestTicketGrantingTicket(context);
         final CasCredentials casCreds = client.requestServiceTicket("http://www.pac4j.org/", profile);
         final CasProfile casProfile = client.validateServiceTicket("http://www.pac4j.org/", casCreds);
+        client.destroyTicketGrantingTicket(context, profile);
     }
 
 }
