@@ -32,6 +32,8 @@ public class MockWebContext extends BaseResponseContext {
 
     protected final Map<String, Object> session = new HashMap<String, Object>();
 
+    protected final Map<String, Object> attributes = new HashMap<String, Object>();
+
     protected String method = "GET";
 
     protected String serverName = "localhost";
@@ -114,6 +116,15 @@ public class MockWebContext extends BaseResponseContext {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Object getRequestAttribute(final String name) { return this.attributes.get(name); }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRequestAttribute(final String name, final Object value) { this.attributes.put(name, value); }
 
     public String getRequestParameter(final String name) {
         return this.parameters.get(name);

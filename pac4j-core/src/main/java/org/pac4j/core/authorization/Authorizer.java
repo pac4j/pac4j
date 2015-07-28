@@ -16,7 +16,7 @@
 package org.pac4j.core.authorization;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
 /**
  * Checks if an access is authorized.
@@ -24,7 +24,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface Authorizer<U extends CommonProfile> {
+public interface Authorizer<U extends UserProfile> {
 
     /**
      * Checks if the user profile is authorized for the current web context.
