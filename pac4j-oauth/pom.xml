@@ -75,11 +75,11 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.googlecode</groupId>
-            <artifactId>kryo</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo-shaded</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
