@@ -13,32 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.gae.profile;
+package org.pac4j.openid.profile.yahoo;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 
 /**
- * This class tests the {@link ProfileHelper} class for the appengine client.
+ * This class tests the {@link ProfileHelper} class for the {@link YahooOpenIdProfile}.
  * 
- * @author Patrice de Saint Steban
- * @since 1.6.0
+ * @author Jerome Leleu
+ * @since 1.8.0
  */
-public final class TestProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
-
+public final class TestYahooOpenIdProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
     
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {
-        return GaeUserServiceProfile.class;
+        return YahooOpenIdProfile.class;
     }
     
     @Override
     protected String getProfileType() {
-        return "GaeUserServiceProfile";
+        return "YahooOpenIdProfile";
     }
     
     @Override
     protected String getAttributeName() {
-        return GaeUserServiceAttributesDefinition.DISPLAYNAME;
+        return "email";
     }
 }

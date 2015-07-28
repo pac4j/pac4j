@@ -34,7 +34,9 @@ They depend on the `pac4j-core` module (groupId: `org.pac4j`):
 5. **SAML** (2.0) using the `pac4j-saml` module
 6. **Google App Engine** UserService using the `pac4j-gae` module
 7. **OpenID Connect** 1.0 using the `pac4j-oidc` module
-8. **JWT** using the `pac4j-jwt` module.
+8. **JWT** using the `pac4j-jwt` module
+9. **LDAP** using the `pac4j-ldap` module
+10. **relational DB** using the `pac4j-sql` module. 
 
 See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
 
@@ -105,7 +107,10 @@ With `pac4j` **version 1.8** which supports direct authentication (REST) and aut
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
 EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
-UserProfile profile = manager.get();
+UserProfile profile = null;
+if (useSession != null) {
+  profile = manager.get();
+}
 Client client = clients.findClient(context);
 if (client == null) {
   client = clients.findClient(configName);
@@ -114,9 +119,11 @@ boolean isDirectClient = client instanceof DirectClient;
 if (profile == null && isDirectClient) {
   try {
     credentials = client.getCredentials(context);
-  } catch (RequiresHttpAction e) { }
+  } catch (RequiresHttpAction e) {
+    throw new TechnicalException("Unexpected http action", e);
+  }
   profile = client.getUserProfile(credentials, context);
-  if (profile != null) {
+  if (useSession && profile != null) {
     manager.save(profile);
   }
 }

@@ -75,6 +75,8 @@
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
+		<module>pac4j-ldap</module>
+		<module>pac4j-sql</module>
 	</modules>
 
 	<dependencyManagement>
@@ -149,7 +151,7 @@
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.7</version>
+				<version>1.10</version>
 			</dependency>
 			<dependency>
 				<groupId>xml-security</groupId>
@@ -185,11 +187,6 @@
             </dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-http</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-jwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -197,6 +194,16 @@
 				<groupId>com.nimbusds</groupId>
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>3.10</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ldaptive</groupId>
+				<artifactId>ldaptive</artifactId>
+				<version>1.0.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jdbi</groupId>
+				<artifactId>jdbi</artifactId>
+				<version>2.63</version>
 			</dependency>
 			<!-- for testing -->
 			<dependency>
@@ -232,7 +239,6 @@
 				<version>${spring.version}</version>
 				<scope>test</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>net.sourceforge.htmlunit</groupId>
 				<artifactId>htmlunit</artifactId>
@@ -263,6 +269,18 @@
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
 				<version>1.9.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.unboundid</groupId>
+				<artifactId>unboundid-ldapsdk</artifactId>
+				<version>2.3.8</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.4.187</version>
+				<scope>test</scope>
 			</dependency>
 			<!-- for testing -->
 		</dependencies>
