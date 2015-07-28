@@ -32,7 +32,7 @@ There are two possibilities how to make the values equal:
 3. Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files
 ---------------------------------------------------------------------------------
 
-Yu must install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK
+You must install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK
 running pac4j. If you don't do it, you may encounter errors like this:
 
 ERROR [org.opensaml.xml.encryption.Decrypter] - <Error decrypting the encrypted data element>
