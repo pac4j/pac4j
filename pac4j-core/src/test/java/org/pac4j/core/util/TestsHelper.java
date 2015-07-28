@@ -29,14 +29,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import org.junit.Assert;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.ObjectBuffer;
-import com.esotericsoftware.kryo.SerializationException;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 
@@ -148,20 +149,20 @@ public final class TestsHelper {
     }
 
     public static byte[] serializeKryo(final Kryo kryo, final Object object) {
-        final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
+       Output output = new Output(BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
         try {
-            return buffer.writeClassAndObject(object);
-        } catch (final SerializationException e) {
+            kryo.writeClassAndObject(output, object);
+        } catch (final KryoException e) {
             logger.error("serialize exception with Kryo on object : {}", object, e);
         }
-        return null;
+        return output.toBytes();
     }
 
     public static Object unserializeKryo(final Kryo kryo, final byte[] bytes) {
+        Input input = new Input(bytes);
         try {
-            final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
-            return buffer.readClassAndObject(bytes);
-        } catch (final SerializationException e) {
+            return kryo.readClassAndObject(input);
+        } catch (final KryoException e) {
             logger.error("unserialize exception with Kryo", e);
         }
         return null;
