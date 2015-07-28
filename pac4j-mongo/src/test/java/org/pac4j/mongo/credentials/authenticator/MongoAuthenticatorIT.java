@@ -13,8 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.sql.credentials.authenticator;
+package org.pac4j.mongo.credentials.authenticator;
 
+import com.mongodb.MongoClient;
 import org.junit.*;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
@@ -25,48 +26,93 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.password.NopPasswordEncoder;
 import org.pac4j.http.credentials.password.SaltedSha512PasswordEncoder;
-import org.pac4j.sql.profile.DbProfile;
-import org.pac4j.sql.test.tools.DbServer;
-
-import javax.sql.DataSource;
+import org.pac4j.mongo.profile.MongoProfile;
+import org.pac4j.mongo.test.tools.MongoServer;
 
 import static org.junit.Assert.*;
 
 /**
- * Tests the {@link DbAuthenticator}.
+ * Tests the {@link MongoAuthenticator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DbAuthenticatorTests implements TestsConstants {
+public class MongoAuthenticatorIT implements TestsConstants {
 
-    private DataSource ds = DbServer.getInstance();
+    private final static int PORT = 37017;
+
+    private final MongoServer mongoServer = new MongoServer();
+
+    @Before
+    public void setUp() {
+        mongoServer.start(PORT);
+    }
+
+    @After
+    public void tearDown() {
+        mongoServer.stop();
+    }
+
 
     @Test(expected = TechnicalException.class)
     public void testNullPasswordEncoder() {
-        final DbAuthenticator authenticator = new DbAuthenticator(ds, FIRSTNAME);
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME);
 
         authenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNullAttribute() {
-        final DbAuthenticator authenticator = new DbAuthenticator(ds, null);
-        authenticator.setPasswordEncoder(new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), null, new NopPasswordEncoder());
 
         authenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
-    public void testNullDataSource() {
-        final DbAuthenticator authenticator = new DbAuthenticator(null, FIRSTNAME);
-        authenticator.setPasswordEncoder(new NopPasswordEncoder());
+    public void testNullMongoClient() {
+        final MongoAuthenticator authenticator = new MongoAuthenticator(null, FIRSTNAME, new NopPasswordEncoder());
 
         authenticator.validate(null);
     }
 
+    @Test(expected = TechnicalException.class)
+    public void testNullDatabase() {
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        authenticator.setUsersDatabase(null);
+
+        authenticator.validate(null);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testNullCollection() {
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        authenticator.setUsersCollection(null);
+
+        authenticator.validate(null);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testNullUsername() {
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        authenticator.setUsernameAttribute(null);
+
+        authenticator.validate(null);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testNullPassword() {
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        authenticator.setPasswordAttribute(null);
+
+        authenticator.validate(null);
+    }
+
+    private MongoClient getClient() {
+        return new MongoClient("localhost", PORT);
+    }
+
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
-        final DbAuthenticator authenticator = new DbAuthenticator(ds, attribute);
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), attribute);
         authenticator.setPasswordEncoder(new SaltedSha512PasswordEncoder(SALT));
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
@@ -81,8 +127,8 @@ public class DbAuthenticatorTests implements TestsConstants {
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
-        assertTrue(profile instanceof DbProfile);
-        final DbProfile dbProfile = (DbProfile) profile;
+        assertTrue(profile instanceof MongoProfile);
+        final MongoProfile dbProfile = (MongoProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertEquals(FIRSTNAME_VALUE, dbProfile.getAttribute(FIRSTNAME));
     }
@@ -93,8 +139,8 @@ public class DbAuthenticatorTests implements TestsConstants {
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
-        assertTrue(profile instanceof DbProfile);
-        final DbProfile dbProfile = (DbProfile) profile;
+        assertTrue(profile instanceof MongoProfile);
+        final MongoProfile dbProfile = (MongoProfile) profile;
         assertEquals(GOOD_USERNAME, dbProfile.getId());
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }
