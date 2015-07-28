@@ -77,6 +77,7 @@
 		<module>pac4j-jwt</module>
 		<module>pac4j-ldap</module>
 		<module>pac4j-sql</module>
+		<module>pac4j-mongo</module>
 	</modules>
 
 	<dependencyManagement>
@@ -205,6 +206,11 @@
 				<artifactId>jdbi</artifactId>
 				<version>2.63</version>
 			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongo-java-driver</artifactId>
+				<version>3.0.3</version>
+			</dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
@@ -280,6 +286,12 @@
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
 				<version>1.4.187</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.flapdoodle.embed</groupId>
+				<artifactId>de.flapdoodle.embed.mongo</artifactId>
+				<version>1.48.2</version>
 				<scope>test</scope>
 			</dependency>
 			<!-- for testing -->

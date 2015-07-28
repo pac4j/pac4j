@@ -50,7 +50,15 @@ public interface TestsConstants {
     String TITLE = "title";
     String NAMESPACE = "namespace";
     int INT_ID = 1234;
-    
+    String SALT = "sel";
+    String GOOD_USERNAME = "jle";
+    String GOOD_USERNAME2 = "jleleu";
+    String BAD_USERNAME = "michael";
+    String MULTIPLE_USERNAME = "misagh";
+    String FIRSTNAME = "firstname";
+    String FIRSTNAME_VALUE = "Jerome";
+    String CLIENT_NAME = "clientname";
+
     // urls
     String CALLBACK_URL = "http://myserver/callback";
     String GOOGLE_URL = "http://www.google.com";

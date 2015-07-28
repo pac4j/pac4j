@@ -75,6 +75,8 @@ public final class ProfileHelper {
                             completeName = "org.pac4j.ldap.profile.LdapProfile";
                         } else if ("DbProfile".equals(className)) {
                             completeName = "org.pac4j.sql.profile.DbProfile";
+                        } else if ("MongoProfile".equals(className)) {
+                            completeName = "org.pac4j.mongo.profile.MongoProfile";
                         } else if ("YahooOpenIdProfile".equals(className)) {
                         	completeName = "org.pac4j.openid.profile.yahoo.YahooOpenIdProfile";
                         } else if ("GaeUserServiceProfile".equals(className)) {
