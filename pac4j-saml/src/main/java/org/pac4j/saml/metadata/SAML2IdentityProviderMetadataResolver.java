@@ -32,6 +32,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.UrlResource;
@@ -39,6 +41,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -49,6 +52,7 @@ import java.util.Iterator;
  * @since 1.7
  */
 public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final String idpMetadataPath;
     private String idpEntityId;
@@ -71,27 +75,31 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                     path = "/" + path;
                 }
                 resource = ResourceHelper.of(new ClassPathResource(path));
-            } else if (this.idpMetadataPath.startsWith("file:")) {
-                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
-            } else if (this.idpMetadataPath.startsWith("http")) {
+            }  else if (this.idpMetadataPath.startsWith("https")) {
                 resource = ResourceHelper.of(new UrlResource(this.idpMetadataPath));
+            } else {
+                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
             }
 
             if (resource == null) {
                 throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataPath);
             }
 
-            final InputStream in = resource.getInputStream();
-            final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
-            final Element metadataRoot = inCommonMDDoc.getDocumentElement();
-            idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
-
-            idpMetadataProvider.setParserPool(Configuration.getParserPool());
-            idpMetadataProvider.setFailFastInitialization(true);
-            idpMetadataProvider.setRequireValidMetadata(true);
-            idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
-            idpMetadataProvider.initialize();
-
+            try (final InputStream in = resource.getInputStream()) {
+                final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
+                final Element metadataRoot = inCommonMDDoc.getDocumentElement();
+                idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
+                idpMetadataProvider.setParserPool(Configuration.getParserPool());
+                idpMetadataProvider.setFailFastInitialization(true);
+                idpMetadataProvider.setRequireValidMetadata(true);
+                idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
+                idpMetadataProvider.initialize();
+            } catch (final FileNotFoundException e) {
+                throw new TechnicalException("Error loading idp Metadata. The path must be a "
+                        + "valid https url, begin with '" + CommonHelper.RESOURCE_PREFIX
+                        + "' or it must be a physical readable non-empty local file "
+                        + "at the path specified.", e);
+            }
 
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
             if (this.idpEntityId == null) {
