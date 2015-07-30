@@ -75,8 +75,13 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                     path = "/" + path;
                 }
                 resource = ResourceHelper.of(new ClassPathResource(path));
-            }  else if (this.idpMetadataPath.startsWith("https")) {
-                resource = ResourceHelper.of(new UrlResource(this.idpMetadataPath));
+            }  else if (this.idpMetadataPath.startsWith("http")) {
+                final UrlResource urlResource = new UrlResource(this.idpMetadataPath);
+                if (urlResource.getURL().getProtocol().equalsIgnoreCase("http")) {
+                    logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]",
+                            urlResource.getURL());
+                }
+                resource = ResourceHelper.of(urlResource);
             } else {
                 resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
             }
