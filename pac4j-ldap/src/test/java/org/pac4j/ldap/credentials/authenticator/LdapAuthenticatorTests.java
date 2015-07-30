@@ -20,6 +20,7 @@ import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.pac4j.ldap.test.tools.AuthenticatorGenerator;
@@ -35,10 +36,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapAuthenticatorTests {
-
-    private final static String CLIENT_NAME = "clientName";
-    private final static String BAD_USERNAME = "michael";
+public class LdapAuthenticatorTests implements TestsConstants {
 
     private LdapServer ldapServer;
 
@@ -74,7 +72,7 @@ public class LdapAuthenticatorTests {
     public void authentFailed() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
 
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, LdapServer.PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
     }
 
@@ -82,14 +80,14 @@ public class LdapAuthenticatorTests {
     public void authentSuccessNoAttribute() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
 
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LdapServer.USERNAME, LdapServer.PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
-        assertEquals(LdapServer.USERNAME, ldapProfile.getId());
+        assertEquals(GOOD_USERNAME, ldapProfile.getId());
         assertEquals(0, ldapProfile.getAttributes().size());
     }
 
@@ -97,33 +95,33 @@ public class LdapAuthenticatorTests {
     public void authentSuccessSingleAttribute() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN);
 
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LdapServer.USERNAME, LdapServer.PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
-        assertEquals(LdapServer.USERNAME, ldapProfile.getId());
+        assertEquals(GOOD_USERNAME, ldapProfile.getId());
         assertEquals(2, ldapProfile.getAttributes().size());
-        assertEquals(LdapServer.USERNAME, ldapProfile.getAttribute(LdapServer.CN));
-        assertEquals(LdapServer.FIRSTNAME, ldapProfile.getAttribute(LdapServer.SN));
+        assertEquals(GOOD_USERNAME, ldapProfile.getAttribute(LdapServer.CN));
+        assertEquals(FIRSTNAME_VALUE, ldapProfile.getAttribute(LdapServer.SN));
     }
 
     @Test
     public void authentSuccessMultiAttribute() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN + "," + LdapServer.ROLE);
 
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LdapServer.USERNAME2, LdapServer.PASSWORD, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
         final UserProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
-        assertEquals(LdapServer.USERNAME2, ldapProfile.getId());
+        assertEquals(GOOD_USERNAME2, ldapProfile.getId());
         assertEquals(2, ldapProfile.getAttributes().size());
-        assertEquals(LdapServer.USERNAME2, ldapProfile.getAttribute(LdapServer.CN));
+        assertEquals(GOOD_USERNAME2, ldapProfile.getAttribute(LdapServer.CN));
         assertNull(ldapProfile.getAttribute(LdapServer.SN));
         final Collection<String> attributes = (Collection<String>) ldapProfile.getAttribute(LdapServer.ROLE);
         assertEquals(2, attributes.size());
