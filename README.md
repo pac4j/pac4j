@@ -36,7 +36,8 @@ They depend on the `pac4j-core` module (groupId: `org.pac4j`):
 7. **OpenID Connect** 1.0 using the `pac4j-oidc` module
 8. **JWT** using the `pac4j-jwt` module
 9. **LDAP** using the `pac4j-ldap` module
-10. **relational DB** using the `pac4j-sql` module. 
+10. **relational DB** using the `pac4j-sql` module
+11. **MongoDB** using the `pac4j-mongo` module.
 
 See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
 

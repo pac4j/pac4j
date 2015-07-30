@@ -16,6 +16,7 @@
 package org.pac4j.sql.test.tools;
 
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.password.PasswordEncoder;
 import org.pac4j.http.credentials.password.SaltedSha512PasswordEncoder;
 import org.skife.jdbi.v2.DBI;
@@ -29,15 +30,7 @@ import javax.sql.DataSource;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DbServer {
-
-    public final static String SALT = "sel";
-    public final static String GOOD_USERNAME = "jleleu";
-    public final static String BAD_USERNAME = "michael";
-    public final static String MULTIPLE_USERNAME = "misagh";
-    public final static String PASSWORD = "pwd";
-    public final static String ATTRIBUTE = "nickname";
-    public final static String NICKNAME = "theboss";
+public class DbServer implements TestsConstants{
 
     private static DataSource ds;
 
@@ -47,8 +40,8 @@ public class DbServer {
         final Handle h = dbi.open();
         final PasswordEncoder encoder = new SaltedSha512PasswordEncoder(SALT);
         final String password = encoder.encode(PASSWORD);
-        h.execute("create table users (id int primary key, username varchar(100), password varchar(300), " + ATTRIBUTE + " varchar(100))");
-        h.execute("insert into users values(1, '" + GOOD_USERNAME + "', '" + password + "', '" + NICKNAME + "')");
+        h.execute("create table users (id int primary key, username varchar(100), password varchar(300), " + FIRSTNAME + " varchar(100))");
+        h.execute("insert into users values(1, '" + GOOD_USERNAME + "', '" + password + "', '" + FIRSTNAME_VALUE + "')");
         h.execute("insert into users values(2, '" + MULTIPLE_USERNAME + "', '" + password + "', '')");
         h.execute("insert into users values(3, '" + MULTIPLE_USERNAME + "', '" + password + "', '')");
         h.close();
