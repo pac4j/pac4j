@@ -108,28 +108,28 @@ With `pac4j` **version 1.8** which supports direct authentication (REST) and aut
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
 EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
-UserProfile profile = null;
-if (useSession != null) {
-  profile = manager.get();
-}
-Client client = clients.findClient(context);
-if (client == null) {
-  client = clients.findClient(configName);
-}
+
+Client client = findClient(context);
 boolean isDirectClient = client instanceof DirectClient;
+
+UserProfile profile = manager.get(!isDirectClient || useSessionForDirectClient);
+
 if (profile == null && isDirectClient) {
+  Credentials credentials;
   try {
     credentials = client.getCredentials(context);
   } catch (RequiresHttpAction e) {
-    throw new TechnicalException("Unexpected http action", e);
+    throw new TechnicalException("Unexpected HTTP action", e);
   }
+
   profile = client.getUserProfile(credentials, context);
-  if (useSession && profile != null) {
-    manager.save(profile);
+  if (profile != null) {
+    manager.save(useSessionForDirectClient, profile);
   }
 }
+
 if (profile != null) {
-  if (configAuthorizer.isAuthorized(context, profile) {
+  if (authorizer.isAuthorized(context, profile) {
     grantAccess();
   } else {
     errorHttp403Forbidden();
@@ -167,7 +167,7 @@ if (profile != null) {
 redirectToTheOriginallyRequestedUrl();
 ```
 
-Browse some [code samples](https://github.com/pac4j/pac4j/wiki/Code-samples) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components).
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components).
 
 ### Core concepts:
 
