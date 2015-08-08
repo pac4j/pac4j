@@ -103,7 +103,7 @@ if (profile != null) {
 
 The `EnvSpecificWebContext` and `EnvSpecificProfileManager` classes are specific implementations of the `WebContext` and `ProfileManager` interfaces for your framework.
 
-With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can use a more evolved algorithm:
+With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can use a more elaborated algorithm:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
