@@ -174,7 +174,7 @@
 			        <property name="id" value="0" />
 			        <property name="name" value="oauth wrapper callback url" />
 			        <property name="serviceId" value="http://localhost:8080/cas/oauth2.0/callbackAuthorize" />
-					<property name="allowedToProxy" value="true" />
+			        <property name="allowedToProxy" value="true" />
 			      </bean>
 			 
 			      <bean class="org.jasig.cas.services.RegisteredServiceImpl">
@@ -182,7 +182,7 @@
 			        <property name="name" value="my_key" />
 			        <property name="description" value="my_secret" />
 			        <property name="serviceId" value="http://www.pac4j.org/" />
-					<property name="allowedToProxy" value="true" />
+			        <property name="allowedToProxy" value="true" />
 			        <property name="allowedAttributes">
         				<list>
 							<value>uid</value>
@@ -196,7 +196,7 @@
                     <property name="id" value="2" />
                     <property name="name" value="test_proxy" />
                     <property name="serviceId" value="http://localhost:8080/cas/callback*" />
-					<property name="allowedToProxy" value="true" />
+                    <property name="allowedToProxy" value="true" />
                   </bean>
 
                     <!--
