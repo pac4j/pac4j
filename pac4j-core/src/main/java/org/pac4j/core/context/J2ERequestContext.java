@@ -18,6 +18,7 @@ package org.pac4j.core.context;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This implementation uses the J2E request.
@@ -29,8 +30,12 @@ public class J2ERequestContext extends BaseResponseContext {
 
     private final HttpServletRequest request;
 
-    public J2ERequestContext(final HttpServletRequest request) {
+    private final HttpServletResponse response;
+
+    public J2ERequestContext(final HttpServletRequest request,
+                             final HttpServletResponse response) {
         this.request = request;
+        this.response = response;
     }
 
     /**
@@ -136,6 +141,16 @@ public class J2ERequestContext extends BaseResponseContext {
         } else {
             return requestURL.append('?').append(queryString).toString();
         }
+    }
+
+    @Override
+    public HttpServletRequest getNativeRequest() {
+        return this.request;
+    }
+
+    @Override
+    public HttpServletResponse getNativeResponse() {
+        return this.response;
     }
 
 }

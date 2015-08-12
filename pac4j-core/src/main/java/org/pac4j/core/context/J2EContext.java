@@ -182,4 +182,14 @@ public class J2EContext implements WebContext {
             return requestURL.append('?').append(queryString).toString();
         }
     }
+
+    @Override
+    public HttpServletRequest getNativeRequest() {
+        return this.request;
+    }
+
+    @Override
+    public HttpServletResponse getNativeResponse() {
+        return this.response;
+    }
 }

@@ -101,12 +101,11 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
 
-        final J2EContext j2EContext = (J2EContext) webContext;
-        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(j2EContext);
+        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(webContext);
         final MessageContext<SimpleRequestAdapter> inCtx = new MessageContext<SimpleRequestAdapter>();
         inCtx.setMessage(inTransport);
 
-        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter(j2EContext);
+        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter(webContext);
         final MessageContext<SimpleResponseAdapter> outCtx = new MessageContext<SimpleResponseAdapter>();
         outCtx.setMessage(outTransport);
 
@@ -160,7 +159,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
             }
 
         } catch (final ResolverException e) {
-            throw new SAMLException("An error occured while getting IDP descriptors", e);
+            throw new SAMLException("An error occurred while getting IDP descriptors", e);
         }
         final SAMLMetadataContext mdCtx = parentContext.getSubcontext(SAMLMetadataContext.class, true);
         mdCtx.setEntityDescriptor(entityDescriptor);

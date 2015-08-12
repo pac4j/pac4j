@@ -15,6 +15,11 @@
  */
 package org.pac4j.core.context;
 
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -193,6 +198,16 @@ public class MockWebContext extends BaseResponseContext {
         } else {
             return scheme + "://" + serverName + ":" + serverPort + "/";
         }
+    }
+
+    @Override
+    public HttpServletRequest getNativeRequest() {
+        return new MockHttpServletRequest();
+    }
+
+    @Override
+    public HttpServletResponse getNativeResponse() {
+        return new MockHttpServletResponse();
     }
 
     public void setFullRequestURL(String fullRequestURL) {

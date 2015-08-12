@@ -32,10 +32,10 @@ import javax.servlet.http.HttpServletRequestWrapper;
  *
  */
 public class SimpleRequestAdapter extends HttpServletRequestWrapper {
-    private J2EContext context;
+    private WebContext context;
 
-    public SimpleRequestAdapter(final J2EContext request) {
-        super(request.getRequest());
+    public SimpleRequestAdapter(final WebContext request) {
+        super(request.getNativeRequest());
     }
 
     @Override
@@ -43,11 +43,11 @@ public class SimpleRequestAdapter extends HttpServletRequestWrapper {
         return (HttpServletRequest) super.getRequest();
     }
 
-    public final J2EContext getContext() {
+    public final WebContext getContext() {
         return context;
     }
 
-    public void setContext(final J2EContext context) {
+    public void setContext(final WebContext context) {
         this.context = context;
     }
 
