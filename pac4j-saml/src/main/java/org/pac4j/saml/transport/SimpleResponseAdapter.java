@@ -17,6 +17,7 @@
 package org.pac4j.saml.transport;
 
 import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.WebContext;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -43,8 +44,8 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
      * @param response the response
      * @throws IllegalArgumentException if the response is null
      */
-    public SimpleResponseAdapter(final J2EContext response) {
-        super(response.getResponse());
+    public SimpleResponseAdapter(final WebContext response) {
+        super(response.getNativeResponse());
     }
 
     public final String getOutgoingContent() {

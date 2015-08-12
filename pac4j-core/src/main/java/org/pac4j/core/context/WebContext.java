@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.context;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -31,14 +33,14 @@ public interface WebContext {
      * @param name name of the parameter
      * @return the request parameter
      */
-    public String getRequestParameter(String name);
+     String getRequestParameter(String name);
 
     /**
      * Return all request parameters.
      *
      * @return all request parameters
      */
-    public Map<String, String[]> getRequestParameters();
+     Map<String, String[]> getRequestParameters();
 
     /**
      * Return a request attribute.
@@ -46,7 +48,7 @@ public interface WebContext {
      * @param name the name of the attribute
      * @return the attribute
      */
-    public Object getRequestAttribute(String name);
+     Object getRequestAttribute(String name);
 
     /**
      * Save a request attribute.
@@ -54,7 +56,7 @@ public interface WebContext {
      * @param name the name of the attribute
      * @param value the attribute
      */
-    public void setRequestAttribute(String name, Object value);
+     void setRequestAttribute(String name, Object value);
 
     /**
      * Return a request header.
@@ -62,7 +64,7 @@ public interface WebContext {
      * @param name name of the header
      * @return the request header
      */
-    public String getRequestHeader(String name);
+     String getRequestHeader(String name);
 
     /**
      * Save an attribute in session.
@@ -70,7 +72,7 @@ public interface WebContext {
      * @param name name of the session attribute
      * @param value value of the session attribute
      */
-    public void setSessionAttribute(String name, Object value);
+     void setSessionAttribute(String name, Object value);
 
     /**
      * Get an attribute from session.
@@ -78,35 +80,35 @@ public interface WebContext {
      * @param name name of the session attribute
      * @return the session attribute
      */
-    public Object getSessionAttribute(String name);
+     Object getSessionAttribute(String name);
 
     /**
      * Return the request method.
      *
      * @return the request method
      */
-    public String getRequestMethod();
+     String getRequestMethod();
 
     /**
      * Return the remote address.
      *
      * @return the remote address.
      */
-    public String getRemoteAddr();
+     String getRemoteAddr();
 
     /**
      * Write some content in the response.
      *
      * @param content content to write in response
      */
-    public void writeResponseContent(String content);
+     void writeResponseContent(String content);
 
     /**
      * Set the response status.
      *
      * @param code status code to set for the response 
      */
-    public void setResponseStatus(int code);
+     void setResponseStatus(int code);
 
     /**
      * Add a header to the response.
@@ -114,28 +116,28 @@ public interface WebContext {
      * @param name name of the header
      * @param value value of the header
      */
-    public void setResponseHeader(String name, String value);
+     void setResponseHeader(String name, String value);
 
     /**
      * Return the server name.
      *
      * @return the server name
      */
-    public String getServerName();
+     String getServerName();
 
     /**
      * Return the server port.
      *
      * @return the server port
      */
-    public int getServerPort();
+     int getServerPort();
 
     /**
      * Return the scheme.
      *
      * @return the scheme
      */
-    public String getScheme();
+     String getScheme();
 
     /**
      * Return the full URL (with query string) the client used to request the server.
@@ -143,6 +145,20 @@ public interface WebContext {
      * @return the URL
      * @since 1.5.0
      */
-    public String getFullRequestURL();
+     String getFullRequestURL();
+
+    /**
+     * Returns the native http request object.
+     * @return the request
+     * @since 1.8.0
+     */
+    HttpServletRequest getNativeRequest();
+
+    /**
+     * Returns the native http response object.
+     * @return the response
+     * @since 1.8.0
+     */
+    HttpServletResponse getNativeResponse();
 
 }
