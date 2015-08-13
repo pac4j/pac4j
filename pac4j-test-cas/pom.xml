@@ -153,6 +153,12 @@
 					<webApp>
 						<contextPath>/cas</contextPath>
 					</webApp>
+					<systemProperties>
+						<systemProperty>
+							<name>org.eclipse.jetty.annotations.maxWait</name>
+							<value>240</value>
+						</systemProperty>
+					</systemProperties>
 				</configuration>
 				<executions>
 					<execution>

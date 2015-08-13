@@ -449,7 +449,7 @@
 
 	<properties>
 		<spring.version>4.1.5.RELEASE</spring.version>
-		<cas.version>3.5.1</cas.version>
+		<cas.version>3.6.0</cas.version>
 		<slf4j.version>1.7.12</slf4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
