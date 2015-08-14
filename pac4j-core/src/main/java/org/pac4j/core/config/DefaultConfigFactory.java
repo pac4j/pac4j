@@ -16,7 +16,7 @@
 package org.pac4j.core.config;
 
 /**
- * Will be removed, use {@link org.pac4j.core.config.DefaultConfigFactory}.
+ * A default configuration factory.
  *
  * @author Jerome Leleu
  * @since 1.8.0
