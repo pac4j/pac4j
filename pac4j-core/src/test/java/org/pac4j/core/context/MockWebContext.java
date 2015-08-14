@@ -147,6 +147,8 @@ public class MockWebContext extends BaseResponseContext {
         return this.session.get(name);
     }
 
+    public void invalidateSession() { this.session.clear(); }
+
     public String getRequestMethod() {
         return this.method;
     }

@@ -28,6 +28,7 @@ import org.pac4j.core.profile.UserProfile;
  * @since 1.8.0
  *
  */
+@Deprecated
 public class DefaultClientsFactory implements ClientsFactory {
 
     /**
