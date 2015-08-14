@@ -13,22 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.config;
 
 /**
- * Will be removed, use {@link org.pac4j.core.config.ConfigFactory}.
+ * A factory to build the configuration.
  *
  * @author Jerome Leleu
- * @since 1.7.0
+ * @since 1.8.0
  */
-@Deprecated
-public interface ClientsFactory {
+public interface ConfigFactory {
 
     /**
-     * Build clients from env.
+     * Build a configuration.
      *
-     * @param env some current initialization environment.
-     * @return the clients.
+     * @return
      */
-    Clients build(Object env);
+    Config build();
 }

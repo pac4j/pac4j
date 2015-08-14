@@ -20,7 +20,7 @@ import org.pac4j.core.context.WebContext;
 
 /**
  * <p>This class is a generic way to manage the current user profile, i.e. the one of the current authenticated user.</p>
- * <p>It may be partially ree-implemented for specific needs / frameworks.</p>
+ * <p>It may be partially re-implemented for specific needs / frameworks.</p>
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -76,10 +76,11 @@ public class ProfileManager<U extends UserProfile> {
     }
 
     /**
-     * Perform a logout by removing the current user profile.
+     * Perform a logout by removing the current user profile and invalidating the web session.
      */
     public void logout() {
         remove(true);
+        context.invalidateSession();
     }
 
     /**

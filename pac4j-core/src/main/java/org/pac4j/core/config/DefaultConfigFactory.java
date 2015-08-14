@@ -13,22 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.config;
 
 /**
- * Will be removed, use {@link org.pac4j.core.config.ConfigFactory}.
+ * Will be removed, use {@link org.pac4j.core.config.DefaultConfigFactory}.
  *
  * @author Jerome Leleu
- * @since 1.7.0
+ * @since 1.8.0
  */
-@Deprecated
-public interface ClientsFactory {
+public class DefaultConfigFactory implements ConfigFactory {
+
+    protected Config config;
+
+    public DefaultConfigFactory(final Config config) {
+        this.config = config;
+    }
 
     /**
-     * Build clients from env.
-     *
-     * @param env some current initialization environment.
-     * @return the clients.
+     * {@inheritDoc}
      */
-    Clients build(Object env);
+    public Config build() {
+        return config;
+    }
 }
