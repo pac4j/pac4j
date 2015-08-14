@@ -16,7 +16,7 @@
 package org.pac4j.core.client;
 
 /**
- * Will be removed, use {@link org.pac4j.core.config.ConfigFactory}.
+ * Will be removed, in favor of {@link org.pac4j.core.config.ConfigFactory}.
  *
  * @author Jerome Leleu
  * @since 1.7.0
