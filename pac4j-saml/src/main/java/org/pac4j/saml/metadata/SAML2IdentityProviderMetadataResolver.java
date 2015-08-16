@@ -56,7 +56,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 }
                 resource = ResourceHelper.of(new ClassPathResource(path));
             } else if (this.idpMetadataPath.startsWith("file:")) {
-                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
+                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath.substring(5)));
             } else if (this.idpMetadataPath.startsWith("http")) {
                 resource = ResourceHelper.of(new UrlResource(this.idpMetadataPath));
             }
