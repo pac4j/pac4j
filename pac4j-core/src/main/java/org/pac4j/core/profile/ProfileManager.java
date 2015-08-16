@@ -34,18 +34,15 @@ public class ProfileManager<U extends UserProfile> {
     }
 
     /**
-     * Retrieve the current user profile.
+     * Retrieve the current user profile (from request first and then from the session if not found and requested).
      *
      * @param readFromSession if the user profile must be read from session
      * @return the user profile
      */
     public U get(final boolean readFromSession) {
-        U profile = null;
-        if (readFromSession) {
+        U profile = (U) this.context.getRequestAttribute(Pac4jConstants.USER_PROFILE);
+        if (profile == null && readFromSession) {
             profile = (U) this.context.getSessionAttribute(Pac4jConstants.USER_PROFILE);
-        }
-        if (profile == null) {
-            profile = (U) this.context.getRequestAttribute(Pac4jConstants.USER_PROFILE);
         }
         return profile;
     }
