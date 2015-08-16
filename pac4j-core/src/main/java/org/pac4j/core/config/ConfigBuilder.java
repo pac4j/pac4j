@@ -16,33 +16,28 @@
 package org.pac4j.core.config;
 
 import org.pac4j.core.exception.TechnicalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * One instance of the configuration. Useful in implementations where, for any reason,
- * the configuration must be shared across several elements.
+ * To build a configuration from a factory.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ConfigInstance {
+public final class ConfigBuilder {
 
-    protected static Config config = new Config();
+    private final static Logger logger = LoggerFactory.getLogger(ConfigBuilder.class);
 
-    public synchronized static void build(final String factoryName) {
+    public synchronized static Config build(final String factoryName) {
         try {
+            logger.info("Build the configuration from factory: {}", factoryName);
             final Class<ConfigFactory> clazz = (Class<ConfigFactory>) Class.forName(factoryName);
             final ConfigFactory factory = clazz.newInstance();
-            ConfigInstance.config = factory.build();
+            return factory.build();
         } catch (final Exception e) {
+            logger.error("Cannot build configuration", e);
             throw new TechnicalException(e);
         }
-    }
-
-    public static Config getConfig() {
-        return config;
-    }
-
-    public static void setConfig(Config config) {
-        ConfigInstance.config = config;
     }
 }
