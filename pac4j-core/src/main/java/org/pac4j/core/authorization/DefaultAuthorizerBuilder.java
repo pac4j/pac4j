@@ -25,11 +25,11 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultAuthorizerBuilder {
+public final class DefaultAuthorizerBuilder {
 
     private static final Authorizer DEFAULT_AUTHORIZER = new IsAuthenticatedAuthorizer();
 
-    private static final String SEPARATOR = ",";
+    public static final String ROLE_SEPARATOR = ",";
 
     public static Authorizer build(final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers,
                                    final String requireAnyRole, final String requireAllRoles) {
@@ -37,20 +37,22 @@ public class DefaultAuthorizerBuilder {
         if (authorizer != null) {
             return authorizer;
         }
-        // we have an authorizer name and a map of authorizers
-        if (CommonHelper.isNotBlank(authorizerName) && authorizers != null) {
+        // we have an authorizer name
+        if (CommonHelper.isNotBlank(authorizerName)) {
+            // we must have authorizers
+            CommonHelper.assertNotNull("authorizers", authorizers);
             final Authorizer result = authorizers.get(authorizerName);
-            if (result != null) {
-                return result;
-            }
+            // we must have an authorizer defined for this name
+            CommonHelper.assertNotNull("authorizers['" + authorizerName + "']", result);
+            return result;
         }
         // we have a requireAnyRole value
         if (CommonHelper.isNotBlank(requireAnyRole)) {
-            return new RequireAnyRoleAuthorizer(requireAnyRole.split(SEPARATOR));
+            return new RequireAnyRoleAuthorizer(requireAnyRole.split(ROLE_SEPARATOR));
         }
         // we have a requireAllRoles value
         if (CommonHelper.isNotBlank(requireAllRoles)) {
-            return new RequireAllRolesAuthorizer(requireAllRoles.split(SEPARATOR));
+            return new RequireAllRolesAuthorizer(requireAllRoles.split(ROLE_SEPARATOR));
         }
         return DEFAULT_AUTHORIZER;
     }
