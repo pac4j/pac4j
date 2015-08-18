@@ -47,4 +47,8 @@ public class RequireAllRolesAuthorizer<U extends UserProfile> implements Authori
         }
         return true;
     }
+
+    public String[] getExpectedRoles() {
+        return expectedRoles;
+    }
 }
