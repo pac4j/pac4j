@@ -13,22 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.config;
 
 /**
- * Will be removed, in favor of {@link org.pac4j.core.config.ConfigFactory}.
+ * A singleton of the configuration. Useful in implementations where the configuration must be shared
+ * and no dependency injection framework is available.
  *
  * @author Jerome Leleu
- * @since 1.7.0
+ * @since 1.8.0
  */
-@Deprecated
-public interface ClientsFactory {
+public final class ConfigSingleton {
 
-    /**
-     * Build clients from env.
-     *
-     * @param env some current initialization environment.
-     * @return the clients.
-     */
-    Clients build(Object env);
+    private static Config config = new Config();
+
+    public static Config getConfig() {
+        return config;
+    }
+
+    public static void setConfig(Config config) {
+        ConfigSingleton.config = config;
+    }
 }

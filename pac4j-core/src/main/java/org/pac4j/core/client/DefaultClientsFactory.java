@@ -21,13 +21,13 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * A concrete factory to build clients meant to be initialized by dependency
- * injection.
+ * Will be removed, in favor of {@link org.pac4j.core.config.DefaultConfigFactory}.
  * 
  * @author Daniel Hankins
  * @since 1.8.0
  *
  */
+@Deprecated
 public class DefaultClientsFactory implements ClientsFactory {
 
     /**

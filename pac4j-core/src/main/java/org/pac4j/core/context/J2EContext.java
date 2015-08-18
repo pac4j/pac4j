@@ -94,6 +94,13 @@ public class J2EContext implements WebContext {
     /**
      * {@inheritDoc}
      */
+    public void invalidateSession() {
+        this.request.getSession().invalidate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String getRequestMethod() {
         return this.request.getMethod();
     }
@@ -104,14 +111,18 @@ public class J2EContext implements WebContext {
     public String getRemoteAddr() { return this.request.getRemoteAddr(); }
 
     /**
-     * {@inheritDoc}
+     * Return the HTTP request.
+     *
+     * @return the HTTP request
      */
     public HttpServletRequest getRequest() {
         return this.request;
     }
 
     /**
-     * {@inheritDoc}
+     * Return the HTTP response.
+     *
+     * @return the HTTP response
      */
     public HttpServletResponse getResponse() {
         return this.response;
@@ -173,6 +184,9 @@ public class J2EContext implements WebContext {
         return this.request.getScheme();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getFullRequestURL() {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();

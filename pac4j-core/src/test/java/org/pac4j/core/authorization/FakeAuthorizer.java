@@ -19,36 +19,14 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * Checks an access if the user profile has any of the roles.
+ * Fake authorizer (never authorizerd).
  *
- * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyRoleAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public class FakeAuthorizer implements Authorizer {
 
-    private final String[] expectedRoles;
-
-    public RequireAnyRoleAuthorizer(final String[] expectedRoles) {
-        this.expectedRoles = expectedRoles;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAuthorized(WebContext context, U profile) {
-        if (expectedRoles == null || expectedRoles.length == 0) {
-            return true;
-        }
-        for (final String role : expectedRoles) {
-            if (profile.getRoles().contains(role)) {
-                return true;
-            }
-        }
+    public boolean isAuthorized(final WebContext context, final UserProfile profile) {
         return false;
-    }
-
-    public String[] getExpectedRoles() {
-        return expectedRoles;
     }
 }

@@ -20,11 +20,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * This implementation uses the J2E request.
+ * This partial J2E request context is not used by any implementation. It might be removed in the future.
  *
  * @author Jerome Leleu
  * @since 1.4.0
  */
+@Deprecated
 public class J2ERequestContext extends BaseResponseContext {
 
     private final HttpServletRequest request;
@@ -79,9 +80,14 @@ public class J2ERequestContext extends BaseResponseContext {
     }
 
     /**
-     * Return the request method : GET, POST...
-     *
-     * @return the request method
+     * {@inheritDoc}
+     */
+    public void invalidateSession() {
+        this.request.getSession().invalidate();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public String getRequestMethod() {
         return this.request.getMethod();
@@ -102,32 +108,29 @@ public class J2ERequestContext extends BaseResponseContext {
     }
 
     /**
-     * Return the server name.
-     *
-     * @return the server name
+     * {@inheritDoc}
      */
     public String getServerName() {
         return this.request.getServerName();
     }
 
     /**
-     * Return the server port.
-     *
-     * @return the server port
+     * {@inheritDoc}
      */
     public int getServerPort() {
         return this.request.getServerPort();
     }
 
     /**
-     * Return the scheme.
-     *
-     * @return the scheme
+     * {@inheritDoc}
      */
     public String getScheme() {
         return this.request.getScheme();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getFullRequestURL() {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();
@@ -137,5 +140,4 @@ public class J2ERequestContext extends BaseResponseContext {
             return requestURL.append('?').append(queryString).toString();
         }
     }
-
 }
