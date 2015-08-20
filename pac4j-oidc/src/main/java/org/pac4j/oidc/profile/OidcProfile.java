@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
  * <p>It is returned by the {@link OidcClient}.</p>
- * 
+ *
  * @author Michael Remond
  * @version 1.7.0
  */
@@ -79,6 +79,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         super.writeExternal(out);
         final BearerAccessTokenBean bean = BearerAccessTokenBean.toBean(this.accessToken);
         out.writeObject(bean);
+        out.writeObject(this.idTokenString);
     }
 
     @Override
@@ -86,6 +87,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         super.readExternal(in);
         final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
         this.accessToken = BearerAccessTokenBean.fromBean(bean);
+        this.idTokenString = (String) in.readObject();
     }
 
     private static class BearerAccessTokenBean implements Serializable {
