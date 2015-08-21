@@ -16,6 +16,8 @@
 
 package org.pac4j.oidc.profile;
 
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import org.pac4j.core.profile.CommonProfile;
@@ -26,12 +28,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.List;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
  * <p>It is returned by the {@link OidcClient}.</p>
- * 
+ *
  * @author Michael Remond
  * @version 1.7.0
  */
@@ -40,6 +43,8 @@ public class OidcProfile extends CommonProfile implements Externalizable {
     private static final long serialVersionUID = -52855988661742374L;
 
     private BearerAccessToken accessToken;
+    private String idTokenString;
+    private JWT idToken;
 
     public OidcProfile() {
     }
@@ -52,12 +57,29 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         return this.accessToken;
     }
 
+    public String getIdTokenString() {
+        return idTokenString;
+    }
+
+    public void setIdTokenString(String idTokenString) {
+        this.idTokenString = idTokenString;
+    }
+
+    public JWT getIdToken() throws ParseException {
+        if (this.idToken == null && this.idTokenString != null) {
+            this.idToken = JWTParser.parse(this.idTokenString);
+        }
+
+        return this.idToken;
+    }
+
 
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         super.writeExternal(out);
         final BearerAccessTokenBean bean = BearerAccessTokenBean.toBean(this.accessToken);
         out.writeObject(bean);
+        out.writeObject(this.idTokenString);
     }
 
     @Override
@@ -65,6 +87,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         super.readExternal(in);
         final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
         this.accessToken = BearerAccessTokenBean.fromBean(bean);
+        this.idTokenString = (String) in.readObject();
     }
 
     private static class BearerAccessTokenBean implements Serializable {

@@ -326,6 +326,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             // Return profile with Claims Set, User Info and Access Token
             OidcProfile profile = new OidcProfile(accessToken);
             profile.setId(claimsSet.getSubject());
+            profile.setIdTokenString(tokenSuccessResponse.getIDTokenString());
             profile.addAttributes(claimsSet.getAllClaims());
             profile.addAttributes(userInfo.toJWTClaimsSet().getAllClaims());
 
