@@ -23,12 +23,12 @@ import junit.framework.TestCase;
 import org.pac4j.core.util.TestsConstants;
 
 /**
- * This class tests the {@link ProfileHelper} class for the appropriate profile.
+ * This abstract class is meant to test the {@link ProfileHelper} class for building the appropriate profile.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class TestProfileHelper extends TestCase implements TestsConstants {
+public abstract class TestCaseProfileHelper extends TestCase implements TestsConstants {
     
     protected static final Map<String, Object> EMPTY_MAP = new HashMap<String, Object>();
     

@@ -17,6 +17,7 @@ package org.pac4j.cas.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.TestCaseProfileHelper;
 
 /**
  * This class tests the {@link ProfileHelper} class for the {@link CasProfile}.
@@ -24,7 +25,7 @@ import org.pac4j.core.profile.ProfileHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class TestCasProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+public final class TestCasProfileHelper extends TestCaseProfileHelper {
     
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {
