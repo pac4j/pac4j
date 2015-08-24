@@ -29,7 +29,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import org.apache.commons.lang.NotImplementedException;
 import org.junit.Test;
 import org.pac4j.core.client.ClientIT;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -74,8 +74,8 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected final Mechanism getMechanism() {
-        return Mechanism.SAML_PROTOCOL;
+    protected final ClientType getClientType() {
+        return ClientType.SAML_PROTOCOL;
     }
 
     @Override

@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.indirect;
 
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -105,7 +105,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.BASICAUTH_MECHANISM;
+    public ClientType getClientType() {
+        return ClientType.BASICAUTH_BASED;
     }
 }

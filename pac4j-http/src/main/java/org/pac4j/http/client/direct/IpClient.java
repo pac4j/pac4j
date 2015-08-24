@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.extractor.IpExtractor;
@@ -53,7 +53,7 @@ public class IpClient extends DirectHttpClient<TokenCredentials> {
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.IP_MECHANISM;
+    public ClientType getClientType() {
+        return ClientType.IP_BASED;
     }
 }

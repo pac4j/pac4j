@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -130,8 +130,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private Secret _secret;
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.OPENID_CONNECT_PROTOCOL;
+    public ClientType getClientType() {
+        return ClientType.OPENID_CONNECT_PROTOCOL;
     }
 
     public void setDiscoveryURI(final String discoveryURI) {

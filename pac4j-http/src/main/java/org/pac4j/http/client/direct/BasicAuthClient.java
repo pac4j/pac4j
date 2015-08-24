@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
@@ -57,7 +57,7 @@ public class BasicAuthClient extends DirectHttpClient<UsernamePasswordCredential
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.BASICAUTH_MECHANISM;
+    public ClientType getClientType() {
+        return ClientType.BASICAUTH_BASED;
     }
 }
