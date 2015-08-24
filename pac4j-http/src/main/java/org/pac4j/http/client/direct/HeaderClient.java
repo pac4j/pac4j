@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
@@ -77,7 +77,7 @@ public class HeaderClient extends DirectHttpClient<TokenCredentials> {
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.HEADER_MECHANISM;
+    public ClientType getClientType() {
+        return ClientType.HEADER_BASED;
     }
 }

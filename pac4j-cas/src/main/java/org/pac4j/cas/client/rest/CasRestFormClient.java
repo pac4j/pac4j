@@ -17,7 +17,7 @@
 
 package org.pac4j.cas.client.rest;
 
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.http.credentials.extractor.FormExtractor;
 
 /**
@@ -44,8 +44,8 @@ public class CasRestFormClient extends AbstractCasRestClient {
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.FORM_MECHANISM;
+    public ClientType getClientType() {
+        return ClientType.FORM_BASED;
     }
 
 }

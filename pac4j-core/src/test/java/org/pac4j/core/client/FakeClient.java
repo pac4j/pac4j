@@ -39,7 +39,7 @@ public class FakeClient extends IndirectClient<Credentials, CommonProfile> {
     }
 
     @Override
-    public Mechanism getMechanism() {
+    public ClientType getClientType() {
         throw new UnsupportedOperationException("Not implemneted yet");
     }
 

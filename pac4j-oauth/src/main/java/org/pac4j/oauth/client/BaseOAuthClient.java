@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
@@ -343,7 +343,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.OAUTH_PROTOCOL;
+    public ClientType getClientType() {
+        return ClientType.OAUTH_PROTOCOL;
     }
 }

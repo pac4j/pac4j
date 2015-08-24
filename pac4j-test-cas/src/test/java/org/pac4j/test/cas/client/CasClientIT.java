@@ -21,7 +21,7 @@ import org.pac4j.cas.client.CasClient.CasProtocol;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -122,7 +122,7 @@ public abstract class CasClientIT extends ClientIT {
     }
     
     @Override
-    protected Mechanism getMechanism() {
-        return Mechanism.CAS_PROTOCOL;
+    protected ClientType getClientType() {
+        return ClientType.CAS_PROTOCOL;
     }
 }

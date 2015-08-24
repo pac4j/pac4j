@@ -74,7 +74,7 @@ public class MockBaseClient<C extends Credentials> extends IndirectClient<C, Com
     }
     
     @Override
-    public Mechanism getMechanism() {
+    public ClientType getClientType() {
         return null;
     }
 }

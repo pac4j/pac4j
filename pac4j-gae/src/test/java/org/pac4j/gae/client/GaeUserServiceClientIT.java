@@ -16,7 +16,7 @@
 package org.pac4j.gae.client;
 
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.context.WebContext;
@@ -109,7 +109,7 @@ public class GaeUserServiceClientIT extends ClientIT implements TestsConstants {
     }
 
     @Override
-    protected Mechanism getMechanism() {
-        return Mechanism.GAE_MECHANISM;
+    protected ClientType getClientType() {
+        return ClientType.GAE_PROVIDER;
     }
 }

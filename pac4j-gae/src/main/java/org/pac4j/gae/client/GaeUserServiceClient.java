@@ -16,7 +16,7 @@
 package org.pac4j.gae.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -85,8 +85,8 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	}
 
 	@Override
-	public Mechanism getMechanism() {
-		return Mechanism.GAE_MECHANISM;
+	public ClientType getClientType() {
+		return ClientType.GAE_PROVIDER;
 	}
 
 	@Override

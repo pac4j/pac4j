@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.util.TestsHelper;
 
@@ -72,7 +72,7 @@ public abstract class OAuthClientIT extends ClientIT {
     }
     
     @Override
-    protected Mechanism getMechanism() {
-        return Mechanism.OAUTH_PROTOCOL;
+    protected ClientType getClientType() {
+        return ClientType.OAUTH_PROTOCOL;
     }
 }
