@@ -27,7 +27,7 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -297,8 +297,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    public final Mechanism getMechanism() {
-        return Mechanism.SAML_PROTOCOL;
+    public final ClientType getClientType() {
+        return ClientType.SAML_PROTOCOL;
     }
 
     public final String getIdentityProviderResolvedEntityId() {

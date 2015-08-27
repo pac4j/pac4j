@@ -16,24 +16,24 @@
 package org.pac4j.core.client;
 
 /**
- * This enum lists all available connection mechanism.
+ * This enum lists all available client types.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public enum Mechanism {
+public enum ClientType {
     // @formatter:off
     OAUTH_PROTOCOL,
     CAS_PROTOCOL,
     OPENID_PROTOCOL,
-    FORM_MECHANISM,
-    BASICAUTH_MECHANISM,
+    FORM_BASED,
+    BASICAUTH_BASED,
     SAML_PROTOCOL,
-    JANRAIN_MECHANISM,
-    GAE_MECHANISM,
+    JANRAIN_PROVIDER,
+    GAE_PROVIDER,
     OPENID_CONNECT_PROTOCOL,
-    HEADER_MECHANISM,
-    PARAMETER_MECHANISM,
-    IP_MECHANISM
+    HEADER_BASED,
+    PARAMETER_BASED,
+    IP_BASED
     // @formatter:on
 }

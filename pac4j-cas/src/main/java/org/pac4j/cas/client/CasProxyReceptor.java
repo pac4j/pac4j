@@ -25,7 +25,7 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -163,7 +163,7 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     }
     
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.CAS_PROTOCOL;
+    public ClientType getClientType() {
+        return ClientType.CAS_PROTOCOL;
     }
 }

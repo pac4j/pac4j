@@ -28,7 +28,7 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -193,7 +193,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.OPENID_PROTOCOL;
+    public ClientType getClientType() {
+        return ClientType.OPENID_PROTOCOL;
     }
 }

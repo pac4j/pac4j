@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.indirect;
 
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -164,7 +164,7 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.FORM_MECHANISM;
+    public ClientType getClientType() {
+        return ClientType.FORM_BASED;
     }
 }
