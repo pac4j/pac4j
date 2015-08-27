@@ -54,6 +54,9 @@ import java.util.Iterator;
 public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected final static String HTTP_PREFIX = "http";
+    protected final static String FILE_PREFIX = "file:";
+
     private final String idpMetadataPath;
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
@@ -75,13 +78,16 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                     path = "/" + path;
                 }
                 resource = ResourceHelper.of(new ClassPathResource(path));
-            }  else if (this.idpMetadataPath.startsWith("http")) {
+            }  else if (this.idpMetadataPath.startsWith(HTTP_PREFIX)) {
                 final UrlResource urlResource = new UrlResource(this.idpMetadataPath);
-                if (urlResource.getURL().getProtocol().equalsIgnoreCase("http")) {
+                if (urlResource.getURL().getProtocol().equalsIgnoreCase(HTTP_PREFIX)) {
                     logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]",
                             urlResource.getURL());
                 }
                 resource = ResourceHelper.of(urlResource);
+            // for backward compatibility
+            } else if (this.idpMetadataPath.startsWith(FILE_PREFIX)) {
+                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath.substring(FILE_PREFIX.length())));
             } else {
                 resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
             }
