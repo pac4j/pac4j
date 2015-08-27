@@ -17,6 +17,7 @@ package org.pac4j.gae.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.TestCaseProfileHelper;
 
 /**
  * This class tests the {@link ProfileHelper} class for the appengine client.
@@ -24,7 +25,7 @@ import org.pac4j.core.profile.ProfileHelper;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public final class TestGaeProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+public final class TestGaeProfileHelper extends TestCaseProfileHelper {
 
     
     @Override
