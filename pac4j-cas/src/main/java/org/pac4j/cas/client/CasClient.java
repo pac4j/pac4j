@@ -34,7 +34,7 @@ import org.pac4j.cas.logout.NoLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.Mechanism;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -345,7 +345,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    public Mechanism getMechanism() {
-        return Mechanism.CAS_PROTOCOL;
+    public ClientType getClientType() {
+        return ClientType.CAS_PROTOCOL;
     }
 }

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * <li>The cloning process is handled by the {@link #clone()} method, the {@link #newClient()} method must be implemented in sub-classes to
  * create a new instance</li>
  * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
- * <li>The {@link #getMechanism()} method returns the implemented {@link Mechanism} by the client.</li>
+ * <li>The {@link #getClientType()} method returns the implemented {@link ClientType} by the client.</li>
  * <li>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
  * the appropriate {@link AuthorizationGenerator}.</li>
  * </ul>
@@ -107,11 +107,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
 
     /**
-     * Return the implemented mechanism.
+     * Return the client type.
      * 
-     * @return the implemented mechanism
+     * @return the client type
      */
-    public abstract Mechanism getMechanism();
+    public abstract ClientType getClientType();
 
     @Override
     public String toString() {
