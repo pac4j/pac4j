@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-   <title>pac4j: the authentication solution for Java</title>
-   <meta name="description" content="pac4j, the Java authentication solution for CAS, OAuth, SAML, OpenID, HTTP protocols; Facebook, Twitter, Google, Yahoo, LinkedIn... providers; J2E, CAS, Shiro, Spring Security, Play, Ratpack frameworks">
-   <meta name="keywords" content="pac4j Java authentication CAS, OAuth, SAML, OpenID, HTTP, Facebook, Twitter, Google, Yahoo, LinkedIn, J2E, Shiro, Spring Security, Play, Ratpack">
-   <meta name="author" content="Jerome Leleu">
+   <title>pac4j: the security library for Java</title>
    <meta charset='utf-8'>
    <script src='http://html5slides.googlecode.com/svn/trunk/slides.js'></script>
    </head>
@@ -23,7 +20,7 @@
 </ul>
 </article>
 
-<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>authentication mechanisms (OAuth, CAS, OpenID, HTTP, SAML...)</i>...</q>
+<article class='smaller'><q>One <i>Ring</i> to rule <i>them</i> all...<br /><br />One <i>client library (pac4j)</i> to rule all <i>authentication mechanisms (OAuth, CAS, OpenID, HTTP, SAML, LDAP, SQL...)</i></q>
 <div class='author'> J&eacute;r&ocirc;me Leleu ;-)</div></article>
 
 <article><h3>What kind of authentication mechanisms is supported by <strong>pac4j</strong> ?</h3>
@@ -32,7 +29,7 @@
   <li>Client protocol authentication (stateful, redirection back and forth to an identity provider for login):
    <ol>
     <li>from the client application, redirect the user to the "provider" for authentication (mostly HTTP 302)</li>
-    <li>after successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
+    <li>after a successful authentication, redirect back the user from the "provider" to the client application (HTTP 302) and get the user credentials</li>
     <li>with these credentials, get the profile of the authenticated user (direct call from the client application to the "provider").</li>
    </ol>
   </li>
@@ -41,13 +38,17 @@
 
 <article><h3>What authentication mechanisms are actually supported by <strong>pac4j</strong> ?</h3>
 <ul>
- <li><strong>OAuth</strong> (1.0 & 2.0): DropBox, Facebook, Github, Google, LinkedIn, Twitter, Windows live, WordPress, Yahoo...</li>
- <li><strong>CAS</strong>: protocol versions 1.0  & 2.0 / SAML ticket validation, proxy ticket validation, logout request and CAS proxyfication</li>
- <li><strong>HTTP</strong>: form & basic authentications</li>
+ <li><strong>OAuth</strong> (1.0 & 2.0): Facebook, Twitter, Google, Yahoo...</li>
+ <li><strong>CAS</strong>: v1.0 / 2.0 / 3.0</li>
+ <li><strong>HTTP</strong>: form, basic auth, IP, request parameter</li>
  <li><strong>OpenID</strong>: Google</li>
  <li><strong>SAML</strong> 2.0</li>
  <li><strong>Google App Engine</strong> authentication service</li>
  <li><strong>OpenID Connect</strong>: v1.0</li>
+ <li><strong>LDAP</strong></li>
+ <li><strong>JWT</strong></li>
+ <li><strong>SQL database</strong></li>
+ <li><strong>MongoDB</strong></li>
 </ul>
 </article>
 
@@ -62,6 +63,7 @@
  <li>the <a target="_blank" href="http://vertx.io/">Vertx</a> framework</li>
  <li>the <a target="_blank" href="http://undertow.io/">Undertow</a> web server</li>
  <li>the <a target="_blank" href="http://sparkjava.com/">Sparkjava</a> framework</li>
+ <li>the <a target="_blank" href="http://jooby.org/">Jooby</a> micro web framework</li>
 </ul>
 </article>
 
@@ -73,10 +75,10 @@
 
 <article><h3><strong>pac4j</strong> details</h3>
 <table>
- <tr><td>Module</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http, pac4j-saml, pac4j-gae, pac4j-oidc</td></tr>
+ <tr><td>Modules</td><td>pac4j-core, pac4j-oauth, pac4j-cas, pac4j-openid, pac4j-http, pac4j-saml, pac4j-gae, pac4j-oidc, pac4j-jwt, pac4j-ldap, pac4j-sql, pac4j-mongo</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/pac4j/pac4j">https://github.com/pac4j/pac4j</a></td></tr>
  <tr><td>Latest release</td><td>1.7.0</td></tr>
- <tr><td>Latest snapshot</td><td>1.7.1-SNAPSHOT</td></tr>
+ <tr><td>Latest snapshot</td><td>1.8.0-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -87,8 +89,8 @@
  <tr><td>Module</td><td>j2e-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j">https://github.com/pac4j/j2e-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/j2e-pac4j-demo">j2e-pac4j-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.1.0</td></tr>
- <tr><td>Latest snapshot</td><td>1.1.1-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.1.1</td></tr>
+ <tr><td>Latest snapshot</td><td>1.2.0-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/j2e-pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -99,8 +101,8 @@
  <tr><td>Module</td><td>cas-server-support-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j">https://github.com/Jasig/cas/tree/master/cas-server-support-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/leleuj/cas-pac4j-oauth-demo">cas-pac4j-oauth-demo</a></td></tr>
- <tr><td>Latest release</td><td>4.0.0</td></tr>
- <tr><td>Latest snapshot</td><td>4.1.0-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>4.0.4</td></tr>
+ <tr><td>Latest snapshot</td><td>4.1.0-RC2-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/jasig/cas/">Sonatype snapshots repository</a></td></tr>
 </table>
 </article>
@@ -110,8 +112,8 @@
  <tr><td>Modules</td><td>play-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/pac4j/play-pac4j">https://github.com/pac4j/play-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/play-pac4j-java-demo">play-pac4j-java-demo</a>, <a href="https://github.com/pac4j/play-pac4j-scala-demo">play-pac4j-scala-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.1.5 <i>(Play 2.0 & 2.1)</i><br />1.2.3 <i>(Play 2.2)</i><br />1.4.0 <i>(Play 2.3)</i></td></tr>
- <tr><td>Latest snapshot</td><td>1.1.6-SNAPSHOT <i>(Play 2.0 & 2.1)</i><br />1.2.4-SNAPSHOT <i>(Play 2.2)</i><br />1.4.1-SNAPSHOT <i>(Play 2.3)</i></td></tr>
+ <tr><td>Latest release</td><td>1.1.5 <i>(Play 2.0/1)</i> - 1.2.3 <i>(Play 2.2)</i><br />1.4.0 <i>(Play 2.3)</i> - 1.5.0 <i>(Play 2.4)</i></td></tr>
+ <tr><td>Latest snapshot</td><td>1.1.6-SNAPSHOT <i>(Play 2.0/1)</i> - 1.2.4-SNAPSHOT <i>(Play 2.2)</i><br />1.4.1-SNAPSHOT <i>(Play 2.3)</i> - 2.0.0-SNAPSHOT <i>(Play 2.4)</i></td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/play-pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -119,7 +121,7 @@
 
 <article><h3><strong>Shiro</strong> implementation based on <strong>pac4j</strong></h3>
 <table>
- <tr><td>Module</td><td>buji-pac4j</td></tr>
+ <tr><td>Modules</td><td>buji-pac4j-core, buji-pac4j-servlet</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/bujiio/buji-pac4j">https://github.com/bujiio/buji-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/buji-pac4j-demo">buji-pac4j-demo</a></td></tr>
  <tr><td>Latest release</td><td>1.3.1</td></tr>
@@ -146,10 +148,10 @@
  <tr><td>Module</td><td>ratpack-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j">https://github.com/ratpack/ratpack/tree/master/ratpack-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/ratpack-pac4j-demo">https://github.com/pac4j/ratpack-pac4j-demo</a></td></tr>
- <tr><td>Latest release</td><td>0.9.16</td></tr>
- <tr><td>Latest snapshot</td><td>0.9.17-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>0.9.19</td></tr>
+ <tr><td>Latest snapshot</td><td>0.9.20-SNAPSHOT</td></tr>
  <tr><td>Development version</td><td><a target="_blank" href="https://github.com/ratpack/ratpack/tree/master">Github source</a></td></tr>
- <tr><td>Documentation</td><td><a target="_blank" href="http://www.ratpack.io/manual/0.9.16/api/">Javadoc</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="http://www.ratpack.io/manual/0.9.19/api/">Javadoc</a></td></tr>
 </table>
 </article>
 
@@ -159,7 +161,7 @@
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/pac4j/vertx-pac4j">https://github.com/pac4j/vertx-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/vertx-pac4j-demo">https://github.com/pac4j/vertx-pac4j-demo</a></td></tr>
  <tr><td>Latest release</td><td>1.1.0</td></tr>
- <tr><td>Latest snapshot</td><td>1.1.1-SNAPSHOT</td></tr>
+ <tr><td>Latest snapshot</td><td>2.0.0-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/vertx-pac4j/index.html">Javadoc</a></td></tr>
 </table>
@@ -182,10 +184,22 @@
  <tr><td>Module</td><td>spark-pac4j</td></tr>
  <tr><td>Source</td><td><a target="_blank" href="https://github.com/pac4j/spark-pac4j">https://github.com/pac4j/spark-pac4j</a></td></tr>
  <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/spark-pac4j-demo">https://github.com/pac4j/spark-pac4j-demo</a></td></tr>
- <tr><td>Latest release</td><td>1.0.0</td></tr>
- <tr><td>Latest snapshot</td><td>1.0.1-SNAPSHOT</td></tr>
+ <tr><td>Latest release</td><td>1.0.3</td></tr>
+ <tr><td>Latest snapshot</td><td>1.0.4-SNAPSHOT</td></tr>
  <tr><td>Snapshots repository</td><td><a target="_blank" href="https://oss.sonatype.org/content/repositories/snapshots/org/pac4j/">Sonatype snapshots repository</a></td></tr>
  <tr><td>Documentation</td><td><a target="_blank" href="/apidocs/spark-pac4j/index.html">Javadoc</a></td></tr>
+</table>
+</article>
+
+<article><h3><strong>Jooby</strong> implementation based on <strong>pac4j</strong></h3>
+<table>
+ <tr><td>Module</td><td>jooby-pac4j</td></tr>
+ <tr><td>Source</td><td><a target="_blank" href="https://github.com/jooby-project/jooby">https://github.com/jooby-project/jooby</a></td></tr>
+ <tr><td>Demo</td><td><a target="_blank" href="https://github.com/pac4j/jooby-pac4j-demo">https://github.com/pac4j/jooby-pac4j-demo</a></td></tr>
+ <tr><td>Latest release</td><td>0.9.2</td></tr>
+ <tr><td>Latest snapshot</td><td>0.10.0-SNAPSHOT</td></tr>
+ <tr><td>Development version</td><td><a target="_blank" href="https://github.com/jooby-project/jooby">Github source</a></td></tr>
+ <tr><td>Documentation</td><td><a target="_blank" href="http://jooby.org/apidocs/">Javadoc</a></td></tr>
 </table>
 </article>
 

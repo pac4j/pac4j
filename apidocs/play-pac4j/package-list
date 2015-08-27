@@ -1,3 +1,5 @@
 org.pac4j.play
+org.pac4j.play.cas.logout
+org.pac4j.play.handler
 org.pac4j.play.java
-org.pac4j.play.scala
+org.pac4j.play.store

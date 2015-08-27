@@ -6,6 +6,7 @@ org.pac4j.cas.logout
 org.pac4j.cas.profile
 org.pac4j.core.authorization
 org.pac4j.core.client
+org.pac4j.core.config
 org.pac4j.core.context
 org.pac4j.core.credentials
 org.pac4j.core.exception
