@@ -17,6 +17,7 @@ package org.pac4j.oauth.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.TestCaseProfileHelper;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 /**
@@ -25,7 +26,7 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public final class TestOAuthProfileHelper extends org.pac4j.core.profile.TestProfileHelper {
+public final class TestOAuthProfileHelper extends TestCaseProfileHelper {
     
     public void testBuildProfileCasOAuthWrapperProfile() {
         assertNotNull(ProfileHelper.buildProfile("CasOAuthWrapperProfile" + "#" + STRING_ID, EMPTY_MAP));

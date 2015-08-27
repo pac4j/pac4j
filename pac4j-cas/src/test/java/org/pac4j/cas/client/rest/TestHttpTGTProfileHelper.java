@@ -1,6 +1,7 @@
 package org.pac4j.cas.client.rest;
 
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.TestCaseProfileHelper;
 
 /**
  * The {@link TestHttpTGTProfileHelper} is responsible for
@@ -8,7 +9,7 @@ import org.pac4j.core.profile.CommonProfile;
  *
  * @author Misagh Moayyed
  */
-public class TestHttpTGTProfileHelper extends org.pac4j.core.profile.TestProfileHelper  {
+public class TestHttpTGTProfileHelper extends TestCaseProfileHelper {
 
     @Override
     protected Class<? extends CommonProfile> getProfileClass() {

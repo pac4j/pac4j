@@ -30,13 +30,13 @@ import org.pac4j.core.profile.converter.AttributeConverter;
  */
 public class AttributesDefinition {
     
-    protected List<String> allAttributesNames = new ArrayList<String>();
+    protected List<String> allAttributesNames = new ArrayList<>();
     
-    protected List<String> principalAttributesNames = new ArrayList<String>();
+    protected List<String> principalAttributesNames = new ArrayList<>();
     
-    protected List<String> otherAttributesNames = new ArrayList<String>();
+    protected List<String> otherAttributesNames = new ArrayList<>();
     
-    protected Map<String, AttributeConverter<? extends Object>> attributesConverters = new HashMap<String, AttributeConverter<? extends Object>>();
+    protected Map<String, AttributeConverter<? extends Object>> attributesConverters = new HashMap<>();
     
     /**
      * Return all the attributes names.
@@ -94,8 +94,8 @@ public class AttributesDefinition {
     }
     
     /**
-     * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is ignored and null is
-     * returned.
+     * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is returned or <code>null</code>,
+     * depending on the {@link ProfileHelper#enforceProfileDefinition} setting.
      * 
      * @param name name of the attribute
      * @param value value of the attribute
@@ -106,7 +106,11 @@ public class AttributesDefinition {
         if (converter != null && value != null) {
             return converter.convert(value);
         } else {
-            return null;
+            if (ProfileHelper.isEnforceProfileDefinition()) {
+                return null;
+            } else {
+                return value;
+            }
         }
     }
 }
