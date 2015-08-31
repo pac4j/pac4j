@@ -16,6 +16,7 @@
 package org.pac4j.core.client;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.pac4j.core.context.WebContext;
@@ -73,28 +74,32 @@ public final class Clients extends InitializableObject {
     }
 
     /**
-     * Initialize all clients by computing callback urls.
+     * Initialize all clients by computing callback urls if necessary.
      */
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("clients", this.clients);
-        if (CommonHelper.isNotBlank(this.callbackUrl)) {
-            for (final Client client : this.clients) {
-                if (client instanceof IndirectClient) {
-                    final IndirectClient indirectClient = (IndirectClient) client;
-                    String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                    // no callback url defined for the client -> set it with the group callback url
-                    if (indirectClientCallbackUrl == null) {
-                        indirectClient.setCallbackUrl(this.callbackUrl);
-                        indirectClientCallbackUrl = this.callbackUrl;
-                    }
-                    // if the "clientName" parameter is not already part of the callback url, add it unless the client
-                    // has indicated to not include it.
-                    if (indirectClient.isIncludeClientNameInCallbackUrl() &&
-                            indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-                        indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
-                                indirectClient.getName()));
-                    }
+        final HashSet<String> names = new HashSet<>();
+        for (final Client client : this.clients) {
+            final String name = client.getName();
+            if (names.contains(name)) {
+                throw new TechnicalException("Duplicate name in clients: " + name);
+            }
+            names.add(name);
+            if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
+                final IndirectClient indirectClient = (IndirectClient) client;
+                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+                // no callback url defined for the client -> set it with the group callback url
+                if (indirectClientCallbackUrl == null) {
+                    indirectClient.setCallbackUrl(this.callbackUrl);
+                    indirectClientCallbackUrl = this.callbackUrl;
+                }
+                // if the "clientName" parameter is not already part of the callback url, add it unless the client
+                // has indicated to not include it.
+                if (indirectClient.isIncludeClientNameInCallbackUrl() &&
+                        indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
+                            name));
                 }
             }
         }
