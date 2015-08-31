@@ -94,7 +94,7 @@ public final class Clients extends InitializableObject {
                     indirectClient.setCallbackUrl(this.callbackUrl);
                     indirectClientCallbackUrl = this.callbackUrl;
                 }
-                // if the "clientName" parameter is not already part of the callback url, add it unless the client
+                // if the "client_name" parameter is not already part of the callback url, add it unless the client
                 // has indicated to not include it.
                 if (indirectClient.isIncludeClientNameInCallbackUrl() &&
                         indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
