@@ -90,16 +90,13 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
 
         final MongoDatabase db = mongoClient.getDatabase(usersDatabase);
         final MongoCollection<Document> collection = db.getCollection(usersCollection);
-        final MongoCursor<Document> cursor = collection.find(eq(usernameAttribute, username)).iterator();
         final List<Document> users = new ArrayList<>();
-        try {
+        try (final MongoCursor<Document> cursor = collection.find(eq(usernameAttribute, username)).iterator()) {
             int i= 0;
             while (cursor.hasNext() && i <= 2) {
                 users.add(cursor.next());
                 i++;
             }
-        } finally {
-            cursor.close();
         }
 
         if (users.size() == 0) {
