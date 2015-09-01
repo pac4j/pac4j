@@ -19,6 +19,7 @@ import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
  *
  * @author Jerome Leleu
  * @since 1.4.0
+ * @deprecated
  */
 @Deprecated
 public class BasicAuthClient extends IndirectBasicAuthClient {
