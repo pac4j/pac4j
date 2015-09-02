@@ -27,7 +27,7 @@ public class TokenCredentials extends HttpCredentials {
 
     private static final long serialVersionUID = -4270718634364817595L;
 
-    private final String token;
+    private String token;
 
     public TokenCredentials(String token, final String clientName) {
         this.token = token;
@@ -41,5 +41,12 @@ public class TokenCredentials extends HttpCredentials {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "token", this.token, "clientName", getClientName());
+    }
+
+    @Override
+    public void clear() {
+        this.token = null;
+        this.setClientName(null);
+        this.setUserProfile(null);
     }
 }

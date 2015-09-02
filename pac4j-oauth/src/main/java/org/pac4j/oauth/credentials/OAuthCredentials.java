@@ -29,11 +29,11 @@ public class OAuthCredentials extends Credentials {
     
     private static final long serialVersionUID = -7705033802712382951L;
     
-    private final Token requestToken;
+    private Token requestToken;
     
-    private final String token;
+    private String token;
     
-    private final String verifier;
+    private String verifier;
     
     public OAuthCredentials(final String verifier, final String clientName) {
         this.requestToken = null;
@@ -65,5 +65,13 @@ public class OAuthCredentials extends Credentials {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "requestToken", this.requestToken, "token", this.token,
                                      "verifier", this.verifier, "clientName", getClientName());
+    }
+
+    @Override
+    public void clear() {
+        this.token = null;
+        this.requestToken = null;
+        this.verifier = null;
+        this.setClientName(null);
     }
 }

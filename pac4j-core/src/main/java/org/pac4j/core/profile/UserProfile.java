@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pac4j.core.Clearable;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile implements Serializable, Externalizable {
+public class UserProfile implements Serializable, Externalizable, Clearable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
@@ -260,5 +261,10 @@ public class UserProfile implements Serializable, Externalizable {
         this.isRemembered = (boolean) in.readBoolean();
         this.roles = (List) in.readObject();
         this.permissions = (List) in.readObject();
+    }
+
+    @Override
+    public void clear() {
+        // No-op. Allow subtypes to specify which state should be cleared out.
     }
 }
