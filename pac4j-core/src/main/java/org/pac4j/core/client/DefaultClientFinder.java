@@ -31,7 +31,7 @@ public final class DefaultClientFinder {
 
     public static final String CLIENT_NAME_SEPARATOR = ",";
 
-    public static Client find(final Clients clients, final WebContext context, final String clientName) {
+    public Client find(final Clients clients, final WebContext context, final String clientName) {
         // no name -> no client
         if (CommonHelper.isBlank(clientName)) {
             return null;

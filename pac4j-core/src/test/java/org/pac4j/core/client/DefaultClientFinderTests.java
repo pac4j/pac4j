@@ -31,9 +31,11 @@ import static org.junit.Assert.*;
  */
 public class DefaultClientFinderTests implements TestsConstants {
 
+    private final DefaultClientFinder finder = new DefaultClientFinder();
+
     @Test
     public void testBlankClientName() {
-        assertNull(DefaultClientFinder.find(new Clients(), MockWebContext.create(), "  "));
+        assertNull(finder.find(new Clients(), MockWebContext.create(), "  "));
     }
 
     @Test
@@ -41,7 +43,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client = new MockBaseClient(NAME);
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client, DefaultClientFinder.find(clients, context, NAME));
+        assertEquals(client, finder.find(clients, context, NAME));
     }
 
     @Test(expected = TechnicalException.class)
@@ -49,7 +51,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client = new MockBaseClient(NAME);
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, FAKE_VALUE);
-        DefaultClientFinder.find(clients, context, NAME);
+        finder.find(clients, context, NAME);
     }
 
     @Test
@@ -57,7 +59,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client = new MockBaseClient(NAME);
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client, DefaultClientFinder.find(clients, context, FAKE_VALUE + "," + NAME));
+        assertEquals(client, finder.find(clients, context, FAKE_VALUE + "," + NAME));
     }
 
     @Test
@@ -66,7 +68,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client2, DefaultClientFinder.find(clients, context, CLIENT_NAME));
+        assertEquals(client2, finder.find(clients, context, CLIENT_NAME));
     }
 
     @Test
@@ -75,7 +77,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client2, DefaultClientFinder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE));
+        assertEquals(client2, finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE));
     }
 
     @Test
@@ -84,7 +86,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        assertEquals(client2, DefaultClientFinder.find(clients, context, CLIENT_NAME));
+        assertEquals(client2, finder.find(clients, context, CLIENT_NAME));
     }
 
     @Test(expected = TechnicalException.class)
@@ -93,7 +95,7 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        DefaultClientFinder.find(clients, context, FAKE_VALUE);
+        finder.find(clients, context, FAKE_VALUE);
     }
 
     @Test
@@ -102,6 +104,6 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        assertEquals(client2, DefaultClientFinder.find(clients, context, CLIENT_NAME + "," + NAME));
+        assertEquals(client2, finder.find(clients, context, CLIENT_NAME + "," + NAME));
     }
 }
