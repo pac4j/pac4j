@@ -56,7 +56,7 @@ public class StravaClientIT extends OAuthClientIT {
             final J2EContext context) throws Exception {
         final BaseClient baseClient = (BaseClient) client;
         // force immediate redirection for tests
-        baseClient.redirect(context, true, false);
+        baseClient.redirect(context, true);
 
         MockHttpServletResponse response = (MockHttpServletResponse) context.getResponse();
         final String redirectionUrl = response.getHeader(HttpConstants.LOCATION_HEADER);

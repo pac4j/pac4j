@@ -18,6 +18,7 @@ package org.pac4j.core.client;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
@@ -45,7 +46,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context, false, false);
+        client.redirect(context, false);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
         final Credentials credentials = client.getCredentials(context);
@@ -56,7 +57,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context, false, false);
+        client.redirect(context, false);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(CommonHelper.addParameter(CALLBACK_URL, IndirectClient.NEEDS_CLIENT_REDIRECTION_PARAMETER, "true"),
                 redirectionUrl);
@@ -75,7 +76,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        client.redirect(context, true, false);
+        client.redirect(context, true);
         final String redirectionUrl = context.getResponseLocation();
         assertEquals(LOGIN_URL, redirectionUrl);
     }
@@ -150,9 +151,9 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
     public void testAjaxRequest() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create();
+        final MockWebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.AJAX_HEADER_NAME, Pac4jConstants.AJAX_HEADER_VALUE);
         try {
-            client.redirect(context, false, true);
+            client.redirect(context, false);
             fail("should fail");
         } catch (RequiresHttpAction e) {
             assertEquals(401, e.getCode());
@@ -166,7 +167,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setSessionAttribute(client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         try {
-            client.redirect(context, true, false);
+            client.redirect(context, true);
             fail("should fail");
         } catch (RequiresHttpAction e) {
             assertEquals(403, e.getCode());

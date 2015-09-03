@@ -78,7 +78,7 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
     public void testRedirectionUrl() throws RequiresHttpAction {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
-        basicAuthClient.redirect(context, false, false);
+        basicAuthClient.redirect(context, false);
         assertEquals(CALLBACK_URL, context.getResponseLocation());
     }
 
