@@ -13,24 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.http;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
 
 /**
- * <p>This class is the default direct (stateless) implementation of an authentication client (whatever the protocol).
- * In that case, redirecting does not have any sense.</p>
+ * Compute if a HTTP request is an AJAX one.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
+public interface AjaxRequestResolver {
 
-    @Override
-    public final void redirect(final WebContext context, final boolean requiresAuthentication) {
-        throw new TechnicalException("direct clients do not support redirections");
-    }
+    /**
+     * Whether it is an AJAX request.
+     *
+     * @param context the web context
+     * @return whether it is an AJAX request
+     */
+    boolean isAjax(WebContext context);
 }

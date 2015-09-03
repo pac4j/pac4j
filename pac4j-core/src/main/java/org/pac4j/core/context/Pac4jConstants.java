@@ -42,8 +42,21 @@ public interface Pac4jConstants {
     @Deprecated
     String STATELESS = "stateless";
 
-    /* Is Ajax configuration parameter */
+    /**
+     * This ajax configuration parameter is no longer necessary
+     * as AJAX requests are now automatically detected.
+     */
+    @Deprecated
     String IS_AJAX = "isAjax";
+
+    /* The AJAX header value. */
+    String AJAX_HEADER_VALUE = "XMLHttpRequest";
+
+    /* The AJAX header name. */
+    String AJAX_HEADER_NAME = "X-Requested-With";
+
+    /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
+    String IS_AJAX_REQUEST = "is_ajax_request";
 
     /* RequireAnyRole configuration parameter */
     String REQUIRE_ANY_ROLE = "requireAnyRole";
