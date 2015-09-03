@@ -31,14 +31,16 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  */
 public class IpClient extends DirectHttpClient<TokenCredentials> {
 
-    public IpClient() {
-        this(null, null);
+    public IpClient() { }
+
+    public IpClient(final TokenAuthenticator tokenAuthenticator) {
+        setAuthenticator(tokenAuthenticator);
     }
 
     public IpClient(final TokenAuthenticator tokenAuthenticator,
-                    final ProfileCreator profilePopulator) {
+                    final ProfileCreator profileCreator) {
         setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profilePopulator);
+        setProfileCreator(profileCreator);
     }
 
     @Override

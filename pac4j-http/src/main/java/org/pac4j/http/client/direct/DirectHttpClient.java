@@ -22,6 +22,7 @@ import org.pac4j.http.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.http.credentials.extractor.Extractor;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.http.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.HttpProfile;
@@ -41,7 +42,7 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
 
     private Authenticator<C> authenticator;
 
-    private ProfileCreator<C, HttpProfile> profileCreator;
+    private ProfileCreator<C, HttpProfile> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     @Override
     protected void internalInit() {

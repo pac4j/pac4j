@@ -50,10 +50,14 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
         this(null, null);
     }
 
-    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                                   final ProfileCreator profilePopulator) {
+    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profilePopulator);
+    }
+
+    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+                                   final ProfileCreator profileCreator) {
+        setAuthenticator(usernamePasswordAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     @Override

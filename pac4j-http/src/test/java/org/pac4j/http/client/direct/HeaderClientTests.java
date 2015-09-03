@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
@@ -26,14 +26,17 @@ import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.profile.creator.test.SimpleTestTokenProfileCreator;
 
+import static org.junit.Assert.*;
+
 /**
  * This class tests the {@link HeaderClient} class.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class HeaderClientTests extends TestCase implements TestsConstants {
+public final class HeaderClientTests implements TestsConstants {
 
+    @Test
     public void testClone() {
         final HeaderClient oldClient = new HeaderClient();
         oldClient.setName(TYPE);
@@ -50,21 +53,32 @@ public final class HeaderClientTests extends TestCase implements TestsConstants 
         assertEquals(oldClient.getHeaderName(), client.getHeaderName());
     }
 
+    @Test
     public void testMissingTokendAuthenticator() {
         final HeaderClient client = new HeaderClient(null, new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
+    @Test
     public void testMissingProfileCreator() {
         final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 
+    @Test
+    public void testHasDefaultProfileCreator() {
+        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator());
+        client.setHeaderName(HEADER_NAME);
+        client.init();
+    }
+
+    @Test
     public void testMissingHeaderName() {
         final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "headerName cannot be blank");
     }
 
+    @Test
     public void testAuthentication() throws RequiresHttpAction {
         final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         client.setHeaderName(HEADER_NAME);
