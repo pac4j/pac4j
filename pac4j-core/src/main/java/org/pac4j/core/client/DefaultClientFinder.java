@@ -27,7 +27,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultClientFinder {
+public class DefaultClientFinder implements ClientFinder {
 
     public static final String CLIENT_NAME_SEPARATOR = ",";
 
