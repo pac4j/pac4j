@@ -33,23 +33,21 @@ public final class DefaultAuthorizerBuilderTests {
 
     private final static String NAME = "fakeAuth";
 
-    private final static String ROLES = "role1" + DefaultAuthorizerBuilder.ROLE_SEPARATOR + "role2";
-
     @Test
     public void testProvidedAuthorizer() {
         final FakeAuthorizer authorizer = new FakeAuthorizer();
-        final Authorizer result = DefaultAuthorizerBuilder.build(authorizer, null, null, null, null);
+        final Authorizer result = DefaultAuthorizerBuilder.build(authorizer, null, null);
         assertEquals(authorizer, result);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNameNoAuthorizers() {
-        final Authorizer result = DefaultAuthorizerBuilder.build(null, NAME, null, null, null);
+        final Authorizer result = DefaultAuthorizerBuilder.build(null, NAME, null);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNameEmptyAuthorizers() {
-        final Authorizer result = DefaultAuthorizerBuilder.build(null, NAME, new HashMap<String, Authorizer>(), null, null);
+        final Authorizer result = DefaultAuthorizerBuilder.build(null, NAME, new HashMap<String, Authorizer>());
     }
 
     @Test
@@ -57,29 +55,13 @@ public final class DefaultAuthorizerBuilderTests {
         final FakeAuthorizer authorizer = new FakeAuthorizer();
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, authorizer);
-        final Authorizer result = DefaultAuthorizerBuilder.build(null, NAME, authorizers, null, null);
+        final Authorizer result = DefaultAuthorizerBuilder.build(null, NAME, authorizers);
         assertEquals(authorizer, result);
     }
 
     @Test
-    public void testRequireAnyRole() {
-        final Authorizer result = DefaultAuthorizerBuilder.build(null, null, null, ROLES, null);
-        assertTrue(result instanceof RequireAnyRoleAuthorizer);
-        final RequireAnyRoleAuthorizer authorizer = (RequireAnyRoleAuthorizer) result;
-        assertEquals(2, authorizer.getExpectedRoles().length);
-    }
-
-    @Test
-    public void testRequireAllRoles() {
-        final Authorizer result = DefaultAuthorizerBuilder.build(null, null, null, null, ROLES);
-        assertTrue(result instanceof RequireAllRolesAuthorizer);
-        final RequireAllRolesAuthorizer authorizer = (RequireAllRolesAuthorizer) result;
-        assertEquals(2, authorizer.getExpectedRoles().length);
-    }
-
-    @Test
     public void testDefault() {
-        final Authorizer result = DefaultAuthorizerBuilder.build(null, null, null, null, null);
+        final Authorizer result = DefaultAuthorizerBuilder.build(null, null, null);
         assertTrue(result instanceof IsAuthenticatedAuthorizer);
     }
 }
