@@ -20,18 +20,18 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.Map;
 
 /**
- * Build the default authorizer based on regular parameters.
+ * Build the authorizer based on regular parameters.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class DefaultAuthorizerBuilder {
+public class DefaultAuthorizerBuilder implements AuthorizerBuilder {
 
     private static final Authorizer DEFAULT_AUTHORIZER = new IsAuthenticatedAuthorizer();
 
     public static final String ROLE_SEPARATOR = ",";
 
-    public static Authorizer build(final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers) {
+    public Authorizer build(final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers) {
         // we already have an authorizer
         if (authorizer != null) {
             return authorizer;
