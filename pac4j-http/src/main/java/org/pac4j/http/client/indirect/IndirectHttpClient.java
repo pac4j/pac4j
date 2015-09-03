@@ -21,6 +21,7 @@ import org.pac4j.http.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.http.credentials.extractor.Extractor;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.http.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.profile.HttpProfile;
@@ -40,7 +41,7 @@ public abstract class IndirectHttpClient<C extends Credentials> extends Indirect
 
     private Authenticator<C> authenticator;
 
-    private ProfileCreator<C, HttpProfile> profileCreator;
+    private ProfileCreator<C, HttpProfile> profileCreator =  AuthenticatorProfileCreator.INSTANCE;
 
     @Override
     public IndirectHttpClient<C> clone() {

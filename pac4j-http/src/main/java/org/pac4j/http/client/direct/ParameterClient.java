@@ -41,18 +41,22 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
     public ParameterClient() {
     }
 
-    public ParameterClient(final TokenAuthenticator tokenAuthenticator,
-                           final ProfileCreator profilePopulator) {
+    public ParameterClient(final TokenAuthenticator tokenAuthenticator) {
         setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profilePopulator);
+    }
+
+    public ParameterClient(final TokenAuthenticator tokenAuthenticator,
+                           final ProfileCreator profileCreator) {
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     public ParameterClient(final String parameterName,
                            final TokenAuthenticator tokenAuthenticator,
-                           final ProfileCreator profilePopulator) {
+                           final ProfileCreator profileCreator) {
         this.parameterName = parameterName;
         setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profilePopulator);
+        setProfileCreator(profileCreator);
     }
 
     @Override
