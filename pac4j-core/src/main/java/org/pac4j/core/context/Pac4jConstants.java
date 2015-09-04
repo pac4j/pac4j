@@ -67,10 +67,20 @@ public interface Pac4jConstants {
     /* Target url configuration parameter */
     String TARGET_URL = "targetUrl";
 
-    /* Whether the web session must be used for direct clients */
+    /**
+     * Will be removed before pac4j v1.8 release.
+     *
+     * @deprecated
+     */
+    @Deprecated
     String USE_SESSION_FOR_DIRECT_CLIENT = "useSessionForDirectClient";
 
-    /* Whether client can be selected dynamically */
+    /**
+     * Will be removed before pac4j v1.8 release.
+     *
+     * @deprecated
+     */
+    @Deprecated
     String ALLOW_DYNAMIC_CLIENT_SELECTION = "allowDynamicClientSelection";
 
     /* The name of an authorizer */
