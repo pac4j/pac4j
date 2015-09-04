@@ -245,7 +245,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     @Override
     protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
-        return (SAML2Credentials) this.profileHandler.receive(context);
+        final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
+        credentials.setClientName(getName()); // The profile handler sets a hard-coded client name, we need the real one.
+        return credentials;
     }
 
     @Override
