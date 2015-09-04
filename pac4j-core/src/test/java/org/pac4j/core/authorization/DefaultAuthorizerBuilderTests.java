@@ -38,18 +38,18 @@ public final class DefaultAuthorizerBuilderTests {
     @Test
     public void testProvidedAuthorizer() {
         final FakeAuthorizer authorizer = new FakeAuthorizer();
-        final Authorizer result = builder.build(authorizer, null, null);
+        final Authorizer result = builder.build(null, authorizer, null, null);
         assertEquals(authorizer, result);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNameNoAuthorizers() {
-        final Authorizer result = builder.build(null, NAME, null);
+        final Authorizer result = builder.build(null, null, NAME, null);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNameEmptyAuthorizers() {
-        final Authorizer result = builder.build(null, NAME, new HashMap<String, Authorizer>());
+        final Authorizer result = builder.build(null, null, NAME, new HashMap<String, Authorizer>());
     }
 
     @Test
@@ -57,13 +57,13 @@ public final class DefaultAuthorizerBuilderTests {
         final FakeAuthorizer authorizer = new FakeAuthorizer();
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, authorizer);
-        final Authorizer result = builder.build(null, NAME, authorizers);
+        final Authorizer result = builder.build(null, null, NAME, authorizers);
         assertEquals(authorizer, result);
     }
 
     @Test
     public void testDefault() {
-        final Authorizer result = builder.build(null, null, null);
+        final Authorizer result = builder.build(null, null, null, null);
         assertTrue(result instanceof IsAuthenticatedAuthorizer);
     }
 }

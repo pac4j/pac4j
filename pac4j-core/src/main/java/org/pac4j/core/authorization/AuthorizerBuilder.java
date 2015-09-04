@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.authorization;
 
+import org.pac4j.core.context.WebContext;
+
 import java.util.Map;
 
 /**
@@ -25,5 +27,5 @@ import java.util.Map;
  */
 public interface AuthorizerBuilder {
 
-    Authorizer build(Authorizer authorizer, String authorizerName, Map<String, Authorizer> authorizers);
+    Authorizer build(WebContext context, Authorizer authorizer, String authorizerName, Map<String, Authorizer> authorizers);
 }
