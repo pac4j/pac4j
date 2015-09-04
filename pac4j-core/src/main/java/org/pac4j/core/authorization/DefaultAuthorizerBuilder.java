@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.authorization;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Map;
@@ -31,7 +32,7 @@ public class DefaultAuthorizerBuilder implements AuthorizerBuilder {
 
     public static final String ROLE_SEPARATOR = ",";
 
-    public Authorizer build(final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers) {
+    public Authorizer build(final WebContext context, final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers) {
         // we already have an authorizer
         if (authorizer != null) {
             return authorizer;
