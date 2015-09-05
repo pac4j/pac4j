@@ -90,11 +90,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     private final static Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
 
+    /** The default maximum authentication lifetime, in seconds. Used for {@link #maximumAuthenticationLifetime} if a meaningless (&lt;=0) value is passed to the constructor. */
+    private static final int DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME = 3600;
+ 
     /* maximum skew in seconds between SP and IDP clocks */
     private int acceptedSkew = 120;
 
     /* maximum lifetime after a successful authentication on an IDP */
-    private int maximumAuthenticationLifetime = 3600;
+    private int maximumAuthenticationLifetime;
 
     private final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
@@ -114,7 +117,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                                          final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = engine;
         this.decrypter = decrypter;
-        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
+        this.maximumAuthenticationLifetime = (maximumAuthenticationLifetime > 0 ? maximumAuthenticationLifetime : DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME);
         this.uriComparator = uriComparator;
     }
 
