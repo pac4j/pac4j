@@ -58,10 +58,18 @@ public interface Pac4jConstants {
     /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
     String IS_AJAX_REQUEST = "is_ajax_request";
 
-    /* RequireAnyRole configuration parameter */
+    /**
+     * This configuration is no longer needed, replaced by the use
+     * of an {@link org.pac4j.core.authorization.Authorizer} directly or by name.
+     */
+    @Deprecated
     String REQUIRE_ANY_ROLE = "requireAnyRole";
 
-    /* RequireAllRoles configuration parameter */
+    /**
+     * This configuration is no longer needed, replaced by the use
+     * of an {@link org.pac4j.core.authorization.Authorizer} directly or by name.
+     */
+    @Deprecated
     String REQUIRE_ALL_ROLES = "requireAllRoles";
 
     /* Target url configuration parameter */
