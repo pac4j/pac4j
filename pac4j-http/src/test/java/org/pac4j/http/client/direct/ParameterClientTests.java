@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
@@ -26,18 +26,21 @@ import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.profile.creator.test.SimpleTestTokenProfileCreator;
 
+import static org.junit.Assert.*;
+
 /**
  * This class tests the {@link ParameterClient} class.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class ParameterClientTests extends TestCase implements TestsConstants {
+public final class ParameterClientTests implements TestsConstants {
 
     private final static String PARAMETER_NAME = "parameterName";
     private final static boolean SUPPORT_GET = true;
     private final static boolean SUPPORT_POST = false;
 
+    @Test
     public void testClone() {
         final ParameterClient oldClient = new ParameterClient();
         oldClient.setName(TYPE);
@@ -57,21 +60,32 @@ public final class ParameterClientTests extends TestCase implements TestsConstan
         assertEquals(oldClient.isSupportPostRequest(), client.isSupportPostRequest());
     }
 
+    @Test
     public void testMissingTokendAuthenticator() {
         final ParameterClient client = new ParameterClient(null, new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
+    @Test
     public void testMissingProfileCreator() {
         final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 
+    @Test
+    public void testHasDefaultProfileCreator() {
+        final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator());
+        client.setParameterName(PARAMETER_NAME);
+        client.init();
+    }
+
+    @Test
     public void testMissingParameterName() {
         final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "parameterName cannot be blank");
     }
 
+    @Test
     public void testAuthentication() throws RequiresHttpAction {
         final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         client.setParameterName(PARAMETER_NAME);

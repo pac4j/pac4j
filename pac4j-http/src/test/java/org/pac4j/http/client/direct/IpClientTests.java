@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
@@ -26,16 +26,19 @@ import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.profile.creator.test.SimpleTestTokenProfileCreator;
 
+import static org.junit.Assert.*;
+
 /**
  * This class tests the {@link IpClient} class.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class IpClientTests extends TestCase implements TestsConstants {
+public final class IpClientTests implements TestsConstants {
 
     private final static String IP = "127.0.0.2";
 
+    @Test
     public void testClone() {
         final IpClient oldClient = new IpClient();
         oldClient.setName(TYPE);
@@ -49,16 +52,25 @@ public final class IpClientTests extends TestCase implements TestsConstants {
         assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
     }
 
+    @Test
     public void testMissingTokendAuthenticator() {
         final IpClient client = new IpClient(null, new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
+    @Test
     public void testMissingProfileCreator() {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator(), null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 
+    @Test
+    public void testHasDefaultProfileCreator() {
+        final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
+        client.init();
+    }
+
+    @Test
     public void testAuthentication() throws RequiresHttpAction {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         final MockWebContext context = MockWebContext.create();
