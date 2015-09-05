@@ -86,8 +86,8 @@ In your protection filter, you may implement this simple logic:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
-UserProfile profile = manager.get();
+ProfileManager manager = new ProfileManager(context);
+UserProfile profile = manager.get(true);
 if (profile != null) {
   grantAccess();
 } else {
@@ -101,18 +101,16 @@ if (profile != null) {
 }
 ```
 
-The `EnvSpecificWebContext` and `EnvSpecificProfileManager` classes are specific implementations of the `WebContext` and `ProfileManager` interfaces for your framework.
+The `EnvSpecificWebContext` class is a specific implementation of the `WebContext` interface for your framework.
 
 With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can use a more elaborated algorithm:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
-
+ProfileManager manager = new ProfileManager(context);
 Client client = findClient(context);
 boolean isDirectClient = client instanceof DirectClient;
-
-UserProfile profile = manager.get(!isDirectClient || useSessionForDirectClient);
+UserProfile profile = manager.get(!isDirectClient);
 
 if (profile == null && isDirectClient) {
   Credentials credentials;
@@ -121,10 +119,9 @@ if (profile == null && isDirectClient) {
   } catch (RequiresHttpAction e) {
     throw new TechnicalException("Unexpected HTTP action", e);
   }
-
   profile = client.getUserProfile(credentials, context);
   if (profile != null) {
-    manager.save(useSessionForDirectClient, profile);
+    manager.save(false, profile);
   }
 }
 
@@ -152,7 +149,7 @@ In your callback filter:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-EnvSpecificProfileManager manager = new EnvSpecificProfileManager(...);
+ProfileManager manager = new ProfileManager(context);
 Client client = clients.findClient(context);
 Credentials credentials;
 try {
@@ -162,7 +159,7 @@ try {
 }
 UserProfile profile = client.getUserProfile(credentials, context);
 if (profile != null) {
-  manager.save(profile);
+  manager.save(true, profile);
 }
 redirectToTheOriginallyRequestedUrl();
 ```
