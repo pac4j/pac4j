@@ -39,10 +39,14 @@ public class DirectBasicAuthClient extends DirectHttpClient<UsernamePasswordCred
     public DirectBasicAuthClient() {
     }
 
-    public DirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                                 final ProfileCreator profilePopulator) {
+    public DirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profilePopulator);
+    }
+
+    public DirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+                                 final ProfileCreator profileCreator) {
+        setAuthenticator(usernamePasswordAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     @Override

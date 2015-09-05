@@ -57,6 +57,15 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     public FormClient() {
     }
 
+    public FormClient(final String loginUrl) {
+        setLoginUrl(loginUrl);
+    }
+
+    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+        setLoginUrl(loginUrl);
+        setAuthenticator(usernamePasswordAuthenticator);
+    }
+
     public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
             final ProfileCreator profileCreator) {
         setLoginUrl(loginUrl);

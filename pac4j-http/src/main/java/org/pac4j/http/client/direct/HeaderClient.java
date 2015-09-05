@@ -39,10 +39,14 @@ public class HeaderClient extends DirectHttpClient<TokenCredentials> {
     public HeaderClient() {
     }
 
-    public HeaderClient(final TokenAuthenticator tokenAuthenticator,
-                        final ProfileCreator profilePopulator) {
+    public HeaderClient(final TokenAuthenticator tokenAuthenticator) {
         setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profilePopulator);
+    }
+
+    public HeaderClient(final TokenAuthenticator tokenAuthenticator,
+                        final ProfileCreator profileCreator) {
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     @Override
