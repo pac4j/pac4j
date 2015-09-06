@@ -19,6 +19,9 @@ import org.junit.Test;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.CommonProfile;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -28,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAllRolesAuthorizerTests {
+public final class RequireAllRolesAuthorizerTests {
 
     private static final String ROLE1 = "role1";
     private static final String ROLE2 = "role2";
@@ -38,7 +41,36 @@ public class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder() {
-        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
+        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(ROLE3, ROLE1);
+        final CommonProfile profile = new CommonProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE3);
+        assertTrue(authorizer.isAuthorized(context, profile));
+    }
+
+    @Test
+    public void testHasAllRolesOkDifferentOrder2() {
+        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(Arrays.asList(ROLE3, ROLE1));
+        final CommonProfile profile = new CommonProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE3);
+        assertTrue(authorizer.isAuthorized(context, profile));
+    }
+
+    @Test
+    public void testHasAllRolesOkDifferentOrder3() {
+        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
+        authorizer.setRoles(ROLE3, ROLE1);
+        final CommonProfile profile = new CommonProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE3);
+        assertTrue(authorizer.isAuthorized(context, profile));
+    }
+
+    @Test
+    public void testHasAllRolesOkDifferentOrder4() {
+        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
+        authorizer.setRoles(Arrays.asList(ROLE3, ROLE1));
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -47,7 +79,7 @@ public class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesNull() {
-        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(null);
+        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer((List<String>) null);
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);

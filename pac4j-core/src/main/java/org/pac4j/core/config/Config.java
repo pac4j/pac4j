@@ -17,6 +17,7 @@ package org.pac4j.core.config;
 
 import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class Config {
     }
 
     public Config(final Map<String, Authorizer> authorizers) {
-        this.authorizers = authorizers;
+        setAuthorizers(authorizers);
     }
 
     public Config(final Clients clients, final Map<String, Authorizer> authorizers) {
@@ -61,6 +62,11 @@ public class Config {
     }
 
     public void setAuthorizers(Map<String, Authorizer> authorizers) {
+        CommonHelper.assertNotNull("authorizers", authorizers);
         this.authorizers = authorizers;
+    }
+
+    public void addAuthorizer(final String name, final Authorizer authorizer) {
+        authorizers.put(name, authorizer);
     }
 }
