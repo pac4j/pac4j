@@ -18,6 +18,8 @@ package org.pac4j.core.authorization;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.List;
+
 /**
  * Checks an access if the user profile has all the roles.
  *
@@ -27,28 +29,46 @@ import org.pac4j.core.profile.UserProfile;
  */
 public class RequireAllRolesAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
-    private final String[] expectedRoles;
+    private String[] roles;
 
-    public RequireAllRolesAuthorizer(final String[] expectedRoles) {
-        this.expectedRoles = expectedRoles;
+    public RequireAllRolesAuthorizer() { }
+
+    public RequireAllRolesAuthorizer(final String... roles) {
+        this.roles = roles;
+    }
+
+    public RequireAllRolesAuthorizer(final List<String> roles) {
+        setRoles(roles);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isAuthorized(WebContext context, U profile) {
-        if (expectedRoles == null || expectedRoles.length == 0) {
+        if (roles == null || roles.length == 0) {
             return true;
         }
-        for (final String role : expectedRoles) {
-            if (!profile.getRoles().contains(role)) {
+        final List<String> profileRoles = profile.getRoles();
+        for (final String role : roles) {
+            if (!profileRoles.contains(role)) {
                 return false;
             }
         }
         return true;
     }
 
-    public String[] getExpectedRoles() {
-        return expectedRoles;
+    public String[] getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        if (roles != null) {
+            final int size = roles.size();
+            this.roles = roles.toArray(new String[size]);
+        }
+    }
+
+    public void setRoles(String... roles) {
+        this.roles = roles;
     }
 }
