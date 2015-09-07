@@ -31,7 +31,6 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
@@ -101,12 +100,11 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     protected final void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
 
-        final J2EContext j2EContext = (J2EContext) webContext;
-        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(j2EContext);
+        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(webContext);
         final MessageContext<SimpleRequestAdapter> inCtx = new MessageContext<SimpleRequestAdapter>();
         inCtx.setMessage(inTransport);
 
-        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter(j2EContext);
+        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter(webContext);
         final MessageContext<SimpleResponseAdapter> outCtx = new MessageContext<SimpleResponseAdapter>();
         outCtx.setMessage(outTransport);
 
@@ -120,7 +118,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
         if (this.samlMessageStorageFactory != null) {
             logger.debug("Creating message storage by {}", this.samlMessageStorageFactory.getClass().getName());
-            context.setSAMLMessageStorage(this.samlMessageStorageFactory.getMessageStorage(inTransport.getRequest()));
+            context.setSAMLMessageStorage(this.samlMessageStorageFactory.getMessageStorage(inTransport.getContext()));
         }
     }
 

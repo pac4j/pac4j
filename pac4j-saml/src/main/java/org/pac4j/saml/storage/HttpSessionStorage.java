@@ -16,12 +16,11 @@
 package org.pac4j.saml.storage;
 
 import org.opensaml.core.xml.XMLObject;
+import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Set;
@@ -46,7 +45,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
     /**
      * Session the storage operates on.
      */
-    private final HttpSession session;
+    private final WebContext session;
 
     /**
      * Internal storage for messages, corresponding to the object in session.
@@ -66,21 +65,11 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      *
      * @param request request to load/store internalMessages from
      */
-    public HttpSessionStorage(final HttpServletRequest request) {
+    public HttpSessionStorage(final WebContext request) {
         Assert.notNull(request, "Request must be set");
-        this.session = request.getSession(true);
+        this.session = request;
     }
 
-    /**
-     * Creates the storage object. The session is manipulated only once caller tries to store
-     * or retrieve a message.
-     *
-     * @param session session to load/store internalMessages from
-     */
-    public HttpSessionStorage(final HttpSession session) {
-        Assert.notNull(session, "Session must be set");
-        this.session = session;
-    }
 
     /**
      * Stores a request message into the repository. RequestAbstractType must have an ID
@@ -91,7 +80,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      */
     @Override
     public void storeMessage(final String messageID, final XMLObject message) {
-        log.debug("Storing message {} to session {}", messageID, session.getId());
+        log.debug("Storing message {} to session {}", messageID, session.getSessionIdentifier());
         final Hashtable<String, XMLObject> messages = getMessages();
         messages.put(messageID, message);
         updateSession(messages);
@@ -116,11 +105,11 @@ public class HttpSessionStorage implements SAMLMessageStorage {
         final Hashtable<String, XMLObject> messages = getMessages();
         final XMLObject o = messages.get(messageID);
         if (o == null) {
-            log.debug("Message {} not found in session {}", messageID, session.getId());
+            log.debug("Message {} not found in session {}", messageID, session.getSessionIdentifier());
             return null;
         }
 
-        log.debug("Message {} found in session {}, clearing", messageID, session.getId());
+        log.debug("Message {} found in session {}, clearing", messageID, session.getSessionIdentifier());
         messages.clear();
         updateSession(messages);
         return o;
@@ -156,10 +145,11 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      */
     @SuppressWarnings("unchecked")
     private Hashtable<String, XMLObject> initializeSession() {
-        Hashtable<String, XMLObject> messages = (Hashtable<String, XMLObject>) session.getAttribute(SAML_STORAGE_KEY);
+        Hashtable<String, XMLObject> messages = (Hashtable<String, XMLObject>)
+                session.getSessionAttribute(SAML_STORAGE_KEY);
         if (messages == null) {
             synchronized (session) {
-                messages = (Hashtable<String, XMLObject>) session.getAttribute(SAML_STORAGE_KEY);
+                messages = (Hashtable<String, XMLObject>) session.getSessionAttribute(SAML_STORAGE_KEY);
                 if (messages == null) {
                     messages = new Hashtable<String, XMLObject>();
                     updateSession(messages);
@@ -174,7 +164,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * in order to replicate the session across nodes or persist it correctly.
      */
     private void updateSession(final Hashtable<String, XMLObject> messages) {
-        session.setAttribute(SAML_STORAGE_KEY, messages);
+        session.setSessionAttribute(SAML_STORAGE_KEY, messages);
     }
 
 }
