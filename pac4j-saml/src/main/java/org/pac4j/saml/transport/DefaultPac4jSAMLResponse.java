@@ -20,7 +20,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
@@ -29,12 +28,10 @@ import java.io.UnsupportedEncodingException;
  * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
  * the saml messages. The content can be retrieved as a String from getOutgoingContent().
  * 
- * @author Michael Remond
  * @author Misagh Moayyed
- * @since 1.5.0
- *
+ * @since 1.8
  */
-public class SimpleResponseAdapter {
+public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     private final ByteArrayOutputStream outputStream;
     private final OutputStreamWriter outputStreamWriter;
     private final WebContext webContext;
@@ -46,7 +43,7 @@ public class SimpleResponseAdapter {
      * @param response the response
      * @throws IllegalArgumentException if the response is null
      */
-    public SimpleResponseAdapter(final WebContext response) {
+    public DefaultPac4jSAMLResponse(final WebContext response) {
         webContext = response;
 
         try {
@@ -57,12 +54,25 @@ public class SimpleResponseAdapter {
         }
     }
 
+    @Override
     public final String getOutgoingContent() {
         return outputStreamWriter.toString();
     }
 
-    public final OutputStreamWriter getOutputStream() throws IOException {
-        return outputStreamWriter;
+    @Override
+    public WebContext getWebContext() {
+        return null;
+    }
+
+    @Override
+    public void init() {
+        setNoCacheHeaders();
+        setUTF8Encoding();
+    }
+
+    @Override
+    public OutputStreamWriter getOutputStreamWriter() {
+        return this.outputStreamWriter;
     }
 
     public void setNoCacheHeaders() {
@@ -74,15 +84,18 @@ public class SimpleResponseAdapter {
         webContext.setResponseCharacterEncoding("UTF-8");
     }
 
+    @Override
     public void setContentType(final String type) {
         webContext.setResponseContentType(type);
     }
 
+    @Override
     public final void setRedirectUrl(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
-    public final String getRedirectUrl() {
+    @Override
+    public String getRedirectUrl() {
         return this.redirectUrl;
     }
 
