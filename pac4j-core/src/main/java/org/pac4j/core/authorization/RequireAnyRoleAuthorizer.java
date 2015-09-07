@@ -18,7 +18,10 @@ package org.pac4j.core.authorization;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Checks an access if the user profile has any of the roles.
@@ -29,23 +32,27 @@ import java.util.List;
  */
 public class RequireAnyRoleAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
-    private String[] roles;
+    private Set<String> roles;
 
     public RequireAnyRoleAuthorizer() { }
 
     public RequireAnyRoleAuthorizer(final String... roles) {
-        this.roles = roles;
+        setRoles(roles);
     }
 
     public RequireAnyRoleAuthorizer(final List<String> roles) {
         setRoles(roles);
     }
 
+    public RequireAnyRoleAuthorizer(final Set<String> roles) {
+        this.roles = roles;
+    }
+
     /**
      * {@inheritDoc}
      */
     public boolean isAuthorized(WebContext context, U profile) {
-        if (roles == null || roles.length == 0) {
+        if (roles == null || roles.size() == 0) {
             return true;
         }
         final List<String> profileRoles = profile.getRoles();
@@ -57,18 +64,23 @@ public class RequireAnyRoleAuthorizer<U extends UserProfile> implements Authoriz
         return false;
     }
 
-    public String[] getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(final Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setRoles(final List<String> roles) {
         if (roles != null) {
-            final int size = roles.size();
-            this.roles = roles.toArray(new String[size]);
+            this.roles = new HashSet<>(roles);
         }
     }
 
-    public void setRoles(String... roles) {
-        this.roles = roles;
+    public void setRoles(final String... roles) {
+        if (roles != null) {
+            setRoles(Arrays.asList(roles));
+        }
     }
 }

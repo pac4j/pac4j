@@ -20,6 +20,7 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
@@ -69,6 +70,16 @@ public final class RequireAllRolesAuthorizerTests {
 
     @Test
     public void testHasAllRolesOkDifferentOrder4() {
+        final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
+        authorizer.setRoles(new HashSet<String>(Arrays.asList(ROLE3, ROLE1)));
+        final CommonProfile profile = new CommonProfile();
+        profile.addRole(ROLE1);
+        profile.addRole(ROLE3);
+        assertTrue(authorizer.isAuthorized(context, profile));
+    }
+
+    @Test
+    public void testHasAllRolesOkDifferentOrder5() {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
         authorizer.setRoles(Arrays.asList(ROLE3, ROLE1));
         final CommonProfile profile = new CommonProfile();
