@@ -128,6 +128,18 @@ public interface WebContext {
     void setResponseHeader(String name, String value);
 
     /**
+     * Sets the response encoding type.
+     * @param encoding
+     */
+    void setResponseCharacterEncoding(String encoding);
+
+    /**
+     * Sets the response content type.
+     * @param content
+     */
+    void setResponseContentType(String content);
+
+    /**
      * Return the server name.
      *
      * @return the server name

@@ -18,7 +18,6 @@ package org.pac4j.saml.sso.impl;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -28,6 +27,7 @@ import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageReceiver;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
+import org.pac4j.saml.transport.Pac4jHTTPPostDecoder;
 import org.pac4j.saml.util.Configuration;
 
 /**
@@ -54,10 +54,8 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
         peerContext.setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         context.getSAMLSelfProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
-        final HTTPPostDecoder decoder = new HTTPPostDecoder();
+        final Pac4jHTTPPostDecoder decoder = new Pac4jHTTPPostDecoder(context.getWebContext());
         try {
-
-            decoder.setHttpServletRequest(context.getProfileRequestContextInboundMessageTransportRequest().getRequest());
             decoder.setParserPool(Configuration.getParserPool());
             decoder.initialize();
             decoder.decode();

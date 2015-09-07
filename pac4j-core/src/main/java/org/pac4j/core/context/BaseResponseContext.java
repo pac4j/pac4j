@@ -32,7 +32,11 @@ public abstract class BaseResponseContext implements WebContext {
 
     protected String responseLocation;
 
-    protected final Map<String, String> responseHeaders = new HashMap<String, String>();
+    protected String responseContentType;
+
+    protected String responseEncoding;
+
+    protected final Map<String, String> responseHeaders = new HashMap<>();
 
     public void writeResponseContent(final String content) {
         if (content != null) {
@@ -64,4 +68,21 @@ public abstract class BaseResponseContext implements WebContext {
         return this.responseHeaders;
     }
 
+    @Override
+    public void setResponseCharacterEncoding(final String encoding) {
+        this.responseEncoding = encoding;
+    }
+
+    @Override
+    public void setResponseContentType(final String content) {
+        this.responseContentType = content;
+    }
+
+    public String getResponseContentType() {
+        return responseContentType;
+    }
+
+    public String getResponseEncoding() {
+        return responseEncoding;
+    }
 }

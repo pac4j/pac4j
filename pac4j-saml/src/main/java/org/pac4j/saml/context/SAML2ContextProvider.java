@@ -95,6 +95,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     public SAML2MessageContext buildContext(final WebContext webContext) {
         final SAML2MessageContext context = buildServiceProviderContext(webContext);
         addIDPContext(context);
+        context.setWebContext(webContext);
         return context;
     }
 
