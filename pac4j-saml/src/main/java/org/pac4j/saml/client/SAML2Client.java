@@ -56,7 +56,6 @@ import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
-import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

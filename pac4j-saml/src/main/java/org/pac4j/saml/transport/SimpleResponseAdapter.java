@@ -16,10 +16,9 @@
 
 package org.pac4j.saml.transport;
 
-import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.context.WebContext;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -33,8 +32,9 @@ import java.io.IOException;
  * @since 1.5.0
  *
  */
-public class SimpleResponseAdapter extends HttpServletResponseWrapper {
+public class SimpleResponseAdapter {
     private final Pac4jServletOutputStream outputStream = new Pac4jServletOutputStream();
+    private final WebContext webContext;
     private String redirectUrl;
 
     /**
@@ -43,20 +43,18 @@ public class SimpleResponseAdapter extends HttpServletResponseWrapper {
      * @param response the response
      * @throws IllegalArgumentException if the response is null
      */
-    public SimpleResponseAdapter(final J2EContext response) {
-        super(response.getResponse());
+    public SimpleResponseAdapter(final WebContext response) {
+        webContext = response;
     }
 
     public final String getOutgoingContent() {
         return outputStream.getOutgoingContent();
     }
 
-    @Override
     public final ServletOutputStream getOutputStream() throws IOException {
         return outputStream;
     }
 
-    @Override
     public final void sendRedirect(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }

@@ -86,6 +86,12 @@ public interface WebContext {
     void invalidateSession();
 
     /**
+     * Gets the session id for this context.
+     * @return the session identifier
+     */
+    Object getSessionIdentifier();
+
+    /**
      * Return the request method.
      *
      * @return the request method

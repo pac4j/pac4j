@@ -16,11 +16,7 @@
 
 package org.pac4j.saml.transport;
 
-import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Basic RequestAdapter returning an inputStream from the input content of
@@ -31,27 +27,17 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @since 1.5.0
  *
  */
-public class SimpleRequestAdapter extends HttpServletRequestWrapper {
-    private J2EContext context;
+public class SimpleRequestAdapter {
+    private final WebContext context;
 
-    public SimpleRequestAdapter(final J2EContext request) {
-        super(request.getRequest());
+    public SimpleRequestAdapter(final WebContext request) {
+        this.context = request;
     }
 
-    @Override
-    public final HttpServletRequest getRequest() {
-        return (HttpServletRequest) super.getRequest();
-    }
-
-    public final J2EContext getContext() {
+    public final WebContext getContext() {
         return context;
     }
 
-    public void setContext(final J2EContext context) {
-        this.context = context;
-    }
-
-    @Override
     public final String getMethod() {
         return getContext().getRequestMethod();
     }

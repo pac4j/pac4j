@@ -37,8 +37,6 @@ import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.storage.SAMLMessageStorage;
-import org.pac4j.saml.transport.SimpleRequestAdapter;
-import org.pac4j.saml.transport.SimpleResponseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
