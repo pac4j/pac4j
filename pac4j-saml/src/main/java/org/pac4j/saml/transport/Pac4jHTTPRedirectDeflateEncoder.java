@@ -1,12 +1,10 @@
 package org.pac4j.saml.transport;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.component.ComponentSupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +13,8 @@ import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * Pac4j implementation of the {@link HTTPRedirectDeflateEncoder}
+ * that ignores the http request in favor of {@link WebContext}.
  * @author Misagh Moayyed
  * @since 1.8
  */
