@@ -18,6 +18,11 @@ package org.pac4j.core.authorization;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Checks an access if the user profile has all the roles.
  *
@@ -27,28 +32,55 @@ import org.pac4j.core.profile.UserProfile;
  */
 public class RequireAllRolesAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
-    private final String[] expectedRoles;
+    private Set<String> roles;
 
-    public RequireAllRolesAuthorizer(final String[] expectedRoles) {
-        this.expectedRoles = expectedRoles;
+    public RequireAllRolesAuthorizer() { }
+
+    public RequireAllRolesAuthorizer(final String... roles) {
+        setRoles(roles);
+    }
+
+    public RequireAllRolesAuthorizer(final List<String> roles) {
+        setRoles(roles);
+    }
+
+    public RequireAllRolesAuthorizer(final Set<String> roles) {
+        this.roles = roles;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isAuthorized(WebContext context, U profile) {
-        if (expectedRoles == null || expectedRoles.length == 0) {
+        if (roles == null || roles.size() == 0) {
             return true;
         }
-        for (final String role : expectedRoles) {
-            if (!profile.getRoles().contains(role)) {
+        final List<String> profileRoles = profile.getRoles();
+        for (final String role : roles) {
+            if (!profileRoles.contains(role)) {
                 return false;
             }
         }
         return true;
     }
 
-    public String[] getExpectedRoles() {
-        return expectedRoles;
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(final Set<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setRoles(final List<String> roles) {
+        if (roles != null) {
+            this.roles = new HashSet<>(roles);
+        }
+    }
+
+    public void setRoles(final String... roles) {
+        if (roles != null) {
+            setRoles(Arrays.asList(roles));
+        }
     }
 }
