@@ -17,10 +17,12 @@
 package org.pac4j.saml.transport;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
 
-import javax.servlet.ServletOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -33,7 +35,8 @@ import java.io.IOException;
  *
  */
 public class SimpleResponseAdapter {
-    private final Pac4jServletOutputStream outputStream = new Pac4jServletOutputStream();
+    private final ByteArrayOutputStream outputStream;
+    private final OutputStreamWriter outputStreamWriter;
     private final WebContext webContext;
     private String redirectUrl;
 
@@ -45,17 +48,37 @@ public class SimpleResponseAdapter {
      */
     public SimpleResponseAdapter(final WebContext response) {
         webContext = response;
+
+        try {
+            outputStream = new ByteArrayOutputStream();
+            outputStreamWriter = new Pac4jServletOutputStreamWriter(outputStream);
+        } catch (UnsupportedEncodingException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     public final String getOutgoingContent() {
-        return outputStream.getOutgoingContent();
+        return outputStreamWriter.toString();
     }
 
-    public final ServletOutputStream getOutputStream() throws IOException {
-        return outputStream;
+    public final OutputStreamWriter getOutputStream() throws IOException {
+        return outputStreamWriter;
     }
 
-    public final void sendRedirect(final String redirectUrl) {
+    public void setNoCacheHeaders() {
+        webContext.setResponseHeader("Cache-control", "no-cache, no-store");
+        webContext.setResponseHeader("Pragma", "no-cache");
+    }
+
+    public void setUTF8Encoding() {
+        webContext.setResponseCharacterEncoding("UTF-8");
+    }
+
+    public void setContentType(final String type) {
+        webContext.setResponseContentType(type);
+    }
+
+    public final void setRedirectUrl(final String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
@@ -63,12 +86,11 @@ public class SimpleResponseAdapter {
         return this.redirectUrl;
     }
 
-    private static class Pac4jServletOutputStream extends ServletOutputStream {
-        private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        @Override
-        public final void write(final int b) throws IOException {
-            outputStream.write(b);
+    private static class Pac4jServletOutputStreamWriter extends OutputStreamWriter {
+        private final ByteArrayOutputStream outputStream;
+        public Pac4jServletOutputStreamWriter(ByteArrayOutputStream out) throws UnsupportedEncodingException {
+            super(out, "UTF-8");
+            outputStream = out;
         }
 
         public final String getOutgoingContent() {
@@ -79,6 +101,11 @@ public class SimpleResponseAdapter {
                 throw new RuntimeException(e);
             }
 
+        }
+
+        @Override
+        public String toString() {
+            return this.getOutgoingContent();
         }
     }
 }

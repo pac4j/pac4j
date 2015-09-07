@@ -168,6 +168,16 @@ public class J2EContext implements WebContext {
         this.response.setHeader(name, value);
     }
 
+    @Override
+    public void setResponseCharacterEncoding(final String encoding) {
+        this.response.setCharacterEncoding(encoding);
+    }
+
+    @Override
+    public void setResponseContentType(final String content) {
+        this.response.setContentType(content);
+    }
+
     /**
      * {@inheritDoc}
      */

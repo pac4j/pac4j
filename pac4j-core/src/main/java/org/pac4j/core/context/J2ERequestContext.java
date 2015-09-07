@@ -86,6 +86,11 @@ public class J2ERequestContext extends BaseResponseContext {
         this.request.getSession().invalidate();
     }
 
+    @Override
+    public Object getSessionIdentifier() {
+        return this.request.getSession().getId();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -97,6 +102,8 @@ public class J2ERequestContext extends BaseResponseContext {
      * {@inheritDoc}
      */
     public String getRemoteAddr() { return this.request.getRemoteAddr(); }
+
+
 
     /**
      * Return the HTTP request.

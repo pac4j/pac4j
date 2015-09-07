@@ -56,6 +56,7 @@ import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
+import org.pac4j.saml.transport.SimpleResponseAdapter;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -245,7 +246,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
-        credentials.setClientName(getName()); // The profile handler sets a hard-coded client name, we need the real one.
+        // The profile handler sets a hard-coded client name, we need the real one.
+        credentials.setClientName(getName());
         return credentials;
     }
 

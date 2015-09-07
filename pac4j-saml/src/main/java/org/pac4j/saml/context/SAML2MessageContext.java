@@ -35,8 +35,11 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.transport.SimpleRequestAdapter;
+import org.pac4j.saml.transport.SimpleResponseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,8 @@ import java.util.List;
  */
 @SuppressWarnings("rawtypes")
 public class SAML2MessageContext extends MessageContext<SAMLObject> {
+
+    private WebContext webContext;
 
     /* valid subject assertion */
     private Assertion subjectAssertion;
@@ -74,6 +79,14 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     public SAML2MessageContext(final MessageContext<SAMLObject> ctx) {
         this();
         super.setParent(ctx);
+    }
+
+    public WebContext getWebContext() {
+        return webContext;
+    }
+
+    public void setWebContext(final WebContext webContext) {
+        this.webContext = webContext;
     }
 
     public final Assertion getSubjectAssertion() {
