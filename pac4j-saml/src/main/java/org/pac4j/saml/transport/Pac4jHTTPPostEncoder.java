@@ -16,7 +16,7 @@ import java.io.OutputStreamWriter;
 
 /**
  * Pac4j implementation of {@link HTTPPostEncoder}
- * that uses the {@link SimpleResponseAdapter} to handle encodings
+ * that uses the {@link Pac4jSAMLResponse} to handle encodings
  * rather than the http response.
  * @author Misagh Moayyed
  * @since 1.8
@@ -25,9 +25,9 @@ public class Pac4jHTTPPostEncoder extends HTTPPostEncoder {
     private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final WebContext context;
-    private final SimpleResponseAdapter responseAdapter;
+    private final Pac4jSAMLResponse responseAdapter;
 
-    public Pac4jHTTPPostEncoder(final WebContext context, final SimpleResponseAdapter responseAdapter) {
+    public Pac4jHTTPPostEncoder(final WebContext context, final Pac4jSAMLResponse responseAdapter) {
         this.context = context;
         this.responseAdapter = responseAdapter;
     }
@@ -41,10 +41,9 @@ public class Pac4jHTTPPostEncoder extends HTTPPostEncoder {
             this.populateVelocityContext(e, messageContext, endpointURL);
 
             responseAdapter.setContentType("text/html");
-            responseAdapter.setNoCacheHeaders();
-            responseAdapter.setUTF8Encoding();
+            responseAdapter.init();
 
-            OutputStreamWriter out = responseAdapter.getOutputStream();
+            OutputStreamWriter out = responseAdapter.getOutputStreamWriter();
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", e, out);
             out.flush();
         } catch (Exception var6) {

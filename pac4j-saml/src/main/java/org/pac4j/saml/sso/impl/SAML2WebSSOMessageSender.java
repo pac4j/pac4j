@@ -23,9 +23,6 @@ import org.opensaml.saml.common.binding.impl.SAMLOutboundDestinationHandler;
 import org.opensaml.saml.common.binding.security.impl.EndpointURLSchemeSecurityHandler;
 import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.binding.encoding.impl.BaseSAML2MessageEncoder;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -38,7 +35,7 @@ import org.pac4j.saml.sso.SAML2MessageSender;
 import org.pac4j.saml.storage.SAMLMessageStorage;
 import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
 import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
-import org.pac4j.saml.transport.SimpleResponseAdapter;
+import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +153,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
      */
     private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
 
-        final SimpleResponseAdapter adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
+        final Pac4jSAMLResponse adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
 
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
 

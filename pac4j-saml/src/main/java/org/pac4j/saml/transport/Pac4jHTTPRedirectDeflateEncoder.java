@@ -23,9 +23,9 @@ public class Pac4jHTTPRedirectDeflateEncoder extends HTTPRedirectDeflateEncoder 
     private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final WebContext context;
-    private final SimpleResponseAdapter responseAdapter;
+    private final Pac4jSAMLResponse responseAdapter;
 
-    public Pac4jHTTPRedirectDeflateEncoder(final WebContext context, final SimpleResponseAdapter responseAdapter) {
+    public Pac4jHTTPRedirectDeflateEncoder(final WebContext context, final Pac4jSAMLResponse responseAdapter) {
         this.context = context;
         this.responseAdapter = responseAdapter;
     }
@@ -39,8 +39,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends HTTPRedirectDeflateEncoder 
         String encodedMessage = this.deflateAndBase64Encode(outboundMessage);
         String redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
 
-        responseAdapter.setNoCacheHeaders();
-        responseAdapter.setUTF8Encoding();
+        responseAdapter.init();
         responseAdapter.setRedirectUrl(redirectURL);
     }
 
