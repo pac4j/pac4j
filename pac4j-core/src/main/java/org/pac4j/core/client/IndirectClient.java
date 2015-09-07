@@ -89,7 +89,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
             context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
-            context.
         } else if (action.getType() == RedirectType.SUCCESS) {
             context.setResponseStatus(HttpConstants.OK);
             context.writeResponseContent(action.getContent());

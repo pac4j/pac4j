@@ -1,5 +1,6 @@
 package org.pac4j.saml.transport;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import org.apache.velocity.VelocityContext;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.encoder.MessageEncodingException;
@@ -9,10 +10,16 @@ import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStreamWriter;
 
 /**
+ * Pac4j implementation of {@link HTTPPostEncoder}
+ * that uses the {@link SimpleResponseAdapter} to handle encodings
+ * rather than the http response.
  * @author Misagh Moayyed
+ * @since 1.8
  */
 public class Pac4jHTTPPostEncoder extends HTTPPostEncoder {
     private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
@@ -44,5 +51,15 @@ public class Pac4jHTTPPostEncoder extends HTTPPostEncoder {
             logger.error("Error invoking Velocity template", var6);
             throw new MessageEncodingException("Error creating output document", var6);
         }
+    }
+
+    @Override
+    public synchronized void setHttpServletResponse(@Nullable HttpServletResponse servletResponse) {
+        logger.debug("Ignoring HttpServletRequest");
+    }
+
+    @Override
+    protected void doInitialize() throws ComponentInitializationException {
+        logger.debug("Initialized {}", this.getClass().getSimpleName());
     }
 }

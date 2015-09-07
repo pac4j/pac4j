@@ -19,7 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
- * Custom decoder for Pac4J that ignores the HttpServletRequest
+ * Custom decoder for Pac4j that ignores the HttpServletRequest
  * in favor of {@link org.pac4j.core.context.WebContext}.
  * @author Misagh Moayyed
  * @since 1.8
