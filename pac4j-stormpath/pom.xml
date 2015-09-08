@@ -32,6 +32,22 @@
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-api</artifactId>
+            <version>${stormpath.sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-httpclient</artifactId>
+            <version>${stormpath.sdk.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
 		<!-- for testing -->
 		<dependency>
@@ -68,4 +84,7 @@
 		</plugins>
 	</build>
 
+    <properties>
+        <stormpath.sdk.version>0.9.3</stormpath.sdk.version>
+    </properties>
 </project>
