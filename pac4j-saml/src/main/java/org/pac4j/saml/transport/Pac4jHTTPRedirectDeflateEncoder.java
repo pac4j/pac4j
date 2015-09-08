@@ -32,12 +32,12 @@ public class Pac4jHTTPRedirectDeflateEncoder extends HTTPRedirectDeflateEncoder 
 
     @Override
     protected void doEncode() throws MessageEncodingException {
-        MessageContext messageContext = this.getMessageContext();
-        SAMLObject outboundMessage = (SAMLObject)messageContext.getMessage();
-        String endpointURL = this.getEndpointURL(messageContext).toString();
+        final MessageContext messageContext = this.getMessageContext();
+        final SAMLObject outboundMessage = (SAMLObject)messageContext.getMessage();
+        final String endpointURL = this.getEndpointURL(messageContext).toString();
         this.removeSignature(outboundMessage);
-        String encodedMessage = this.deflateAndBase64Encode(outboundMessage);
-        String redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
+        final String encodedMessage = this.deflateAndBase64Encode(outboundMessage);
+        final String redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
 
         responseAdapter.init();
         responseAdapter.setRedirectUrl(redirectURL);
