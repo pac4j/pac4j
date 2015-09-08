@@ -90,6 +90,11 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         this.idTokenString = (String) in.readObject();
     }
 
+    @Override
+    public void clear() {
+        this.accessToken = null;
+    }
+
     private static class BearerAccessTokenBean implements Serializable {
         private String value;
         private long lifetime;
