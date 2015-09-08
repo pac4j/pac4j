@@ -149,6 +149,11 @@ public class MockWebContext extends BaseResponseContext {
 
     public void invalidateSession() { this.session.clear(); }
 
+    @Override
+    public Object getSessionIdentifier() {
+        return hashCode();
+    }
+
     public String getRequestMethod() {
         return this.method;
     }

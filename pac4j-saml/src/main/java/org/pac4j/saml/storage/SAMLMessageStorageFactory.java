@@ -15,7 +15,7 @@
  */
 package org.pac4j.saml.storage;
 
-import javax.servlet.http.HttpServletRequest;
+import org.pac4j.core.context.WebContext;
 
 /**
  * Factories implementing this interface provide services for storage and retrieval of SAML messages for
@@ -26,9 +26,9 @@ public interface SAMLMessageStorageFactory {
     /**
      * Provides message storage related to the given request.
      *
-     * @param request currently processed HTTP request
+     * @param request currently processed context
      * @return storage objects
      */
-    SAMLMessageStorage getMessageStorage(HttpServletRequest request);
+    SAMLMessageStorage getMessageStorage(WebContext request);
 
 }

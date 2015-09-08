@@ -26,15 +26,15 @@ import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.ClientType;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAML2ContextProvider;
+import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.context.SAMLContextProvider;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.CredentialProvider;
@@ -56,7 +56,7 @@ import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
-import org.pac4j.saml.transport.SimpleResponseAdapter;
+import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -232,7 +232,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
         this.profileHandler.send(context, authnRequest, relayState);
 
-        final SimpleResponseAdapter adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
+        final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
         if (this.configuration.getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
             final String content = adapter.getOutgoingContent();
             return RedirectAction.success(content);
@@ -246,7 +246,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
-        credentials.setClientName(getName()); // The profile handler sets a hard-coded client name, we need the real one.
+        // The profile handler sets a hard-coded client name, we need the real one.
+        credentials.setClientName(getName());
         return credentials;
     }
 

@@ -31,13 +31,12 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
-import org.pac4j.saml.transport.SimpleRequestAdapter;
-import org.pac4j.saml.transport.SimpleResponseAdapter;
+import org.pac4j.saml.transport.DefaultPac4jSAMLResponse;
+import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,23 +95,13 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     public SAML2MessageContext buildContext(final WebContext webContext) {
         final SAML2MessageContext context = buildServiceProviderContext(webContext);
         addIDPContext(context);
+        context.setWebContext(webContext);
         return context;
     }
 
     protected final void addTransportContext(final WebContext webContext, final SAML2MessageContext context) {
-
-        final J2EContext j2EContext = (J2EContext) webContext;
-        final SimpleRequestAdapter inTransport = new SimpleRequestAdapter(j2EContext);
-        final MessageContext<SimpleRequestAdapter> inCtx = new MessageContext<SimpleRequestAdapter>();
-        inCtx.setMessage(inTransport);
-
-        final SimpleResponseAdapter outTransport = new SimpleResponseAdapter(j2EContext);
-        final MessageContext<SimpleResponseAdapter> outCtx = new MessageContext<SimpleResponseAdapter>();
-        outCtx.setMessage(outTransport);
-
         final ProfileRequestContext profile = context.getProfileRequestContext();
-        profile.setInboundMessageContext(inCtx);
-        profile.setOutboundMessageContext(outCtx);
+        profile.setOutboundMessageContext(prepareOutboundMessageContext(webContext));
         context.getSAMLProtocolContext().setProtocol(SAMLConstants.SAML20P_NS);
 
         final ProfileRequestContext request = context.getProfileRequestContext();
@@ -120,8 +109,15 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
         if (this.samlMessageStorageFactory != null) {
             logger.debug("Creating message storage by {}", this.samlMessageStorageFactory.getClass().getName());
-            context.setSAMLMessageStorage(this.samlMessageStorageFactory.getMessageStorage(inTransport.getRequest()));
+            context.setSAMLMessageStorage(this.samlMessageStorageFactory.getMessageStorage(webContext));
         }
+    }
+
+    protected MessageContext<Pac4jSAMLResponse> prepareOutboundMessageContext(final WebContext webContext) {
+        final Pac4jSAMLResponse outTransport = new DefaultPac4jSAMLResponse(webContext);
+        final MessageContext<Pac4jSAMLResponse> outCtx = new MessageContext<>();
+        outCtx.setMessage(outTransport);
+        return outCtx;
     }
 
     protected final void addSPContext(final SAML2MessageContext context) {
