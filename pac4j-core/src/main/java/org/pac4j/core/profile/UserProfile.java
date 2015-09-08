@@ -167,6 +167,29 @@ public class UserProfile implements Serializable, Externalizable {
     }
 
     /**
+     * Return the attribute with name.
+     *
+     * @param name attribute name
+     * @return the attribute with name
+     * @since 1.8
+     */
+    public <T> T getAttribute(final String name, final Class<T> clazz) {
+        final Object attribute = getAttribute(name);
+
+        if (attribute == null) {
+            return null;
+        }
+
+        if (!clazz.isAssignableFrom(attribute.getClass())) {
+            throw new ClassCastException("Attribute [" + name
+                    + " is of type " + attribute.getClass()
+                    + " when we were expecting " + clazz);
+        }
+
+        return (T) attribute;
+    }
+
+    /**
      * Add a role.
      * 
      * @param role the role to add.

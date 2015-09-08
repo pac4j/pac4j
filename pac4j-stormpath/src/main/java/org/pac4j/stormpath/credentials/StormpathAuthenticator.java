@@ -18,8 +18,8 @@ import java.util.Map;
 
 /**
  * An authentication handler for <a href="http://www.stormpath.com">Stormpath</a>.
- * <p/>
- * This implementation uses Stormpath's <a href="https://github.com/stormpath/stormpath-sdk-java/wiki">Java SDK</a>
+ * This implementation uses Stormpath's
+ * <a href="https://github.com/stormpath/stormpath-sdk-java/wiki">Java SDK</a>
  *
  * @author Misagh Moayyed
  * @since 1.8
