@@ -37,13 +37,13 @@ public class Pac4jHTTPPostEncoder extends HTTPPostEncoder {
         logger.debug("Invoking Velocity template to create POST body");
 
         try {
-            VelocityContext e = new VelocityContext();
+            final VelocityContext e = new VelocityContext();
             this.populateVelocityContext(e, messageContext, endpointURL);
 
             responseAdapter.setContentType("text/html");
             responseAdapter.init();
 
-            OutputStreamWriter out = responseAdapter.getOutputStreamWriter();
+            final OutputStreamWriter out = responseAdapter.getOutputStreamWriter();
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", e, out);
             out.flush();
         } catch (Exception var6) {
