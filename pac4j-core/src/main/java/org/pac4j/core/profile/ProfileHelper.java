@@ -84,7 +84,7 @@ public final class ProfileHelper {
                         } else if ("GaeUserServiceProfile".equals(className)) {
                             completeName = "org.pac4j.gae.profile.GaeUserServiceProfile";
                         } else if ("StormpathProfile".equals(className)) {
-                                completeName = "org.pac4j.stormpath.profile.StormpathProfile";
+                            completeName = "org.pac4j.stormpath.profile.StormpathProfile";
                         } else {
                             final String packageName = className.substring(0, className.length() - 7).toLowerCase();
                             completeName = "org.pac4j.oauth.profile." + packageName + "." + className;

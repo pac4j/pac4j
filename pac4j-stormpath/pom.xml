@@ -14,24 +14,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.pac4j</groupId>
-		<artifactId>pac4j</artifactId>
-		<version>1.8.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.pac4j</groupId>
+        <artifactId>pac4j</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>pac4j-stormpath</artifactId>
-	<packaging>jar</packaging>
-	<name>pac4j for Stormpath</name>
+    <artifactId>pac4j-stormpath</artifactId>
+    <packaging>jar</packaging>
+    <name>pac4j for Stormpath</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.pac4j</groupId>
-			<artifactId>pac4j-core</artifactId>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-http</artifactId>
@@ -49,40 +50,40 @@
             <scope>runtime</scope>
         </dependency>
 
-		<!-- for testing -->
-		<dependency>
-			<groupId>org.pac4j</groupId>
-			<artifactId>pac4j-core</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <!-- for testing -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>org.pac4j.stormpath</Bundle-SymbolicName>
-						<Export-Package>org.pac4j.stormpath.*;version=${project.version}</Export-Package>
-						<Import-Package>*</Import-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.pac4j.stormpath</Bundle-SymbolicName>
+                        <Export-Package>org.pac4j.stormpath.*;version=${project.version}</Export-Package>
+                        <Import-Package>*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <stormpath.sdk.version>0.9.3</stormpath.sdk.version>
