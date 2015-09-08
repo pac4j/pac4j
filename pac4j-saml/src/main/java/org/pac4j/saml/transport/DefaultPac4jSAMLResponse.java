@@ -32,6 +32,8 @@ import java.io.UnsupportedEncodingException;
  * @since 1.8
  */
 public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
+    private static final String UTF8_ENCODING = "UTF-8";
+
     private final ByteArrayOutputStream outputStream;
     private final OutputStreamWriter outputStreamWriter;
     private final WebContext webContext;
@@ -61,7 +63,7 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
 
     @Override
     public WebContext getWebContext() {
-        return null;
+        return webContext;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     }
 
     public void setUTF8Encoding() {
-        webContext.setResponseCharacterEncoding("UTF-8");
+        webContext.setResponseCharacterEncoding(UTF8_ENCODING);
     }
 
     @Override
@@ -102,13 +104,13 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     private static class Pac4jServletOutputStreamWriter extends OutputStreamWriter {
         private final ByteArrayOutputStream outputStream;
         public Pac4jServletOutputStreamWriter(ByteArrayOutputStream out) throws UnsupportedEncodingException {
-            super(out, "UTF-8");
+            super(out, UTF8_ENCODING);
             outputStream = out;
         }
 
         public final String getOutgoingContent() {
             try {
-                final String result = new String(this.outputStream.toByteArray(), "UTF-8");
+                final String result = new String(this.outputStream.toByteArray(), UTF8_ENCODING);
                 return result;
             } catch (final Exception e) {
                 throw new RuntimeException(e);
