@@ -62,32 +62,32 @@ public final class ParameterClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokendAuthenticator() {
-        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenProfileCreator());
+        final ParameterClient client = new ParameterClient(PARAMETER_NAME, null, new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator(), null);
+        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator(), null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator());
+        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
         client.setParameterName(PARAMETER_NAME);
         client.init();
     }
 
     @Test
     public void testMissingParameterName() {
-        final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         TestsHelper.initShouldFail(client, "parameterName cannot be blank");
     }
 
     @Test
     public void testAuthentication() throws RequiresHttpAction {
-        final ParameterClient client = new ParameterClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
         client.setParameterName(PARAMETER_NAME);
         client.setSupportGetRequest(SUPPORT_GET);
         client.setSupportPostRequest(SUPPORT_POST);
