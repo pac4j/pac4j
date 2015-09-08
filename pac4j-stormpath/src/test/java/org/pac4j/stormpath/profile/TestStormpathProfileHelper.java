@@ -1,9 +1,11 @@
 package org.pac4j.stormpath.profile;
 
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.TestCaseProfileHelper;
 
 /**
+ * This class tests the {@link ProfileHelper} class for the {@link StormpathProfile}.
  * @author Misagh Moayyed
  * @since 1.8
  */
