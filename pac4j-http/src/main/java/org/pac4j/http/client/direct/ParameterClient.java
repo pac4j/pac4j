@@ -25,7 +25,7 @@ import org.pac4j.http.profile.creator.ProfileCreator;
 /**
  * <p>This class is the client to authenticate users directly based on a provided parameter (in a GET and/or POST request).</p>
  * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
- * 
+ *
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
  * @since 1.8.0
@@ -41,14 +41,8 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
     public ParameterClient() {
     }
 
-    public ParameterClient(final TokenAuthenticator tokenAuthenticator) {
+    public ParameterClient(final String parameterName, final TokenAuthenticator tokenAuthenticator) {
         setAuthenticator(tokenAuthenticator);
-    }
-
-    public ParameterClient(final TokenAuthenticator tokenAuthenticator,
-                           final ProfileCreator profileCreator) {
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
     }
 
     public ParameterClient(final String parameterName,
