@@ -15,28 +15,15 @@
  */
 package org.pac4j.http.profile.creator.test;
 
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.creator.ProfileCreator;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 /**
- * This class is a profile creator which creates a HTTP profile with username set.
- * 
+ * Will be removed before pac4j v1.8 release.
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
+ * @deprecated
  */
-public class SimpleTestUsernameProfileCreator implements ProfileCreator<UsernamePasswordCredentials, HttpProfile> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public HttpProfile create(UsernamePasswordCredentials credentials) {
-        String username = credentials.getUsername();
-        final HttpProfile profile = new HttpProfile();
-        profile.setId(username);
-        profile.addAttribute(CommonProfile.USERNAME, username);
-        return profile;
-    }
+@Deprecated
+public class SimpleTestUsernameProfileCreator extends AuthenticatorProfileCreator {
 }

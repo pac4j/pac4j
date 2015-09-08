@@ -24,14 +24,14 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class SaltedSha512PasswordEncoder implements PasswordEncoder {
+public class BasicSaltedSha512PasswordEncoder implements PasswordEncoder {
 
     protected String salt;
 
-    public SaltedSha512PasswordEncoder() {
+    public BasicSaltedSha512PasswordEncoder() {
     }
 
-    public SaltedSha512PasswordEncoder(final String salt) {
+    public BasicSaltedSha512PasswordEncoder(final String salt) {
         this.salt = salt;
     }
 

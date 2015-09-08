@@ -19,6 +19,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.http.profile.HttpProfile;
 
 /**
  * This class is a simple test authenticator: token must not be blank.
@@ -36,5 +37,9 @@ public class SimpleTestTokenAuthenticator implements TokenAuthenticator {
         if (CommonHelper.isBlank(credentials.getToken())) {
             throw new CredentialsException("token must not be blank");
         }
+        final String token = credentials.getToken();
+        final HttpProfile profile = new HttpProfile();
+        profile.setId(token);
+        credentials.setUserProfile(profile);
     }
 }

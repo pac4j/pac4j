@@ -1,29 +1,25 @@
 /*
   Copyright 2012 - 2015 pac4j organization
-
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
-
        http://www.apache.org/licenses/LICENSE-2.0
-
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile.creator.test;
-
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
+package org.pac4j.http.client;
 
 /**
- * Will be removed before pac4j v1.8 release.
- * 
+ * Will be removed. Replaced by {@link org.pac4j.http.client.indirect.FormClient}.
+ *
+ * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.4.0
  * @deprecated
  */
 @Deprecated
-public class SimpleTestTokenProfileCreator extends AuthenticatorProfileCreator {
+public class FormClient extends org.pac4j.http.client.indirect.FormClient {
 }
