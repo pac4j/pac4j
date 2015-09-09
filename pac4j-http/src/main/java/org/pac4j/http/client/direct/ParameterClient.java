@@ -42,6 +42,7 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
     }
 
     public ParameterClient(final String parameterName, final TokenAuthenticator tokenAuthenticator) {
+        this.parameterName = parameterName;
         setAuthenticator(tokenAuthenticator);
     }
 
