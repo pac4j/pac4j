@@ -33,11 +33,11 @@ public class SAML2Credentials extends Credentials {
 
     private static final long serialVersionUID = 5040516205957826527L;
 
-    private final NameID nameId;
+    private NameID nameId;
 
-    private final List<Attribute> attributes;
+    private List<Attribute> attributes;
     
-    private final Conditions conditions;
+    private Conditions conditions;
 
     public SAML2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
                             final String clientName) {
@@ -64,4 +64,11 @@ public class SAML2Credentials extends Credentials {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
     }
 
+    @Override
+    public void clear() {
+        this.conditions = null;
+        this.nameId = null;
+        this.attributes = null;
+        this.setClientName(null);
+    }
 }

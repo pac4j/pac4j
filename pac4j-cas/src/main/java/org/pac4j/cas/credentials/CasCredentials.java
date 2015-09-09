@@ -28,7 +28,7 @@ public class CasCredentials extends Credentials {
     
     private static final long serialVersionUID = -6006976366005458716L;
     
-    private final String serviceTicket;
+    private String serviceTicket;
     
     public CasCredentials(final String serviceTicket, final String clientName) {
         this.serviceTicket = serviceTicket;
@@ -43,5 +43,11 @@ public class CasCredentials extends Credentials {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "serviceTicket", this.serviceTicket, "clientName",
                                      getClientName());
+    }
+
+    @Override
+    public void clear() {
+        this.serviceTicket = null;
+        this.setClientName(null);
     }
 }
