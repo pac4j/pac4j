@@ -45,4 +45,9 @@ public abstract class OAuth20Profile extends CommonProfile {
     public String getAccessToken() {
         return (String) getAttribute(OAuthAttributesDefinition.ACCESS_TOKEN);
     }
+
+    @Override
+    public void clear() {
+        this.setAccessToken("");
+    }
 }
