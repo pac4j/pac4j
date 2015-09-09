@@ -24,7 +24,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.password.NopPasswordEncoder;
-import org.pac4j.http.credentials.password.SaltedSha512PasswordEncoder;
+import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
 import org.pac4j.sql.profile.DbProfile;
 import org.pac4j.sql.test.tools.DbServer;
 
@@ -67,7 +67,7 @@ public class DbAuthenticatorTests implements TestsConstants {
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, attribute);
-        authenticator.setPasswordEncoder(new SaltedSha512PasswordEncoder(SALT));
+        authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials);

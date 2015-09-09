@@ -29,7 +29,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 import org.bson.Document;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.password.PasswordEncoder;
-import org.pac4j.http.credentials.password.SaltedSha512PasswordEncoder;
+import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class MongoServer implements TestsConstants {
             final MongoDatabase db = mongo.getDatabase("users");
             db.createCollection("users");
             final MongoCollection<Document> collection = db.getCollection("users");
-            final PasswordEncoder encoder = new SaltedSha512PasswordEncoder(SALT);
+            final PasswordEncoder encoder = new BasicSaltedSha512PasswordEncoder(SALT);
             final String password = encoder.encode(PASSWORD);
             Map<String, Object> properties1 = new HashMap<>();
             properties1.put(USERNAME, GOOD_USERNAME);
