@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 pac4j organization
+  Copyright 2012 - 2015 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,17 +13,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.oidc.client;
 
 import java.net.URI;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.openid.connect.sdk.*;
+import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
@@ -44,7 +45,6 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -60,18 +60,6 @@ import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
-import com.nimbusds.openid.connect.sdk.AuthenticationErrorResponse;
-import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
-import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
-import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
-import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
-import com.nimbusds.openid.connect.sdk.Nonce;
-import com.nimbusds.openid.connect.sdk.OIDCAccessTokenResponse;
-import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoRequest;
-import com.nimbusds.openid.connect.sdk.UserInfoResponse;
-import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.util.DefaultJWTDecoder;
@@ -273,9 +261,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     @Override
     protected OidcProfile retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
 
-        TokenRequest request = new TokenRequest(this.oidcProvider.getTokenEndpointURI(), this.clientAuthentication,
-                new AuthorizationCodeGrant(credentials.getCode(), this.redirectURI,
-                        this.clientAuthentication.getClientID()));
+        final TokenRequest request = new TokenRequest(this.oidcProvider.getTokenEndpointURI(), this.clientAuthentication,
+                new AuthorizationCodeGrant(credentials.getCode(), this.redirectURI));
         HTTPResponse httpResponse;
         try {
             // Token request
@@ -283,14 +270,15 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
 
-            TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
+            final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
             if (response instanceof TokenErrorResponse) {
                 logger.error("Bad token response, error={}", ((TokenErrorResponse) response).getErrorObject());
                 return null;
             }
             logger.debug("Token response successful");
-            OIDCAccessTokenResponse tokenSuccessResponse = (OIDCAccessTokenResponse) response;
-            BearerAccessToken accessToken = (BearerAccessToken) tokenSuccessResponse.getAccessToken();
+            final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
+            final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
+            final BearerAccessToken accessToken = (BearerAccessToken) oidcTokens.getAccessToken();
 
             // User Info request
             UserInfo userInfo = null;
@@ -313,7 +301,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             }
 
             // Check ID Token
-            ReadOnlyJWTClaimsSet claimsSet = this.jwtDecoder.decodeJWT(tokenSuccessResponse.getIDToken());
+            final JWTClaimsSet claimsSet = this.jwtDecoder.decodeJWT(oidcTokens.getIDToken());
             if (useNonce()) {
                 String nonce = claimsSet.getStringClaim("nonce");
                 if (nonce == null || !nonce.equals(context.getSessionAttribute(NONCE_ATTRIBUTE))) {
@@ -326,9 +314,9 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             // Return profile with Claims Set, User Info and Access Token
             OidcProfile profile = new OidcProfile(accessToken);
             profile.setId(claimsSet.getSubject());
-            profile.setIdTokenString(tokenSuccessResponse.getIDTokenString());
-            profile.addAttributes(claimsSet.getAllClaims());
-            profile.addAttributes(userInfo.toJWTClaimsSet().getAllClaims());
+            profile.setIdTokenString(oidcTokens.getIDTokenString());
+            profile.addAttributes(claimsSet.getClaims());
+            profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
 
             return profile;
 
@@ -378,19 +366,19 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         }
     }
 
-    private JWEDecrypter getDecrypter(final JWK key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private JWEDecrypter getDecrypter(final JWK key) throws JOSEException {
         if (key instanceof RSAKey) {
             return new RSADecrypter(((RSAKey) key).toRSAPrivateKey());
         }
         return null;
     }
 
-    private JWSVerifier getVerifier(final JWK key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private JWSVerifier getVerifier(final JWK key) throws JOSEException {
         if (key instanceof RSAKey) {
             return new RSASSAVerifier(((RSAKey) key).toRSAPublicKey());
         } else if (key instanceof ECKey) {
             ECKey ecKey = (ECKey) key;
-            return new ECDSAVerifier(ecKey.getX().decodeToBigInteger(), ecKey.getY().decodeToBigInteger());
+            return new ECDSAVerifier(ecKey);
         }
         return null;
     }
@@ -421,5 +409,4 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private void setAuthParams(final Map<String, String> authParams) {
         this.authParams = authParams;
     }
-
 }

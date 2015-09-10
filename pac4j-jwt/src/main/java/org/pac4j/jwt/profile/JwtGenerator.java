@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Generates a JWT token from a user profile.
@@ -53,22 +54,30 @@ public class JwtGenerator<U extends UserProfile> {
 
         try {
             // Create HMAC signer
-            JWSSigner signer = new MACSigner(this.secret);
+            final JWSSigner signer = new MACSigner(this.secret);
 
-            // Prepare JWT with claims set
-            JWTClaimsSet claimsSet = new JWTClaimsSet();
-            claimsSet.setSubject(profile.getTypedId());
-            claimsSet.setIssueTime(new Date());
-            claimsSet.setIssuer(this.getClass().getSimpleName());
-            claimsSet.setCustomClaims(profile.getAttributes());
+            // Build claims
+            final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
+                    .subject(profile.getTypedId())
+                    .issueTime(new Date())
+                    .issuer(this.getClass().getSimpleName());
 
-            SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
+            // add attributes
+            final Map<String, Object> attributes = profile.getAttributes();
+            for (final String key : attributes.keySet()) {
+                builder.claim(key, attributes.get(key));
+            }
+
+            // claims
+            final JWTClaimsSet claims = builder.build();
+            // signed
+            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
 
             // Apply the HMAC
             signedJWT.sign(signer);
 
             // Create JWE object with signed JWT as payload
-            JWEObject jweObject = new JWEObject(
+            final  JWEObject jweObject = new JWEObject(
                     new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM).contentType("JWT").build(),
                     new Payload(signedJWT));
 
