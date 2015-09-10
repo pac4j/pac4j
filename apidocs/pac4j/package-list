@@ -4,12 +4,14 @@ org.pac4j.cas.client.rest
 org.pac4j.cas.credentials
 org.pac4j.cas.logout
 org.pac4j.cas.profile
+org.pac4j.core
 org.pac4j.core.authorization
 org.pac4j.core.client
 org.pac4j.core.config
 org.pac4j.core.context
 org.pac4j.core.credentials
 org.pac4j.core.exception
+org.pac4j.core.http
 org.pac4j.core.kryo
 org.pac4j.core.profile
 org.pac4j.core.profile.converter
@@ -17,6 +19,7 @@ org.pac4j.core.util
 org.pac4j.gae.client
 org.pac4j.gae.credentials
 org.pac4j.gae.profile
+org.pac4j.http.client
 org.pac4j.http.client.direct
 org.pac4j.http.client.indirect
 org.pac4j.http.credentials
@@ -79,6 +82,8 @@ org.pac4j.saml.transport
 org.pac4j.saml.util
 org.pac4j.sql.credentials.authenticator
 org.pac4j.sql.profile
+org.pac4j.stormpath.credentials
+org.pac4j.stormpath.profile
 org.pac4j.test.cas.controller
 org.scribe.builder.api
 org.scribe.extractors
