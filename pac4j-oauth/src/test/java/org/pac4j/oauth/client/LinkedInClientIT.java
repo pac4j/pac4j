@@ -84,7 +84,7 @@ public class LinkedInClientIT extends OAuthClientIT {
                             Gender.UNSPECIFIED,
                             null,
                             null,
-                            "http://www.linkedin.com/profile/view?id=167439971&amp;authType=name&amp;authToken=_IWF&amp;trk=api*",
+                            "https://www.linkedin.com/profile/view?id=167439971&amp;authType=name&amp;authToken=_IWF&amp;trk=api*",
                             null);
         assertEquals("ScribeUP développeur chez OpenSource", profile.getHeadline());
         assertNotNull(profile.getAccessSecret());
