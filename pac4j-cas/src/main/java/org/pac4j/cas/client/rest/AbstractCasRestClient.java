@@ -17,7 +17,6 @@
 
 package org.pac4j.cas.client.rest;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
@@ -48,6 +47,8 @@ import java.net.URL;
  * @since 1.8.0
  */
 public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePasswordCredentials> {
+    private static final int HTTP_STATUS_OK = 200;
+
     public AbstractCasRestClient() {
         super();
     }
@@ -70,7 +71,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
             final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
             connection = HttpUtils.openDeleteConnection(deleteURL);
             final int responseCode = connection.getResponseCode();
-            if (responseCode != HttpStatus.SC_OK) {
+            if (responseCode != HTTP_STATUS_OK) {
                 throw new TechnicalException("TGT delete request for `" + profile + "` failed: " +
                         HttpUtils.buildHttpErrorMessage(connection));
             }
@@ -95,7 +96,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
             out.close();
 
             final int responseCode = connection.getResponseCode();
-            if (responseCode == HttpStatus.SC_OK) {
+            if (responseCode == HTTP_STATUS_OK) {
                 final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 return new CasCredentials(in.readLine(), getClass().getSimpleName());
             }
