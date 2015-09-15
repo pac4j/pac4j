@@ -17,7 +17,6 @@
 
 package org.pac4j.cas.client.rest;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.core.exception.TechnicalException;
@@ -39,6 +38,8 @@ import java.net.URL;
 public class CasRestAuthenticator implements Authenticator<UsernamePasswordCredentials> {
     private final String casServerPrefixUrl;
     private final String casRestUrl;
+
+    private static final int HTTP_STATUS_CREATED = 201;
 
     public CasRestAuthenticator(final String casServerPrefixUrl) {
         this(casServerPrefixUrl, buildCasRestUrlFromCasServerPrefixUrl(casServerPrefixUrl));
@@ -81,7 +82,7 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
 
             final String locationHeader = connection.getHeaderField("location");
             final int responseCode = connection.getResponseCode();
-            if (locationHeader != null && responseCode == HttpStatus.SC_CREATED) {
+            if (locationHeader != null && responseCode == HTTP_STATUS_CREATED) {
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }
 

@@ -22,6 +22,8 @@ import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.Cas10TicketValidator;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
+import org.jasig.cas.client.validation.Cas30ProxyTicketValidator;
+import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.Saml11TicketValidator;
 import org.jasig.cas.client.validation.TicketValidationException;
@@ -82,8 +84,8 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     protected static final Logger logger = LoggerFactory.getLogger(CasClient.class);
 
     public enum CasProtocol {
-        CAS10, CAS20, CAS20_PROXY, SAML
-    };
+        CAS10, CAS20, CAS20_PROXY, CAS30, CAS30_PROXY, SAML
+    }
 
     protected static final String SERVICE_PARAMETER = "service";
 
@@ -178,8 +180,26 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
                 cas20ProxyTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
                         .getProxyGrantingTicketStorage());
             }
+        } else if (this.casProtocol == CasProtocol.CAS30) {
+            this.ticketValidator = new Cas30ServiceTicketValidator(this.casPrefixUrl);
+            if (this.casProxyReceptor != null) {
+                final Cas30ServiceTicketValidator cas30ServiceTicketValidator = (Cas30ServiceTicketValidator) this.ticketValidator;
+                cas30ServiceTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
+                cas30ServiceTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
+                        .getProxyGrantingTicketStorage());
+            }
+        } else if (this.casProtocol == CasProtocol.CAS30_PROXY) {
+            this.ticketValidator = new Cas30ProxyTicketValidator(this.casPrefixUrl);
+            final Cas30ProxyTicketValidator cas30ProxyTicketValidator = (Cas30ProxyTicketValidator) this.ticketValidator;
+            cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
+            cas30ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
+            if (this.casProxyReceptor != null) {
+                cas30ProxyTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
+                cas30ProxyTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
+                        .getProxyGrantingTicketStorage());
+            }
         } else if (this.casProtocol == CasProtocol.SAML) {
-        	Saml11TicketValidator saml11TicketValidator=new Saml11TicketValidator(this.casPrefixUrl);
+        	final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(this.casPrefixUrl);
         	saml11TicketValidator.setTolerance(getTimeTolerance());
             this.ticketValidator = saml11TicketValidator;
         }
