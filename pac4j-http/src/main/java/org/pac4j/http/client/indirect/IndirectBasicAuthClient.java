@@ -22,9 +22,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
@@ -85,6 +85,11 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
             // retrieve credentials
             credentials = extractor.extract(context);
             logger.debug("credentials : {}", credentials);
+            
+            if (credentials == null) {
+              throw RequiresHttpAction.unauthorized("Requires authentication", context, this.realmName);
+            }
+            
             // validate credentials
             getAuthenticator().validate(credentials);
         } catch (final CredentialsException e) {
