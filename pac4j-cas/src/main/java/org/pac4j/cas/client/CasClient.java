@@ -103,7 +103,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     
     protected long timeTolerance = 1000L;
 
-    protected CasProtocol casProtocol = CasProtocol.CAS20;
+    protected CasProtocol casProtocol = CasProtocol.CAS30;
 
     protected boolean renew = false;
 
