@@ -24,8 +24,10 @@ import org.pac4j.http.credentials.HttpCredentials;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class AuthenticatorProfileCreator<C extends HttpCredentials, P extends UserProfile>
+public class AuthenticatorProfileCreator<C extends HttpCredentials, P extends UserProfile>
         implements ProfileCreator<C, P> {
+
+    public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator<>();
 
     /**
      * {@inheritDoc}

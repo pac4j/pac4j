@@ -25,7 +25,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.password.NopPasswordEncoder;
-import org.pac4j.http.credentials.password.SaltedSha512PasswordEncoder;
+import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.pac4j.mongo.test.tools.MongoServer;
 
@@ -113,7 +113,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), attribute);
-        authenticator.setPasswordEncoder(new SaltedSha512PasswordEncoder(SALT));
+        authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials);

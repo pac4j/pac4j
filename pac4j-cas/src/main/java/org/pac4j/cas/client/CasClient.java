@@ -22,6 +22,8 @@ import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.Cas10TicketValidator;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
+import org.jasig.cas.client.validation.Cas30ProxyTicketValidator;
+import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.ProxyList;
 import org.jasig.cas.client.validation.Saml11TicketValidator;
 import org.jasig.cas.client.validation.TicketValidationException;
@@ -82,8 +84,8 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     protected static final Logger logger = LoggerFactory.getLogger(CasClient.class);
 
     public enum CasProtocol {
-        CAS10, CAS20, CAS20_PROXY, SAML
-    };
+        CAS10, CAS20, CAS20_PROXY, CAS30, CAS30_PROXY, SAML
+    }
 
     protected static final String SERVICE_PARAMETER = "service";
 
@@ -93,13 +95,15 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     protected TicketValidator ticketValidator;
 
+    protected String encoding = "UTF-8";
+
     protected String casLoginUrl;
 
     protected String casPrefixUrl;
     
-    protected long timeTolerance=1000L;
+    protected long timeTolerance = 1000L;
 
-    protected CasProtocol casProtocol = CasProtocol.CAS20;
+    protected CasProtocol casProtocol = CasProtocol.CAS30;
 
     protected boolean renew = false;
 
@@ -150,6 +154,87 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         if (CommonHelper.isBlank(this.casLoginUrl) && CommonHelper.isBlank(this.casPrefixUrl)) {
             throw new TechnicalException("casLoginUrl and casPrefixUrl cannot be both blank");
         }
+
+        initializeClientConfiguration();
+
+        if (this.casProtocol == CasProtocol.CAS10) {
+            initializeCas10Protocol();
+        } else if (this.casProtocol == CasProtocol.CAS20) {
+            initializeCas20Protocol();
+        } else if (this.casProtocol == CasProtocol.CAS20_PROXY) {
+            initializeCas20ProxyProtocol();
+        } else if (this.casProtocol == CasProtocol.CAS30) {
+            initializeCas30Protocol();
+        } else if (this.casProtocol == CasProtocol.CAS30_PROXY) {
+            initializeCas30ProxyProtocol();
+        } else if (this.casProtocol == CasProtocol.SAML) {
+            initializeSAMLProtocol();
+        }
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<CasProfile>());
+    }
+
+    protected void initializeSAMLProtocol() {
+        final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(this.casPrefixUrl);
+        saml11TicketValidator.setTolerance(getTimeTolerance());
+        saml11TicketValidator.setEncoding(this.encoding);
+        this.ticketValidator = saml11TicketValidator;
+    }
+
+    protected void initializeCas30ProxyProtocol() {
+        this.ticketValidator = new Cas30ProxyTicketValidator(this.casPrefixUrl);
+        final Cas30ProxyTicketValidator cas30ProxyTicketValidator = (Cas30ProxyTicketValidator) this.ticketValidator;
+        cas30ProxyTicketValidator.setEncoding(this.encoding);
+        cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
+        cas30ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
+        if (this.casProxyReceptor != null) {
+            cas30ProxyTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
+            cas30ProxyTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
+                    .getProxyGrantingTicketStorage());
+        }
+    }
+
+    protected void initializeCas30Protocol() {
+        this.ticketValidator = new Cas30ServiceTicketValidator(this.casPrefixUrl);
+        final Cas30ServiceTicketValidator cas30ServiceTicketValidator = (Cas30ServiceTicketValidator) this.ticketValidator;
+        cas30ServiceTicketValidator.setEncoding(this.encoding);
+        if (this.casProxyReceptor != null) {
+            cas30ServiceTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
+            cas30ServiceTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
+                    .getProxyGrantingTicketStorage());
+        }
+    }
+
+    protected void initializeCas20ProxyProtocol() {
+        this.ticketValidator = new Cas20ProxyTicketValidator(this.casPrefixUrl);
+        final Cas20ProxyTicketValidator cas20ProxyTicketValidator = (Cas20ProxyTicketValidator) this.ticketValidator;
+        cas20ProxyTicketValidator.setEncoding(this.encoding);
+        cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
+        cas20ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
+        if (this.casProxyReceptor != null) {
+            cas20ProxyTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
+            cas20ProxyTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
+                    .getProxyGrantingTicketStorage());
+        }
+    }
+
+    protected void initializeCas20Protocol() {
+        this.ticketValidator = new Cas20ServiceTicketValidator(this.casPrefixUrl);
+        final Cas20ServiceTicketValidator cas20ServiceTicketValidator = (Cas20ServiceTicketValidator) this.ticketValidator;
+        cas20ServiceTicketValidator.setEncoding(this.encoding);
+        if (this.casProxyReceptor != null) {
+            cas20ServiceTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
+            cas20ServiceTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
+                    .getProxyGrantingTicketStorage());
+        }
+    }
+
+    protected void initializeCas10Protocol() {
+        this.ticketValidator = new Cas10TicketValidator(this.casPrefixUrl);
+        final Cas10TicketValidator cas10TicketValidator = (Cas10TicketValidator) this.ticketValidator;
+        cas10TicketValidator.setEncoding(this.encoding);
+    }
+
+    protected void initializeClientConfiguration() {
         if (this.casPrefixUrl != null && !this.casPrefixUrl.endsWith("/")) {
             this.casPrefixUrl += "/";
         }
@@ -158,32 +243,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         } else if (CommonHelper.isBlank(this.casLoginUrl)) {
             this.casLoginUrl = this.casPrefixUrl + "login";
         }
-        if (this.casProtocol == CasProtocol.CAS10) {
-            this.ticketValidator = new Cas10TicketValidator(this.casPrefixUrl);
-        } else if (this.casProtocol == CasProtocol.CAS20) {
-            this.ticketValidator = new Cas20ServiceTicketValidator(this.casPrefixUrl);
-            if (this.casProxyReceptor != null) {
-                final Cas20ServiceTicketValidator cas20ServiceTicketValidator = (Cas20ServiceTicketValidator) this.ticketValidator;
-                cas20ServiceTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
-                cas20ServiceTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
-                        .getProxyGrantingTicketStorage());
-            }
-        } else if (this.casProtocol == CasProtocol.CAS20_PROXY) {
-            this.ticketValidator = new Cas20ProxyTicketValidator(this.casPrefixUrl);
-            final Cas20ProxyTicketValidator cas20ProxyTicketValidator = (Cas20ProxyTicketValidator) this.ticketValidator;
-            cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
-            cas20ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
-            if (this.casProxyReceptor != null) {
-                cas20ProxyTicketValidator.setProxyCallbackUrl(this.casProxyReceptor.getCallbackUrl());
-                cas20ProxyTicketValidator.setProxyGrantingTicketStorage(this.casProxyReceptor
-                        .getProxyGrantingTicketStorage());
-            }
-        } else if (this.casProtocol == CasProtocol.SAML) {
-        	Saml11TicketValidator saml11TicketValidator=new Saml11TicketValidator(this.casPrefixUrl);
-        	saml11TicketValidator.setTolerance(getTimeTolerance());
-            this.ticketValidator = saml11TicketValidator;
-        }
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<CasProfile>());
     }
 
     /**
@@ -202,20 +261,23 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             final CasCredentials casCredentials = new CasCredentials(ticket, getName());
             logger.debug("casCredentials : {}", casCredentials);
             return casCredentials;
-        } else if (this.logoutHandler.isLogoutRequest(context)) {
+        }
+
+        if (this.logoutHandler.isLogoutRequest(context)) {
             this.logoutHandler.destroySession(context);
             final String message = "logout request : no credential returned";
             logger.debug(message);
             throw RequiresHttpAction.ok(message, context);
         }
+
         if (this.gateway) {
             logger.info("No credential found in this gateway round-trip");
             return null;
-        } else {
-            final String message = "No ticket or logout request";
-            logger.error(message);
-            throw new CredentialsException(message);
         }
+        final String message = "No ticket or logout request";
+        logger.error(message);
+        throw new CredentialsException(message);
+
     }
 
     /**
@@ -331,11 +393,19 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 		this.timeTolerance = timeTolerance;
 	}
 
-	@Override
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(final String encoding) {
+        this.encoding = encoding;
+    }
+
+    @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "casLoginUrl", this.casLoginUrl,
                 "casPrefixUrl", this.casPrefixUrl, "casProtocol", this.casProtocol, "renew", this.renew, "gateway",
-                this.gateway, "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy,
+                this.gateway, "encoding", this.encoding, "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy,
                 "allowedProxyChains", this.allowedProxyChains, "casProxyReceptor", this.casProxyReceptor);
     }
 

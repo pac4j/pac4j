@@ -27,9 +27,9 @@ public class UsernamePasswordCredentials extends HttpCredentials {
 
     private static final long serialVersionUID = -7229878989627796565L;
 
-    private final String username;
+    private String username;
 
-    private final String password;
+    private String password;
 
     public UsernamePasswordCredentials(final String username, final String password, final String clientName) {
         this.username = username;
@@ -49,5 +49,13 @@ public class UsernamePasswordCredentials extends HttpCredentials {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "password", "[PROTECTED]",
                 "clientName", getClientName());
+    }
+
+    @Override
+    public void clear() {
+        this.username = null;
+        this.password = null;
+        this.setClientName(null);
+        this.setUserProfile(null);
     }
 }

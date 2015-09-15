@@ -42,22 +42,53 @@ public interface Pac4jConstants {
     @Deprecated
     String STATELESS = "stateless";
 
-    /* Is Ajax configuration parameter */
+    /**
+     * This ajax configuration parameter is no longer necessary
+     * as AJAX requests are now automatically detected.
+     */
+    @Deprecated
     String IS_AJAX = "isAjax";
 
-    /* RequireAnyRole configuration parameter */
+    /* The AJAX header value. */
+    String AJAX_HEADER_VALUE = "XMLHttpRequest";
+
+    /* The AJAX header name. */
+    String AJAX_HEADER_NAME = "X-Requested-With";
+
+    /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
+    String IS_AJAX_REQUEST = "is_ajax_request";
+
+    /**
+     * This configuration is no longer needed, replaced by the use
+     * of an {@link org.pac4j.core.authorization.Authorizer} directly or by name.
+     */
+    @Deprecated
     String REQUIRE_ANY_ROLE = "requireAnyRole";
 
-    /* RequireAllRoles configuration parameter */
+    /**
+     * This configuration is no longer needed, replaced by the use
+     * of an {@link org.pac4j.core.authorization.Authorizer} directly or by name.
+     */
+    @Deprecated
     String REQUIRE_ALL_ROLES = "requireAllRoles";
 
     /* Target url configuration parameter */
     String TARGET_URL = "targetUrl";
 
-    /* Whether the web session must be used for direct clients */
+    /**
+     * Will be removed before pac4j v1.8 release.
+     *
+     * @deprecated
+     */
+    @Deprecated
     String USE_SESSION_FOR_DIRECT_CLIENT = "useSessionForDirectClient";
 
-    /* Whether client can be selected dynamically */
+    /**
+     * Will be removed before pac4j v1.8 release.
+     *
+     * @deprecated
+     */
+    @Deprecated
     String ALLOW_DYNAMIC_CLIENT_SELECTION = "allowDynamicClientSelection";
 
     /* The name of an authorizer */

@@ -78,6 +78,7 @@
 		<module>pac4j-ldap</module>
 		<module>pac4j-sql</module>
 		<module>pac4j-mongo</module>
+		<module>pac4j-stormpath</module>
 	</modules>
 
 	<dependencyManagement>
@@ -141,13 +142,18 @@
 			<dependency>
 				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-core</artifactId>
-				<version>3.3.3</version>
+				<version>3.4.1</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.jasig.cas.client</groupId>
+				<artifactId>cas-client-support-saml</artifactId>
+				<version>3.4.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
@@ -193,8 +199,18 @@
 			</dependency>
 			<dependency>
 				<groupId>com.nimbusds</groupId>
+				<artifactId>oauth2-oidc-sdk</artifactId>
+				<version>5.0-alpha2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nimbusds</groupId>
 				<artifactId>nimbus-jose-jwt</artifactId>
-				<version>3.10</version>
+				<version>4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>1.51</version>
 			</dependency>
 			<dependency>
 				<groupId>org.ldaptive</groupId>

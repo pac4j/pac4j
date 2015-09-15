@@ -12,10 +12,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */package org.pac4j.http.client.indirect;
+ */
+package org.pac4j.http.client.indirect;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -24,12 +24,14 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.UsernameProfileCreator;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link FormClient} class.
@@ -37,8 +39,9 @@ import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class TestFormClient extends TestCase implements TestsConstants {
+public final class TestFormClient implements TestsConstants {
 
+    @Test
     public void testClone() {
         final FormClient oldClient = new FormClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
@@ -46,10 +49,8 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         oldClient.setPasswordParameter(PASSWORD);
         oldClient.setUsernameParameter(USERNAME);
         oldClient.setLoginUrl(LOGIN_URL);
-        final SimpleTestUsernameProfileCreator profileCreator = new SimpleTestUsernameProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
-        final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
-        oldClient.setAuthenticator(usernamePasswordAuthenticator);
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator());
+        oldClient.setAuthenticator(new SimpleTestUsernamePasswordAuthenticator());
         final FormClient client = (FormClient) oldClient.clone();
         assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
         assertEquals(oldClient.getName(), client.getName());
@@ -60,33 +61,43 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         assertEquals(oldClient.getLoginUrl(), client.getLoginUrl());
     }
 
+    @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, null, new SimpleTestUsernameProfileCreator());
+        final FormClient formClient = new FormClient(LOGIN_URL, null);
         TestsHelper.initShouldFail(formClient, "authenticator cannot be null");
     }
 
+    @Test
     public void testMissingProfileCreator() {
         final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
     }
 
+    @Test
+    public void testHasDefaultProfileCreator() {
+        final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        formClient.init();
+    }
+
+    @Test
     public void testMissingLoginUrl() {
-        final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator(),
-                new SimpleTestUsernameProfileCreator());
+        final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator());
         TestsHelper.initShouldFail(formClient, "loginUrl cannot be blank");
     }
 
     private FormClient getFormClient() {
-        return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), new SimpleTestUsernameProfileCreator());
+        return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
     }
 
+    @Test
     public void testRedirectionUrl() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
-        formClient.redirect(context, false, false);
+        formClient.redirect(context, false);
         assertEquals(LOGIN_URL, context.getResponseLocation());
     }
 
+    @Test
     public void testGetCredentialsMissingUsername() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
@@ -102,6 +113,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
 
+    @Test
     public void testGetCredentialsMissingPassword() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
@@ -116,6 +128,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
 
+    @Test
     public void testGetCredentials() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
@@ -132,6 +145,7 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         }
     }
 
+    @Test
     public void testGetRightCredentials() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
@@ -141,8 +155,10 @@ public final class TestFormClient extends TestCase implements TestsConstants {
         assertEquals(USERNAME, credentials.getPassword());
     }
 
+    @Test
     public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
+        formClient.setProfileCreator(new UsernameProfileCreator());
         final MockWebContext context = MockWebContext.create();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);

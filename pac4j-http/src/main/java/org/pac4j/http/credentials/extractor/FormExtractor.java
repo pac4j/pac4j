@@ -42,7 +42,7 @@ public class FormExtractor implements Extractor<UsernamePasswordCredentials> {
     public UsernamePasswordCredentials extract(WebContext context) {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
-        if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
+        if (username == null || password == null) {
             return null;
         }
 

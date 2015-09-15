@@ -18,7 +18,7 @@ package org.pac4j.jwt.credentials.authenticator;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
@@ -83,8 +83,8 @@ public class JwtAuthenticator implements TokenAuthenticator {
         }
 
         try {
-            final ReadOnlyJWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-            final UserProfile profile = ProfileHelper.buildProfile(claimSet.getSubject(), claimSet.getCustomClaims());
+            final JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
+            final UserProfile profile = ProfileHelper.buildProfile(claimSet.getSubject(), claimSet.getClaims());
             credentials.setUserProfile(profile);
         } catch (final Exception e) {
             logger.error("Cannot get claimSet", e);

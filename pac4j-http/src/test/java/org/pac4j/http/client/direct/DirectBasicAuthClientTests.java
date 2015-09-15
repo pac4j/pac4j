@@ -14,8 +14,8 @@
    limitations under the License.
  */package org.pac4j.http.client.direct;
 
-import junit.framework.TestCase;
 import org.apache.commons.codec.binary.Base64;
+import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -27,14 +27,17 @@ import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
+import static org.junit.Assert.*;
+
 /**
  * This class tests the {@link DirectBasicAuthClient} class.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class DirectBasicAuthClientTests extends TestCase implements TestsConstants {
+public final class DirectBasicAuthClientTests implements TestsConstants {
 
+    @Test
     public void testClone() {
         final DirectBasicAuthClient oldClient = new DirectBasicAuthClient();
         oldClient.setName(TYPE);
@@ -48,16 +51,25 @@ public final class DirectBasicAuthClientTests extends TestCase implements TestsC
         assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
     }
 
+    @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null, new SimpleTestUsernameProfileCreator());
         TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
 
+    @Test
     public void testMissingProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.initShouldFail(basicAuthClient, "profileCreator cannot be null");
     }
 
+    @Test
+    public void testHasDefaultProfileCreator() {
+        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        basicAuthClient.init();
+    }
+
+    @Test
     public void testAuthentication() throws RequiresHttpAction {
         final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), new SimpleTestUsernameProfileCreator());
         final MockWebContext context = MockWebContext.create();
