@@ -23,9 +23,6 @@ import org.opensaml.saml.common.binding.impl.SAMLOutboundDestinationHandler;
 import org.opensaml.saml.common.binding.security.impl.EndpointURLSchemeSecurityHandler;
 import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.saml2.binding.encoding.impl.BaseSAML2MessageEncoder;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPPostEncoder;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
@@ -36,6 +33,9 @@ import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageSender;
 import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.transport.Pac4jHTTPPostEncoder;
+import org.pac4j.saml.transport.Pac4jHTTPRedirectDeflateEncoder;
+import org.pac4j.saml.transport.Pac4jSAMLResponse;
 import org.pac4j.saml.util.VelocityEngineFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,21 +146,31 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     }
 
+    /**
+     * Build the WebSSO handler for sending and receiving SAML2 messages.
+     * @param ctx
+     * @return the encoder instance
+     */
     private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
-        // Build the WebSSO handler for sending and receiving SAML2 messages
-        final BaseSAML2MessageEncoder encoder;
+
+        final Pac4jSAMLResponse adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
+
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
-            // Get a velocity engine for the HTTP-POST binding (building of an HTML document)
+
             final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
-            encoder = new HTTPPostEncoder();
-            ((HTTPPostEncoder) encoder).setVelocityEngine(velocityEngine);
-        } else if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            encoder = new HTTPRedirectDeflateEncoder();
-        } else {
-            throw new UnsupportedOperationException("Binding type - " + destinationBindingType + " is not supported");
+            final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(ctx.getWebContext(), adapter);
+            encoder.setVelocityEngine(velocityEngine);
+            return encoder;
         }
 
-        encoder.setHttpServletResponse(ctx.getProfileRequestContextOutboundMessageTransportResponse());
-        return encoder;
+        if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
+            final Pac4jHTTPRedirectDeflateEncoder encoder =
+                    new Pac4jHTTPRedirectDeflateEncoder(ctx.getWebContext(), adapter);
+            return encoder;
+        }
+
+        throw new UnsupportedOperationException("Binding type - "
+                + destinationBindingType + " is not supported");
+
     }
 }

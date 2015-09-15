@@ -15,26 +15,15 @@
  */
 package org.pac4j.http.profile.creator.test;
 
-import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.creator.ProfileCreator;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 /**
- * This profile creator creates a HTTP profile where the identifier is the token.
+ * Will be removed before pac4j v1.8 release.
  * 
  * @author Jerome Leleu
  * @since 1.8.0
+ * @deprecated
  */
-public class SimpleTestTokenProfileCreator implements ProfileCreator<TokenCredentials, HttpProfile> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public HttpProfile create(final TokenCredentials credentials) {
-        final String token = credentials.getToken();
-        final HttpProfile profile = new HttpProfile();
-        profile.setId(token);
-        return profile;
-    }
+@Deprecated
+public class SimpleTestTokenProfileCreator extends AuthenticatorProfileCreator {
 }

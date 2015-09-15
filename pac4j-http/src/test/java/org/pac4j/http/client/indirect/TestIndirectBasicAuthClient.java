@@ -14,9 +14,8 @@
    limitations under the License.
  */package org.pac4j.http.client.indirect;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.codec.binary.Base64;
+import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -27,14 +26,17 @@ import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
+import static org.junit.Assert.*;
+
 /**
  * This class tests the {@link IndirectBasicAuthClient} class.
  *
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class TestIndirectBasicAuthClient extends TestCase implements TestsConstants {
+public final class TestIndirectBasicAuthClient implements TestsConstants {
 
+    @Test
     public void testClone() {
         final IndirectBasicAuthClient oldClient = new IndirectBasicAuthClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
@@ -50,18 +52,28 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
     }
 
+    @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null, new SimpleTestUsernameProfileCreator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
 
+    @Test
     public void testMissingProfileCreator() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "profileCreator cannot be null");
     }
 
+    @Test
+    public void testHasDefaultProfileCreator() {
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        basicAuthClient.setCallbackUrl(CALLBACK_URL);
+        basicAuthClient.init();
+    }
+
+    @Test
     public void testMissingLoginUrl() {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
                 new SimpleTestUsernameProfileCreator());
@@ -75,13 +87,15 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         return basicAuthClient;
     }
 
+    @Test
     public void testRedirectionUrl() throws RequiresHttpAction {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         MockWebContext context = MockWebContext.create();
-        basicAuthClient.redirect(context, false, false);
+        basicAuthClient.redirect(context, false);
         assertEquals(CALLBACK_URL, context.getResponseLocation());
     }
 
+    @Test
     public void testGetCredentialsMissingHeader() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
@@ -96,6 +110,7 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         }
     }
 
+    @Test
     public void testGetCredentialsNotABasicHeader() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
@@ -110,6 +125,7 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         }
     }
 
+    @Test
     public void testGetCredentialsBadFormatHeader() throws RequiresHttpAction {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
@@ -125,6 +141,7 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         }
     }
 
+    @Test
     public void testGetCredentialsMissingSemiColon() throws RequiresHttpAction {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
@@ -140,6 +157,7 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         }
     }
 
+    @Test
     public void testGetCredentialsBadCredentials() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + PASSWORD;
@@ -156,6 +174,7 @@ public final class TestIndirectBasicAuthClient extends TestCase implements Tests
         }
     }
 
+    @Test
     public void testGetCredentialsGoodCredentials() throws RequiresHttpAction {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + USERNAME;

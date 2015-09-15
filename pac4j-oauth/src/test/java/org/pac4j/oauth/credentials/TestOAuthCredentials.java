@@ -47,4 +47,20 @@ public final class TestOAuthCredentials extends TestCase implements TestsConstan
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());
         assertEquals(credentials.getClientName(), credentials2.getClientName());
     }
+
+    public void testClearOAuthCredentials() {
+        final OAuthCredentials credentials = new OAuthCredentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
+        final byte[] bytes = TestsHelper.serialize(credentials);
+        final OAuthCredentials credentials2 = (OAuthCredentials) TestsHelper.unserialize(bytes);
+        credentials.clear();
+        credentials2.clear();
+        assertNull(credentials.getToken());
+        assertNull(credentials.getRequestToken());
+        assertNull(credentials.getVerifier());
+        assertNull(credentials.getClientName());
+        assertNull(credentials2.getToken());
+        assertNull(credentials2.getRequestToken());
+        assertNull(credentials2.getVerifier());
+        assertNull(credentials2.getClientName());
+    }
 }

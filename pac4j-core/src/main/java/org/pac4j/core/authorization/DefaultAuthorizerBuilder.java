@@ -15,22 +15,46 @@
  */
 package org.pac4j.core.authorization;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Map;
 
 /**
- * Build the default authorizer based on regular parameters.
+ * Build the authorizer based on regular parameters.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class DefaultAuthorizerBuilder {
+public class DefaultAuthorizerBuilder implements AuthorizerBuilder {
 
     private static final Authorizer DEFAULT_AUTHORIZER = new IsAuthenticatedAuthorizer();
 
     public static final String ROLE_SEPARATOR = ",";
 
+    public Authorizer build(final WebContext context, final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers) {
+        // we already have an authorizer
+        if (authorizer != null) {
+            return authorizer;
+        }
+        // we have an authorizer name
+        if (CommonHelper.isNotBlank(authorizerName)) {
+            // we must have authorizers
+            CommonHelper.assertNotNull("authorizers", authorizers);
+            final Authorizer result = authorizers.get(authorizerName);
+            // we must have an authorizer defined for this name
+            CommonHelper.assertNotNull("authorizers['" + authorizerName + "']", result);
+            return result;
+        }
+        return DEFAULT_AUTHORIZER;
+    }
+
+    /**
+     * Will be removed before the release of pac4j v1.8.
+     *
+     * @deprecated
+     */
+    @Deprecated
     public static Authorizer build(final Authorizer authorizer, final String authorizerName, final Map<String, Authorizer> authorizers,
                                    final String requireAnyRole, final String requireAllRoles) {
         // we already have an authorizer

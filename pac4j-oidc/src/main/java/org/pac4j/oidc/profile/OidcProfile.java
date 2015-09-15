@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 pac4j organization
+  Copyright 2012 - 2015 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -88,6 +88,11 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
         this.accessToken = BearerAccessTokenBean.fromBean(bean);
         this.idTokenString = (String) in.readObject();
+    }
+
+    @Override
+    public void clear() {
+        this.accessToken = null;
     }
 
     private static class BearerAccessTokenBean implements Serializable {

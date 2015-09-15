@@ -86,6 +86,12 @@ public interface WebContext {
     void invalidateSession();
 
     /**
+     * Gets the session id for this context.
+     * @return the session identifier
+     */
+    Object getSessionIdentifier();
+
+    /**
      * Return the request method.
      *
      * @return the request method
@@ -120,6 +126,18 @@ public interface WebContext {
      * @param value value of the header
      */
     void setResponseHeader(String name, String value);
+
+    /**
+     * Sets the response encoding type.
+     * @param encoding
+     */
+    void setResponseCharacterEncoding(String encoding);
+
+    /**
+     * Sets the response content type.
+     * @param content
+     */
+    void setResponseContentType(String content);
 
     /**
      * Return the server name.

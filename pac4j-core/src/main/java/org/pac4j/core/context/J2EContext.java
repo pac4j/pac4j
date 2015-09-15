@@ -98,6 +98,11 @@ public class J2EContext implements WebContext {
         this.request.getSession().invalidate();
     }
 
+    @Override
+    public Object getSessionIdentifier() {
+        return this.request.getSession().getId();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -161,6 +166,16 @@ public class J2EContext implements WebContext {
      */
     public void setResponseHeader(final String name, final String value) {
         this.response.setHeader(name, value);
+    }
+
+    @Override
+    public void setResponseCharacterEncoding(final String encoding) {
+        this.response.setCharacterEncoding(encoding);
+    }
+
+    @Override
+    public void setResponseContentType(final String content) {
+        this.response.setContentType(content);
     }
 
     /**

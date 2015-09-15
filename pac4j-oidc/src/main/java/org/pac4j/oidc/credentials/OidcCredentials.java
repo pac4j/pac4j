@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 pac4j organization
+  Copyright 2012 - 2015 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.nimbusds.oauth2.sdk.AuthorizationCode;
  */
 public class OidcCredentials extends Credentials {
 
-    private final AuthorizationCode code;
+    private AuthorizationCode code;
 
     public OidcCredentials(AuthorizationCode code) {
         this.code = code;
@@ -40,4 +40,9 @@ public class OidcCredentials extends Credentials {
         return this.code;
     }
 
+    @Override
+    public void clear() {
+        this.code = null;
+        this.setClientName(null);
+    }
 }
