@@ -23,23 +23,24 @@ package org.pac4j.core.context;
  */
 public interface HttpConstants {
 
-    public static final int OK = 200;
+    int OK = 200;
 
-    public static final int UNAUTHORIZED = 401;
+    /**
+     * @since 1.8
+     */
+    int CREATED = 201;
 
-    public static final int FORBIDDEN = 403;
+    int UNAUTHORIZED = 401;
 
-    public static final int TEMP_REDIRECT = 302;
+    int FORBIDDEN = 403;
 
-    public static final int DEFAULT_PORT = 80;
+    int TEMP_REDIRECT = 302;
 
-    public static final String LOCATION_HEADER = "Location";
+    int DEFAULT_PORT = 80;
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    String LOCATION_HEADER = "Location";
 
-    public static final String AUTHENTICATE_HEADER = "WWW-Authenticate";
+    String AUTHORIZATION_HEADER = "Authorization";
 
-    public static final String CONTENT_TYPE_HEADER = "Content-Type";
-
-    public final static String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
+    String AUTHENTICATE_HEADER = "WWW-Authenticate";
 }
