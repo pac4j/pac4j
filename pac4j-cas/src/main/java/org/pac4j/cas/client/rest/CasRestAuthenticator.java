@@ -17,9 +17,9 @@
 
 package org.pac4j.cas.client.rest;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.Authenticator;
@@ -81,7 +81,7 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
 
             final String locationHeader = connection.getHeaderField("location");
             final int responseCode = connection.getResponseCode();
-            if (locationHeader != null && responseCode == HttpStatus.SC_CREATED) {
+            if (locationHeader != null && responseCode == HttpConstants.CREATED) {
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }
 

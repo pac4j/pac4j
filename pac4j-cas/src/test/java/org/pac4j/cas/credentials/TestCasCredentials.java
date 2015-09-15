@@ -12,7 +12,7 @@ import org.pac4j.core.util.TestsConstants;
 public class TestCasCredentials extends TestCase implements TestsConstants {
 
     public void testClearCredentials() {
-        CasCredentials casCredentials = new CasCredentials(
+        final CasCredentials casCredentials = new CasCredentials(
                 "testServiceTicket",
                 "TestClientName"
         );

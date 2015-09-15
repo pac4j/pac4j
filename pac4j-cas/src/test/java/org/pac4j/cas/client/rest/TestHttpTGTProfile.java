@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 public class TestHttpTGTProfile extends TestCase {
 
     public void testClearProfile() {
-        HttpTGTProfile profile = new HttpTGTProfile("testId", "testUser");
+        final HttpTGTProfile profile = new HttpTGTProfile("testId", "testUser");
         profile.clear();
         assertNull(profile.getTicketGrantingTicketId());
     }

@@ -17,13 +17,13 @@
 
 package org.pac4j.cas.client.rest;
 
-import org.apache.commons.httpclient.HttpStatus;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.client.direct.DirectHttpClient;
@@ -70,7 +70,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
             final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
             connection = HttpUtils.openDeleteConnection(deleteURL);
             final int responseCode = connection.getResponseCode();
-            if (responseCode != HttpStatus.SC_OK) {
+            if (responseCode != HttpConstants.OK) {
                 throw new TechnicalException("TGT delete request for `" + profile + "` failed: " +
                         HttpUtils.buildHttpErrorMessage(connection));
             }
@@ -95,7 +95,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
             out.close();
 
             final int responseCode = connection.getResponseCode();
-            if (responseCode == HttpStatus.SC_OK) {
+            if (responseCode == HttpConstants.OK) {
                 final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 return new CasCredentials(in.readLine(), getClass().getSimpleName());
             }

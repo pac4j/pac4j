@@ -142,13 +142,18 @@
 			<dependency>
 				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-core</artifactId>
-				<version>3.3.3</version>
+				<version>3.4.1</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.jasig.cas.client</groupId>
+				<artifactId>cas-client-support-saml</artifactId>
+				<version>3.4.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
