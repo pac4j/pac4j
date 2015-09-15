@@ -38,9 +38,7 @@ They depend on the `pac4j-core` module (groupId: `org.pac4j`):
 9. **LDAP** using the `pac4j-ldap` module
 10. **relational DB** using the `pac4j-sql` module
 11. **MongoDB** using the `pac4j-mongo` module
-12. [**Stormpath**](https://stormpath.com) using the `pac4j-stormpath` module.
-
-See [all authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Clients).
+12. **Stormpath** using the `pac4j-stormpath` module.
 
 
 ## How to use `pac4j` for a specific framework?
