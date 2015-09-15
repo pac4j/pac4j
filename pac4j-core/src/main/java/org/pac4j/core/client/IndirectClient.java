@@ -108,8 +108,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         init();
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
-            // clean requested url
-            context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
+            logger.info("AJAX request detected -> returning 401");
+            cleanRequestedUrl(context);
             throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
         }
         // authentication has already been tried
@@ -119,6 +119,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             // protected target -> forbidden
             if (requiresAuthentication) {
                 logger.error("authentication already tried and protected target -> forbidden");
+                cleanRequestedUrl(context);
                 throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
             }
         }
@@ -131,6 +132,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
                     NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
             return RedirectAction.redirect(intermediateUrl);
         }
+    }
+
+    private void cleanRequestedUrl(final WebContext context) {
+        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
     }
 
     /**
