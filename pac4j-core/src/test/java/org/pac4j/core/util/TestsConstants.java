@@ -58,6 +58,7 @@ public interface TestsConstants {
     String FIRSTNAME = "firstname";
     String FIRSTNAME_VALUE = "Jerome";
     String CLIENT_NAME = "clientname";
+    String ROLE = "role";
 
     // urls
     String CALLBACK_URL = "http://myserver/callback";

@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
@@ -29,14 +30,12 @@ import java.util.List;
  */
 public class DefaultClientFinder implements ClientFinder {
 
-    public static final String CLIENT_NAME_SEPARATOR = ",";
-
     public Client find(final Clients clients, final WebContext context, final String clientName) {
         // no name -> no client
         if (CommonHelper.isBlank(clientName)) {
             return null;
         }
-        final List<String> names = Arrays.asList(clientName.split(CLIENT_NAME_SEPARATOR));
+        final List<String> names = Arrays.asList(clientName.split(Pac4jConstants.ELEMENT_SEPRATOR));
         // if a client_name parameter is provided on the request, get the client and check if it is allowed
         final String clientNameOnRequest = context.getRequestParameter(clients.getClientNameParameter());
         if (clientNameOnRequest != null) {
