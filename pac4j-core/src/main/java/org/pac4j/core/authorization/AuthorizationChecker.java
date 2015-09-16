@@ -18,15 +18,18 @@ package org.pac4j.core.authorization;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * Fake authorizer (never authorizerd).
+ * The way to check authorizations.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class FakeAuthorizer implements Authorizer {
+public interface AuthorizationChecker {
 
-    public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        return false;
-    }
+    boolean isAuthorized(WebContext context, UserProfile profile, String authorizerName, Map<String, Authorizer> authorizersMap);
+
+    boolean isAuthorized(WebContext context, UserProfile profile, List<Authorizer> authorizers);
 }
