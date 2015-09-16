@@ -16,11 +16,9 @@
 package org.pac4j.http.credentials.authenticator;
 
 import org.junit.Test;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.extractor.HeaderExtractor;
 
 import static org.junit.Assert.*;
 
