@@ -15,15 +15,16 @@
  */
 package org.pac4j.http.credentials.authenticator;
 
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.HttpCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,36 +37,32 @@ public class LocalCachingAuthenticator<T extends HttpCredentials> implements Aut
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Cache<T, UserProfile> cache;
-
-    private final Authenticator<T> delegate;
+    private final LoadingCache<T, UserProfile> cache;
+    private final UserProfileCacheLoader<T> cacheLoader;
 
     public LocalCachingAuthenticator(final Authenticator<T> delegate,
                                      final long cacheSize, final long timeout,
                                      final TimeUnit timeUnit) {
-        this.delegate = delegate;
+
+        this.cacheLoader = new UserProfileCacheLoader<>(delegate);
         this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize)
-                            .expireAfterWrite(timeout, timeUnit).build();
+                .expireAfterWrite(timeout, timeUnit).build(this.cacheLoader);
     }
 
     @Override
     public void validate(final T credentials) {
         try {
-            final UserProfile profile = this.cache.get(credentials, new Callable<UserProfile>() {
-                @Override
-                public UserProfile call() throws Exception {
-                    logger.debug("Delegating authentication to {}...", delegate);
-                    delegate.validate(credentials);
-                    final UserProfile profile = credentials.getUserProfile();
-                    logger.debug("Cached authentication result");
-                    return profile;
-                }
-            });
+            final UserProfile profile = this.cache.get(credentials);
             credentials.setUserProfile(profile);
             logger.debug("Found cached credential. Using cached profile {}...", profile);
-        } catch (final Exception e) {
-            throw new TechnicalException(e);
+        } catch (Exception e) {
+            throw new CredentialsException(e);
         }
+
+    }
+
+    public void setDelegate(final Authenticator<T> delegate) {
+        this.cacheLoader.setDelegate(delegate);
     }
 
     public void removeFromCache(final T credentials) {
@@ -76,7 +73,30 @@ public class LocalCachingAuthenticator<T extends HttpCredentials> implements Aut
         return this.cache.getIfPresent(credentials) != null;
     }
 
-    public void clearCache() {
-        this.cache.cleanUp();
+    public boolean clearCache() {
+        this.cache.invalidateAll();
+        return this.cache.asMap().isEmpty();
+    }
+
+    private static class UserProfileCacheLoader<T extends HttpCredentials> extends CacheLoader<T, UserProfile> {
+        private final Logger logger = LoggerFactory.getLogger(getClass());
+
+        private Authenticator<T> delegate;
+
+        public UserProfileCacheLoader(final Authenticator<T> delegate) {
+            this.delegate = delegate;
+        }
+
+        public UserProfile load(final T credentials) throws Exception {
+            logger.debug("Delegating authentication to {}...", delegate);
+            delegate.validate(credentials);
+            final UserProfile profile = credentials.getUserProfile();
+            logger.debug("Cached authentication result");
+            return profile;
+        }
+
+        public void setDelegate(final Authenticator<T> delegate) {
+            this.delegate = delegate;
+        }
     }
 }
