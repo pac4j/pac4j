@@ -227,6 +227,11 @@
 				<artifactId>mongo-java-driver</artifactId>
 				<version>3.0.3</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>18.0</version>
+			</dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
