@@ -21,6 +21,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -35,7 +37,8 @@ public class DefaultClientFinderTests implements TestsConstants {
 
     @Test
     public void testBlankClientName() {
-        assertNull(finder.find(new Clients(), MockWebContext.create(), "  "));
+        final List<Client> currentClients = finder.find(new Clients(), MockWebContext.create(), "  ");
+        assertEquals(0, currentClients.size());
     }
 
     @Test
@@ -43,7 +46,9 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client = new MockBaseClient(NAME);
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client, finder.find(clients, context, NAME));
+        final List<Client> currentClients = finder.find(clients, context, NAME);
+        assertEquals(1, currentClients.size());
+        assertEquals(client, currentClients.get(0));
     }
 
     @Test(expected = TechnicalException.class)
@@ -59,25 +64,27 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client = new MockBaseClient(NAME);
         final Clients clients = new Clients(client);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client, finder.find(clients, context, FAKE_VALUE + "," + NAME));
+        final List<Client> currentClients = finder.find(clients, context, FAKE_VALUE + "," + NAME);
+        assertEquals(1, currentClients.size());
+        assertEquals(client, currentClients.get(0));
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void testClientOnRequestNotAllowed() {
         final Client client1 = new MockBaseClient(NAME);
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client2, finder.find(clients, context, CLIENT_NAME));
+        finder.find(clients, context, CLIENT_NAME);
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void testClientOnRequestNotAllowedList() {
         final Client client1 = new MockBaseClient(NAME);
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        assertEquals(client2, finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE));
+        finder.find(clients, context, CLIENT_NAME + "," + FAKE_VALUE);
     }
 
     @Test
@@ -86,7 +93,9 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        assertEquals(client2, finder.find(clients, context, CLIENT_NAME));
+        final List<Client> currentClients = finder.find(clients, context, CLIENT_NAME);
+        assertEquals(1, currentClients.size());
+        assertEquals(client2, currentClients.get(0));
     }
 
     @Test(expected = TechnicalException.class)
@@ -104,6 +113,9 @@ public class DefaultClientFinderTests implements TestsConstants {
         final Client client2 = new MockBaseClient(CLIENT_NAME);
         final Clients clients = new Clients(client1, client2);
         final WebContext context = MockWebContext.create();
-        assertEquals(client2, finder.find(clients, context, CLIENT_NAME + "," + NAME));
+        final List<Client> currentClients = finder.find(clients, context, CLIENT_NAME + "," + NAME);
+        assertEquals(2, currentClients.size());
+        assertEquals(client2, currentClients.get(0));
+        assertEquals(client1, currentClients.get(1));
     }
 }
