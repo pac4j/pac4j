@@ -29,7 +29,6 @@ import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
 import org.pac4j.http.profile.UsernameProfileCreator;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
-import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
 
 import static org.junit.Assert.*;
 

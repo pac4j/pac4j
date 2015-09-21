@@ -24,7 +24,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.creator.test.SimpleTestTokenProfileCreator;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -40,8 +41,7 @@ public final class HeaderClientTests implements TestsConstants {
     public void testClone() {
         final HeaderClient oldClient = new HeaderClient();
         oldClient.setName(TYPE);
-        final SimpleTestTokenProfileCreator profileCreator = new SimpleTestTokenProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, HttpProfile>());
         final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
         oldClient.setAuthenticator(authenticator);
         oldClient.setHeaderName(HEADER_NAME);
@@ -55,7 +55,7 @@ public final class HeaderClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokendAuthenticator() {
-        final HeaderClient client = new HeaderClient(null, new SimpleTestTokenProfileCreator());
+        final HeaderClient client = new HeaderClient(null);
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
@@ -74,13 +74,13 @@ public final class HeaderClientTests implements TestsConstants {
 
     @Test
     public void testMissingHeaderName() {
-        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator());
         TestsHelper.initShouldFail(client, "headerName cannot be blank");
     }
 
     @Test
     public void testAuthentication() throws RequiresHttpAction {
-        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator());
         client.setHeaderName(HEADER_NAME);
         client.setPrefixHeader(PREFIX_HEADER);
         final MockWebContext context = MockWebContext.create();

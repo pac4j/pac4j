@@ -66,7 +66,7 @@ public final class ProfileHelper {
                         if ("CasProfile".equals(className) || "CasProxyProfile".equals(className)) {
                             completeName = "org.pac4j.cas.profile." + className;
                         } else if ("HttpTGTProfile".equals(className)) {
-                            completeName = "org.pac4j.cas.client.rest.HttpTGTProfile";
+                            completeName = "org.pac4j.cas.profile.HttpTGTProfile";
                         } else if ("SAML2Profile".equals(className)) {
                             completeName = "org.pac4j.saml.profile.SAML2Profile";
                         } else if ("HttpProfile".equals(className)) {
