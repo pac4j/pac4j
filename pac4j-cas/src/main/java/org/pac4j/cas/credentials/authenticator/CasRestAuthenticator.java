@@ -14,11 +14,12 @@
  * limitations under the License.
  *
  */
-
-package org.pac4j.cas.client.rest;
+package org.pac4j.cas.credentials.authenticator;
 
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.pac4j.cas.util.HttpUtils;
+import org.pac4j.cas.profile.HttpTGTProfile;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
@@ -110,7 +111,7 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         return casRestUrl;
     }
 
-    TicketValidator getTicketValidator() {
+    public TicketValidator getTicketValidator() {
         return new Cas20ServiceTicketValidator(getCasServerPrefixUrl());
     }
 }

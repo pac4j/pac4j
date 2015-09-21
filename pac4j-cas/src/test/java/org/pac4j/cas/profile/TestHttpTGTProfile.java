@@ -13,26 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.cas.profile;
 
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
+import junit.framework.TestCase;
 
 /**
- * Will be removed before pac4j v1.8 release.
+ * General test cases for HttpTGTProfile.
  *
- * @deprecated
- * @param <U> the user profile
- * @author Jerome Leleu
- * @since 1.8.0
+ * @author  Jacob Severson
+ * @since   1.8.0
  */
-@Deprecated
-public class IsAuthenticatedAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public class TestHttpTGTProfile extends TestCase {
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isAuthorized(WebContext context, U profile) {
-        return profile != null;
+    public void testClearProfile() {
+        final HttpTGTProfile profile = new HttpTGTProfile("testId", "testUser");
+        profile.clear();
+        assertNull(profile.getTicketGrantingTicketId());
     }
 }
