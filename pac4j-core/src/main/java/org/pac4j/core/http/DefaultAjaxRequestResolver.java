@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.http;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 
@@ -24,7 +25,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultAjaxRequestResolver implements AjaxRequestResolver, Pac4jConstants {
+public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpConstants, Pac4jConstants {
 
     /**
      * {@inheritDoc}

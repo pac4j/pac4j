@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  */
-
-package org.pac4j.cas.client.rest;
+package org.pac4j.cas.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -37,7 +36,7 @@ public final class HttpUtils {
     private HttpUtils() {
     }
 
-    static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
+    public static String buildHttpErrorMessage(final HttpURLConnection connection) throws IOException {
         final StringBuilder messageBuilder = new StringBuilder("(").append(connection.getResponseCode()).append(")");
         if (connection.getResponseMessage() != null) {
             messageBuilder.append(" ");
@@ -46,15 +45,15 @@ public final class HttpUtils {
         return messageBuilder.toString();
     }
 
-    static HttpURLConnection openPostConnection(final URL url) throws IOException {
+    public static HttpURLConnection openPostConnection(final URL url) throws IOException {
         return openConnection(url, "POST");
     }
 
-    static HttpURLConnection openDeleteConnection(final URL url) throws IOException {
+    public static HttpURLConnection openDeleteConnection(final URL url) throws IOException {
         return openConnection(url, "DELETE");
     }
 
-    static HttpURLConnection openConnection(final URL url, final String requestMethod) throws IOException {
+    public static HttpURLConnection openConnection(final URL url, final String requestMethod) throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -62,11 +61,11 @@ public final class HttpUtils {
         return connection;
     }
 
-    static String encodeQueryParam(final String paramName, final String paramValue) throws UnsupportedEncodingException {
+    public static String encodeQueryParam(final String paramName, final String paramValue) throws UnsupportedEncodingException {
         return URLEncoder.encode(paramName, DEFAULT_QUERY_PARAM_ENCODING) + "=" + URLEncoder.encode(paramValue, DEFAULT_QUERY_PARAM_ENCODING);
     }
 
-    static void closeConnection(final HttpURLConnection connection) {
+    public static void closeConnection(final HttpURLConnection connection) {
         if (connection != null) {
             connection.disconnect();
         }

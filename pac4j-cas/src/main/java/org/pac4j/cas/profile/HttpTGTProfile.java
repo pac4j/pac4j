@@ -14,8 +14,7 @@
  * limitations under the License.
  *
  */
-
-package org.pac4j.cas.client.rest;
+package org.pac4j.cas.profile;
 
 import org.pac4j.http.profile.HttpProfile;
 

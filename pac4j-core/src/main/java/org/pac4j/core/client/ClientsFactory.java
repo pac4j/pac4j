@@ -20,6 +20,7 @@ package org.pac4j.core.client;
  *
  * @author Jerome Leleu
  * @since 1.7.0
+ * @deprecated
  */
 @Deprecated
 public interface ClientsFactory {
