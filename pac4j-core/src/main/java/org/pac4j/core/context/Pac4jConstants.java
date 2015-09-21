@@ -100,15 +100,18 @@ public interface Pac4jConstants {
     /* The default url, the root path */
     String DEFAULT_URL_VALUE = "/";
 
-    /** The url parameter */
+    /* The url parameter */
     String URL = "url";
 
-    /** The logout pattern for url */
+    /* The element (client or authorizer) separator */
+    String ELEMENT_SEPRATOR = ",";
+
+    /* The logout pattern for url */
     String LOGOUT_URL_PATTERN = "logoutUrlPattern";
 
-    /** The default value for the logout url pattern, meaning only relative urls are allowed */
+    /* The default value for the logout url pattern, meaning only relative urls are allowed */
     String DEFAULT_LOGOUT_URL_PATTERN_VALUE = "/.*";
 
-    /** The config factory parameter */
+    /* The config factory parameter */
     String CONFIG_FACTORY = "configFactory";
 }

@@ -17,6 +17,8 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 
+import java.util.List;
+
 /**
  * The way to find the client.
  *
@@ -25,5 +27,5 @@ import org.pac4j.core.context.WebContext;
  */
 public interface ClientFinder {
 
-    Client find(Clients clients, WebContext context, String clientName);
+    List<Client> find(Clients clients, WebContext context, String clientName);
 }
