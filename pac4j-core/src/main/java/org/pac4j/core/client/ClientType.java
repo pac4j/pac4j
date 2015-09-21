@@ -34,6 +34,7 @@ public enum ClientType {
     OPENID_CONNECT_PROTOCOL,
     HEADER_BASED,
     PARAMETER_BASED,
+    COOKIE_BASED,
     IP_BASED
     // @formatter:on
 }

@@ -15,13 +15,14 @@
  */
 package org.pac4j.core.context;
 
-import java.io.IOException;
-import java.util.Map;
+import org.pac4j.core.exception.TechnicalException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.pac4j.core.exception.TechnicalException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * This implementation uses the J2E request and session.
@@ -210,5 +211,34 @@ public class J2EContext implements WebContext {
         } else {
             return requestURL.append('?').append(queryString).toString();
         }
+    }
+
+    @Override
+    public Collection<Cookie> getRequestCookies() {
+        final javax.servlet.http.Cookie[] cookies = this.request.getCookies();
+        final Collection<Cookie> pac4jCookies = new LinkedHashSet<>(cookies.length);
+        for (javax.servlet.http.Cookie c : this.request.getCookies()) {
+            final Cookie cookie = new Cookie(c.getName(), c.getValue());
+            cookie.setComment(c.getComment());
+            cookie.setDomain(c.getDomain());
+            cookie.setHttpOnly(c.isHttpOnly());
+            cookie.setMaxAge(c.getMaxAge());
+            cookie.setPath(c.getPath());
+            cookie.setSecure(c.getSecure());
+            pac4jCookies.add(cookie);
+        }
+        return pac4jCookies;
+    }
+
+    @Override
+    public void addResponseCookie(final Cookie cookie) {
+        javax.servlet.http.Cookie c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
+        c.setSecure(cookie.isSecure());
+        c.setPath(cookie.getPath());
+        c.setMaxAge(cookie.getMaxAge());
+        c.setHttpOnly(cookie.isHttpOnly());
+        c.setComment(cookie.getComment());
+        c.setDomain(cookie.getDomain());
+        this.response.addCookie(c);
     }
 }

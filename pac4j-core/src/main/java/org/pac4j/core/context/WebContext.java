@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.context;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -162,9 +163,24 @@ public interface WebContext {
 
     /**
      * Return the full URL (with query string) the client used to request the server.
-     * 
+     *
      * @return the URL
      * @since 1.5.0
      */
     String getFullRequestURL();
+
+    /**
+     * Retrieves request cookies.
+     * @since 1.8.1
+     */
+    Collection<Cookie> getRequestCookies();
+
+    /**
+     * Adds cookies to the response
+     * @since 1.8.1
+     */
+    void addResponseCookie(Cookie cookie);
 }
+
+
+
