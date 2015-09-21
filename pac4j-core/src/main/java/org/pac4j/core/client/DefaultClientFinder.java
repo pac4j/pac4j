@@ -15,40 +15,49 @@
  */
 package org.pac4j.core.client;
 
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Find the right client based on regular parameters.
+ * Find the right clients based on regular parameters.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
 public class DefaultClientFinder implements ClientFinder {
 
-    public static final String CLIENT_NAME_SEPARATOR = ",";
+    public List<Client> find(final Clients clients, final WebContext context, final String clientName) {
+        final List<Client> result = new ArrayList<>();
 
-    public Client find(final Clients clients, final WebContext context, final String clientName) {
-        // no name -> no client
-        if (CommonHelper.isBlank(clientName)) {
-            return null;
-        }
-        final List<String> names = Arrays.asList(clientName.split(CLIENT_NAME_SEPARATOR));
-        // if a client_name parameter is provided on the request, get the client and check if it is allowed
-        final String clientNameOnRequest = context.getRequestParameter(clients.getClientNameParameter());
-        if (clientNameOnRequest != null) {
-            // from the request
-            final Client client = clients.findClient(context);
-            final String nameFound = client.getName();
-            // if allowed
-            if (names.contains(nameFound)) {
-                return client;
+        if (CommonHelper.isNotBlank(clientName)) {
+            final List<String> names = Arrays.asList(clientName.split(Pac4jConstants.ELEMENT_SEPRATOR));
+            // if a client_name parameter is provided on the request, get the client and check if it is allowed
+            final String clientNameOnRequest = context.getRequestParameter(clients.getClientNameParameter());
+            if (clientNameOnRequest != null) {
+                // from the request
+                final Client client = clients.findClient(context);
+                final String nameFound = client.getName();
+                // if allowed -> return it
+                if (names.contains(nameFound)) {
+                    result.add(client);
+                } else {
+                    throw new TechnicalException("Client not allowed: " + nameFound);
+                }
+            } else {
+                // no client provided, return all
+                for (final String name : names) {
+                    // from its name
+                    final Client client = clients.findClient(name);
+                    result.add(client);
+                }
             }
         }
-        // not allowed, return default (first)
-        return clients.findClient(names.get(0));
+        return result;
     }
 }

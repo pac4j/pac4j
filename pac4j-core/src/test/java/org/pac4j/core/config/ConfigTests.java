@@ -17,7 +17,7 @@ package org.pac4j.core.config;
 
 import org.junit.Test;
 import org.pac4j.core.authorization.Authorizer;
-import org.pac4j.core.authorization.FakeAuthorizer;
+import org.pac4j.core.authorization.RequireAnyRoleAuthorizer;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
@@ -47,7 +47,7 @@ public final class ConfigTests implements TestsConstants {
     @Test
     public void testAddAuthorizer() {
         final Config config = new Config();
-        final FakeAuthorizer authorizer = new FakeAuthorizer();
+        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
         config.addAuthorizer(NAME, authorizer);
         assertEquals(authorizer, config.getAuthorizers().get(NAME));
     }

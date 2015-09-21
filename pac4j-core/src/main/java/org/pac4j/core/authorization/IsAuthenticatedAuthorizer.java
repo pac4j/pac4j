@@ -19,12 +19,14 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * Checks if the user is authenticated.
+ * Will be removed before pac4j v1.8 release.
  *
+ * @deprecated
  * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
+@Deprecated
 public class IsAuthenticatedAuthorizer<U extends UserProfile> implements Authorizer<U> {
 
     /**
