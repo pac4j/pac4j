@@ -15,6 +15,8 @@
  */
 package org.pac4j.http.credentials;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -43,6 +45,27 @@ public class UsernamePasswordCredentials extends HttpCredentials {
 
     public String getPassword() {
         return this.password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UsernamePasswordCredentials that = (UsernamePasswordCredentials) o;
+        final EqualsBuilder builder = new EqualsBuilder();
+        return builder
+                .append(this.username, that.username)
+                .append(this.password, that.password)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(7, 31)
+                .append(this.username)
+                .append(this.password)
+                .toHashCode();
     }
 
     @Override

@@ -15,6 +15,8 @@
  */
 package org.pac4j.http.credentials;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -41,6 +43,25 @@ public class TokenCredentials extends HttpCredentials {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "token", this.token, "clientName", getClientName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TokenCredentials that = (TokenCredentials) o;
+        final EqualsBuilder builder = new EqualsBuilder();
+        return builder
+                .append(this.token, that.token)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(7, 31)
+                .append(this.token)
+                .toHashCode();
     }
 
     @Override
