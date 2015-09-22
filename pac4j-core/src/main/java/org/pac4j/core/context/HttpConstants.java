@@ -47,4 +47,8 @@ public interface HttpConstants {
     String CONTENT_TYPE_HEADER = "Content-Type";
     
     String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
+
+    String AJAX_HEADER_VALUE = "XMLHttpRequest";
+
+    String AJAX_HEADER_NAME = "X-Requested-With";
 }
