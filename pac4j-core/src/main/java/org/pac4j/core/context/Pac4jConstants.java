@@ -49,12 +49,6 @@ public interface Pac4jConstants {
     @Deprecated
     String IS_AJAX = "isAjax";
 
-    /* The AJAX header value. */
-    String AJAX_HEADER_VALUE = "XMLHttpRequest";
-
-    /* The AJAX header name. */
-    String AJAX_HEADER_NAME = "X-Requested-With";
-
     /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
     String IS_AJAX_REQUEST = "is_ajax_request";
 
@@ -72,24 +66,11 @@ public interface Pac4jConstants {
     @Deprecated
     String REQUIRE_ALL_ROLES = "requireAllRoles";
 
-    /* Target url configuration parameter */
+    /**
+     * This configuration is no longer needed, as this concept was too complicated.
+     */
+    @Deprecated
     String TARGET_URL = "targetUrl";
-
-    /**
-     * Will be removed before pac4j v1.8 release.
-     *
-     * @deprecated
-     */
-    @Deprecated
-    String USE_SESSION_FOR_DIRECT_CLIENT = "useSessionForDirectClient";
-
-    /**
-     * Will be removed before pac4j v1.8 release.
-     *
-     * @deprecated
-     */
-    @Deprecated
-    String ALLOW_DYNAMIC_CLIENT_SELECTION = "allowDynamicClientSelection";
 
     /* The name of an authorizer */
     String AUTHORIZER_NAME = "authorizerName";

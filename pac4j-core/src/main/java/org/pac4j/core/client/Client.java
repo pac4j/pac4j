@@ -52,10 +52,10 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * <p>Redirect to the authentication provider for an indirect client.</p>
      *
      * @param context the current web context
-     * @param requiresAuthentication whether the target url is protected
+     * @param protectedTarget whether the target url is protected
      * @throws RequiresHttpAction whether an additional HTTP action is required
      */
-    public void redirect(WebContext context, boolean requiresAuthentication) throws RequiresHttpAction;
+    public void redirect(WebContext context, boolean protectedTarget) throws RequiresHttpAction;
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at this step.</p>

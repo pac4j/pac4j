@@ -14,9 +14,9 @@
  * limitations under the License.
  *
  */
-
 package org.pac4j.cas.client.rest;
 
+import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.http.credentials.extractor.FormExtractor;
 
