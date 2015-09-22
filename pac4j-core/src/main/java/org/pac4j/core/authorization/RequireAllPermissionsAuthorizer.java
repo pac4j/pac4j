@@ -51,7 +51,7 @@ public class RequireAllPermissionsAuthorizer<U extends UserProfile> implements A
     /**
      * {@inheritDoc}
      */
-    public boolean isAuthorized(WebContext context, U profile) {
+    public boolean isAuthorized(final WebContext context, final U profile) {
         if (permissions == null || permissions.size() == 0) {
             return true;
         }
