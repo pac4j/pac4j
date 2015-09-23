@@ -24,7 +24,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.creator.test.SimpleTestTokenProfileCreator;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -42,8 +43,7 @@ public final class IpClientTests implements TestsConstants {
     public void testClone() {
         final IpClient oldClient = new IpClient();
         oldClient.setName(TYPE);
-        final SimpleTestTokenProfileCreator profileCreator = new SimpleTestTokenProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, HttpProfile>());
         final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
         oldClient.setAuthenticator(authenticator);
         final IpClient client = (IpClient) oldClient.clone();
@@ -54,7 +54,7 @@ public final class IpClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokendAuthenticator() {
-        final IpClient client = new IpClient(null, new SimpleTestTokenProfileCreator());
+        final IpClient client = new IpClient(null);
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
@@ -72,7 +72,7 @@ public final class IpClientTests implements TestsConstants {
 
     @Test
     public void testAuthentication() throws RequiresHttpAction {
-        final IpClient client = new IpClient(new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.setRemoteAddress(IP);
         final TokenCredentials credentials = client.getCredentials(context);

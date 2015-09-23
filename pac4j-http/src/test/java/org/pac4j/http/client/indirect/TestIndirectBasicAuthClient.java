@@ -12,7 +12,8 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
- */package org.pac4j.http.client.indirect;
+ */
+package org.pac4j.http.client.indirect;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
@@ -24,7 +25,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -41,8 +43,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
         final IndirectBasicAuthClient oldClient = new IndirectBasicAuthClient();
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setName(TYPE);
-        final SimpleTestUsernameProfileCreator profileCreator = new SimpleTestUsernameProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setAuthenticator(usernamePasswordAuthenticator);
         final IndirectBasicAuthClient client = (IndirectBasicAuthClient) oldClient.clone();
@@ -54,7 +55,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null, new SimpleTestUsernameProfileCreator());
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
@@ -75,14 +76,12 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
 
     @Test
     public void testMissingLoginUrl() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
-                new SimpleTestUsernameProfileCreator());
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         TestsHelper.initShouldFail(basicAuthClient, "callbackUrl cannot be blank");
     }
 
     private IndirectBasicAuthClient getBasicAuthClient() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(),
-                new SimpleTestUsernameProfileCreator());
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         return basicAuthClient;
     }

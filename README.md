@@ -4,7 +4,7 @@
 
 ## What is `pac4j`?
 
-`pac4j` is a **Java authentication / authorization engine to authenticate users, get their profiles and manage their authorizations** in order to secure your Java web applications. It's available under the Apache 2 license.
+`pac4j` is a **Java security engine to authenticate users, get their profiles and manage their authorizations** in order to secure your Java web applications. It's available under the Apache 2 license.
 
 It is actually **implemented by many frameworks and supports many authentication mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture).
 
@@ -64,13 +64,13 @@ The latest released version is the [![Maven Central](https://maven-badges.heroku
 
 ### Implementations
 
-`pac4j` is a powerful yet easy security engine which can be used in many ways.
+`pac4j` is an easy and powerful security engine which can be used in many ways.
 
 Add the `pac4j-core` dependency to benefit from the core API of `pac4j`. Other dependencies will be optionally added for specific support: `pac4j-oauth` for OAuth, `pac4j-cas` for CAS, `pac4j-saml` for SAML...
 
 To secure your Java web application, **a good implementation is to create two filters**: **one to protect urls**, **the other one to receive callbacks** for stateful authentication processes ("indirect clients").
 
-Gather all your clients via the `Clients` class to share the same callback url:
+Gather all your authentication mechanisms = [**clients**](https://github.com/pac4j/pac4j/wiki/Clients) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
 
 ```java
 FacebookClient facebookClient = new FacebookClient(FB_KEY, FB_SECRET);
@@ -79,107 +79,81 @@ FormClient formClient = new FormClient("http://localhost:8080/theForm.jsp", new 
 CasClient casClient = new CasClient();
 casClient.setCasLoginUrl("http://mycasserver/login");
 Clients clients = new Clients("http://localhost:8080/callback", facebookClient, twitterClient, formClient, casClient);
+Config config = new Config(clients);
+config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
+config.addAuthorizer("custom", new CustomAuthorizer());
 ```
 
-In your protection filter, you may implement this simple logic:
+1) **For your protection filter, use the following logic (loop on direct clients for authentication then check the user profile and authorizations)**:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
+Clients configClients = config.getClients();
+List<Client> currentClients = clientFinder.find(configClients, context, clientName);
+
+boolean useSession = useSession(context, currentClients);
 ProfileManager manager = new ProfileManager(context);
-UserProfile profile = manager.get(true);
+UserProfile profile = manager.get(useSession);
+
+if (profile == null && currentClients != null && currentClients.size() > 0) {
+  for (final Client currentClient: currentClients) {
+    if (currentClient instanceof DirectClient) {
+      final Credentials credentials;
+      try {
+        credentials = currentClient.getCredentials(context);
+      } catch (RequiresHttpAction e) { ... }
+      profile = currentClient.getUserProfile(credentials, context);
+      if (profile != null) {
+        manager.save(useSession, profile);
+        break;
+      }
+    }
+  }
+}
+
 if (profile != null) {
-  grantAccess();
+  if (authorizationChecker.isAuthorized(context, profile, authorizerName, config.getAuthorizers())) {
+    grantAccess();
+  } else {
+    errorHttp403Forbidden();
+  }
 } else {
-  saveRequestedUrl();
-  Client client = clients.findClient(configName);
-  try {
-    client.redirect(context);
-  } catch (RequiresHttpAction e) {
-    handleSpecialHttpBehaviours();
+  if (currentClients != null && currentClients.size() > 0 && currentClients.get(0) instanceof IndirectClient) {
+    Client currentClient =  currentClients.get(0);
+    saveRequestedUrl(context);
+    redirectToIdentityProvider(currentClient, context);
+  } else {
+    errorHttp401NotAuthenticated();
   }
 }
 ```
 
 The `EnvSpecificWebContext` class is a specific implementation of the `WebContext` interface for your framework.
 
-With `pac4j` **version 1.8** which supports direct authentication (REST) and authorizations, you can use a more elaborated algorithm:
+See the final implementations in [j2e-pac4j](https://github.com/pac4j/j2e-pac4j/blob/master/src/main/java/org/pac4j/j2e/filter/RequiresAuthenticationFilter.java#L91) and [play-pac4j](https://github.com/pac4j/play-pac4j/blob/master/play-pac4j-java/src/main/java/org/pac4j/play/java/RequiresAuthenticationAction.java#L95).
+
+2) **For your callback filter, get the credentials and the user profile on the callback url**:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-ProfileManager manager = new ProfileManager(context);
-Client client = findClient(context);
-boolean isDirectClient = client instanceof DirectClient;
-UserProfile profile = manager.get(!isDirectClient);
-
-if (profile == null && isDirectClient) {
-  Credentials credentials;
-  try {
-    credentials = client.getCredentials(context);
-  } catch (RequiresHttpAction e) {
-    throw new TechnicalException("Unexpected HTTP action", e);
-  }
-  profile = client.getUserProfile(credentials, context);
-  if (profile != null) {
-    manager.save(false, profile);
-  }
-}
-
-if (profile != null) {
-  if (authorizer.isAuthorized(context, profile) {
-    grantAccess();
-  } else {
-    errorHttp403Forbidden();
-  }
-} else {
-  if (isDirectClient) {
-    errorHttp401NotAuthenticated();
-  } else {
-    saveRequestedUrl();
-    try {
-      client.redirect(context);
-    } catch (RequiresHttpAction e) {
-      handleSpecialHttpBehaviours();
-    }
-  }
-}
-```
-
-In your callback filter:
-
-```java
-EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-ProfileManager manager = new ProfileManager(context);
+Clients clients = config.getClients();
 Client client = clients.findClient(context);
+
 Credentials credentials;
 try {
   credentials = client.getCredentials(context);
 } catch (RequiresHttpAction e) {
   handleSpecialHttpBehaviours();
 }
+
 UserProfile profile = client.getUserProfile(credentials, context);
-if (profile != null) {
-  manager.save(true, profile);
-}
-redirectToTheOriginallyRequestedUrl();
+saveUserProfile(context, profile);
+redirectToOriginallyRequestedUrl(context, response);
 ```
 
-Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components).
+See the final implementations in [j2e-pac4j](https://github.com/pac4j/j2e-pac4j/blob/master/src/main/java/org/pac4j/j2e/filter/CallbackFilter.java#L65) and [play-pac4j](https://github.com/pac4j/play-pac4j/blob/master/play-pac4j-java/src/main/java/org/pac4j/play/CallbackController.java#L63).
 
-### Core concepts:
-
-1. [Client](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java): it's an authentication mechanism, it is responsible for starting the authentication process (indirect / stateful: `IndirectClient`) and then getting the credentials and the user profile (UI use case) or directly (direct / stateless: `DirectClient`) getting and validating credentials and getting the user profile (web services use case). A hierarchy of clients exists: `FacebookClient`, `CasClient`...
-2. [Clients](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Clients.java): it's a helper class to define all clients together (and reuse the same callback url)
-3. [UserProfile](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java): it's the profile of an authenticated user. A hierarchy of user profiles exists: `CommonProfile`, `OAuth20Profile`, `FacebookProfile`...
-4. [AttributesDefinition](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/AttributesDefinition.java): it's the attributes definition for a specific type of profile
-5. [ProfileManager](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileManager.java): it's a manager to get/set/remove the current user profile
-6. [Credentials](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java): it's a user credentials. A hierarchy of credentials exists: `CasCredentials`, `Saml2Credentials`, `UsernamePasswordCredentials`...
-7. [WebContext](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java): it represents the current HTTP request response and session, regardless of the framework
-8. [AuthorizationGenerator](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/AuthorizationGenerator.java): it's a class to compute the roles and permissions for a user profile
-9. [Authorizer](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/Authorizer.java): it's a generic concept to manage authorizations given a user profile and a web context
-10. [Config](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/config/Config.java): it's the application configuration composed of `Clients` and `Authorizer`s. It can be used with a `ConfigFactory`, a `ConfigBuilder` and a `ConfigSingleton` depending on the framework capabilities
-11. [Extractor](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/extractor/Extractor.java): it's a way to get user credentials from a HTTP request
-12. [Authenticator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/credentials/authenticator/Authenticator.java): it's the interface to implement to validate user credentials. Several implementations exist: `LdapAuthenticator`, `MongoDBAuthenticator`...
-13. [ProfileCreator](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/profile/creator/ProfileCreator.java): it's the interface to implement to create a user profile from credentials. The default implementation (`AuthenticatorProfileCreator`) uses the user profile saved in the credentials by the `Authenticator`.
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) for more information.
 
 
 ## Need help?

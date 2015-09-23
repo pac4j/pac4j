@@ -24,7 +24,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.creator.test.SimpleTestTokenProfileCreator;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -44,8 +45,7 @@ public final class ParameterClientTests implements TestsConstants {
     public void testClone() {
         final ParameterClient oldClient = new ParameterClient();
         oldClient.setName(TYPE);
-        final SimpleTestTokenProfileCreator profileCreator = new SimpleTestTokenProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, HttpProfile>());
         final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
         oldClient.setAuthenticator(authenticator);
         oldClient.setParameterName(PARAMETER_NAME);
@@ -62,7 +62,7 @@ public final class ParameterClientTests implements TestsConstants {
 
     @Test
     public void testMissingTokendAuthenticator() {
-        final ParameterClient client = new ParameterClient(PARAMETER_NAME, null, new SimpleTestTokenProfileCreator());
+        final ParameterClient client = new ParameterClient(PARAMETER_NAME, null);
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
@@ -81,13 +81,13 @@ public final class ParameterClientTests implements TestsConstants {
 
     @Test
     public void testMissingParameterName() {
-        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
         TestsHelper.initShouldFail(client, "parameterName cannot be blank");
     }
 
     @Test
     public void testAuthentication() throws RequiresHttpAction {
-        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator(), new SimpleTestTokenProfileCreator());
+        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator());
         client.setParameterName(PARAMETER_NAME);
         client.setSupportGetRequest(SUPPORT_GET);
         client.setSupportPostRequest(SUPPORT_POST);

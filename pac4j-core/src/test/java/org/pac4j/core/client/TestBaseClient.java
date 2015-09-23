@@ -17,8 +17,8 @@ package org.pac4j.core.client;
 
 import junit.framework.TestCase;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
@@ -151,7 +151,7 @@ public final class TestBaseClient extends TestCase implements TestsConstants {
     public void testAjaxRequest() {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
         client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.AJAX_HEADER_NAME, Pac4jConstants.AJAX_HEADER_VALUE);
+        final MockWebContext context = MockWebContext.create().addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
         try {
             client.redirect(context, false);
             fail("should fail");
