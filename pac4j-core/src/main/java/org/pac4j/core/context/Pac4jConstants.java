@@ -29,6 +29,9 @@ public interface Pac4jConstants {
     /* User Profile object saved in session */
     String USER_PROFILE = "pac4jUserProfile";
 
+    /* CSRF token name saved in session */
+    String CSRK_TOKEN = "pac4jCsrfToken";
+
     /* Session ID */
     String SESSION_ID = "pac4jSessionId";
 
