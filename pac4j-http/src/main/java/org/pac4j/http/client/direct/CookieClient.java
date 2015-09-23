@@ -18,27 +18,28 @@ package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.CookieCredentials;
-import org.pac4j.http.credentials.authenticator.CookieAuthenticator;
+import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.extractor.CookieExtractor;
 import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
+ * Allows direct authentication based on a cookie.
  * @author Misagh Moayyed
- * @since 1.8.1
+ * @since 1.8.0
  */
-public class CookieClient extends DirectHttpClient<CookieCredentials>  {
+public class CookieClient extends DirectHttpClient<TokenCredentials>  {
     private String cookieName;
-    private String cookieValue;
+
 
     public CookieClient() {
     }
 
-    public CookieClient(final CookieAuthenticator cookieAuthenticator) {
+    public CookieClient(final TokenAuthenticator cookieAuthenticator) {
         setAuthenticator(cookieAuthenticator);
     }
 
-    public CookieClient(final CookieAuthenticator cookieAuthenticator,
+    public CookieClient(final TokenAuthenticator cookieAuthenticator,
                         final ProfileCreator profileCreator) {
         setAuthenticator(cookieAuthenticator);
         setProfileCreator(profileCreator);
@@ -52,18 +53,10 @@ public class CookieClient extends DirectHttpClient<CookieCredentials>  {
         this.cookieName = cookieName;
     }
 
-    public String getCookieValue() {
-        return cookieValue;
-    }
-
-    public void setCookieValue(String cookieValue) {
-        this.cookieValue = cookieValue;
-    }
-
     @Override
     protected void internalInit() {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
-        extractor = new CookieExtractor(this.cookieName, this.cookieValue, getName());
+        extractor = new CookieExtractor(this.cookieName, getName());
         super.internalInit();
 
     }
@@ -72,7 +65,6 @@ public class CookieClient extends DirectHttpClient<CookieCredentials>  {
     protected CookieClient newClient() {
         final CookieClient newClient = new CookieClient();
         newClient.setCookieName(this.cookieName);
-        newClient.setCookieValue(this.cookieValue);
         return newClient;
     }
 

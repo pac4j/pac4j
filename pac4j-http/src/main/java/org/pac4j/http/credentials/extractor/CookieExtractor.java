@@ -18,34 +18,35 @@ package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.http.credentials.CookieCredentials;
+import org.pac4j.http.credentials.TokenCredentials;
 
 import java.util.Collection;
 
 /**
+ * Extracts a cookie value from the request context.
  * @author Misagh Moayyed
- * @since 1.8.1
+ * @since 1.8.0
  */
-public class CookieExtractor implements Extractor<CookieCredentials> {
+public class CookieExtractor implements Extractor<TokenCredentials> {
 
     private final String cookieName;
 
-    private final String cookieValue;
-
     private final String clientName;
 
-    public CookieExtractor(final String cookieName, final String cookieValue, final String clientName) {
+    public CookieExtractor(final String cookieName, final String clientName) {
         this.cookieName = cookieName;
         this.clientName = clientName;
-        this.cookieValue = cookieValue;
     }
 
     @Override
-    public CookieCredentials extract(final WebContext context) {
+    public TokenCredentials extract(final WebContext context) {
         final Collection<Cookie> col = context.getRequestCookies();
-        if (col.contains(new Cookie(this.cookieName, this.cookieValue))) {
-            return null;
+        for (final Cookie c : col) {
+            if (c.getName().equals(this.cookieName)) {
+                return new TokenCredentials(c.getValue(), clientName);
+            }
         }
-        return new CookieCredentials(this.cookieName, this.cookieValue, clientName);
+        return null;
+
     }
 }
