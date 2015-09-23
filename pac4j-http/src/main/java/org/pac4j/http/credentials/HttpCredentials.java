@@ -37,5 +37,8 @@ public abstract class HttpCredentials extends Credentials {
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
     }
-}
 
+    public abstract boolean equals(Object o);
+
+    public abstract int hashCode();
+}

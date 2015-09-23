@@ -13,17 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.profile.creator.test;
+package org.pac4j.cas.profile;
 
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
+import junit.framework.TestCase;
 
 /**
- * Will be removed before pac4j v1.8 release.
- * 
- * @author Jerome Leleu
- * @since 1.8.0
- * @deprecated
+ * General test cases for HttpTGTProfile.
+ *
+ * @author  Jacob Severson
+ * @since   1.8.0
  */
-@Deprecated
-public class SimpleTestTokenProfileCreator extends AuthenticatorProfileCreator {
+public class TestHttpTGTProfile extends TestCase {
+
+    public void testClearProfile() {
+        final HttpTGTProfile profile = new HttpTGTProfile("testId", "testUser");
+        profile.clear();
+        assertNull(profile.getTicketGrantingTicketId());
+    }
 }

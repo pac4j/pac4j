@@ -13,11 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package org.pac4j.http.credentials.authenticator;
 
 import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.HttpCredentials;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -33,11 +33,35 @@ import static org.junit.Assert.assertTrue;
  * @since 1.8
  */
 public class LocalCachingAuthenticatorTests {
+
+    private class OnlyOneCallAuthenticator implements UsernamePasswordAuthenticator {
+
+        private int n = 0;
+
+        public void validate(final UsernamePasswordCredentials credentials) {
+            if (n > 0) {
+                throw new IllegalArgumentException("Cannot call validate twice");
+            }
+            credentials.setUserProfile(new UserProfile());
+            n++;
+        }
+    }
+
     private SimpleTestUsernamePasswordAuthenticator delegate =
             new SimpleTestUsernamePasswordAuthenticator();
 
     private final HttpCredentials credentials =
             new UsernamePasswordCredentials("a", "a", this.getClass().getName());
+
+    @Test
+    public void testDoubleCalls() {
+        final OnlyOneCallAuthenticator authenticator = new OnlyOneCallAuthenticator();
+        final LocalCachingAuthenticator localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
+        final HttpCredentials credentials1 = new UsernamePasswordCredentials("a", "a", this.getClass().getName());
+        localCachingAuthenticator.validate(credentials1);
+        final HttpCredentials credentials2 = new UsernamePasswordCredentials("a", "a", this.getClass().getName());
+        localCachingAuthenticator.validate(credentials2);
+    }
 
     @Test
     public void testNoCache() {

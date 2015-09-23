@@ -14,14 +14,16 @@
  * limitations under the License.
  *
  */
-
 package org.pac4j.cas.client.rest;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.credentials.CasCredentials;
+import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
+import org.pac4j.cas.profile.HttpTGTProfile;
+import org.pac4j.cas.util.HttpUtils;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;

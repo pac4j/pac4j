@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Jerome Leleu
  * @since 1.4.0
+ * @deprecated
  */
 @Deprecated
 public class J2ERequestContext extends BaseResponseContext {
