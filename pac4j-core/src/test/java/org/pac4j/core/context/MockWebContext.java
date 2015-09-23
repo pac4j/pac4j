@@ -15,7 +15,9 @@
  */
 package org.pac4j.core.context;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -45,6 +47,8 @@ public class MockWebContext extends BaseResponseContext {
     protected String fullRequestURL = null;
 
     protected String ip = null;
+
+    protected final Collection<Cookie> requestCookies = new LinkedHashSet<>();
 
     protected MockWebContext() {
     }
@@ -170,6 +174,7 @@ public class MockWebContext extends BaseResponseContext {
         return map;
     }
 
+
     public String getServerName() {
         return serverName;
     }
@@ -204,5 +209,10 @@ public class MockWebContext extends BaseResponseContext {
 
     public void setFullRequestURL(String fullRequestURL) {
         this.fullRequestURL = fullRequestURL;
+    }
+
+    @Override
+    public Collection<Cookie> getRequestCookies() {
+        return this.requestCookies;
     }
 }
