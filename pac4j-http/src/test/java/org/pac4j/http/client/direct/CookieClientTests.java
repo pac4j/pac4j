@@ -27,7 +27,7 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +43,7 @@ public class CookieClientTests implements TestsConstants {
     public void testClone() {
         final CookieClient oldClient = new CookieClient();
         oldClient.setName(TYPE);
-        final SimpleTestUsernameProfileCreator profileCreator = new SimpleTestUsernameProfileCreator();
+        final AuthenticatorProfileCreator profileCreator = new AuthenticatorProfileCreator();
         oldClient.setProfileCreator(profileCreator);
         final TokenAuthenticator authN = new SimpleTestTokenAuthenticator();
         oldClient.setAuthenticator(authN);
@@ -55,7 +55,7 @@ public class CookieClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final CookieClient cookieClient = new CookieClient(null, new SimpleTestUsernameProfileCreator());
+        final CookieClient cookieClient = new CookieClient(null, new AuthenticatorProfileCreator());
         cookieClient.setCookieName("testcookie");
         TestsHelper.initShouldFail(cookieClient, "authenticator cannot be null");
     }
@@ -83,7 +83,7 @@ public class CookieClientTests implements TestsConstants {
     @Test
     public void testAuthentication() throws RequiresHttpAction {
         final CookieClient client = new CookieClient(new SimpleTestTokenAuthenticator(),
-                new SimpleTestUsernameProfileCreator());
+                new AuthenticatorProfileCreator());
         client.setCookieName(USERNAME);
         final MockWebContext context = MockWebContext.create();
 
