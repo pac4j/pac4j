@@ -15,15 +15,15 @@
  */
 package org.pac4j.core.kryo;
 
-import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.Locale;
-
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers.*;
 import org.pac4j.core.profile.FormattedDate;
 
-import com.esotericsoftware.kryo.serialize.LongSerializer;
-import com.esotericsoftware.kryo.serialize.SimpleSerializer;
-import com.esotericsoftware.kryo.serialize.StringSerializer;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * This class is a Kryo serializer for {@link FormattedDate}.
@@ -31,26 +31,26 @@ import com.esotericsoftware.kryo.serialize.StringSerializer;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class FormattedDateSerializer extends SimpleSerializer<FormattedDate> {
-    
+public class FormattedDateSerializer extends Serializer<FormattedDate> {
+
     private final LongSerializer longSerializer = new LongSerializer();
-    
+
     private final StringSerializer stringSerializer = new StringSerializer();
-    
+
     private final LocaleSerializer localeSerializer = new LocaleSerializer();
-    
+
     @Override
-    public FormattedDate read(final ByteBuffer buffer) {
-        final Long time = this.longSerializer.readObject(buffer, Long.class);
-        final String format = this.stringSerializer.readObject(buffer, String.class);
-        final Locale locale = this.localeSerializer.readObject(buffer, Locale.class);
+    public FormattedDate read(Kryo kryo, Input input, Class<FormattedDate> aClass) {
+        final Long time = this.longSerializer.read(kryo, input, Long.class);
+        final String format = this.stringSerializer.read(kryo, input, String.class);
+        final Locale locale = this.localeSerializer.read(kryo, input, Locale.class);
         return new FormattedDate(new Date(time), format, locale);
     }
-    
+
     @Override
-    public void write(final ByteBuffer buffer, final FormattedDate object) {
-        this.longSerializer.writeObject(buffer, object.getTime());
-        this.stringSerializer.writeObject(buffer, object.getFormat());
-        this.localeSerializer.writeObject(buffer, object.getLocale());
+    public void write(Kryo kryo, Output output, FormattedDate formattedDate) {
+        this.longSerializer.write(kryo, output, formattedDate.getTime());
+        this.stringSerializer.write(kryo, output, formattedDate.getFormat());
+        this.localeSerializer.write(kryo, output, formattedDate.getLocale());
     }
 }

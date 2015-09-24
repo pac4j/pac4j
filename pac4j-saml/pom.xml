@@ -207,8 +207,8 @@
             <version>2.8.1</version>
         </dependency>
         <dependency>
-            <groupId>com.googlecode</groupId>
-            <artifactId>kryo</artifactId>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo-shaded</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

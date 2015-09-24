@@ -15,12 +15,12 @@
  */
 package org.pac4j.core.kryo;
 
-import java.nio.ByteBuffer;
-
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers.*;
 import org.pac4j.core.profile.Color;
-
-import com.esotericsoftware.kryo.serialize.IntSerializer;
-import com.esotericsoftware.kryo.serialize.SimpleSerializer;
 
 /**
  * This class is a Kryo serializer for {@link Color}.
@@ -28,22 +28,23 @@ import com.esotericsoftware.kryo.serialize.SimpleSerializer;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class ColorSerializer extends SimpleSerializer<Color> {
-    
+public class ColorSerializer extends Serializer<Color> {
+
     private final IntSerializer intSerializer = new IntSerializer();
-    
+
     @Override
-    public Color read(final ByteBuffer buffer) {
-        final int red = this.intSerializer.readObject(buffer, Integer.class);
-        final int green = this.intSerializer.readObject(buffer, Integer.class);
-        final int blue = this.intSerializer.readObject(buffer, Integer.class);
+    public Color read(Kryo kryo, Input input, Class<Color> aClass) {
+        final int red = this.intSerializer.read(kryo, input, Integer.class);
+        final int green = this.intSerializer.read(kryo, input, Integer.class);
+        final int blue = this.intSerializer.read(kryo, input, Integer.class);
         return new Color(red, green, blue);
     }
-    
+
     @Override
-    public void write(final ByteBuffer buffer, final Color object) {
-        this.intSerializer.writeObject(buffer, object.getRed());
-        this.intSerializer.writeObject(buffer, object.getGreen());
-        this.intSerializer.writeObject(buffer, object.getBlue());
+    public void write(Kryo kryo, Output output, Color color) {
+        this.intSerializer.write(kryo, output, color.getRed());
+        this.intSerializer.write(kryo, output, color.getGreen());
+        this.intSerializer.write(kryo, output, color.getBlue());
     }
+
 }
