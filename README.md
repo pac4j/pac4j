@@ -50,7 +50,7 @@ Read the appropriate documentation for the [SSO CAS server](http://jasig.github.
 
 ### Versions
 
-The current version **1.8.0-SNAPSHOT** is under development. Maven artefacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j). See the [tests strategy](https://github.com/pac4j/pac4j/wiki/Tests).
+The current version **1.8.0-RC2-SNAPSHOT** is under development. Maven artefacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j). See the [tests strategy](https://github.com/pac4j/pac4j/wiki/Tests).
 
 The source code can be cloned and built locally via Maven:
 
@@ -115,15 +115,14 @@ if (profile != null) {
   if (authorizationChecker.isAuthorized(context, profile, authorizerName, config.getAuthorizers())) {
     grantAccess();
   } else {
-    errorHttp403Forbidden();
+    forbidden(context, currentClients, profile);
   }
 } else {
-  if (currentClients != null && currentClients.size() > 0 && currentClients.get(0) instanceof IndirectClient) {
-    Client currentClient =  currentClients.get(0);
-    saveRequestedUrl(context);
-    redirectToIdentityProvider(currentClient, context);
+  if (startAuthentication(context, currentClients)) {
+    saveRequestedUrl(context, currentClients);
+    redirectToIdentityProvider(context, currentClients);
   } else {
-    errorHttp401NotAuthenticated();
+    unauthorized(context, currentClients);
   }
 }
 ```
