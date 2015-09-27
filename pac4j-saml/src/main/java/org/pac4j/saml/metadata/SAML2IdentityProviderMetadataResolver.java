@@ -59,7 +59,6 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     private final String idpMetadataPath;
     private String idpEntityId;
-    private DOMMetadataResolver idpMetadataProvider;
 
     public SAML2IdentityProviderMetadataResolver(final String idpMetadataPath,
                                                  @Nullable final String idpEntityId) {
@@ -69,7 +68,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     @Override
     public final MetadataResolver resolve() {
-
+    	DOMMetadataResolver idpMetadataProvider = null;
         try {
             Resource resource = null;
             if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
