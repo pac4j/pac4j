@@ -134,8 +134,8 @@
 			<artifactId>logback-classic</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.googlecode</groupId>
-			<artifactId>kryo</artifactId>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo-shaded</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- for testing -->

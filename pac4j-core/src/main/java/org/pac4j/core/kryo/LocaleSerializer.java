@@ -15,11 +15,13 @@
  */
 package org.pac4j.core.kryo;
 
-import java.nio.ByteBuffer;
-import java.util.Locale;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers.*;
 
-import com.esotericsoftware.kryo.serialize.SimpleSerializer;
-import com.esotericsoftware.kryo.serialize.StringSerializer;
+import java.util.Locale;
 
 /**
  * This class is a Kryo serializer for {@link Locale}.
@@ -27,22 +29,22 @@ import com.esotericsoftware.kryo.serialize.StringSerializer;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class LocaleSerializer extends SimpleSerializer<Locale> {
-    
+public class LocaleSerializer extends Serializer<Locale> {
+
     private final StringSerializer stringSerializer = new StringSerializer();
-    
+
     @Override
-    public Locale read(final ByteBuffer buffer) {
-        final String language = this.stringSerializer.readObject(buffer, String.class);
-        final String country = this.stringSerializer.readObject(buffer, String.class);
-        final String variant = this.stringSerializer.readObject(buffer, String.class);
+    public Locale read(Kryo kryo, Input input, Class<Locale> aClass) {
+        final String language = this.stringSerializer.read(kryo, input, String.class);
+        final String country = this.stringSerializer.read(kryo, input, String.class);
+        final String variant = this.stringSerializer.read(kryo, input, String.class);
         return new Locale(language, country, variant);
     }
-    
+
     @Override
-    public void write(final ByteBuffer buffer, final Locale object) {
-        this.stringSerializer.writeObject(buffer, object.getLanguage());
-        this.stringSerializer.writeObject(buffer, object.getCountry());
-        this.stringSerializer.writeObject(buffer, object.getVariant());
+    public void write(Kryo kryo, Output output, Locale locale) {
+        this.stringSerializer.write(kryo, output, locale.getLanguage());
+        this.stringSerializer.write(kryo, output, locale.getCountry());
+        this.stringSerializer.write(kryo, output, locale.getVariant());
     }
 }
