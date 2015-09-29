@@ -59,6 +59,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     private final String idpMetadataPath;
     private String idpEntityId;
+    private DOMMetadataResolver idpMetadataProvider = null;
 
     public SAML2IdentityProviderMetadataResolver(final String idpMetadataPath,
                                                  @Nullable final String idpEntityId) {
@@ -67,8 +68,15 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     @Override
-    public final MetadataResolver resolve() {
-    	DOMMetadataResolver idpMetadataProvider = null;
+    public  final MetadataResolver resolve() {
+    	
+    	// No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
+    	// idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
+    	// Usage of locks will adversly impact performance.
+    	if(idpMetadataProvider != null) {
+    		return idpMetadataProvider;
+    	}
+    	
         try {
             Resource resource = null;
             if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
