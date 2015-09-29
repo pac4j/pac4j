@@ -37,7 +37,7 @@ public class CasProxyProfile extends CasProfile {
     /**
      * Store the CAS principal.
      * 
-     * @param attributePrincipal
+     * @param attributePrincipal the principal with attributes
      */
     public void setPrincipal(final AttributePrincipal attributePrincipal) {
         this.attributePrincipal = attributePrincipal;
@@ -46,7 +46,7 @@ public class CasProxyProfile extends CasProfile {
     /**
      * Get a proxy ticket for a given service.
      * 
-     * @param service
+     * @param service the CAS service
      * @return the proxy ticket for the given service
      */
     public String getProxyTicketFor(final String service) {

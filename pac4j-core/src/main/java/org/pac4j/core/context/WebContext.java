@@ -130,13 +130,13 @@ public interface WebContext {
 
     /**
      * Sets the response encoding type.
-     * @param encoding
+     * @param encoding the character encoding
      */
     void setResponseCharacterEncoding(String encoding);
 
     /**
      * Sets the response content type.
-     * @param content
+     * @param content the content type
      */
     void setResponseContentType(String content);
 
@@ -171,16 +171,17 @@ public interface WebContext {
 
     /**
      * Retrieves request cookies.
+     *
+     * @return the request cookies
      * @since 1.8.1
      */
     Collection<Cookie> getRequestCookies();
 
     /**
      * Adds cookies to the response
+     *
+     * @param cookie a cookie to add to the response
      * @since 1.8.1
      */
     void addResponseCookie(Cookie cookie);
 }
-
-
-
