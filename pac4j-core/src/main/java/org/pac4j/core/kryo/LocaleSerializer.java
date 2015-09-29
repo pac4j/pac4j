@@ -38,13 +38,23 @@ public class LocaleSerializer extends Serializer<Locale> {
         final String language = this.stringSerializer.read(kryo, input, String.class);
         final String country = this.stringSerializer.read(kryo, input, String.class);
         final String variant = this.stringSerializer.read(kryo, input, String.class);
-        return new Locale(language, country, variant);
+        if (language == null && country == null && variant == null) {
+            return null;
+        } else {
+            return new Locale(language, country, variant);
+        }
     }
 
     @Override
     public void write(Kryo kryo, Output output, Locale locale) {
-        this.stringSerializer.write(kryo, output, locale.getLanguage());
-        this.stringSerializer.write(kryo, output, locale.getCountry());
-        this.stringSerializer.write(kryo, output, locale.getVariant());
+        if (locale != null) {
+            this.stringSerializer.write(kryo, output, locale.getLanguage());
+            this.stringSerializer.write(kryo, output, locale.getCountry());
+            this.stringSerializer.write(kryo, output, locale.getVariant());
+        } else {
+            this.stringSerializer.write(kryo, output, null);
+            this.stringSerializer.write(kryo, output, null);
+            this.stringSerializer.write(kryo, output, null);
+        }
     }
 }
