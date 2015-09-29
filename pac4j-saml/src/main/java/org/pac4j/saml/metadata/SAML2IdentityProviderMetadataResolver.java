@@ -59,7 +59,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     private final String idpMetadataPath;
     private String idpEntityId;
-    private DOMMetadataResolver idpMetadataProvider = null;
+    private DOMMetadataResolver idpMetadataProvider;
 
     public SAML2IdentityProviderMetadataResolver(final String idpMetadataPath,
                                                  @Nullable final String idpEntityId) {
