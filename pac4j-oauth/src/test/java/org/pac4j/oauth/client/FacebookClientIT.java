@@ -50,7 +50,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
  * This class tests the {@link FacebookClient} class by simulating a complete authentication.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -82,7 +82,7 @@ public class FacebookClientIT extends OAuthClientIT {
         facebookClient.setSecret("8ace9cbf90dcecfeb36c285854db55ab");
         facebookClient.setCallbackUrl(PAC4J_URL);
         facebookClient
-                .setScope("email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_groups,user_actions.music");
+                .setScope("email,user_about_me,user_actions.books,user_actions.fitness,user_actions.music,user_actions.news,user_actions.video,user_birthday,user_education_history,user_events,user_friends,user_games_activity,user_hometown,user_likes,user_location,user_managed_groups,user_photos,user_posts,user_relationship_details,user_relationships,user_religion_politics,user_status,user_tagged_places,user_videos,user_website,user_work_history");
         facebookClient.setFields(FacebookClient.DEFAULT_FIELDS
                 + ",friends,movies,music,books,likes,albums,events,groups,music.listens,picture");
         facebookClient.setLimit(100);

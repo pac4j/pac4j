@@ -115,7 +115,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", this.name);
+        return CommonHelper.toString(this.getClass(), "name", getName());
     }
 
     public void addAuthorizationGenerator(AuthorizationGenerator<U> authorizationGenerator) {

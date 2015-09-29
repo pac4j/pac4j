@@ -22,7 +22,6 @@ import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.foursquare.FoursquareAttributesDefinition;
 import org.pac4j.oauth.profile.github.GitHubAttributesDefinition;
 import org.pac4j.oauth.profile.google2.Google2AttributesDefinition;
-import org.pac4j.oauth.profile.linkedin.LinkedInAttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
 import org.pac4j.oauth.profile.orcid.OrcidAttributesDefinition;
@@ -47,8 +46,6 @@ public final class OAuthAttributesDefinitions {
     public final static AttributesDefinition githubDefinition = new GitHubAttributesDefinition();
 
     public final static AttributesDefinition google2Definition = new Google2AttributesDefinition();
-
-    public final static AttributesDefinition linkedinDefinition = new LinkedInAttributesDefinition();
 
     public final static AttributesDefinition twitterDefinition = new TwitterAttributesDefinition();
 
