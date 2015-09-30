@@ -26,7 +26,7 @@ public interface PasswordEncoder {
     /**
      * Encode a password.
      *
-     * @param password
+     * @param password the not encoded password
      * @return the encoded password
      */
     String encode(String password);

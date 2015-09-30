@@ -97,7 +97,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	
 	/**
 	 * Set the authDomain for connect to google apps for domain with the UserService
-	 * @param authDomain
+	 * @param authDomain the authentication domain
 	 */
 	public void setAuthDomain(String authDomain) {
 		this.authDomain = authDomain;
