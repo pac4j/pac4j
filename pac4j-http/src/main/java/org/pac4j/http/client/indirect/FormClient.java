@@ -128,7 +128,7 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     /**
      * Return the error message depending on the thrown exception. Can be overriden for other message computation.
      * 
-     * @param e
+     * @param e the technical exception
      * @return the error message
      */
     protected String computeErrorMessage(final TechnicalException e) {
