@@ -681,9 +681,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     }
 
     private boolean isDateValid(final DateTime issueInstant, final int interval) {
-        final long now = System.currentTimeMillis();
-        return issueInstant.isBefore(now + this.acceptedSkew * 1000)
-                && issueInstant.isAfter(now - (this.acceptedSkew + interval) * 1000);
+        final DateTime before =  DateTime.now().plusSeconds(acceptedSkew);
+        final DateTime after =  DateTime.now().minusSeconds(acceptedSkew + interval);
+        return issueInstant.isBefore(before) && issueInstant.isAfter(after);
     }
 
     private boolean isIssueInstantValid(final DateTime issueInstant) {
@@ -694,10 +694,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         return isDateValid(authnInstant, this.maximumAuthenticationLifetime);
     }
 
+    @Override
     public final void setAcceptedSkew(final int acceptedSkew) {
         this.acceptedSkew = acceptedSkew;
     }
 
+    @Override
     public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
