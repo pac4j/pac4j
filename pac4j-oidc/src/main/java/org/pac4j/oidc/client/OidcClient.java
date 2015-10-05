@@ -21,12 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.openid.connect.sdk.*;
-import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
-import org.pac4j.core.client.IndirectClient;
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -35,6 +32,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
@@ -45,6 +43,7 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -60,8 +59,21 @@ import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.openid.connect.sdk.AuthenticationErrorResponse;
+import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
+import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
+import com.nimbusds.openid.connect.sdk.AuthenticationResponseParser;
+import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
+import com.nimbusds.openid.connect.sdk.Nonce;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponse;
+import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
+import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoRequest;
+import com.nimbusds.openid.connect.sdk.UserInfoResponse;
+import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import com.nimbusds.openid.connect.sdk.util.DefaultJWTDecoder;
 import com.nimbusds.openid.connect.sdk.util.DefaultResourceRetriever;
 
@@ -105,6 +117,9 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* Map containing the parameters for configuring all aspects of the OpenID Connect integration */
     private Map<String, String> authParams;
 
+    /* Scope */
+    private String scope;
+
     /* Map containing user defined parameters */
     private final Map<String, String> customParams = new HashMap<String, String>();
 
@@ -134,6 +149,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         this.secret = secret;
     }
 
+    public void setScope(String scope) {
+		this.scope = scope;
+	}
+
     public void addCustomParam(final String key, final String value) {
         this.customParams.put(key, value);
     }
@@ -146,8 +165,15 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         CommonHelper.assertNotBlank(this.discoveryURI, "discoveryURI cannot be blank");
 
         this.authParams = new HashMap<String, String>();
-        // default values
-        this.authParams.put("scope", "openid profile email");
+        
+        // add scope
+        if(StringUtils.isNotBlank(this.scope)){
+        	this.authParams.put("scope", this.scope);
+        } else {
+	        // default values
+	        this.authParams.put("scope", "openid profile email");
+        }
+        
         this.authParams.put("response_type", "code");
         this.authParams.put("redirect_uri", getCallbackUrl());
         // add custom values
