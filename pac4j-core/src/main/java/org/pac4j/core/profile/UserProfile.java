@@ -170,8 +170,10 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     /**
      * Return the attribute with name.
      *
-     * @param name attribute name
-     * @return the attribute with name
+     * @param name the attribute name
+     * @param clazz the class of the attribute
+     * @param <T> the type of the attribute
+     * @return the attribute by its name
      * @since 1.8
      */
     public <T> T getAttribute(final String name, final Class<T> clazz) {
