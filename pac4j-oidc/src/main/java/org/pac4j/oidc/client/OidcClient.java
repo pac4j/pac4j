@@ -280,6 +280,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
             final BearerAccessToken accessToken = (BearerAccessToken) oidcTokens.getAccessToken();
 
+            // Create Oidc profile
+            OidcProfile profile = new OidcProfile(accessToken);
+            profile.setIdTokenString(oidcTokens.getIDTokenString());
+
             // User Info request
             UserInfo userInfo = null;
             if (this.oidcProvider.getUserInfoEndpointURI() != null) {
@@ -297,11 +301,19 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                 } else {
                     UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     userInfo = userInfoSuccessResponse.getUserInfo();
+                    if(userInfo != null){
+                    	profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
+                    }
                 }
             }
 
             // Check ID Token
             final JWTClaimsSet claimsSet = this.jwtDecoder.decodeJWT(oidcTokens.getIDToken());
+            if(claimsSet != null){
+            	profile.setId(claimsSet.getSubject());
+            	profile.addAttributes(claimsSet.getClaims());
+            }
+            
             if (useNonce()) {
                 String nonce = claimsSet.getStringClaim("nonce");
                 if (nonce == null || !nonce.equals(context.getSessionAttribute(NONCE_ATTRIBUTE))) {
@@ -310,13 +322,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                                     + "Session expired or possible threat of cross-site request forgery");
                 }
             }
-
-            // Return profile with Claims Set, User Info and Access Token
-            OidcProfile profile = new OidcProfile(accessToken);
-            profile.setId(claimsSet.getSubject());
-            profile.setIdTokenString(oidcTokens.getIDTokenString());
-            profile.addAttributes(claimsSet.getClaims());
-            profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
 
             return profile;
 
