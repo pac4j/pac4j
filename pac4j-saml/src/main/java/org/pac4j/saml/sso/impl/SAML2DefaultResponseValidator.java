@@ -68,10 +68,14 @@ import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -523,23 +527,29 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             return false;
         }
 
-        if (data.getRecipient() == null) {
-            logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
+        try {
+            if (data.getRecipient() == null) {
+                logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
+                return false;
+            } else {
+                final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
+                if (endpoint == null) {
+                    logger.warn("No endpoint was found in the SAML endpoint context");
+                    return false;
+                }
+    
+                final URI recipientUri = new URI(data.getRecipient());
+                final URI appEndpointUri = new URI(endpoint.getLocation());
+                if (!UriUtils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
+                    logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. SP ACS URL from context: {}", recipientUri, appEndpointUri);
+                    return false;
+                }
+            }
+        } catch (URISyntaxException use) {
+            logger.error("Unable to check SubjectConfirmationData recipient, a URI has invalid syntax.", use);
             return false;
-        } else {
-            final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
-            if (endpoint == null) {
-                logger.warn("No endpoint was found in the SAML endpoint context");
-                return false;
-            }
-
-            final String url = endpoint.getLocation();
-            if (!data.getRecipient().equals(url)) {
-                logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found",
-                        data.getRecipient());
-                return false;
-            }
         }
+        
         return true;
     }
 
