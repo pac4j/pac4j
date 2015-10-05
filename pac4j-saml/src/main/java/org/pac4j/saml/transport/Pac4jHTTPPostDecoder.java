@@ -13,8 +13,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
@@ -46,7 +44,7 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
             final String relayState = this.context.getRequestParameter("RelayState");
             logger.debug("Decoded SAML relay state of: {}", relayState);
             SAMLBindingSupport.setRelayState(messageContext, relayState);
-            final InputStream base64DecodedMessage = this.getBase64DecodedMessage(null);
+            final InputStream base64DecodedMessage = this.getBase64DecodedMessage();
             final SAMLObject inboundMessage = (SAMLObject)this.unmarshallMessage(base64DecodedMessage);
             messageContext.setMessage(inboundMessage);
             logger.debug("Decoded SAML message");
@@ -55,8 +53,7 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
         }
     }
 
-    @Override
-    protected InputStream getBase64DecodedMessage(final HttpServletRequest request)
+    protected InputStream getBase64DecodedMessage()
             throws MessageDecodingException {
         logger.debug("Getting Base64 encoded message from context, ignoring the given request");
         String encodedMessage = this.context.getRequestParameter("SAMLRequest");
@@ -78,11 +75,6 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
                 return new ByteArrayInputStream(decodedBytes);
             }
         }
-    }
-
-    @Override
-    public synchronized void setHttpServletRequest(@Nullable final HttpServletRequest servletRequest) {
-        logger.debug("Ignoring HttpServletRequest");
     }
 
     @Override
