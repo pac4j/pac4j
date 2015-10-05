@@ -63,7 +63,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     /**
      * Return the user identifier for the web context.
      * 
-     * @param context
+     * @param context the web context
      * @return the user identifier
      */
     protected abstract String getUser(WebContext context);
@@ -81,7 +81,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
      * Get a fetch request for attributes.
      * 
      * @return a fetch request for attributes
-     * @throws MessageException
+     * @throws MessageException an OpenID exception
      */
     protected abstract FetchRequest getFetchRequest() throws MessageException;
 
@@ -152,9 +152,9 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     /**
      * Create the appropriate OpenID profile.
      * 
-     * @param authSuccess
+     * @param authSuccess the authentication success message
      * @return the appropriate OpenID profile
-     * @throws MessageException
+     * @throws MessageException an OpenID exception
      */
     protected abstract U createProfile(AuthSuccess authSuccess) throws MessageException;
 

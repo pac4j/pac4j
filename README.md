@@ -2,9 +2,7 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="50%" height="50%" />
 </p>
 
-## What is `pac4j`?
-
-`pac4j` is a **Java security engine to authenticate users, get their profiles and manage their authorizations** in order to secure your Java web applications. It's available under the Apache 2 license.
+`pac4j` is a **Java security engine** to authenticate users, get their profiles and manage their authorizations in order to secure your Java web applications. It's available under the Apache 2 license.
 
 It is actually **implemented by many frameworks and supports many authentication mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture).
 
@@ -25,18 +23,18 @@ They depend on the `pac4j-core` module (groupId: `org.pac4j`):
 
 ### Supported authentication mechanisms:
 
-`pac4j` supports stateful / indirect and stateless / direct [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows) using external identity providers or internal credentials authenticators and user profile creators:
+`pac4j` supports the main [authentication mechanisms](https://github.com/pac4j/pac4j/wiki/Authentication-flows) (via stateful / indirect clients for UI based on external identity providers and stateless / direct clients for web services using internal credentials authenticators and user profile creators):
 
 1. **OAuth** (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... using the `pac4j-oauth` module
-2. **CAS** (1.0, 2.0, SAML, logout & proxy) + REST API support using the `pac4j-cas` module
-3. **HTTP** (form, basic auth, IP, header, GET/POST parameter authentications) using the `pac4j-http` module
+2. **CAS** (1.0, 2.0, 3.0, SAML, logout, proxy, REST) using the `pac4j-cas` module
+3. **HTTP** (form, basic auth, IP, header, cookie, GET/POST parameter) using the `pac4j-http` module
 4. **OpenID** using the `pac4j-openid` module
 5. **SAML** (2.0) using the `pac4j-saml` module
 6. **Google App Engine** UserService using the `pac4j-gae` module
-7. **OpenID Connect** 1.0 using the `pac4j-oidc` module
+7. **OpenID Connect** (1.0) using the `pac4j-oidc` module
 8. **JWT** using the `pac4j-jwt` module
 9. **LDAP** using the `pac4j-ldap` module
-10. **relational DB** using the `pac4j-sql` module
+10. **Relational DB** using the `pac4j-sql` module
 11. **MongoDB** using the `pac4j-mongo` module
 12. **Stormpath** using the `pac4j-stormpath` module.
 
@@ -50,7 +48,7 @@ Read the appropriate documentation for the [SSO CAS server](http://jasig.github.
 
 ### Versions
 
-The current version **1.8.0-RC2-SNAPSHOT** is under development. Maven artefacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j). See the [tests strategy](https://github.com/pac4j/pac4j/wiki/Tests).
+The current version **1.8.0-RC2-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j). See the [tests strategy](https://github.com/pac4j/pac4j/wiki/Tests).
 
 The source code can be cloned and built locally via Maven:
 

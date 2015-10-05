@@ -28,7 +28,7 @@ public interface LogoutHandler {
     /**
      * Defines if this request is a token one.
      * 
-     * @param context
+     * @param context the web context
      * @return if this request is a token one
      */
     public boolean isTokenRequest(final WebContext context);
@@ -36,7 +36,7 @@ public interface LogoutHandler {
     /**
      * Defines if this request is a logout one.
      * 
-     * @param context
+     * @param context the web context
      * @return if this request is a logout one
      */
     public boolean isLogoutRequest(final WebContext context);
@@ -44,15 +44,15 @@ public interface LogoutHandler {
     /**
      * Associates a token request with the current web session.
      * 
-     * @param context
-     * @param ticket
+     * @param context the web context
+     * @param ticket the service ticket
      */
     public void recordSession(final WebContext context, String ticket);
     
     /**
      * Destroys the current web session for the given CAS logout request.
      * 
-     * @param context
+     * @param context the web context
      */
     public void destroySession(final WebContext context);
 }

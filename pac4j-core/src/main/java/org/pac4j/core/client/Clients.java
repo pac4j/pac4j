@@ -139,6 +139,7 @@ public final class Clients extends InitializableObject {
      * Return the right client according to the specific class.
      *
      * @param clazz class of the client
+     * @param <C> the kind of client
      * @return the right client
      */
     @SuppressWarnings("unchecked")

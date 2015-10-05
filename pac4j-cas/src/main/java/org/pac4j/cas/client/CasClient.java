@@ -118,7 +118,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     /**
      * Get the redirection url.
      * 
-     * @param context
+     * @param context the web context
      * @return the redirection url
      */
     @Override
@@ -248,9 +248,9 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     /**
      * Get the credentials from the web context.
      * 
-     * @param context
+     * @param context the web context
      * @return the credentials
-     * @throws RequiresHttpAction
+     * @throws RequiresHttpAction requires an extra HTTP action
      */
     @Override
     protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
@@ -283,7 +283,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     /**
      * Get the user profile from the credentials.
      * 
-     * @param credentials
+     * @param credentials the CAS credentials
      * @return the user profile
      */
     @Override

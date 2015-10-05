@@ -68,7 +68,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
      * Construct an instance from a given {@link SingleSignOutHandler} class.
      * The provided handler is not taken into account.
      * 
-     * @param singleSignOutHandler
+     * @param singleSignOutHandler the real SSOut handler
      */
     @Deprecated
     public CasSingleSignOutHandler(final SingleSignOutHandler singleSignOutHandler) {
