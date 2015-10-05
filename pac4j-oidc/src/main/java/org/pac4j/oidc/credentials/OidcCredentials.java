@@ -30,8 +30,9 @@ public class OidcCredentials extends Credentials {
 
     private AuthorizationCode code;
 
-    public OidcCredentials(AuthorizationCode code) {
+    public OidcCredentials(AuthorizationCode code, String clientName) {
         this.code = code;
+        this.setClientName(clientName);
     }
 
     private static final long serialVersionUID = 6772331801527223938L;

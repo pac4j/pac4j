@@ -281,7 +281,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         // Get authorization code
         AuthorizationCode code = successResponse.getAuthorizationCode();
 
-        return new OidcCredentials(code);
+        return new OidcCredentials(code, getName());
     }
 
     @Override

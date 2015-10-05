@@ -27,8 +27,7 @@ import junit.framework.TestCase;
 public class TestOidcCredentials extends TestCase {
 
     public void testClearOidcCredentials() {
-        OidcCredentials oidcCredentials = new OidcCredentials(new AuthorizationCode());
-        oidcCredentials.setClientName("testClient");
+        OidcCredentials oidcCredentials = new OidcCredentials(new AuthorizationCode(), "testClient");
         oidcCredentials.clear();
         assertNull(oidcCredentials.getClientName());
         assertNull(oidcCredentials.getCode());
