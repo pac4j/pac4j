@@ -9,9 +9,6 @@ import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Pac4j implementation of the {@link HTTPRedirectDeflateEncoder}
  * that ignores the http request in favor of {@link WebContext}.
@@ -41,11 +38,6 @@ public class Pac4jHTTPRedirectDeflateEncoder extends HTTPRedirectDeflateEncoder 
 
         responseAdapter.init();
         responseAdapter.setRedirectUrl(redirectURL);
-    }
-
-    @Override
-    public synchronized void setHttpServletResponse(@Nullable HttpServletResponse servletResponse) {
-        logger.debug("Ignoring HttpServletRequest");
     }
 
     @Override
