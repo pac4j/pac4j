@@ -10,8 +10,6 @@ import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStreamWriter;
 
 /**
@@ -50,11 +48,6 @@ public class Pac4jHTTPPostEncoder extends HTTPPostEncoder {
             logger.error("Error invoking Velocity template", var6);
             throw new MessageEncodingException("Error creating output document", var6);
         }
-    }
-
-    @Override
-    public synchronized void setHttpServletResponse(@Nullable HttpServletResponse servletResponse) {
-        logger.debug("Ignoring HttpServletRequest");
     }
 
     @Override
