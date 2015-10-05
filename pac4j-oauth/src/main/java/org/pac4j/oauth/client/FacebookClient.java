@@ -60,7 +60,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
-    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.2/oauth/access_token?grant_type=fb_exchange_token";
+    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
     
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
     
@@ -68,7 +68,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     protected String fields = DEFAULT_FIELDS;
     
-    protected final static String BASE_URL = "https://graph.facebook.com/v2.2/me";
+    protected final static String BASE_URL = "https://graph.facebook.com/v2.4/me";
     
     public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
     
