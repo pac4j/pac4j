@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.kryo.ColorSerializer;
@@ -232,8 +231,12 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
 
     protected void updateContextForCancel(HtmlPage redirectionPage, WebContext context) throws Exception {
         final String callbackUrl = getCallbackUrlForCancel(redirectionPage);
-        final MockWebContext mockWebContext = (MockWebContext) context;
-        mockWebContext.addRequestParameters(TestsHelper.getParametersFromUrl(callbackUrl));
+        final Map<String, String> parameters = TestsHelper.getParametersFromUrl(callbackUrl);
+        for (final String key : parameters.keySet()) {
+            final J2EContext j2EContext = (J2EContext) context;
+            final MockHttpServletRequest request = (MockHttpServletRequest) j2EContext.getRequest();
+            request.addParameter(key, parameters.get(key));
+        }
     }
 
     protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
