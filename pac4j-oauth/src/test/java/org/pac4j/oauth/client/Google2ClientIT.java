@@ -85,7 +85,7 @@ public class Google2ClientIT extends OAuthClientIT {
         final HtmlTextInput email = form.getInputByName("Email");
         email.setValueAttribute("testscribeup@gmail.com");
         final HtmlPasswordInput passwd = form.getInputByName("Passwd");
-        passwd.setValueAttribute("testpwdscribeup90");
+        passwd.setValueAttribute("testpwdscribeup91");
         final HtmlSubmitInput submit = form.getInputByName("signIn");
         final HtmlPage callbackPage = submit.click();
         final String callbackUrl = callbackPage.getUrl().toString();

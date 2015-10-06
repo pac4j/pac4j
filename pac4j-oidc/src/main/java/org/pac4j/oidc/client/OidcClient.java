@@ -121,7 +121,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private String scope;
 
     /* Map containing user defined parameters */
-    private final Map<String, String> customParams = new HashMap<String, String>();
+    private Map<String, String> customParams = new HashMap<String, String>();
 
     /* client authentication object at the token End Point (basic, form or JWT) */
     private ClientAuthentication clientAuthentication;
@@ -155,6 +155,11 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     public void addCustomParam(final String key, final String value) {
         this.customParams.put(key, value);
+    }
+
+    public void setCustomParams(Map<String, String> customParams) {
+        CommonHelper.assertNotNull("customParams", customParams);
+        this.customParams = customParams;
     }
 
     @Override

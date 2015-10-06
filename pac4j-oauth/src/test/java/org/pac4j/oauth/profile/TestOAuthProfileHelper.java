@@ -48,10 +48,6 @@ public final class TestOAuthProfileHelper extends TestCaseProfileHelper {
         assertNotNull(ProfileHelper.buildProfile("Google2Profile" + "#" + STRING_ID, EMPTY_MAP));
     }
     
-    public void testBuildProfileLinkedInProfile() {
-        assertNotNull(ProfileHelper.buildProfile("LinkedInProfile" + "#" + STRING_ID, EMPTY_MAP));
-    }
-    
     public void testBuildProfileTwitterProfile() {
         assertNotNull(ProfileHelper.buildProfile("TwitterProfile" + "#" + STRING_ID, EMPTY_MAP));
     }

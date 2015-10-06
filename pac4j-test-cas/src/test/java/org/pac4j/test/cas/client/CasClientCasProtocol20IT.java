@@ -28,6 +28,6 @@ public class CasClientCasProtocol20IT extends CasClientIT {
     
     @Override
     protected CasProtocol getCasProtocol() {
-        return CasProtocol.CAS20_PROXY;
+        return CasProtocol.CAS20;
     }
 }
