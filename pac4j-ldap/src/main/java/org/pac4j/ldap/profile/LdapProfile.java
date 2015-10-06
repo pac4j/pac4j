@@ -15,7 +15,7 @@
  */
 package org.pac4j.ldap.profile;
 
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.http.profile.HttpProfile;
 
 
 /**
@@ -25,7 +25,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapProfile extends CommonProfile {
+public class LdapProfile extends HttpProfile {
 
 	private static final long serialVersionUID = 4745130273071234466L;	
 }
