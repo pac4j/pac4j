@@ -15,7 +15,7 @@
  */
 package org.pac4j.mongo.profile;
 
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.http.profile.HttpProfile;
 import org.pac4j.mongo.credentials.authenticator.MongoAuthenticator;
 
 /**
@@ -25,7 +25,7 @@ import org.pac4j.mongo.credentials.authenticator.MongoAuthenticator;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class MongoProfile extends CommonProfile {
+public class MongoProfile extends HttpProfile {
 
     private static final long serialVersionUID = 7289249610131900281L;
 }
