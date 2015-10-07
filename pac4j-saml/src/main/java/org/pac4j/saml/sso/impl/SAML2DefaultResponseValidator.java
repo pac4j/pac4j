@@ -644,14 +644,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     protected final void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
                                                     final SignatureTrustEngine engine) {
 
-        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
 
-        final QName role = selfContext.getRole();
         if (signature != null) {
             final String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
-        } else if (((SPSSODescriptor) role).getWantAssertionsSigned()
+        } else if (context.getSPSSODescriptor().getWantAssertionsSignedXSBoolean().getValue()
                 && !peerContext.isAuthenticated()) {
             throw new SAMLException("Assertion or response must be signed");
         }
