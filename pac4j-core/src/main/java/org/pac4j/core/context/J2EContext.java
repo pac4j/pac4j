@@ -92,13 +92,6 @@ public class J2EContext implements WebContext {
         return this.request.getSession().getAttribute(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void invalidateSession() {
-        this.request.getSession().invalidate();
-    }
-
     @Override
     public Object getSessionIdentifier() {
         return this.request.getSession().getId();
