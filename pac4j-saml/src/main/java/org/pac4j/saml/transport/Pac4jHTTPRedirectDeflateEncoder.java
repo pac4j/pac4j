@@ -1,23 +1,66 @@
+/*
+  Copyright 2012 - 2015 pac4j organization
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.pac4j.saml.transport;
 
+import net.shibboleth.utilities.java.support.codec.Base64Support;
+import net.shibboleth.utilities.java.support.collection.Pair;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.net.URLBuilder;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.messaging.encoder.AbstractMessageEncoder;
 import org.opensaml.messaging.encoder.MessageEncodingException;
 import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.saml.saml2.binding.encoding.impl.HTTPRedirectDeflateEncoder;
+import org.opensaml.saml.common.SignableSAMLObject;
+import org.opensaml.saml.common.binding.BindingException;
+import org.opensaml.saml.common.binding.SAMLBindingSupport;
+import org.opensaml.saml.common.messaging.SAMLMessageSecuritySupport;
+import org.opensaml.saml.saml2.core.RequestAbstractType;
+import org.opensaml.saml.saml2.core.StatusResponseType;
+import org.opensaml.security.credential.Credential;
+import org.opensaml.security.credential.CredentialSupport;
+import org.opensaml.xmlsec.SignatureSigningParameters;
+import org.opensaml.xmlsec.crypto.XMLSigningUtil;
 import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.List;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
 
 /**
- * Pac4j implementation of the {@link HTTPRedirectDeflateEncoder}
- * that ignores the http request in favor of {@link WebContext}.
+ * Pac4j implementation extending directly the {@link AbstractMessageEncoder} as intermediate classes use the J2E HTTP response.
+ * It's mostly a copy/paste of the source code of these intermediate opensaml classes.
+ *
  * @author Misagh Moayyed
  * @since 1.8
  */
-public class Pac4jHTTPRedirectDeflateEncoder extends HTTPRedirectDeflateEncoder {
+public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAMLObject> {
 
-    private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
+    private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final WebContext context;
     private final Pac4jSAMLResponse responseAdapter;
@@ -42,6 +85,195 @@ public class Pac4jHTTPRedirectDeflateEncoder extends HTTPRedirectDeflateEncoder 
 
     @Override
     protected void doInitialize() throws ComponentInitializationException {
-        logger.debug("Initialized {}", this.getClass().getSimpleName());
+        log.debug("Initialized {}", this.getClass().getSimpleName());
+    }
+
+    /**
+     * Gets the response URL from the message context.
+     *
+     * @param messageContext current message context
+     *
+     * @return response URL from the message context
+     *
+     * @throws MessageEncodingException throw if no relying party endpoint is available
+     */
+    protected URI getEndpointURL(MessageContext<SAMLObject> messageContext) throws MessageEncodingException {
+        try {
+            return SAMLBindingSupport.getEndpointURL(messageContext);
+        } catch (BindingException e) {
+            throw new MessageEncodingException("Could not obtain message endpoint URL", e);
+        }
+    }
+
+    /**
+     * Removes the signature from the protocol message.
+     *
+     * @param message current message context
+     */
+    protected void removeSignature(SAMLObject message) {
+        if (message instanceof SignableSAMLObject) {
+            SignableSAMLObject signableMessage = (SignableSAMLObject) message;
+            if (signableMessage.isSigned()) {
+                log.debug("Removing SAML protocol message signature");
+                signableMessage.setSignature(null);
+            }
+        }
+    }
+
+    /**
+     * DEFLATE (RFC1951) compresses the given SAML message.
+     *
+     * @param message SAML message
+     *
+     * @return DEFLATE compressed message
+     *
+     * @throws MessageEncodingException thrown if there is a problem compressing the message
+     */
+    protected String deflateAndBase64Encode(SAMLObject message) throws MessageEncodingException {
+        log.debug("Deflating and Base64 encoding SAML message");
+        try {
+            String messageStr = SerializeSupport.nodeToString(marshallMessage(message));
+
+            ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+            Deflater deflater = new Deflater(Deflater.DEFLATED, true);
+            DeflaterOutputStream deflaterStream = new DeflaterOutputStream(bytesOut, deflater);
+            deflaterStream.write(messageStr.getBytes("UTF-8"));
+            deflaterStream.finish();
+
+            return Base64Support.encode(bytesOut.toByteArray(), Base64Support.UNCHUNKED);
+        } catch (IOException e) {
+            throw new MessageEncodingException("Unable to DEFLATE and Base64 encode SAML message", e);
+        }
+    }
+
+    /**
+     * Helper method that marshalls the given message.
+     *
+     * @param message message the marshall and serialize
+     *
+     * @return marshalled message
+     *
+     * @throws MessageEncodingException thrown if the give message can not be marshalled into its DOM representation
+     */
+    protected Element marshallMessage(XMLObject message) throws MessageEncodingException {
+        log.debug("Marshalling message");
+
+        try {
+            return XMLObjectSupport.marshall(message);
+        } catch (MarshallingException e) {
+            log.error("Error marshalling message", e);
+            throw new MessageEncodingException("Error marshalling message", e);
+        }
+    }
+
+    /**
+     * Builds the URL to redirect the client to.
+     *
+     * @param messageContext current message context
+     * @param endpoint endpoint URL to send encoded message to
+     * @param message Deflated and Base64 encoded message
+     *
+     * @return URL to redirect client to
+     *
+     * @throws MessageEncodingException thrown if the SAML message is neither a RequestAbstractType or Response
+     */
+    protected String buildRedirectURL(MessageContext<SAMLObject> messageContext, String endpoint, String message)
+            throws MessageEncodingException {
+        log.debug("Building URL to redirect client to");
+
+        URLBuilder urlBuilder = null;
+        try {
+            urlBuilder = new URLBuilder(endpoint);
+        } catch (MalformedURLException e) {
+            throw new MessageEncodingException("Endpoint URL " + endpoint + " is not a valid URL", e);
+        }
+
+        List<Pair<String, String>> queryParams = urlBuilder.getQueryParams();
+        queryParams.clear();
+
+        SAMLObject outboundMessage = messageContext.getMessage();
+
+        if (outboundMessage instanceof RequestAbstractType) {
+            queryParams.add(new Pair<String, String>("SAMLRequest", message));
+        } else if (outboundMessage instanceof StatusResponseType) {
+            queryParams.add(new Pair<String, String>("SAMLResponse", message));
+        } else {
+            throw new MessageEncodingException(
+                    "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
+        }
+
+        String relayState = SAMLBindingSupport.getRelayState(messageContext);
+        if (SAMLBindingSupport.checkRelayState(relayState)) {
+            queryParams.add(new Pair<String, String>("RelayState", relayState));
+        }
+
+        SignatureSigningParameters signingParameters =
+                SAMLMessageSecuritySupport.getContextSigningParameters(messageContext);
+        if (signingParameters != null && signingParameters.getSigningCredential() != null) {
+            String sigAlgURI =  getSignatureAlgorithmURI(signingParameters);
+            Pair<String, String> sigAlg = new Pair<String, String>("SigAlg", sigAlgURI);
+            queryParams.add(sigAlg);
+            String sigMaterial = urlBuilder.buildQueryString();
+
+            queryParams.add(new Pair<String, String>("Signature", generateSignature(
+                    signingParameters.getSigningCredential(), sigAlgURI, sigMaterial)));
+        } else {
+            log.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");
+        }
+
+        return urlBuilder.buildURL();
+    }
+
+    /**
+     * Gets the signature algorithm URI to use.
+     *
+     * @param signingParameters the signing parameters to use
+     *
+     * @return signature algorithm to use with the associated signing credential
+     *
+     * @throws MessageEncodingException thrown if the algorithm URI is not supplied explicitly and
+     *          could not be derived from the supplied credential
+     */
+    protected String getSignatureAlgorithmURI(SignatureSigningParameters signingParameters)
+            throws MessageEncodingException {
+
+        if (signingParameters.getSignatureAlgorithm() != null) {
+            return signingParameters.getSignatureAlgorithm();
+        }
+
+        throw new MessageEncodingException("The signing algorithm URI could not be determined");
+    }
+
+    /**
+     * Generates the signature over the query string.
+     *
+     * @param signingCredential credential that will be used to sign query string
+     * @param algorithmURI algorithm URI of the signing credential
+     * @param queryString query string to be signed
+     *
+     * @return base64 encoded signature of query string
+     *
+     * @throws MessageEncodingException there is an error computing the signature
+     */
+    protected String generateSignature(Credential signingCredential, String algorithmURI, String queryString)
+            throws MessageEncodingException {
+
+        log.debug(String.format("Generating signature with key type '%s', algorithm URI '%s' over query string '%s'",
+                CredentialSupport.extractSigningKey(signingCredential).getAlgorithm(), algorithmURI, queryString));
+
+        String b64Signature = null;
+        try {
+            byte[] rawSignature =
+                    XMLSigningUtil.signWithURI(signingCredential, algorithmURI, queryString.getBytes("UTF-8"));
+            b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
+            log.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
+        } catch (final org.opensaml.security.SecurityException e) {
+            log.error("Error during URL signing process", e);
+            throw new MessageEncodingException("Unable to sign URL query string", e);
+        } catch (final UnsupportedEncodingException e) {
+            // UTF-8 encoding is required to be supported by all JVMs
+        }
+
+        return b64Signature;
     }
 }
