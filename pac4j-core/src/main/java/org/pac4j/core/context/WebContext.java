@@ -82,11 +82,6 @@ public interface WebContext {
     Object getSessionAttribute(String name);
 
     /**
-     * Invalidate the current session.
-     */
-    void invalidateSession();
-
-    /**
      * Gets the session id for this context.
      * @return the session identifier
      */
