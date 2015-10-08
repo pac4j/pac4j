@@ -30,7 +30,7 @@ Its core API is provided via the `pac4j-core` submodule (groupId: `org.pac4j`).
 `pac4j` supports most authentication mechanisms, called ["clients"](https://github.com/pac4j/pac4j/wiki/Clients):
 
 - **indirect / stateful clients** are for UI when the user authenticates once at an external provider (like Facebook, a CAS server...) or via a local form (or basic auth popup)  
-- **direct / stateless clients** are for web service when credentials (like basic auth, tokens...) are passed for each HTTP request.
+- **direct / stateless clients** are for web services when credentials (like basic auth, tokens...) are passed for each HTTP request.
 
 See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows).
 
