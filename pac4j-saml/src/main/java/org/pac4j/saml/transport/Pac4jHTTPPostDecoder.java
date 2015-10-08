@@ -1,29 +1,57 @@
+/*
+  Copyright 2012 - 2015 pac4j organization
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
 package org.pac4j.saml.transport;
 
 import com.google.common.base.Strings;
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.logic.Constraint;
+import net.shibboleth.utilities.java.support.xml.ParserPool;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.messaging.decoder.AbstractMessageDecoder;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
-import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
+import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
+import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
- * Custom decoder for Pac4j that ignores the HttpServletRequest
- * in favor of {@link org.pac4j.core.context.WebContext}.
+ * Pac4j implementation extending directly the {@link AbstractMessageDecoder} as intermediate classes use the J2E HTTP request.
+ * It's mostly a copy/paste of the source code of these intermediate opensaml classes.
+ *
  * @author Misagh Moayyed
  * @since 1.8
  */
-public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
+public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
     private final static Logger logger = LoggerFactory.getLogger(Pac4jHTTPPostDecoder.class);
+
+    /** Parser pool used to deserialize the message. */
+    private ParserPool parserPool;
 
     private final WebContext context;
 
@@ -77,9 +105,79 @@ public class Pac4jHTTPPostDecoder extends HTTPPostDecoder {
         }
     }
 
-    @Override
+    /** {@inheritDoc} */
+    protected void doDestroy() {
+        parserPool = null;
+
+        super.doDestroy();
+    }
+
+    /** {@inheritDoc} */
     protected void doInitialize() throws ComponentInitializationException {
+        super.doInitialize();
         logger.debug("Initialized {}", this.getClass().getSimpleName());
 
+        if (parserPool == null) {
+            throw new ComponentInitializationException("Parser pool cannot be null");
+        }
+    }
+
+    /**
+     * Populate the context which carries information specific to this binding.
+     *
+     * @param messageContext the current message context
+     */
+    protected void populateBindingContext(MessageContext<SAMLObject> messageContext) {
+        SAMLBindingContext bindingContext = messageContext.getSubcontext(SAMLBindingContext.class, true);
+        bindingContext.setBindingUri(getBindingURI());
+        bindingContext.setHasBindingSignature(false);
+        bindingContext.setIntendedDestinationEndpointURIRequired(SAMLBindingSupport.isMessageSigned(messageContext));
+    }
+
+    /** {@inheritDoc} */
+    public String getBindingURI() {
+        return SAMLConstants.SAML2_POST_BINDING_URI;
+    }
+
+    /**
+     * Helper method that deserializes and unmarshalls the message from the given stream.
+     *
+     * @param messageStream input stream containing the message
+     *
+     * @return the inbound message
+     *
+     * @throws MessageDecodingException thrown if there is a problem deserializing and unmarshalling the message
+     */
+    protected XMLObject unmarshallMessage(InputStream messageStream) throws MessageDecodingException {
+        try {
+            XMLObject message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
+            return message;
+        } catch (XMLParserException e) {
+            logger.error("Error unmarshalling message from input stream", e);
+            throw new MessageDecodingException("Error unmarshalling message from input stream", e);
+        } catch (UnmarshallingException e) {
+            logger.error("Error unmarshalling message from input stream", e);
+            throw new MessageDecodingException("Error unmarshalling message from input stream", e);
+        }
+    }
+
+    /**
+     * Gets the parser pool used to deserialize incoming messages.
+     *
+     * @return parser pool used to deserialize incoming messages
+     */
+    @Nonnull
+    public ParserPool getParserPool() {
+        return parserPool;
+    }
+
+    /**
+     * Sets the parser pool used to deserialize incoming messages.
+     *
+     * @param pool parser pool used to deserialize incoming messages
+     */
+    public void setParserPool(@Nonnull final ParserPool pool) {
+        Constraint.isNotNull(pool, "ParserPool cannot be null");
+        parserPool = pool;
     }
 }
