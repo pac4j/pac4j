@@ -34,7 +34,7 @@ Its core API is provided via the `pac4j-core` submodule (groupId: `org.pac4j`).
 
 See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows).
 
-| The authentication mechanism you need | The `pac4j-*` submodule you must use
+| The authentication mechanism you want | The `pac4j-*` submodule you must use
 |---------------------------------------|-------------------------------------
 | OAuth (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... | `pac4j-oauth`
 | CAS (1.0, 2.0, 3.0, SAML, logout, proxy, REST) | `pac4j-cas`
