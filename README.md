@@ -6,7 +6,7 @@
 
 It is currently **available for many frameworks / tools and supports many authentication mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/The-big-picture).
 
-Its core API is provided via the `pac4j-core` submodule (groupId: `org.pac4j`).
+Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
 
 
 ## Frameworks / tools implementing `pac4j`:
