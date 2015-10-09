@@ -45,8 +45,10 @@ public class FormExtractor implements Extractor<UsernamePasswordCredentials> {
         if (username == null || password == null) {
             return null;
         }
+        
+       final String tenantId =(String) context.getRequestAttribute("tenantid");
 
-        return new UsernamePasswordCredentials(username, password, clientName);
+        return new UsernamePasswordCredentials(username, password, clientName,tenantId);
     }
 
     public String getUsernameParameter() {
