@@ -37,7 +37,16 @@ public class UsernamePasswordCredentials extends HttpCredentials {
         this.username = username;
         this.password = password;
         setClientName(clientName);
+        setTenantId("self");
     }
+    
+    public UsernamePasswordCredentials(final String username, final String password, final String clientName,String tenantId) {
+        this.username = username;
+        this.password = password;
+        setClientName(clientName);
+        setTenantId(tenantId);
+    }
+    
 
     public String getUsername() {
         return this.username;
@@ -71,7 +80,7 @@ public class UsernamePasswordCredentials extends HttpCredentials {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "password", "[PROTECTED]",
-                "clientName", getClientName());
+                "clientName", getClientName(),getTenantId());
     }
 
     @Override
@@ -80,5 +89,6 @@ public class UsernamePasswordCredentials extends HttpCredentials {
         this.password = null;
         this.setClientName(null);
         this.setUserProfile(null);
+        this.setTenantId(null);
     }
 }
