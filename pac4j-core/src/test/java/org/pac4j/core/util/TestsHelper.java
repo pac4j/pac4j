@@ -15,30 +15,21 @@
  */
 package org.pac4j.core.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.Assert;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.ObjectBuffer;
-import com.esotericsoftware.kryo.SerializationException;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
+import java.io.*;
+import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * This class is an helper fo tests : to get a basic web client, parameters from an url, a formatted date or to serialize and deserialize
@@ -148,20 +139,20 @@ public final class TestsHelper {
     }
 
     public static byte[] serializeKryo(final Kryo kryo, final Object object) {
-        final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
+        Output output = new Output(BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
         try {
-            return buffer.writeClassAndObject(object);
-        } catch (final SerializationException e) {
+            kryo.writeClassAndObject(output, object);
+        } catch (final KryoException e) {
             logger.error("serialize exception with Kryo on object : {}", object, e);
         }
-        return null;
+        return output.toBytes();
     }
 
     public static Object unserializeKryo(final Kryo kryo, final byte[] bytes) {
+        Input input = new Input(bytes);
         try {
-            final ObjectBuffer buffer = new ObjectBuffer(kryo, BUFFERS_INITIAL_CAPACITY, BUFFERS_MAXIMAL_CAPACITY);
-            return buffer.readClassAndObject(bytes);
-        } catch (final SerializationException e) {
+            return kryo.readClassAndObject(input);
+        } catch (final KryoException e) {
             logger.error("unserialize exception with Kryo", e);
         }
         return null;

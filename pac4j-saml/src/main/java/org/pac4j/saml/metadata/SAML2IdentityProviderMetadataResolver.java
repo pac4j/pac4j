@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 pac4j organization
+  Copyright 2012 - 2015 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -68,8 +68,15 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     @Override
-    public final MetadataResolver resolve() {
-
+    public  final MetadataResolver resolve() {
+    	
+    	// No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
+    	// idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
+    	// Usage of locks will adversly impact performance.
+    	if(idpMetadataProvider != null) {
+    		return idpMetadataProvider;
+    	}
+    	
         try {
             Resource resource = null;
             if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {

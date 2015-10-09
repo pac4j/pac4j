@@ -25,7 +25,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator;
+import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -41,8 +42,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     public void testClone() {
         final DirectBasicAuthClient oldClient = new DirectBasicAuthClient();
         oldClient.setName(TYPE);
-        final SimpleTestUsernameProfileCreator profileCreator = new SimpleTestUsernameProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setAuthenticator(usernamePasswordAuthenticator);
         final DirectBasicAuthClient client = (DirectBasicAuthClient) oldClient.clone();
@@ -53,7 +53,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null, new SimpleTestUsernameProfileCreator());
+        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null);
         TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
 
@@ -71,7 +71,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testAuthentication() throws RequiresHttpAction {
-        final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), new SimpleTestUsernameProfileCreator());
+        final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         final MockWebContext context = MockWebContext.create();
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Basic " + Base64.encodeBase64String(header.getBytes()));

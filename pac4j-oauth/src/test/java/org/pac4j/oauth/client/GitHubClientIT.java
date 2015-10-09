@@ -96,10 +96,10 @@ public class GitHubClientIT extends OAuthClientIT {
         assertEquals(0, profile.getFollowing().intValue());
         assertEquals(0, profile.getPrivateGists().intValue());
         assertEquals(0, profile.getPublicRepos().intValue());
-        assertEquals("67c3844a672979889c1e3abbd8c4eb22", profile.getGravatarId());
+        assertEquals("", profile.getGravatarId());
         assertEquals(0, profile.getFollowers().intValue());
         assertEquals("Company", profile.getCompany());
-        assertFalse(profile.getHireable());
+        assertNull(profile.getHireable());
         assertEquals(0, profile.getCollaborators().intValue());
         assertNull(profile.getBio());
         assertEquals(0, profile.getTotalPrivateRepos().intValue());
@@ -109,8 +109,8 @@ public class GitHubClientIT extends OAuthClientIT {
         final GitHubPlan plan = profile.getPlan();
         assertEquals("free", plan.getName());
         assertEquals(0, plan.getCollaborators().intValue());
-        assertEquals(307200, plan.getSpace().intValue());
+        assertEquals(976562499, plan.getSpace().intValue());
         assertEquals(0, plan.getPrivateRepos().intValue());
-        assertEquals(25, profile.getAttributes().size());
+        assertEquals(24, profile.getAttributes().size());
     }
 }

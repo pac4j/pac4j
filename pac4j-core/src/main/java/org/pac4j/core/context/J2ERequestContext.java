@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.context;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Jerome Leleu
  * @since 1.4.0
+ * @deprecated
  */
 @Deprecated
 public class J2ERequestContext extends BaseResponseContext {
@@ -77,13 +80,6 @@ public class J2ERequestContext extends BaseResponseContext {
      */
     public Object getSessionAttribute(final String name) {
         return this.request.getSession().getAttribute(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void invalidateSession() {
-        this.request.getSession().invalidate();
     }
 
     @Override
@@ -146,5 +142,22 @@ public class J2ERequestContext extends BaseResponseContext {
         } else {
             return requestURL.append('?').append(queryString).toString();
         }
+    }
+
+    @Override
+    public Collection<Cookie> getRequestCookies() {
+        final javax.servlet.http.Cookie[] cookies = this.request.getCookies();
+        final Collection<Cookie> pac4jCookies = new LinkedHashSet<>(cookies.length);
+        for (javax.servlet.http.Cookie c : this.request.getCookies()) {
+            final Cookie cookie = new Cookie(c.getName(), c.getValue());
+            cookie.setComment(c.getComment());
+            cookie.setDomain(c.getDomain());
+            cookie.setHttpOnly(c.isHttpOnly());
+            cookie.setMaxAge(c.getMaxAge());
+            cookie.setPath(c.getPath());
+            cookie.setSecure(c.getSecure());
+            pac4jCookies.add(cookie);
+        }
+        return pac4jCookies;
     }
 }

@@ -36,7 +36,7 @@ import org.pac4j.core.util.CommonHelper;
  * redirection url will be the callback url with an additional parameter: {@link #NEEDS_CLIENT_REDIRECTION_PARAMETER} to require the
  * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.
  * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean)} must be used with <code>true</code> for the
- * <code>requiresAuthentication</code> parameter</li>
+ * <code>protectedTarget</code> parameter</li>
  * <li>If you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
  * which will be completed according to the current host, port and scheme. Disabled by default.</li>
  * </ul>
@@ -72,20 +72,20 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     /**
      * <p>Redirect to the authentication provider by updating the WebContext accordingly.</p>
      * <p>Though, if this client requires an indirect redirection, it will return a redirection to the callback url (with an additionnal parameter requesting a
-     * redirection). Whatever the kind of client's redirection, the <code>requiresAuthentication</code> parameter set to <code>true</code> enforces
+     * redirection). Whatever the kind of client's redirection, the <code>protectedTarget</code> parameter set to <code>true</code> enforces
      * a direct redirection.
      * <p>If an authentication has already been tried for this client and has failed (previous <code>null</code> credentials) and if the target
-     * is protected (<code>requiresAuthentication</code> set to <code>true</code>), a forbidden response (403 HTTP status code) is returned.</p>
+     * is protected (<code>protectedTarget</code> set to <code>true</code>), a forbidden response (403 HTTP status code) is returned.</p>
      * <p>If the request is an AJAX one, an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
      *
      * @param context the current web context
-     * @param requiresAuthentication whether the target url is protected
+     * @param protectedTarget whether the target url is protected
      * @throws RequiresHttpAction whether an additional HTTP action is required
      */
     @Override
-    public final void redirect(final WebContext context, final boolean requiresAuthentication)
+    public final void redirect(final WebContext context, final boolean protectedTarget)
             throws RequiresHttpAction {
-        final RedirectAction action = getRedirectAction(context, requiresAuthentication);
+        final RedirectAction action = getRedirectAction(context, protectedTarget);
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
             context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
@@ -100,11 +100,11 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * {@link #redirect(WebContext, boolean)} should be generally called instead.
      * 
      * @param context context
-     * @param requiresAuthentication requires authentication
+     * @param protectedTarget requires authentication
      * @return the redirection action
      * @throws RequiresHttpAction requires an additional HTTP action
      */
-    public final RedirectAction getRedirectAction(final WebContext context, final boolean requiresAuthentication) throws RequiresHttpAction {
+    public final RedirectAction getRedirectAction(final WebContext context, final boolean protectedTarget) throws RequiresHttpAction {
         init();
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
@@ -117,14 +117,14 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
             // protected target -> forbidden
-            if (requiresAuthentication) {
+            if (protectedTarget) {
                 logger.error("authentication already tried and protected target -> forbidden");
                 cleanRequestedUrl(context);
                 throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
             }
         }
-        // it's a direct redirection or force the redirection because requires authentication -> return the real redirection
-        if (isDirectRedirection() || requiresAuthentication) {
+        // it's a direct redirection or force the redirection because the target is protected -> return the real redirection
+        if (isDirectRedirection() || protectedTarget) {
             return retrieveRedirectAction(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection

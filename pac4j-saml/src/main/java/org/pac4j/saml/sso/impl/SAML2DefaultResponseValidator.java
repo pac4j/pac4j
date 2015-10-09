@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 pac4j organization
+  Copyright 2012 - 2015 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -68,10 +68,14 @@ import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.storage.SAMLMessageStorage;
+import org.pac4j.saml.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -523,23 +527,29 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             return false;
         }
 
-        if (data.getRecipient() == null) {
-            logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
+        try {
+            if (data.getRecipient() == null) {
+                logger.debug("SubjectConfirmationData recipient cannot be null for Bearer confirmation");
+                return false;
+            } else {
+                final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
+                if (endpoint == null) {
+                    logger.warn("No endpoint was found in the SAML endpoint context");
+                    return false;
+                }
+    
+                final URI recipientUri = new URI(data.getRecipient());
+                final URI appEndpointUri = new URI(endpoint.getLocation());
+                if (!UriUtils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
+                    logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. SP ACS URL from context: {}", recipientUri, appEndpointUri);
+                    return false;
+                }
+            }
+        } catch (URISyntaxException use) {
+            logger.error("Unable to check SubjectConfirmationData recipient, a URI has invalid syntax.", use);
             return false;
-        } else {
-            final Endpoint endpoint = context.getSAMLEndpointContext().getEndpoint();
-            if (endpoint == null) {
-                logger.warn("No endpoint was found in the SAML endpoint context");
-                return false;
-            }
-
-            final String url = endpoint.getLocation();
-            if (!data.getRecipient().equals(url)) {
-                logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found",
-                        data.getRecipient());
-                return false;
-            }
         }
+        
         return true;
     }
 
@@ -634,14 +644,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     protected final void validateAssertionSignature(final Signature signature, final SAML2MessageContext context,
                                                     final SignatureTrustEngine engine) {
 
-        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
         final SAMLPeerEntityContext peerContext = context.getSAMLPeerEntityContext();
 
-        final QName role = selfContext.getRole();
         if (signature != null) {
             final String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
-        } else if (((SPSSODescriptor) role).getWantAssertionsSigned()
+        } else if (context.getSPSSODescriptor().getWantAssertionsSignedXSBoolean().getValue()
                 && !peerContext.isAuthenticated()) {
             throw new SAMLException("Assertion or response must be signed");
         }
@@ -681,9 +689,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     }
 
     private boolean isDateValid(final DateTime issueInstant, final int interval) {
-        final long now = System.currentTimeMillis();
-        return issueInstant.isBefore(now + this.acceptedSkew * 1000)
-                && issueInstant.isAfter(now - (this.acceptedSkew + interval) * 1000);
+        final DateTime before =  DateTime.now().plusSeconds(acceptedSkew);
+        final DateTime after =  DateTime.now().minusSeconds(acceptedSkew + interval);
+        return issueInstant.isBefore(before) && issueInstant.isAfter(after);
     }
 
     private boolean isIssueInstantValid(final DateTime issueInstant) {
@@ -694,10 +702,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         return isDateValid(authnInstant, this.maximumAuthenticationLifetime);
     }
 
+    @Override
     public final void setAcceptedSkew(final int acceptedSkew) {
         this.acceptedSkew = acceptedSkew;
     }
 
+    @Override
     public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }

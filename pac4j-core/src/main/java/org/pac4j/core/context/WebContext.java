@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.context;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -81,11 +82,6 @@ public interface WebContext {
     Object getSessionAttribute(String name);
 
     /**
-     * Invalidate the current session.
-     */
-    void invalidateSession();
-
-    /**
      * Gets the session id for this context.
      * @return the session identifier
      */
@@ -129,13 +125,13 @@ public interface WebContext {
 
     /**
      * Sets the response encoding type.
-     * @param encoding
+     * @param encoding the character encoding
      */
     void setResponseCharacterEncoding(String encoding);
 
     /**
      * Sets the response content type.
-     * @param content
+     * @param content the content type
      */
     void setResponseContentType(String content);
 
@@ -162,9 +158,25 @@ public interface WebContext {
 
     /**
      * Return the full URL (with query string) the client used to request the server.
-     * 
+     *
      * @return the URL
      * @since 1.5.0
      */
     String getFullRequestURL();
+
+    /**
+     * Retrieves request cookies.
+     *
+     * @return the request cookies
+     * @since 1.8.1
+     */
+    Collection<Cookie> getRequestCookies();
+
+    /**
+     * Adds cookies to the response
+     *
+     * @param cookie a cookie to add to the response
+     * @since 1.8.1
+     */
+    void addResponseCookie(Cookie cookie);
 }

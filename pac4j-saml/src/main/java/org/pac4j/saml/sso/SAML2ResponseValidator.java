@@ -1,5 +1,5 @@
 /*
-  Copyright 2012 -2014 pac4j organization
+  Copyright 2012 - 2015 pac4j organization
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,4 +27,8 @@ import org.pac4j.saml.context.SAML2MessageContext;
 public interface SAML2ResponseValidator {
 
     Credentials validate(SAML2MessageContext context);
+
+    void setMaximumAuthenticationLifetime(int maximumAuthenticationLifetime);
+
+    void setAcceptedSkew(int acceptedSkew);
 }

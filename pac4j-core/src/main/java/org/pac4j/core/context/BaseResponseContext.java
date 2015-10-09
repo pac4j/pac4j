@@ -15,7 +15,9 @@
  */
 package org.pac4j.core.context;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -37,6 +39,9 @@ public abstract class BaseResponseContext implements WebContext {
     protected String responseEncoding;
 
     protected final Map<String, String> responseHeaders = new HashMap<>();
+
+    protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
+
 
     public void writeResponseContent(final String content) {
         if (content != null) {
@@ -84,5 +89,10 @@ public abstract class BaseResponseContext implements WebContext {
 
     public String getResponseEncoding() {
         return responseEncoding;
+    }
+
+    @Override
+    public void addResponseCookie(Cookie cookie) {
+        this.responseCookies.add(cookie);
     }
 }

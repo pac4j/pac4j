@@ -67,7 +67,7 @@ public class BitbucketClientIT extends OAuthClientIT {
         assertEquals("Scribeup", profile.getFamilyName());
         assertEquals("Test Scribeup", profile.getDisplayName());
         assertFalse(profile.isTeam());
-        assertEquals("https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Apr/29/testscribeup-avatar-2548548378-2_avatar.png", profile.getPictureUrl());
+        assertTrue(profile.getPictureUrl().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
         assertEquals("/1.0/users/testscribeup", profile.getProfileUrl());
     }
 

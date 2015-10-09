@@ -88,6 +88,7 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
         return CommonHelper.toString(this.getClass(), "name", getName(), "extractor", this.extractor,
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
+
     public Authenticator<C> getAuthenticator() {
         return authenticator;
     }

@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.pac4j</groupId>
 		<artifactId>pac4j</artifactId>
-		<version>1.8.0-SNAPSHOT</version>
+		<version>1.8.0-RC2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>pac4j-oauth</artifactId>
@@ -75,11 +75,11 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.googlecode</groupId>
-            <artifactId>kryo</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo-shaded</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
