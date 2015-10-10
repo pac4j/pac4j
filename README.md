@@ -13,16 +13,16 @@ Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
 
 | The framework / tool you develop with | The `*-pac4j` library you must use | The demo(s) for tests
 |---------------------------------------|------------------------------------|----------------------
-| [SSO CAS server](https://github.com/Jasig/cas) | [cas-server-support-pac4j](http://jasig.github.io/cas/4.1.x/integration/Delegate-Authentication.html) | [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo)
-| [Play 2.x framework](http://www.playframework.org) | [play-pac4j](https://github.com/pac4j/play-pac4j) | [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) or [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo)
 | [J2E environment](http://docs.oracle.com/javaee/) | [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) | [j2e-pac4j-demo](https://github.com/pac4j/j2e-pac4j-demo)
+| [Play 2.x framework](http://www.playframework.org) | [play-pac4j](https://github.com/pac4j/play-pac4j) | [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) or [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo)
+| [Vertx](http://vertx.io) | [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) | [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo)
+| [Spark Java framework](http://sparkjava.com) | [spark-pac4j](https://github.com/pac4j/spark-pac4j) | [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo)
+| [Ratpack](http://www.ratpack.io) | [ratpack-pac4j](http://ratpack.io/manual/current/pac4j.html#pac4j) | [ratpack-pac4j-demo](https://github.com/pac4j/ratpack-pac4j-demo)
+| [Undertow](http://undertow.io) | [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) | [undertow-pac4j-demo](https://github.com/pac4j/undertow-pac4j-demo)
+| [Jooby framework](http://jooby.org) |  [jooby-pac4j](http://jooby.org/doc/pac4j) | [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)
 | [Apache Shiro](http://shiro.apache.org) | [buji-pac4j](https://github.com/bujiio/buji-pac4j) | [buji-pac4j-demo](https://github.com/pac4j/buji-pac4j-demo)
 | [Spring Security](http://projects.spring.io/spring-security) | [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) | [spring-security-pac4j-demo](https://github.com/pac4j/spring-security-pac4j-demo)
-| [Ratpack](http://www.ratpack.io) | [ratpack-pac4j](http://ratpack.io/manual/current/pac4j.html#pac4j) | [ratpack-pac4j-demo](https://github.com/pac4j/ratpack-pac4j-demo)
-| [Vertx](http://vertx.io) | [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) | [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo)
-| [Undertow](http://undertow.io) | [undertow-pac4j](https://github.com/pac4j/undertow-pac4j) | [undertow-pac4j-demo](https://github.com/pac4j/undertow-pac4j-demo)
-| [Spark Java framework](http://sparkjava.com) | [spark-pac4j](https://github.com/pac4j/spark-pac4j) | [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo)
-| [Jooby framework](http://jooby.org) |  [jooby-pac4j](http://jooby.org/doc/pac4j) | [jooby-pac4j-demo](https://github.com/pac4j/jooby-pac4j-demo)
+| [SSO CAS server](https://github.com/Jasig/cas) | [cas-server-support-pac4j](http://jasig.github.io/cas/4.1.x/integration/Delegate-Authentication.html) | [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo)
 
 
 ## Supported authentication / authorization mechanisms:
