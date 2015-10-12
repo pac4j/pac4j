@@ -649,9 +649,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         if (signature != null) {
             final String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
-        } else if (context.getSPSSODescriptor().getWantAssertionsSignedXSBoolean().getValue()
-                && !peerContext.isAuthenticated()) {
-            throw new SAMLException("Assertion or response must be signed");
+        } else {
+            SPSSODescriptor spDescriptor = (context == null) ? null : context.getSPSSODescriptor();
+            Boolean wantAssertionsSigned = (spDescriptor == null) ? Boolean.FALSE : spDescriptor.getWantAssertionsSigned();
+            if (wantAssertionsSigned && !peerContext.isAuthenticated()) {
+                throw new SAMLException("Assertion or response must be signed");
+            }
         }
     }
 
