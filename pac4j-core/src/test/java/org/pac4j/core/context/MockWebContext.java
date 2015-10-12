@@ -207,8 +207,9 @@ public class MockWebContext extends BaseResponseContext {
         }
     }
 
-    public void setFullRequestURL(String fullRequestURL) {
+    public MockWebContext setFullRequestURL(String fullRequestURL) {
         this.fullRequestURL = fullRequestURL;
+        return this;
     }
 
     @Override
