@@ -21,3 +21,4 @@ test-output/
 .springBeans
 cas.log
 perfStats.log
+.DS_Store
