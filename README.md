@@ -90,7 +90,7 @@ Notice you may also use the `ConfigSingleton` object to keep one instance of you
  
 To secure your Java web application, **the reference implementation is to create two "filters"**: **one to protect urls**, **the other one to receive callbacks** for stateful authentication processes (indirect clients).
 
-1) **For your protection "filter", it must be based on two parameters: `clientName`** (list of clients used for authentication) **and `authorizerName`** (list of authorizers to check authorizations) and **use the following logic (loop on direct clients for authentication then check the user profile and authorizations)**:
+1) **For your protection "filter", it must be based on two String parameters: `clientName`** (list of clients used for authentication) **and `authorizerName`** (list of authorizers to check authorizations) and **use the following logic (loop on direct clients for authentication then check the user profile and authorizations)**:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
