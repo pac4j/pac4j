@@ -72,9 +72,7 @@ The latest released version is the [![Maven Central](https://maven-badges.heroku
 
 `pac4j` is an easy and powerful security engine. Add the `pac4j-core` dependency to benefit from the core API of `pac4j`. Other dependencies will be optionally added for specific support: `pac4j-oauth` for OAuth, `pac4j-cas` for CAS, `pac4j-saml` for SAML...
 
-To secure your Java web application, **the reference implementation is to create two filters**: **one to protect urls**, **the other one to receive callbacks** for stateful authentication processes ("indirect clients").
-
-Gather all your authentication mechanisms = [**clients**](https://github.com/pac4j/pac4j/wiki/Clients) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
+To define your security configuration, gather all your authentication mechanisms = [**clients**](https://github.com/pac4j/pac4j/wiki/Clients) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
 
 ```java
 FacebookClient facebookClient = new FacebookClient(FB_KEY, FB_SECRET);
@@ -88,7 +86,11 @@ config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
 config.addAuthorizer("custom", new CustomAuthorizer());
 ```
 
-1) **For your protection filter, use the following logic (loop on direct clients for authentication then check the user profile and authorizations)**:
+Notice you may also use the `ConfigSingleton` object to keep one instance of your configuration and share it among the different components (if you don't have any dependency injection capability). You can also use the `ConfigFactory` to build you configuration if no other mean is available.
+ 
+To secure your Java web application, **the reference implementation is to create two "filters"**: **one to protect urls**, **the other one to receive callbacks** for stateful authentication processes (indirect clients).
+
+1) **For your protection "filter", it must be based on two parameters: `clientName`** (list of clients used for authentication) **and `authorizerName`** (list of authorizers to check authorizations) and **use the following logic (loop on direct clients for authentication then check the user profile and authorizations)**:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
