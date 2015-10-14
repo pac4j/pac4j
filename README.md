@@ -137,7 +137,7 @@ The `EnvSpecificWebContext` class is a specific implementation of the `WebContex
 
 See the final implementations in [j2e-pac4j](https://github.com/pac4j/j2e-pac4j/blob/master/src/main/java/org/pac4j/j2e/filter/RequiresAuthenticationFilter.java#L91) and [play-pac4j](https://github.com/pac4j/play-pac4j/blob/master/play-pac4j-java/src/main/java/org/pac4j/play/java/RequiresAuthenticationAction.java#L95).
 
-2) **For your callback filter, get the credentials and the user profile on the callback url**:
+2) **For your callback "filter", get the credentials and the user profile on the callback url**:
 
 ```java
 EnvSpecificWebContext context = new EnvSpecificWebContex(...);
