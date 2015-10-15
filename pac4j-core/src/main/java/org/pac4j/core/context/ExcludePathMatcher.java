@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * Exclude path matcher.
  *
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.8.1
  */
 public final class ExcludePathMatcher implements PathMatcher {
 
@@ -45,14 +45,8 @@ public final class ExcludePathMatcher implements PathMatcher {
 
     public boolean matches(final WebContext context) {
         if (pattern != null) {
-            final String url = context.getFullRequestURL();
-            final int pos = url.indexOf("/", 9);
-            final String path;
-            if (pos > 0) {
-                path = url.substring(pos);
-            } else {
-                path = "/";
-            }
+            final String path = context.getPath();
+            logger.debug("path to match: {}", path);
             return pattern.matcher(path).matches();
         }
         return false;

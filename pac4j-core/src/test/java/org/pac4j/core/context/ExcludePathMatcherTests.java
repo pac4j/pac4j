@@ -26,18 +26,16 @@ import static org.junit.Assert.*;
  * Tests {@link ExcludePathMatcher}.
  *
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.8.1
  */
 public final class ExcludePathMatcherTests {
-
-    private final static String BEGIN_URL = "http://example.com";
 
     private ExcludePathMatcher matcher = new ExcludePathMatcher("^/(img/.*|css/.*|page\\.html)$");
 
     @Test
     public void testBlankPath() {
         final ExcludePathMatcher pathMatcher = new ExcludePathMatcher();
-        assertFalse(pathMatcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/page.html")));
+        assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/page.html")));
         assertFalse(pathMatcher.matches(MockWebContext.create()));
     }
 
@@ -59,20 +57,20 @@ public final class ExcludePathMatcherTests {
     @Test
     public void testNoPath() {
         final ExcludePathMatcher pathMatcher = new ExcludePathMatcher("^/$");
-        assertTrue(pathMatcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL)));
+        assertTrue(pathMatcher.matches(MockWebContext.create().setPath("/")));
     }
 
     @Test
     public void testDontMatch() {
-        assertFalse(matcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/js/app.js")));
-        assertFalse(matcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/")));
-        assertFalse(matcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/page.htm")));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/js/app.js")));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/")));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/page.htm")));
     }
 
     @Test
     public void testMatch() {
-        assertTrue(matcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/css/app.css")));
-        assertTrue(matcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/img/")));
-        assertTrue(matcher.matches(MockWebContext.create().setFullRequestURL(BEGIN_URL + "/page.html")));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/css/app.css")));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/img/")));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/page.html")));
     }
 }

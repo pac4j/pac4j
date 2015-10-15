@@ -168,7 +168,7 @@ public interface WebContext {
      * Retrieves request cookies.
      *
      * @return the request cookies
-     * @since 1.8.1
+     * @since 1.8.0
      */
     Collection<Cookie> getRequestCookies();
 
@@ -176,7 +176,15 @@ public interface WebContext {
      * Adds cookies to the response
      *
      * @param cookie a cookie to add to the response
-     * @since 1.8.1
+     * @since 1.8.0
      */
     void addResponseCookie(Cookie cookie);
+
+    /**
+     * Get the "servlet path" (in a J2E style).
+     *
+     * @return the "servlet path"
+     * @since 1.8.1
+     */
+    String getPath();
 }
