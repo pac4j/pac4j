@@ -234,4 +234,11 @@ public class J2EContext implements WebContext {
         c.setDomain(cookie.getDomain());
         this.response.addCookie(c);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPath() {
+        return request.getServletPath();
+    }
 }

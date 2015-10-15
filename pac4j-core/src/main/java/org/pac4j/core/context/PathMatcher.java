@@ -19,7 +19,7 @@ package org.pac4j.core.context;
  * To match paths.
  *
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.8.1
  */
 public interface PathMatcher {
 

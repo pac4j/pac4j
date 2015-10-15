@@ -160,4 +160,11 @@ public class J2ERequestContext extends BaseResponseContext {
         }
         return pac4jCookies;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPath() {
+        return request.getServletPath();
+    }
 }
