@@ -14,6 +14,7 @@ Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
 | The framework / tool you develop with | The `*-pac4j` library you must use | The demo(s) for tests
 |---------------------------------------|------------------------------------|----------------------
 | [J2E environment](http://docs.oracle.com/javaee/) | [j2e-pac4j](https://github.com/pac4j/j2e-pac4j) | [j2e-pac4j-demo](https://github.com/pac4j/j2e-pac4j-demo)
+| [Spring Web MVC](http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/mvc.html) and [Spring Boot](http://projects.spring.io/spring-boot) | [spring-webmvc-pac4j](https://github.com/pac4j/spring-webmvc-pac4j) | [spring-webmvc-pac4j-demo](https://github.com/pac4j/spring-webmvc-pac4j-demo) or [spring-webmvc-pac4j-boot-demo](https://github.com/pac4j/spring-webmvc-pac4j-boot-demo)
 | [Play 2.x framework](http://www.playframework.org) | [play-pac4j](https://github.com/pac4j/play-pac4j) | [play-pac4j-java-demo](https://github.com/pac4j/play-pac4j-java-demo) or [play-pac4j-scala-demo](https://github.com/pac4j/play-pac4j-scala-demo)
 | [Vertx](http://vertx.io) | [vertx-pac4j](https://github.com/pac4j/vertx-pac4j) | [vertx-pac4j-demo](https://github.com/pac4j/vertx-pac4j-demo)
 | [Spark Java framework](http://sparkjava.com) | [spark-pac4j](https://github.com/pac4j/spark-pac4j) | [spark-pac4j-demo](https://github.com/pac4j/spark-pac4j-demo)
