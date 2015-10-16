@@ -161,7 +161,6 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         try {
             return XMLObjectSupport.marshall(message);
         } catch (MarshallingException e) {
-            log.error("Error marshalling message", e);
             throw new MessageEncodingException("Error marshalling message", e);
         }
     }
@@ -268,7 +267,6 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
             b64Signature = Base64Support.encode(rawSignature, Base64Support.UNCHUNKED);
             log.debug("Generated digital signature value (base64-encoded) {}", b64Signature);
         } catch (final org.opensaml.security.SecurityException e) {
-            log.error("Error during URL signing process", e);
             throw new MessageEncodingException("Unable to sign URL query string", e);
         } catch (final UnsupportedEncodingException e) {
             // UTF-8 encoding is required to be supported by all JVMs

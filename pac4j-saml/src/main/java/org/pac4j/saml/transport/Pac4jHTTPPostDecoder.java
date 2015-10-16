@@ -90,13 +90,11 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         }
 
         if(Strings.isNullOrEmpty(encodedMessage)) {
-            logger.error("Request did not contain either a SAMLRequest or SAMLResponse parameter. Invalid request for SAML 2 HTTP POST binding.");
-            throw new MessageDecodingException("No SAML message present in request");
+            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. Invalid request for SAML 2 HTTP POST binding.");
         } else {
             logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);
             final byte[] decodedBytes = Base64Support.decode(encodedMessage);
             if(decodedBytes == null) {
-                logger.error("Unable to Base64 decode SAML message");
                 throw new MessageDecodingException("Unable to Base64 decode SAML message");
             } else {
                 logger.trace("Decoded SAML message:\n{}", new String(decodedBytes));
@@ -153,10 +151,8 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
             XMLObject message = XMLObjectSupport.unmarshallFromInputStream(getParserPool(), messageStream);
             return message;
         } catch (XMLParserException e) {
-            logger.error("Error unmarshalling message from input stream", e);
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
         } catch (UnmarshallingException e) {
-            logger.error("Error unmarshalling message from input stream", e);
             throw new MessageDecodingException("Error unmarshalling message from input stream", e);
         }
     }

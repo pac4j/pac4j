@@ -72,13 +72,11 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
             verified = signedJWT.verify(new MACVerifier(this.secret));
         } catch (final Exception e) {
-            logger.error("Cannot decrypt / verify JWT", e);
-            throw new TechnicalException("Cannot decrypt / verify JWT: " + e.getMessage());
+            throw new TechnicalException("Cannot decrypt / verify JWT", e);
         }
 
         if (!verified) {
             final String message = "JWT verification failed: " + token;
-            logger.error(message);
             throw new CredentialsException(message);
         }
 
@@ -87,8 +85,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
             final UserProfile profile = ProfileHelper.buildProfile(claimSet.getSubject(), claimSet.getClaims());
             credentials.setUserProfile(profile);
         } catch (final Exception e) {
-            logger.error("Cannot get claimSet", e);
-            throw new TechnicalException("Cannot get claimSet: " + e.getMessage());
+            throw new TechnicalException("Cannot get claimSet", e);
         }
     }
 

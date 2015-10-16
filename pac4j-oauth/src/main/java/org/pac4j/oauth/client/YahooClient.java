@@ -79,7 +79,6 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
         logger.debug("guid : {}", guid);
         if (StringUtils.isBlank(guid)) {
             final String message = "Cannot find guid from body : " + body;
-            logger.error(message);
             throw new HttpCommunicationException(message);
         }
         body = sendRequestForData(accessToken, "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json");

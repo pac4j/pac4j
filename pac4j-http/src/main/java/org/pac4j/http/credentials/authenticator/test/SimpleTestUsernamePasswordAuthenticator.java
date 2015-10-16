@@ -57,7 +57,6 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
     }
 
     protected void throwsException(final String message) {
-        logger.error(message);
         throw new CredentialsException(message);
     }
 }
