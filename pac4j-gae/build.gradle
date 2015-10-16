@@ -1,0 +1,28 @@
+
+description = 'pac4j for GAE UserService mechanism'
+dependencies {
+  compile project(':pac4j-core')
+    compile(group: 'org.openid4java', name: 'openid4java', version:'0.9.8') {
+exclude(module: 'commons-logging')
+    }
+    compile group: 'com.google.appengine', name: 'appengine-api-1.0-sdk', version:'1.9.0'
+    compile group: 'com.google.appengine', name: 'appengine-jsr107cache', version:'1.9.0'
+    compile group: 'net.sf.jsr107cache', name: 'jsr107cache', version:'1.1'
+  testCompile project(':pac4j-core')
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile(group: 'net.sourceforge.htmlunit', name: 'htmlunit', version:'2.15') {
+exclude(module: 'commons-logging')
+    }
+    testCompile group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.7.12'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.3'
+    testCompile group: 'org.mockito', name: 'mockito-core', version:'1.9.5'
+    testCompile group: 'com.esotericsoftware', name: 'kryo-shaded', version:'3.0.3'
+    testCompile group: 'com.google.appengine', name: 'appengine-testing', version:'1.9.0'
+    testCompile group: 'com.google.appengine', name: 'appengine-api-labs', version:'1.9.0'
+    testCompile group: 'com.google.appengine', name: 'appengine-api-stubs', version:'1.9.0'
+    compile(group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1') {
+       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
+       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
+       Please review and delete this closure when resolved. */
+    }
+}

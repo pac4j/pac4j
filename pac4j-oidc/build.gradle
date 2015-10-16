@@ -1,0 +1,12 @@
+
+description = 'pac4j for OpenID Connect protocol'
+dependencies {
+  compile project(':pac4j-core')
+    compile group: 'com.nimbusds', name: 'oauth2-oidc-sdk', version:'5.0-alpha5'
+  testCompile project(':pac4j-core')
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile(group: 'net.sourceforge.htmlunit', name: 'htmlunit', version:'2.15') {
+exclude(module: 'commons-logging')
+    }
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.3'
+}

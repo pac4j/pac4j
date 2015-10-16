@@ -1,0 +1,11 @@
+
+description = 'pac4j for Stormpath'
+dependencies {
+  compile project(':pac4j-core')
+  compile project(':pac4j-http')
+    compile group: 'com.stormpath.sdk', name: 'stormpath-sdk-api', version:'0.9.3'
+    runtime group: 'com.stormpath.sdk', name: 'stormpath-sdk-httpclient', version:'0.9.3'
+  testCompile project(':pac4j-core')
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.3'
+}

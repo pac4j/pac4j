@@ -1,0 +1,49 @@
+
+description = 'pac4j for SAML protocol'
+dependencies {
+  compile project(':pac4j-core')
+    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.3'
+    compile group: 'org.slf4j', name: 'log4j-over-slf4j', version:'1.7.12'
+    compile group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.7.12'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.12'
+    compile group: 'org.opensaml', name: 'opensaml-core', version:'3.1.1'
+    compile group: 'net.shibboleth.utilities', name: 'java-support', version:'7.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-saml-api', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-saml-impl', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-soap-api', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-xmlsec-api', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-security-api', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-security-impl', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-profile-api', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-profile-impl', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-messaging-api', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-messaging-impl', version:'3.1.1'
+    compile group: 'org.opensaml', name: 'opensaml-xmlsec-impl', version:'3.1.1'
+    compile group: 'com.google.guava', name: 'guava', version:'18.0'
+    compile(group: 'org.cryptacular', name: 'cryptacular', version:'1.0') {
+exclude(module: 'bcprov-jdk15on')
+    }
+    compile group: 'commons-codec', name: 'commons-codec', version:'1.10'
+    compile group: 'joda-time', name: 'joda-time', version:'2.7'
+    compile group: 'xalan', name: 'xalan', version:'2.7.2'
+    compile group: 'org.apache.velocity', name: 'velocity', version:'1.7'
+    compile group: 'org.springframework', name: 'spring-core', version:'4.1.5.RELEASE'
+    compile group: 'net.shibboleth.ext', name: 'spring-extensions', version:'5.1.1'
+    compile(group: 'org.opensaml', name: 'xmltooling', version:'1.4.4') {
+exclude(module: 'joda-time')
+exclude(module: 'xmlsec')
+    }
+  testCompile project(':pac4j-core')
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile(group: 'net.sourceforge.htmlunit', name: 'htmlunit', version:'2.15') {
+exclude(module: 'xalan')
+    }
+    testCompile group: 'xerces', name: 'xercesImpl', version:'2.8.1'
+    testCompile group: 'com.esotericsoftware', name: 'kryo-shaded', version:'3.0.3'
+    testCompile group: 'org.springframework', name: 'spring-test', version:'4.1.5.RELEASE'
+    compile(group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1') {
+       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
+       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
+       Please review and delete this closure when resolved. */
+    }
+}

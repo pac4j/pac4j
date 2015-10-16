@@ -1,0 +1,35 @@
+allprojects  {
+  apply plugin: 'maven'
+
+  //group = 'org.pac4j'
+  group = 'wavity-pac4j'
+version = '1.8.0-RC2-SNAPSHOT'
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'eclipse-wtp'
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+
+  task packageSources(type: Jar) {
+classifier = 'sources'
+from sourceSets.main.allSource
+
+}
+artifacts.archives packageSources
+  repositories {
+    mavenLocal()
+    
+    maven { url "https://raw.github.com/fernandezpablo85/scribe-java/mvn-repo/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+    maven { url "https://build.shibboleth.net/nexus/content/groups/public" }
+  }
+
+  configurations.all {
+}
+  
+  
+}

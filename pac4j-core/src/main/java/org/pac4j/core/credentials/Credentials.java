@@ -30,6 +30,8 @@ public abstract class Credentials implements Serializable, Clearable {
     private static final long serialVersionUID = 4864923514027378583L;
 
     private String clientName;
+    
+    private String tenantId;
 
     public String getClientName() {
         return this.clientName;
@@ -37,5 +39,13 @@ public abstract class Credentials implements Serializable, Clearable {
 
     public void setClientName(final String clientName) {
         this.clientName = clientName;
+    }
+    
+    public String getTenantId() {
+    	return this.tenantId;
+    }
+    
+    public void setTenantId(final String tenantId) {
+    	this.tenantId = tenantId;
     }
 }

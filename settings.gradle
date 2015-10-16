@@ -1,0 +1,30 @@
+rootProject.name = 'pac4j'
+include ':pac4j-core'
+include ':pac4j-oauth'
+include ':pac4j-cas'
+include ':pac4j-openid'
+include ':pac4j-test-cas'
+include ':pac4j-http'
+include ':pac4j-saml'
+include ':pac4j-gae'
+include ':pac4j-oidc'
+include ':pac4j-jwt'
+include ':pac4j-ldap'
+include ':pac4j-sql'
+include ':pac4j-mongo'
+include ':pac4j-stormpath'
+
+project(':pac4j-core').projectDir = "$rootDir/pac4j-core" as File
+project(':pac4j-oauth').projectDir = "$rootDir/pac4j-oauth" as File
+project(':pac4j-cas').projectDir = "$rootDir/pac4j-cas" as File
+project(':pac4j-openid').projectDir = "$rootDir/pac4j-openid" as File
+project(':pac4j-test-cas').projectDir = "$rootDir/pac4j-test-cas" as File
+project(':pac4j-http').projectDir = "$rootDir/pac4j-http" as File
+project(':pac4j-saml').projectDir = "$rootDir/pac4j-saml" as File
+project(':pac4j-gae').projectDir = "$rootDir/pac4j-gae" as File
+project(':pac4j-oidc').projectDir = "$rootDir/pac4j-oidc" as File
+project(':pac4j-jwt').projectDir = "$rootDir/pac4j-jwt" as File
+project(':pac4j-ldap').projectDir = "$rootDir/pac4j-ldap" as File
+project(':pac4j-sql').projectDir = "$rootDir/pac4j-sql" as File
+project(':pac4j-mongo').projectDir = "$rootDir/pac4j-mongo" as File
+project(':pac4j-stormpath').projectDir = "$rootDir/pac4j-stormpath" as File

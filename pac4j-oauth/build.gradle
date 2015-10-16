@@ -1,0 +1,22 @@
+
+description = 'pac4j for OAuth protocol'
+dependencies {
+  compile project(':pac4j-core')
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.1'
+    compile group: 'org.scribe', name: 'scribe', version:'1.3.6'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.5.1'
+  testCompile project(':pac4j-core')
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile(group: 'net.sourceforge.htmlunit', name: 'htmlunit', version:'2.15') {
+exclude(module: 'commons-logging')
+    }
+    testCompile group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.7.12'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version:'1.1.3'
+    testCompile group: 'com.esotericsoftware', name: 'kryo-shaded', version:'3.0.3'
+    testCompile group: 'org.springframework', name: 'spring-test', version:'4.1.5.RELEASE'
+    compile(group: 'javax.servlet', name: 'javax.servlet-api', version:'3.0.1') {
+       /* This dependency was originally in the Maven provided scope, but the project was not of type war.
+       This behavior is not yet supported by Gradle, so this dependency has been converted to a compile dependency.
+       Please review and delete this closure when resolved. */
+    }
+}
