@@ -1,5 +1,4 @@
 *.pydevproject
-.project
 .metadata
 bin/**
 tmp/**
@@ -9,8 +8,6 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.classpath
-.settings/
 .loadpath
 target/
 test-output/
@@ -25,3 +22,17 @@ perfStats.log
 .idea
 overlays
 pac4j-test-cas/overlays/
+build
+.project
+.classpath
+.settings
+bin
+classes
+*.class
+*.war
+*.ear
+*.jar
+.gradle
+.DS_Store
+*~
+

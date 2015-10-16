@@ -1,0 +1,10 @@
+
+description = 'pac4j for MongoDB'
+dependencies {
+  compile project(':pac4j-core')
+  compile project(':pac4j-http')
+    compile group: 'org.mongodb', name: 'mongo-java-driver', version:'3.0.3'
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+  testCompile project(':pac4j-core')
+    testCompile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version:'1.48.2'
+}
