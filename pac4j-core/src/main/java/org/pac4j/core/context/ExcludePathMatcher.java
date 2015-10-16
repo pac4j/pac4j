@@ -43,6 +43,7 @@ public final class ExcludePathMatcher implements PathMatcher {
         setExcludePath(excludePath);
     }
 
+    @Override
     public boolean matches(final WebContext context) {
         if (pattern != null) {
             final String path = context.getPath();

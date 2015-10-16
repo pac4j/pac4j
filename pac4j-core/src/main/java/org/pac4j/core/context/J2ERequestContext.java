@@ -37,47 +37,33 @@ public class J2ERequestContext extends BaseResponseContext {
         this.request = request;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRequestParameter(final String name) {
         return this.request.getParameter(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Object getRequestAttribute(final String name) { return this.request.getAttribute(name); }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setRequestAttribute(final String name, final Object value) { this.request.setAttribute(name, value); }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRequestHeader(final String name) {
         return this.request.getHeader(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setSessionAttribute(final String name, final Object value) {
         this.request.getSession().setAttribute(name, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Object getSessionAttribute(final String name) {
         return this.request.getSession().getAttribute(name);
     }
@@ -87,19 +73,13 @@ public class J2ERequestContext extends BaseResponseContext {
         return this.request.getSession().getId();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRequestMethod() {
         return this.request.getMethod();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRemoteAddr() { return this.request.getRemoteAddr(); }
-
-
 
     /**
      * Return the HTTP request.
@@ -110,30 +90,22 @@ public class J2ERequestContext extends BaseResponseContext {
         return this.request;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getServerName() {
         return this.request.getServerName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public int getServerPort() {
         return this.request.getServerPort();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getScheme() {
         return this.request.getScheme();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getFullRequestURL() {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();
@@ -161,9 +133,7 @@ public class J2ERequestContext extends BaseResponseContext {
         return pac4jCookies;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getPath() {
         return request.getServletPath();
     }
