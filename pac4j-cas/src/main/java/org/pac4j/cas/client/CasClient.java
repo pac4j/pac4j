@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
  * {@link #setCasProxyReceptor(CasProxyReceptor)} method.</p>
  * <p>It returns a {@link org.pac4j.cas.profile.CasProfile} or a {@link org.pac4j.cas.profile.CasProxyProfile} if the
  * <code>casProxyReceptor</code> is defined (this CAS client acts as a proxy).</p>
- * 
+ *
  * @see org.pac4j.cas.profile.CasProfile
  * @author Jerome Leleu
  * @since 1.4.0
@@ -100,7 +100,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     protected String casLoginUrl;
 
     protected String casPrefixUrl;
-    
+
     protected long timeTolerance = 1000L;
 
     protected CasProtocol casProtocol = CasProtocol.CAS30;
@@ -117,7 +117,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     /**
      * Get the redirection url.
-     * 
+     *
      * @param context the web context
      * @return the redirection url
      */
@@ -247,7 +247,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     /**
      * Get the credentials from the web context.
-     * 
+     *
      * @param context the web context
      * @return the credentials
      * @throws RequiresHttpAction requires an extra HTTP action
@@ -275,14 +275,13 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             return null;
         }
         final String message = "No ticket or logout request";
-        logger.error(message);
         throw new CredentialsException(message);
 
     }
 
     /**
      * Get the user profile from the credentials.
-     * 
+     *
      * @param credentials the CAS credentials
      * @return the user profile
      */
@@ -308,8 +307,8 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             logger.debug("casProfile : {}", casProfile);
             return casProfile;
         } catch (final TicketValidationException e) {
-            logger.error("cannot validate CAS ticket : {} / {}", ticket, e);
-            throw new TechnicalException(e);
+            String message = "cannot validate CAS ticket : " + ticket;
+            throw new TechnicalException(message, e);
         }
     }
 
