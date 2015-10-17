@@ -50,6 +50,8 @@ public class MockWebContext extends BaseResponseContext {
 
     protected final Collection<Cookie> requestCookies = new LinkedHashSet<>();
 
+    protected String path = "";
+
     protected MockWebContext() {
     }
 
@@ -207,12 +209,25 @@ public class MockWebContext extends BaseResponseContext {
         }
     }
 
-    public void setFullRequestURL(String fullRequestURL) {
+    public MockWebContext setFullRequestURL(String fullRequestURL) {
         this.fullRequestURL = fullRequestURL;
+        return this;
     }
 
     @Override
     public Collection<Cookie> getRequestCookies() {
         return this.requestCookies;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getPath() {
+        return path;
+    }
+
+    public MockWebContext setPath(final String path) {
+        this.path = path;
+        return this;
     }
 }
