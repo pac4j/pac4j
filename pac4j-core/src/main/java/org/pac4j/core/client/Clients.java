@@ -131,7 +131,6 @@ public final class Clients extends InitializableObject {
             }
         }
         final String message = "No client found for name: " + name;
-        logger.error(message);
         throw new TechnicalException(message);
     }
 
@@ -153,7 +152,6 @@ public final class Clients extends InitializableObject {
           }
         }
         final String message = "No client found for class: " + clazz;
-        logger.error(message);
         throw new TechnicalException(message);
     }
 

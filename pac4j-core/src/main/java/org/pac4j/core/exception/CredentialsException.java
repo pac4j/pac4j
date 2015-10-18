@@ -32,4 +32,8 @@ public class CredentialsException extends TechnicalException {
     public CredentialsException(final Throwable t) {
         super(t);
     }
+
+    public CredentialsException(String message, Throwable t) {
+        super(message, t);
+    }
 }

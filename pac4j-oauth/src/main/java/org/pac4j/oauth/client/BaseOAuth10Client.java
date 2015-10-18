@@ -78,7 +78,6 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
             return new OAuthCredentials(tokenSession, token, verifier, getName());
         } else {
             final String message = "No credential found";
-            logger.error(message);
             throw new OAuthCredentialsException(message);
         }
     }
@@ -96,14 +95,12 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
         logger.debug("verifier : {}", verifier);
         if (tokenRequest == null) {
             final String message = "Token request expired";
-            logger.error(message);
             throw new OAuthCredentialsException(message);
         }
         final String savedToken = tokenRequest.getToken();
         logger.debug("savedToken : {}", savedToken);
         if (savedToken == null || !savedToken.equals(token)) {
             final String message = "Token received : " + token + " is different from saved token : " + savedToken;
-            logger.error(message);
             throw new OAuthCredentialsException(message);
         }
         final Verifier clientVerifier = new Verifier(verifier);

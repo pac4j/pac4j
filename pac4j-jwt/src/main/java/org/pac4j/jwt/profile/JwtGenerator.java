@@ -88,8 +88,7 @@ public class JwtGenerator<U extends UserProfile> {
             return jweObject.serialize();
 
         } catch (final Exception e) {
-            logger.error("Cannot generate JWT", e);
-            throw new TechnicalException("Cannot generate JWT: " + e.getMessage());
+            throw new TechnicalException("Cannot generate JWT", e);
         }
     }
 }

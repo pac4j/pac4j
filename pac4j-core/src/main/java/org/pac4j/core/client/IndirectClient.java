@@ -118,7 +118,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
             // protected target -> forbidden
             if (protectedTarget) {
-                logger.error("authentication already tried and protected target -> forbidden");
                 cleanRequestedUrl(context);
                 throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
             }

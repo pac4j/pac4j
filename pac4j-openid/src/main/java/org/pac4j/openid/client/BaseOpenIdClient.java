@@ -117,7 +117,6 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
             logger.debug("redirectionUrl : {}", redirectionUrl);
             return RedirectAction.redirect(redirectionUrl);
         } catch (final OpenIDException e) {
-            logger.error("OpenID exception", e);
             throw new TechnicalException("OpenID exception", e);
         }
     }
@@ -183,12 +182,10 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
                 return profile;
             }
         } catch (final OpenIDException e) {
-            logger.error("OpenID exception", e);
             throw new TechnicalException("OpenID exception", e);
         }
 
         final String message = "No verifiedId found";
-        logger.error(message);
         throw new TechnicalException(message);
     }
 

@@ -36,8 +36,7 @@ public final class ConfigBuilder {
             final ConfigFactory factory = clazz.newInstance();
             return factory.build();
         } catch (final Exception e) {
-            logger.error("Cannot build configuration", e);
-            throw new TechnicalException(e);
+            throw new TechnicalException("Cannot build configuration", e);
         }
     }
 }

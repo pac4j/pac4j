@@ -105,7 +105,6 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
         if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
             context.writeResponseContent("");
             final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
-            logger.error(message);
             throw RequiresHttpAction.ok(message, context);
         }
         
