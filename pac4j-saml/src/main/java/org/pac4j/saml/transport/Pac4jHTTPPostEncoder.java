@@ -149,7 +149,6 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
             this.getVelocityEngine().mergeTemplate(this.getVelocityTemplateId(), "UTF-8", e, out);
             out.flush();
         } catch (Exception var6) {
-            log.error("Error invoking Velocity template", var6);
             throw new MessageEncodingException("Error creating output document", var6);
         }
     }
@@ -207,7 +206,6 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
                         "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
             }
         } catch (UnsupportedEncodingException e) {
-            log.error("UTF-8 encoding is not supported, this VM is not Java compliant.");
             throw new MessageEncodingException("Unable to encode message, UTF-8 encoding is not supported");
         }
 
@@ -250,7 +248,6 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
         try {
             return XMLObjectSupport.marshall(message);
         } catch (MarshallingException e) {
-            log.error("Error marshalling message", e);
             throw new MessageEncodingException("Error marshalling message", e);
         }
     }
