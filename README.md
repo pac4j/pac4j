@@ -35,15 +35,15 @@ Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
 
 See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows).
 
-| The authentication mechanism you want | The `pac4j-*` submodule(s) you must use | Client type
-|---------------------------------------|-----------------------------------------|------------
-| OAuth (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... | `pac4j-oauth` | Indirect
-| CAS (1.0, 2.0, 3.0, SAML, logout, proxy) | `pac4j-cas` | Indirect
-| SAML (2.0) | `pac4j-saml` | Indirect
-| OpenID Connect (1.0) | `pac4j-oidc` | Indirect
-| HTTP (form, basic auth, IP, header, cookie, GET/POST parameter)<br />+<br />JWT<br />or LDAP<br />or Relational DB<br />or MongoDB<br />or Stormpath<br />or CAS REST API| `pac4j-http`<br />+<br />`pac4j-jwt`<br />or `pac4j-ldap`<br />or `pac4j-sql`<br />or `pac4j-mongo`<br />or `pac4j-stormpath`<br />or `pac4j-cas` | Direct
-| Google App Engine UserService | `pac4j-gae` | Indirect
-| OpenID | `pac4j-openid` | Indirect
+| The authentication mechanism you want | The `pac4j-*` submodule(s) you must use
+|---------------------------------------|----------------------------------------
+| OAuth (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... | `pac4j-oauth`
+| CAS (1.0, 2.0, 3.0, SAML, logout, proxy) | `pac4j-cas`
+| SAML (2.0) | `pac4j-saml`
+| OpenID Connect (1.0) | `pac4j-oidc`
+| HTTP (form, basic auth, IP, header, cookie, GET/POST parameter)<br />+<br />JWT<br />or LDAP<br />or Relational DB<br />or MongoDB<br />or Stormpath<br />or CAS REST API| `pac4j-http`<br />+<br />`pac4j-jwt`<br />or `pac4j-ldap`<br />or `pac4j-sql`<br />or `pac4j-mongo`<br />or `pac4j-stormpath`<br />or `pac4j-cas`
+| Google App Engine UserService | `pac4j-gae`
+| OpenID | `pac4j-openid`
 
 `pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` and `pac4j-http` submodules: role / permission checks, CSRF token validation...
 
