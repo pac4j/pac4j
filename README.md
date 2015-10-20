@@ -35,20 +35,15 @@ Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
 
 See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows).
 
-| The authentication mechanism you want | The `pac4j-*` submodule you must use
-|---------------------------------------|-------------------------------------
+| The authentication mechanism you want | The `pac4j-*` submodule(s) you must use
+|---------------------------------------|----------------------------------------
 | OAuth (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... | `pac4j-oauth`
 | CAS (1.0, 2.0, 3.0, SAML, logout, proxy, REST) | `pac4j-cas`
-| HTTP (form, basic auth, IP, header, cookie, GET/POST parameter) | `pac4j-http`
-| OpenID | `pac4j-openid`
 | SAML (2.0) | `pac4j-saml`
-| Google App Engine UserService | `pac4j-gae`
 | OpenID Connect (1.0) | `pac4j-oidc`
-| JWT | `pac4j-jwt`
-| LDAP | `pac4j-ldap`
-| Relational DB | `pac4j-sql`
-| MongoDB | `pac4j-mongo`
-| Stormpath | `pac4j-stormpath`
+| HTTP (form, basic auth, IP, header, cookie, GET/POST parameter)<br />+<br />JWT or LDAP or Relational DB or MongoDB or Stormpath | `pac4j-http`<br />+<br />`pac4j-jwt` or `pac4j-ldap` or `pac4j-sql` or `pac4j-mongo` or `pac4j-stormpath` |
+| Google App Engine UserService | `pac4j-gae`
+| OpenID | `pac4j-openid`
 
 `pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` and `pac4j-http` submodules: role / permission checks, CSRF token validation...
 
