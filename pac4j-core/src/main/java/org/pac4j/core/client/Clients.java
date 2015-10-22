@@ -57,7 +57,7 @@ public final class Clients extends InitializableObject {
 
     public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
-        setClientsList(clients);
+        setClients(clients);
     }
 
     public Clients(final String callbackUrl, final Client... clients) {
@@ -66,7 +66,7 @@ public final class Clients extends InitializableObject {
     }
 
     public Clients(final List<Client> clients) {
-        setClientsList(clients);
+        setClients(clients);
     }
 
     public Clients(final Client... clients) {
@@ -181,7 +181,16 @@ public final class Clients extends InitializableObject {
         this.callbackUrl = callbackUrl;
     }
 
+    /**
+     * Use {@link #setClients(List)} instead.
+     * @deprecated
+     */
+    @Deprecated
     public void setClientsList(final List<Client> clients) {
+        this.clients = clients;
+    }
+
+    public void setClients(final List<Client> clients) {
         this.clients = clients;
     }
 
