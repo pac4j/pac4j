@@ -13,24 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.credentials.authenticator;
+package org.pac4j.http.authorization;
 
-import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.profile.IpProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
 /**
- * Authenticates users based on their IP and a regexp pattern.
+ * Authorizes users based on their IP and a regexp pattern.
  *
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.8.1
  */
-public class IpRegexpAuthenticator implements TokenAuthenticator {
+public class IpRegexpAuthorizer implements Authorizer<UserProfile> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -38,25 +38,18 @@ public class IpRegexpAuthenticator implements TokenAuthenticator {
 
     private Pattern pattern;
 
-    public IpRegexpAuthenticator() { }
+    public IpRegexpAuthorizer() { }
 
-    public IpRegexpAuthenticator(final String regexpPattern) {
+    public IpRegexpAuthorizer(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
     }
 
     @Override
-    public void validate(final TokenCredentials credentials) {
+    public boolean isAuthorized(final WebContext context, final UserProfile profile) {
         CommonHelper.assertNotNull("pattern", pattern);
 
-        final String ip = credentials.getToken();
-
-        if (!this.pattern.matcher(ip).matches()) {
-            throw new CredentialsException("Unauthorized IP address: " + ip);
-        }
-
-        final IpProfile profile = new IpProfile(ip);
-        logger.debug("profile: {}", profile);
-        credentials.setUserProfile(profile);
+        final String ip = context.getRemoteAddr();
+        return this.pattern.matcher(ip).matches();
     }
 
     public void setRegexpPattern(final String regexpPattern) {
@@ -66,6 +59,6 @@ public class IpRegexpAuthenticator implements TokenAuthenticator {
 
     @Override
     public String toString() {
-        return "IpRegexpAuthenticator[" + this.regexPattern + "]";
+        return "IpRegexpAuthorizer[" + this.regexPattern + "]";
     }
 }
