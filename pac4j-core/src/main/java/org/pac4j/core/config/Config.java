@@ -57,6 +57,10 @@ public class Config {
         this.clients = new Clients(callbackUrl, clients);
     }
 
+    public Config(final Authorizer authorizer) {
+        setAuthorizer(authorizer);
+    }
+
     public Config(final Map<String, Authorizer> authorizers) {
         setAuthorizers(authorizers);
     }
@@ -66,9 +70,19 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
+    public Config(final Clients clients, Authorizer authorizer) {
+        this.clients = clients;
+        setAuthorizer(authorizer);
+    }
+
     public Config(final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(client);
         setAuthorizers(authorizers);
+    }
+
+    public Config(final Client client, final Authorizer authorizer) {
+        this.clients = new Clients(client);
+        setAuthorizer(authorizer);
     }
 
     public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
@@ -76,14 +90,29 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
+    public Config(final Authorizer authorizer, final Client... clients) {
+        this.clients = new Clients(clients);
+        setAuthorizer(authorizer);
+    }
+
     public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
         setAuthorizers(authorizers);
     }
 
+    public Config(final String callbackUrl, final Authorizer authorizer, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+        setAuthorizer(authorizer);
+    }
+
     public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(callbackUrl, client);
         setAuthorizers(authorizers);
+    }
+
+    public Config(final String callbackUrl, final Client client, final Authorizer authorizer) {
+        this.clients = new Clients(callbackUrl, client);
+        setAuthorizer(authorizer);
     }
 
     public Clients getClients() {
@@ -96,6 +125,11 @@ public class Config {
 
     public Map<String, Authorizer> getAuthorizers() {
         return authorizers;
+    }
+
+    public void setAuthorizer(Authorizer authorizer) {
+        CommonHelper.assertNotNull("authorizer", authorizer);
+        this.authorizers.put(authorizer.getClass().getSimpleName(), authorizer);
     }
 
     public void setAuthorizers(Map<String, Authorizer> authorizers) {

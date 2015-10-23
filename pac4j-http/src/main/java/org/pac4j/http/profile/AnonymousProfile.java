@@ -13,17 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
-package org.pac4j.core.credentials;
+package org.pac4j.http.profile;
 
 /**
- * Anonymous credentials. Not to be used except for advanced use cases.
+ * Anonymous profile. Not to be used except for advanced use cases.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class AnonymousCredentials extends Credentials {
+public class AnonymousProfile extends HttpProfile {
 
-    @Override
-    public void clear() { }
+    private static final long serialVersionUID = 1L;
 }
