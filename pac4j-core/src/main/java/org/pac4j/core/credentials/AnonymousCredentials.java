@@ -13,29 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+
+package org.pac4j.core.credentials;
 
 /**
- * This enum lists all available client types.
- * 
+ * Anonymous credentials. Not to be used except for advanced use cases.
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.1
  */
-public enum ClientType {
-    // @formatter:off
-    OAUTH_PROTOCOL,
-    CAS_PROTOCOL,
-    OPENID_PROTOCOL,
-    FORM_BASED,
-    BASICAUTH_BASED,
-    SAML_PROTOCOL,
-    JANRAIN_PROVIDER,
-    GAE_PROVIDER,
-    OPENID_CONNECT_PROTOCOL,
-    HEADER_BASED,
-    PARAMETER_BASED,
-    COOKIE_BASED,
-    IP_BASED,
-    UNKNOWN
-    // @formatter:on
+public class AnonymousCredentials extends Credentials {
+
+    @Override
+    public void clear() { }
 }
