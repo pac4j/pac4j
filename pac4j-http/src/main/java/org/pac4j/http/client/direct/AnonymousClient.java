@@ -13,13 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.http.client.direct;
 
+import org.pac4j.core.client.BaseClient;
+import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.AnonymousCredentials;
+import org.pac4j.http.credentials.AnonymousCredentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.AnonymousProfile;
+import org.pac4j.http.profile.AnonymousProfile;
+import org.pac4j.http.profile.HttpProfile;
 
 /**
  * Anonymous client. Not to be used except for advanced use cases.
@@ -27,7 +29,7 @@ import org.pac4j.core.profile.AnonymousProfile;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class AnonymousClient extends BaseClient<AnonymousCredentials, AnonymousProfile> {
+public class AnonymousClient extends DirectHttpClient<AnonymousCredentials> {
 
     private final AnonymousCredentials CREDENTIALS;
     private final AnonymousProfile PROFILE;
@@ -42,13 +44,8 @@ public class AnonymousClient extends BaseClient<AnonymousCredentials, AnonymousP
     protected void internalInit() { }
 
     @Override
-    protected BaseClient<AnonymousCredentials, AnonymousProfile> newClient() {
+    protected BaseClient<AnonymousCredentials, HttpProfile> newClient() {
         return this;
-    }
-
-    @Override
-    public void redirect(WebContext context, boolean protectedTarget) throws RequiresHttpAction {
-        throw new TechnicalException("No redirection in AnonymousClient");
     }
 
     @Override
