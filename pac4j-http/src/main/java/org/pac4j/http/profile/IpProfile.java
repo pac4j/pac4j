@@ -13,29 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.http.profile;
 
 /**
- * This enum lists all available client types.
- * 
+ * Profile for IP authentication.
+ *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.1
  */
-public enum ClientType {
-    // @formatter:off
-    OAUTH_PROTOCOL,
-    CAS_PROTOCOL,
-    OPENID_PROTOCOL,
-    FORM_BASED,
-    BASICAUTH_BASED,
-    SAML_PROTOCOL,
-    JANRAIN_PROVIDER,
-    GAE_PROVIDER,
-    OPENID_CONNECT_PROTOCOL,
-    HEADER_BASED,
-    PARAMETER_BASED,
-    COOKIE_BASED,
-    IP_BASED,
-    UNKNOWN
-    // @formatter:on
+public class IpProfile extends HttpProfile {
+
+    private static final long serialVersionUID = 1L;
+
+    public IpProfile(final String ip) {
+        setId(ip);
+    }
 }
