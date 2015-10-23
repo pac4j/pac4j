@@ -37,12 +37,20 @@ public class Config {
 
     public Config() {}
 
+    public Config(final Client client) {
+        this.clients = new Clients(client);
+    }
+
     public Config(final Clients clients) {
         this.clients = clients;
     }
 
     public Config(final Client... clients) {
         this.clients = new Clients(clients);
+    }
+
+    public Config(final String callbackUrl, final Client client) {
+        this.clients = new Clients(callbackUrl, client);
     }
 
     public Config(final String callbackUrl, final Client... clients) {
@@ -58,6 +66,11 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
+    public Config(final Client client, final Map<String, Authorizer> authorizers) {
+        this.clients = new Clients(client);
+        setAuthorizers(authorizers);
+    }
+
     public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(clients);
         setAuthorizers(authorizers);
@@ -65,6 +78,11 @@ public class Config {
 
     public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
+        this.clients = new Clients(callbackUrl, client);
         setAuthorizers(authorizers);
     }
 
