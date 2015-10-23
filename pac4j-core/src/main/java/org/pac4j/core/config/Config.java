@@ -16,6 +16,7 @@
 package org.pac4j.core.config;
 
 import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.util.CommonHelper;
 
@@ -40,20 +41,38 @@ public class Config {
         this.clients = clients;
     }
 
+    public Config(final Client... clients) {
+        this.clients = new Clients(clients);
+    }
+
+    public Config(final String callbackUrl, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+    }
+
     public Config(final Map<String, Authorizer> authorizers) {
         setAuthorizers(authorizers);
     }
 
     public Config(final Clients clients, final Map<String, Authorizer> authorizers) {
         this.clients = clients;
-        this.authorizers = authorizers;
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
+        this.clients = new Clients(clients);
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+        setAuthorizers(authorizers);
     }
 
     public Clients getClients() {
         return clients;
     }
 
-    public void setClients(Clients clients) {
+    public void setClients(final Clients clients) {
         this.clients = clients;
     }
 
