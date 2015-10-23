@@ -63,6 +63,6 @@ public class AnonymousClient extends BaseClient<AnonymousCredentials, AnonymousP
 
     @Override
     public ClientType getClientType() {
-        return null;
+        return ClientType.UNKNOWN;
     }
 }
