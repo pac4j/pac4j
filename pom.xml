@@ -341,7 +341,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- skipTests>true</skipTests -->
+					<skipTests>true</skipTests>
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>
