@@ -59,7 +59,7 @@ The source code can be cloned and locally built via Maven:
 ```shell
 git clone git@github.com:pac4j/pac4j.git
 cd pac4j
-mvn clean install -DskipITs
+mvn clean install
 ```
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
