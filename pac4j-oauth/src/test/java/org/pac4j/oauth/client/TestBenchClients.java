@@ -36,9 +36,9 @@ public final class TestBenchClients extends TestCase {
     
     private static final String TWITTER_RESPONSE = "{\"id\":488358057,\"followers_count\":0,\"contributors_enabled\":false,\"profile_background_tile\":false,\"profile_background_image_url_https\":\"https:\\/\\/si0.twimg.com\\/images\\/themes\\/theme1\\/bg.png\",\"time_zone\":\"Amsterdam\",\"profile_sidebar_fill_color\":\"DDEEF6\",\"utc_offset\":3600,\"geo_enabled\":false,\"default_profile\":true,\"screen_name\":\"testscribeUP\",\"name\":\"test scribeUP\",\"lang\":\"fr\",\"profile_background_color\":\"C0DEED\",\"protected\":true,\"follow_request_sent\":false,\"is_translator\":false,\"url\":null,\"listed_count\":0,\"profile_background_image_url\":\"http:\\/\\/a0.twimg.com\\/images\\/themes\\/theme1\\/bg.png\",\"created_at\":\"Fri Feb 10 11:10:24 +0000 2012\",\"id_str\":\"488358057\",\"profile_link_color\":\"0084B4\",\"description\":\"biographie\",\"profile_image_url_https\":\"https:\\/\\/si0.twimg.com\\/sticky\\/default_profile_images\\/default_profile_5_normal.png\",\"verified\":false,\"following\":false,\"profile_use_background_image\":true,\"notifications\":false,\"location\":\"New York\",\"profile_text_color\":\"333333\",\"default_profile_image\":true,\"profile_image_url\":\"http:\\/\\/a0.twimg.com\\/sticky\\/default_profile_images\\/default_profile_5_normal.png\",\"favourites_count\":0,\"friends_count\":0,\"profile_sidebar_border_color\":\"C0DEED\",\"statuses_count\":0}";
     
-    private static final int MAX_FACEBOOK = 10000;
+    private static final int MAX_FACEBOOK = 1000;
     
-    private static final int MAX_TWITTER = 150000;
+    private static final int MAX_TWITTER = 15000;
     
     private static final BenchFacebookClient benchFacebookClient = new BenchFacebookClient();
     
