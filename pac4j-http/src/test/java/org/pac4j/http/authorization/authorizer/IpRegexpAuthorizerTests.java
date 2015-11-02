@@ -13,11 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.authorization;
+package org.pac4j.http.authorization.authorizer;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.http.authorization.authorizer.IpRegexpAuthorizer;
 
 import static org.junit.Assert.*;
 
