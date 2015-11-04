@@ -46,9 +46,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
 
     private String realmName = "authentication required";
 
-    public IndirectBasicAuthClient() {
-        this(null, null);
-    }
+    public IndirectBasicAuthClient() { }
 
     public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);

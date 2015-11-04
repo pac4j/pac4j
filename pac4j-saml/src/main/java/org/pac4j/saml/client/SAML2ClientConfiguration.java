@@ -20,10 +20,10 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 
-
 /**
  * The {@link SAML2ClientConfiguration} is responsible for...
  * capturing client settings and passing them around.
+ *
  * @author Misagh Moayyed
  * @since 1.7
  */
@@ -58,6 +58,8 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private boolean forceServiceProviderMetadataGeneration;
 
     private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
+
+    public SAML2ClientConfiguration() {}
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
                                     final String privateKeyPassword, final String identityProviderMetadataPath) {
