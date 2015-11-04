@@ -16,6 +16,7 @@
 package org.pac4j.core.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -65,12 +66,21 @@ public final class Clients extends InitializableObject {
         setClients(clients);
     }
 
+    public Clients(final String callbackUrl, final Client client) {
+        setCallbackUrl(callbackUrl);
+        setClients(Arrays.asList(client));
+    }
+
     public Clients(final List<Client> clients) {
         setClients(clients);
     }
 
     public Clients(final Client... clients) {
         setClients(clients);
+    }
+
+    public Clients(final Client client) {
+        setClients(Arrays.asList(client));
     }
 
     /**
@@ -195,10 +205,7 @@ public final class Clients extends InitializableObject {
     }
 
     public void setClients(final Client... clients) {
-        this.clients = new ArrayList<Client>();
-        for (final Client client : clients) {
-            this.clients.add(client);
-        }
+        this.clients = Arrays.asList(clients);
     }
 
     @Override
