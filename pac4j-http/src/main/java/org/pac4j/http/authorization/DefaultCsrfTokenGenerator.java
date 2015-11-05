@@ -23,9 +23,7 @@ import org.pac4j.core.context.WebContext;
  */
 public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String get(final WebContext context) {
         String token = (String) context.getSessionAttribute(Pac4jConstants.CSRK_TOKEN);
         if (token == null) {
