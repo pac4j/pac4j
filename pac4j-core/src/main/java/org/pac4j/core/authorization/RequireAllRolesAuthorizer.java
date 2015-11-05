@@ -48,9 +48,7 @@ public class RequireAllRolesAuthorizer<U extends UserProfile> implements Authori
         this.roles = roles;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isAuthorized(final WebContext context, final U profile) {
         if (roles == null || roles.size() == 0) {
             return true;
