@@ -50,9 +50,7 @@ public class CheckHttpMethodAuthorizer<U extends UserProfile> implements Authori
         this.methods = methods;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isAuthorized(final WebContext context, final U profile) {
         if (methods == null || methods.size() == 0) {
             return true;
