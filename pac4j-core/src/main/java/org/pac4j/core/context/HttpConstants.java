@@ -51,4 +51,6 @@ public interface HttpConstants {
     String AJAX_HEADER_VALUE = "XMLHttpRequest";
 
     String AJAX_HEADER_NAME = "X-Requested-With";
+
+    enum HTTP_METHOD { GET, POST, HEAD, TRACE, PUT, DELETE, OPTIONS }
 }
