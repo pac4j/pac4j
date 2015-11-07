@@ -163,7 +163,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
 
         CommonHelper.assertNotBlank(this.clientId, "clientID cannot be blank");
         CommonHelper.assertNotBlank(this.secret, "secret cannot be blank");

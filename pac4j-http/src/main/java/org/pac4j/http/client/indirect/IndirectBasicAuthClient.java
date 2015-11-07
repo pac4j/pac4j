@@ -59,9 +59,9 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         extractor = new BasicAuthExtractor(headerName, prefixHeader, getName());
-        super.internalInit();
+        super.internalInit(context);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
     }

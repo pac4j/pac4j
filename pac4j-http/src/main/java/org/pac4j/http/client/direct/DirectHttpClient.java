@@ -45,7 +45,7 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
     private ProfileCreator<C, HttpProfile> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("extractor", this.extractor);
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
         CommonHelper.assertNotNull("profileCreator", getProfileCreator());
@@ -61,7 +61,7 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
 
     @Override
     public C getCredentials(WebContext context) throws RequiresHttpAction {
-        init();
+        init(context);
         try {
             C credentials = this.extractor.extract(context);
             if (credentials == null) {

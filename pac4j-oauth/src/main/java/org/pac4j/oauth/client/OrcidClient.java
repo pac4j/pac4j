@@ -82,8 +82,8 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         this.service = new ProxyOAuth20ServiceImpl(new OrcidApi20(), new OAuthConfig(this.key,
                 this.secret,
                 this.callbackUrl,

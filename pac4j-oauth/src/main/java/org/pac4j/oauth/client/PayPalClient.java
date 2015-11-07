@@ -65,8 +65,8 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
     
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
         this.service = new PayPalOAuth20ServiceImpl(new PayPalApi20(), new OAuthConfig(this.key, this.secret,
                                                                                        this.callbackUrl,
