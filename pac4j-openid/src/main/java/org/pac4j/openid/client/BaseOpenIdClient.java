@@ -102,10 +102,9 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
             // save discovery information in session
             context.setSessionAttribute(getDiscoveryInformationSessionAttributeName(), discoveryInformation);
 
-            final String contextualCallbackUrl = getContextualCallbackUrl(context);
             // create authentication request to be sent to the OpenID provider
             final AuthRequest authRequest = this.consumerManager.authenticate(discoveryInformation,
-                    contextualCallbackUrl);
+                    computeFinalCallbackUrl(context));
 
             // create fetch request for attributes
             final FetchRequest fetchRequest = getFetchRequest();
@@ -165,9 +164,8 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
         logger.debug("discoveryInformation : {}", discoveryInformation);
 
         try {
-            final String contextualCallbackUrl = getContextualCallbackUrl(context);
             // verify the response
-            final VerificationResult verification = this.consumerManager.verify(contextualCallbackUrl, parameterList,
+            final VerificationResult verification = this.consumerManager.verify(computeFinalCallbackUrl(context), parameterList,
                     discoveryInformation);
 
             // examine the verification result and extract the verified identifier
