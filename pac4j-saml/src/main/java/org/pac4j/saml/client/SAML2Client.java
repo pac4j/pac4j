@@ -285,7 +285,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     @Override
     protected String getStateParameter(final WebContext webContext) {
         final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
-        return (relayState == null) ? getContextualCallbackUrl(webContext) : relayState;
+        return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
     }
 
     public final SAML2ResponseValidator getResponseValidator() {
