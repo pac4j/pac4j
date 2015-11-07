@@ -15,11 +15,10 @@
  */
 package org.pac4j.core.authorization;
 
+import org.pac4j.core.authorization.authorizer.AbstractRequireAnyAuthorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,55 +29,25 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyPermissionAuthorizer<U extends UserProfile> implements Authorizer<U> {
-
-    private Set<String> permissions;
+public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
 
     public RequireAnyPermissionAuthorizer() { }
 
     public RequireAnyPermissionAuthorizer(final String... permissions) {
-        setPermissions(permissions);
+        setElements(permissions);
     }
 
     public RequireAnyPermissionAuthorizer(final List<String> permissions) {
-        setPermissions(permissions);
+        setElements(permissions);
     }
 
     public RequireAnyPermissionAuthorizer(final Set<String> permissions) {
-        this.permissions = permissions;
+        setElements(permissions);
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final U profile) {
-        if (permissions == null || permissions.size() == 0) {
-            return true;
-        }
+    protected boolean check(final WebContext context, final U profile, final String element) {
         final List<String> profilePermissions = profile.getPermissions();
-        for (final String permission : permissions) {
-            if (profilePermissions.contains(permission)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Set<String> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(final Set<String> permissions) {
-        this.permissions = permissions;
-    }
-
-    public void setPermissions(final List<String> permissions) {
-        if (permissions != null) {
-            this.permissions = new HashSet<>(permissions);
-        }
-    }
-
-    public void setPermissions(final String... permissions) {
-        if (permissions != null) {
-            setPermissions(Arrays.asList(permissions));
-        }
+        return profilePermissions.contains(element);
     }
 }
