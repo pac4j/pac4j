@@ -51,7 +51,7 @@ public final class RequireAnyPermissionAuthorizerTests {
     @Test
     public void testHasAnyPermissionOnePermission2() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
-        authorizer.setPermissions(PERMISSION1);
+        authorizer.setElements(PERMISSION1);
         final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, profile));
@@ -60,7 +60,7 @@ public final class RequireAnyPermissionAuthorizerTests {
     @Test
     public void testHasAnyPermissionOnePermission3() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
-        authorizer.setPermissions(Arrays.asList(PERMISSION1));
+        authorizer.setElements(Arrays.asList(PERMISSION1));
         final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, profile));
@@ -69,7 +69,7 @@ public final class RequireAnyPermissionAuthorizerTests {
     @Test
     public void testHasAnyPermissionOnePermission4() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
-        authorizer.setPermissions(new HashSet<String>(Arrays.asList(PERMISSION1)));
+        authorizer.setElements(new HashSet<String>(Arrays.asList(PERMISSION1)));
         final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         assertTrue(authorizer.isAuthorized(context, profile));

@@ -61,7 +61,7 @@ public final class RequireAllRolesAuthorizerTests {
     @Test
     public void testHasAllRolesOkDifferentOrder3() {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
-        authorizer.setRoles(ROLE3, ROLE1);
+        authorizer.setElements(ROLE3, ROLE1);
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -71,7 +71,7 @@ public final class RequireAllRolesAuthorizerTests {
     @Test
     public void testHasAllRolesOkDifferentOrder4() {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
-        authorizer.setRoles(new HashSet<String>(Arrays.asList(ROLE3, ROLE1)));
+        authorizer.setElements(new HashSet<String>(Arrays.asList(ROLE3, ROLE1)));
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -81,7 +81,7 @@ public final class RequireAllRolesAuthorizerTests {
     @Test
     public void testHasAllRolesOkDifferentOrder5() {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
-        authorizer.setRoles(Arrays.asList(ROLE3, ROLE1));
+        authorizer.setElements(Arrays.asList(ROLE3, ROLE1));
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
