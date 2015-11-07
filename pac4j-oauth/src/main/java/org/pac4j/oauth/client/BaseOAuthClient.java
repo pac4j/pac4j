@@ -65,7 +65,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     protected int proxyPort = 8080;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
@@ -163,12 +163,13 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     /**
      * Get the user profile from the access token.
-     * 
+     *
+     * @param context the web context
      * @param accessToken the access token
      * @return the user profile
      */
-    public U getUserProfile(final String accessToken) {
-        init();
+    public U getUserProfile(final WebContext context, final String accessToken) {
+        init(context);
         try {
             final Token token = new Token(accessToken, "");
             return retrieveUserProfileFromToken(token);

@@ -115,8 +115,8 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         CommonHelper.assertNotBlank("publicKey", this.publicKey);
         this.service = new ProxyOAuth20ServiceImpl(new OkApi(),
                 new OAuthConfig(this.key, this.secret, this.callbackUrl, SignatureType.Header, null, null), this.connectTimeout, this.readTimeout,

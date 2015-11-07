@@ -53,7 +53,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     @Test
     public void testSPMetadata() {
         final SAML2Client client = getClient();
-        client.init();
+        client.init(null);
         final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"" + client.getServiceProviderResolvedEntityId() + "\""));
         assertTrue(spMetadata
@@ -65,7 +65,7 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     public void testCustomSpEntityId() {
         final SAML2Client client = getClient();
         client.getConfiguration().setServiceProviderEntityId("http://localhost:8080/callback");
-        client.init();
+        client.init(null);
         final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
         assertTrue(spMetadata.contains("entityID=\"http://localhost:8080/callback\""));
         assertTrue(spMetadata

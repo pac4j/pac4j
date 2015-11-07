@@ -66,7 +66,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
-        basicAuthClient.init();
+        basicAuthClient.init(null);
     }
 
     @Test

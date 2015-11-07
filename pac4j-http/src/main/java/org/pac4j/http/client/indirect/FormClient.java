@@ -83,9 +83,9 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
-        super.internalInit();
+        super.internalInit(context);
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
     }
 
