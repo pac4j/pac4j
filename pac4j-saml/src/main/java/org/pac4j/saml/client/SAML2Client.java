@@ -194,7 +194,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     protected void initSignatureSigningParametersProvider() {
-        this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(this.credentialProvider);
+        this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(
+                this.credentialProvider, this.configuration);
     }
 
     protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
