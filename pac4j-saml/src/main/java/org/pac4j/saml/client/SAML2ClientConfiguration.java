@@ -16,9 +16,15 @@
 package org.pac4j.saml.client;
 
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -59,6 +65,12 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
     private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
+
+    private Collection<String> blackListedSignatureSigningAlgorithms;
+    private List<String> signatureAlgorithms;
+    private List<String> signatureReferenceDigestMethods;
+    private String signatureCanonicalizationAlgorithm;
+
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
                                     final String privateKeyPassword, final String identityProviderMetadataPath) {
         this(keystorePath, keystorePassword, privateKeyPassword, identityProviderMetadataPath, null, null);
@@ -78,6 +90,14 @@ public final class SAML2ClientConfiguration implements Cloneable {
         CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
         CommonHelper.assertNotBlank("identityProviderMetadataPath", this.identityProviderMetadataPath);
+
+        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
+        this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
+        this.signatureAlgorithms = new ArrayList<>(config.getSignatureAlgorithms());
+        this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
+        this.signatureReferenceDigestMethods.remove("http://www.w3.org/2001/04/xmlenc#sha512");
+        this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
+
     }
 
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
@@ -230,6 +250,39 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.samlMessageStorageFactory = samlMessageStorageFactory;
     }
 
+
+    public Collection<String> getBlackListedSignatureSigningAlgorithms() {
+        return blackListedSignatureSigningAlgorithms;
+    }
+
+    public void setBlackListedSignatureSigningAlgorithms(final Collection<String> blackListedSignatureSigningAlgorithms) {
+        this.blackListedSignatureSigningAlgorithms = blackListedSignatureSigningAlgorithms;
+    }
+
+    public List<String> getSignatureAlgorithms() {
+        return signatureAlgorithms;
+    }
+
+    public void setSignatureAlgorithms(final List<String> signatureAlgorithms) {
+        this.signatureAlgorithms = signatureAlgorithms;
+    }
+
+    public List<String> getSignatureReferenceDigestMethods() {
+        return signatureReferenceDigestMethods;
+    }
+
+    public void setSignatureReferenceDigestMethods(final List<String> signatureReferenceDigestMethods) {
+        this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
+    }
+
+    public String getSignatureCanonicalizationAlgorithm() {
+        return signatureCanonicalizationAlgorithm;
+    }
+
+    public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
+        this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
+    }
+
     @Override
     public SAML2ClientConfiguration clone() {
         try {
@@ -238,4 +291,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
             throw new RuntimeException(e);
         }
     }
+
+
+
 }
