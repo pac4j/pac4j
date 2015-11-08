@@ -99,6 +99,6 @@ public interface Pac4jConstants {
     /* The config factory parameter */
     String CONFIG_FACTORY = "configFactory";
 
-    /* The exclude path parameter */
-    String EXCLUDE_PATH = "excludePath";
+    /* Matcher name configuration parameter */
+    String MATCHER_NAME = "matcherName";
 }
