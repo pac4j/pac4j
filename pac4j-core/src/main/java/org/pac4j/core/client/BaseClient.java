@@ -16,6 +16,7 @@
 package org.pac4j.core.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.pac4j.core.authorization.AuthorizationGenerator;
@@ -118,26 +119,30 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return CommonHelper.toString(this.getClass(), "name", getName());
     }
 
-    public void addAuthorizationGenerator(AuthorizationGenerator<U> authorizationGenerator) {
-        if (this.authorizationGenerators != null) {
-            this.authorizationGenerators.add(authorizationGenerator);
-        }
+    public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+        CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
+        this.authorizationGenerators.add(authorizationGenerator);
     }
 
     public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
         return this.authorizationGenerators;
     }
 
-    public void setAuthorizationGenerators(List<AuthorizationGenerator<U>> authorizationGenerators) {
+    public void setAuthorizationGenerators(final List<AuthorizationGenerator<U>> authorizationGenerators) {
+        CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
         this.authorizationGenerators = authorizationGenerators;
     }
 
+    public void setAuthorizationGenerators(final AuthorizationGenerator<U>... authorizationGenerators) {
+        CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
+        this.authorizationGenerators = Arrays.asList(authorizationGenerators);
+    }
+
     /**
-     * Use addAuthorizationGenerator instead.
+     * Add only one authorization generator.
      * 
      * @param authorizationGenerator an authorizations generator
      */
-    @Deprecated
     public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
     }

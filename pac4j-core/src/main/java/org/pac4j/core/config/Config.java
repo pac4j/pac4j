@@ -16,6 +16,7 @@
 package org.pac4j.core.config;
 
 import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.util.CommonHelper;
 
@@ -36,8 +37,28 @@ public class Config {
 
     public Config() {}
 
+    public Config(final Client client) {
+        this.clients = new Clients(client);
+    }
+
     public Config(final Clients clients) {
         this.clients = clients;
+    }
+
+    public Config(final Client... clients) {
+        this.clients = new Clients(clients);
+    }
+
+    public Config(final String callbackUrl, final Client client) {
+        this.clients = new Clients(callbackUrl, client);
+    }
+
+    public Config(final String callbackUrl, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+    }
+
+    public Config(final Authorizer authorizer) {
+        setAuthorizer(authorizer);
     }
 
     public Config(final Map<String, Authorizer> authorizers) {
@@ -46,19 +67,69 @@ public class Config {
 
     public Config(final Clients clients, final Map<String, Authorizer> authorizers) {
         this.clients = clients;
-        this.authorizers = authorizers;
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final Clients clients, Authorizer authorizer) {
+        this.clients = clients;
+        setAuthorizer(authorizer);
+    }
+
+    public Config(final Client client, final Map<String, Authorizer> authorizers) {
+        this.clients = new Clients(client);
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final Client client, final Authorizer authorizer) {
+        this.clients = new Clients(client);
+        setAuthorizer(authorizer);
+    }
+
+    public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
+        this.clients = new Clients(clients);
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final Authorizer authorizer, final Client... clients) {
+        this.clients = new Clients(clients);
+        setAuthorizer(authorizer);
+    }
+
+    public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final String callbackUrl, final Authorizer authorizer, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+        setAuthorizer(authorizer);
+    }
+
+    public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
+        this.clients = new Clients(callbackUrl, client);
+        setAuthorizers(authorizers);
+    }
+
+    public Config(final String callbackUrl, final Client client, final Authorizer authorizer) {
+        this.clients = new Clients(callbackUrl, client);
+        setAuthorizer(authorizer);
     }
 
     public Clients getClients() {
         return clients;
     }
 
-    public void setClients(Clients clients) {
+    public void setClients(final Clients clients) {
         this.clients = clients;
     }
 
     public Map<String, Authorizer> getAuthorizers() {
         return authorizers;
+    }
+
+    public void setAuthorizer(Authorizer authorizer) {
+        CommonHelper.assertNotNull("authorizer", authorizer);
+        this.authorizers.put(authorizer.getClass().getSimpleName(), authorizer);
     }
 
     public void setAuthorizers(Map<String, Authorizer> authorizers) {

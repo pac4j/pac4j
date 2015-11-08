@@ -153,8 +153,8 @@ public final class CommonHelper {
         try {
             return URLEncoder.encode(text, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
-            logger.error("Unable to encode text : {} / {}", text, e);
-            throw new TechnicalException(e);
+            String message = "Unable to encode text : " + text;
+            throw new TechnicalException(message, e);
         }
     }
 

@@ -18,6 +18,9 @@ package org.pac4j.http.credentials.authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.http.profile.IpProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
@@ -29,15 +32,19 @@ import java.util.regex.Pattern;
  */
 public class IpRegexpAuthenticator implements TokenAuthenticator {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private String regexPattern;
+
     private Pattern pattern;
 
-    public IpRegexpAuthenticator() {
-    }
+    public IpRegexpAuthenticator() { }
 
     public IpRegexpAuthenticator(final String regexpPattern) {
         setRegexpPattern(regexpPattern);
     }
 
+    @Override
     public void validate(final TokenCredentials credentials) {
         CommonHelper.assertNotNull("pattern", pattern);
 
@@ -46,9 +53,19 @@ public class IpRegexpAuthenticator implements TokenAuthenticator {
         if (!this.pattern.matcher(ip).matches()) {
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
+
+        final IpProfile profile = new IpProfile(ip);
+        logger.debug("profile: {}", profile);
+        credentials.setUserProfile(profile);
     }
 
     public void setRegexpPattern(final String regexpPattern) {
+        this.regexPattern = regexpPattern;
         this.pattern = Pattern.compile(regexpPattern);
+    }
+
+    @Override
+    public String toString() {
+        return "IpRegexpAuthenticator[" + this.regexPattern + "]";
     }
 }

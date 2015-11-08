@@ -73,11 +73,10 @@ public class ProfileManager<U extends UserProfile> {
     }
 
     /**
-     * Perform a logout by removing the current user profile and invalidating the web session.
+     * Perform a logout by removing the current user profile from the session as well.
      */
     public void logout() {
         remove(true);
-        context.invalidateSession();
     }
 
     /**
