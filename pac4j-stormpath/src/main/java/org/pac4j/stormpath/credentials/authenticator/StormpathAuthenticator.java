@@ -58,8 +58,7 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
             final Client client = new Client(new DefaultApiKey(stormpathAccessId, stormpathSecretKey));
             this.application = client.getDataStore().getResource(
                     String.format("/applications/%s", applicationId), Application.class);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new BadCredentialsException("An exception is caught trying to access Stormpath cloud. " +
                     "Please verify that your provided Stormpath <accessId>, " +
                     "<secretKey>, and <applicationId> are correct. Original Stormpath error: " + e.getMessage());
@@ -76,10 +75,8 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
 
             final StormpathProfile profile = createProfile(account);
             credentials.setUserProfile(profile);
-        }
-        catch (final ResourceException e) {
-            logger.error(e.getMessage(), e);
-            throw new BadCredentialsException("Bad credentials for: " + credentials.getUsername());
+        } catch (final ResourceException e) {
+            throw new BadCredentialsException("Bad credentials for: " + credentials.getUsername(), e);
         }
     }
 

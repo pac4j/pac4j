@@ -16,6 +16,7 @@
 package org.pac4j.core.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public final class Clients extends InitializableObject {
 
     public Clients(final String callbackUrl, final List<Client> clients) {
         setCallbackUrl(callbackUrl);
-        setClientsList(clients);
+        setClients(clients);
     }
 
     public Clients(final String callbackUrl, final Client... clients) {
@@ -65,12 +66,21 @@ public final class Clients extends InitializableObject {
         setClients(clients);
     }
 
+    public Clients(final String callbackUrl, final Client client) {
+        setCallbackUrl(callbackUrl);
+        setClients(Arrays.asList(client));
+    }
+
     public Clients(final List<Client> clients) {
-        setClientsList(clients);
+        setClients(clients);
     }
 
     public Clients(final Client... clients) {
         setClients(clients);
+    }
+
+    public Clients(final Client client) {
+        setClients(Arrays.asList(client));
     }
 
     /**
@@ -131,7 +141,6 @@ public final class Clients extends InitializableObject {
             }
         }
         final String message = "No client found for name: " + name;
-        logger.error(message);
         throw new TechnicalException(message);
     }
 
@@ -153,7 +162,6 @@ public final class Clients extends InitializableObject {
           }
         }
         final String message = "No client found for class: " + clazz;
-        logger.error(message);
         throw new TechnicalException(message);
     }
 
@@ -183,15 +191,21 @@ public final class Clients extends InitializableObject {
         this.callbackUrl = callbackUrl;
     }
 
+    /**
+     * Use {@link #setClients(List)} instead.
+     * @deprecated
+     */
+    @Deprecated
     public void setClientsList(final List<Client> clients) {
         this.clients = clients;
     }
 
+    public void setClients(final List<Client> clients) {
+        this.clients = clients;
+    }
+
     public void setClients(final Client... clients) {
-        this.clients = new ArrayList<Client>();
-        for (final Client client : clients) {
-            this.clients.add(client);
-        }
+        this.clients = Arrays.asList(clients);
     }
 
     @Override

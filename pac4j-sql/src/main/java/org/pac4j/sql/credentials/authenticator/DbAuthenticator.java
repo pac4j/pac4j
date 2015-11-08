@@ -121,11 +121,10 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
             }
 
         } catch (final TechnicalException e) {
-            logger.error("Authentication error", e);
+            logger.debug("Authentication error", e);
             throw e;
         } catch (final RuntimeException e) {
-            logger.error("Cannot fetch username / password from DB", e);
-            throw new TechnicalException(e);
+            throw new TechnicalException("Cannot fetch username / password from DB", e);
         } finally {
             if (h != null) {
                 h.close();

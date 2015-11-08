@@ -35,6 +35,7 @@ public enum ClientType {
     HEADER_BASED,
     PARAMETER_BASED,
     COOKIE_BASED,
-    IP_BASED
+    IP_BASED,
+    UNKNOWN
     // @formatter:on
 }

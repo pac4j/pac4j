@@ -82,7 +82,6 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
             logger.debug("sessionState : {} / stateParameter : {}", sessionState, stateParameter);
             if (stateParameter == null || !stateParameter.equals(sessionState)) {
                 final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
-                logger.error(message);
                 throw new OAuthCredentialsException(message);
             }
         }
@@ -94,7 +93,6 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
             return new OAuthCredentials(verifier, getName());
         } else {
             final String message = "No credential found";
-            logger.error(message);
             throw new OAuthCredentialsException(message);
         }
     }

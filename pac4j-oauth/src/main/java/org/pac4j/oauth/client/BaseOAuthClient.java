@@ -123,7 +123,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
                 }
             }
             if (errorFound) {
-                logger.error(errorMessage);
                 throw oauthCredentialsException;
             } else {
                 return getOAuthCredentials(context);
@@ -233,7 +232,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         logger.debug("Request took : " + (t1 - t0) + " ms for : " + dataUrl);
         logger.debug("response code : {} / response body : {}", code, body);
         if (code != 200) {
-            logger.error("Failed to get data, code : " + code + " / body : " + body);
             throw new HttpCommunicationException(code, body);
         }
         return body;

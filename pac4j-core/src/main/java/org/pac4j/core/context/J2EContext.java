@@ -47,56 +47,35 @@ public class J2EContext implements WebContext {
         this.response = response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRequestParameter(final String name) {
         return this.request.getParameter(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Object getRequestAttribute(final String name) { return this.request.getAttribute(name); }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setRequestAttribute(final String name, final Object value) { this.request.setAttribute(name, value); }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Map<String, String[]> getRequestParameters() {
         return this.request.getParameterMap();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRequestHeader(final String name) {
         return this.request.getHeader(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setSessionAttribute(final String name, final Object value) {
         this.request.getSession().setAttribute(name, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Object getSessionAttribute(final String name) {
         return this.request.getSession().getAttribute(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void invalidateSession() {
-        this.request.getSession().invalidate();
     }
 
     @Override
@@ -104,16 +83,12 @@ public class J2EContext implements WebContext {
         return this.request.getSession().getId();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRequestMethod() {
         return this.request.getMethod();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getRemoteAddr() { return this.request.getRemoteAddr(); }
 
     /**
@@ -134,9 +109,7 @@ public class J2EContext implements WebContext {
         return this.response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void writeResponseContent(final String content) {
         if (content != null) {
             try {
@@ -147,9 +120,7 @@ public class J2EContext implements WebContext {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setResponseStatus(final int code) {
         if (code == HttpConstants.OK || code == HttpConstants.TEMP_REDIRECT) {
             this.response.setStatus(code);
@@ -162,9 +133,7 @@ public class J2EContext implements WebContext {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setResponseHeader(final String name, final String value) {
         this.response.setHeader(name, value);
     }
@@ -179,30 +148,22 @@ public class J2EContext implements WebContext {
         this.response.setContentType(content);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getServerName() {
         return this.request.getServerName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public int getServerPort() {
         return this.request.getServerPort();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getScheme() {
         return this.request.getScheme();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getFullRequestURL() {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();
@@ -240,5 +201,10 @@ public class J2EContext implements WebContext {
         c.setComment(cookie.getComment());
         c.setDomain(cookie.getDomain());
         this.response.addCookie(c);
+    }
+
+    @Override
+    public String getPath() {
+        return request.getServletPath();
     }
 }

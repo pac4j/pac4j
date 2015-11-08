@@ -46,9 +46,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
 
     private String realmName = "authentication required";
 
-    public IndirectBasicAuthClient() {
-        this(null, null);
-    }
+    public IndirectBasicAuthClient() { }
 
     public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
@@ -93,7 +91,6 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
             // validate credentials
             getAuthenticator().validate(credentials);
         } catch (final CredentialsException e) {
-            logger.error("Credentials retrieval / validation failed", e);
             throw RequiresHttpAction.unauthorized("Requires authentication", context,
                     this.realmName);
         }

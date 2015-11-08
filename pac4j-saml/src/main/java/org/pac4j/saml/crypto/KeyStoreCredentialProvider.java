@@ -117,7 +117,6 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             return ks;
         } catch (final Exception e) {
-            this.logger.error("Error loading keystore", e);
             throw new SAMLException("Error loading keystore", e);
         } finally {
             if (inputStream != null) {

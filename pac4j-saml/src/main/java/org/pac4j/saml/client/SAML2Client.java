@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.saml.client;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
@@ -99,7 +98,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected Decrypter decrypter;
 
-    protected final SAML2ClientConfiguration configuration;
+    protected SAML2ClientConfiguration configuration;
 
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
@@ -107,6 +106,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         CommonHelper.assertNotNull("unmarshallerFactory", Configuration.getUnmarshallerFactory());
         CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
     }
+
+    public SAML2Client() { }
 
     public SAML2Client(final SAML2ClientConfiguration configuration) {
         this.configuration = configuration;
@@ -311,6 +312,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     public final String getServiceProviderResolvedEntityId() {
         return this.spMetadataResolver.getEntityId();
+    }
+
+    public void setConfiguration(SAML2ClientConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     public final SAML2ClientConfiguration getConfiguration() {

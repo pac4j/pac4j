@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.http.profile.IpProfile;
 
 import static org.junit.Assert.*;
 
@@ -47,6 +48,8 @@ public final class IpRegexpAuthenticatorTests {
     public void testValidateGoodIP() {
         final TokenCredentials credentials = new TokenCredentials(GOOD_IP, CLIENT_NAME);
         authenticator.validate(credentials);
+        final IpProfile profile = (IpProfile) credentials.getUserProfile();
+        assertEquals(GOOD_IP, profile.getId());
     }
 
     @Test
