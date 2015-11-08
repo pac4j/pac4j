@@ -104,14 +104,16 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         checker.isAuthorized(null, profile, NAME + Pac4jConstants.ELEMENT_SEPRATOR + VALUE, authorizers);
     }
 
-    @Test
+    @Test(expected = TechnicalException.class)
     public void testNullAuthorizers() {
         assertTrue(checker.isAuthorized(null, new UserProfile(), null));
+        checker.isAuthorized(null, new UserProfile(), "auth1", null);
     }
 
     @Test
-    public void testNoAuthorizers() {
+    public void testZeroAuthorizers() {
         assertTrue(checker.isAuthorized(null, new UserProfile(), new ArrayList<Authorizer>()));
+        assertTrue(checker.isAuthorized(null, new UserProfile(), "", new HashMap<String, Authorizer>()));
     }
 
     @Test
