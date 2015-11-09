@@ -41,7 +41,7 @@ public class AnonymousClient extends DirectHttpClient<AnonymousCredentials> {
     }
 
     @Override
-    protected void internalInit() { }
+    protected void internalInit(final WebContext context) { }
 
     @Override
     protected BaseClient<AnonymousCredentials, HttpProfile> newClient() {

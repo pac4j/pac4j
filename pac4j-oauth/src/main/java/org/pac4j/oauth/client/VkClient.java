@@ -69,8 +69,8 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected void internalInit() {
-		super.internalInit();
+	protected void internalInit(final WebContext context) {
+		super.internalInit(context);
 		this.service = new ProxyOAuth20ServiceImpl(new VkApi(),
 				new OAuthConfig(this.key, this.secret, this.callbackUrl, SignatureType.Header, this.scope, null), this.connectTimeout, this.readTimeout,
 				this.proxyHost, this.proxyPort);

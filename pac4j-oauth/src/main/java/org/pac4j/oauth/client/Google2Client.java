@@ -72,8 +72,8 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     }
 
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         CommonHelper.assertNotNull("scope", this.scope);
         if (this.scope == Google2Scope.EMAIL) {
             this.scopeValue = this.EMAIL_SCOPE;
