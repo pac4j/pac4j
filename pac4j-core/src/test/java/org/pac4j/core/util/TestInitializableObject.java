@@ -18,7 +18,7 @@ package org.pac4j.core.util;
 import junit.framework.TestCase;
 
 /**
- * This class tests the {@link InitializableObject} class.
+ * This class tests the {@link InitializableWebObject} class.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -26,20 +26,20 @@ import junit.framework.TestCase;
 public final class TestInitializableObject extends TestCase {
     
     public void testInit() {
-        CounterInitializableObject counterInitializableObject = new CounterInitializableObject();
+        CounterInitializableWebObject counterInitializableObject = new CounterInitializableWebObject();
         assertEquals(0, counterInitializableObject.getCounter());
-        counterInitializableObject.init();
+        counterInitializableObject.init(null);
         assertEquals(1, counterInitializableObject.getCounter());
-        counterInitializableObject.init();
+        counterInitializableObject.init(null);
         assertEquals(1, counterInitializableObject.getCounter());
     }
     
     public void testReinit() {
-        CounterInitializableObject counterInitializableObject = new CounterInitializableObject();
+        CounterInitializableWebObject counterInitializableObject = new CounterInitializableWebObject();
         assertEquals(0, counterInitializableObject.getCounter());
-        counterInitializableObject.reinit();
+        counterInitializableObject.reinit(null);
         assertEquals(1, counterInitializableObject.getCounter());
-        counterInitializableObject.reinit();
+        counterInitializableObject.reinit(null);
         assertEquals(2, counterInitializableObject.getCounter());
     }
 }

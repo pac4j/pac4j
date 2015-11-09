@@ -21,33 +21,30 @@ import org.pac4j.core.profile.UserProfile;
 import java.util.List;
 import java.util.Set;
 
-import static org.pac4j.core.context.HttpConstants.*;
-
 /**
- * Checks the HTTP method.
+ * Checks the profile type.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckHttpMethodAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<HTTP_METHOD, U> {
+public class CheckProfileTypeAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<Class<U>, U> {
 
-    public CheckHttpMethodAuthorizer() { }
+    public CheckProfileTypeAuthorizer() { }
 
-    public CheckHttpMethodAuthorizer(final HTTP_METHOD... methods) {
-        setElements(methods);
+    public CheckProfileTypeAuthorizer(final Class<U>... types) {
+        setElements(types);
     }
 
-    public CheckHttpMethodAuthorizer(final List<HTTP_METHOD> methods) {
-        setElements(methods);
+    public CheckProfileTypeAuthorizer(final List<Class<U>> types) {
+        setElements(types);
     }
 
-    public CheckHttpMethodAuthorizer(final Set<HTTP_METHOD> methods) {
-        setElements(methods);
+    public CheckProfileTypeAuthorizer(final Set<Class<U>> types) {
+        setElements(types);
     }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final HTTP_METHOD element) {
-        final String requestMethod = context.getRequestMethod();
-        return requestMethod.equalsIgnoreCase(element.toString());
+    protected boolean check(final WebContext context, final U profile, final Class<U> element) {
+        return profile.getClass().isAssignableFrom(element);
     }
 }

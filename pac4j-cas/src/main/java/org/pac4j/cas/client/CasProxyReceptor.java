@@ -73,7 +73,7 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     }
     
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("proxyGrantingTicketStorage", this.proxyGrantingTicketStorage);
         // timer to clean proxyGrantingTicketStorage

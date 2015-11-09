@@ -61,7 +61,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     @Test
     public void testHasAllPermissionsOkDifferentOrder3() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
-        authorizer.setPermissions(PERMISSION3, PERMISSION1);
+        authorizer.setElements(PERMISSION3, PERMISSION1);
         final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -71,7 +71,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     @Test
     public void testHasAllPermissionsOkDifferentOrder4() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
-        authorizer.setPermissions(new HashSet<String>(Arrays.asList(PERMISSION3, PERMISSION1)));
+        authorizer.setElements(new HashSet<String>(Arrays.asList(PERMISSION3, PERMISSION1)));
         final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
@@ -81,7 +81,7 @@ public final class RequireAllPermissionsAuthorizerTests {
     @Test
     public void testHasAllPermissionsOkDifferentOrder5() {
         final RequireAllPermissionsAuthorizer authorizer = new RequireAllPermissionsAuthorizer();
-        authorizer.setPermissions(Arrays.asList(PERMISSION3, PERMISSION1));
+        authorizer.setElements(Arrays.asList(PERMISSION3, PERMISSION1));
         final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);

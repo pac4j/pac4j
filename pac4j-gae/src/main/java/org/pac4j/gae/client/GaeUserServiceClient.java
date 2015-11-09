@@ -90,7 +90,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	}
 
 	@Override
-	protected void internalInit() {
+	protected void internalInit(final WebContext context) {
 		service = UserServiceFactory.getUserService();
 		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
 	}
