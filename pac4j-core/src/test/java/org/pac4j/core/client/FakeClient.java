@@ -44,7 +44,7 @@ public class FakeClient extends IndirectClient<Credentials, CommonProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         throw new UnsupportedOperationException("Not implemneted yet");
     }
 }

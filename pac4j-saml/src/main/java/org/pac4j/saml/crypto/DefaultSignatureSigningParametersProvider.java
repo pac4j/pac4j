@@ -25,7 +25,10 @@ import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.criterion.SignatureSigningConfigurationCriterion;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.exceptions.SAMLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +39,15 @@ import java.util.List;
  * @since 1.7
  */
 public class DefaultSignatureSigningParametersProvider implements SignatureSigningParametersProvider {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSignatureSigningParametersProvider.class);
 
     private final CredentialProvider credentialProvider;
+    private final SAML2ClientConfiguration configuration;
 
-    public DefaultSignatureSigningParametersProvider(final CredentialProvider credentialProvider) {
+    public DefaultSignatureSigningParametersProvider(final CredentialProvider credentialProvider,
+                                                     final SAML2ClientConfiguration configuration) {
         this.credentialProvider = credentialProvider;
+        this.configuration = configuration;
     }
 
     @Override
@@ -54,6 +61,16 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
                     new SAMLMetadataSignatureSigningParametersResolver();
 
             final SignatureSigningParameters params = resolver.resolveSingle(criteria);
+            augmentSignatureSigningParameters(params);
+
+            logger.info("Created signature signing parameters." +
+                    "\nSignature algorithm: {}" +
+                    "\nSignature canonicalization algorithm: {}" +
+                    "\nSignature reference digest methods: {}",
+                    params.getSignatureAlgorithm(), params.getSignatureCanonicalizationAlgorithm(),
+                    params.getSignatureReferenceDigestMethod());
+
+
             if (params == null) {
                 throw new SAMLException("Could not determine the signature parameters");
             }
@@ -65,12 +82,22 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
         }
     }
 
-    private SignatureSigningConfiguration getSignatureSigningConfiguration() {
+    protected SignatureSigningConfiguration getSignatureSigningConfiguration() {
         final BasicSignatureSigningConfiguration config =
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
-        final List<Credential> creds = new ArrayList<Credential>();
+
+        config.setBlacklistedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
+        config.setSignatureAlgorithms(this.configuration.getSignatureAlgorithms());
+        config.setSignatureCanonicalizationAlgorithm(this.configuration.getSignatureCanonicalizationAlgorithm());
+        config.setSignatureReferenceDigestMethods(this.configuration.getSignatureReferenceDigestMethods());
+
+        final List<Credential> creds = new ArrayList<>();
         creds.add(this.credentialProvider.getCredential());
         config.setSigningCredentials(creds);
         return config;
+    }
+
+    protected SignatureSigningParameters augmentSignatureSigningParameters(final SignatureSigningParameters params) {
+        return params;
     }
 }
