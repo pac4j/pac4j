@@ -165,8 +165,4 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     public ClientType getClientType() {
         return ClientType.CAS_PROTOCOL;
     }
-
-    public String computeFinalCallbackUrl(final WebContext context) {
-        return callbackUrlResolver.compute(this.callbackUrl, context);
-    }
 }

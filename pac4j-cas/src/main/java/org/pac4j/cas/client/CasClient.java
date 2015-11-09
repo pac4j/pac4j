@@ -123,8 +123,8 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
      */
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        final String finalCasLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
-        final String redirectionUrl = CommonUtils.constructRedirectUrl(finalCasLoginUrl, SERVICE_PARAMETER,
+        final String computedCasLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
+        final String redirectionUrl = CommonUtils.constructRedirectUrl(computedCasLoginUrl, SERVICE_PARAMETER,
                 computeFinalCallbackUrl(context), this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);

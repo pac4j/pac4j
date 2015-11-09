@@ -134,7 +134,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
     }
 
-    protected String computeFinalCallbackUrl(final WebContext context) {
+    public String computeFinalCallbackUrl(final WebContext context) {
         return callbackUrlResolver.compute(callbackUrl, context);
     }
 
