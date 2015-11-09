@@ -58,8 +58,8 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         DefaultApi10a api;
         if (this.alwaysConfirmAuthorization == false) {
             api = new TwitterApi.Authenticate();

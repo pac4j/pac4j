@@ -24,15 +24,15 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
+import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is the default implementation of an authentication client (whatever the protocol). It has the core concepts:</p>
  * <ul>
- * <li>The initialization process is handled by the {@link InitializableObject} inheritance, the {@link #internalInit()} must be implemented
- * in sub-classes. The {@link #init()} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
+ * <li>The initialization process is handled by the {@link InitializableWebObject} inheritance, the {@link #internalInit(WebContext)} must be implemented
+ * in sub-classes. The {@link #init(WebContext)} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
  * required to initialize the client</li>
  * <li>The cloning process is handled by the {@link #clone()} method, the {@link #newClient()} method must be implemented in sub-classes to
  * create a new instance</li>
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableObject implements
+public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableWebObject implements
         Client<C, U>, Cloneable {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -90,7 +90,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     @Override
     public final U getUserProfile(final C credentials, final WebContext context) {
-        init();
+        init(context);
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
             return null;

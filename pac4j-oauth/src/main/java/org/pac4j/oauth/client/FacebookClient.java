@@ -100,8 +100,8 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     }
     
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         CommonHelper.assertNotBlank("fields", this.fields);
         this.api20 = new ExtendedFacebookApi();
         if (StringUtils.isNotBlank(this.scope)) {

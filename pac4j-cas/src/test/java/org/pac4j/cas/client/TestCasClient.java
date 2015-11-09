@@ -46,7 +46,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
         casClient.setCasPrefixUrl(PREFIX_URL_WITHOUT_SLASH);
-        casClient.init();
+        casClient.init(null);
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
     }
     
@@ -55,7 +55,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
         assertEquals(null, casClient.getCasPrefixUrl());
-        casClient.init();
+        casClient.init(null);
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
     }
     
@@ -64,7 +64,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasPrefixUrl(PREFIX_URL);
         assertEquals(null, casClient.getCasLoginUrl());
-        casClient.init();
+        casClient.init(null);
         assertEquals(LOGIN_URL, casClient.getCasLoginUrl());
     }
     
@@ -76,7 +76,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
 		casClient.redirect(context, false);
         assertFalse(context.getResponseLocation().indexOf("renew=true") >= 0);
         casClient.setRenew(true);
-        casClient.reinit();
+        casClient.reinit(null);
         context = MockWebContext.create();
         casClient.redirect(context, false);
         assertTrue(context.getResponseLocation().indexOf("renew=true") >= 0);
@@ -90,7 +90,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.redirect(context, false);
         assertFalse(context.getResponseLocation().indexOf("gateway=true") >= 0);
         casClient.setGateway(true);
-        casClient.reinit();
+        casClient.reinit(null);
         casClient.redirect(context, false);
         assertTrue(context.getResponseLocation().indexOf("gateway=true") >= 0);
         final CasCredentials credentials = casClient.getCredentials(context);
@@ -102,7 +102,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
-        casClient.init();
+        casClient.init(null);
         final MockWebContext context = MockWebContext.create().addRequestParameter("logoutRequest", logoutRequest)
             .setRequestMethod("POST");
         try {
