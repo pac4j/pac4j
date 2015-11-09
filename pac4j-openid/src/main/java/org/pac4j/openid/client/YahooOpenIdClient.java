@@ -46,8 +46,8 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 	}
     
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
     }
 
     @Override

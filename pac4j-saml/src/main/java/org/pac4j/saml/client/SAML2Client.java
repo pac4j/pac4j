@@ -114,7 +114,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         if (!this.callbackUrl.startsWith("http")) {
             throw new TechnicalException("SAML callbackUrl must be absolute");

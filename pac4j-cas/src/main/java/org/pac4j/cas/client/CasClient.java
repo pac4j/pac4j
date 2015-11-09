@@ -148,7 +148,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("logoutHandler", this.logoutHandler);
         if (CommonHelper.isBlank(this.casLoginUrl) && CommonHelper.isBlank(this.casPrefixUrl)) {

@@ -52,9 +52,9 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
     }
 
     @Override
-    protected void internalInit()
+    protected void internalInit(final WebContext context)
     {
-        super.internalInit();
+        super.internalInit(context);
         this.service = new ProxyOAuth10aServiceImpl(new BitBucketApi(),
                                                     new OAuthConfig(this.key, this.secret, this.callbackUrl,
                                                                     SignatureType.Header, null, null),

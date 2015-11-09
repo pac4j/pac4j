@@ -65,8 +65,8 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
     }
     
     @Override
-    protected void internalInit() {
-        super.internalInit();
+    protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
         StateApi20 api20 = new LinkedInApi20();
