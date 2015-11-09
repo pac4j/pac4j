@@ -157,6 +157,8 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
         initializeClientConfiguration();
 
+        initializeLogoutHandler(context);
+
         if (this.casProtocol == CasProtocol.CAS10) {
             initializeCas10Protocol();
         } else if (this.casProtocol == CasProtocol.CAS20) {
@@ -171,6 +173,17 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             initializeSAMLProtocol();
         }
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<CasProfile>());
+    }
+
+
+    private void initializeLogoutHandler(final WebContext context) {
+        if (this.logoutHandler == null) {
+            if (context instanceof J2EContext) {
+                this.logoutHandler = new CasSingleSignOutHandler();
+            } else {
+                this.logoutHandler = new NoLogoutHandler();
+            }
+        }
     }
 
     protected void initializeSAMLProtocol() {
@@ -255,8 +268,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     @Override
     protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
 
-        initializeLogoutHandler(context);
-
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
             final String ticket = context.getRequestParameter(SERVICE_TICKET_PARAMETER);
@@ -280,20 +291,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         final String message = "No ticket or logout request";
         throw new CredentialsException(message);
 
-    }
-
-    private void initializeLogoutHandler(final WebContext context) {
-        if (this.logoutHandler == null) {
-            synchronized (this) {
-                if (this.logoutHandler == null) {
-                    if (context instanceof J2EContext) {
-                        this.logoutHandler = new CasSingleSignOutHandler();
-                    } else {
-                        this.logoutHandler = new NoLogoutHandler();
-                    }
-                }
-            }
-        }
     }
 
     /**
