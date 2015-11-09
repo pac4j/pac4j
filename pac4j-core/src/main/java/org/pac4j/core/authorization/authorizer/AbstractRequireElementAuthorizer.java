@@ -15,39 +15,44 @@
  */
 package org.pac4j.core.authorization.authorizer;
 
+import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.pac4j.core.context.HttpConstants.*;
-
 /**
- * Checks the HTTP method.
+ * An authorizer to require elements.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckHttpMethodAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<HTTP_METHOD, U> {
+public abstract class AbstractRequireElementAuthorizer<E extends Object, U extends UserProfile> implements Authorizer<U> {
 
-    public CheckHttpMethodAuthorizer() { }
+    protected Set<E> elements;
 
-    public CheckHttpMethodAuthorizer(final HTTP_METHOD... methods) {
-        setElements(methods);
+    protected abstract boolean check(final WebContext context, final U profile, final E element);
+
+    public Set<E> getElements() {
+        return elements;
     }
 
-    public CheckHttpMethodAuthorizer(final List<HTTP_METHOD> methods) {
-        setElements(methods);
+    public void setElements(final Set<E> elements) {
+        this.elements = elements;
     }
 
-    public CheckHttpMethodAuthorizer(final Set<HTTP_METHOD> methods) {
-        setElements(methods);
+    public void setElements(final List<E> elements) {
+        if (elements != null) {
+            this.elements = new HashSet<>(elements);
+        }
     }
 
-    @Override
-    protected boolean check(final WebContext context, final U profile, final HTTP_METHOD element) {
-        final String requestMethod = context.getRequestMethod();
-        return requestMethod.equalsIgnoreCase(element.toString());
+    public void setElements(final E... elements) {
+        if (elements != null) {
+            setElements(Arrays.asList(elements));
+        }
     }
 }
