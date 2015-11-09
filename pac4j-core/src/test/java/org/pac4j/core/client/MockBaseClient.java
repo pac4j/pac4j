@@ -49,7 +49,7 @@ public class MockBaseClient<C extends Credentials> extends IndirectClient<C, Com
     }
     
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("callbackUrl", getCallbackUrl());
     }
     

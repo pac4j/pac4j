@@ -16,6 +16,7 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.ClientType;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
@@ -55,9 +56,9 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
     }
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         extractor = new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName());
-        super.internalInit();
+        super.internalInit(context);
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
     }
 

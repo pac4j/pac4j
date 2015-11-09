@@ -51,7 +51,7 @@ public final class RequireAnyRoleAuthorizerTests {
     @Test
     public void testHasAnyRoleOneRole2() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
-        authorizer.setRoles(ROLE1);
+        authorizer.setElements(ROLE1);
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         assertTrue(authorizer.isAuthorized(context, profile));
@@ -60,7 +60,7 @@ public final class RequireAnyRoleAuthorizerTests {
     @Test
     public void testHasAnyRoleOneRole3() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
-        authorizer.setRoles(Arrays.asList(ROLE1));
+        authorizer.setElements(Arrays.asList(ROLE1));
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         assertTrue(authorizer.isAuthorized(context, profile));
@@ -69,7 +69,7 @@ public final class RequireAnyRoleAuthorizerTests {
     @Test
     public void testHasAnyRoleOneRole4() {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
-        authorizer.setRoles(new HashSet<String>(Arrays.asList(ROLE1)));
+        authorizer.setElements(new HashSet<String>(Arrays.asList(ROLE1)));
         final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         assertTrue(authorizer.isAuthorized(context, profile));

@@ -102,7 +102,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws RequiresHttpAction requires an additional HTTP action
      */
     public final RedirectAction getRedirectAction(final WebContext context, final boolean protectedTarget) throws RequiresHttpAction {
-        init();
+        init(context);
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
@@ -170,7 +170,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      */
     @Override
     public final C getCredentials(final WebContext context) throws RequiresHttpAction {
-        init();
+        init(context);
         final String value = context.getRequestParameter(NEEDS_CLIENT_REDIRECTION_PARAMETER);
         // needs redirection -> return the redirection url
         if (CommonHelper.isNotBlank(value)) {

@@ -52,9 +52,8 @@ public abstract class IndirectHttpClient<C extends Credentials> extends Indirect
         return newClient;
     }
 
-
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("extractor", this.extractor);
         CommonHelper.assertNotNull("authenticator", getAuthenticator());
         CommonHelper.assertNotNull("profileCreator", getProfileCreator());

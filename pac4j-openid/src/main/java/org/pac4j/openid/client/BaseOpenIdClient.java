@@ -55,7 +55,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     private ConsumerManager consumerManager;
 
     @Override
-    protected void internalInit() {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         this.consumerManager = new ConsumerManager();
     }

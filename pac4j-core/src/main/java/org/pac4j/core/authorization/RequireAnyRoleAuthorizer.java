@@ -15,11 +15,10 @@
  */
 package org.pac4j.core.authorization;
 
+import org.pac4j.core.authorization.authorizer.AbstractRequireAnyAuthorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,55 +29,23 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyRoleAuthorizer<U extends UserProfile> implements Authorizer<U> {
-
-    private Set<String> roles;
+public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
 
     public RequireAnyRoleAuthorizer() { }
 
     public RequireAnyRoleAuthorizer(final String... roles) {
-        setRoles(roles);
+        setElements(roles);
     }
 
     public RequireAnyRoleAuthorizer(final List<String> roles) {
-        setRoles(roles);
+        setElements(roles);
     }
 
-    public RequireAnyRoleAuthorizer(final Set<String> roles) {
-        this.roles = roles;
-    }
+    public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final U profile) {
-        if (roles == null || roles.size() == 0) {
-            return true;
-        }
+    protected boolean check(final WebContext context, final U profile, final String element) {
         final List<String> profileRoles = profile.getRoles();
-        for (final String role : roles) {
-            if (profileRoles.contains(role)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(final Set<String> roles) {
-        this.roles = roles;
-    }
-
-    public void setRoles(final List<String> roles) {
-        if (roles != null) {
-            this.roles = new HashSet<>(roles);
-        }
-    }
-
-    public void setRoles(final String... roles) {
-        if (roles != null) {
-            setRoles(Arrays.asList(roles));
-        }
+        return profileRoles.contains(element);
     }
 }
