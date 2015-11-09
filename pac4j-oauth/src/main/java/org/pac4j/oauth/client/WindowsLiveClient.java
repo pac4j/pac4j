@@ -55,7 +55,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth20ServiceImpl(new WindowsLiveApi(), new OAuthConfig(this.key, this.secret,
-                                                                                  this.callbackUrl,
+                                                                                  computeFinalCallbackUrl(context),
                                                                                   SignatureType.Header, "wl.basic",
                                                                                   null), this.connectTimeout,
                                                    this.readTimeout, this.proxyHost, this.proxyPort);

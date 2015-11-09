@@ -56,7 +56,7 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth10aServiceImpl(new DropBoxApi(),
-                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                    new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
                                                                     SignatureType.Header, null, null),
                                                     this.connectTimeout, this.readTimeout, this.proxyHost,
                                                     this.proxyPort);

@@ -116,22 +116,18 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        if (!this.callbackUrl.startsWith("http")) {
-            throw new TechnicalException("SAML callbackUrl must be absolute");
-        }
 
         initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
         final MetadataResolver metadataManager = initChainingMetadataResolver(
                 initIdentityProviderMetadataResolver(),
-                initServiceProviderMetadataResolver());
+                initServiceProviderMetadataResolver(context));
         initSAMLContextProvider(metadataManager);
         initSAMLObjectBuilder();
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLResponseValidator();
         initSAMLProfileHandler();
-
     }
 
     protected void initSAMLProfileHandler() {
@@ -169,9 +165,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.configuration.getSamlMessageStorageFactory());
     }
 
-    protected MetadataResolver initServiceProviderMetadataResolver() {
+    protected MetadataResolver initServiceProviderMetadataResolver(final WebContext context) {
         this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration.getServiceProviderMetadataPath(),
-                getCallbackUrl(),
+                computeFinalCallbackUrl(context),
                 this.configuration.getServiceProviderEntityId(),
                 this.configuration.isForceServiceProviderMetadataGeneration(),
                 this.credentialProvider);
