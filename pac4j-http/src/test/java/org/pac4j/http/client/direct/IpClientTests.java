@@ -67,7 +67,7 @@ public final class IpClientTests implements TestsConstants {
     @Test
     public void testHasDefaultProfileCreator() {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
-        client.init();
+        client.init(null);
     }
 
     @Test

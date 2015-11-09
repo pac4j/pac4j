@@ -22,6 +22,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.Assert;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,9 +159,9 @@ public final class TestsHelper {
         return null;
     }
 
-    public static void initShouldFail(final InitializableObject obj, final String message) {
+    public static void initShouldFail(final InitializableWebObject obj, final String message) {
         try {
-            obj.init();
+            obj.init(MockWebContext.create());
             Assert.fail("init should fail");
         } catch (final TechnicalException e) {
             Assert.assertEquals(message, e.getMessage());

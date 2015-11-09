@@ -61,7 +61,7 @@ public final class CasClientProxyModeIT extends CasClientIT {
         logger.debug("callbackUrl : {}", callbackUrl);
         
         this.casClient.setCallbackUrl(SERVICE_URL);
-        this.casClient.reinit();
+        this.casClient.reinit(null);
         
         return callbackUrl;
     }

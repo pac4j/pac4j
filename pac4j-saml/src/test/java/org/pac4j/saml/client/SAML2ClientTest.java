@@ -40,7 +40,7 @@ public class SAML2ClientTest {
     public void testIdpMetadataParsing_fromFile() {
         final SAML2Client client = getClient();
         client.getConfiguration().setIdentityProviderMetadataPath("resource:testshib-providers.xml");
-        client.init();
+        client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();
         final String id = client.getIdentityProviderMetadataResolver().getEntityId();
@@ -51,7 +51,7 @@ public class SAML2ClientTest {
     public void testIdpMetadataParsing_fromUrl() {
         final SAML2Client client = getClient();
         client.getConfiguration().setIdentityProviderMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
-        client.init();
+        client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();
         final String id = client.getIdentityProviderMetadataResolver().getEntityId();
