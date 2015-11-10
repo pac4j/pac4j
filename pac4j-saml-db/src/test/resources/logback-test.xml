@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>pac4j test %d{HH:mm:ss} [%thread] %-5level %logger - %msg%n%ex{short}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.pac4j.saml.client.db" level="DEBUG" />
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

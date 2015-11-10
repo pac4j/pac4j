@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.pac4j</groupId>
+        <artifactId>pac4j</artifactId>
+        <version>1.8.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pac4j-saml-db</artifactId>
+    <packaging>jar</packaging>
+    <name>pac4j for SAML protocol - DB config support</name>
+
+	<dependencies>
+
+		<!-- Other PAC4J modules -->
+		<dependency>
+			<groupId>org.pac4j</groupId>
+			<artifactId>pac4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.pac4j</groupId>
+			<artifactId>pac4j-saml</artifactId>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		
+		<!-- Because of TestsHelper being reused -->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo-shaded</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+		<!-- Unit test dependencies -->
+		<dependency>
+			<groupId>org.pac4j</groupId>
+			<artifactId>pac4j-core</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+	
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+	
+		<!-- Because of TestsHelper being reused -->
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+			<scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+	</dependencies>
+
+	
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.pac4j.saml2db</Bundle-SymbolicName>
+                        <Export-Package>org.pac4j.saml.*;version=${project.version}</Export-Package>
+                        <Import-Package>org.joda.time;version="[1.6,3)",*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

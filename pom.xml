@@ -72,6 +72,7 @@
 		<module>pac4j-test-cas</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
+		<module>pac4j-saml-db</module>
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
@@ -96,6 +97,11 @@
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-cas</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-saml</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -227,7 +233,13 @@
 				<artifactId>guava</artifactId>
 				<version>18.0</version>
 			</dependency>
-			<!-- for testing -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+ 	 	 	
+ 	 	 	<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-core</artifactId>
@@ -317,7 +329,12 @@
 				<version>1.48.2</version>
 				<scope>test</scope>
 			</dependency>
-			<!-- for testing -->
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>${xerces.version}</version>
+			</dependency>			
+ 	 	 	<!-- for testing -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -474,6 +491,7 @@
 		<spring.version>4.1.5.RELEASE</spring.version>
 		<cas.version>3.6.0</cas.version>
 		<slf4j.version>1.7.12</slf4j.version>
+		<xerces.version>2.8.1</xerces.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
