@@ -25,14 +25,15 @@ import org.slf4j.LoggerFactory;
  * </p>
  * 
  * <p>
- * The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the clients group if empty and
- * a specific parameter added to define the client targeted. It is implicitly called by the "finders" methods and doesn't need to be called
- * explicitly.
+ * The {@link #init(WebContext)} method is used to initialize the callback urls of the clients from the callback url of the clients group
+ * if empty and a specific parameter added to define the client targeted. It is implicitly called by the "finders" methods and doesn't
+ * need to be called explicitly.
  * </p>
  * 
  * <p>
- * The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called to find the right
- * client according to the input context or type. The {@link #findAllClients()} method returns all the clients.
+ * The {@link #findClient(WebContext)}, {@link #findClient(WebContext, String)} or {@link #findClient(WebContext, Class)} methods must be
+ * called to find the right client according to the input context or type. The {@link #findAllClients(WebContext)} method returns all the
+ * clients.
  * </p>
  *
  * TODO: We could have a common class (maybe abstract) that would contain common code of this class and {@link Clients}. Most code is
@@ -80,7 +81,7 @@ public class DbLoadedSamlClients extends InitializableWebObject {
 	/**
 	 * Initializes all clients by loading them from the database.
 	 * 
-	 * @see org.pac4j.core.util.InitializableObject#internalInit()
+	 * @see org.pac4j.core.util.InitializableWebObject#internalInit(org.pac4j.core.context.WebContext)
 	 */
 	@Override
 	protected void internalInit(final WebContext context) {
