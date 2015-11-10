@@ -38,6 +38,7 @@ import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -91,7 +92,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     public static final String SERVICE_TICKET_PARAMETER = "ticket";
 
-    protected LogoutHandler logoutHandler = new NoLogoutHandler();
+    protected LogoutHandler logoutHandler;
 
     protected TicketValidator ticketValidator;
 
@@ -150,12 +151,13 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotNull("logoutHandler", this.logoutHandler);
         if (CommonHelper.isBlank(this.casLoginUrl) && CommonHelper.isBlank(this.casPrefixUrl)) {
             throw new TechnicalException("casLoginUrl and casPrefixUrl cannot be both blank");
         }
 
         initializeClientConfiguration();
+
+        initializeLogoutHandler(context);
 
         if (this.casProtocol == CasProtocol.CAS10) {
             initializeCas10Protocol();
@@ -171,6 +173,17 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             initializeSAMLProtocol();
         }
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<CasProfile>());
+    }
+
+
+    private void initializeLogoutHandler(final WebContext context) {
+        if (this.logoutHandler == null) {
+            if (context instanceof J2EContext) {
+                this.logoutHandler = new CasSingleSignOutHandler();
+            } else {
+                this.logoutHandler = new NoLogoutHandler();
+            }
+        }
     }
 
     protected void initializeSAMLProtocol() {
@@ -254,6 +267,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
      */
     @Override
     protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
             final String ticket = context.getRequestParameter(SERVICE_TICKET_PARAMETER);
