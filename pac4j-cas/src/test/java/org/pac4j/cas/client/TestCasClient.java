@@ -96,15 +96,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         final CasCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
     }
-    
-    public void testNullLogoutHandler() {
-        final CasClient casClient = new CasClient();
-        casClient.setCallbackUrl(CALLBACK_URL);
-        casClient.setCasLoginUrl(LOGIN_URL);
-        casClient.setLogoutHandler(null);
-        TestsHelper.initShouldFail(casClient, "logoutHandler cannot be null");
-    }
-    
+
     public void testLogout() {
         final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\" Version=\"2.0\" IssueInstant=\"2012-12-19T15:30:55Z\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>ST-1-FUUhL26EgrkcD6I2Mry9-cas01.example.org</samlp:SessionIndex></samlp:LogoutRequest>";
         final CasClient casClient = new CasClient();
