@@ -13,8 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.pac4j.core.context;
+package org.pac4j.core.matching;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -23,23 +24,23 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Pattern;
 
 /**
- * Exclude path matcher.
+ * To match requests by excluding path.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class ExcludePathMatcher implements PathMatcher {
+public final class ExcludedPathMatcher implements Matcher {
 
-    private final static Logger logger = LoggerFactory.getLogger(ExcludePathMatcher.class);
+    private final static Logger logger = LoggerFactory.getLogger(ExcludedPathMatcher.class);
 
     private String excludePath;
 
     private Pattern pattern;
 
-    public ExcludePathMatcher() {
+    public ExcludedPathMatcher() {
     }
 
-    public ExcludePathMatcher(final String excludePath) {
+    public ExcludedPathMatcher(final String excludePath) {
         setExcludePath(excludePath);
     }
 
@@ -48,9 +49,9 @@ public final class ExcludePathMatcher implements PathMatcher {
         if (pattern != null) {
             final String path = context.getPath();
             logger.debug("path to match: {}", path);
-            return pattern.matcher(path).matches();
+            return !pattern.matcher(path).matches();
         }
-        return false;
+        return true;
     }
 
     public String getExcludePath() {
