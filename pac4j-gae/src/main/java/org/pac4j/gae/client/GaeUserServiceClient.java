@@ -55,7 +55,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 
 	@Override
 	protected RedirectAction retrieveRedirectAction(WebContext context) {
-		String destinationUrl = getCallbackUrl();
+		String destinationUrl = computeFinalCallbackUrl(context);
 		String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl) : service.createLoginURL(destinationUrl, authDomain);
 		return RedirectAction.redirect(loginUrl);
 	}

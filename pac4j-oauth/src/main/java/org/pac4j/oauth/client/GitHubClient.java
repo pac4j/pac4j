@@ -63,7 +63,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(), new OAuthConfig(this.key, this.secret,
-                                                                                    this.callbackUrl,
+                                                                                    computeFinalCallbackUrl(context),
                                                                                     SignatureType.Header, this.scope,
                                                                                     null), this.connectTimeout,
                                                    this.readTimeout, this.proxyHost, this.proxyPort);

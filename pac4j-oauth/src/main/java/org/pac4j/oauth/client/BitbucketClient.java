@@ -56,7 +56,7 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
     {
         super.internalInit(context);
         this.service = new ProxyOAuth10aServiceImpl(new BitBucketApi(),
-                                                    new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                    new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
                                                                     SignatureType.Header, null, null),
                                                     this.connectTimeout, this.readTimeout, this.proxyHost,
                                                     this.proxyPort);

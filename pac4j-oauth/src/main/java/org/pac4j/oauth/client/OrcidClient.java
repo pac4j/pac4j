@@ -86,7 +86,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
         super.internalInit(context);
         this.service = new ProxyOAuth20ServiceImpl(new OrcidApi20(), new OAuthConfig(this.key,
                 this.secret,
-                this.callbackUrl,
+                computeFinalCallbackUrl(context),
                 SignatureType.Header,
                 this.getScope(),
                 null), this.connectTimeout, this.readTimeout, this.proxyHost, this.proxyPort, false, true);

@@ -106,13 +106,13 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         this.api20 = new ExtendedFacebookApi();
         if (StringUtils.isNotBlank(this.scope)) {
             this.service = new StateOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
-                                                                                   this.callbackUrl,
+                                                                                   computeFinalCallbackUrl(context),
                                                                                    SignatureType.Header, this.scope,
                                                                                    null), this.connectTimeout,
                                                        this.readTimeout, this.proxyHost, this.proxyPort);
         } else {
             this.service = new StateOAuth20ServiceImpl(this.api20, new OAuthConfig(this.key, this.secret,
-                                                                                   this.callbackUrl,
+                                                                                   computeFinalCallbackUrl(context),
                                                                                    SignatureType.Header, null, null),
                                                        this.connectTimeout, this.readTimeout, this.proxyHost,
                                                        this.proxyPort);
