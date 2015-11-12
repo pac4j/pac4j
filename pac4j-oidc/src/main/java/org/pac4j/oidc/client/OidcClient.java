@@ -180,7 +180,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         }
         
         this.authParams.put("response_type", "code");
-        this.authParams.put("redirect_uri", getCallbackUrl());
+        final String computedCallbackUrl = computeFinalCallbackUrl(context);
+        this.authParams.put("redirect_uri", computedCallbackUrl);
         // add custom values
         this.authParams.putAll(this.customParams);
         // Override with required values
@@ -199,7 +200,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             jwkSet = JWKSet.parse(resourceRetriever.retrieveResource(this.oidcProvider.getJWKSetURI().toURL())
                     .getContent());
 
-            this.redirectURI = new URI(getCallbackUrl());
+            this.redirectURI = new URI(computedCallbackUrl);
         } catch (Exception e) {
             throw new TechnicalException(e);
         }

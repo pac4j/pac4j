@@ -83,7 +83,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
             this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
         this.service = new StateOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
-                this.callbackUrl,
+                computeFinalCallbackUrl(context),
                 SignatureType.Header,
                 this.scopeValue, null),
                 this.connectTimeout, this.readTimeout, this.proxyHost,

@@ -119,7 +119,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         super.internalInit(context);
         CommonHelper.assertNotBlank("publicKey", this.publicKey);
         this.service = new ProxyOAuth20ServiceImpl(new OkApi(),
-                new OAuthConfig(this.key, this.secret, this.callbackUrl, SignatureType.Header, null, null), this.connectTimeout, this.readTimeout,
+                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, null, null), this.connectTimeout, this.readTimeout,
                 this.proxyHost, this.proxyPort, false, true);
     }
 

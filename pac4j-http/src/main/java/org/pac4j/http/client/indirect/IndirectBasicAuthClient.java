@@ -73,7 +73,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
 
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        return RedirectAction.redirect(getContextualCallbackUrl(context));
+        return RedirectAction.redirect(computeFinalCallbackUrl(context));
     }
 
     @Override

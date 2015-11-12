@@ -69,7 +69,7 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
         super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
         this.service = new PayPalOAuth20ServiceImpl(new PayPalApi20(), new OAuthConfig(this.key, this.secret,
-                                                                                       this.callbackUrl,
+                                                                                       computeFinalCallbackUrl(context),
                                                                                        SignatureType.Header,
                                                                                        this.scope, null),
                                                     this.connectTimeout, this.readTimeout, this.proxyHost,

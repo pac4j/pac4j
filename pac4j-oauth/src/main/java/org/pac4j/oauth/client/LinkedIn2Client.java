@@ -70,7 +70,7 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
         StateApi20 api20 = new LinkedInApi20();
-        this.service = new LinkedInOAuth20ServiceImpl(api20, new OAuthConfig(this.key, this.secret, this.callbackUrl,
+        this.service = new LinkedInOAuth20ServiceImpl(api20, new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
                                                                              SignatureType.Header, this.scope, null),
                                                       this.connectTimeout, this.readTimeout, this.proxyHost,
                                                       this.proxyPort);
