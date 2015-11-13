@@ -348,7 +348,7 @@ public class DbLoadedSamlClient extends IndirectClient<SAML2Credentials, SAML2Pr
     @Override
     protected final String getStateParameter(final WebContext webContext) {
         final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
-        return (relayState == null) ? getContextualCallbackUrl(webContext) : relayState;
+        return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
     }
 
     
