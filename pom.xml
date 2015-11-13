@@ -72,7 +72,7 @@
 		<module>pac4j-test-cas</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
-		<module>pac4j-saml-db</module>
+		<module>pac4j-saml-config-db</module>
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>

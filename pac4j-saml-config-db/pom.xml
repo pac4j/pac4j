@@ -10,7 +10,7 @@
         <version>1.8.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>pac4j-saml-db</artifactId>
+    <artifactId>pac4j-saml-config-db</artifactId>
     <packaging>jar</packaging>
     <name>pac4j for SAML protocol - DB config support</name>
 
