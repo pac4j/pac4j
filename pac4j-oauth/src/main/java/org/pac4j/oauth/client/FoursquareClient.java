@@ -50,7 +50,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new FoursquareOAuth20ServiceImpl(new Foursquare2Api(),
-                new OAuthConfig(this.key, this.secret, this.callbackUrl, SignatureType.Header, "user", null),
+                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, "user", null),
                 this.connectTimeout,
                 this.readTimeout,
                 this.proxyHost,

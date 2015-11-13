@@ -83,7 +83,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
-        service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(key, secret, callbackUrl,
+        service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(key, secret, computeFinalCallbackUrl(context),
                 SignatureType.Header, scope, null), connectTimeout, readTimeout, proxyHost, proxyPort, false, false);
     }
 

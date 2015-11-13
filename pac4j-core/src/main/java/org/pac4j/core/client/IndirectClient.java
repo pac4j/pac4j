@@ -23,6 +23,8 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.http.AjaxRequestResolver;
 import org.pac4j.core.http.DefaultAjaxRequestResolver;
+import org.pac4j.core.http.DefaultCallbackUrlResolver;
+import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -37,8 +39,7 @@ import org.pac4j.core.util.CommonHelper;
  * redirection, which will be handled <b>later</b> in the {@link #getCredentials(WebContext)} method.
  * To force a direct redirection, the {@link #getRedirectAction(WebContext, boolean)} must be used with <code>true</code> for the
  * <code>protectedTarget</code> parameter</li>
- * <li>If you enable "contextual redirects" by using the {@link #setEnableContextualRedirects(boolean)}, you can use relative callback urls
- * which will be completed according to the current host, port and scheme. Disabled by default.</li>
+ * <li>The way the callback url is finally computed is handled by the {@link #callbackUrlResolver} which is by default the provided {@link #callbackUrl}.</li>
  * </ul>
  *
  * @author Jerome Leleu
@@ -54,13 +55,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private boolean includeClientNameInCallbackUrl = true;
 
-    private boolean enableContextualRedirects = false;
-
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
-    public String getContextualCallbackUrl(final WebContext context) {
-        return prependHostToUrlIfNotPresent(this.callbackUrl, context);
-    }
+    protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
 
     /**
      * Define if this client has a direct redirection.
@@ -127,7 +124,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             return retrieveRedirectAction(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection
-            final String intermediateUrl = CommonHelper.addParameter(getContextualCallbackUrl(context),
+            final String intermediateUrl = CommonHelper.addParameter(computeFinalCallbackUrl(context),
                     NEEDS_CLIENT_REDIRECTION_PARAMETER, "true");
             return RedirectAction.redirect(intermediateUrl);
         }
@@ -135,6 +132,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private void cleanRequestedUrl(final WebContext context) {
         context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
+    }
+
+    public String computeFinalCallbackUrl(final WebContext context) {
+        return callbackUrlResolver.compute(callbackUrl, context);
     }
 
     /**
@@ -197,43 +198,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
 
     /**
-     * Returns if contextual redirects are enabled for this client
-     * 
-     * @return if contextual redirects are enabled for this client
-     */
-    public boolean isEnableContextualRedirects() {
-        return this.enableContextualRedirects;
-    }
-
-    /**
-     * Sets whether contextual redirects are enabled for this client
-     * 
-     * @param enableContextualRedirects enable contextual redirects
-     */
-    public void setEnableContextualRedirects(final boolean enableContextualRedirects) {
-        this.enableContextualRedirects = enableContextualRedirects;
-    }
-
-    protected String prependHostToUrlIfNotPresent(final String url, final WebContext webContext) {
-        if (webContext != null && this.enableContextualRedirects && url != null && !url.startsWith("http://")
-                && !url.startsWith("https://")) {
-            final StringBuilder sb = new StringBuilder();
-
-            sb.append(webContext.getScheme()).append("://").append(webContext.getServerName());
-
-            if (webContext.getServerPort() != HttpConstants.DEFAULT_PORT) {
-                sb.append(":").append(webContext.getServerPort());
-            }
-
-            sb.append(url.startsWith("/") ? url : "/" + url);
-
-            return sb.toString();
-        }
-
-        return url;
-    }
-
-    /**
      * Return the state parameter required by some security protocols like SAML or OAuth.
      * 
      * @param webContext web context
@@ -265,9 +229,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         this.callbackUrl = callbackUrl;
     }
 
-    public String getCallbackUrl() {
-        return this.callbackUrl;
-    }
+    public String getCallbackUrl() { return this.callbackUrl; }
 
     public AjaxRequestResolver getAjaxRequestResolver() {
         return ajaxRequestResolver;
@@ -275,5 +237,13 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     public void setAjaxRequestResolver(AjaxRequestResolver ajaxRequestResolver) {
         this.ajaxRequestResolver = ajaxRequestResolver;
+    }
+
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
+    }
+
+    public void setCallbackUrlResolver(CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 }

@@ -18,13 +18,14 @@ package org.pac4j.core.config;
 import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A basic configuration with clients and authorizers.
+ * The default configuration with clients, authorizers and matchers.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -34,6 +35,8 @@ public class Config {
     protected Clients clients;
 
     protected Map<String, Authorizer> authorizers = new HashMap<>();
+
+    protected Map<String, Matcher> matchers = new HashMap<>();
 
     public Config() {}
 
@@ -57,10 +60,6 @@ public class Config {
         this.clients = new Clients(callbackUrl, clients);
     }
 
-    public Config(final Authorizer authorizer) {
-        setAuthorizer(authorizer);
-    }
-
     public Config(final Map<String, Authorizer> authorizers) {
         setAuthorizers(authorizers);
     }
@@ -70,19 +69,9 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
-    public Config(final Clients clients, Authorizer authorizer) {
-        this.clients = clients;
-        setAuthorizer(authorizer);
-    }
-
     public Config(final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(client);
         setAuthorizers(authorizers);
-    }
-
-    public Config(final Client client, final Authorizer authorizer) {
-        this.clients = new Clients(client);
-        setAuthorizer(authorizer);
     }
 
     public Config(final Map<String, Authorizer> authorizers, final Client... clients) {
@@ -90,29 +79,14 @@ public class Config {
         setAuthorizers(authorizers);
     }
 
-    public Config(final Authorizer authorizer, final Client... clients) {
-        this.clients = new Clients(clients);
-        setAuthorizer(authorizer);
-    }
-
     public Config(final String callbackUrl, final Map<String, Authorizer> authorizers, final Client... clients) {
         this.clients = new Clients(callbackUrl, clients);
         setAuthorizers(authorizers);
     }
 
-    public Config(final String callbackUrl, final Authorizer authorizer, final Client... clients) {
-        this.clients = new Clients(callbackUrl, clients);
-        setAuthorizer(authorizer);
-    }
-
     public Config(final String callbackUrl, final Client client, final Map<String, Authorizer> authorizers) {
         this.clients = new Clients(callbackUrl, client);
         setAuthorizers(authorizers);
-    }
-
-    public Config(final String callbackUrl, final Client client, final Authorizer authorizer) {
-        this.clients = new Clients(callbackUrl, client);
-        setAuthorizer(authorizer);
     }
 
     public Clients getClients() {
@@ -127,17 +101,35 @@ public class Config {
         return authorizers;
     }
 
-    public void setAuthorizer(Authorizer authorizer) {
+    public void setAuthorizer(final Authorizer authorizer) {
         CommonHelper.assertNotNull("authorizer", authorizer);
         this.authorizers.put(authorizer.getClass().getSimpleName(), authorizer);
     }
 
-    public void setAuthorizers(Map<String, Authorizer> authorizers) {
+    public void setAuthorizers(final Map<String, Authorizer> authorizers) {
         CommonHelper.assertNotNull("authorizers", authorizers);
         this.authorizers = authorizers;
     }
 
     public void addAuthorizer(final String name, final Authorizer authorizer) {
         authorizers.put(name, authorizer);
+    }
+
+    public Map<String, Matcher> getMatchers() {
+        return matchers;
+    }
+
+    public void setMatcher(final Matcher matcher) {
+        CommonHelper.assertNotNull("matcher", matcher);
+        this.matchers.put(matcher.getClass().getSimpleName(), matcher);
+    }
+
+    public void setMatchers(final Map<String, Matcher> matchers) {
+        CommonHelper.assertNotNull("matchers", matchers);
+        this.matchers = matchers;
+    }
+
+    public void addMatcher(final String name, final Matcher matcher) {
+        matchers.put(name, matcher);
     }
 }

@@ -58,7 +58,7 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth20ServiceImpl(new WordPressApi(),
-                                                   new OAuthConfig(this.key, this.secret, this.callbackUrl,
+                                                   new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
                                                                    SignatureType.Header, null, null),
                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
                                                    this.proxyPort, false, true);

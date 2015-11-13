@@ -32,12 +32,13 @@ import java.util.Map;
  */
 public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
+    @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile, final String authorizerName, final Map<String, Authorizer> authorizersMap) {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (CommonHelper.isNotBlank(authorizerName)) {
             // we must have authorizers
-            CommonHelper.assertNotNull("authorizersMap", authorizers);
+            CommonHelper.assertNotNull("authorizersMap", authorizersMap);
             final String[] names = authorizerName.split(Pac4jConstants.ELEMENT_SEPRATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
@@ -51,6 +52,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return isAuthorized(context, profile, authorizers);
     }
 
+    @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile, final List<Authorizer> authorizers) {
         // authorizations check comes after authentication and profile must not be null
         CommonHelper.assertNotNull("profile", profile);

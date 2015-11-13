@@ -57,7 +57,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth10aServiceImpl(new YahooApi(), new OAuthConfig(this.key, this.secret,
-                                                                                    this.callbackUrl,
+                                                                                    computeFinalCallbackUrl(context),
                                                                                     SignatureType.Header, null, null),
                                                     this.connectTimeout, this.readTimeout, this.proxyHost,
                                                     this.proxyPort);
