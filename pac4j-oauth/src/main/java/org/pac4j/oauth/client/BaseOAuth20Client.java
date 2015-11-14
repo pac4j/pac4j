@@ -78,6 +78,8 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         // check state parameter if required
         if (requiresStateParameter()) {
             final String sessionState = (String) context.getSessionAttribute(getName() + STATE_PARAMETER);
+            // clean from session after retrieving it
+            context.setSessionAttribute(getName() + STATE_PARAMETER, null);
             String stateParameter = context.getRequestParameter("state");
             logger.debug("sessionState : {} / stateParameter : {}", sessionState, stateParameter);
             if (stateParameter == null || !stateParameter.equals(sessionState)) {
