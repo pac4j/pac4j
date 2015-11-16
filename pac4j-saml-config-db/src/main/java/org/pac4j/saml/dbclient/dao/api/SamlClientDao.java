@@ -34,4 +34,15 @@ public interface SamlClientDao {
 	 */
 	public List<DbLoadedSamlClientConfiguration> loadAllClients();
 	
+	
+	/**
+	 * Loads a single SAML Client Configuration.
+	 * 
+	 * @param clientName
+	 *            Name of the client.
+	 * 
+	 * @return A single configuration for the desired client or {@code null} of no such configuration exists.
+	 */
+	public DbLoadedSamlClientConfiguration loadClient(String clientName);
+	
 }

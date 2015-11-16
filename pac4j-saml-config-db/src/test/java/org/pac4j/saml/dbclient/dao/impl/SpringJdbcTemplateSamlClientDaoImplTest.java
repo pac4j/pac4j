@@ -18,6 +18,7 @@ package org.pac4j.saml.dbclient.dao.impl;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,7 @@ public class SpringJdbcTemplateSamlClientDaoImplTest {
 
 	
 	@After
-	public void shutDownInMemoryDatabase() throws Exception {
+	public void shutDownInMemoryDatabase() {
 		if (db != null) {
 			db.shutdown();
 		}
@@ -120,7 +121,75 @@ public class SpringJdbcTemplateSamlClientDaoImplTest {
 			assertEquals(expectedBindings[i-1], cfg.getDestinationBindingType());
 		}
 	}
+	
+	
+	/**
+	 * Checks that a single loaded SAML Client Configuration for a particular environment and a particular client name corresponds to the
+	 * SQL script used to populate the database.
+	 */
+	@Test
+	public void singleClientConfigurationMustBeLoaded() {
+		DbLoadedSamlClientConfiguration cfg = templateUnderTest.loadClient("Five");
+		assertNotNull(cfg);
 
+		// Client name
+		assertEquals("Five", cfg.getClientName());
+		
+		// Keystore data
+		byte[] keystoreData = cfg.getKeystoreBinaryData();
+		byte[] expectedKeystoreData = createExpectedKeystoreData((byte) 5);
+		assertArrayEquals(expectedKeystoreData, keystoreData);
+
+		// Keystore password
+		assertEquals("KsPwd5", cfg.getKeystorePassword());
+
+		// Private key password
+		assertEquals("PrKeyPwd5", cfg.getPrivateKeyPassword());
+
+		// IdP metadata
+		assertEquals("CLOB-5", cfg.getIdentityProviderMetadata());
+		
+		// IdP entity ID
+		assertEquals("urn:idp5", cfg.getIdentityProviderEntityId());
+		
+		// SP entity ID
+		assertEquals("urn:sp5", cfg.getServiceProviderEntityId());
+
+		// Maximum authentication lifetime
+		assertEquals(5000, cfg.getMaximumAuthenticationLifetime());
+
+		// Destination binding type
+		assertEquals("urn:binding", cfg.getDestinationBindingType());
+	}
+
+	
+	/**
+	 * Checks that nothing is found for a non-existing client. 
+	 */
+	@Test
+	public void singleClientConfigurationThatDoesNotExist() {
+		DbLoadedSamlClientConfiguration cfg = templateUnderTest.loadClient("DoesNotExist");
+		assertNull(cfg);
+	}
+	
+	
+	/**
+	 * Checks that an exception is thrown on reading configuration for an unspecified client.
+	 */
+	@Test(expected=IllegalArgumentException.class)
+	public void singleClientConfigurationForNoName1() {
+		templateUnderTest.loadClient(null);
+	}
+
+	
+	/**
+	 * Checks that an exception is thrown on reading configuration for an unspecified client.
+	 */
+	@Test(expected=IllegalArgumentException.class)
+	public void singleClientConfigurationForNoName2() {
+		templateUnderTest.loadClient("   ");
+	}
+	
 	
 	private byte[] createExpectedKeystoreData(byte b) {
 		byte[] result = new byte[5];
