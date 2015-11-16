@@ -76,6 +76,7 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
  * constructor plus a few init methods would be OK.
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class DbLoadedSamlClient extends IndirectClient<SAML2Credentials, SAML2Profile> {
 

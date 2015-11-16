@@ -36,6 +36,7 @@ import org.pac4j.saml.storage.SAMLMessageStorageFactory;
  * TODO: It would be nice to have a common interface and maybe a common abstract parent too.
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class DbLoadedSamlClientConfiguration implements Cloneable {
 	

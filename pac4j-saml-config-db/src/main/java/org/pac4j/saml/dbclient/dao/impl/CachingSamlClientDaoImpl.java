@@ -32,6 +32,7 @@ import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
  * to another implementation of the same DAO type.</p>
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class CachingSamlClientDaoImpl implements SamlClientDao {
 

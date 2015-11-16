@@ -51,6 +51,7 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
  * a common ancestor to reuse some code. Most methods are just copied - duplicate code.
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class KeyStoreCredentialProvider2 implements CredentialProvider { 
 

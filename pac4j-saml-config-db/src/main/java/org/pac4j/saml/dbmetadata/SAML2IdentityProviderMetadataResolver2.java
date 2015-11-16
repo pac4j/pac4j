@@ -48,6 +48,7 @@ import net.shibboleth.utilities.java.support.xml.XMLParserException;
  * a common ancestor to reuse some code.
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class SAML2IdentityProviderMetadataResolver2 implements SAML2MetadataResolver {
 

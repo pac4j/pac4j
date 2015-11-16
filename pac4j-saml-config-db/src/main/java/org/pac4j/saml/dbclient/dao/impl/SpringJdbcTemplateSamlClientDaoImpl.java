@@ -88,6 +88,7 @@ COMMENT ON COLUMN SAG_SAML_PAC4J_CLIENT_CFG.DEST_BINDING_TYPE IS 'Destination bi
  * Example: You can have environments "Development", "Test" and "Production".</p>
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 

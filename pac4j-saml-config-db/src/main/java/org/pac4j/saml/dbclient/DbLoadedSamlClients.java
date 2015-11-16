@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * duplicated. {@link Clients} cannot be extended because it is final.
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public class DbLoadedSamlClients extends InitializableWebObject {
 

@@ -24,6 +24,7 @@ import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
  * DAO to manipulate SAML Client Configurations stored in a data source.
  * 
  * @author jkacer
+ * @since 1.9.0
  */
 public interface SamlClientDao {
 
