@@ -39,9 +39,15 @@ public class JwtGenerator<U extends UserProfile> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final String secret;
+    private final boolean encrypted;
 
-    public JwtGenerator(final String secret) {
+    public JwtGenerator(String secret) {
+        this(secret, true);
+    }
+
+    public JwtGenerator(final String secret, final boolean encrypted) {
         this.secret = secret;
+        this.encrypted = encrypted;
     }
 
     /**
@@ -51,7 +57,6 @@ public class JwtGenerator<U extends UserProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
-
         try {
             // Create HMAC signer
             final JWSSigner signer = new MACSigner(this.secret);
@@ -70,23 +75,27 @@ public class JwtGenerator<U extends UserProfile> {
 
             // claims
             final JWTClaimsSet claims = builder.build();
+
             // signed
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
+            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256, JOSEObjectType.JWT, null, null, null, null, null, null, null, null, null, null, null), claims);
 
             // Apply the HMAC
             signedJWT.sign(signer);
 
-            // Create JWE object with signed JWT as payload
-            final  JWEObject jweObject = new JWEObject(
-                    new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM).contentType("JWT").build(),
-                    new Payload(signedJWT));
+            if (encrypted) {
+                // Create JWE object with signed JWT as payload
+                final JWEObject jweObject = new JWEObject(
+                        new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM).contentType("JWT").build(),
+                        new Payload(signedJWT));
 
-            // Perform encryption
-            jweObject.encrypt(new DirectEncrypter(this.secret.getBytes("UTF-8")));
+                // Perform encryption
+                jweObject.encrypt(new DirectEncrypter(this.secret.getBytes("UTF-8")));
 
-            // Serialise to JWE compact form
-            return jweObject.serialize();
-
+                // Serialise to JWE compact form
+                return jweObject.serialize();
+            } else {
+                return signedJWT.serialize();
+            }
         } catch (final Exception e) {
             throw new TechnicalException("Cannot generate JWT", e);
         }
