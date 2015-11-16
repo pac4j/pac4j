@@ -112,7 +112,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         // authentication has already been tried
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
-            context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
+            cleanAttemptedAuthentication(context);
             // protected target -> forbidden
             if (protectedTarget) {
                 cleanRequestedUrl(context);
@@ -132,6 +132,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private void cleanRequestedUrl(final WebContext context) {
         context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
+    }
+
+    private void cleanAttemptedAuthentication(final WebContext context) {
+        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {
@@ -189,7 +193,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             if (credentials == null) {
                 context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
             } else {
-                context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
+                cleanAttemptedAuthentication(context);
             }
             return credentials;
         }
@@ -204,7 +208,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @return the state
      */
     protected String getStateParameter(WebContext webContext) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw new UnsupportedOperationException("To be implemented in subclasses if required");
     }
 
     /**
