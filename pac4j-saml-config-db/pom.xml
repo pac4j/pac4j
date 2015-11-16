@@ -53,17 +53,15 @@
 			<artifactId>spring-jdbc</artifactId>
 		</dependency>
 		
-		<!-- Because of TestsHelper being reused -->
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo-shaded</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+        	<groupId>org.apache.commons</groupId>
+        	<artifactId>commons-lang3</artifactId>
         </dependency>
 
 		<!-- Unit test dependencies -->
@@ -105,6 +103,13 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- Because of TestsHelper being reused -->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo-shaded</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
