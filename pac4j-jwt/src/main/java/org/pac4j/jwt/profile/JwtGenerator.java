@@ -39,10 +39,10 @@ public class JwtGenerator<U extends UserProfile> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final String secret;
-    private final boolean encrypted;
+    private boolean encrypted = true;
 
     public JwtGenerator(String secret) {
-        this(secret, true);
+        this.secret = secret;
     }
 
     public JwtGenerator(final String secret, final boolean encrypted) {
@@ -77,7 +77,7 @@ public class JwtGenerator<U extends UserProfile> {
             final JWTClaimsSet claims = builder.build();
 
             // signed
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256, JOSEObjectType.JWT, null, null, null, null, null, null, null, null, null, null, null), claims);
+            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
 
             // Apply the HMAC
             signedJWT.sign(signer);
