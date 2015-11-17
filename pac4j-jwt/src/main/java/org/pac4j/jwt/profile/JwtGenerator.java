@@ -41,10 +41,21 @@ public class JwtGenerator<U extends UserProfile> {
     private final String secret;
     private boolean encrypted = true;
 
+    /**
+     * Initializes the generator that will create JWT tokens that are both signed and encrypted.
+     *
+     * @param secret The secret. Must be at least 256 bits long and not {@code null}
+     */
     public JwtGenerator(String secret) {
         this.secret = secret;
     }
 
+    /**
+     * Initializes the generator that will create JWT tokens that is signed and optionally encrypted.
+     *
+     * @param secret    The secret. Must be at least 256 bits long and not {@code null}
+     * @param encrypted whether the JWT will be encrypted or not
+     */
     public JwtGenerator(final String secret, final boolean encrypted) {
         this.secret = secret;
         this.encrypted = encrypted;
