@@ -60,13 +60,13 @@ public class JwtAuthenticator implements TokenAuthenticator {
         SignedJWT signedJWT = null;
 
         try {
+            // Parse the token
             JWT jwt = JWTParser.parse(token);
 
             if (jwt instanceof SignedJWT) {
                 signedJWT = (SignedJWT) jwt;
             } else if (jwt instanceof EncryptedJWT) {
-                // Parse the JWE string
-                JWEObject jweObject = JWEObject.parse(token);
+                JWEObject jweObject = (JWEObject) jwt;
 
                 // Decrypt with shared key
                 jweObject.decrypt(new DirectDecrypter(this.secret.getBytes("UTF-8")));
