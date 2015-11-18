@@ -32,10 +32,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * An alternative to {@link Clients}. Unlike {@link Clients}, this class works with clients whose definition is stored in a database. It is
- * limited to {@link DbLoadedSamlClient}s only, so clients of another type cannot be managed by this class.
+ * An alternative to {@link Clients}. Unlike {@link Clients}, this class works with clients whose definition is stored in a database. 
  * </p>
- * 
+ *
  * <p>
  * This class is made to group multiple clients using a specific parameter to distinguish them, generally on one callback url.
  * </p>

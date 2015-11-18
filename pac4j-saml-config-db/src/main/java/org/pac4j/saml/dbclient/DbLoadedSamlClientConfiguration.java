@@ -50,8 +50,11 @@ public class DbLoadedSamlClientConfiguration extends AbstractSAML2ClientConfigur
     
     
     /**
-     * The constructor. Use setters to initialize properties.
-     */
+	 * The constructor. Use setters to initialize properties.
+	 * 
+	 * @param dao
+	 *            DAO loading client configuration from DB.
+	 */
     public DbLoadedSamlClientConfiguration(final SamlClientDao dao) {
     	super();
     	if (dao == null) {
