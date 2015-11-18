@@ -212,6 +212,10 @@ public final class Clients extends InitializableWebObject {
         this.clients = Arrays.asList(clients);
     }
 
+    public List<Client> getClients() {
+        return clients;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
