@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.saml.crypto;
 
 import java.io.IOException;
@@ -24,10 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.criterion.EntityIdCriterion;
-
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialResolver;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
@@ -37,35 +33,44 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+
+
 /**
- * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
+ * Base for all key store credential providers.
+ * 
+ * Responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
  * opensaml object.
+ *
+ * It can be used as-is; or a subclass can be used instead, providing different constructor arguments for convenience.
+ * It is up to subclasses to provide an adequate input stream to the constructor, which should contain data of the JKS.
  * 
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class KeyStoreCredentialProvider implements CredentialProvider {
+public abstract class KeyStoreCredentialProvider implements CredentialProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
-
+	private final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
+	
     private final CredentialResolver credentialResolver;
 
     private final String privateKey;
 
-    public KeyStoreCredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-        final InputStream inputStream = CommonHelper.getInputStreamFromName(name);
+    // ------------------------------------------------------------------------------------------------------------------------------------
+
+    public KeyStoreCredentialProvider(final InputStream inputStream, final String storePasswd, final String privateKeyPasswd) {
         final KeyStore keyStore = loadKeyStore(inputStream, storePasswd);
         this.privateKey = getPrivateKeyAlias(keyStore);
         final Map<String, String> passwords = new HashMap<String, String>();
         passwords.put(this.privateKey, privateKeyPasswd);
         this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
     }
-
+    
     @Override
     public KeyInfo getKeyInfo() {
         final Credential serverCredential = getCredential();
@@ -142,4 +147,5 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             throw new SAMLException("Unable to get aliases from keyStore", e);
         }
     }
+
 }

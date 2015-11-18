@@ -39,8 +39,8 @@ import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
-import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
-import org.pac4j.saml.crypto.KeyStoreCredentialProvider2;
+import org.pac4j.saml.crypto.KeyStoreFileCredentialProvider;
+import org.pac4j.saml.crypto.KeyStoreByteArrayCredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
@@ -197,10 +197,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected void initCredentialProvider() {
     	if (this.configuration.keystoreDataNeedResolution()) {
-            this.credentialProvider = new KeyStoreCredentialProvider(this.configuration.getKeystorePath(), this.configuration.getKeystorePassword(), this.configuration.getPrivateKeyPassword());
+            this.credentialProvider = new KeyStoreFileCredentialProvider(this.configuration.getKeystorePath(), this.configuration.getKeystorePassword(), this.configuration.getPrivateKeyPassword());
     	} else {
-    		// TODO: Better name
-    		this.credentialProvider = new KeyStoreCredentialProvider2(this.configuration.getResolvedKeystoreData(), this.configuration.getKeystorePassword(), this.configuration.getPrivateKeyPassword());
+    		this.credentialProvider = new KeyStoreByteArrayCredentialProvider(this.configuration.getResolvedKeystoreData(), this.configuration.getKeystorePassword(), this.configuration.getPrivateKeyPassword());
     	}
     }
 
