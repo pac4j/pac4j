@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class Clients extends InitializableWebObject {
+public class Clients extends InitializableWebObject {
 
     private static final Logger logger = LoggerFactory.getLogger(Clients.class);
 
@@ -67,7 +68,7 @@ public final class Clients extends InitializableWebObject {
 
     public Clients(final String callbackUrl, final Client client) {
         setCallbackUrl(callbackUrl);
-        setClients(Arrays.asList(client));
+        setClients(new ArrayList<Client>(Arrays.asList(client)));
     }
 
     public Clients(final List<Client> clients) {
@@ -79,7 +80,7 @@ public final class Clients extends InitializableWebObject {
     }
 
     public Clients(final Client client) {
-        setClients(Arrays.asList(client));
+        setClients(new ArrayList<Client>(Arrays.asList(client)));
     }
 
     /**
@@ -97,21 +98,30 @@ public final class Clients extends InitializableWebObject {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
             names.add(name);
-            if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
-                final IndirectClient indirectClient = (IndirectClient) client;
-                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                // no callback url defined for the client -> set it with the group callback url
-                if (indirectClientCallbackUrl == null) {
-                    indirectClient.setCallbackUrl(this.callbackUrl);
-                    indirectClientCallbackUrl = this.callbackUrl;
-                }
-                // if the "client_name" parameter is not already part of the callback url, add it unless the client
-                // has indicated to not include it.
-                if (indirectClient.isIncludeClientNameInCallbackUrl() &&
-                        indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
-                            name));
-                }
+            updateCallbackUrlOfIndirectClient(client);
+        }
+    }
+
+    
+    /**
+     * Sets a client's Callback URL, if not already set. If requested, the "client_name" parameter will also be a part of the URL.
+     * 
+     * @param client A client.
+     */
+    protected void updateCallbackUrlOfIndirectClient(final Client client) {
+        if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
+            final IndirectClient indirectClient = (IndirectClient) client;
+            String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+            // no callback url defined for the client -> set it with the group callback url
+            if (indirectClientCallbackUrl == null) {
+                indirectClient.setCallbackUrl(this.callbackUrl);
+                indirectClientCallbackUrl = this.callbackUrl;
+            }
+            // if the "client_name" parameter is not already part of the callback url, add it unless the client
+            // has indicated to not include it.
+            if (indirectClient.isIncludeClientNameInCallbackUrl() &&
+                    indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, client.getName()));
             }
         }
     }
@@ -209,7 +219,11 @@ public final class Clients extends InitializableWebObject {
     }
 
     public void setClients(final Client... clients) {
-        this.clients = Arrays.asList(clients);
+        this.clients = new ArrayList<Client>(Arrays.asList(clients));
+    }
+    
+    protected List<Client> getClients() {
+    	return this.clients;
     }
 
     @Override
