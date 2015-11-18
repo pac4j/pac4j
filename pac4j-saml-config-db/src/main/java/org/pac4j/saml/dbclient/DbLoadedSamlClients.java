@@ -108,7 +108,7 @@ public class DbLoadedSamlClients extends Clients {
 	 * 
 	 * @param callbackUrl
 	 *            The callback URL.
-	 * @param clients
+	 * @param client
 	 *            The clients.
 	 */
 	public DbLoadedSamlClients(String callbackUrl, Client client) {
