@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.dbmetadata;
+package org.pac4j.saml.metadata;
 
 import java.io.StringReader;
 import java.util.Iterator;
@@ -29,8 +29,6 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.xml.util.XMLHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.exceptions.SAMLException;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
-import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.util.Configuration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

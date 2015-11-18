@@ -23,7 +23,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
+import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -92,28 +92,38 @@ COMMENT ON COLUMN SAG_SAML_PAC4J_CLIENT_CFG.DEST_BINDING_TYPE IS 'Destination bi
  */
 public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 
+	/** SQL text of the query to select all client names. */
+	private static final String SELECT_ALL_NAMES_SQL_TEXT = "select Client_Name from %s where Environment = ?";
 	/** SQL text of the query to select all existing clients. */
-	private static final String SELECT_ALL_CLIENTS_SQL_TEXT = "select Client_Name, Keystore_Data, Keystore_Password, Private_Key_Password, IdP_Metadata, IdP_Entity_ID, SP_Entity_ID, Max_Auth_Lifetime, Dest_Binding_Type from %s where Environment = ?";
+	private static final String SELECT_ALL_CLIENTS_SQL_TEXT = "select Client_Name, Environment, Keystore_Data, Keystore_Password, Private_Key_Password, IdP_Metadata, IdP_Entity_ID, SP_Entity_ID, Max_Auth_Lifetime, Dest_Binding_Type from %s where Environment = ?";
 	/** SQL text of the query to select a single client by name. */
-	private static final String SELECT_SINGLE_CLIENT_SQL_TEXT = "select Client_Name, Keystore_Data, Keystore_Password, Private_Key_Password, IdP_Metadata, IdP_Entity_ID, SP_Entity_ID, Max_Auth_Lifetime, Dest_Binding_Type from %s where (Environment = ?) and (Client_Name = ?)";
+	private static final String SELECT_SINGLE_CLIENT_SQL_TEXT = "select Client_Name, Environment, Keystore_Data, Keystore_Password, Private_Key_Password, IdP_Metadata, IdP_Entity_ID, SP_Entity_ID, Max_Auth_Lifetime, Dest_Binding_Type from %s where (Environment = ?) and (Client_Name = ?)";
 	
+	/** Row mapper to read configuration rows and convert them to client names. */
+	private final OnlyNamesRowMapper onlyNamesRowMapper;
 	/** Row mapper to read configuration rows and convert them to objects. */
-	private final SamlClientConfigurationRowMapper rowMapper;
+	private final SamlClientConfigurationRowMapper fullRowMapper;
 
 	/** A Spring JDBC template. */
 	private final JdbcTemplate template;
 
 	/** Environment name; to distinguish records for different environments in a single table. */
 	private final String environment;
-	
+
+	/** SQL text of the query to select all client names after filling in the table name. */
+	private final String selectAllNamesSqlText;
 	/** SQL text of the query to select all existing clients after filling in the table name. */
 	private final String selectAllClientsSqlText;
 	/** SQL text of the query to select a single client after filling in the table name. */
 	private final String selectSingleClientSqlText;
-	
+
+	/** Parameters to the query selecting all names: environment. */
+	private final Object[] selectAllNamesParameters;
 	/** Parameters to the query selecting all clients: environment. */
 	private final Object[] selectAllClientsParameters;
 
+	/** Parameter types to the query selecting all names: environment. */
+	private final int[] selectAllNamesParameterTypes;
 	/** Parameter types to the query selecting all clients: environment. */
 	private final int[] selectAllClientsParameterTypes;
 	/** Parameter types to the query selecting a single client: environment and client name. */
@@ -151,27 +161,43 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 		if (StringUtils.isBlank(environment)) {
 			throw new IllegalArgumentException("Environment must not be null or empty.");
 		}
-		
-		this.rowMapper = new SamlClientConfigurationRowMapper(lobHandler);
+
+		this.onlyNamesRowMapper = new OnlyNamesRowMapper();
+		this.fullRowMapper = new SamlClientConfigurationRowMapper(lobHandler);
 		this.template = new JdbcTemplate(dataSource);
 		this.environment = environment;
-		
+	
+		this.selectAllNamesSqlText = String.format(SELECT_ALL_NAMES_SQL_TEXT, tableName);
 		this.selectAllClientsSqlText = String.format(SELECT_ALL_CLIENTS_SQL_TEXT, tableName);
 		this.selectSingleClientSqlText = String.format(SELECT_SINGLE_CLIENT_SQL_TEXT, tableName);
 		
+		this.selectAllNamesParameters = new Object[] {environment};
 		this.selectAllClientsParameters = new Object[] {environment};
+		
+		this.selectAllNamesParameterTypes = new int[] {Types.VARCHAR};
 		this.selectAllClientsParameterTypes = new int[] {Types.VARCHAR};
 		this.selectSingleClientParameterTypes = new int[] {Types.VARCHAR, Types.VARCHAR};
 	}
 
 
 	/* (non-Javadoc)
+	 * @see org.pac4j.saml.dbclient.dao.api.SamlClientDao#loadClientNames()
+	 */
+	@Override
+	@Transactional(readOnly=true)
+	public List<String> loadClientNames() {
+		final List<String> names = template.query(selectAllNamesSqlText, selectAllNamesParameters, selectAllNamesParameterTypes, onlyNamesRowMapper);
+		return names;
+	}
+
+	
+	/* (non-Javadoc)
 	 * @see org.pac4j.saml.dbclient.dao.api.SamlClientDao#loadAllClients()
 	 */
 	@Override
 	@Transactional(readOnly=true)
-	public List<DbLoadedSamlClientConfiguration> loadAllClients() {
-		final List<DbLoadedSamlClientConfiguration> configurations = template.query(selectAllClientsSqlText, selectAllClientsParameters, selectAllClientsParameterTypes, rowMapper);
+	public List<DbLoadedSamlClientConfigurationDto> loadAllClients() {
+		final List<DbLoadedSamlClientConfigurationDto> configurations = template.query(selectAllClientsSqlText, selectAllClientsParameters, selectAllClientsParameterTypes, fullRowMapper);
 		return configurations;
 	}
 	
@@ -181,13 +207,13 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 	 */
 	@Override
 	@Transactional(readOnly=true)
-	public DbLoadedSamlClientConfiguration loadClient(final String clientName) {
+	public DbLoadedSamlClientConfigurationDto loadClient(final String clientName) {
 		if (StringUtils.isBlank(clientName)) {
 			throw new IllegalArgumentException("Client name must not be null or empty.");
 		}
 		
 		final Object[] selectSingleClientParameters = new Object[] {environment, clientName};
-		final List<DbLoadedSamlClientConfiguration> configurations = template.query(selectSingleClientSqlText, selectSingleClientParameters, selectSingleClientParameterTypes, rowMapper);
+		final List<DbLoadedSamlClientConfigurationDto> configurations = template.query(selectSingleClientSqlText, selectSingleClientParameters, selectSingleClientParameterTypes, fullRowMapper);
 		if ((configurations != null) && (!configurations.isEmpty())) {
 			return configurations.get(0);
 		} else {
@@ -197,11 +223,11 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 	
 
 	/**
-	 * Spring JDBC row mapper to read configuration rows and convert them to objects of type {@link DbLoadedSamlClientConfiguration}.
+	 * Spring JDBC row mapper to read configuration rows and convert them to objects of type {@link DbLoadedSamlClientConfigurationDto}.
 	 * 
 	 * @author jkacer
 	 */
-	private static class SamlClientConfigurationRowMapper implements RowMapper<DbLoadedSamlClientConfiguration> {
+	private static class SamlClientConfigurationRowMapper implements RowMapper<DbLoadedSamlClientConfigurationDto> {
 
 		/**
 		 * LOB handler able to read BLOBs and CLOBs. As of Oracle 10.2, DefaultLobHandler should work with standard setup out of the box. No
@@ -226,8 +252,9 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 		 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
 		 */
 		@Override
-		public DbLoadedSamlClientConfiguration mapRow(ResultSet rs, int rowNumber) throws SQLException {
+		public DbLoadedSamlClientConfigurationDto mapRow(ResultSet rs, int rowNumber) throws SQLException {
 			String clientName = rs.getString("Client_Name");
+			String environment = rs.getString("Environment");
 			byte[] keystoreBinaryData = lobHandler.getBlobAsBytes(rs, "Keystore_Data");
 			String keystorePassword = rs.getString("Keystore_Password");
 			String privateKeyPassword = rs.getString("Private_Key_Password");
@@ -237,7 +264,9 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 			int maximumAuthenticationLifetime = rs.getInt("Max_Auth_Lifetime");
 			String destinationBindingType = rs.getString("Dest_Binding_Type");
 			
-			DbLoadedSamlClientConfiguration config = new DbLoadedSamlClientConfiguration();
+			DbLoadedSamlClientConfigurationDto config = new DbLoadedSamlClientConfigurationDto();
+			config.setClientName(clientName);
+			config.setEnvironment(environment);
 			config.setKeystoreBinaryData(keystoreBinaryData);
 			config.setKeystorePassword(keystorePassword);
 			config.setPrivateKeyPassword(privateKeyPassword);
@@ -246,11 +275,28 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 			config.setServiceProviderEntityId(serviceProviderEntityId);
 			config.setMaximumAuthenticationLifetime(maximumAuthenticationLifetime);
 			config.setDestinationBindingType(destinationBindingType);
-			config.setClientName(clientName);
 			
 			return config;
 		}
 
 	}
 
+	
+	/**
+	 * Spring JDBC row mapper to read configuration rows and extract client names from them.
+	 * 
+	 * @author jkacer
+	 */
+	private static class OnlyNamesRowMapper implements RowMapper<String> {
+
+		/* (non-Javadoc)
+		 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
+		 */
+		@Override
+		public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+			return rs.getString("Client_Name");
+		}
+		
+	}
+	
 }

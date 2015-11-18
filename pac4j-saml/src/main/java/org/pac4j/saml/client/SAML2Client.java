@@ -40,10 +40,12 @@ import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.crypto.DefaultSignatureSigningParametersProvider;
 import org.pac4j.saml.crypto.ExplicitSignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
+import org.pac4j.saml.crypto.KeyStoreCredentialProvider2;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
+import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver2;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.profile.SAML2Profile;
@@ -98,7 +100,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected Decrypter decrypter;
 
-    protected SAML2ClientConfiguration configuration;
+    protected AbstractSAML2ClientConfiguration configuration;
 
     static {
         CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
@@ -107,16 +109,25 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
     }
 
+    
     public SAML2Client() { }
 
-    public SAML2Client(final SAML2ClientConfiguration configuration) {
+    public SAML2Client(final AbstractSAML2ClientConfiguration configuration) {
         this.configuration = configuration;
     }
+    
 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        CommonHelper.assertNotNull("configuration", this.configuration);
 
+        // First of all, initialize the configuration. It may dynamically load some properties.
+        if (context != null) {
+        	context.setRequestAttribute("current_client_name", getName()); // TODO: Constant somewhere?
+        }
+        this.configuration.init(context);
+        
         initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
@@ -175,15 +186,22 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     protected MetadataResolver initIdentityProviderMetadataResolver() {
-        this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration.getIdentityProviderMetadataPath(),
-                this.configuration.getIdentityProviderEntityId());
+    	if (this.configuration.identityProviderMetadataNeedResolution()) {
+            this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration.getIdentityProviderMetadataPath(), this.configuration.getIdentityProviderEntityId());
+    	} else {
+    		// TODO: Better name
+    		this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver2(this.configuration.getResolvedIdentityProviderMetadata(), this.configuration.getIdentityProviderEntityId());
+    	}
         return this.idpMetadataResolver.resolve();
     }
 
     protected void initCredentialProvider() {
-        this.credentialProvider = new KeyStoreCredentialProvider(this.configuration.getKeystorePath(),
-                this.configuration.getKeystorePassword(),
-                this.configuration.getPrivateKeyPassword());
+    	if (this.configuration.keystoreDataNeedResolution()) {
+            this.credentialProvider = new KeyStoreCredentialProvider(this.configuration.getKeystorePath(), this.configuration.getKeystorePassword(), this.configuration.getPrivateKeyPassword());
+    	} else {
+    		// TODO: Better name
+    		this.credentialProvider = new KeyStoreCredentialProvider2(this.configuration.getResolvedKeystoreData(), this.configuration.getKeystorePassword(), this.configuration.getPrivateKeyPassword());
+    	}
     }
 
     protected void initDecrypter() {
@@ -212,9 +230,14 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         }
         return metadataManager;
     }
+
     @Override
     protected BaseClient<SAML2Credentials, SAML2Profile> newClient() {
-        return new SAML2Client(this.configuration.clone());
+        try {
+			return new SAML2Client(this.configuration.clone());
+		} catch (CloneNotSupportedException cnse) {
+			throw new RuntimeException("Cannot clone a SAML Client Configuration.", cnse);
+		}
     }
 
     @Override
@@ -310,11 +333,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return this.spMetadataResolver.getEntityId();
     }
 
-    public void setConfiguration(SAML2ClientConfiguration configuration) {
+    public void setConfiguration(AbstractSAML2ClientConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public final SAML2ClientConfiguration getConfiguration() {
+    public final AbstractSAML2ClientConfiguration getConfiguration() {
         return this.configuration;
     }
 }

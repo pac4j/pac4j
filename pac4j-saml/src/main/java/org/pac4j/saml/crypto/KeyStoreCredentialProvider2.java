@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.saml.dbcrypto;
+package org.pac4j.saml.crypto;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,8 +34,6 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.saml.crypto.CredentialProvider;
-import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,74 +15,36 @@
  */
 package org.pac4j.saml.dbclient;
 
-import org.opensaml.saml.common.xml.SAMLConstants;
+import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.saml.client.AbstractSAML2ClientConfiguration;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
-import org.pac4j.saml.storage.EmptyStorageFactory;
-import org.pac4j.saml.storage.SAMLMessageStorageFactory;
+import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
+import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 
 
 /**
+ * SAML Client configuration intended to be loaded from a database.
+ * 
  * An alternative to {@link SAML2ClientConfiguration}. Unlike {@link SAML2ClientConfiguration}, this class does not use paths to resources.
  * Instead, it contains the data directly.
  *
- * Differences from {@link SAML2ClientConfiguration}:
- * <ul>
- * <li>The JKS keystore - contained as a byte array, not a path to a resource</li>
- * <li>IdP metadata - contained as a string, not a path to a resource</li>
- * <li>SP metadata - dropped completely</li>
- * <li>Client name - added</li>
- * </ul>
- *
- * TODO: It would be nice to have a common interface and maybe a common abstract parent too.
- * 
  * @author jkacer
  * @since 1.9.0
  */
-public class DbLoadedSamlClientConfiguration implements Cloneable {
+public class DbLoadedSamlClientConfiguration extends AbstractSAML2ClientConfiguration {
+
+	/** DAO to read SAML client configurations. Should be shared by all configuration instances. */
+	private final SamlClientDao dao;
 	
-    /** Default value of the Destination Binding Type. Used when a NULL is read from the database setup. */
-    private static final String DEFAULT_DESTINATION_BINDING_TYPE = SAMLConstants.SAML2_POST_BINDING_URI;
-    
-    /** Minimum allowed value of Maximum Authentication Lifetime, in seconds. */
-    private static final int MINIMUM_MAX_AUTHENTICATION_LIFETIME = 1;
-
-    /** Default value of Maximum Authentication Lifetime, in seconds. Used when the supplied value is less than the defined minimum.*/
-    private static final int DEFAULT_MAX_AUTHENTICATION_LIFETIME = 3600;
-
-    
 	/** Binary data of a JKS keystore. */
 	private byte[] keystoreBinaryData;
-
-    private String keystorePassword;
-
-    private String privateKeyPassword;
 
     /** IdP metadata. */
     private String identityProviderMetadata;
 
-    private String identityProviderEntityId;
-
-    private String serviceProviderEntityId;
-
-    private int maximumAuthenticationLifetime = DEFAULT_MAX_AUTHENTICATION_LIFETIME;
-
-    private boolean forceAuth = false;
-
-    private String comparisonType = null;
-
-    private String destinationBindingType = DEFAULT_DESTINATION_BINDING_TYPE;
-
-    private String authnContextClassRef = null;
-
-    private String nameIdPolicyFormat = null;
-
-    private boolean forceServiceProviderMetadataGeneration;
-
-    private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
-
-    /** SAML Client name. Should be always set to the client's name because the client will read its name from this field. */
-    private String clientName;
-
+	/** SAML Client name. */
+	private String clientName;
     
     // ------------------------------------------------------------------------------------------------------------------------------------
     
@@ -90,8 +52,12 @@ public class DbLoadedSamlClientConfiguration implements Cloneable {
     /**
      * The constructor. Use setters to initialize properties.
      */
-    public DbLoadedSamlClientConfiguration() {
+    public DbLoadedSamlClientConfiguration(final SamlClientDao dao) {
     	super();
+    	if (dao == null) {
+    		throw new IllegalArgumentException("DAO must not be null.");
+    	}
+    	this.dao = dao;
     }
     
 
@@ -103,22 +69,6 @@ public class DbLoadedSamlClientConfiguration implements Cloneable {
 		this.keystoreBinaryData = keystoreBinaryData;
 	}
 
-	public String getKeystorePassword() {
-		return keystorePassword;
-	}
-
-	public void setKeystorePassword(String keystorePassword) {
-		this.keystorePassword = keystorePassword;
-	}
-
-	public String getPrivateKeyPassword() {
-		return privateKeyPassword;
-	}
-
-	public void setPrivateKeyPassword(String privateKeyPassword) {
-		this.privateKeyPassword = privateKeyPassword;
-	}
-
 	public String getIdentityProviderMetadata() {
 		return identityProviderMetadata;
 	}
@@ -127,86 +77,11 @@ public class DbLoadedSamlClientConfiguration implements Cloneable {
 		this.identityProviderMetadata = identityProviderMetadata;
 	}
 
-	public String getIdentityProviderEntityId() {
-		return identityProviderEntityId;
-	}
-
-	public void setIdentityProviderEntityId(String identityProviderEntityId) {
-		this.identityProviderEntityId = identityProviderEntityId;
-	}
-
-	public String getServiceProviderEntityId() {
-		return serviceProviderEntityId;
-	}
-
-	public void setServiceProviderEntityId(String serviceProviderEntityId) {
-		this.serviceProviderEntityId = serviceProviderEntityId;
-	}
-
-	public int getMaximumAuthenticationLifetime() {
-		return maximumAuthenticationLifetime;
-	}
-
-	public void setMaximumAuthenticationLifetime(int maximumAuthenticationLifetime) {
-		this.maximumAuthenticationLifetime = (maximumAuthenticationLifetime >= MINIMUM_MAX_AUTHENTICATION_LIFETIME ? maximumAuthenticationLifetime : DEFAULT_MAX_AUTHENTICATION_LIFETIME);
-	}
-
-	public boolean isForceAuth() {
-		return forceAuth;
-	}
-
-	public void setForceAuth(boolean forceAuth) {
-		this.forceAuth = forceAuth;
-	}
-
-	public String getComparisonType() {
-		return comparisonType;
-	}
-
-	public void setComparisonType(String comparisonType) {
-		this.comparisonType = comparisonType;
-	}
-
-	public String getDestinationBindingType() {
-		return destinationBindingType;
-	}
-
-	public void setDestinationBindingType(String destinationBindingType) {
-		this.destinationBindingType = (destinationBindingType != null ? destinationBindingType : DEFAULT_DESTINATION_BINDING_TYPE);
-	}
-
-	public String getAuthnContextClassRef() {
-		return authnContextClassRef;
-	}
-
-	public void setAuthnContextClassRef(String authnContextClassRef) {
-		this.authnContextClassRef = authnContextClassRef;
-	}
-
-	public String getNameIdPolicyFormat() {
-		return nameIdPolicyFormat;
-	}
-
-	public void setNameIdPolicyFormat(String nameIdPolicyFormat) {
-		this.nameIdPolicyFormat = nameIdPolicyFormat;
-	}
-
-	public boolean isForceServiceProviderMetadataGeneration() {
-		return forceServiceProviderMetadataGeneration;
-	}
-
-	public void setForceServiceProviderMetadataGeneration(boolean forceServiceProviderMetadataGeneration) {
-		this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
-	}
-
-	public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
-		return samlMessageStorageFactory;
-	}
-
-	public void setSamlMessageStorageFactory(SAMLMessageStorageFactory samlMessageStorageFactory) {
-		this.samlMessageStorageFactory = samlMessageStorageFactory;
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#getClientName()
+	 */
+	@Override
     public String getClientName() {
 		return clientName;
 	}
@@ -214,7 +89,7 @@ public class DbLoadedSamlClientConfiguration implements Cloneable {
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
@@ -223,5 +98,127 @@ public class DbLoadedSamlClientConfiguration implements Cloneable {
     public DbLoadedSamlClientConfiguration clone() throws CloneNotSupportedException {
 		return (DbLoadedSamlClientConfiguration) super.clone();
     }
+
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Initializes the configuration by loading all its propertied from a database using the DAO provided at creation time.
+	 * 
+	 * It is assumed the client name will come in the web context, under key "current_client_name".
+	 * 
+	 * @see org.pac4j.core.util.InitializableWebObject#internalInit(org.pac4j.core.context.WebContext)
+	 * 
+	 * @throws IllegalStateException
+	 *             If the context does not contain the client name or if no configuration for the given name exists.
+	 */
+	@Override
+	protected void internalInit(WebContext context) {
+		// The client name must come in the web context. If it doesn't, it's an error.
+		final String requiredClientName = context.getRequestParameter("current_client_name");
+		if (StringUtils.isBlank(requiredClientName)) {
+			throw new IllegalStateException("Web context needs to be populated with the required client's name at this point. Missing key: current_client_name");
+		}
+
+		// Subsequently, the configuration for the name must be loaded using a DAO.
+		DbLoadedSamlClientConfigurationDto loaded = dao.loadClient(requiredClientName);
+		if ((loaded == null) || (!requiredClientName.equals(loaded.getClientName()))) {
+			throw new IllegalStateException("SAML Client Configuration for name '" + requiredClientName + "' could not be loaded.");
+		}
+		
+		// If everything is OK, we will set the loaded values to the configuration object (itself).
+		setClientName(requiredClientName);
+		setDestinationBindingType(loaded.getDestinationBindingType());
+		setIdentityProviderEntityId(loaded.getIdentityProviderEntityId());
+		setIdentityProviderMetadata(loaded.getIdentityProviderMetadata());
+		setKeystoreBinaryData(loaded.getKeystoreBinaryData());
+		setKeystorePassword(loaded.getKeystorePassword());
+		setPrivateKeyPassword(loaded.getPrivateKeyPassword());
+		setMaximumAuthenticationLifetime(loaded.getMaximumAuthenticationLifetime());
+		setServiceProviderEntityId(loaded.getServiceProviderEntityId());
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @return Always false.
+	 * 
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#keystoreDataNeedResolution()
+	 */
+	@Override
+	public boolean keystoreDataNeedResolution() {
+		return false;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @return Always false.
+	 * 
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#identityProviderMetadataNeedResolution()
+	 */
+	@Override
+	public boolean identityProviderMetadataNeedResolution() {
+		return false;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Not implemented.
+	 * 
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#getKeystorePath()
+	 */
+	@Override
+	public String getKeystorePath() {
+		throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not implement getKeystorePath()");
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#getResolvedKeystoreData()
+	 */
+	@Override
+	public byte[] getResolvedKeystoreData() {
+		return keystoreBinaryData;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Not implemented.
+	 * 
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#getIdentityProviderMetadataPath()
+	 */
+	@Override
+	public String getIdentityProviderMetadataPath() {
+		throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not implement getIdentityProviderMetadataPath()");
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#getResolvedIdentityProviderMetadata()
+	 */
+	@Override
+	public String getResolvedIdentityProviderMetadata() {
+		return identityProviderMetadata;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @return Always true.
+	 * 
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#providesClientName()
+	 */
+	@Override
+	public boolean providesClientName() {
+		return true;
+	}
 	
 }

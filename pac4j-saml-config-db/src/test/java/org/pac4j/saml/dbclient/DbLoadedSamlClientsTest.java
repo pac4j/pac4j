@@ -34,12 +34,14 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 
 
 
 /**
- * Unit test of {@link DbLoadedSamlClientsTest}. Most code is taken from {@link TestClients} but adapted - some checks make no sense here
+ * Unit test of {@link DbLoadedSamlClients}. Most code is taken from {@link TestClients} but adapted - some checks make no sense here
  * and some operations are not doable.
  * 
  * @author jkacer
@@ -58,17 +60,24 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
 
 	
 	private SamlClientDao createSamlClientDaoMock() {
-		DbLoadedSamlClientConfiguration clientCfg1 = new DbLoadedSamlClientConfiguration();
+		DbLoadedSamlClientConfigurationDto clientCfg1 = new DbLoadedSamlClientConfigurationDto();
 		clientCfg1.setClientName("SamlClient1"); // The rest is not important for the test
-		DbLoadedSamlClientConfiguration clientCfg2 = new DbLoadedSamlClientConfiguration();
+		DbLoadedSamlClientConfigurationDto clientCfg2 = new DbLoadedSamlClientConfigurationDto();
 		clientCfg2.setClientName("SamlClient2"); // The rest is not important for the test
 		
-		List<DbLoadedSamlClientConfiguration> clientConfigurations = new ArrayList<DbLoadedSamlClientConfiguration>();
-		clientConfigurations.add(clientCfg1);
-		clientConfigurations.add(clientCfg2);
+		List<DbLoadedSamlClientConfigurationDto> clientConfigurationDtos = new ArrayList<DbLoadedSamlClientConfigurationDto>();
+		clientConfigurationDtos.add(clientCfg1);
+		clientConfigurationDtos.add(clientCfg2);
+		
+		List<String> clientNames = new ArrayList<String>();
+		clientNames.add("SamlClient1");
+		clientNames.add("SamlClient2");
 
 		SamlClientDao scd = mock(SamlClientDao.class);
-		when(scd.loadAllClients()).thenReturn(clientConfigurations);
+		when(scd.loadAllClients()).thenReturn(clientConfigurationDtos);
+		when(scd.loadClientNames()).thenReturn(clientNames);
+		when(scd.loadClient("SamlClient1")).thenReturn(clientCfg1);
+		when(scd.loadClient("SamlClient2")).thenReturn(clientCfg2);
 		
 		return scd;
 	}
@@ -84,18 +93,18 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
 	@Test
     public void testTwoClients() {
 		clientsUnderTest.init(null);
-        DbLoadedSamlClient c0 = clientsUnderTest.findClient(MockWebContext.create().addRequestParameter("client_name", "SamlClient1"));
+        SAML2Client c0 = clientsUnderTest.findClient(MockWebContext.create().addRequestParameter("client_name", "SamlClient1"));
         assertNotNull(c0);
         assertEquals("SamlClient1", c0.getName());
 
         clientsUnderTest.setClientNameParameter(TYPE);
         clientsUnderTest.reinit(null);
         
-        DbLoadedSamlClient c1 = clientsUnderTest.findClient(MockWebContext.create().addRequestParameter(TYPE, "SamlClient1"));
+        SAML2Client c1 = clientsUnderTest.findClient(MockWebContext.create().addRequestParameter(TYPE, "SamlClient1"));
         assertNotNull(c1);
         assertEquals("SamlClient1", c1.getName());
         
-        DbLoadedSamlClient c2 = clientsUnderTest.findClient(null, "SamlClient2");
+        SAML2Client c2 = clientsUnderTest.findClient(null, "SamlClient2");
         assertNotNull(c2);
         assertEquals("SamlClient2", c2.getName());
     }
@@ -105,7 +114,7 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
     public void testDoubleInit() {
         clientsUnderTest.init(null);
         clientsUnderTest.init(null);
-        DbLoadedSamlClient foundClient = clientsUnderTest.findClient(null, "SamlClient1");
+        SAML2Client foundClient = clientsUnderTest.findClient(null, "SamlClient1");
         assertNotNull(foundClient);
         assertEquals(CALLBACK_URL + "?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=" + "SamlClient1", foundClient.getCallbackUrl());
     }
@@ -113,7 +122,7 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
 
 	@Test
     public void testAllClients() {
-        final List<DbLoadedSamlClient> clients = clientsUnderTest.findAllClients(null);
+        final List<SAML2Client> clients = clientsUnderTest.findAllClients(null);
         assertEquals(2, clients.size());
         assertTrue(listContainsClientWithName(clients, "SamlClient1"));
         assertTrue(listContainsClientWithName(clients, "SamlClient2"));
@@ -122,7 +131,7 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
     
 	@Test
     public void testByClass1() {
-		DbLoadedSamlClient c = clientsUnderTest.findClient(null, DbLoadedSamlClient.class);
+		SAML2Client c = clientsUnderTest.findClient(null, SAML2Client.class);
 		assertNotNull(c);
 		assertTrue(c.getName().startsWith("SamlClient"));
     }
@@ -130,13 +139,13 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
 	
 	@Test(expected=TechnicalException.class)
     public void testByClass2() {
-		DbLoadedSamlClient c = clientsUnderTest.findClient(null, FakeClient.class);
+		FakeClient c = clientsUnderTest.findClient(null, FakeClient.class);
 		assertNull(c);
     }
 
 	
-	private boolean listContainsClientWithName(List<DbLoadedSamlClient> clients, String name) {
-		for (DbLoadedSamlClient c: clients) {
+	private boolean listContainsClientWithName(List<SAML2Client> clients, String name) {
+		for (SAML2Client c: clients) {
 			if (c.getName().equals(name)) {return true;}
 		}
 		return false;

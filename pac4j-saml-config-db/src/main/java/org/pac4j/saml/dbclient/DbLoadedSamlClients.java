@@ -24,6 +24,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class DbLoadedSamlClients extends InitializableWebObject {
     private String callbackUrl;
     
     /** List of managed SAML clients. */
-    private final List<DbLoadedSamlClient> clients;
+    private final List<SAML2Client> clients;
     
     /** Name of the HTTP parameter holding client names. */
     private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
@@ -90,7 +91,7 @@ public class DbLoadedSamlClients extends InitializableWebObject {
 	public DbLoadedSamlClients(final String callbackUrl) {
 		super();
 		this.callbackUrl = callbackUrl;
-		this.clients = new ArrayList<DbLoadedSamlClient>();
+		this.clients = new ArrayList<SAML2Client>();
 	}
 	
 	
@@ -109,15 +110,21 @@ public class DbLoadedSamlClients extends InitializableWebObject {
         // Remove all clients first if re-initialized
         this.clients.clear();
         
-        logger.debug("Loading SAML client definitions from the database...");
-        List<DbLoadedSamlClientConfiguration> dbConfigurations = samlClientDao.loadAllClients();
-        for (DbLoadedSamlClientConfiguration dbCfg: dbConfigurations) {
-        	DbLoadedSamlClient client = new DbLoadedSamlClient(dbCfg);
+        logger.debug("Loading SAML client definition from the database...");
+        
+        // Load all defined client names and create a configuration and client for each of them.
+        // But do not initialize them yet.
+        // Alternative: Initialize them completely here, then DbLoadedSamlClientConfiguration.internalInit() could be empty.
+        List<String> namesOfDefinedSamlClients = samlClientDao.loadClientNames();
+        for (String singleClientName: namesOfDefinedSamlClients) {
+        	DbLoadedSamlClientConfiguration configuration = new DbLoadedSamlClientConfiguration(samlClientDao);
+        	SAML2Client client = new SAML2Client(configuration);
+        	client.setName(singleClientName);
         	this.clients.add(client);
         }
         logger.debug("SAML clients loaded OK.");
         
-        for (final DbLoadedSamlClient client : this.clients) {
+        for (final SAML2Client client : this.clients) {
             String baseClientCallbackUrl = client.getCallbackUrl();
             // no callback url defined for the client -> set it with the group callback url
             if (baseClientCallbackUrl == null) {
@@ -133,7 +140,7 @@ public class DbLoadedSamlClients extends InitializableWebObject {
 
 	
 	// Copied from Clients
-	public DbLoadedSamlClient findClient(final WebContext context) {
+	public SAML2Client findClient(final WebContext context) {
         final String name = context.getRequestParameter(this.clientNameParameter);
         CommonHelper.assertNotBlank("name", name);
         return findClient(context, name);
@@ -141,9 +148,9 @@ public class DbLoadedSamlClients extends InitializableWebObject {
 
     
 	// Copied from Clients
-    public DbLoadedSamlClient findClient(final WebContext context, final String name) {
+    public SAML2Client findClient(final WebContext context, final String name) {
         init(context);
-        for (final DbLoadedSamlClient client : this.clients) {
+        for (final SAML2Client client : this.clients) {
             if (CommonHelper.areEquals(name, client.getName())) {
                 return client;
             }
@@ -155,12 +162,12 @@ public class DbLoadedSamlClients extends InitializableWebObject {
     
     
 	// Copied from Clients
-    public <C extends Client> DbLoadedSamlClient findClient(final WebContext context, final Class<C> clazz) {
+    public <C extends Client> C findClient(final WebContext context, final Class<C> clazz) {
 		init(context);
 		if (clazz != null) {
-			for (final DbLoadedSamlClient client : this.clients) {
+			for (final Client client : this.clients) {
 				if (clazz.isAssignableFrom(client.getClass())) {
-					return client;
+					return (C) client;
 				}
 			}
 		}
@@ -171,7 +178,7 @@ public class DbLoadedSamlClients extends InitializableWebObject {
 
     
 	// Copied from Clients
-    public List<DbLoadedSamlClient> findAllClients(final WebContext context) {
+    public List<SAML2Client> findAllClients(final WebContext context) {
         init(context);
         return this.clients;
     }

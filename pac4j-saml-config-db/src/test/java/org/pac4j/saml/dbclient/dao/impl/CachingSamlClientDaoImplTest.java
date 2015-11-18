@@ -15,8 +15,11 @@
  */
 package org.pac4j.saml.dbclient.dao.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,7 +31,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
+import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 
 
@@ -58,14 +61,19 @@ public class CachingSamlClientDaoImplTest {
 	private SamlClientDao createRealDaoMock() {
 		SamlClientDao realDaoMock = mock(SamlClientDao.class);
 
-		List<DbLoadedSamlClientConfiguration> all = new ArrayList<DbLoadedSamlClientConfiguration>();
-		DbLoadedSamlClientConfiguration client1 = createTestConfig("Client1");
-		DbLoadedSamlClientConfiguration client2 = createTestConfig("Client2");
-		DbLoadedSamlClientConfiguration client3 = createTestConfig("Client3");
+		List<String> names = new ArrayList<String>();
+		names.add("Client1");
+		names.add("Client2");
+		names.add("Client3");
+		List<DbLoadedSamlClientConfigurationDto> all = new ArrayList<DbLoadedSamlClientConfigurationDto>();
+		DbLoadedSamlClientConfigurationDto client1 = createTestConfig("Client1");
+		DbLoadedSamlClientConfigurationDto client2 = createTestConfig("Client2");
+		DbLoadedSamlClientConfigurationDto client3 = createTestConfig("Client3");
 		all.add(client1);
 		all.add(client2);
 		all.add(client3);
-		
+
+		when(realDaoMock.loadClientNames()).thenReturn(names);
 		when(realDaoMock.loadAllClients()).thenReturn(all);
 		when(realDaoMock.loadClient("Client1")).thenReturn(client1);
 		when(realDaoMock.loadClient("Client2")).thenReturn(client2);
@@ -75,10 +83,11 @@ public class CachingSamlClientDaoImplTest {
 	}
 	
 	
-	private DbLoadedSamlClientConfiguration createTestConfig(String clientName) {
-		DbLoadedSamlClientConfiguration cfg = new DbLoadedSamlClientConfiguration();
+	private DbLoadedSamlClientConfigurationDto createTestConfig(String clientName) {
+		DbLoadedSamlClientConfigurationDto cfg = new DbLoadedSamlClientConfigurationDto();
 		
 		cfg.setClientName(clientName);
+		cfg.setEnvironment("Env");
 		cfg.setIdentityProviderEntityId("urn:idp" + clientName);
 		cfg.setServiceProviderEntityId("urn:sp" + clientName);
 		cfg.setIdentityProviderMetadata("Some XML here...");
@@ -98,6 +107,26 @@ public class CachingSamlClientDaoImplTest {
 	}
 
 
+	
+	@Test
+	public void testLoadAllNames() {
+		// Read 10 times.
+		for (int i = 0; i < 10; i++) {
+			List<String> names = daoUnderTest.loadClientNames();
+			assertNotNull(names);
+			assertEquals(3, names.size());
+			assertTrue(names.contains("Client1"));
+			assertTrue(names.contains("Client2"));
+			assertTrue(names.contains("Client3"));
+		}		
+
+		// The real DAO must have been called just once.
+		verify(realDaoMock, times(0)).loadClientNames();
+		verify(realDaoMock, times(1)).loadAllClients();
+		verify(realDaoMock, times(0)).loadClient(anyString());
+	}
+	
+	
 	/**
 	 * Checks that loadAllClients() returns data repeatedly and the underlying DAO is called just once.
 	 */
@@ -105,12 +134,13 @@ public class CachingSamlClientDaoImplTest {
 	public void testLoadAllClients() {
 		// Read 10 times.
 		for (int i = 0; i < 10; i++) {
-			List<DbLoadedSamlClientConfiguration> all = daoUnderTest.loadAllClients();
+			List<DbLoadedSamlClientConfigurationDto> all = daoUnderTest.loadAllClients();
 			assertNotNull(all);
 			assertEquals(3, all.size());
 		}
 		
 		// The real DAO must have been called just once.
+		verify(realDaoMock, times(0)).loadClientNames();
 		verify(realDaoMock, times(1)).loadAllClients();
 		verify(realDaoMock, times(0)).loadClient(anyString());
 	}
@@ -126,7 +156,7 @@ public class CachingSamlClientDaoImplTest {
 		// Read 10 times.
 		for (int i = 0; i < 10; i++) {
 			for (String clientName: clientNames) {
-				DbLoadedSamlClientConfiguration cfg = daoUnderTest.loadClient(clientName);
+				DbLoadedSamlClientConfigurationDto cfg = daoUnderTest.loadClient(clientName);
 				assertNotNull(cfg);
 				assertEquals(clientName, cfg.getClientName());
 			}
@@ -135,6 +165,7 @@ public class CachingSamlClientDaoImplTest {
 		}
 		
 		// The real DAO must have been called just once.
+		verify(realDaoMock, times(0)).loadClientNames();
 		verify(realDaoMock, times(1)).loadAllClients();
 		verify(realDaoMock, times(0)).loadClient(anyString());
 	}

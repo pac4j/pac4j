@@ -17,8 +17,6 @@ package org.pac4j.saml.dbclient.dao.api;
 
 import java.util.List;
 
-import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
-
 
 /**
  * DAO to manipulate SAML Client Configurations stored in a data source.
@@ -29,11 +27,19 @@ import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
 public interface SamlClientDao {
 
 	/**
+	 * Finds names of all existing clients.
+	 * 
+	 * @return A list of names.
+	 */
+	public List<String> loadClientNames();
+	
+	
+	/**
 	 * Loads all existing SAML Client Configurations.
 	 * 
 	 * @return A list of configurations.
 	 */
-	public List<DbLoadedSamlClientConfiguration> loadAllClients();
+	public List<DbLoadedSamlClientConfigurationDto> loadAllClients();
 	
 	
 	/**
@@ -44,6 +50,6 @@ public interface SamlClientDao {
 	 * 
 	 * @return A single configuration for the desired client or {@code null} of no such configuration exists.
 	 */
-	public DbLoadedSamlClientConfiguration loadClient(String clientName);
+	public DbLoadedSamlClientConfigurationDto loadClient(String clientName);
 	
 }

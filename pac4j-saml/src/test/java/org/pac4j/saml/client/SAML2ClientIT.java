@@ -145,12 +145,11 @@ public abstract class SAML2ClientIT extends ClientIT implements TestsConstants {
     @Override
     protected final SAML2Client getClient() {
 
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("resource:samlKeystore.jks",
-                        "pac4j-demo-passwd",
-                        "pac4j-demo-passwd",
-                        "resource:testshib-providers.xml");
-
+        final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration();
+        cfg.setKeystorePath("resource:samlKeystore.jks");
+        cfg.setKeystorePassword("pac4j-demo-passwd");
+        cfg.setPrivateKeyPassword("pac4j-demo-passwd");
+        cfg.setIdentityProviderMetadataPath("resource:testshib-providers.xml");
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setDestinationBindingType(getDestinationBindingType());
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");

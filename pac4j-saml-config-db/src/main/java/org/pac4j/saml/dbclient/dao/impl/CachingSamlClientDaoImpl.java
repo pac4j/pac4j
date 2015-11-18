@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
+import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 
 
@@ -40,7 +41,7 @@ public class CachingSamlClientDaoImpl implements SamlClientDao {
 	private final SamlClientDao realDao;
 
 	/** Cached configurations, read just once. */
-	private Map<String, DbLoadedSamlClientConfiguration> cachedConfigurations;
+	private Map<String, DbLoadedSamlClientConfigurationDto> cachedConfigurations;
 	
 
 	// ------------------------------------------------------------------------------------------------------------------------------------
@@ -63,13 +64,24 @@ public class CachingSamlClientDaoImpl implements SamlClientDao {
 
 	
 	/* (non-Javadoc)
+	 * @see org.pac4j.saml.dbclient.dao.api.SamlClientDao#loadClientNames()
+	 */
+	@Override
+	public List<String> loadClientNames() {
+		checkAndLoadFromRealDao();
+		Set<String> keys = cachedConfigurations.keySet();
+		return new ArrayList<String>(keys);
+	}
+	
+
+	/* (non-Javadoc)
 	 * @see org.pac4j.saml.dbclient.dao.api.SamlClientDao#loadAllClients()
 	 */
 	@Override
-	public List<DbLoadedSamlClientConfiguration> loadAllClients() {
+	public List<DbLoadedSamlClientConfigurationDto> loadAllClients() {
 		checkAndLoadFromRealDao();
-		Collection<DbLoadedSamlClientConfiguration> values = cachedConfigurations.values();
-		return new ArrayList<DbLoadedSamlClientConfiguration>(values);
+		Collection<DbLoadedSamlClientConfigurationDto> values = cachedConfigurations.values();
+		return new ArrayList<DbLoadedSamlClientConfigurationDto>(values);
 	}
 
 	
@@ -77,7 +89,7 @@ public class CachingSamlClientDaoImpl implements SamlClientDao {
 	 * @see org.pac4j.saml.dbclient.dao.api.SamlClientDao#loadClient(java.lang.String)
 	 */
 	@Override
-	public DbLoadedSamlClientConfiguration loadClient(String clientName) {
+	public DbLoadedSamlClientConfigurationDto loadClient(String clientName) {
 		checkAndLoadFromRealDao();
 		return cachedConfigurations.get(clientName);
 	}
@@ -90,12 +102,12 @@ public class CachingSamlClientDaoImpl implements SamlClientDao {
 	 */
 	private synchronized void checkAndLoadFromRealDao() {
 		if (cachedConfigurations == null) {
-			List<DbLoadedSamlClientConfiguration> allLoaded = realDao.loadAllClients();
-			cachedConfigurations = new HashMap<String, DbLoadedSamlClientConfiguration>();
-			for (DbLoadedSamlClientConfiguration single: allLoaded) {
+			List<DbLoadedSamlClientConfigurationDto> allLoaded = realDao.loadAllClients();
+			cachedConfigurations = new HashMap<String, DbLoadedSamlClientConfigurationDto>();
+			for (DbLoadedSamlClientConfigurationDto single: allLoaded) {
 				cachedConfigurations.put(single.getClientName(), single);
 			}
 		}
 	}
-	
+
 }

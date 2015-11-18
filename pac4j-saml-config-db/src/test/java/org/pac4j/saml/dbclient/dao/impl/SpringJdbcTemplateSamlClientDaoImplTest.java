@@ -19,6 +19,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +27,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensaml.saml.common.xml.SAMLConstants;
-import org.pac4j.saml.dbclient.DbLoadedSamlClientConfiguration;
+import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -75,21 +75,37 @@ public class SpringJdbcTemplateSamlClientDaoImplTest {
 
 	
 	/**
+	 * Checks that loaded SAML Client names for a particular environment correspond to the SQL script used to populate the database.
+	 */
+	@Test
+	public void allNamesMustBeLoaded() {
+		String[] expectedNames = {"One", "Two", "Three", "Four", "Five"};
+		List<String> names = templateUnderTest.loadClientNames();
+
+		assertNotNull(names);
+		assertEquals(5, names.size());
+		
+		for (String expected: expectedNames) {
+			assertTrue(names.contains(expected));
+		}
+	}
+	
+	
+	/**
 	 * Checks that loaded SAML Client Configurations for a particular environment correspond to the SQL script used to populate the
 	 * database.
 	 */
 	@Test
 	public void allClientConfigurationsMustBeLoaded() {
 		String[] expectedNames = {"One", "Two", "Three", "Four", "Five"};
-		// Expected bindings: In case of NULL, the configuration uses the default binding, which is HTTP POST.
-		String[] expectedBindings = {SAMLConstants.SAML2_POST_BINDING_URI, "http://redirect", "http://post", SAMLConstants.SAML2_POST_BINDING_URI, "urn:binding"};
+		String[] expectedBindings = {null, "http://redirect", "http://post", null, "urn:binding"};
 		
-		List<DbLoadedSamlClientConfiguration> configurations = templateUnderTest.loadAllClients();
+		List<DbLoadedSamlClientConfigurationDto> configurations = templateUnderTest.loadAllClients();
 		assertNotNull(configurations);
 		assertEquals(5, configurations.size());
 
 		for (int i = 1; i <= 5; i++) {
-			DbLoadedSamlClientConfiguration cfg = configurations.get(i-1);
+			DbLoadedSamlClientConfigurationDto cfg = configurations.get(i-1);
 			
 			// Client name
 			assertEquals(expectedNames[i-1], cfg.getClientName());
@@ -129,7 +145,7 @@ public class SpringJdbcTemplateSamlClientDaoImplTest {
 	 */
 	@Test
 	public void singleClientConfigurationMustBeLoaded() {
-		DbLoadedSamlClientConfiguration cfg = templateUnderTest.loadClient("Five");
+		DbLoadedSamlClientConfigurationDto cfg = templateUnderTest.loadClient("Five");
 		assertNotNull(cfg);
 
 		// Client name
@@ -168,7 +184,7 @@ public class SpringJdbcTemplateSamlClientDaoImplTest {
 	 */
 	@Test
 	public void singleClientConfigurationThatDoesNotExist() {
-		DbLoadedSamlClientConfiguration cfg = templateUnderTest.loadClient("DoesNotExist");
+		DbLoadedSamlClientConfigurationDto cfg = templateUnderTest.loadClient("DoesNotExist");
 		assertNull(cfg);
 	}
 	

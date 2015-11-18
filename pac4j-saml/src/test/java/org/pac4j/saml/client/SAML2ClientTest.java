@@ -39,7 +39,15 @@ public class SAML2ClientTest {
     @Test
     public void testIdpMetadataParsing_fromFile() {
         final SAML2Client client = getClient();
-        client.getConfiguration().setIdentityProviderMetadataPath("resource:testshib-providers.xml");
+        final AbstractSAML2ClientConfiguration cfg = client.getConfiguration();
+        
+        if (cfg.identityProviderMetadataNeedResolution()) {
+        	SAML2ClientConfiguration scc = (SAML2ClientConfiguration) cfg;
+        	scc.setIdentityProviderMetadataPath("resource:testshib-providers.xml");
+        } else {
+        	// TODO: Set metadata directly
+        }
+        
         client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();
@@ -50,7 +58,15 @@ public class SAML2ClientTest {
     @Test
     public void testIdpMetadataParsing_fromUrl() {
         final SAML2Client client = getClient();
-        client.getConfiguration().setIdentityProviderMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
+        final AbstractSAML2ClientConfiguration cfg = client.getConfiguration();
+        
+        if (cfg.identityProviderMetadataNeedResolution()) {
+        	SAML2ClientConfiguration scc = (SAML2ClientConfiguration) cfg;
+        	scc.setIdentityProviderMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
+        } else {
+        	// TODO: Set metadata directly
+        }
+        
         client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();
@@ -61,11 +77,11 @@ public class SAML2ClientTest {
 
     protected final SAML2Client getClient() {
 
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("resource:samlKeystore.jks",
-                        "pac4j-demo-passwd",
-                        "pac4j-demo-passwd",
-                        "resource:testshib-providers.xml");
+        final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration();
+        cfg.setKeystorePath("resource:samlKeystore.jks");
+        cfg.setKeystorePassword("pac4j-demo-passwd");
+        cfg.setPrivateKeyPassword("pac4j-demo-passwd");
+        cfg.setIdentityProviderMetadataPath("resource:testshib-providers.xml");
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
         cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
