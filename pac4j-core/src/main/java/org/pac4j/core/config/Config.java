@@ -22,6 +22,7 @@ import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,6 +49,10 @@ public class Config {
         this.clients = clients;
     }
 
+    public Config(final List<Client> clients) {
+        this.clients = new Clients(clients);
+    }
+
     public Config(final Client... clients) {
         this.clients = new Clients(clients);
     }
@@ -57,6 +62,10 @@ public class Config {
     }
 
     public Config(final String callbackUrl, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+    }
+
+    public Config(final String callbackUrl, final List<Client> clients) {
         this.clients = new Clients(callbackUrl, clients);
     }
 
