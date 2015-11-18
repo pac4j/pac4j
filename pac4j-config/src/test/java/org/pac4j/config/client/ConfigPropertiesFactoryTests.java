@@ -22,6 +22,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
+import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
 
 import java.util.HashMap;
@@ -51,10 +52,15 @@ public final class ConfigPropertiesFactoryTests implements TestsConstants {
         properties.put(SAML_PRIVATE_KEY_PASSWORD, PASSWORD);
         properties.put(SAML_KEYSTORE_PATH, PATH);
         properties.put(SAML_IDENTITY_PROVIDER_METADATA_PATH, PATH);
+        properties.put(OIDC_ID, ID);
+        properties.put(OIDC_SECRET, SECRET);
+        properties.put(OIDC_DISCOVERY_URI, CALLBACK_URL);
+        properties.put(OIDC_CUSTOM_PARAM_KEY1, KEY);
+        properties.put(OIDC_CUSTOM_PARAM_VALUE1, VALUE);
         final ConfigPropertiesFactory factory = new ConfigPropertiesFactory(CALLBACK_URL, properties);
         final Config config = factory.build();
         final Clients clients = config.getClients();
-        assertEquals(4, clients.getClients().size());
+        assertEquals(5, clients.getClients().size());
         final FacebookClient fbClient = (FacebookClient) clients.findClient(null, "FacebookClient");
         assertEquals(ID, fbClient.getKey());
         assertEquals(SECRET, fbClient.getSecret());
@@ -66,5 +72,7 @@ public final class ConfigPropertiesFactoryTests implements TestsConstants {
         assertEquals(CasClient.CasProtocol.CAS20, casClient.getCasProtocol());
         final SAML2Client saml2client = (SAML2Client) clients.findClient(null, "SAML2Client");
         assertNotNull(saml2client);
+        final OidcClient oidcClient = (OidcClient) clients.findClient(null, "OidcClient");
+        assertNotNull(oidcClient);
     }
 }

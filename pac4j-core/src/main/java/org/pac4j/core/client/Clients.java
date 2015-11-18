@@ -197,6 +197,7 @@ public final class Clients extends InitializableWebObject {
 
     /**
      * Use {@link #setClients(List)} instead.
+     * @param clients the clients to set
      * @deprecated
      */
     @Deprecated

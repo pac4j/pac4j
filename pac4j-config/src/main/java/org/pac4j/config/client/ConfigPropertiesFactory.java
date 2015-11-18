@@ -22,6 +22,7 @@ import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
+import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 
@@ -56,6 +57,12 @@ public class ConfigPropertiesFactory implements ConfigFactory {
     public final static String CAS_LOGIN_URL = "cas.loginUrl";
     public final static String CAS_PROTOCOL = "cas.protocol";
 
+    public final static String OIDC_ID = "oidc.id";
+    public final static String OIDC_SECRET = "oidc.secret";
+    public final static String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
+    public final static String OIDC_CUSTOM_PARAM_KEY1 = "oidc.customParamKey1";
+    public final static String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
+
     private final String callbackUrl;
 
     private final Map<String, String> properties;
@@ -79,6 +86,7 @@ public class ConfigPropertiesFactory implements ConfigFactory {
         tryCreateTwitterClient(clients);
         tryCreateSaml2Client(clients);
         tryCreateCasClient(clients);
+        tryCreateOidcClient(clients);
         return new Config(callbackUrl, clients);
     }
 
@@ -143,6 +151,21 @@ public class ConfigPropertiesFactory implements ConfigFactory {
                 casClient.setCasProtocol(CasClient.CasProtocol.valueOf(protocol));
             }
             clients.add(casClient);
+        }
+    }
+
+    private void tryCreateOidcClient(final List<Client> clients) {
+        final String id = getProperty(OIDC_ID);
+        final String secret = getProperty(OIDC_SECRET);
+        final String discoveryUri = getProperty(OIDC_DISCOVERY_URI);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret) && CommonHelper.isNotBlank(discoveryUri)) {
+            final OidcClient oidcClient = new OidcClient(id, secret, discoveryUri);
+            final String key = getProperty(OIDC_CUSTOM_PARAM_KEY1);
+            final String value = getProperty(OIDC_CUSTOM_PARAM_VALUE1);
+            if (CommonHelper.isNotBlank(key) && CommonHelper.isNotBlank(value)) {
+                oidcClient.addCustomParam(key, value);
+            }
+            clients.add(oidcClient);
         }
     }
 }
