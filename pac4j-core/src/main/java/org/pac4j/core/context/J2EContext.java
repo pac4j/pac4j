@@ -41,7 +41,7 @@ public class J2EContext implements WebContext {
     private final SessionStore sessionStore;
 
     /**
-     * Build a J2E context from the current HTTP request.
+     * Build a J2E context from the current HTTP request and response.
      *
      * @param request the current request
      * @param response the current response
@@ -51,7 +51,7 @@ public class J2EContext implements WebContext {
     }
 
     /**
-     * Build a J2E context from the current HTTP request.
+     * Build a J2E context from the current HTTP request and response.
      *
      * @param request the current request
      * @param response the current response
