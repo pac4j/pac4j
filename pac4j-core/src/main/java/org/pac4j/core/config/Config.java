@@ -18,6 +18,7 @@ package org.pac4j.core.config;
 import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
@@ -38,6 +39,8 @@ public class Config {
     protected Map<String, Authorizer> authorizers = new HashMap<>();
 
     protected Map<String, Matcher> matchers = new HashMap<>();
+
+    protected SessionStore sessionStore;
 
     public Config() {}
 
@@ -140,5 +143,13 @@ public class Config {
 
     public void addMatcher(final String name, final Matcher matcher) {
         matchers.put(name, matcher);
+    }
+
+    public SessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    public void setSessionStore(SessionStore sessionStore) {
+        this.sessionStore = sessionStore;
     }
 }
