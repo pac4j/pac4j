@@ -22,6 +22,8 @@ import org.pac4j.http.credentials.AnonymousCredentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.http.profile.AnonymousProfile;
 import org.pac4j.http.profile.HttpProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Anonymous client. Not to be used except for advanced use cases.
@@ -31,10 +33,13 @@ import org.pac4j.http.profile.HttpProfile;
  */
 public class AnonymousClient extends DirectHttpClient<AnonymousCredentials> {
 
+    private final static Logger logger = LoggerFactory.getLogger(AnonymousClient.class);
+
     private final AnonymousCredentials CREDENTIALS;
     private final AnonymousProfile PROFILE;
 
     public AnonymousClient() {
+        logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issue!");
         CREDENTIALS = new AnonymousCredentials();
         PROFILE = new AnonymousProfile();
         PROFILE.setId("anonymous");
