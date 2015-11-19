@@ -197,6 +197,7 @@ public final class Clients extends InitializableWebObject {
 
     /**
      * Use {@link #setClients(List)} instead.
+     * @param clients the clients to set
      * @deprecated
      */
     @Deprecated
@@ -210,6 +211,10 @@ public final class Clients extends InitializableWebObject {
 
     public void setClients(final Client... clients) {
         this.clients = Arrays.asList(clients);
+    }
+
+    public List<Client> getClients() {
+        return clients;
     }
 
     @Override
