@@ -132,6 +132,14 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* secret object */
     private Secret _secret;
 
+    public OidcClient() { }
+
+    public OidcClient(final String clientId, final String secret, final String discoveryURI) {
+        this.clientId = clientId;
+        this.secret = secret;
+        this.discoveryURI = discoveryURI;
+    }
+
     @Override
     public ClientType getClientType() {
         return ClientType.OPENID_CONNECT_PROTOCOL;

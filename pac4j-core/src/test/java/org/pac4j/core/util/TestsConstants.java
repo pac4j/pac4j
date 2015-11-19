@@ -24,6 +24,7 @@ package org.pac4j.core.util;
 public interface TestsConstants {
     
     // simple objects
+    String ID = "id";
     String VALUE = "value";
     int MILLIS_BETWEEN_CLEANUPS = 30000;
     String TYPE = "type";
@@ -59,6 +60,7 @@ public interface TestsConstants {
     String FIRSTNAME_VALUE = "Jerome";
     String CLIENT_NAME = "clientname";
     String ROLE = "role";
+    String PATH = "/tmp/path";
 
     // urls
     String CALLBACK_URL = "http://myserver/callback";
