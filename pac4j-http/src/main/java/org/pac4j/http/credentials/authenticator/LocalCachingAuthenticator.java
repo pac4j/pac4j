@@ -30,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * An authenticator that caches the result of an authentication event locally.
  * The authentication is delegated to a pluggable component.
+ *
+ * Add the <code>guava</code> dependency to use this class.
+ *
  * @author Misagh Moayyed
  * @since 1.8
  */
