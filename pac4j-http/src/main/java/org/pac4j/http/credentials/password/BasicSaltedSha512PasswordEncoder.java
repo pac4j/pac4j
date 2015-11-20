@@ -21,6 +21,8 @@ import org.pac4j.core.util.CommonHelper;
 /**
  * A password encoder based on SHA512 and using a salt.
  *
+ * Add the <code>commons-codec</code> dependency to use this class.
+ *
  * @author Jerome Leleu
  * @since 1.8.0
  */
