@@ -61,18 +61,18 @@ public final class ConfigPropertiesFactoryTests implements TestsConstants {
         final Config config = factory.build();
         final Clients clients = config.getClients();
         assertEquals(5, clients.getClients().size());
-        final FacebookClient fbClient = (FacebookClient) clients.findClient(null, "FacebookClient");
+        final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient");
         assertEquals(ID, fbClient.getKey());
         assertEquals(SECRET, fbClient.getSecret());
-        final TwitterClient twClient = (TwitterClient) clients.findClient(null, "TwitterClient");
+        final TwitterClient twClient = (TwitterClient) clients.findClient("TwitterClient");
         assertEquals(ID, twClient.getKey());
         assertEquals(SECRET, twClient.getSecret());
-        final CasClient casClient = (CasClient) clients.findClient(null, "CasClient");
+        final CasClient casClient = (CasClient) clients.findClient("CasClient");
         assertEquals(CALLBACK_URL, casClient.getCasLoginUrl());
         assertEquals(CasClient.CasProtocol.CAS20, casClient.getCasProtocol());
-        final SAML2Client saml2client = (SAML2Client) clients.findClient(null, "SAML2Client");
+        final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
         assertNotNull(saml2client);
-        final OidcClient oidcClient = (OidcClient) clients.findClient(null, "OidcClient");
+        final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
         assertNotNull(oidcClient);
     }
 }
