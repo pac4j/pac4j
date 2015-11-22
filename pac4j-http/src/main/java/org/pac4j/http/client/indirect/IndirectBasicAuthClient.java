@@ -36,7 +36,7 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
  */
 public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
 
