@@ -159,6 +159,15 @@ public final class TestsHelper {
         return null;
     }
 
+    public static void initShouldFail(final InitializableObject obj, final String message) {
+        try {
+            obj.init();
+            Assert.fail("init should fail");
+        } catch (final TechnicalException e) {
+            Assert.assertEquals(message, e.getMessage());
+        }
+    }
+
     public static void initShouldFail(final InitializableWebObject obj, final String message) {
         try {
             obj.init(MockWebContext.create());

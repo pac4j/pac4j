@@ -15,28 +15,24 @@
  */
 package org.pac4j.core.util;
 
-import org.pac4j.core.context.WebContext;
-
 /**
- * Object that can be (re-)initialized, taking the web context into account.
+ * Object that can be (re-)initialized.
  * 
  * @author Jerome Leleu
- * @since 1.8.1
+ * @since 1.4.0
  */
-public abstract class InitializableWebObject {
+public abstract class InitializableObject {
     
     private boolean initialized = false;
     
     /**
      * Initialize the object.
-     *
-     * @param context the web context
      */
-    public void init(final WebContext context) {
+    public void init() {
         if (!this.initialized) {
             synchronized (this) {
                 if (!this.initialized) {
-                    internalInit(context);
+                    internalInit();
                     this.initialized = true;
                 }
             }
@@ -45,18 +41,14 @@ public abstract class InitializableWebObject {
     
     /**
      * Force (again) the initialization of the object.
-     *
-     * @param context the web context
      */
-    public synchronized void reinit(final WebContext context) {
-        internalInit(context);
+    public synchronized void reinit() {
+        internalInit();
         this.initialized = true;
     }
     
     /**
      * Internal initialization of the object.
-     *
-     * @param context the web context
      */
-    protected abstract void internalInit(final WebContext context);
+    protected abstract void internalInit();
 }
