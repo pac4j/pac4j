@@ -53,7 +53,7 @@ public class DefaultClientFinder implements ClientFinder {
                 // no client provided, return all
                 for (final String name : names) {
                     // from its name
-                    final Client client = clients.findClient(context, name);
+                    final Client client = clients.findClient(name);
                     result.add(client);
                 }
             }

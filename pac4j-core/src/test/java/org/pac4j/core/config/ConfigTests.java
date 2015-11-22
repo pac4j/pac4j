@@ -59,6 +59,6 @@ public final class ConfigTests implements TestsConstants {
         final Client client = new FakeClient();
         final Config config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
-        assertEquals(client, config.getClients().findAllClients(null).get(0));
+        assertEquals(client, config.getClients().findAllClients().get(0));
     }
 }
