@@ -56,7 +56,7 @@ public final class CallbackController extends AbstractController {
         casClient.setCasProxyReceptor(casProxyReceptor);
         this.clients.setCallbackUrl(CAS_BASE_URL + "callback");
         this.clients.setClients(casClient, casProxyReceptor);
-        this.clients.init(null);
+        this.clients.init();
     }
     
     @SuppressWarnings("unchecked")
