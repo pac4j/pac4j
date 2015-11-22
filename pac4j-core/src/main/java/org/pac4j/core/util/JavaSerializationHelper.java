@@ -49,20 +49,11 @@ public class JavaSerializationHelper {
      */
     public byte[] serializeToBytes(final Serializable o) {
         byte[] bytes = null;
-        try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final ObjectOutputStream oos = new ObjectOutputStream(baos);
-            try {
-                oos.writeObject(o);
-                oos.flush();
-                bytes = baos.toByteArray();
-            } finally {
-                try {
-                    oos.close();
-                } finally {
-                    baos.close();
-                }
-            }
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             final ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(o);
+            oos.flush();
+            bytes = baos.toByteArray();
         } catch (final IOException e) {
             logger.warn("cannot Java serialize object", e);
         }
@@ -87,21 +78,10 @@ public class JavaSerializationHelper {
      */
     public Serializable unserializeFromBytes(final byte[] bytes) {
         Serializable o = null;
-        try {
-            final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-            final ObjectInputStream ois = new ObjectInputStream(bais);
-            try {
-                o = (Serializable) ois.readObject();
-            } finally {
-                try {
-                    ois.close();
-                } finally {
-                    bais.close();
-                }
-            }
-        } catch (final IOException e) {
-            logger.warn("cannot Java deserialize object", e);
-        } catch (final ClassNotFoundException e) {
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            final ObjectInputStream ois = new ObjectInputStream(bais)) {
+            o = (Serializable) ois.readObject();
+        } catch (final IOException | ClassNotFoundException e) {
             logger.warn("cannot Java deserialize object", e);
         }
         return o;
