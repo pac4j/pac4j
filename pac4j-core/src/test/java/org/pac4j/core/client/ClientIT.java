@@ -36,6 +36,8 @@ import org.pac4j.core.profile.FormattedDate;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.JavaSerializationHelper;
+import org.pac4j.core.util.KryoSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.slf4j.Logger;
@@ -99,8 +101,9 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
             verifyProfile(profile);
 
             // Java serialization
-            byte[] bytes = TestsHelper.serialize(profile);
-            final UserProfile profile2 = (UserProfile) TestsHelper.unserialize(bytes);
+            final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+            byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
+            final UserProfile profile2 = (UserProfile) javaSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile2);
 
             // like CAS serialization
@@ -122,8 +125,9 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
             kryo.register(Color.class, new ColorSerializer());
             kryo.register(ArrayList.class);
             registerForKryo(kryo);
-            bytes = TestsHelper.serializeKryo(kryo, profile);
-            final UserProfile profile4 = (UserProfile) TestsHelper.unserializeKryo(kryo, bytes);
+            final KryoSerializationHelper kryoSerializationHelper = new KryoSerializationHelper(kryo);
+            bytes = kryoSerializationHelper.serializeToBytes(profile);
+            final UserProfile profile4 = (UserProfile) kryoSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile4);
         } finally {
             ProfileHelper.setKeepRawData(false);
