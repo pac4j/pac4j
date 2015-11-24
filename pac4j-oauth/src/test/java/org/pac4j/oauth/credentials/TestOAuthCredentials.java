@@ -17,8 +17,8 @@ package org.pac4j.oauth.credentials;
 
 import junit.framework.TestCase;
 
+import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
 import org.scribe.model.Token;
 
 /**
@@ -40,8 +40,9 @@ public final class TestOAuthCredentials extends TestCase implements TestsConstan
         assertEquals(TOKEN, requestToken.getToken());
         assertEquals(SECRET, requestToken.getSecret());
         // test serialization
-        final byte[] bytes = TestsHelper.serialize(credentials);
-        final OAuthCredentials credentials2 = (OAuthCredentials) TestsHelper.unserialize(bytes);
+        final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+        final byte[] bytes = javaSerializationHelper.serializeToBytes(credentials);
+        final OAuthCredentials credentials2 = (OAuthCredentials) javaSerializationHelper.unserializeFromBytes(bytes);
         assertEquals(credentials.getRequestToken().toString(), credentials2.getRequestToken().toString());
         assertEquals(credentials.getToken(), credentials2.getToken());
         assertEquals(credentials.getVerifier(), credentials2.getVerifier());
@@ -50,8 +51,9 @@ public final class TestOAuthCredentials extends TestCase implements TestsConstan
 
     public void testClearOAuthCredentials() {
         final OAuthCredentials credentials = new OAuthCredentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
-        final byte[] bytes = TestsHelper.serialize(credentials);
-        final OAuthCredentials credentials2 = (OAuthCredentials) TestsHelper.unserialize(bytes);
+        final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
+        final byte[] bytes = javaSerializationHelper.serializeToBytes(credentials);
+        final OAuthCredentials credentials2 = (OAuthCredentials) javaSerializationHelper.unserializeFromBytes(bytes);
         credentials.clear();
         credentials2.clear();
         assertNull(credentials.getToken());
