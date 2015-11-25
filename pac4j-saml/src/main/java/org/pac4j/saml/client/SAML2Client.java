@@ -44,8 +44,8 @@ import org.pac4j.saml.crypto.KeyStoreByteArrayCredentialProvider;
 import org.pac4j.saml.crypto.KeyStoreDecryptionProvider;
 import org.pac4j.saml.crypto.SAML2SignatureTrustEngineProvider;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver;
-import org.pac4j.saml.metadata.SAML2IdentityProviderMetadataResolver2;
+import org.pac4j.saml.metadata.PathBasedSAML2IdentityProviderMetadataResolver;
+import org.pac4j.saml.metadata.StringBasedSAML2IdentityProviderMetadataResolver;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.metadata.SAML2ServiceProviderMetadataResolver;
 import org.pac4j.saml.profile.SAML2Profile;
@@ -187,10 +187,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected MetadataResolver initIdentityProviderMetadataResolver() {
     	if (this.configuration.identityProviderMetadataNeedResolution()) {
-            this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration.getIdentityProviderMetadataPath(), this.configuration.getIdentityProviderEntityId());
+            this.idpMetadataResolver = new PathBasedSAML2IdentityProviderMetadataResolver(this.configuration.getIdentityProviderMetadataPath(), this.configuration.getIdentityProviderEntityId());
     	} else {
-    		// TODO: Better name
-    		this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver2(this.configuration.getResolvedIdentityProviderMetadata(), this.configuration.getIdentityProviderEntityId());
+    		this.idpMetadataResolver = new StringBasedSAML2IdentityProviderMetadataResolver(this.configuration.getResolvedIdentityProviderMetadata(), this.configuration.getIdentityProviderEntityId());
     	}
         return this.idpMetadataResolver.resolve();
     }
