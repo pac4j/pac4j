@@ -135,7 +135,7 @@ public class DbLoadedSamlClients extends Clients {
 	 * @see org.pac4j.core.util.InitializableWebObject#internalInit(org.pac4j.core.context.WebContext)
 	 */
 	@Override
-	protected void internalInit(final WebContext context) {
+	protected void internalInit() {
         // Remove all clients first if re-initialized
 		List<Client> existingClients = super.getClients();
 		if (existingClients == null) {
@@ -148,7 +148,7 @@ public class DbLoadedSamlClients extends Clients {
 		existingClients.addAll(explicitClients);
 
 		// Initialize like in the super class.
-		super.internalInit(context);
+		super.internalInit();
         CommonHelper.assertNotNull("samlClientDao", this.samlClientDao);
 
         // And finally add those contributed by the DAO.

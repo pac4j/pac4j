@@ -13,50 +13,41 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.util;
+package org.pac4j.core.context.session;
 
 import org.pac4j.core.context.WebContext;
 
 /**
- * Object that can be (re-)initialized, taking the web context into account.
- * 
+ * To store data in session.
+ *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public abstract class InitializableWebObject {
-    
-    private boolean initialized = false;
-    
+public interface SessionStore {
+
     /**
-     * Initialize the object.
+     * Get or create the session identifier and initialize the session with it if necessary.
      *
      * @param context the web context
+     * @return the session identifier
      */
-    public void init(final WebContext context) {
-        if (!this.initialized) {
-            synchronized (this) {
-                if (!this.initialized) {
-                    internalInit(context);
-                    this.initialized = true;
-                }
-            }
-        }
-    }
-    
+    String getOrCreateSessionId(WebContext context);
+
     /**
-     * Force (again) the initialization of the object.
+     * Get the object from its key in store.
      *
      * @param context the web context
+     * @param key the key of the object
+     * @return the object in store
      */
-    public synchronized void reinit(final WebContext context) {
-        internalInit(context);
-        this.initialized = true;
-    }
-    
+    Object get(WebContext context, String key);
+
     /**
-     * Internal initialization of the object.
+     * Save an object in the store by its key.
      *
      * @param context the web context
+     * @param key the key of the object
+     * @param value the value to save in store
      */
-    protected abstract void internalInit(final WebContext context);
+    void set(WebContext context, String key, Object value);
 }

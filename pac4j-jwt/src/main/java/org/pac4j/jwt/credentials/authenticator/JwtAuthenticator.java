@@ -18,8 +18,7 @@ package org.pac4j.jwt.credentials.authenticator;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.jwt.*;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
@@ -61,14 +60,22 @@ public class JwtAuthenticator implements TokenAuthenticator {
         SignedJWT signedJWT = null;
 
         try {
-            // Parse the JWE string
-            JWEObject jweObject = JWEObject.parse(token);
+            // Parse the token
+            JWT jwt = JWTParser.parse(token);
 
-            // Decrypt with shared key
-            jweObject.decrypt(new DirectDecrypter(this.secret.getBytes("UTF-8")));
+            if (jwt instanceof SignedJWT) {
+                signedJWT = (SignedJWT) jwt;
+            } else if (jwt instanceof EncryptedJWT) {
+                JWEObject jweObject = (JWEObject) jwt;
 
-            // Extract payload
-            signedJWT = jweObject.getPayload().toSignedJWT();
+                // Decrypt with shared key
+                jweObject.decrypt(new DirectDecrypter(this.secret.getBytes("UTF-8")));
+
+                // Extract payload
+                signedJWT = jweObject.getPayload().toSignedJWT();
+            } else {
+                throw new TechnicalException("unsupported unsecured jwt");
+            }
 
             verified = signedJWT.verify(new MACVerifier(this.secret));
         } catch (final Exception e) {

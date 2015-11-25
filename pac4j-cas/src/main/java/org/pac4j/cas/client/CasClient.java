@@ -116,6 +116,22 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     protected CasProxyReceptor casProxyReceptor;
 
+    public CasClient() { }
+
+    public CasClient(final String casLoginUrl) {
+        this.casLoginUrl = casLoginUrl;
+    }
+
+    public CasClient(final String casLoginUrl, final CasProtocol casProtocol) {
+        this.casLoginUrl = casLoginUrl;
+        this.casProtocol = casProtocol;
+    }
+
+    public CasClient(final String casLoginUrl, final String casPrefixUrl) {
+        this.casLoginUrl = casLoginUrl;
+        this.casPrefixUrl = casPrefixUrl;
+    }
+
     /**
      * Get the redirection url.
      *

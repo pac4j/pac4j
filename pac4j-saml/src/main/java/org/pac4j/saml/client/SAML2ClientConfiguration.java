@@ -41,6 +41,15 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
     	super();
     }
 
+    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
+    		final String privateKeyPassword, final String identityProviderMetadataPath) {
+    	super();
+    	this.keystorePath = keystorePath;
+    	setKeystorePassword(keystorePassword);
+    	setPrivateKeyPassword(privateKeyPassword);
+    	this.identityProviderMetadataPath = identityProviderMetadataPath;
+    }
+
 
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
         this.identityProviderMetadataPath = identityProviderMetadataPath;

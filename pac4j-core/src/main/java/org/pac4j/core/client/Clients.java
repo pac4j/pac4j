@@ -23,25 +23,25 @@ import java.util.List;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
  * callback url.</p>
- * <p>The {@link #init(WebContext)} method is used to initialize the callback urls of the clients from the callback url of the
+ * <p>The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the
  * clients group if empty and a specific parameter added to define the client targeted. It is implicitly called by the
  * "finders" methods and doesn't need to be called explicitly.</p>
- * <p>The {@link #findClient(WebContext)}, {@link #findClient(WebContext, String)} or {@link #findClient(WebContext, Class)} methods must be called
- * to find the right client according to the input context or type. The {@link #findAllClients(WebContext)} method returns all the
+ * <p>The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called
+ * to find the right client according to the input context or type. The {@link #findAllClients()} method returns all the
  * clients.</p>
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public class Clients extends InitializableWebObject {
+public class Clients extends InitializableObject {
 
     private static final Logger logger = LoggerFactory.getLogger(Clients.class);
 
@@ -85,11 +85,9 @@ public class Clients extends InitializableWebObject {
 
     /**
      * Initialize all clients by computing callback urls if necessary.
-     *
-     * @param context the web context
      */
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void internalInit() {
         CommonHelper.assertNotNull("clients", this.clients);
         final HashSet<String> names = new HashSet<>();
         for (final Client client : this.clients) {
@@ -135,18 +133,17 @@ public class Clients extends InitializableWebObject {
     public Client findClient(final WebContext context) {
         final String name = context.getRequestParameter(this.clientNameParameter);
         CommonHelper.assertNotBlank("name", name);
-        return findClient(context, name);
+        return findClient(name);
     }
 
     /**
      * Return the right client according to the specific name.
      *
-     * @param context the web context
      * @param name name of the client
      * @return the right client
      */
-    public Client findClient(final WebContext context, final String name) {
-        init(context);
+    public Client findClient(final String name) {
+        init();
         for (final Client client : this.clients) {
             if (CommonHelper.areEquals(name, client.getName())) {
                 return client;
@@ -159,14 +156,13 @@ public class Clients extends InitializableWebObject {
     /**
      * Return the right client according to the specific class.
      *
-     * @param context the web context
      * @param clazz class of the client
      * @param <C> the kind of client
      * @return the right client
      */
     @SuppressWarnings("unchecked")
-    public <C extends Client> C findClient(final WebContext context, final Class<C> clazz) {
-        init(context);
+    public <C extends Client> C findClient(final Class<C> clazz) {
+        init();
         if (clazz != null) {
           for (final Client client : this.clients) {
             if (clazz.isAssignableFrom(client.getClass())) {
@@ -181,11 +177,10 @@ public class Clients extends InitializableWebObject {
     /**
      * Find all the clients.
      *
-     * @param context the web context
      * @return all the clients
      */
-    public List<Client> findAllClients(final WebContext context) {
-        init(context);
+    public List<Client> findAllClients() {
+        init();
         return this.clients;
     }
 
@@ -207,6 +202,7 @@ public class Clients extends InitializableWebObject {
 
     /**
      * Use {@link #setClients(List)} instead.
+     * @param clients the clients to set
      * @deprecated
      */
     @Deprecated
@@ -222,8 +218,8 @@ public class Clients extends InitializableWebObject {
         this.clients = new ArrayList<Client>(Arrays.asList(clients));
     }
     
-    protected List<Client> getClients() {
-    	return this.clients;
+    public List<Client> getClients() {
+        return clients;
     }
 
     @Override

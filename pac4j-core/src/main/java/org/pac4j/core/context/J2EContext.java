@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.context;
 
+import org.pac4j.core.context.session.J2ESessionStore;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
- * This implementation uses the J2E request and session.
+ * This implementation uses the J2E request, response and session.
  *
  * @author Jerome Leleu
  * @since 1.4.0
@@ -36,15 +38,33 @@ public class J2EContext implements WebContext {
 
     private final HttpServletResponse response;
 
+    private final SessionStore sessionStore;
+
     /**
-     * Build a J2E context from the current HTTP request.
+     * Build a J2E context from the current HTTP request and response.
      *
      * @param request the current request
      * @param response the current response
      */
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response) {
+        this(request, response, null);
+    }
+
+    /**
+     * Build a J2E context from the current HTTP request and response.
+     *
+     * @param request the current request
+     * @param response the current response
+     * @param sessionStore the session store to use
+     */
+    public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore sessionStore) {
         this.request = request;
         this.response = response;
+        if (sessionStore == null) {
+            this.sessionStore = new J2ESessionStore();
+        } else {
+            this.sessionStore = sessionStore;
+        }
     }
 
     @Override
@@ -70,17 +90,17 @@ public class J2EContext implements WebContext {
 
     @Override
     public void setSessionAttribute(final String name, final Object value) {
-        this.request.getSession().setAttribute(name, value);
+        sessionStore.set(this, name, value);
     }
 
     @Override
     public Object getSessionAttribute(final String name) {
-        return this.request.getSession().getAttribute(name);
+        return sessionStore.get(this, name);
     }
 
     @Override
     public Object getSessionIdentifier() {
-        return this.request.getSession().getId();
+        return sessionStore.getOrCreateSessionId(this);
     }
 
     @Override
@@ -107,6 +127,10 @@ public class J2EContext implements WebContext {
      */
     public HttpServletResponse getResponse() {
         return this.response;
+    }
+
+    public SessionStore getSessionStore() {
+        return sessionStore;
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.pac4j.jwt;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -44,11 +45,20 @@ public class JwtTests {
     @Test
     public void testGenerateAuthenticate() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY);
-        final FacebookProfile profile = new FacebookProfile();
-        profile.setId(ID);
-        profile.addAttribute(FacebookAttributesDefinition.NAME, NAME);
-        profile.addAttribute(FacebookAttributesDefinition.VERIFIED, VERIFIED);
+        final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+
+    @Test
+    public void testGenerateAuthenticateNotEncrypted() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY, false);
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+
+    private void assertToken(FacebookProfile profile, String token) {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
         final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
         authenticator.validate(credentials);
@@ -60,6 +70,14 @@ public class JwtTests {
         assertEquals(profile.getDisplayName(), fbProfile.getDisplayName());
         assertEquals(profile.getFamilyName(), fbProfile.getFamilyName());
         assertEquals(profile.getVerified(), fbProfile.getVerified());
+    }
+
+    private FacebookProfile createProfile() {
+        final FacebookProfile profile = new FacebookProfile();
+        profile.setId(ID);
+        profile.addAttribute(FacebookAttributesDefinition.NAME, NAME);
+        profile.addAttribute(FacebookAttributesDefinition.VERIFIED, VERIFIED);
+        return profile;
     }
 
     @Test(expected = TechnicalException.class)

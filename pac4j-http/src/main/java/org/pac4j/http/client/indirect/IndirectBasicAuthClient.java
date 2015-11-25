@@ -36,7 +36,7 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.0
  */
 public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
 
@@ -64,6 +64,13 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
         super.internalInit(context);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
+    }
+
+    @Override
+    public IndirectBasicAuthClient clone() {
+        final IndirectBasicAuthClient newClient = (IndirectBasicAuthClient) super.clone();
+        newClient.setRealmName(this.realmName);
+        return newClient;
     }
 
     @Override
@@ -113,5 +120,13 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     @Override
     public ClientType getClientType() {
         return ClientType.BASICAUTH_BASED;
+    }
+
+    public String getRealmName() {
+        return realmName;
+    }
+
+    public void setRealmName(String realmName) {
+        this.realmName = realmName;
     }
 }

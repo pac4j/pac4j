@@ -18,10 +18,12 @@ package org.pac4j.core.config;
 import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +40,8 @@ public class Config {
 
     protected Map<String, Matcher> matchers = new HashMap<>();
 
+    protected SessionStore sessionStore;
+
     public Config() {}
 
     public Config(final Client client) {
@@ -46,6 +50,10 @@ public class Config {
 
     public Config(final Clients clients) {
         this.clients = clients;
+    }
+
+    public Config(final List<Client> clients) {
+        this.clients = new Clients(clients);
     }
 
     public Config(final Client... clients) {
@@ -57,6 +65,10 @@ public class Config {
     }
 
     public Config(final String callbackUrl, final Client... clients) {
+        this.clients = new Clients(callbackUrl, clients);
+    }
+
+    public Config(final String callbackUrl, final List<Client> clients) {
         this.clients = new Clients(callbackUrl, clients);
     }
 
@@ -131,5 +143,13 @@ public class Config {
 
     public void addMatcher(final String name, final Matcher matcher) {
         matchers.put(name, matcher);
+    }
+
+    public SessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    public void setSessionStore(SessionStore sessionStore) {
+        this.sessionStore = sessionStore;
     }
 }

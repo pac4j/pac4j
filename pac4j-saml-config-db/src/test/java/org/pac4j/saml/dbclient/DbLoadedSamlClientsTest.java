@@ -62,7 +62,7 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         final DbLoadedSamlClients clientsGroup = new DbLoadedSamlClients();
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
-        clientsGroup.init(MockWebContext.create()); // This should not fail anymore because the DAO contributes some clients too
+        clientsGroup.init(); // This should not fail anymore because the DAO contributes some clients too
     }
 
     @Test
@@ -70,9 +70,9 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         MockBaseClient facebookClient = newFacebookClient();
         final DbLoadedSamlClients clientsGroup = new DbLoadedSamlClients(facebookClient);
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
-        clientsGroup.init(null);
+        clientsGroup.init();
         assertNull(facebookClient.getCallbackUrl());
-        IndirectClient sc1 = (IndirectClient) clientsGroup.findClient(null, "SamlClient1");
+        IndirectClient sc1 = (IndirectClient) clientsGroup.findClient("SamlClient1");
         assertNotNull(sc1);
         assertNull(sc1.getCallbackUrl());
     }
@@ -91,14 +91,14 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
         assertNull(facebookClient.getCallbackUrl());
         assertNull(yahooClient.getCallbackUrl());
-        clientsGroup.init(null);
+        clientsGroup.init();
         assertEquals(CALLBACK_URL + "?" + TYPE + "=" + facebookClient.getName(), facebookClient.getCallbackUrl());
         assertEquals(CALLBACK_URL + "?" + TYPE + "=" + yahooClient.getName(), yahooClient.getCallbackUrl());
         assertEquals(yahooClient, clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, yahooClient.getName())));
-        assertEquals(yahooClient, clientsGroup.findClient(null, yahooClient.getName()));
+        assertEquals(yahooClient, clientsGroup.findClient(yahooClient.getName()));
         // Additional 2 clients from the DAO
-        assertNotNull(clientsGroup.findClient(null, "SamlClient1"));
-        assertNotNull(clientsGroup.findClient(null, "SamlClient2"));
+        assertNotNull(clientsGroup.findClient("SamlClient1"));
+        assertNotNull(clientsGroup.findClient("SamlClient2"));
         assertNotNull(clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, "SamlClient1")));
         assertNotNull(clientsGroup.findClient(MockWebContext.create().addRequestParameter(TYPE, "SamlClient2")));
     }
@@ -110,12 +110,12 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         clientsGroup.setClients(facebookClient);
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
-        clientsGroup.init(null);
+        clientsGroup.init();
         final DbLoadedSamlClients clientsGroup2 = new DbLoadedSamlClients();
         clientsGroup2.setCallbackUrl(CALLBACK_URL);
         clientsGroup2.setClients(facebookClient);
         clientsGroup2.setSamlClientDao(createSamlClientDaoMock());
-        clientsGroup2.init(null);
+        clientsGroup2.init();
         assertEquals(CALLBACK_URL + "?" + Clients.DEFAULT_CLIENT_NAME_PARAMETER + "=" + facebookClient.getName(), facebookClient.getCallbackUrl());
     }
     
@@ -127,10 +127,10 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         clientsGroup.setClients(facebookClient);
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
-        clientsGroup.init(null);
-        clientsGroup.init(null);
+        clientsGroup.init();
+        clientsGroup.init();
     	
-        final List<Client> clients = clientsGroup.findAllClients(null);
+        final List<Client> clients = clientsGroup.findAllClients();
         assertEquals(3, clients.size()); // 1 explicit + 2 contributed by the DAO
         assertTrue(clients.contains(facebookClient));
     }
@@ -143,10 +143,10 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         clientsGroup.setClients(facebookClient);
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
-        clientsGroup.init(null);
-        clientsGroup.reinit(null);
+        clientsGroup.init();
+        clientsGroup.reinit();
     	
-        final List<Client> clients = clientsGroup.findAllClients(null);
+        final List<Client> clients = clientsGroup.findAllClients();
         assertEquals(3, clients.size()); // 1 explicit + 2 contributed by the DAO
         assertTrue(clients.contains(facebookClient));
     }
@@ -163,7 +163,7 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         clientsGroup.setClients(clients);
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         clientsGroup.setSamlClientDao(createSamlClientDaoMock());
-        final List<Client> clients2 = clientsGroup.findAllClients(null);
+        final List<Client> clients2 = clientsGroup.findAllClients();
         assertEquals(4, clients2.size()); // 2 explicit + 2 contributed by the DAO
         assertTrue(clients2.containsAll(clients));
     }
@@ -176,10 +176,10 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         final DbLoadedSamlClients group = new DbLoadedSamlClients(CALLBACK_URL, facebookClient, yahooClient);
         group.setClientNameParameter(KEY);
         group.setSamlClientDao(createSamlClientDaoMock());
-        group.init(null);
+        group.init();
         assertEquals(LOGIN_URL + "?" + group.getClientNameParameter() + "=" + facebookClient.getName(), facebookClient.getCallbackUrl());
         assertEquals(CALLBACK_URL + "?" + group.getClientNameParameter() + "=" + yahooClient.getName(), yahooClient.getCallbackUrl());
-        SAML2Client samlClient = (SAML2Client) group.findClient(null, "SamlClient1");
+        SAML2Client samlClient = (SAML2Client) group.findClient("SamlClient1");
         assertEquals(CALLBACK_URL + "?" + group.getClientNameParameter() + "=" + samlClient.getName(), samlClient.getCallbackUrl());
     }
 
@@ -193,10 +193,10 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         final DbLoadedSamlClients group = new DbLoadedSamlClients(CALLBACK_URL, facebookClient, yahooClient);
         group.setClientNameParameter(KEY);
         group.setSamlClientDao(createSamlClientDaoMock());
-        group.init(null);
+        group.init();
         assertEquals(LOGIN_URL, facebookClient.getCallbackUrl());
         assertEquals(CALLBACK_URL, yahooClient.getCallbackUrl());
-        SAML2Client samlClient = (SAML2Client) group.findClient(null, "SamlClient1");
+        SAML2Client samlClient = (SAML2Client) group.findClient("SamlClient1");
         assertEquals(CALLBACK_URL + "?" + KEY + "=" + samlClient.getName(), samlClient.getCallbackUrl());
     }
 
@@ -206,9 +206,9 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         final FakeClient fakeClient = new FakeClient();
         final DbLoadedSamlClients clients = new DbLoadedSamlClients(CALLBACK_URL, facebookClient, fakeClient);
         clients.setSamlClientDao(createSamlClientDaoMock());
-        assertEquals(facebookClient, clients.findClient(null, MockBaseClient.class));
-        assertEquals(fakeClient, clients.findClient(null, FakeClient.class));
-        SAML2Client samlClient = clients.findClient(null, SAML2Client.class);
+        assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
+        assertEquals(fakeClient, clients.findClient(FakeClient.class));
+        SAML2Client samlClient = clients.findClient(SAML2Client.class);
         assertNotNull(samlClient);
         assertTrue(samlClient.getName().startsWith("SamlClient")); // SamlClient1 or SamlClient2
     }
@@ -219,9 +219,9 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         final FakeClient fakeClient = new FakeClient();
         final DbLoadedSamlClients clients = new DbLoadedSamlClients(CALLBACK_URL, fakeClient, facebookClient);
         clients.setSamlClientDao(createSamlClientDaoMock());
-        assertEquals(facebookClient, clients.findClient(null, MockBaseClient.class));
-        assertEquals(fakeClient, clients.findClient(null, FakeClient.class));
-        SAML2Client samlClient = clients.findClient(null, SAML2Client.class);
+        assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
+        assertEquals(fakeClient, clients.findClient(FakeClient.class));
+        SAML2Client samlClient = clients.findClient(SAML2Client.class);
         assertNotNull(samlClient);
         assertTrue(samlClient.getName().startsWith("SamlClient")); // SamlClient1 or SamlClient2
     }
@@ -232,7 +232,7 @@ public class DbLoadedSamlClientsTest implements TestsConstants {
         final MockBaseClient client2 = new MockBaseClient(NAME);
         final DbLoadedSamlClients clients = new DbLoadedSamlClients(CALLBACK_URL, client1, client2);
         clients.setSamlClientDao(createSamlClientDaoMock());
-        clients.init(null);
+        clients.init();
     }
 
     
