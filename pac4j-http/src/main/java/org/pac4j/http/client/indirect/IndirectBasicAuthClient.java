@@ -67,6 +67,13 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     }
 
     @Override
+    public IndirectBasicAuthClient clone() {
+        final IndirectBasicAuthClient newClient = (IndirectBasicAuthClient) super.clone();
+        newClient.setRealmName(this.realmName);
+        return newClient;
+    }
+
+    @Override
     protected IndirectBasicAuthClient newClient() {
         return new IndirectBasicAuthClient();
     }
@@ -113,5 +120,13 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     @Override
     public ClientType getClientType() {
         return ClientType.BASICAUTH_BASED;
+    }
+
+    public String getRealmName() {
+        return realmName;
+    }
+
+    public void setRealmName(String realmName) {
+        this.realmName = realmName;
     }
 }

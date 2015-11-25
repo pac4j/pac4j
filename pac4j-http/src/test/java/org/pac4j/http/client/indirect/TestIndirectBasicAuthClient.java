@@ -44,6 +44,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
         oldClient.setCallbackUrl(CALLBACK_URL);
         oldClient.setName(TYPE);
         oldClient.setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
+        oldClient.setRealmName(NAME);
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setAuthenticator(usernamePasswordAuthenticator);
         final IndirectBasicAuthClient client = (IndirectBasicAuthClient) oldClient.clone();
@@ -51,6 +52,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
         assertEquals(oldClient.getName(), client.getName());
         assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
         assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
+        assertEquals(oldClient.getRealmName(), client.getRealmName());
     }
 
     @Test
