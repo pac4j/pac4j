@@ -76,11 +76,15 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
     }
 
     
-	/* (non-Javadoc)
-	 * @see org.pac4j.core.util.InitializableWebObject#internalInit(org.pac4j.core.context.WebContext)
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Does not do anything. All fields should have been properly set up using setters or constructor parameters.
+	 * 
+	 * @see org.pac4j.saml.client.AbstractSAML2ClientConfiguration#init(java.lang.String, org.pac4j.core.context.WebContext)
 	 */
 	@Override
-	protected void internalInit(WebContext context) {
+	protected void init(String clientName, WebContext webContext) {
 		// Intentionally left empty
 	}
 

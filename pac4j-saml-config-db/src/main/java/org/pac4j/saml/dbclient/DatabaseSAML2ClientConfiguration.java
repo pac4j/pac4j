@@ -24,7 +24,7 @@ import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 
 
 /**
- * SAML Client configuration intended to be loaded from a database.
+ * SAML2 Client configuration intended to be loaded from a database.
  * 
  * An alternative to {@link SAML2ClientConfiguration}. Unlike {@link SAML2ClientConfiguration}, this class does not use paths to resources.
  * Instead, it contains the data directly.
@@ -32,7 +32,7 @@ import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
  * @author jkacer
  * @since 1.9.0
  */
-public class DbLoadedSamlClientConfiguration extends AbstractSAML2ClientConfiguration {
+public class DatabaseSAML2ClientConfiguration extends AbstractSAML2ClientConfiguration {
 
 	/** DAO to read SAML client configurations. Should be shared by all configuration instances. */
 	private final SamlClientDao dao;
@@ -55,7 +55,7 @@ public class DbLoadedSamlClientConfiguration extends AbstractSAML2ClientConfigur
 	 * @param dao
 	 *            DAO loading client configuration from DB.
 	 */
-    public DbLoadedSamlClientConfiguration(final SamlClientDao dao) {
+    public DatabaseSAML2ClientConfiguration(final SamlClientDao dao) {
     	super();
     	if (dao == null) {
     		throw new IllegalArgumentException("DAO must not be null.");
@@ -98,8 +98,8 @@ public class DbLoadedSamlClientConfiguration extends AbstractSAML2ClientConfigur
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-    public DbLoadedSamlClientConfiguration clone() throws CloneNotSupportedException {
-		return (DbLoadedSamlClientConfiguration) super.clone();
+    public DatabaseSAML2ClientConfiguration clone() throws CloneNotSupportedException {
+		return (DatabaseSAML2ClientConfiguration) super.clone();
     }
 
 	
@@ -116,21 +116,19 @@ public class DbLoadedSamlClientConfiguration extends AbstractSAML2ClientConfigur
 	 *             If the context does not contain the client name or if no configuration for the given name exists.
 	 */
 	@Override
-	protected void internalInit(WebContext context) {
-		// The client name must come in the web context. If it doesn't, it's an error.
-		final String requiredClientName = context.getRequestParameter("current_client_name");
-		if (StringUtils.isBlank(requiredClientName)) {
-			throw new IllegalStateException("Web context needs to be populated with the required client's name at this point. Missing key: current_client_name");
+	protected void init(final String clientName, final WebContext context) {
+		if (StringUtils.isBlank(clientName)) {
+			throw new IllegalStateException("The client name must not be null or empty.");
 		}
 
 		// Subsequently, the configuration for the name must be loaded using a DAO.
-		DbLoadedSamlClientConfigurationDto loaded = dao.loadClient(requiredClientName);
-		if ((loaded == null) || (!requiredClientName.equals(loaded.getClientName()))) {
-			throw new IllegalStateException("SAML Client Configuration for name '" + requiredClientName + "' could not be loaded.");
+		DbLoadedSamlClientConfigurationDto loaded = dao.loadClient(clientName);
+		if ((loaded == null) || (!clientName.equals(loaded.getClientName()))) {
+			throw new IllegalStateException("SAML Client Configuration for name '" + clientName + "' could not be loaded.");
 		}
 		
 		// If everything is OK, we will set the loaded values to the configuration object (itself).
-		setClientName(requiredClientName);
+		setClientName(clientName);
 		setDestinationBindingType(loaded.getDestinationBindingType());
 		setIdentityProviderEntityId(loaded.getIdentityProviderEntityId());
 		setIdentityProviderMetadata(loaded.getIdentityProviderMetadata());

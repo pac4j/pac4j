@@ -40,7 +40,7 @@ import net.shibboleth.utilities.java.support.resource.Resource;
  * 
  * @author Misagh Moayyed
  * @author jkacer
- * @since 1.9
+ * @since 1.9.0
  */
 public class PathBasedSAML2IdentityProviderMetadataResolver extends AbstractSAML2IdentityProviderMetadataResolver {
 

@@ -122,11 +122,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("configuration", this.configuration);
 
-        // First of all, initialize the configuration. It may dynamically load some properties.
-        if (context != null) {
-        	context.setRequestAttribute("current_client_name", getName()); // TODO: Constant somewhere?
-        }
-        this.configuration.init(context);
+        // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
+        this.configuration.init(getName(), context);
         
         initCredentialProvider();
         initDecrypter();

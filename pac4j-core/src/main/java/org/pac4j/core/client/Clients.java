@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -41,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public class Clients extends InitializableObject {
+public final class Clients extends InitializableObject {
 
     private static final Logger logger = LoggerFactory.getLogger(Clients.class);
 
@@ -49,9 +50,21 @@ public class Clients extends InitializableObject {
 
     private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
 
+    /** Clients known in advance - set by the constructor or setter. */
     private List<Client> clients;
+    
+    /** Additional clients contributed by contributors. */
+    private List<Client> contributedClients;
 
     private String callbackUrl = null;
+    
+	/**
+	 * Contributors of additional clients that cannot be statically set using the constructor or setter (because they are not known at build
+	 * time).
+	 */
+    private List<AdditionalClientContributor> clientContributors;
+    
+    
 
     public Clients() {
     }
@@ -68,7 +81,7 @@ public class Clients extends InitializableObject {
 
     public Clients(final String callbackUrl, final Client client) {
         setCallbackUrl(callbackUrl);
-        setClients(new ArrayList<Client>(Arrays.asList(client)));
+        setClients(Arrays.asList(client));
     }
 
     public Clients(final List<Client> clients) {
@@ -80,7 +93,7 @@ public class Clients extends InitializableObject {
     }
 
     public Clients(final Client client) {
-        setClients(new ArrayList<Client>(Arrays.asList(client)));
+        setClients(Arrays.asList(client));
     }
 
     /**
@@ -90,7 +103,11 @@ public class Clients extends InitializableObject {
     protected void internalInit() {
         CommonHelper.assertNotNull("clients", this.clients);
         final HashSet<String> names = new HashSet<>();
-        for (final Client client : this.clients) {
+
+        // Contributed clients will be reloaded from their sources
+		this.contributedClients = enlistAllContributedClients();
+        
+        for (final Client client : combineStaticAndContributedClients()) {
             final String name = client.getName();
             if (names.contains(name)) {
                 throw new TechnicalException("Duplicate name in clients: " + name);
@@ -144,7 +161,7 @@ public class Clients extends InitializableObject {
      */
     public Client findClient(final String name) {
         init();
-        for (final Client client : this.clients) {
+        for (final Client client : combineStaticAndContributedClients()) {
             if (CommonHelper.areEquals(name, client.getName())) {
                 return client;
             }
@@ -164,7 +181,7 @@ public class Clients extends InitializableObject {
     public <C extends Client> C findClient(final Class<C> clazz) {
         init();
         if (clazz != null) {
-          for (final Client client : this.clients) {
+          for (final Client client : combineStaticAndContributedClients()) {
             if (clazz.isAssignableFrom(client.getClass())) {
                 return (C) client;
             }
@@ -181,9 +198,48 @@ public class Clients extends InitializableObject {
      */
     public List<Client> findAllClients() {
         init();
-        return this.clients;
+        return combineStaticAndContributedClients();
     }
 
+    
+	/**
+	 * Gathers contributed clients from all contributors and returns them. Does NOT set them to {@link #contributedClients}.
+	 * 
+	 * @return A list of all contributed clients. Never {@code null}.
+	 */
+    private List<Client> enlistAllContributedClients() {
+    	final List<Client> allContributedClients = new ArrayList<>();
+    	
+    	if (clientContributors != null) {
+    		for (AdditionalClientContributor contributor: clientContributors) {
+    			final Set<Client> clientsFromThisContributor = contributor.contributeClients();
+    			allContributedClients.addAll(clientsFromThisContributor);
+    			logger.debug("Contributor {} contributed {} clients.", contributor.getContributorName(), clientsFromThisContributor.size());
+    		}
+    	}
+    	
+    	logger.debug("In total, {} clients were contributed.", allContributedClients.size());
+    	return allContributedClients;
+    }
+
+    
+	/**
+	 * Combines statically defined clients with dynamically contributed clients into one list.
+	 * 
+	 * @return A list of clients containing both static and contributed clients.
+	 */
+    private List<Client> combineStaticAndContributedClients() {
+		final List<Client> combined = new ArrayList<>();
+		if (this.clients != null) {
+			combined.addAll(clients);
+		}
+		if (this.contributedClients != null) {
+			combined.addAll(contributedClients);
+		}
+		return combined;
+    }
+    
+    
     public String getClientNameParameter() {
         return this.clientNameParameter;
     }
@@ -215,7 +271,7 @@ public class Clients extends InitializableObject {
     }
 
     public void setClients(final Client... clients) {
-        this.clients = new ArrayList<Client>(Arrays.asList(clients));
+        this.clients = Arrays.asList(clients);
     }
     
     public List<Client> getClients() {
@@ -227,4 +283,13 @@ public class Clients extends InitializableObject {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
                 this.clientNameParameter, "clients", this.clients);
     }
+
+	public List<AdditionalClientContributor> getClientContributors() {
+		return clientContributors;
+	}
+
+	public void setClientContributors(List<AdditionalClientContributor> clientContributors) {
+		this.clientContributors = clientContributors;
+	}
+    
 }
