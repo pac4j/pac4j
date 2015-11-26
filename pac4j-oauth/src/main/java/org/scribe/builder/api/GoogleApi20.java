@@ -28,14 +28,22 @@ import org.scribe.utils.OAuthEncoder;
  * @since 1.2.0
  */
 public class GoogleApi20 extends StateApi20 {
-    private static final String AUTHORIZATION_URL = "https://accounts.google.com/o/oauth2/auth?client_id=%s&redirect_uri=%s&scope=%s&response_type=code&state=%s";
-    
+    private static final String AUTHORIZATION_URL = "https://accounts.google.com/o/oauth2/auth?client_id=%s&redirect_uri=%s&scope=%s&response_type=code";
+
+    private static final String STATEFULL_AUTHORIZATION_URL = AUTHORIZATION_URL + "&state=%s";
+
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, String state) {
-        return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
-                             OAuthEncoder.encode(config.getScope()), state);
+        return String.format(STATEFULL_AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
+                OAuthEncoder.encode(config.getScope()), state);
     }
-    
+
+    @Override
+    public String getAuthorizationUrl(final OAuthConfig config) {
+        return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
+                OAuthEncoder.encode(config.getScope()));
+    }
+
     @Override
     public String getAccessTokenEndpoint() {
         return "https://accounts.google.com/o/oauth2/token";
