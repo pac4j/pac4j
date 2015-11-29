@@ -20,16 +20,25 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * XContent type options authorizer.
+ * Add a custom security header.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class XContentTypeOptionsAuthorizer implements Authorizer<UserProfile> {
+public class CustomSecurityHeader implements Authorizer<UserProfile> {
+
+    private final String name;
+
+    private final String value;
+
+    public CustomSecurityHeader(final String name, final String value) {
+        this.name = name;
+        this.value = value;
+    }
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        context.setResponseHeader("X-Content-Type-Options", "nosniff");
+        context.setResponseHeader(name, value);
         return true;
     }
 }
