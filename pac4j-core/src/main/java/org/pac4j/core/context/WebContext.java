@@ -157,6 +157,13 @@ public interface WebContext {
     String getScheme();
 
     /**
+     * Return whether the request is secure.
+     *
+     * @return whether the request is secure
+     */
+    boolean isSecure();
+
+    /**
      * Return the full URL (with query string) the client used to request the server.
      *
      * @return the URL
@@ -171,6 +178,15 @@ public interface WebContext {
      * @since 1.8.0
      */
     Collection<Cookie> getRequestCookies();
+
+    /**
+     * Retrieve a cookie by its name.
+     *
+     * @param name the name of the cookie
+     * @return the cookie
+     * @since 1.8.1
+     */
+    Cookie getRequestCookie(String name);
 
     /**
      * Adds cookies to the response
