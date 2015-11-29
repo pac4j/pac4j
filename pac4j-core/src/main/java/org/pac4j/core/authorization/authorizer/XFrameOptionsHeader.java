@@ -20,16 +20,16 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * XSS protection authorizer.
+ * XFrame options header.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class XSSProtectionAuthorizer implements Authorizer<UserProfile> {
+public class XFrameOptionsHeader implements Authorizer<UserProfile> {
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        context.setResponseHeader("X-XSS-Protection", "1; mode=block");
+        context.setResponseHeader("X-Frame-Options", "DENY");
         return true;
     }
 }

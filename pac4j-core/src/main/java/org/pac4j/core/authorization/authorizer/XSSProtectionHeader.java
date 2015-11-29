@@ -20,39 +20,16 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * Strict transport security authorizer.
+ * XSS protection header.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class StrictTransportSecurityAuthorizer implements Authorizer<UserProfile> {
-
-    /**
-     * 6 months in seconds.
-     */
-    private final static int DEFAULT_MAX_AGE = 15768000;
-
-    private int maxAge = DEFAULT_MAX_AGE;
-
-    public StrictTransportSecurityAuthorizer() {}
-
-    public StrictTransportSecurityAuthorizer(final int maxAge) {
-        this.maxAge = maxAge;
-    }
+public class XSSProtectionHeader implements Authorizer<UserProfile> {
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        if ("HTTPS".equalsIgnoreCase(context.getScheme())) {
-            context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
-        }
+        context.setResponseHeader("X-XSS-Protection", "1; mode=block");
         return true;
-    }
-
-    public int getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(int maxAge) {
-        this.maxAge = maxAge;
     }
 }
