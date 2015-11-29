@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class J2EContext implements WebContext {
+public class J2EContext extends AbstractWebContext {
 
     private final HttpServletRequest request;
 
@@ -186,6 +186,9 @@ public class J2EContext implements WebContext {
     public String getScheme() {
         return this.request.getScheme();
     }
+
+    @Override
+    public boolean isSecure() { return this.request.isSecure(); }
 
     @Override
     public String getFullRequestURL() {

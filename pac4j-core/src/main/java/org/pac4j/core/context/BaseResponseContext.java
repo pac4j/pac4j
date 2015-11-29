@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseResponseContext implements WebContext {
+public abstract class BaseResponseContext extends AbstractWebContext {
 
     protected String responseContent = "";
 
