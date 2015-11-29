@@ -42,7 +42,7 @@ public class StrictTransportSecurityAuthorizer implements Authorizer<UserProfile
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        if ("HTTPS".equalsIgnoreCase(context.getScheme())) {
+        if ("HTTPS".equalsIgnoreCase(context.getScheme()) || context.isSecure()) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }
         return true;
