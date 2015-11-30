@@ -15,18 +15,15 @@
  */
 package org.pac4j.core.client;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
@@ -42,9 +39,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class Clients extends InitializableObject {
-
-    private static final Logger logger = LoggerFactory.getLogger(Clients.class);
+public class Clients extends InitializableObject {
 
     public final static String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
 
@@ -53,18 +48,9 @@ public final class Clients extends InitializableObject {
     /** Clients known in advance - set by the constructor or setter. */
     private List<Client> clients;
     
-    /** Additional clients contributed by contributors. */
-    private List<Client> contributedClients;
-
     private String callbackUrl = null;
-    
-	/**
-	 * Contributors of additional clients that cannot be statically set using the constructor or setter (because they are not known at build
-	 * time).
-	 */
-    private List<AdditionalClientContributor> clientContributors;
-    
-    
+
+    // ------------------------------------------------------------------------------------------------------------------------------------
 
     public Clients() {
     }
@@ -96,24 +82,24 @@ public final class Clients extends InitializableObject {
         setClients(Arrays.asList(client));
     }
 
+    
     /**
      * Initialize all clients by computing callback urls if necessary.
      */
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("clients", this.clients);
         final HashSet<String> names = new HashSet<>();
 
-        // Contributed clients will be reloaded from their sources
-		this.contributedClients = enlistAllContributedClients();
-        
-        for (final Client client : combineStaticAndContributedClients()) {
-            final String name = client.getName();
-            if (names.contains(name)) {
-                throw new TechnicalException("Duplicate name in clients: " + name);
-            }
-            names.add(name);
-            updateCallbackUrlOfIndirectClient(client);
+        final List<Client> loadedClients = loadClientsInternal();
+        if (loadedClients != null) {
+	        for (final Client client : loadedClients) {
+	            final String name = client.getName();
+	            if (names.contains(name)) {
+	                throw new TechnicalException("Duplicate name in clients: " + name);
+	            }
+	            names.add(name);
+	            updateCallbackUrlOfIndirectClient(client);
+	        }
         }
     }
 
@@ -160,8 +146,7 @@ public final class Clients extends InitializableObject {
      * @return the right client
      */
     public Client findClient(final String name) {
-        init();
-        for (final Client client : combineStaticAndContributedClients()) {
+        for (final Client client : getClients()) {
             if (CommonHelper.areEquals(name, client.getName())) {
                 return client;
             }
@@ -179,9 +164,8 @@ public final class Clients extends InitializableObject {
      */
     @SuppressWarnings("unchecked")
     public <C extends Client> C findClient(final Class<C> clazz) {
-        init();
         if (clazz != null) {
-          for (final Client client : combineStaticAndContributedClients()) {
+          for (final Client client : getClients()) {
             if (clazz.isAssignableFrom(client.getClass())) {
                 return (C) client;
             }
@@ -197,49 +181,9 @@ public final class Clients extends InitializableObject {
      * @return all the clients
      */
     public List<Client> findAllClients() {
-        init();
-        return combineStaticAndContributedClients();
+        return getClients();
     }
 
-    
-	/**
-	 * Gathers contributed clients from all contributors and returns them. Does NOT set them to {@link #contributedClients}.
-	 * 
-	 * @return A list of all contributed clients. Never {@code null}.
-	 */
-    private List<Client> enlistAllContributedClients() {
-    	final List<Client> allContributedClients = new ArrayList<>();
-    	
-    	if (clientContributors != null) {
-    		for (AdditionalClientContributor contributor: clientContributors) {
-    			final Set<Client> clientsFromThisContributor = contributor.contributeClients();
-    			allContributedClients.addAll(clientsFromThisContributor);
-    			logger.debug("Contributor {} contributed {} clients.", contributor.getContributorName(), clientsFromThisContributor.size());
-    		}
-    	}
-    	
-    	logger.debug("In total, {} clients were contributed.", allContributedClients.size());
-    	return allContributedClients;
-    }
-
-    
-	/**
-	 * Combines statically defined clients with dynamically contributed clients into one list.
-	 * 
-	 * @return A list of clients containing both static and contributed clients.
-	 */
-    private List<Client> combineStaticAndContributedClients() {
-		final List<Client> combined = new ArrayList<>();
-		if (this.clients != null) {
-			combined.addAll(clients);
-		}
-		if (this.contributedClients != null) {
-			combined.addAll(contributedClients);
-		}
-		return combined;
-    }
-    
-    
     public String getClientNameParameter() {
         return this.clientNameParameter;
     }
@@ -274,8 +218,18 @@ public final class Clients extends InitializableObject {
         this.clients = Arrays.asList(clients);
     }
     
+    /**
+     * Returns initialized clients.
+     * 
+     * @return A list of clients ready to be used.
+     */
     public List<Client> getClients() {
-        return clients;
+    	init();
+    	if (this.clients == null) {
+    		return Collections.emptyList();
+    	} else {
+    		return this.clients;
+    	}
     }
 
     @Override
@@ -284,12 +238,19 @@ public final class Clients extends InitializableObject {
                 this.clientNameParameter, "clients", this.clients);
     }
 
-	public List<AdditionalClientContributor> getClientContributors() {
-		return clientContributors;
-	}
-
-	public void setClientContributors(List<AdditionalClientContributor> clientContributors) {
-		this.clientContributors = clientContributors;
-	}
+    
+	/**
+	 * An internal method that loads client definitions, if needed. The loaded clients should be returned as the result of this method and
+	 * also set into an internal variable that is later returned by {@link #getClients()}. These two methods should always be consistent
+	 * with each other.
+	 * 
+	 * @return A list of clients ready to be used.
+	 * 
+	 * @see #getClients()
+	 */
+    protected List<Client> loadClientsInternal() {
+    	// Nothing is needed to be done with this.clients. They are statically defined.
+    	return this.clients;
+    }
     
 }
