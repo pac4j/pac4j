@@ -16,6 +16,7 @@
 package org.pac4j.core.authorization;
 
 import org.junit.Test;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -157,5 +158,57 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testNullProfile() {
         checker.isAuthorized(null, null, new ArrayList<Authorizer>());
+    }
+
+    @Test
+    public void testHsts() {
+        final MockWebContext context = MockWebContext.create();
+        context.setScheme("HTTPS");
+        checker.isAuthorized(context, new UserProfile(), "hsts", null);
+        assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
+    }
+
+    @Test
+    public void testNosniff() {
+        final MockWebContext context = MockWebContext.create();
+        checker.isAuthorized(context, new UserProfile(), "nosniff", null);
+        assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
+    }
+
+    @Test
+    public void testNoframe() {
+        final MockWebContext context = MockWebContext.create();
+        checker.isAuthorized(context, new UserProfile(), "noframe", null);
+        assertNotNull(context.getResponseHeaders().get("X-Frame-Options"));
+    }
+
+    @Test
+    public void testXssprotection() {
+        final MockWebContext context = MockWebContext.create();
+        checker.isAuthorized(context, new UserProfile(), "xssprotection", null);
+        assertNotNull(context.getResponseHeaders().get("X-XSS-Protection"));
+    }
+
+    @Test
+    public void testNocache() {
+        final MockWebContext context = MockWebContext.create();
+        checker.isAuthorized(context, new UserProfile(), "nocache", null);
+        assertNotNull(context.getResponseHeaders().get("Cache-Control"));
+        assertNotNull(context.getResponseHeaders().get("Pragma"));
+        assertNotNull(context.getResponseHeaders().get("Expires"));
+    }
+
+    @Test
+    public void testSecurityHeaders() {
+        final MockWebContext context = MockWebContext.create();
+        context.setScheme("HTTPS");
+        checker.isAuthorized(context, new UserProfile(), "securityHeaders", null);
+        assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
+        assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
+        assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
+        assertNotNull(context.getResponseHeaders().get("X-XSS-Protection"));
+        assertNotNull(context.getResponseHeaders().get("Cache-Control"));
+        assertNotNull(context.getResponseHeaders().get("Pragma"));
+        assertNotNull(context.getResponseHeaders().get("Expires"));
     }
 }

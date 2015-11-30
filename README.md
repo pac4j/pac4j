@@ -45,7 +45,7 @@ See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authenticatio
 | Google App Engine UserService | `pac4j-gae`
 | OpenID | `pac4j-openid`
 
-`pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` and `pac4j-http` submodules: role / permission checks, CSRF token validation...
+`pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` (and `pac4j-http`) submodules: role / permission checks, IP check, profile type verification, CSRF token validation... and the regular web security protections for XSS, cache control, Xframe... (like the default filters of Spring Security). 
 
 
 ## How to develop you own `pac4j` implementation for your framework / tool?

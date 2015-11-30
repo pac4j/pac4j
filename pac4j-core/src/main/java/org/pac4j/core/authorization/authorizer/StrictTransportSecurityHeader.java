@@ -20,16 +20,40 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * XFrame options authorizer.
+ * Strict transport security header.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class XFrameOptionsAuthorizer implements Authorizer<UserProfile> {
+public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
+
+    /**
+     * 6 months in seconds.
+     */
+    private final static int DEFAULT_MAX_AGE = 15768000;
+
+    private int maxAge = DEFAULT_MAX_AGE;
+
+    public StrictTransportSecurityHeader() {}
+
+    public StrictTransportSecurityHeader(final int maxAge) {
+        this.maxAge = maxAge;
+    }
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        context.setResponseHeader("X-Frame-Options", "DENY");
+        // TODO : tested on the scheme, but maybe the real test should be based on request.isSecure() or both
+        if ("HTTPS".equalsIgnoreCase(context.getScheme())) {
+            context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
+        }
         return true;
+    }
+
+    public int getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
     }
 }
