@@ -22,7 +22,7 @@ package org.pac4j.core.client;
  * <li>REDIRECT (HTTP 302)</li>
  * <li>SUCCESS (HTTP 200)</li>
  * </ul>
- * 
+ *
  * @author Michael Remond
  * @since 1.5.0
  */
@@ -66,5 +66,10 @@ public class RedirectAction {
 
     public String getContent() {
         return this.content;
+    }
+
+    @Override
+    public String toString() {
+        return "[type: " + type + ", location: " + location + ", content: " + content + "]";
     }
 }
