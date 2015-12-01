@@ -188,6 +188,9 @@ public class J2EContext implements WebContext {
     }
 
     @Override
+    public boolean isSecure() { return this.request.isSecure(); }
+
+    @Override
     public String getFullRequestURL() {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();

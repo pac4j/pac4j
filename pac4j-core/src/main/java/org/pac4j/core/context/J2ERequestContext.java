@@ -124,6 +124,9 @@ public class J2ERequestContext extends BaseResponseContext {
     }
 
     @Override
+    public boolean isSecure() { return this.request.isSecure(); }
+
+    @Override
     public String getFullRequestURL() {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();
