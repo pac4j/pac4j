@@ -16,6 +16,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
@@ -42,8 +43,7 @@ public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        // TODO : tested on the scheme, but maybe the real test should be based on request.isSecure() or both
-        if ("HTTPS".equalsIgnoreCase(context.getScheme())) {
+        if (ContextHelper.isHttpsOrSecure(context)) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }
         return true;
