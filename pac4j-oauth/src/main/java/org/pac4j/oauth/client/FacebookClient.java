@@ -63,6 +63,8 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
     
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
+
+    private static final String APPSECRET_PARAMETER = "appsecret_proof";
     
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
     
@@ -81,6 +83,8 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     protected boolean requiresExtendedToken = false;
     
     protected StateApi20 api20;
+
+    protected String appsecretProof = null;
     
     public FacebookClient() {
     }
@@ -139,6 +143,10 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         if (profile != null && this.requiresExtendedToken) {
             String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, this.key);
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, this.secret);
+            String as = getAppsecretProof();
+            if (as != null) {
+                url = CommonHelper.addParameter(url, APPSECRET_PARAMETER, as);
+            }
             url = CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
             final ProxyOAuthRequest request = createProxyRequest(url);
             final long t0 = System.currentTimeMillis();
@@ -200,6 +208,14 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         } else {
             return false;
         }
+    }
+
+    public void setAppsecretProof(String secret) {
+        appsecretProof = secret;
+    }
+
+    public String getAppsecretProof() {
+        return this.appsecretProof;
     }
     
     public String getScope() {
