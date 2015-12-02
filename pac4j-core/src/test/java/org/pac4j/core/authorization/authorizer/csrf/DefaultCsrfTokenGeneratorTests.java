@@ -10,13 +10,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.authorization;
+package org.pac4j.core.authorization.authorizer.csrf;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests {@link DefaultCsrfTokenGenerator}.
@@ -32,8 +31,8 @@ public final class DefaultCsrfTokenGeneratorTests {
     public void test() {
         final WebContext context = MockWebContext.create();
         final String token = generator.get(context);
-        assertNotNull(token);
+        Assert.assertNotNull(token);
         final String token2 = generator.get(context);
-        assertEquals(token, token2);
+        Assert.assertEquals(token, token2);
     }
 }
