@@ -16,6 +16,9 @@
 package org.pac4j.core.authorization;
 
 import org.pac4j.core.authorization.authorizer.*;
+import org.pac4j.core.authorization.authorizer.csrf.CsrfAuthorizer;
+import org.pac4j.core.authorization.authorizer.csrf.CsrfTokenGeneratorAuthorizer;
+import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -26,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Default way to check the authorizations.
+ * Default way to check the authorizations (with default authorizers).
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -38,6 +41,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static XFrameOptionsHeader X_FRAME_OPTIONS_HEADER = new XFrameOptionsHeader();
     final static XSSProtectionHeader XSS_PROTECTION_HEADER = new XSSProtectionHeader();
     final static CacheControlHeader CACHE_CONTROL_HEADER = new CacheControlHeader();
+    final static CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
+    final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
 
     @Override
     public boolean isAuthorized(final WebContext context, final UserProfile profile, final String authorizerName, final Map<String, Authorizer> authorizersMap) {
@@ -64,6 +69,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                     authorizers.add(STRICT_TRANSPORT_SECURITY_HEADER);
                     authorizers.add(X_FRAME_OPTIONS_HEADER);
                     authorizers.add(XSS_PROTECTION_HEADER);
+                } else if ("csrfToken".equalsIgnoreCase(name)) {
+                    authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
+                } else if ("csrfCheck".equalsIgnoreCase(name)) {
+                    authorizers.add(CSRF_AUTHORIZER);
+                } else if ("csrf".equalsIgnoreCase(name)) {
+                    authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
+                    authorizers.add(CSRF_AUTHORIZER);
                 } else {
                     // we must have authorizers
                     CommonHelper.assertNotNull("authorizersMap", authorizersMap);
