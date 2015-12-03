@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
@@ -75,7 +76,6 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import com.nimbusds.openid.connect.sdk.util.DefaultJWTDecoder;
-import com.nimbusds.openid.connect.sdk.util.DefaultResourceRetriever;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
