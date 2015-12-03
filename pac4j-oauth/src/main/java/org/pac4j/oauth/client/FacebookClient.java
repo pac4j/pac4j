@@ -15,9 +15,14 @@
  */
 package org.pac4j.oauth.client;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -33,8 +38,6 @@ import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.oauth.StateOAuth20ServiceImpl;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Facebook.</p>
@@ -84,7 +87,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     protected StateApi20 api20;
 
-    protected String appsecretProof = null;
+    protected String appsecret = null;
     
     public FacebookClient() {
     }
@@ -143,11 +146,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         if (profile != null && this.requiresExtendedToken) {
             String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, this.key);
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, this.secret);
-            String as = getAppsecretProof();
-            if (as != null) {
-                url = CommonHelper.addParameter(url, APPSECRET_PARAMETER, as);
-            }
-            url = CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
+            url = addExchangeToken(url, accessToken);
             final ProxyOAuthRequest request = createProxyRequest(url);
             final long t0 = System.currentTimeMillis();
             final Response response = request.send();
@@ -210,12 +209,46 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         }
     }
 
-    public void setAppsecretProof(String secret) {
-        appsecretProof = secret;
+    public void setAppsecret(String secret) {
+        appsecret = secret;
     }
 
-    public String getAppsecretProof() {
-        return this.appsecretProof;
+    public String getAppsecret() {
+        return this.appsecret;
+    }
+
+    /**
+     * The code in this method is based on this blog post: https://www.sammyk.me/the-single-most-important-way-to-make-your-facebook-app-more-secure
+     * and this answer: https://stackoverflow.com/questions/7124735/hmac-sha256-algorithm-for-signature-calculation
+     *
+     * @param token the application token we pass back and forth
+     * @return Hashed token + appsecret, encoded as a hexadecimal string
+     */
+    protected String computeAppSecretProof(Token token) {
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(getAppsecret().getBytes("UTF-8"), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            return org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getToken().getBytes("UTF-8")));
+        } catch (Exception e) {
+            throw new TechnicalException("Unable to compute appsecret_proof", e);
+        }
+    }
+
+    /**
+     * Adds the token to the URL in question. If we have an appsecret, then this method
+     * will also add the appsecret_proof parameter to the URL, as Facebook expects.
+     *
+     * @param url the URL to modify
+     * @param accessToken the token we're passing back and forth
+     * @return url with additional parameter(s)
+     */
+    protected String addExchangeToken(String url, Token accessToken) {
+        if (this.appsecret != null) {
+            String proof = computeAppSecretProof(accessToken);
+            url = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
+        }
+        return CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
     }
     
     public String getScope() {
