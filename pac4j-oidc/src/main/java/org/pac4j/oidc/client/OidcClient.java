@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
+import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
+import com.nimbusds.openid.connect.sdk.token.verifiers.IDTokenVerifier;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
@@ -33,18 +35,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWEDecrypter;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.ECDSAVerifier;
-import com.nimbusds.jose.crypto.RSADecrypter;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.ECKey;
-import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -75,7 +66,6 @@ import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
-import com.nimbusds.openid.connect.sdk.util.DefaultJWTDecoder;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
@@ -86,6 +76,10 @@ import com.nimbusds.openid.connect.sdk.util.DefaultJWTDecoder;
  * @since 1.7.0
  */
 public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
+
+    public final static String AUDIENCE = "audience";
+    public final static String AUTHORIZED_PARTY = "authorizedParty";
+    public final static String EXPIRATION_TIME = "expirationTime";
 
     /* Parameter to indicate to send nonce in the authentication request */
     private static final String USE_NONCE_PARAM = "useNonce";
@@ -108,8 +102,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* discovery URI for fetching OP metadata (http://openid.net/specs/openid-connect-discovery-1_0.html) */
     private String discoveryURI;
 
-    /* Decoder for the JWT ID Token */
-    private DefaultJWTDecoder jwtDecoder;
+    /* ID Token verifier */
+    private IDTokenVerifier idTokenVerifier;
 
     /* OIDC metadata */
     private OIDCProviderMetadata oidcProvider;
@@ -215,10 +209,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         // Get available client authentication method
         ClientAuthenticationMethod method = getClientAuthenticationMethod();
         this.clientAuthentication = getClientAuthentication(method);
-        // Init JWT decoder
-        this.jwtDecoder = new DefaultJWTDecoder();
-        initJwtDecoder(this.jwtDecoder, jwkSet);
-
+        // Init IDTokenVerifier
+        this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, oidcProvider.getIDTokenJWSAlgs().get(0), jwkSet);
     }
 
     @Override
@@ -264,6 +256,15 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         logger.debug("Authentication request url : {}", location);
 
         return RedirectAction.redirect(location);
+    }
+
+    /**
+     * Returns <code>true</code> if we want to use a nonce.
+     *
+     * @return
+     */
+    private boolean useNonce() {
+        return Boolean.parseBoolean(this.authParams.get(USE_NONCE_PARAM));
     }
 
     @Override
@@ -347,20 +348,19 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                 }
             }
 
+            final Nonce nonce;
+            if (useNonce()) {
+                nonce = new Nonce((String) context.getSessionAttribute(NONCE_ATTRIBUTE));
+            } else {
+                nonce = null;
+            }
             // Check ID Token
-            final JWTClaimsSet claimsSet = this.jwtDecoder.decodeJWT(oidcTokens.getIDToken());
+            final IDTokenClaimsSet claimsSet = this.idTokenVerifier.verify(oidcTokens.getIDToken(), nonce);
             if(claimsSet != null){
             	profile.setId(claimsSet.getSubject());
-            	profile.addAttributes(claimsSet.getClaims());
-            }
-            
-            if (useNonce()) {
-                String nonce = claimsSet.getStringClaim("nonce");
-                if (nonce == null || !nonce.equals(context.getSessionAttribute(NONCE_ATTRIBUTE))) {
-                    throw new TechnicalException(
-                            "A nonce was sent in the authentication request but it is missing or different in the ID Token. "
-                                    + "Session expired or possible threat of cross-site request forgery");
-                }
+                profile.addAttribute(AUDIENCE, claimsSet.getAudience());
+                profile.addAttribute(AUTHORIZED_PARTY, claimsSet.getAuthorizedParty());
+                profile.addAttribute(EXPIRATION_TIME, claimsSet.getExpirationTime());
             }
 
             return profile;
@@ -380,52 +380,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         return this.oidcProvider.getTokenEndpointAuthMethods() != null
                 && this.oidcProvider.getTokenEndpointAuthMethods().size() > 0 ? this.oidcProvider
                 .getTokenEndpointAuthMethods().get(0) : ClientAuthenticationMethod.getDefault();
-    }
-
-    /**
-     * Returns <code>true</code> if we want to use a nonce.
-     *
-     * @return
-     */
-    private boolean useNonce() {
-        return Boolean.parseBoolean(this.authParams.get(USE_NONCE_PARAM));
-    }
-
-    /**
-     * Add the required verifiers and decrypters to the JWT Decoder based on the JWK set from the OP.
-     *
-     * @param jwtDecoder
-     * @param jwkSet
-     */
-    private void initJwtDecoder(final DefaultJWTDecoder jwtDecoder, final JWKSet jwkSet) {
-        try {
-            for (JWK key : jwkSet.getKeys()) {
-                if (key.getKeyUse() == KeyUse.SIGNATURE) {
-                    jwtDecoder.addJWSVerifier(getVerifier(key));
-                } else if (key.getKeyUse() == KeyUse.ENCRYPTION) {
-                    jwtDecoder.addJWEDecrypter(getDecrypter(key));
-                }
-            }
-        } catch (Exception e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    private JWEDecrypter getDecrypter(final JWK key) throws JOSEException {
-        if (key instanceof RSAKey) {
-            return new RSADecrypter(((RSAKey) key).toRSAPrivateKey());
-        }
-        return null;
-    }
-
-    private JWSVerifier getVerifier(final JWK key) throws JOSEException {
-        if (key instanceof RSAKey) {
-            return new RSASSAVerifier(((RSAKey) key).toRSAPublicKey());
-        } else if (key instanceof ECKey) {
-            ECKey ecKey = (ECKey) key;
-            return new ECDSAVerifier(ecKey);
-        }
-        return null;
     }
 
     /**
