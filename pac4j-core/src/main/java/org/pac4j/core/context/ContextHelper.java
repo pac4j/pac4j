@@ -30,12 +30,11 @@ public final class ContextHelper {
     /**
      * Get a specific cookie by its name.
      *
-     * @param context the current web context
+     * @param cookies provided cookies
      * @param name the name of the cookie
      * @return the cookie
      */
-    public static final Cookie getCookie(final WebContext context, final String name) {
-        final Collection<Cookie> cookies = context.getRequestCookies();
+    public static Cookie getCookie(final Collection<Cookie> cookies, final String name) {
         if (cookies != null) {
             for (final Cookie cookie : cookies) {
                 if (cookie != null && CommonHelper.areEquals(name, cookie.getName())) {
@@ -44,6 +43,27 @@ public final class ContextHelper {
             }
         }
         return null;
+    }
+
+    /**
+     * Get a specific cookie by its name.
+     *
+     * @param context the current web context
+     * @param name the name of the cookie
+     * @return the cookie
+     */
+    public static Cookie getCookie(final WebContext context, final String name) {
+        return getCookie(context.getRequestCookies(), name);
+    }
+
+    /**
+     * Whether it is a POST request.
+     *
+     * @param context the web context
+     * @return whether it is a POST request
+     */
+    public static boolean isPost(final WebContext context) {
+        return HttpConstants.HTTP_METHOD.POST.name().equalsIgnoreCase(context.getRequestMethod());
     }
 
     /**

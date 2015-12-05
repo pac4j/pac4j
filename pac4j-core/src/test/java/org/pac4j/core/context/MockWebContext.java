@@ -229,6 +229,8 @@ public class MockWebContext extends BaseResponseContext {
         return this.requestCookies;
     }
 
+    public Collection<Cookie> getResponseCookies() { return this.responseCookies; }
+
     /**
      * {@inheritDoc}
      */
