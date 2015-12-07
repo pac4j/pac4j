@@ -18,9 +18,11 @@ package org.pac4j.oidc.client;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.token.verifiers.IDTokenVerifier;
@@ -81,9 +83,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     public final static String AUTHORIZED_PARTY = "authorizedParty";
     public final static String EXPIRATION_TIME = "expirationTime";
 
-    /* Parameter to indicate to send nonce in the authentication request */
-    private static final String USE_NONCE_PARAM = "useNonce";
-
     /* state attribute name in session */
     private static final String STATE_ATTRIBUTE = "oidcStateAttribute";
 
@@ -125,6 +124,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     /* secret object */
     private Secret _secret;
+
+    private boolean useNonce;
+
+    private JWSAlgorithm preferredJwsAlgorithm;
 
     public OidcClient() { }
 
@@ -172,7 +175,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         CommonHelper.assertNotBlank(this.discoveryURI, "discoveryURI cannot be blank");
 
         this.authParams = new HashMap<String, String>();
-        
+
         // add scope
         if(StringUtils.isNotBlank(this.scope)){
         	this.authParams.put("scope", this.scope);
@@ -180,7 +183,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 	        // default values
 	        this.authParams.put("scope", "openid profile email");
         }
-        
+
         this.authParams.put("response_type", "code");
         final String computedCallbackUrl = computeFinalCallbackUrl(context);
         this.authParams.put("redirect_uri", computedCallbackUrl);
@@ -209,8 +212,18 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         // Get available client authentication method
         ClientAuthenticationMethod method = getClientAuthenticationMethod();
         this.clientAuthentication = getClientAuthentication(method);
+        // check algorithms
+        final List<JWSAlgorithm> algorithms = oidcProvider.getIDTokenJWSAlgs();
+        CommonHelper.assertTrue(algorithms != null && algorithms.size() > 0, "There must at least one JWS algorithm supported on the OpenID Connect provider side");
+        final JWSAlgorithm jwsAlgorithm;
+        if (algorithms.contains(preferredJwsAlgorithm)) {
+            jwsAlgorithm = preferredJwsAlgorithm;
+        } else {
+            jwsAlgorithm = algorithms.get(0);
+            logger.error("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredJwsAlgorithm, jwsAlgorithm);
+        }
         // Init IDTokenVerifier
-        this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, oidcProvider.getIDTokenJWSAlgs().get(0), jwkSet);
+        this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, jwkSet);
     }
 
     @Override
@@ -220,13 +233,14 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         client.setSecret(this.secret);
         client.setDiscoveryURI(this.discoveryURI);
         client.setAuthParams(this.authParams);
-
+        client.setUseNonce(this.useNonce);
+        client.setPreferredJwsAlgorithm(this.preferredJwsAlgorithm);
         return client;
     }
 
     @Override
     protected boolean isDirectRedirection() {
-        return true;
+        return false;
     }
 
     @Override
@@ -239,7 +253,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         params.put("state", state.getValue());
         context.setSessionAttribute(STATE_ATTRIBUTE, state);
         // Init nonce for replay attack mitigation
-        if (useNonce()) {
+        if (this.useNonce) {
             Nonce nonce = new Nonce();
             params.put("nonce", nonce.getValue());
             context.setSessionAttribute(NONCE_ATTRIBUTE, nonce.getValue());
@@ -256,15 +270,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         logger.debug("Authentication request url : {}", location);
 
         return RedirectAction.redirect(location);
-    }
-
-    /**
-     * Returns <code>true</code> if we want to use a nonce.
-     *
-     * @return
-     */
-    private boolean useNonce() {
-        return Boolean.parseBoolean(this.authParams.get(USE_NONCE_PARAM));
     }
 
     @Override
@@ -349,7 +354,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             }
 
             final Nonce nonce;
-            if (useNonce()) {
+            if (this.useNonce) {
                 nonce = new Nonce((String) context.getSessionAttribute(NONCE_ATTRIBUTE));
             } else {
                 nonce = null;
@@ -407,5 +412,21 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     private void setAuthParams(final Map<String, String> authParams) {
         this.authParams = authParams;
+    }
+
+    public JWSAlgorithm getPreferredJwsAlgorithm() {
+        return preferredJwsAlgorithm;
+    }
+
+    public void setPreferredJwsAlgorithm(JWSAlgorithm preferredJwsAlgorithm) {
+        this.preferredJwsAlgorithm = preferredJwsAlgorithm;
+    }
+
+    public boolean isUseNonce() {
+        return useNonce;
+    }
+
+    public void setUseNonce(boolean useNonce) {
+        this.useNonce = useNonce;
     }
 }
