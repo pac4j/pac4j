@@ -10,7 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.authorization;
+package org.pac4j.core.authorization.authorizer.csrf;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -25,13 +25,13 @@ public class DefaultCsrfTokenGenerator implements CsrfTokenGenerator {
 
     @Override
     public String get(final WebContext context) {
-        String token = (String) context.getSessionAttribute(Pac4jConstants.CSRK_TOKEN);
+        String token = (String) context.getSessionAttribute(Pac4jConstants.CSRF_TOKEN);
         if (token == null) {
             synchronized (this) {
-                token = (String) context.getSessionAttribute(Pac4jConstants.CSRK_TOKEN);
+                token = (String) context.getSessionAttribute(Pac4jConstants.CSRF_TOKEN);
                 if (token == null) {
                     token = java.util.UUID.randomUUID().toString();
-                    context.setSessionAttribute(Pac4jConstants.CSRK_TOKEN, token);
+                    context.setSessionAttribute(Pac4jConstants.CSRF_TOKEN, token);
                 }
             }
         }

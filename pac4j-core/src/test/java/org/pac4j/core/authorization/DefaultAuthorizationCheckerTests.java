@@ -16,6 +16,8 @@
 package org.pac4j.core.authorization;
 
 import org.junit.Test;
+import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
+import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -210,5 +212,65 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         assertNotNull(context.getResponseHeaders().get("Cache-Control"));
         assertNotNull(context.getResponseHeaders().get("Pragma"));
         assertNotNull(context.getResponseHeaders().get("Expires"));
+    }
+
+    @Test
+    public void testCsrf() {
+        final MockWebContext context = MockWebContext.create();
+        assertTrue(checker.isAuthorized(context, new UserProfile(), "csrf", null));
+        assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
+    public void testCsrfToken() {
+        final MockWebContext context = MockWebContext.create();
+        assertTrue(checker.isAuthorized(context, new UserProfile(), "csrfToken", null));
+        assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
+    public void testCsrfPost() {
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        assertFalse(checker.isAuthorized(context, new UserProfile(), "csrf", null));
+        assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
+    public void testCsrfTokenPost() {
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        assertTrue(checker.isAuthorized(context, new UserProfile(), "csrfToken", null));
+        assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
+    public void testCsrfPostTokenParameter() {
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
+        final String token = generator.get(context);
+        context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
+        assertTrue(checker.isAuthorized(context, new UserProfile(), "csrf", null));
+        assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
+        assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
+    }
+
+    @Test
+    public void testCsrfCheckPost() {
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
+        generator.get(context);
+        assertFalse(checker.isAuthorized(context, new UserProfile(), "csrfCheck", null));
+    }
+
+    @Test
+    public void testCsrfCheckPostTokenParameter() {
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
+        final String token = generator.get(context);
+        context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
+        assertTrue(checker.isAuthorized(context, new UserProfile(), "csrfCheck", null));
     }
 }
