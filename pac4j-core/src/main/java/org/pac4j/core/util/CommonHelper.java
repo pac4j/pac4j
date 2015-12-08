@@ -195,18 +195,28 @@ public final class CommonHelper {
      * @return the input stream
      */
     public static InputStream getInputStreamFromName(String name) {
-        if (name.startsWith(RESOURCE_PREFIX)) {
-            String path = name.substring(RESOURCE_PREFIX.length());
-            if (!path.startsWith("/")) {
-                path = "/" + path;
-            }
-            return CommonHelper.class.getResourceAsStream(path);
-        } else {
-            try {
+    	int prefixEnd = name.indexOf(":");
+    	String prefix = null;
+    	String path = name;
+    	if (prefixEnd != -1) {
+    		prefix = name.substring(0,prefixEnd);
+    		path = name.substring(prefixEnd+1);
+    	}
+    	
+    	switch (prefix) {
+		case "resource":
+			if (!path.startsWith("/")) {
+	            path = "/" + path;
+	        }
+		case "classpath":
+			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+		default:
+			try {
                 return new FileInputStream(name);
             } catch (FileNotFoundException e) {
                 throw new TechnicalException(e);
             }
-        }
+		}
+
     }
 }
