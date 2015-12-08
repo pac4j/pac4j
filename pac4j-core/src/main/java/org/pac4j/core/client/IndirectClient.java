@@ -102,7 +102,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws RequiresHttpAction requires an additional HTTP action
      */
     public final RedirectAction getRedirectAction(final WebContext context, final boolean protectedTarget) throws RequiresHttpAction {
-        init(context);
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
@@ -121,6 +120,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         }
         // it's a direct redirection or force the redirection because the target is protected -> return the real redirection
         if (isDirectRedirection() || protectedTarget) {
+            init(context);
             return retrieveRedirectAction(context);
         } else {
             // return an intermediate url which is the callback url with a specific parameter requiring redirection

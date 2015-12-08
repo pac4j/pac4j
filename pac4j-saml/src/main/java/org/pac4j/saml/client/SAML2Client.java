@@ -67,7 +67,7 @@ import java.util.List;
 /**
  * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
  * Browser SSO profile with HTTP-POST binding. (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
- * 
+ *
  * @author Michael Remond
  * @author Misagh Moayyed
  * @since 1.5.0
@@ -219,7 +219,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     @Override
     protected boolean isDirectRedirection() {
-        return false;
+        return !this.configuration.getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI);
     }
 
     @Override
