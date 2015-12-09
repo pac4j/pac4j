@@ -20,7 +20,7 @@
 	<parent>
 		<groupId>org.pac4j</groupId>
 		<artifactId>pac4j</artifactId>
-		<version>1.8.1-SNAPSHOT</version>
+		<version>1.8.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>pac4j-oauth</artifactId>
@@ -36,6 +36,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.scribe</groupId>
 			<artifactId>scribe</artifactId>

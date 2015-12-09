@@ -86,10 +86,18 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
         final BasicSignatureSigningConfiguration config =
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 
-        config.setBlacklistedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
-        config.setSignatureAlgorithms(this.configuration.getSignatureAlgorithms());
-        config.setSignatureCanonicalizationAlgorithm(this.configuration.getSignatureCanonicalizationAlgorithm());
-        config.setSignatureReferenceDigestMethods(this.configuration.getSignatureReferenceDigestMethods());
+        if (this.configuration.getBlackListedSignatureSigningAlgorithms() != null) {
+            config.setBlacklistedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
+        }
+        if (this.configuration.getSignatureAlgorithms() != null){
+            config.setSignatureAlgorithms(this.configuration.getSignatureAlgorithms());
+        }
+        if (this.configuration.getSignatureCanonicalizationAlgorithm() != null) {
+            config.setSignatureCanonicalizationAlgorithm(this.configuration.getSignatureCanonicalizationAlgorithm());
+        }
+        if (this.configuration.getSignatureReferenceDigestMethods() != null) {
+            config.setSignatureReferenceDigestMethods(this.configuration.getSignatureReferenceDigestMethods());
+        }
 
         final List<Credential> creds = new ArrayList<>();
         creds.add(this.credentialProvider.getCredential());

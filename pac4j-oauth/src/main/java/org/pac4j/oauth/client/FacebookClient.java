@@ -15,9 +15,14 @@
  */
 package org.pac4j.oauth.client;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -33,8 +38,6 @@ import org.scribe.model.Response;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.oauth.StateOAuth20ServiceImpl;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Facebook.</p>
@@ -63,6 +66,8 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
     
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
+
+    private static final String APPSECRET_PARAMETER = "appsecret_proof";
     
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
     
@@ -81,6 +86,8 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     protected boolean requiresExtendedToken = false;
     
     protected StateApi20 api20;
+
+    protected boolean useAppsecretProof = false;
     
     public FacebookClient() {
     }
@@ -125,6 +132,10 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         if (this.limit > DEFAULT_LIMIT) {
             url += "&limit=" + this.limit;
         }
+        // possibly include the appsecret_proof parameter
+        if (this.useAppsecretProof) {
+            url = computeAppSecretProof(url, accessToken);
+        }
         return url;
     }
     
@@ -139,7 +150,7 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         if (profile != null && this.requiresExtendedToken) {
             String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, this.key);
             url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, this.secret);
-            url = CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
+            url = addExchangeToken(url, accessToken);
             final ProxyOAuthRequest request = createProxyRequest(url);
             final long t0 = System.currentTimeMillis();
             final Response response = request.send();
@@ -200,6 +211,50 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
         } else {
             return false;
         }
+    }
+
+    public void setUseAppSecretProof(boolean useSecret) {
+        this.useAppsecretProof = useSecret;
+    }
+
+    public boolean getUseAppSecretProof() {
+        return this.useAppsecretProof;
+    }
+
+    /**
+     * The code in this method is based on this blog post: https://www.sammyk.me/the-single-most-important-way-to-make-your-facebook-app-more-secure
+     * and this answer: https://stackoverflow.com/questions/7124735/hmac-sha256-algorithm-for-signature-calculation
+     *
+     * @param url the URL to which we're adding the proof
+     * @param token the application token we pass back and forth
+     * @return URL with the appsecret_proof parameter added
+     */
+    protected String computeAppSecretProof(String url, Token token) {
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(this.secret.getBytes("UTF-8"), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getToken().getBytes("UTF-8")));
+            url = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
+            return url;
+        } catch (Exception e) {
+            throw new TechnicalException("Unable to compute appsecret_proof", e);
+        }
+    }
+
+    /**
+     * Adds the token to the URL in question. If we require appsecret_proof, then this method
+     * will also add the appsecret_proof parameter to the URL, as Facebook expects.
+     *
+     * @param url the URL to modify
+     * @param accessToken the token we're passing back and forth
+     * @return url with additional parameter(s)
+     */
+    protected String addExchangeToken(String url, Token accessToken) {
+        if (this.useAppsecretProof) {
+            url = computeAppSecretProof(url, accessToken);
+        }
+        return CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
     }
     
     public String getScope() {

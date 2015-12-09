@@ -15,6 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
@@ -26,8 +27,6 @@ import org.scribe.model.OAuthConfig;
 import org.scribe.model.SignatureType;
 import org.scribe.model.Token;
 import org.scribe.oauth.StateOAuth20ServiceImpl;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
@@ -55,6 +54,8 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
 
     protected String scopeValue;
+
+    private boolean requiresStateParameter = true;
 
     public Google2Client() {
     }
@@ -118,7 +119,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
 
     @Override
     protected boolean requiresStateParameter() {
-        return true;
+        return requiresStateParameter;
     }
 
     @Override
@@ -129,5 +130,14 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Enable or disable usage of the 'state' parameter as a CSRF protection in OAuth.
+     * Default is true.
+     * @param requiresStateParameter
+     */
+    public void setUseStateParameter(boolean requiresStateParameter) {
+        this.requiresStateParameter = requiresStateParameter;
     }
 }

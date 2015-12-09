@@ -42,6 +42,8 @@ public class MockWebContext extends BaseResponseContext {
 
     protected String scheme = "http";
 
+    protected boolean secure = false;
+
     protected int serverPort = 80;
 
     protected String fullRequestURL = null;
@@ -197,8 +199,16 @@ public class MockWebContext extends BaseResponseContext {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public MockWebContext setScheme(final String scheme) {
         this.scheme = scheme;
+        return this;
+    }
+
+    public boolean isSecure() { return this.secure; }
+
+    public MockWebContext setSecure(final boolean secure) {
+        this.secure = secure;
+        return this;
     }
 
     public String getFullRequestURL() {
@@ -218,6 +228,8 @@ public class MockWebContext extends BaseResponseContext {
     public Collection<Cookie> getRequestCookies() {
         return this.requestCookies;
     }
+
+    public Collection<Cookie> getResponseCookies() { return this.responseCookies; }
 
     /**
      * {@inheritDoc}

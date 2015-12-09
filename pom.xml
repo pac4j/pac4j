@@ -27,7 +27,7 @@
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>1.8.1-SNAPSHOT</version>
+	<version>1.8.2-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -206,12 +206,12 @@
 			<dependency>
 				<groupId>com.nimbusds</groupId>
 				<artifactId>oauth2-oidc-sdk</artifactId>
-				<version>5.0-alpha5</version>
+				<version>5.0-alpha15</version>
 			</dependency>
 			<dependency>
 				<groupId>com.nimbusds</groupId>
 				<artifactId>nimbus-jose-jwt</artifactId>
-				<version>4.0</version>
+				<version>4.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>

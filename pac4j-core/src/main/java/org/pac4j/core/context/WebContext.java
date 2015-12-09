@@ -111,7 +111,7 @@ public interface WebContext {
     /**
      * Set the response status.
      *
-     * @param code status code to set for the response 
+     * @param code status code to set for the response
      */
     void setResponseStatus(int code);
 
@@ -155,6 +155,13 @@ public interface WebContext {
      * @return the scheme
      */
     String getScheme();
+
+    /**
+     * Return whether the request is secure.
+     *
+     * @return whether the request is secure
+     */
+    boolean isSecure();
 
     /**
      * Return the full URL (with query string) the client used to request the server.
