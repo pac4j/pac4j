@@ -15,7 +15,6 @@
  */
 package org.pac4j.config.client;
 
-import com.nimbusds.jose.JWSAlgorithm;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.client.Clients;
