@@ -45,14 +45,14 @@ See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authenticatio
 | Google App Engine UserService | `pac4j-gae`
 | OpenID | `pac4j-openid`
 
-`pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` and `pac4j-http` submodules: role / permission checks, CSRF token validation...
+`pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` (and `pac4j-http`) submodules: role / permission checks, IP check, profile type verification, HTTP method verification... as well as regular security protections for CSRF, XSS, cache control, Xframe...
 
 
 ## How to develop you own `pac4j` implementation for your framework / tool?
 
 ### Versions
 
-The next version **1.8.1-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j). See the [tests strategy](https://github.com/pac4j/pac4j/wiki/Tests).
+The next version **1.8.2-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j). See the [tests strategy](https://github.com/pac4j/pac4j/wiki/Tests).
 
 The source code can be cloned and locally built via Maven:
 

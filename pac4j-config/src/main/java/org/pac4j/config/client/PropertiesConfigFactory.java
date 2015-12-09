@@ -15,6 +15,7 @@
  */
 package org.pac4j.config.client;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
@@ -36,7 +37,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class ConfigPropertiesFactory implements ConfigFactory {
+public class PropertiesConfigFactory implements ConfigFactory {
 
     public final static String FACEBOOK_ID = "facebook.id";
     public final static String FACEBOOK_SECRET = "facebook.secret";
@@ -60,18 +61,23 @@ public class ConfigPropertiesFactory implements ConfigFactory {
     public final static String OIDC_ID = "oidc.id";
     public final static String OIDC_SECRET = "oidc.secret";
     public final static String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
+    public final static String OIDC_USE_NONCE = "oidc.useNonce";
+    public final static String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
+    public final static String OIDC_MAX_CLOCK_SKEW = "oidc.maxClockSkew";
     public final static String OIDC_CUSTOM_PARAM_KEY1 = "oidc.customParamKey1";
     public final static String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
+    public final static String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
+    public final static String OIDC_CUSTOM_PARAM_VALUE2 = "oidc.customParamValue2";
 
     private final String callbackUrl;
 
     private final Map<String, String> properties;
 
-    public ConfigPropertiesFactory(final Map<String, String> properties) {
+    public PropertiesConfigFactory(final Map<String, String> properties) {
         this(null, properties);
     }
 
-    public ConfigPropertiesFactory(final String callbackUrl, final Map<String, String> properties) {
+    public PropertiesConfigFactory(final String callbackUrl, final Map<String, String> properties) {
         this.callbackUrl = callbackUrl;
         this.properties = properties;
     }
@@ -160,10 +166,27 @@ public class ConfigPropertiesFactory implements ConfigFactory {
         final String discoveryUri = getProperty(OIDC_DISCOVERY_URI);
         if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret) && CommonHelper.isNotBlank(discoveryUri)) {
             final OidcClient oidcClient = new OidcClient(id, secret, discoveryUri);
-            final String key = getProperty(OIDC_CUSTOM_PARAM_KEY1);
-            final String value = getProperty(OIDC_CUSTOM_PARAM_VALUE1);
-            if (CommonHelper.isNotBlank(key) && CommonHelper.isNotBlank(value)) {
-                oidcClient.addCustomParam(key, value);
+            final String useNonce = getProperty(OIDC_USE_NONCE);
+            if (CommonHelper.isNotBlank(useNonce)) {
+                oidcClient.setUseNonce(Boolean.parseBoolean(useNonce));
+            }
+            final String jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM);
+            if (CommonHelper.isNotBlank(jwsAlgo)) {
+                oidcClient.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
+            }
+            final String maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW);
+            if (CommonHelper.isNotBlank(maxClockSkew)) {
+                oidcClient.setMaxClockSkew(Integer.parseInt(maxClockSkew));
+            }
+            final String key1 = getProperty(OIDC_CUSTOM_PARAM_KEY1);
+            final String value1 = getProperty(OIDC_CUSTOM_PARAM_VALUE1);
+            if (CommonHelper.isNotBlank(key1)) {
+                oidcClient.addCustomParam(key1, value1);
+            }
+            final String key2 = getProperty(OIDC_CUSTOM_PARAM_KEY2);
+            final String value2 = getProperty(OIDC_CUSTOM_PARAM_VALUE2);
+            if (CommonHelper.isNotBlank(key2)) {
+                oidcClient.addCustomParam(key2, value2);
             }
             clients.add(oidcClient);
         }

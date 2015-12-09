@@ -10,23 +10,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.authorization;
+package org.pac4j.core.authorization.authorizer.csrf;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 
 /**
- * CSRF token generator.
+ * Tests {@link DefaultCsrfTokenGenerator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface CsrfTokenGenerator {
+public final class DefaultCsrfTokenGeneratorTests {
 
-    /**
-     * Get the CSRF token from the session or create it if it doesn't exist.
-     *
-     * @param context the current web context
-     * @return the CSRF token
-     */
-    String get(WebContext context);
+    private final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
+
+    @Test
+    public void test() {
+        final WebContext context = MockWebContext.create();
+        final String token = generator.get(context);
+        Assert.assertNotNull(token);
+        final String token2 = generator.get(context);
+        Assert.assertEquals(token, token2);
+    }
 }

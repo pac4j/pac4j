@@ -28,18 +28,14 @@ import org.pac4j.http.profile.HttpProfile;
 public final class HttpTGTProfile extends HttpProfile {
     private static final long serialVersionUID = -1688563185891330018L;
 
-    private final String userName;
     private String ticketGrantingTicketId;
 
-    public HttpTGTProfile() {
-        this.ticketGrantingTicketId = null;
-        this.userName = null;
-    }
+    public HttpTGTProfile() { }
 
     public HttpTGTProfile(final String ticketGrantingTicketId, final String userName) {
         super();
         this.ticketGrantingTicketId = ticketGrantingTicketId;
-        this.userName = userName;
+        setId(userName);
     }
 
     public String getTicketGrantingTicketId() {
@@ -49,11 +45,6 @@ public final class HttpTGTProfile extends HttpProfile {
     @Override
     public void clear() {
         this.ticketGrantingTicketId = null;
-    }
-
-    @Override
-    public String toString() {
-        return this.userName;
     }
 
     @Override
