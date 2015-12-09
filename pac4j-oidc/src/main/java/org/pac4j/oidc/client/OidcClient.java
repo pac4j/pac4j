@@ -15,7 +15,9 @@
  */
 package org.pac4j.oidc.client;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
-import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -79,15 +80,14 @@ import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
  */
 public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
-    public final static String AUDIENCE = "audience";
-    public final static String AUTHORIZED_PARTY = "authorizedParty";
-    public final static String EXPIRATION_TIME = "expirationTime";
-
     /* state attribute name in session */
     private static final String STATE_ATTRIBUTE = "oidcStateAttribute";
 
     /* nonce attribute name in session */
     private static final String NONCE_ATTRIBUTE = "oidcNonceAttribute";
+
+    /* default max clock skew */
+    private static final int DEFAULT_MAX_CLOCK_SKEW = 30;
 
     /* OpenID client_id */
     private String clientId;
@@ -125,9 +125,14 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* secret object */
     private Secret _secret;
 
+    /* use nonce? */
     private boolean useNonce;
 
+    /* Preferred JWS algorithm */
     private JWSAlgorithm preferredJwsAlgorithm;
+
+    /* max clock skew in seconds */
+    private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
 
     public OidcClient() { }
 
@@ -196,34 +201,43 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         this._clientID = new ClientID(this.clientId);
         this._secret = new Secret(this.secret);
 
-        JWKSet jwkSet;
-        // Download OIDC metadata and Json Web Key Set
         try {
+            // Download OIDC metadata
             DefaultResourceRetriever resourceRetriever = new DefaultResourceRetriever();
             this.oidcProvider = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
                     new URL(this.discoveryURI)).getContent());
-            jwkSet = JWKSet.parse(resourceRetriever.retrieveResource(this.oidcProvider.getJWKSetURI().toURL())
-                    .getContent());
-
             this.redirectURI = new URI(computedCallbackUrl);
-        } catch (Exception e) {
+            // check algorithms
+            final List<JWSAlgorithm> algorithms = oidcProvider.getIDTokenJWSAlgs();
+            CommonHelper.assertTrue(algorithms != null && algorithms.size() > 0, "There must at least one JWS algorithm supported on the OpenID Connect provider side");
+            final JWSAlgorithm jwsAlgorithm;
+            if (algorithms.contains(preferredJwsAlgorithm)) {
+                jwsAlgorithm = preferredJwsAlgorithm;
+            } else {
+                jwsAlgorithm = algorithms.get(0);
+                logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredJwsAlgorithm, jwsAlgorithm);
+            }
+            // Init IDTokenVerifier
+            if (CommonHelper.isNotBlank(secret) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
+                this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, _secret);
+            } else {
+                this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, this.oidcProvider.getJWKSetURI().toURL());
+            }
+            idTokenVerifier.setMaxClockSkew(this.maxClockSkew);
+
+        } catch (final IOException | ParseException | URISyntaxException e) {
             throw new TechnicalException(e);
         }
-        // Get available client authentication method
-        ClientAuthenticationMethod method = getClientAuthenticationMethod();
-        this.clientAuthentication = getClientAuthentication(method);
-        // check algorithms
-        final List<JWSAlgorithm> algorithms = oidcProvider.getIDTokenJWSAlgs();
-        CommonHelper.assertTrue(algorithms != null && algorithms.size() > 0, "There must at least one JWS algorithm supported on the OpenID Connect provider side");
-        final JWSAlgorithm jwsAlgorithm;
-        if (algorithms.contains(preferredJwsAlgorithm)) {
-            jwsAlgorithm = preferredJwsAlgorithm;
-        } else {
-            jwsAlgorithm = algorithms.get(0);
-            logger.error("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredJwsAlgorithm, jwsAlgorithm);
+
+        final ClientAuthenticationMethod method = this.oidcProvider.getTokenEndpointAuthMethods() != null
+                && this.oidcProvider.getTokenEndpointAuthMethods().size() > 0 ? this.oidcProvider
+                .getTokenEndpointAuthMethods().get(0) : ClientAuthenticationMethod.getDefault();
+
+        if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(method)) {
+            this.clientAuthentication = new ClientSecretPost(this._clientID, this._secret);
+        } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(method)) {
+            this.clientAuthentication = new ClientSecretBasic(this._clientID, this._secret);
         }
-        // Init IDTokenVerifier
-        this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, jwkSet);
     }
 
     @Override
@@ -235,6 +249,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         client.setAuthParams(this.authParams);
         client.setUseNonce(this.useNonce);
         client.setPreferredJwsAlgorithm(this.preferredJwsAlgorithm);
+        client.setMaxClockSkew(this.maxClockSkew);
         return client;
     }
 
@@ -361,12 +376,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             }
             // Check ID Token
             final IDTokenClaimsSet claimsSet = this.idTokenVerifier.verify(oidcTokens.getIDToken(), nonce);
-            if(claimsSet != null){
-            	profile.setId(claimsSet.getSubject());
-                profile.addAttribute(AUDIENCE, claimsSet.getAudience());
-                profile.addAttribute(AUTHORIZED_PARTY, claimsSet.getAuthorizedParty());
-                profile.addAttribute(EXPIRATION_TIME, claimsSet.getExpirationTime());
-            }
+            CommonHelper.assertNotNull("claimsSet", claimsSet);
+          	profile.setId(claimsSet.getSubject());
 
             return profile;
 
@@ -374,32 +385,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             throw new TechnicalException(e);
         }
 
-    }
-
-    /**
-     * Returns the first available authentication method from the OP.
-     *
-     * @return
-     */
-    private ClientAuthenticationMethod getClientAuthenticationMethod() {
-        return this.oidcProvider.getTokenEndpointAuthMethods() != null
-                && this.oidcProvider.getTokenEndpointAuthMethods().size() > 0 ? this.oidcProvider
-                .getTokenEndpointAuthMethods().get(0) : ClientAuthenticationMethod.getDefault();
-    }
-
-    /**
-     * Returns a configured Client Authentication with method, client_id and secret for the token End Point.
-     *
-     * @param method
-     * @return
-     */
-    private ClientAuthentication getClientAuthentication(final ClientAuthenticationMethod method) {
-        if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(method)) {
-            return new ClientSecretPost(this._clientID, this._secret);
-        } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(method)) {
-            return new ClientSecretBasic(this._clientID, this._secret);
-        }
-        return null;
     }
 
     private Map<String, String> toSingleParameter(final Map<String, String[]> requestParameters) {
@@ -428,5 +413,13 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     public void setUseNonce(boolean useNonce) {
         this.useNonce = useNonce;
+    }
+
+    public int getMaxClockSkew() {
+        return maxClockSkew;
+    }
+
+    public void setMaxClockSkew(int maxClockSkew) {
+        this.maxClockSkew = maxClockSkew;
     }
 }

@@ -63,6 +63,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public final static String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
     public final static String OIDC_USE_NONCE = "oidc.useNonce";
     public final static String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
+    public final static String OIDC_MAX_CLOCK_SKEW = "oidc.maxClockSkew";
     public final static String OIDC_CUSTOM_PARAM_KEY1 = "oidc.customParamKey1";
     public final static String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
     public final static String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
@@ -172,6 +173,10 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM);
             if (CommonHelper.isNotBlank(jwsAlgo)) {
                 oidcClient.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
+            }
+            final String maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW);
+            if (CommonHelper.isNotBlank(maxClockSkew)) {
+                oidcClient.setMaxClockSkew(Integer.parseInt(maxClockSkew));
             }
             final String key1 = getProperty(OIDC_CUSTOM_PARAM_KEY1);
             final String value1 = getProperty(OIDC_CUSTOM_PARAM_VALUE1);
