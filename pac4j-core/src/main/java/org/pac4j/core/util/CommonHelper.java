@@ -208,6 +208,11 @@ public final class CommonHelper {
 			if (!path.startsWith("/")) {
 	            path = "/" + path;
 	        }
+			// The choice here was to keep legacy behavior and remove / prior to 
+			// calling classloader.getResourceAsStream.. or make it work exactly
+			// as it did before but have different behavior for resource: and classpath:
+			// My decision was to keep legacy working the same.
+			return CommonHelper.class.getResourceAsStream(path);
 		case "classpath":
 			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		default:
