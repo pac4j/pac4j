@@ -15,6 +15,7 @@
  */
 package org.pac4j.config.client;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.client.Clients;
@@ -55,6 +56,9 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(OIDC_ID, ID);
         properties.put(OIDC_SECRET, SECRET);
         properties.put(OIDC_DISCOVERY_URI, CALLBACK_URL);
+        properties.put(OIDC_USE_NONCE, "true");
+        properties.put(OIDC_PREFERRED_JWS_ALGORITHM, "RS384");
+        properties.put(OIDC_MAX_CLOCK_SKEW, "60");
         properties.put(OIDC_CUSTOM_PARAM_KEY1, KEY);
         properties.put(OIDC_CUSTOM_PARAM_VALUE1, VALUE);
         final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
