@@ -135,7 +135,7 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     /**
      * Enable or disable usage of the 'state' parameter as a CSRF protection in OAuth.
      * Default is true.
-     * @param requiresStateParameter
+     * @param requiresStateParameter whether the 'state' parameter must be used
      */
     public void setUseStateParameter(boolean requiresStateParameter) {
         this.requiresStateParameter = requiresStateParameter;
