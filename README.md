@@ -154,7 +154,7 @@ redirectToOriginallyRequestedUrl(context, response);
 
 See the final implementations in [j2e-pac4j](https://github.com/pac4j/j2e-pac4j/blob/master/src/main/java/org/pac4j/j2e/filter/CallbackFilter.java#L65) and [play-pac4j](https://github.com/pac4j/play-pac4j/blob/master/play-pac4j-java/src/main/java/org/pac4j/play/CallbackController.java#L63).
 
-Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) for more information.
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.1/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) for more information.
 
 
 ## Need help?
