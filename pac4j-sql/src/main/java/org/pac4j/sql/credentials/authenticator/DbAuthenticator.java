@@ -84,6 +84,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         }
     }
 
+    @Override
     public void validate(UsernamePasswordCredentials credentials) {
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);

@@ -9,6 +9,7 @@ import org.pac4j.core.profile.converter.AttributeConverter;
  */
 public final class VkBooleanConverter implements AttributeConverter<Boolean> {
 
+	@Override
 	public Boolean convert(final Object attribute) {
 		if (attribute != null) {
 			if (attribute instanceof Boolean) {

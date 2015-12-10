@@ -29,9 +29,7 @@ public class DefaultConfigFactory implements ConfigFactory {
         this.config = config;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Config build() {
         return config;
     }

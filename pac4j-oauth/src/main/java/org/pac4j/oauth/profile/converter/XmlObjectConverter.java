@@ -38,6 +38,7 @@ public final class XmlObjectConverter implements AttributeConverter<XmlObject> {
         this.clazz = clazz;
     }
     
+    @Override
     public XmlObject convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             try {

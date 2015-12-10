@@ -89,9 +89,6 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
         }
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected CasCredentials retrieveCredentials(final WebContext context) throws
         RequiresHttpAction {
@@ -141,16 +138,11 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
                                      this.millisBetweenCleanUps);
     }
     
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");

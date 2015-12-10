@@ -90,6 +90,7 @@ public class LocalCachingAuthenticator<T extends HttpCredentials> implements Aut
             this.delegate = delegate;
         }
 
+        @Override
         public UserProfile load(final T credentials) throws Exception {
             logger.debug("Delegating authentication to {}...", delegate);
             delegate.validate(credentials);

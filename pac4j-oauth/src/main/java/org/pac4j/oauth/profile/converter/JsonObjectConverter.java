@@ -40,6 +40,7 @@ public final class JsonObjectConverter implements AttributeConverter<JsonObject>
         this.clazz = clazz;
     }
     
+    @Override
     public JsonObject convert(final Object attribute) {
         if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
             try {

@@ -47,6 +47,7 @@ public class ParameterExtractor implements Extractor<TokenCredentials> {
         this.clientName = clientName;
     }
 
+    @Override
     public TokenCredentials extract(WebContext context) {
         final String method = context.getRequestMethod();
         if ("GET".equals(method) && !supportGetRequest) {

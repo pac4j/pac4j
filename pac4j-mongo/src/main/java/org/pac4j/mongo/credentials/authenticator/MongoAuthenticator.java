@@ -77,6 +77,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public void validate(UsernamePasswordCredentials credentials) {
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);

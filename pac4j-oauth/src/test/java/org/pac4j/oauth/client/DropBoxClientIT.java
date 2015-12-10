@@ -75,6 +75,7 @@ public class DropBoxClientIT extends OAuthClientIT {
         kryo.register(DropBoxProfile.class);
     }
 
+    @Override
     protected boolean isJavascriptEnabled() {
         return true;
     }

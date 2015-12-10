@@ -39,6 +39,7 @@ public class HeaderExtractor implements Extractor<TokenCredentials> {
         this.clientName = clientName;
     }
 
+    @Override
     public TokenCredentials extract(WebContext context) {
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
