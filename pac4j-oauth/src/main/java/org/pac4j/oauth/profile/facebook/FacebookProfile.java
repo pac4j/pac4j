@@ -231,6 +231,7 @@ public class FacebookProfile extends OAuth20Profile {
      * {"error":{"message":"(#12) username is deprecated for versions v2.0 and higher","type":"OAuthException","code":12}}
      */
     @Deprecated
+    @Override
     public String getUsername() {
         return (String) getAttribute(USERNAME);
     }

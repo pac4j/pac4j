@@ -33,6 +33,7 @@ public class Google2JsonExtractor implements AccessTokenExtractor {
     
     private final Pattern accessTokenPattern = Pattern.compile("\"access_token\"\\s*:\\s*\"(\\S*?)\"");
     
+    @Override
     public Token extract(final String response) {
         Preconditions.checkEmptyString(response, "Cannot extract a token from a null or empty String");
         final Matcher matcher = this.accessTokenPattern.matcher(response);

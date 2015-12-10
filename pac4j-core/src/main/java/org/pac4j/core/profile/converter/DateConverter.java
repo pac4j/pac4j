@@ -46,6 +46,7 @@ public class DateConverter implements AttributeConverter<Date> {
         this.locale = locale;
     }
     
+    @Override
     public Date convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             SimpleDateFormat simpleDateFormat;

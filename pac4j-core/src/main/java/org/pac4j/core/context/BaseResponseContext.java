@@ -42,17 +42,19 @@ public abstract class BaseResponseContext implements WebContext {
 
     protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
 
-
+    @Override
     public void writeResponseContent(final String content) {
         if (content != null) {
             this.responseContent += content;
         }
     }
 
+    @Override
     public void setResponseStatus(final int code) {
         this.responseStatus = code;
     }
 
+    @Override
     public void setResponseHeader(final String name, final String value) {
         this.responseHeaders.put(name, value);
     }
