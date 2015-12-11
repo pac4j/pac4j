@@ -70,6 +70,7 @@ import java.util.Locale;
  */
 
 public class OrcidProfile extends OAuth20Profile {
+    private static final long serialVersionUID = 7626472295622786149L;	
 
     @Override
     protected AttributesDefinition getAttributesDefinition() {
