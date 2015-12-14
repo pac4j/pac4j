@@ -362,8 +362,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     @Override
     protected OidcProfile retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
 
-        final TokenRequest request = new TokenRequest(getProviderMetadata().getTokenEndpointURI(), getClientAuthentication(),
-                new AuthorizationCodeGrant(credentials.getCode(), getRedirectURI()));
+        final TokenRequest request = buildTokenRequest(credentials);
         HTTPResponse httpResponse;
         try {
             // Token request
@@ -388,8 +387,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             // User Info request
             UserInfo userInfo = null;
             if (getProviderMetadata().getUserInfoEndpointURI() != null) {
-                UserInfoRequest userInfoRequest = new UserInfoRequest(getProviderMetadata().getUserInfoEndpointURI(),
-                        accessToken);
+                UserInfoRequest userInfoRequest = buildUserInfoRequest(accessToken);
                 httpResponse = userInfoRequest.toHTTPRequest().send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
@@ -425,6 +423,23 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             throw new TechnicalException(e);
         }
 
+    }
+
+    /**
+     * @param credentials
+     * @return the TokenRequest object that will be used to query the OIDC Token endpoint.
+     */
+    protected TokenRequest buildTokenRequest(OidcCredentials credentials) {
+        return new TokenRequest(getProviderMetadata().getTokenEndpointURI(), getClientAuthentication(),
+                new AuthorizationCodeGrant(credentials.getCode(), getRedirectURI()));
+    }
+
+    /**
+     * @param accessToken
+     * @return The UserInfoRequest object that will be used to query the OIDC UserInfo endpoint
+     */
+    protected UserInfoRequest buildUserInfoRequest(BearerAccessToken accessToken) {
+        return new UserInfoRequest(getProviderMetadata().getUserInfoEndpointURI(), accessToken);
     }
 
     private Map<String, String> toSingleParameter(final Map<String, String[]> requestParameters) {
