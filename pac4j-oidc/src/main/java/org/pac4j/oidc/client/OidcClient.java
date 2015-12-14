@@ -248,22 +248,22 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                     new URL(getDiscoveryURI())).getContent());
             this.redirectURI = new URI(computedCallbackUrl);
             // check algorithms
-            final List<JWSAlgorithm> algorithms = oidcProvider.getIDTokenJWSAlgs();
+            final List<JWSAlgorithm> algorithms = getProviderMetadata().getIDTokenJWSAlgs();
             CommonHelper.assertTrue(algorithms != null && algorithms.size() > 0, "There must at least one JWS algorithm supported on the OpenID Connect provider side");
             final JWSAlgorithm jwsAlgorithm;
-            if (algorithms.contains(preferredJwsAlgorithm)) {
-                jwsAlgorithm = preferredJwsAlgorithm;
+            if (algorithms.contains(getPreferredJwsAlgorithm())) {
+                jwsAlgorithm = getPreferredJwsAlgorithm();
             } else {
                 jwsAlgorithm = algorithms.get(0);
-                logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredJwsAlgorithm, jwsAlgorithm);
+                logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", getPreferredJwsAlgorithm(), jwsAlgorithm);
             }
             // Init IDTokenVerifier
-            if (CommonHelper.isNotBlank(secret) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
-                this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, _secret);
+            if (CommonHelper.isNotBlank(getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
+                this.idTokenVerifier = new IDTokenVerifier(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, _secret);
             } else {
-                this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
+                this.idTokenVerifier = new IDTokenVerifier(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
             }
-            idTokenVerifier.setMaxClockSkew(getMaxClockSkew());
+            getIDTokenVerifier().setMaxClockSkew(getMaxClockSkew());
 
         } catch (final IOException | ParseException | URISyntaxException e) {
             throw new TechnicalException(e);
@@ -455,7 +455,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     public JWSAlgorithm getPreferredJwsAlgorithm() {
-        return preferredJwsAlgorithm;
+        return this.preferredJwsAlgorithm;
     }
 
     public void setPreferredJwsAlgorithm(JWSAlgorithm preferredJwsAlgorithm) {
@@ -463,7 +463,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     public boolean isUseNonce() {
-        return useNonce;
+        return this.useNonce;
     }
 
     public void setUseNonce(boolean useNonce) {
@@ -471,7 +471,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     public int getMaxClockSkew() {
-        return maxClockSkew;
+        return this.maxClockSkew;
     }
 
     public void setMaxClockSkew(int maxClockSkew) {
