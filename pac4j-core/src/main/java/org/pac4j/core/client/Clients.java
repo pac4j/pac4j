@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class Clients extends InitializableObject {
+public class Clients extends InitializableObject {
 
     private static final Logger logger = LoggerFactory.getLogger(Clients.class);
 
@@ -87,9 +87,9 @@ public final class Clients extends InitializableObject {
      */
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotNull("clients", this.clients);
+        CommonHelper.assertNotNull("clients", getClients());
         final HashSet<String> names = new HashSet<>();
-        for (final Client client : this.clients) {
+        for (final Client client : getClients()) {
             final String name = client.getName();
             if (names.contains(name)) {
                 throw new TechnicalException("Duplicate name in clients: " + name);
@@ -134,7 +134,7 @@ public final class Clients extends InitializableObject {
      */
     public Client findClient(final String name) {
         init();
-        for (final Client client : this.clients) {
+        for (final Client client : getClients()) {
             if (CommonHelper.areEquals(name, client.getName())) {
                 return client;
             }
@@ -154,7 +154,7 @@ public final class Clients extends InitializableObject {
     public <C extends Client> C findClient(final Class<C> clazz) {
         init();
         if (clazz != null) {
-          for (final Client client : this.clients) {
+          for (final Client client : getClients()) {
             if (clazz.isAssignableFrom(client.getClass())) {
                 return (C) client;
             }
@@ -171,7 +171,7 @@ public final class Clients extends InitializableObject {
      */
     public List<Client> findAllClients() {
         init();
-        return this.clients;
+        return getClients();
     }
 
     public String getClientNameParameter() {
@@ -209,12 +209,12 @@ public final class Clients extends InitializableObject {
     }
 
     public List<Client> getClients() {
-        return clients;
+        return this.clients;
     }
 
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
-                this.clientNameParameter, "clients", this.clients);
+                this.clientNameParameter, "clients", getClients());
     }
 }
