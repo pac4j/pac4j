@@ -17,7 +17,7 @@ package org.pac4j.jwt;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
+
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -25,8 +25,7 @@ import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link JwtGenerator} and {@link org.pac4j.jwt.credentials.authenticator.JwtAuthenticator}.
@@ -43,6 +42,17 @@ public class JwtTests {
     private final static String CLIENT_NAME = "clientName";
 
     @Test
+    public void testGenericJwt() {
+        final String token =
+                "ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SnBjM01pT2lKRGRYTjBiMjBnU2xkVUlFSjFhV3hrWlhJaUxDSnBZWFFpT2pFME5UQXhOalEwTlRVc0ltVjRjQ0k2TVRRNE1UY3dNRFExTlN3aVlYVmtJam9pYUhSMGNITTZMeTluYVhSb2RXSXVZMjl0TDNCaFl6UnFJaXdpYzNWaUlqb2lkWE5sY2tCd1lXTTBhaTV2Y21jaUxDSmxiV0ZwYkNJNkluVnpaWEpBY0dGak5Hb3ViM0puSW4wLnpPUGI3cmJJM0lZN2lMWFRLMTI2R2d1MlEzcE5DWnNVenpnemdzcVI3eFU=";
+
+        final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
+        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
+        authenticator.validate(credentials);
+        assertNotNull(credentials.getUserProfile());
+    }
+
+    @Test
     public void testGenerateAuthenticate() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY);
         final FacebookProfile profile = createProfile();
@@ -56,6 +66,7 @@ public class JwtTests {
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
+        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
     }
 
     private void assertToken(FacebookProfile profile, String token) {

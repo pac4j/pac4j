@@ -18,7 +18,12 @@ package org.pac4j.jwt.credentials.authenticator;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.*;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.SignedJWT;
+import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
@@ -55,12 +60,16 @@ public class JwtAuthenticator implements TokenAuthenticator {
     public void validate(TokenCredentials credentials) {
         CommonHelper.assertNotBlank("secret", secret);
 
-        final String token = credentials.getToken();
+        String token = credentials.getToken();
         boolean verified = false;
         SignedJWT signedJWT = null;
 
         try {
             // Parse the token
+            if (Base64.isBase64(token)) {
+                token = new String(Base64.decodeBase64(token), "UTF-8");
+            }
+
             JWT jwt = JWTParser.parse(token);
 
             if (jwt instanceof SignedJWT) {
