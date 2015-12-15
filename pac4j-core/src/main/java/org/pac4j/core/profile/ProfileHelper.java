@@ -64,12 +64,12 @@ public final class ProfileHelper {
 
         logger.info("Building user profile based on typedId {}", typedId);
         try {
-            if (!typedId.contains("#")) {
+            if (!typedId.contains(UserProfile.SEPARATOR)) {
                 final String completeName = determineProfileClassByName("HttpProfile");
                 return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
             }
 
-            final String[] values = typedId.split("#");
+            final String[] values = typedId.split(UserProfile.SEPARATOR);
             final String className = values[0];
 
             final String completeName = determineProfileClassByName(className);
