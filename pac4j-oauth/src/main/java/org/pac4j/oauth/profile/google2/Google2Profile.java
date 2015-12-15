@@ -103,7 +103,7 @@ public class Google2Profile extends OAuth20Profile {
     @Override
     public String getEmail() {
         final List<Google2Email> list = getEmails();
-        if (list != null && list.size() > 0) {
+        if (list != null && !list.isEmpty()) {
             return list.get(0).getEmail();
         } else {
             return null;

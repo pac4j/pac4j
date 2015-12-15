@@ -28,7 +28,7 @@ public abstract class AbstractRequireAnyAuthorizer<E extends Object, U extends U
 
     @Override
     public boolean isAuthorized(final WebContext context, final U profile) {
-        if (elements == null || elements.size() == 0) {
+        if (elements == null || elements.isEmpty()) {
             return true;
         }
         for (final E element : elements) {
