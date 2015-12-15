@@ -17,7 +17,6 @@ package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -40,10 +39,6 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  */
 public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
 
-    private String headerName = HttpConstants.AUTHORIZATION_HEADER;
-
-    private String prefixHeader = "Basic ";
-
     private String realmName = "authentication required";
 
     public IndirectBasicAuthClient() { }
@@ -60,7 +55,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
 
     @Override
     protected void internalInit(final WebContext context) {
-        extractor = new BasicAuthExtractor(headerName, prefixHeader, getName());
+        extractor = new BasicAuthExtractor(getName());
         super.internalInit(context);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
@@ -108,8 +103,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
-                this.realmName, "headerName", this.headerName, "prefixHeader", this.prefixHeader, "authenticator",
-                getAuthenticator(), "profileCreator", getProfileCreator());
+                this.realmName, "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 
     @Override
