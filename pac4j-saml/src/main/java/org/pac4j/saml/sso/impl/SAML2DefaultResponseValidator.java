@@ -161,7 +161,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             for (final Attribute attribute : attributeStatement.getAttributes()) {
                 attributes.add(attribute);
             }
-            if (attributeStatement.getEncryptedAttributes().size() > 0) {
+            if (!attributeStatement.getEncryptedAttributes().isEmpty()) {
                 if (decrypter == null) {
                     logger.warn("Encrypted attributes returned, but no keystore was provided.");
                 } else {
@@ -297,7 +297,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                                                  final SignatureTrustEngine engine, final Decrypter decrypter) {
 
         for (final Assertion assertion : response.getAssertions()) {
-            if (assertion.getAuthnStatements().size() > 0) {
+            if (!assertion.getAuthnStatements().isEmpty()) {
                 try {
                     validateAssertion(assertion, context, engine, decrypter);
                 } catch (final SAMLException e) {
@@ -317,7 +317,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
         final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
         if ((nameIdentifier.getValue() == null) && (context.getBaseID() == null)
-                && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
+                && ((subjectConfirmations == null) || (subjectConfirmations.isEmpty()))) {
             throw new SAMLException(
                     "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
         }
@@ -593,7 +593,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     protected final void validateAudienceRestrictions(final List<AudienceRestriction> audienceRestrictions,
                                                       final String spEntityId) {
 
-        if (audienceRestrictions == null || audienceRestrictions.size() == 0) {
+        if (audienceRestrictions == null || audienceRestrictions.isEmpty()) {
             throw new SAMLException("Audience restrictions cannot be null or empty");
         }
 

@@ -140,7 +140,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         }
 
         // Get first
-        if (services.size() > 0) {
+        if (!services.isEmpty()) {
             return services.iterator().next();
         }
 
