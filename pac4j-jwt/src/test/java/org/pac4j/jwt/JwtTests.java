@@ -37,6 +37,8 @@ import static org.junit.Assert.assertEquals;
 public class JwtTests {
 
     private final static String KEY = "12345678901234567890123456789012";
+    private final static String KEY2 = "02345678901234567890123456789010";
+
     private final static String ID = "technicalId";
     private final static String NAME = "fakeName";
     private final static boolean VERIFIED = true;
@@ -44,7 +46,7 @@ public class JwtTests {
 
     @Test
     public void testGenerateAuthenticate() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
@@ -52,10 +54,29 @@ public class JwtTests {
 
     @Test
     public void testGenerateAuthenticateNotEncrypted() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY, false);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
+    }
+
+    @Test
+    public void testGenerateAuthenticateAndEncrypted() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY, KEY);
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+
+    @Test
+    public void testGenerateAuthenticateAndEncryptedDifferentKeys() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY, KEY2);
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY, KEY2);
+        final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
+        authenticator.validate(credentials);
+        final UserProfile profile2 = credentials.getUserProfile();
     }
 
     private void assertToken(FacebookProfile profile, String token) {
