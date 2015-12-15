@@ -46,16 +46,18 @@ public class JwtGenerator<U extends UserProfile> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String signingSecret;
-    private final String encryptionSecret;
+    private String signingSecret;
+    private String encryptionSecret;
 
-    /**
-     * Initializes the generator that will create JWT tokens that are signed but not encrypted.
-     *
-     * @param signingSecret The signingSecret. Must be at least 256 bits long and not {@code null}
-     */
-    public JwtGenerator(final String signingSecret) {
-        this(signingSecret, null);
+    public JwtGenerator(final String secret) {
+        this(secret, true);
+    }
+
+    public JwtGenerator(final String secret, final boolean encrypted) {
+        this.signingSecret = secret;
+        if (encrypted) {
+            this.encryptionSecret = secret;
+        }
     }
 
     /**
@@ -109,15 +111,16 @@ public class JwtGenerator<U extends UserProfile> {
                         new Payload(signedJWT));
 
                 // Perform encryption
-                jweObject.encrypt(new DirectEncrypter(this.signingSecret.getBytes("UTF-8")));
+                jweObject.encrypt(new DirectEncrypter(this.encryptionSecret.getBytes("UTF-8")));
 
                 // Serialise to JWE compact form
                 return jweObject.serialize();
-            } else {
-                return signedJWT.serialize();
             }
+            return signedJWT.serialize();
+
         } catch (final Exception e) {
             throw new TechnicalException("Cannot generate JWT", e);
         }
     }
+
 }
