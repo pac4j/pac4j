@@ -24,6 +24,7 @@ package org.pac4j.core.profile.converter;
  */
 public final class LongConverter implements AttributeConverter<Long> {
     
+    @Override
     public Long convert(final Object attribute) {
         if (attribute != null) {
             if (attribute instanceof Integer) {

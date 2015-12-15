@@ -26,6 +26,7 @@ import java.util.Locale;
  */
 public final class LocaleConverter implements AttributeConverter<Locale> {
     
+    @Override
     public Locale convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             final String s = ((String) attribute).replaceAll("-", "_");

@@ -61,7 +61,7 @@ public final class SpringSecurityPropertiesAuthorizationGenerator  implements Au
     public void generate(final CommonProfile profile) {
         final String id = profile.getId();
         final List<String> roles = rolesByUsers.get(id);
-        if (roles != null && roles.size() > 0) {
+        if (roles != null && !roles.isEmpty()) {
             profile.addRoles(roles);
         }
     }

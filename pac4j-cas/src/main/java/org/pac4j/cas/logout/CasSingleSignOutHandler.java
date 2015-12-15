@@ -75,12 +75,14 @@ public class CasSingleSignOutHandler implements LogoutHandler {
         logger.warn("The provided CAS SingleSignOutHandler is not taken into account anymore!");
     }
     
+    @Override
     public boolean isTokenRequest(final WebContext context) {
         final J2EContext j2eContext = (J2EContext) context;
         return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(j2eContext.getRequest(), this.artifactParameterName,
                 this.safeParameters));
     }
     
+    @Override
     public boolean isLogoutRequest(final WebContext context) {
         final J2EContext j2eContext = (J2EContext) context;
         HttpServletRequest request = j2eContext.getRequest();
@@ -90,6 +92,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
                         this.safeParameters));
     }
     
+    @Override
     public void recordSession(final WebContext context, final String ticket) {
         final J2EContext j2eContext = (J2EContext) context;
         HttpServletRequest request = j2eContext.getRequest();
@@ -111,6 +114,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
         sessionMappingStorage.addSessionById(token, session);
     }
     
+    @Override
     public void destroySession(final WebContext context) {
         final J2EContext j2eContext = (J2EContext) context;
         HttpServletRequest request = j2eContext.getRequest();
@@ -158,6 +162,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
 
     private class Servlet25LogoutStrategy implements LogoutStrategy {
 
+        @Override
         public void logout(final HttpServletRequest request) {
             // nothing additional to do here
         }

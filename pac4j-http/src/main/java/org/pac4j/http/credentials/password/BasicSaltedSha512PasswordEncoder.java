@@ -37,9 +37,7 @@ public class BasicSaltedSha512PasswordEncoder implements PasswordEncoder {
         this.salt = salt;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String encode(final String password) {
         CommonHelper.assertNotBlank("salt", salt);
 

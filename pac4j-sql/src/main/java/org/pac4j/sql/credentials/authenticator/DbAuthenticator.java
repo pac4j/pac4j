@@ -84,6 +84,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         }
     }
 
+    @Override
     public void validate(UsernamePasswordCredentials credentials) {
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);
@@ -104,7 +105,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
             }
             final List<Map<String, Object>> results = h.createQuery(query).bind("username", username).list(2);
 
-            if (results == null || results.size() == 0) {
+            if (results == null || results.isEmpty()) {
                 throw new AccountNotFoundException("No account found for: " + username);
             } else if (results.size() > 1) {
                 throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
