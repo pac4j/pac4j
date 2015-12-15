@@ -44,7 +44,7 @@ public class JwtTests {
 
     @Test
     public void testGenerateAuthenticate() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
@@ -52,7 +52,15 @@ public class JwtTests {
 
     @Test
     public void testGenerateAuthenticateNotEncrypted() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<FacebookProfile>(KEY, false);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY);
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+
+    @Test
+    public void testGenerateAuthenticateAndEncrypted() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY, KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);

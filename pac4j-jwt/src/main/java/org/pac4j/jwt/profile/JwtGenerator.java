@@ -15,13 +15,21 @@
  */
 package org.pac4j.jwt.profile;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,27 +46,28 @@ public class JwtGenerator<U extends UserProfile> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String secret;
-    private boolean encrypted = true;
+    private final String signingSecret;
+    private final String encryptionSecret;
 
     /**
-     * Initializes the generator that will create JWT tokens that are both signed and encrypted.
+     * Initializes the generator that will create JWT tokens that are signed but not encrypted.
      *
-     * @param secret The secret. Must be at least 256 bits long and not {@code null}
+     * @param signingSecret The signingSecret. Must be at least 256 bits long and not {@code null}
      */
-    public JwtGenerator(String secret) {
-        this.secret = secret;
+    public JwtGenerator(final String signingSecret) {
+        this(signingSecret, null);
     }
 
     /**
      * Initializes the generator that will create JWT tokens that is signed and optionally encrypted.
      *
-     * @param secret    The secret. Must be at least 256 bits long and not {@code null}
-     * @param encrypted whether the JWT will be encrypted or not
+     * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
+     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null}
+     * @since 1.8.2
      */
-    public JwtGenerator(final String secret, final boolean encrypted) {
-        this.secret = secret;
-        this.encrypted = encrypted;
+    public JwtGenerator(final String signingSecret, final String encryptionSecret) {
+        this.signingSecret = signingSecret;
+        this.encryptionSecret = encryptionSecret;
     }
 
     /**
@@ -70,7 +79,7 @@ public class JwtGenerator<U extends UserProfile> {
     public String generate(final U profile) {
         try {
             // Create HMAC signer
-            final JWSSigner signer = new MACSigner(this.secret);
+            final JWSSigner signer = new MACSigner(this.signingSecret);
 
             // Build claims
             final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
@@ -93,14 +102,14 @@ public class JwtGenerator<U extends UserProfile> {
             // Apply the HMAC
             signedJWT.sign(signer);
 
-            if (encrypted) {
+            if (CommonHelper.isNotBlank(this.encryptionSecret)) {
                 // Create JWE object with signed JWT as payload
                 final JWEObject jweObject = new JWEObject(
                         new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM).contentType("JWT").build(),
                         new Payload(signedJWT));
 
                 // Perform encryption
-                jweObject.encrypt(new DirectEncrypter(this.secret.getBytes("UTF-8")));
+                jweObject.encrypt(new DirectEncrypter(this.signingSecret.getBytes("UTF-8")));
 
                 // Serialise to JWE compact form
                 return jweObject.serialize();
