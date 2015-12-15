@@ -42,6 +42,8 @@ public interface HttpConstants {
 
     String AUTHORIZATION_HEADER = "Authorization";
 
+    String BASIC_HEADER_PREFIX = "Basic ";
+
     String AUTHENTICATE_HEADER = "WWW-Authenticate";
 
     String CONTENT_TYPE_HEADER = "Content-Type";

@@ -16,6 +16,7 @@
 package org.pac4j.http.credentials.extractor;
 
 import org.apache.commons.codec.binary.Base64;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.http.credentials.TokenCredentials;
@@ -34,6 +35,10 @@ public class BasicAuthExtractor implements Extractor<UsernamePasswordCredentials
     private final HeaderExtractor extractor;
 
     private final String clientName;
+
+    public BasicAuthExtractor(final String clientName) {
+        this(HttpConstants.AUTHORIZATION_HEADER, HttpConstants.BASIC_HEADER_PREFIX, clientName);
+    }
 
     public BasicAuthExtractor(final String headerName, final String prefixHeader, final String clientName) {
         this.extractor = new HeaderExtractor(headerName, prefixHeader, clientName);
