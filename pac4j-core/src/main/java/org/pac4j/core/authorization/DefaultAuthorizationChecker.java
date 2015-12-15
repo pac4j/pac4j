@@ -93,7 +93,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     public boolean isAuthorized(final WebContext context, final UserProfile profile, final List<Authorizer> authorizers) {
         // authorizations check comes after authentication and profile must not be null
         CommonHelper.assertNotNull("profile", profile);
-        if (authorizers != null && authorizers.size() > 0) {
+        if (authorizers != null && !authorizers.isEmpty()) {
             // check authorizations using authorizers: all must be satisfied
             for (Authorizer authorizer : authorizers) {
                 if (!authorizer.isAuthorized(context, profile)) {
