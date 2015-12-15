@@ -96,6 +96,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
     }
 
     private static class BearerAccessTokenBean implements Serializable {
+        private static final long serialVersionUID = 7726472295622796149L;
         private String value;
         private long lifetime;
         private List<String> scope;
