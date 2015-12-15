@@ -18,7 +18,11 @@ package org.pac4j.jwt.credentials.authenticator;
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.*;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
@@ -47,6 +51,11 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
     public JwtAuthenticator(final String signingSecret) {
         this(signingSecret, signingSecret);
+        warning();
+    }
+
+    private void warning() {
+        logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
     }
 
     /**
@@ -77,14 +86,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
                 signedJWT = (SignedJWT) jwt;
             } else if (jwt instanceof EncryptedJWT) {
                 final JWEObject jweObject = (JWEObject) jwt;
-
-                // Decrypt with shared key
-                String secret = this.encryptionSecret;
-                if (CommonHelper.isBlank(secret)) {
-                    logger.warn("Encryption secret is not configured. Falling back to signing secret");
-                    secret = this.signingSecret;
-                }
-                jweObject.decrypt(new DirectDecrypter(secret.getBytes("UTF-8")));
+                jweObject.decrypt(new DirectDecrypter(this.encryptionSecret.getBytes("UTF-8")));
 
                 // Extract payload
                 signedJWT = jweObject.getPayload().toSignedJWT();
@@ -137,5 +139,12 @@ public class JwtAuthenticator implements TokenAuthenticator {
      */
     public void setEncryptionSecret(final String encryptionSecret) {
         this.encryptionSecret = encryptionSecret;
+    }
+
+    @Deprecated
+    public void setSecret(String secret) {
+        this.encryptionSecret = secret;
+        this.signingSecret = secret;
+        warning();
     }
 }
