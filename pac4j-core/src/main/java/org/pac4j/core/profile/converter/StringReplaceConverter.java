@@ -34,6 +34,7 @@ public final class StringReplaceConverter implements AttributeConverter<String> 
         this.replacement = replacement;
     }
     
+    @Override
     public String convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             final String s = (String) attribute;

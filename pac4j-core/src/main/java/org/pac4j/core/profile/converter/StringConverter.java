@@ -24,6 +24,7 @@ package org.pac4j.core.profile.converter;
  */
 public final class StringConverter implements AttributeConverter<String> {
     
+    @Override
     public String convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             return (String) attribute;

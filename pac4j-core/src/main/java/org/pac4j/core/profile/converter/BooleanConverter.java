@@ -24,6 +24,7 @@ package org.pac4j.core.profile.converter;
  */
 public final class BooleanConverter implements AttributeConverter<Boolean> {
     
+    @Override
     public Boolean convert(final Object attribute) {
         if (attribute != null) {
             if (attribute instanceof Boolean) {

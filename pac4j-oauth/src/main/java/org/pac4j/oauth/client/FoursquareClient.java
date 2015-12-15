@@ -43,10 +43,12 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
         setSecret(secret);
     }
 
+    @Override
     protected FoursquareClient newClient() {
         return new FoursquareClient();
     }
 
+    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new FoursquareOAuth20ServiceImpl(new Foursquare2Api(),
@@ -57,6 +59,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
                 this.proxyPort);
     }
 
+    @Override
     protected FoursquareProfile extractUserProfile(String body) {
         FoursquareProfile profile = new FoursquareProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
@@ -78,10 +81,12 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
         return profile;
     }
 
+    @Override
     protected boolean requiresStateParameter() {
         return false;
     }
 
+    @Override
     protected boolean hasBeenCancelled(WebContext context) {
         return false;
     }

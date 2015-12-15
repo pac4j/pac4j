@@ -39,6 +39,7 @@ public class FormExtractor implements Extractor<UsernamePasswordCredentials> {
         this.clientName = clientName;
     }
 
+    @Override
     public UsernamePasswordCredentials extract(WebContext context) {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);

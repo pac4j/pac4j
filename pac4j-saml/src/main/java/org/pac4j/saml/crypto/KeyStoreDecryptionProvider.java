@@ -52,6 +52,7 @@ public class KeyStoreDecryptionProvider implements DecryptionProvider {
         this.credentialProvider = credentialProvider;
     }
 
+    @Override
     public final Decrypter build() {
         final Credential encryptionCredential = this.credentialProvider.getCredential();
         final KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(encryptionCredential);
