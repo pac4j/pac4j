@@ -49,6 +49,7 @@ public class CsrfAuthorizer<U extends UserProfile> implements Authorizer<U> {
         this.onlyCheckPostRequest = onlyCheckPostRequest;
     }
 
+    @Override
     public boolean isAuthorized(final WebContext context, final U profile) {
         final boolean checkRequest = !onlyCheckPostRequest || (onlyCheckPostRequest && ContextHelper.isPost(context));
         if (checkRequest) {

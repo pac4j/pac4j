@@ -27,9 +27,7 @@ import org.pac4j.core.context.WebContext;
  */
 public class DefaultAjaxRequestResolver implements AjaxRequestResolver, HttpConstants, Pac4jConstants {
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean isAjax(final WebContext context) {
         final boolean xmlHttpRequest = AJAX_HEADER_VALUE.equalsIgnoreCase(context.getRequestHeader(AJAX_HEADER_NAME));
         final boolean hasDynamicAjaxParameter = Boolean.TRUE.toString().equalsIgnoreCase(context.getRequestHeader(IS_AJAX_REQUEST));

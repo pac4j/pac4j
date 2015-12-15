@@ -22,6 +22,7 @@ import org.pac4j.core.context.WebContext;
  */
 public class EmptyStorageFactory implements SAMLMessageStorageFactory {
 
+    @Override
     public SAMLMessageStorage getMessageStorage(final WebContext request) {
         return null;
     }
