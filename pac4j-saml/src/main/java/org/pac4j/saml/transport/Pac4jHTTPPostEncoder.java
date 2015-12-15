@@ -84,14 +84,14 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
         velocityTemplateId = newVelocityTemplateId;
     }
 
-    /** {@inheritDoc} */
+    @Override
     protected void doDestroy() {
         velocityEngine = null;
         velocityTemplateId = null;
         super.doDestroy();
     }
 
-    /** {@inheritDoc} */
+    @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
         log.debug("Initialized {}", this.getClass().getSimpleName());
@@ -104,7 +104,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     protected void doEncode() throws MessageEncodingException {
         MessageContext<SAMLObject> messageContext = getMessageContext();
 

@@ -50,6 +50,7 @@ public class SAML2WebSSOProfileHandler implements SAML2ProfileHandler<AuthnReque
         this.messageSender.sendMessage(context, msg, data);
     }
 
+    @Override
     public Credentials receive(final SAML2MessageContext context) {
         return this.messageReceiver.receiveMessage(context);
     }

@@ -77,6 +77,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public void validate(UsernamePasswordCredentials credentials) {
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);
@@ -99,7 +100,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
             }
         }
 
-        if (users.size() == 0) {
+        if (users.isEmpty()) {
             throw new AccountNotFoundException("No account found for: " + username);
         } else if (users.size() > 1) {
             throw new MultipleAccountsFoundException("Too many accounts found for: " + username);

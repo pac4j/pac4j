@@ -34,6 +34,7 @@ public final class GenderConverter implements AttributeConverter<Gender> {
         this.femaleText = femaleText;
     }
     
+    @Override
     public Gender convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             final String s = ((String) attribute).toLowerCase();

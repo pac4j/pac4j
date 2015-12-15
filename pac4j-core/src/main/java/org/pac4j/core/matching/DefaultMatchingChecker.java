@@ -47,7 +47,7 @@ public class DefaultMatchingChecker implements MatchingChecker {
                 CommonHelper.assertNotNull("matchersMap['" + name + "']", result);
                 matchers.add(result);
             }
-            if (matchers.size() > 0) {
+            if (!matchers.isEmpty()) {
                 // check matching using matchers: all must be satisfied
                 for (Matcher matcher : matchers) {
                     if (!matcher.matches(context)) {

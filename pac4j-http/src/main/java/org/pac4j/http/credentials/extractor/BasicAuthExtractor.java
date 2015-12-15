@@ -40,6 +40,7 @@ public class BasicAuthExtractor implements Extractor<UsernamePasswordCredentials
         this.clientName = clientName;
     }
 
+    @Override
     public UsernamePasswordCredentials extract(WebContext context) {
         final TokenCredentials credentials = this.extractor.extract(context);
         if (credentials == null) {

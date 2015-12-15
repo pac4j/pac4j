@@ -103,14 +103,14 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     protected void doDestroy() {
         parserPool = null;
 
         super.doDestroy();
     }
 
-    /** {@inheritDoc} */
+    @Override
     protected void doInitialize() throws ComponentInitializationException {
         super.doInitialize();
         logger.debug("Initialized {}", this.getClass().getSimpleName());

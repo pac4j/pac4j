@@ -59,6 +59,7 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
         this.attributes = attributes;
     }
 
+    @Override
     public void validate(UsernamePasswordCredentials credentials) {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
         CommonHelper.assertNotNull("attributes", attributes);
