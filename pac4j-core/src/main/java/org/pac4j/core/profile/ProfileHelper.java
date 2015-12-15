@@ -64,16 +64,12 @@ public final class ProfileHelper {
 
         logger.info("Building user profile based on typedId {}", typedId);
         try {
-            if (!typedId.contains(UserProfile.SEPARATOR)) {
-                final String completeName = determineProfileClassByName("HttpProfile");
+            final String[] values = typedId.split(UserProfile.SEPARATOR);
+            if (values.length >= 1) {
+                final String className = values[0];
+                final String completeName = determineProfileClassByName(className);
                 return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
             }
-
-            final String[] values = typedId.split(UserProfile.SEPARATOR);
-            final String className = values[0];
-
-            final String completeName = determineProfileClassByName(className);
-            return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
         } catch (final Exception e) {
             logger.error("Cannot build instance", e);
         }
@@ -104,9 +100,11 @@ public final class ProfileHelper {
             completeName = "org.pac4j.gae.profile.GaeUserServiceProfile";
         } else if ("StormpathProfile".equals(className)) {
             completeName = "org.pac4j.stormpath.profile.StormpathProfile";
+        } else if ("JwtProfile".equals(className)) {
+            completeName = "org.pac4j.jwt.profile.JwtProfile";
         } else {
             final String packageName = className.substring(0, className.length() - 7).toLowerCase();
-            completeName = "org.pac4j.oauth.profile." + packageName + "." + className;
+            completeName = "org.pac4j.oauth.profile." + packageName + '.' + className;
         }
         return completeName;
     }

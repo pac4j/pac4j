@@ -46,7 +46,7 @@ public class JwtTests {
     @Test
     public void testGenericJwt() {
         final String token =
-                "ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SnBjM01pT2lKRGRYTjBiMjBnU2xkVUlFSjFhV3hrWlhJaUxDSnBZWFFpT2pFME5UQXhOalEwTlRVc0ltVjRjQ0k2TVRRNE1UY3dNRFExTlN3aVlYVmtJam9pYUhSMGNITTZMeTluYVhSb2RXSXVZMjl0TDNCaFl6UnFJaXdpYzNWaUlqb2lkWE5sY2tCd1lXTTBhaTV2Y21jaUxDSmxiV0ZwYkNJNkluVnpaWEpBY0dGak5Hb3ViM0puSW4wLnpPUGI3cmJJM0lZN2lMWFRLMTI2R2d1MlEzcE5DWnNVenpnemdzcVI3eFU=";
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdXN0b20gSldUIEJ1aWxkZXIiLCJpYXQiOjE0NTAxNjQ0NTUsImV4cCI6MTQ4MTcwMDQ1NSwiYXVkIjoiaHR0cHM6Ly9naXRodWIuY29tL3BhYzRqIiwic3ViIjoidXNlckBwYWM0ai5vcmciLCJlbWFpbCI6InVzZXJAcGFjNGoub3JnIn0.zOPb7rbI3IY7iLXTK126Ggu2Q3pNCZsUzzgzgsqR7xU";
 
         final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
         final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
