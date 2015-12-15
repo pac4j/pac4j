@@ -72,7 +72,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
     @Override
     public void validate(final TokenCredentials credentials) {
         CommonHelper.assertNotBlank("signingSecret", signingSecret);
-
+        CommonHelper.assertNotBlank("encryptionSecret", encryptionSecret);
 
         final String token = credentials.getToken();
         boolean verified = false;
