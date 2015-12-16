@@ -17,7 +17,7 @@ package org.pac4j.jwt;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
+
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -25,8 +25,7 @@ import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link JwtGenerator} and {@link org.pac4j.jwt.credentials.authenticator.JwtAuthenticator}.
@@ -43,6 +42,17 @@ public class JwtTests {
     private final static String NAME = "fakeName";
     private final static boolean VERIFIED = true;
     private final static String CLIENT_NAME = "clientName";
+
+    @Test
+    public void testGenericJwt() {
+        final String token =
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdXN0b20gSldUIEJ1aWxkZXIiLCJpYXQiOjE0NTAxNjQ0NTUsImV4cCI6MTQ4MTcwMDQ1NSwiYXVkIjoiaHR0cHM6Ly9naXRodWIuY29tL3BhYzRqIiwic3ViIjoidXNlckBwYWM0ai5vcmciLCJlbWFpbCI6InVzZXJAcGFjNGoub3JnIn0.zOPb7rbI3IY7iLXTK126Ggu2Q3pNCZsUzzgzgsqR7xU";
+
+        final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
+        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
+        authenticator.validate(credentials);
+        assertNotNull(credentials.getUserProfile());
+    }
 
     @Test
     public void testGenerateAuthenticate() {
@@ -66,6 +76,7 @@ public class JwtTests {
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
+        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
     }
 
     @Test

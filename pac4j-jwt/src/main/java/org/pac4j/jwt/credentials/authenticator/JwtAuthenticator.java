@@ -30,8 +30,11 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -105,12 +108,22 @@ public class JwtAuthenticator implements TokenAuthenticator {
         }
 
         try {
-            final JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-            final UserProfile profile = ProfileHelper.buildProfile(claimSet.getSubject(), claimSet.getClaims());
-            credentials.setUserProfile(profile);
+            createJwtProfile(credentials, signedJWT);
         } catch (final Exception e) {
             throw new TechnicalException("Cannot get claimSet", e);
         }
+    }
+
+    private static void createJwtProfile(final TokenCredentials credentials, final SignedJWT signedJWT) throws ParseException {
+        final JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
+        String subject = claimSet.getSubject();
+
+        if (!subject.contains(UserProfile.SEPARATOR)) {
+            subject = JwtProfile.class.getSimpleName() + UserProfile.SEPARATOR + subject;
+        }
+
+        final UserProfile profile = ProfileHelper.buildProfile(subject, claimSet.getClaims());
+        credentials.setUserProfile(profile);
     }
 
     /**

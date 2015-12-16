@@ -16,8 +16,10 @@
 package org.pac4j.core.profile;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,53 +58,67 @@ public final class ProfileHelper {
      * @return the user profile built
      */
     public static UserProfile buildProfile(final String typedId, final Map<String, Object> attributes) {
-        if (typedId != null) {
-            final String[] values = typedId.split("#");
-            if (values != null && values.length == 2) {
+        if (CommonHelper.isBlank(typedId)) {
+            return null;
+        }
+
+        logger.info("Building user profile based on typedId {}", typedId);
+        try {
+            final String[] values = typedId.split(UserProfile.SEPARATOR);
+            if (values.length >= 1) {
                 final String className = values[0];
-                if (className != null) {
-                    try {
-                        String completeName;
-                        if ("CasProfile".equals(className) || "CasProxyProfile".equals(className)) {
-                            completeName = "org.pac4j.cas.profile." + className;
-                        } else if ("HttpTGTProfile".equals(className)) {
-                            completeName = "org.pac4j.cas.profile.HttpTGTProfile";
-                        } else if ("SAML2Profile".equals(className)) {
-                            completeName = "org.pac4j.saml.profile.SAML2Profile";
-                        } else if ("HttpProfile".equals(className)) {
-                            completeName = "org.pac4j.http.profile.HttpProfile";
-                        } else if ("OidcProfile".equals(className)) {
-                            completeName = "org.pac4j.oidc.profile.OidcProfile";
-                        } else if ("LdapProfile".equals(className)) {
-                            completeName = "org.pac4j.ldap.profile.LdapProfile";
-                        } else if ("DbProfile".equals(className)) {
-                            completeName = "org.pac4j.sql.profile.DbProfile";
-                        } else if ("MongoProfile".equals(className)) {
-                            completeName = "org.pac4j.mongo.profile.MongoProfile";
-                        } else if ("YahooOpenIdProfile".equals(className)) {
-                        	completeName = "org.pac4j.openid.profile.yahoo.YahooOpenIdProfile";
-                        } else if ("GaeUserServiceProfile".equals(className)) {
-                            completeName = "org.pac4j.gae.profile.GaeUserServiceProfile";
-                        } else if ("StormpathProfile".equals(className)) {
-                            completeName = "org.pac4j.stormpath.profile.StormpathProfile";
-                        } else {
-                            final String packageName = className.substring(0, className.length() - 7).toLowerCase();
-                            completeName = "org.pac4j.oauth.profile." + packageName + "." + className;
-                        }
-                        @SuppressWarnings("unchecked")
-                        final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
-                                .forName(completeName).getDeclaredConstructor();
-                        final UserProfile userProfile = constructor.newInstance();
-                        userProfile.build(typedId, attributes);
-                        logger.debug("userProfile built : {}", userProfile);
-                        return userProfile;
-                    } catch (final Exception e) {
-                        logger.error("Cannot build instance", e);
-                    }
-                }
+                final String completeName = determineProfileClassByName(className);
+                return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
             }
+        } catch (final Exception e) {
+            logger.error("Cannot build instance", e);
         }
         return null;
+    }
+
+    private static String determineProfileClassByName(final String className) {
+        final String completeName;
+        if ("CasProfile".equals(className) || "CasProxyProfile".equals(className)) {
+            completeName = "org.pac4j.cas.profile." + className;
+        } else if ("HttpTGTProfile".equals(className)) {
+            completeName = "org.pac4j.cas.profile.HttpTGTProfile";
+        } else if ("SAML2Profile".equals(className)) {
+            completeName = "org.pac4j.saml.profile.SAML2Profile";
+        } else if ("HttpProfile".equals(className)) {
+            completeName = "org.pac4j.http.profile.HttpProfile";
+        } else if ("OidcProfile".equals(className)) {
+            completeName = "org.pac4j.oidc.profile.OidcProfile";
+        } else if ("LdapProfile".equals(className)) {
+            completeName = "org.pac4j.ldap.profile.LdapProfile";
+        } else if ("DbProfile".equals(className)) {
+            completeName = "org.pac4j.sql.profile.DbProfile";
+        } else if ("MongoProfile".equals(className)) {
+            completeName = "org.pac4j.mongo.profile.MongoProfile";
+        } else if ("YahooOpenIdProfile".equals(className)) {
+            completeName = "org.pac4j.openid.profile.yahoo.YahooOpenIdProfile";
+        } else if ("GaeUserServiceProfile".equals(className)) {
+            completeName = "org.pac4j.gae.profile.GaeUserServiceProfile";
+        } else if ("StormpathProfile".equals(className)) {
+            completeName = "org.pac4j.stormpath.profile.StormpathProfile";
+        } else if ("JwtProfile".equals(className)) {
+            completeName = "org.pac4j.jwt.profile.JwtProfile";
+        } else {
+            final String packageName = className.substring(0, className.length() - 7).toLowerCase();
+            completeName = "org.pac4j.oauth.profile." + packageName + '.' + className;
+        }
+        return completeName;
+    }
+
+    private static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
+                                                                   final String completeName)
+            throws Exception {
+        @SuppressWarnings("unchecked")
+        final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
+                .forName(completeName).getDeclaredConstructor();
+        final UserProfile userProfile = constructor.newInstance();
+        userProfile.build(typedId, attributes);
+        logger.debug("userProfile built : {}", userProfile);
+        return userProfile;
     }
 
     /**
