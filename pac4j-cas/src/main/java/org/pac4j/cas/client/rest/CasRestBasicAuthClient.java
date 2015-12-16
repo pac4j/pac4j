@@ -27,8 +27,14 @@ import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
  * @since 1.8.0
  */
 public class CasRestBasicAuthClient extends AbstractCasRestClient {
+
     public CasRestBasicAuthClient() {
         super();
+    }
+
+    public CasRestBasicAuthClient(final CasRestAuthenticator authenticator) {
+        super(authenticator);
+        this.extractor = new BasicAuthExtractor(CasRestBasicAuthClient.class.getSimpleName());
     }
 
     public CasRestBasicAuthClient(final CasRestAuthenticator authenticator,
