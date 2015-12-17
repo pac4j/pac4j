@@ -19,6 +19,7 @@ import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
@@ -41,6 +42,8 @@ public class Config {
     protected Map<String, Matcher> matchers = new HashMap<>();
 
     protected SessionStore sessionStore;
+
+    protected HttpActionAdapter httpActionAdapter;
 
     public Config() {}
 
@@ -151,5 +154,13 @@ public class Config {
 
     public void setSessionStore(SessionStore sessionStore) {
         this.sessionStore = sessionStore;
+    }
+
+    public HttpActionAdapter getHttpActionAdapter() {
+        return httpActionAdapter;
+    }
+
+    public void setHttpActionAdapter(HttpActionAdapter httpActionAdapter) {
+        this.httpActionAdapter = httpActionAdapter;
     }
 }
