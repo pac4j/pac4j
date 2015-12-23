@@ -50,6 +50,7 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import com.nimbusds.oauth2.sdk.http.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
@@ -265,7 +266,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
         try {
             // Download OIDC metadata
-            DefaultResourceRetriever resourceRetriever = new DefaultResourceRetriever(getConnectTimeout(), getReadTimeout());
+            ResourceRetriever resourceRetriever = createResourceRetriever();
             this.oidcProvider = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
                     new URL(getDiscoveryURI())).getContent());
             this.redirectURI = new URI(computedCallbackUrl);
@@ -300,6 +301,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         } else if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(method)) {
             this.clientAuthentication = new ClientSecretBasic(this._clientID, this._secret);
         }
+    }
+
+    protected ResourceRetriever createResourceRetriever() {
+        return new DefaultResourceRetriever(getConnectTimeout(), getReadTimeout());
     }
 
     @Override
