@@ -24,10 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
-import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
-
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
@@ -39,6 +35,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -50,6 +47,8 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
 import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
@@ -66,6 +65,7 @@ import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
+import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
@@ -135,6 +135,11 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* max clock skew in seconds */
     private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
 
+    /* timeouts for token and userinfo requests */
+    private int connectTimeout = 0;
+
+    private int readTimeout = 0;
+
     public OidcClient() { }
 
     public OidcClient(final String clientId, final String secret, final String discoveryURI) {
@@ -197,6 +202,22 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         return this.customParams;
     }
 
+    public int getConnectTimeout() {
+        return connectTimeout;
+	}
+
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
     public Map<String, String> getAuthParams() {
         return this.authParams;
     }
@@ -244,7 +265,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
         try {
             // Download OIDC metadata
-            DefaultResourceRetriever resourceRetriever = new DefaultResourceRetriever();
+            DefaultResourceRetriever resourceRetriever = new DefaultResourceRetriever(getConnectTimeout(), getReadTimeout());
             this.oidcProvider = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
                     new URL(getDiscoveryURI())).getContent());
             this.redirectURI = new URI(computedCallbackUrl);
@@ -291,6 +312,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         client.setUseNonce(isUseNonce());
         client.setPreferredJwsAlgorithm(getPreferredJwsAlgorithm());
         client.setMaxClockSkew(getMaxClockSkew());
+        client.setConnectTimeout(getConnectTimeout());
+        client.setReadTimeout(getReadTimeout());
         return client;
     }
 
@@ -367,7 +390,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         HTTPResponse httpResponse;
         try {
             // Token request
-            httpResponse = request.toHTTPRequest().send();
+            HTTPRequest tokenHttpRequest = request.toHTTPRequest();
+            tokenHttpRequest.setConnectTimeout(connectTimeout);
+            tokenHttpRequest.setReadTimeout(readTimeout);
+            httpResponse = tokenHttpRequest.send();
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
 
@@ -389,7 +415,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             UserInfo userInfo = null;
             if (getProviderMetadata().getUserInfoEndpointURI() != null) {
                 UserInfoRequest userInfoRequest = buildUserInfoRequest(accessToken);
-                httpResponse = userInfoRequest.toHTTPRequest().send();
+                HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+                userInfoHttpRequest.setConnectTimeout(connectTimeout);
+                userInfoHttpRequest.setReadTimeout(readTimeout);
+                httpResponse = userInfoHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
 
