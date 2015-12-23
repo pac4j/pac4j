@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
-import com.nimbusds.openid.connect.sdk.token.verifiers.IDTokenVerifier;
+
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
@@ -69,6 +69,7 @@ import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
+import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
@@ -102,7 +103,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private String discoveryURI;
 
     /* ID Token verifier */
-    private IDTokenVerifier idTokenVerifier;
+    private IDTokenValidator idTokenValidator;
 
     /* OIDC metadata */
     private OIDCProviderMetadata oidcProvider;
@@ -178,10 +179,10 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     public String getScope() {
         return this.scope;
     }
-    
-    public IDTokenVerifier getIDTokenVerifier() {
-        return this.idTokenVerifier;
-    }
+
+    public IDTokenValidator getIdTokenValidator() {
+		return idTokenValidator;
+	}
 
     public void addCustomParam(final String key, final String value) {
         this.customParams.put(key, value);
@@ -259,11 +260,11 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             }
             // Init IDTokenVerifier
             if (CommonHelper.isNotBlank(getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
-                this.idTokenVerifier = new IDTokenVerifier(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, _secret);
+                this.idTokenValidator = new IDTokenValidator(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, _secret);
             } else {
-                this.idTokenVerifier = new IDTokenVerifier(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
+                this.idTokenValidator = new IDTokenValidator(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
             }
-            getIDTokenVerifier().setMaxClockSkew(getMaxClockSkew());
+            getIdTokenValidator().setMaxClockSkew(getMaxClockSkew());
 
         } catch (final IOException | ParseException | URISyntaxException e) {
             throw new TechnicalException(e);
@@ -413,7 +414,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                 nonce = null;
             }
             // Check ID Token
-            final IDTokenClaimsSet claimsSet = getIDTokenVerifier().verify(oidcTokens.getIDToken(), nonce);
+            final IDTokenClaimsSet claimsSet = getIdTokenValidator().validate(oidcTokens.getIDToken(), nonce);
             CommonHelper.assertNotNull("claimsSet", claimsSet);
             profile.setId(claimsSet.getSubject());
 
