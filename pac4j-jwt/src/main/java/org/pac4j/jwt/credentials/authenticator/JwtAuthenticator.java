@@ -73,6 +73,18 @@ public class JwtAuthenticator implements TokenAuthenticator {
     }
 
     /**
+     * Validates the token and returns the corresponding user profile.
+     *
+     * @param token the JWT
+     * @return the corresponding user profile
+     */
+    public UserProfile validateToken(final String token) {
+        final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
+        validate(credentials);
+        return credentials.getUserProfile();
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
