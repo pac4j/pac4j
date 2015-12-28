@@ -30,4 +30,6 @@ public interface JwtConstants {
     String ISSUER = "iss";
 
     String AUDIENCE = "aud";
+
+    String EXPIRATION_TIME = "exp";
 }
