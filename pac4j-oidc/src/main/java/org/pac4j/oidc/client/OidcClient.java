@@ -16,6 +16,7 @@
 package org.pac4j.oidc.client;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -283,9 +284,9 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             }
             // Init IDTokenVerifier
             if (CommonHelper.isNotBlank(getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
-                this.idTokenValidator = new IDTokenValidator(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, _secret);
+                this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
             } else {
-                this.idTokenValidator = new IDTokenValidator(getProviderMetadata().getIssuer(), _clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
+                this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
             }
             getIdTokenValidator().setMaxClockSkew(getMaxClockSkew());
 
@@ -303,6 +304,16 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             this.clientAuthentication = new ClientSecretBasic(this._clientID, this._secret);
         }
     }
+
+	protected IDTokenValidator createRSATokenValidator(
+			final JWSAlgorithm jwsAlgorithm, ClientID clientID) throws MalformedURLException {
+		return new IDTokenValidator(getProviderMetadata().getIssuer(), clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
+	}
+
+	protected IDTokenValidator createHMACTokenValidator(
+			final JWSAlgorithm jwsAlgorithm, final ClientID clientID, final Secret secret) {
+		return new IDTokenValidator(getProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
+	}
 
     protected ResourceRetriever createResourceRetriever() {
         return new DefaultResourceRetriever(getConnectTimeout(), getReadTimeout());
