@@ -23,6 +23,10 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+
 /**
  * This class tests the OAuth credential retrieval in the {@link org.pac4j.oauth.client.BaseOAuth20Client} class.
  * 
@@ -54,5 +58,18 @@ public final class BaseOAuth20ClientIT extends TestCase implements TestsConstant
             .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);
         assertEquals(CODE, oauthCredential.getVerifier());
+    }
+
+    public void testState() throws MalformedURLException {
+        BaseOAuth20Client client = new FacebookClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setStateParameter("OK");
+        URL url = new URL(client.getRedirectionUrl(MockWebContext.create()));
+        assertTrue(url.getQuery().contains("state=OK"));
+    }
+
+    public void testGetRedirectionGithub() {
+        String url = getClient().getRedirectionUrl(MockWebContext.create());
+        assertTrue(url != null && !url.isEmpty());
     }
 }
