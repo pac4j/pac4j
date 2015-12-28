@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -137,9 +138,9 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
 
     /* timeouts for token and userinfo requests */
-    private int connectTimeout = 0;
+    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
-    private int readTimeout = 0;
+    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     public OidcClient() { }
 
@@ -396,8 +397,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         try {
             // Token request
             HTTPRequest tokenHttpRequest = request.toHTTPRequest();
-            tokenHttpRequest.setConnectTimeout(connectTimeout);
-            tokenHttpRequest.setReadTimeout(readTimeout);
+            tokenHttpRequest.setConnectTimeout(getConnectTimeout());
+            tokenHttpRequest.setReadTimeout(getReadTimeout());
             httpResponse = tokenHttpRequest.send();
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
@@ -421,8 +422,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             if (getProviderMetadata().getUserInfoEndpointURI() != null) {
                 UserInfoRequest userInfoRequest = buildUserInfoRequest(accessToken);
                 HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-                userInfoHttpRequest.setConnectTimeout(connectTimeout);
-                userInfoHttpRequest.setReadTimeout(readTimeout);
+                userInfoHttpRequest.setConnectTimeout(getConnectTimeout());
+                userInfoHttpRequest.setReadTimeout(getReadTimeout());
                 httpResponse = userInfoHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
