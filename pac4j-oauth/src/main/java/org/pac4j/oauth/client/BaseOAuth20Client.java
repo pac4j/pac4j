@@ -39,6 +39,8 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
 
     public static final String OAUTH_CODE = "code";
 
+    private String stateData;
+
     private static final String STATE_PARAMETER = "#oauth20StateParameter";
 
     @Override
@@ -46,11 +48,11 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         // no request token for OAuth 2.0 -> no need to save it in the context
         final String authorizationUrl;
         // if a state parameter is required
-        if (requiresStateParameter()) {
-            String randomState = getStateParameter(context);
-            logger.debug("Random state parameter: {}", randomState);
-            context.setSessionAttribute(getName() + STATE_PARAMETER, randomState);
-            authorizationUrl = ((StateOAuth20Service) this.service).getAuthorizationUrl(randomState);
+        if (requiresStateParameter() || (stateData != null && !stateData.isEmpty())) {
+            String state = getStateParameter(context);
+            logger.debug("State parameter: {}", state);
+            context.setSessionAttribute(getName() + STATE_PARAMETER, state);
+            authorizationUrl = ((StateOAuth20Service) this.service).getAuthorizationUrl(state);
         } else {
             authorizationUrl = this.service.getAuthorizationUrl(null);
         }
@@ -67,7 +69,18 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
 
     @Override
     protected String getStateParameter(WebContext webContext) {
-        return RandomStringUtils.randomAlphanumeric(10);
+        final String stateParameter;
+        if (stateData == null || stateData.isEmpty()) {
+            stateParameter = RandomStringUtils.randomAlphanumeric(10);
+        } else {
+            stateParameter = stateData;
+        }
+        return stateParameter;
+    }
+
+
+    public void setStateParameter(String stateParameter) {
+        stateData = stateParameter;
     }
 
     /**
@@ -76,16 +89,20 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         // check state parameter if required
-        if (requiresStateParameter()) {
+        final String stateParameter = context.getRequestParameter("state");
+
+        if (stateParameter != null && !stateParameter.isEmpty()) {
             final String sessionState = (String) context.getSessionAttribute(getName() + STATE_PARAMETER);
             // clean from session after retrieving it
             context.setSessionAttribute(getName() + STATE_PARAMETER, null);
-            String stateParameter = context.getRequestParameter("state");
             logger.debug("sessionState : {} / stateParameter : {}", sessionState, stateParameter);
-            if (stateParameter == null || !stateParameter.equals(sessionState)) {
-                final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
+            if (!stateParameter.equals(sessionState)) {
+                final String message = "State parameter mismatch : session expired or possible threat of cross-site request forgery";
                 throw new OAuthCredentialsException(message);
             }
+        } else if (requiresStateParameter()) {
+            final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
+            throw new OAuthCredentialsException(message);
         }
 
         final String verifierParameter = context.getRequestParameter(OAUTH_CODE);
