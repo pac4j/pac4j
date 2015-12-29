@@ -37,6 +37,10 @@ public interface HttpConstants {
     int TEMP_REDIRECT = 302;
 
     int DEFAULT_PORT = 80;
+    
+    int DEFAULT_CONNECT_TIMEOUT = 15000;
+    
+    int DEFAULT_READ_TIMEOUT = 15000;
 
     String LOCATION_HEADER = "Location";
 
