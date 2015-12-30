@@ -83,7 +83,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a boolean is true otherwise throw an {@link TechnicalException}.
+     * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
      * 
      * @param value the value to be checked for truth
      * @param message the message to include in the exception if the value is false
@@ -95,7 +95,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
      * 
      * @param name name if the string
      * @param value value of the string
@@ -105,13 +105,23 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that an Object is not <code>null</code> otherwise throw an {@link TechnicalException}.
+     * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
      * 
      * @param name name of the object
      * @param obj object
      */
     public static void assertNotNull(final String name, final Object obj) {
         assertTrue(obj != null, name + " cannot be null");
+    }
+
+    /**
+     * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
+     *
+     * @param name name of the object
+     * @param obj object
+     */
+    public static void assertNull(final String name, final Object obj) {
+        assertTrue(obj == null, name + " must be null");
     }
 
     /**

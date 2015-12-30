@@ -35,4 +35,13 @@ public class CommonHelperTest {
         CommonHelper.assertNotNull("var", var);
     }
 
+    @Test
+    public void testAssertNull_null() {
+        CommonHelper.assertNull("var", null);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testAssertNull_notNull() {
+        CommonHelper.assertNull("var", "notnull");
+    }
 }

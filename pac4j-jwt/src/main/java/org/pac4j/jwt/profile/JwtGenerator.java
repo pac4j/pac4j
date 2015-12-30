@@ -30,6 +30,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.jwt.JwtConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +50,10 @@ public class JwtGenerator<U extends UserProfile> {
     private String signingSecret;
     private String encryptionSecret;
 
+    private JWSAlgorithm jwsAlgorithm = JWSAlgorithm.HS256;
+    private JWEAlgorithm jweAlgorithm = JWEAlgorithm.DIR;
+    private EncryptionMethod encryptionMethod = EncryptionMethod.A256GCM;
+
     public JwtGenerator(final String secret) {
         this(secret, true);
     }
@@ -64,7 +69,7 @@ public class JwtGenerator<U extends UserProfile> {
      * Initializes the generator that will create JWT tokens that is signed and optionally encrypted.
      *
      * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
-     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null}
+     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null} if you want encryption
      * @since 1.8.2
      */
     public JwtGenerator(final String signingSecret, final String encryptionSecret) {
@@ -79,6 +84,12 @@ public class JwtGenerator<U extends UserProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
+        CommonHelper.assertNotNull("profile", profile);
+        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
+        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
+        CommonHelper.assertNotBlank("signingSecret", signingSecret);
+        CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
+
         try {
             // Create HMAC signer
             final JWSSigner signer = new MACSigner(this.signingSecret);
@@ -86,8 +97,7 @@ public class JwtGenerator<U extends UserProfile> {
             // Build claims
             final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                     .subject(profile.getTypedId())
-                    .issueTime(new Date())
-                    .issuer(this.getClass().getSimpleName());
+                    .issueTime(new Date());
 
             // add attributes
             final Map<String, Object> attributes = profile.getAttributes();
@@ -99,15 +109,18 @@ public class JwtGenerator<U extends UserProfile> {
             final JWTClaimsSet claims = builder.build();
 
             // signed
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
+            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
 
             // Apply the HMAC
             signedJWT.sign(signer);
 
             if (CommonHelper.isNotBlank(this.encryptionSecret)) {
+                CommonHelper.assertNotNull("jweAlgorithm", jweAlgorithm);
+                CommonHelper.assertNotNull("encryptionMethod", encryptionMethod);
+
                 // Create JWE object with signed JWT as payload
                 final JWEObject jweObject = new JWEObject(
-                        new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM).contentType("JWT").build(),
+                        new JWEHeader.Builder(jweAlgorithm, encryptionMethod).contentType("JWT").build(),
                         new Payload(signedJWT));
 
                 // Perform encryption
@@ -123,4 +136,43 @@ public class JwtGenerator<U extends UserProfile> {
         }
     }
 
+    public String getSigningSecret() {
+        return signingSecret;
+    }
+
+    public void setSigningSecret(String signingSecret) {
+        this.signingSecret = signingSecret;
+    }
+
+    public String getEncryptionSecret() {
+        return encryptionSecret;
+    }
+
+    public void setEncryptionSecret(String encryptionSecret) {
+        this.encryptionSecret = encryptionSecret;
+    }
+
+    public JWSAlgorithm getJwsAlgorithm() {
+        return jwsAlgorithm;
+    }
+
+    public void setJwsAlgorithm(JWSAlgorithm jwsAlgorithm) {
+        this.jwsAlgorithm = jwsAlgorithm;
+    }
+
+    public JWEAlgorithm getJweAlgorithm() {
+        return jweAlgorithm;
+    }
+
+    public void setJweAlgorithm(JWEAlgorithm jweAlgorithm) {
+        this.jweAlgorithm = jweAlgorithm;
+    }
+
+    public EncryptionMethod getEncryptionMethod() {
+        return encryptionMethod;
+    }
+
+    public void setEncryptionMethod(EncryptionMethod encryptionMethod) {
+        this.encryptionMethod = encryptionMethod;
+    }
 }
