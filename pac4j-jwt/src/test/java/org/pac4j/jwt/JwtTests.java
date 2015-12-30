@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
@@ -33,15 +34,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtTests {
+public class JwtTests implements TestsConstants {
 
-    private final static String KEY = "12345678901234567890123456789012";
-    private final static String KEY2 = "02345678901234567890123456789010";
-
-    private final static String ID = "technicalId";
-    private final static String NAME = "fakeName";
-    private final static boolean VERIFIED = true;
-    private final static String CLIENT_NAME = "clientName";
+    private final static String JWT_KEY = "12345678901234567890123456789012";
+    private final static String JWT_KEY2 = "02345678901234567890123456789010";
 
     @Test
     public void testGenericJwt() {
@@ -49,14 +45,32 @@ public class JwtTests {
                 "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDdXN0b20gSldUIEJ1aWxkZXIiLCJpYXQiOjE0NTAxNjQ0NTUsImV4cCI6MTQ4MTcwMDQ1NSwiYXVkIjoiaHR0cHM6Ly9naXRodWIuY29tL3BhYzRqIiwic3ViIjoidXNlckBwYWM0ai5vcmciLCJlbWFpbCI6InVzZXJAcGFjNGoub3JnIn0.zOPb7rbI3IY7iLXTK126Ggu2Q3pNCZsUzzgzgsqR7xU";
 
         final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
-        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
+        final JwtAuthenticator authenticator = new JwtAuthenticator(JWT_KEY);
         authenticator.validate(credentials);
         assertNotNull(credentials.getUserProfile());
     }
 
+    @Test(expected = TechnicalException.class)
+    public void testGenerateAuthenticateSub() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY);
+        final FacebookProfile profile = createProfile();
+        profile.addAttribute(JwtConstants.SUBJECT, VALUE);
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testGenerateAuthenticateIat() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY);
+        final FacebookProfile profile = createProfile();
+        profile.addAttribute(JwtConstants.ISSUE_TIME, VALUE);
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+
     @Test
     public void testGenerateAuthenticate() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
@@ -64,7 +78,7 @@ public class JwtTests {
 
     @Test
     public void testGenerateAuthenticateNotEncrypted() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
@@ -72,27 +86,26 @@ public class JwtTests {
 
     @Test
     public void testGenerateAuthenticateAndEncrypted() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY, KEY);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY, JWT_KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
-        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
     }
 
     @Test
     public void testGenerateAuthenticateAndEncryptedDifferentKeys() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(KEY, KEY2);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY, JWT_KEY2);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
-        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY, KEY2);
-        final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
-        authenticator.validate(credentials);
-        final UserProfile profile2 = credentials.getUserProfile();
+        assertToken(profile, token, new JwtAuthenticator(JWT_KEY, JWT_KEY2));
     }
 
     private void assertToken(FacebookProfile profile, String token) {
+        assertToken(profile, token, new JwtAuthenticator(JWT_KEY));
+    }
+
+    private void assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
-        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
         authenticator.validate(credentials);
         final UserProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
@@ -108,13 +121,13 @@ public class JwtTests {
         final FacebookProfile profile = new FacebookProfile();
         profile.setId(ID);
         profile.addAttribute(FacebookAttributesDefinition.NAME, NAME);
-        profile.addAttribute(FacebookAttributesDefinition.VERIFIED, VERIFIED);
+        profile.addAttribute(FacebookAttributesDefinition.VERIFIED, true);
         return profile;
     }
 
     @Test(expected = TechnicalException.class)
     public void testAuthenticateFailed() {
-        final JwtAuthenticator authenticator = new JwtAuthenticator(KEY);
+        final JwtAuthenticator authenticator = new JwtAuthenticator(JWT_KEY);
         final TokenCredentials credentials = new TokenCredentials("fakeToken", CLIENT_NAME);
         authenticator.validate(credentials);
     }
