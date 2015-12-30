@@ -24,6 +24,7 @@ It is currently **available for many frameworks / tools and supports most authen
 | [Spring Security](http://projects.spring.io/spring-security) | [spring-security-pac4j](https://github.com/pac4j/spring-security-pac4j) | [spring-security-pac4j-demo](https://github.com/pac4j/spring-security-pac4j-demo)
 | [SSO CAS server](https://github.com/Jasig/cas) | [cas-server-support-pac4j](http://jasig.github.io/cas/4.1.x/integration/Delegate-Authentication.html) | [cas-pac4j-oauth-demo](https://github.com/leleuj/cas-pac4j-oauth-demo)
 
+You can even implement `pac4j` for a new framework / tool by following these [guidelines](https://github.com/pac4j/pac4j/wiki/Implement-pac4j-for-a-new-framework---tool).
 
 ## Supported authentication / authorization mechanisms:
 
@@ -47,9 +48,7 @@ See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authenticatio
 `pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` (and `pac4j-http`) submodules: role / permission checks, IP check, profile type verification, HTTP method verification... as well as regular security protections for CSRF, XSS, cache control, Xframe...
 
 
-## How to develop you own `pac4j` implementation for your framework / tool?
-
-### Versions
+## Versions
 
 The next version **1.8.3-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
@@ -63,97 +62,7 @@ mvn clean install
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-### Implementations
-
-`pac4j` is an easy and powerful security engine. Add the `pac4j-core` dependency to benefit from the core API of `pac4j`. Other dependencies will be optionally added for specific support: `pac4j-oauth` for OAuth, `pac4j-cas` for CAS, `pac4j-saml` for SAML...
-
-To define your security configuration, gather all your authentication mechanisms = [**clients**](https://github.com/pac4j/pac4j/wiki/Clients) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
-
-```java
-FacebookClient facebookClient = new FacebookClient(FB_KEY, FB_SECRET);
-TwitterClient twitterClient = new TwitterClient(TW_KEY, TW_SECRET);
-FormClient formClient = new FormClient("http://localhost:8080/theForm.jsp", new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator());
-CasClient casClient = new CasClient();
-casClient.setCasLoginUrl("http://mycasserver/login");
-Clients clients = new Clients("http://localhost:8080/callback", facebookClient, twitterClient, formClient, casClient);
-Config config = new Config(clients);
-config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
-config.addAuthorizer("custom", new CustomAuthorizer());
-```
-
-Notice you may also use the `ConfigSingleton` object to keep one instance of your configuration and share it among the different components (if you don't have any dependency injection capability). You can also use the `ConfigFactory` to build you configuration if no other mean is available.
- 
-To secure your Java web application, **the reference implementation is to create two "filters"**: **one to protect urls**, **the other one to receive callbacks** for stateful authentication processes (indirect clients).
-
-1) **For your protection "filter", it must be based on two String parameters: `clientName`** (list of clients used for authentication) **and `authorizerName`** (list of authorizers to check authorizations) and **use the following logic (loop on direct clients for authentication then check the user profile and authorizations)**:
-
-```java
-EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-Clients configClients = config.getClients();
-List<Client> currentClients = clientFinder.find(configClients, context, clientName);
-
-boolean useSession = useSession(context, currentClients);
-ProfileManager manager = new ProfileManager(context);
-UserProfile profile = manager.get(useSession);
-
-if (profile == null && currentClients != null && currentClients.size() > 0) {
-  for (final Client currentClient: currentClients) {
-    if (currentClient instanceof DirectClient) {
-      final Credentials credentials;
-      try {
-        credentials = currentClient.getCredentials(context);
-      } catch (RequiresHttpAction e) { ... }
-      profile = currentClient.getUserProfile(credentials, context);
-      if (profile != null) {
-        manager.save(useSession, profile);
-        break;
-      }
-    }
-  }
-}
-
-if (profile != null) {
-  if (authorizationChecker.isAuthorized(context, profile, authorizerName, config.getAuthorizers())) {
-    grantAccess();
-  } else {
-    forbidden(context, currentClients, profile);
-  }
-} else {
-  if (startAuthentication(context, currentClients)) {
-    saveRequestedUrl(context, currentClients);
-    redirectToIdentityProvider(context, currentClients);
-  } else {
-    unauthorized(context, currentClients);
-  }
-}
-```
-
-The `EnvSpecificWebContext` class is a specific implementation of the `WebContext` interface for your framework.
-
-See the final implementations in [j2e-pac4j](https://github.com/pac4j/j2e-pac4j/blob/master/src/main/java/org/pac4j/j2e/filter/RequiresAuthenticationFilter.java#L91) and [play-pac4j](https://github.com/pac4j/play-pac4j/blob/master/play-pac4j-java/src/main/java/org/pac4j/play/java/RequiresAuthenticationAction.java#L95).
-
-2) **For your callback "filter", get the credentials and the user profile on the callback url**:
-
-```java
-EnvSpecificWebContext context = new EnvSpecificWebContex(...);
-Clients clients = config.getClients();
-Client client = clients.findClient(context);
-
-Credentials credentials;
-try {
-  credentials = client.getCredentials(context);
-} catch (RequiresHttpAction e) {
-  handleSpecialHttpBehaviours();
-}
-
-UserProfile profile = client.getUserProfile(credentials, context);
-saveUserProfile(context, profile);
-redirectToOriginallyRequestedUrl(context, response);
-```
-
-See the final implementations in [j2e-pac4j](https://github.com/pac4j/j2e-pac4j/blob/master/src/main/java/org/pac4j/j2e/filter/CallbackFilter.java#L65) and [play-pac4j](https://github.com/pac4j/play-pac4j/blob/master/play-pac4j-java/src/main/java/org/pac4j/play/CallbackController.java#L63).
-
-Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.1/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) for more information.
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.2/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) documentation for more information.
 
 
 ## Need help?
