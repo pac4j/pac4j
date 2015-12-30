@@ -266,7 +266,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             this.casPrefixUrl += "/";
         }
         if (CommonHelper.isBlank(this.casPrefixUrl)) {
-            this.casPrefixUrl = this.casLoginUrl.replaceFirst("/login$", "/$");
+            this.casPrefixUrl = this.casLoginUrl.replaceFirst("/login$", "/");
         } else if (CommonHelper.isBlank(this.casLoginUrl)) {
             this.casLoginUrl = this.casPrefixUrl + "login";
         }

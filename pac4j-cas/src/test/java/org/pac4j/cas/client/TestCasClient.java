@@ -113,4 +113,15 @@ public final class TestCasClient extends TestCase implements TestsConstants {
             assertEquals("logout request : no credential returned", e.getMessage());
         }
     }
+    
+    public void testInitUrlWithLoginString() {
+    	final String testCasLoginUrl = "https://login.foo.bar/login/login";
+    	final String testCasPrefixUrl = "https://login.foo.bar/login/";
+    	final CasClient casClient = new CasClient();
+    	casClient.setCasLoginUrl(testCasLoginUrl);
+    	casClient.setCallbackUrl(CALLBACK_URL);
+    	assertEquals(null, casClient.getCasPrefixUrl());
+    	casClient.init(null);
+    	assertEquals(testCasPrefixUrl, casClient.getCasPrefixUrl());
+    }
 }
