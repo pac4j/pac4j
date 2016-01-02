@@ -70,7 +70,7 @@
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
 		<module>pac4j-openid</module>
-		<module>pac4j-test-cas</module>
+		<!--module>pac4j-test-cas</module-->
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
 		<module>pac4j-gae</module>
