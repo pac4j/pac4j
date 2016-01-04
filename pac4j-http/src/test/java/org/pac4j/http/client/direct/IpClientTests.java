@@ -18,13 +18,13 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.HttpProfile;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
@@ -43,7 +43,7 @@ public final class IpClientTests implements TestsConstants {
     public void testClone() {
         final IpClient oldClient = new IpClient();
         oldClient.setName(TYPE);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, HttpProfile>());
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, CommonProfile>());
         final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
         oldClient.setAuthenticator(authenticator);
         final IpClient client = (IpClient) oldClient.clone();
