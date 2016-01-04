@@ -98,11 +98,6 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected boolean requiresStateParameter() {
-		return false;
-	}
-
-	@Override
 	protected boolean hasBeenCancelled(final WebContext context) {
 		return false;
 	}

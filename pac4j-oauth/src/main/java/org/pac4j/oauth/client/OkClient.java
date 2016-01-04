@@ -62,11 +62,6 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-
-    @Override
     protected boolean hasBeenCancelled(WebContext context) {
         return false;
     }

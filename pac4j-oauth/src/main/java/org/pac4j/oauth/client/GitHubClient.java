@@ -88,11 +88,6 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
     
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }
