@@ -47,9 +47,9 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
         EMAIL_AND_PROFILE
     }
 
-    protected final String PROFILE_SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
+    protected final String PROFILE_SCOPE = "profile";
 
-    protected final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+    protected final String EMAIL_SCOPE = "email";
 
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
 

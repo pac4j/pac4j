@@ -131,11 +131,11 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     private void cleanRequestedUrl(final WebContext context) {
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, null);
+        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
     }
 
     private void cleanAttemptedAuthentication(final WebContext context) {
-        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, null);
+        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {

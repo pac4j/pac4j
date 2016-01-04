@@ -2,7 +2,7 @@ language: java
 
 sudo: false
 
-script: "mvn package -DskipITs --settings travis/settings.xml"
+script: "mvn test javadoc:javadoc --settings travis/settings.xml"
 
 jdk:
   - oraclejdk8

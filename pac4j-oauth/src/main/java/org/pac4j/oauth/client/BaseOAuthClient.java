@@ -18,6 +18,7 @@ package org.pac4j.oauth.client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -54,11 +55,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     protected boolean tokenAsHeader = false;
 
-    // 0,5 second
-    protected int connectTimeout = 500;
+    protected int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
-    // 2 seconds
-    protected int readTimeout = 2000;
+    protected int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     protected String proxyHost = null;
 

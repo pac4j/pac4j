@@ -15,14 +15,12 @@
  */
 package org.pac4j.oauth.client;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
-import org.scribe.oauth.StateOAuth20Service;
 import org.scribe.utils.OAuthEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

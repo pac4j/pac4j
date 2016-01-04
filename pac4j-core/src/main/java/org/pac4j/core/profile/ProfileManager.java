@@ -54,9 +54,9 @@ public class ProfileManager<U extends UserProfile> {
      */
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
-            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILE, null);
+            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILE, "");
         }
-        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILE, null);
+        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILE, "");
     }
 
     /**
