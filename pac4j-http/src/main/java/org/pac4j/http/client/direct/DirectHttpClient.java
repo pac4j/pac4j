@@ -18,6 +18,7 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.http.credentials.extractor.Extractor;
@@ -36,13 +37,13 @@ import org.pac4j.http.profile.HttpProfile;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public abstract class DirectHttpClient<C extends Credentials> extends DirectClient<C, HttpProfile> {
+public abstract class DirectHttpClient<C extends Credentials> extends DirectClient<C, CommonProfile> {
 
     protected Extractor<C> extractor;
 
     private Authenticator<C> authenticator;
 
-    private ProfileCreator<C, HttpProfile> profileCreator = AuthenticatorProfileCreator.INSTANCE;
+    private ProfileCreator<C, CommonProfile> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     @Override
     protected void internalInit(final WebContext context) {
@@ -76,9 +77,9 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
     }
 
     @Override
-    protected HttpProfile retrieveUserProfile(final C credentials, final WebContext context) {
+    protected CommonProfile retrieveUserProfile(final C credentials, final WebContext context) {
         // create the user profile
-        final HttpProfile profile = getProfileCreator().create(credentials);
+        final CommonProfile profile = getProfileCreator().create(credentials);
         logger.debug("profile: {}", profile);
         return profile;
     }
@@ -97,11 +98,11 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
         this.authenticator = authenticator;
     }
 
-    public ProfileCreator<C, HttpProfile> getProfileCreator() {
+    public ProfileCreator<C, CommonProfile> getProfileCreator() {
         return profileCreator;
     }
 
-    public void setProfileCreator(ProfileCreator<C, HttpProfile> profileCreator) {
+    public void setProfileCreator(ProfileCreator<C, CommonProfile> profileCreator) {
         this.profileCreator = profileCreator;
     }
 }

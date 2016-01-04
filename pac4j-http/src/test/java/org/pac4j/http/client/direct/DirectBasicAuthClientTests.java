@@ -19,13 +19,13 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.profile.HttpProfile;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
@@ -42,7 +42,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     public void testClone() {
         final DirectBasicAuthClient oldClient = new DirectBasicAuthClient();
         oldClient.setName(TYPE);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
+        oldClient.setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, CommonProfile>());
         final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
         oldClient.setAuthenticator(usernamePasswordAuthenticator);
         final DirectBasicAuthClient client = (DirectBasicAuthClient) oldClient.clone();

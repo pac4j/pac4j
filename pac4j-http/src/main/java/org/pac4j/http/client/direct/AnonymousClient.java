@@ -18,10 +18,10 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.credentials.AnonymousCredentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.http.profile.AnonymousProfile;
-import org.pac4j.http.profile.HttpProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class AnonymousClient extends DirectHttpClient<AnonymousCredentials> {
     protected void internalInit(final WebContext context) { }
 
     @Override
-    protected BaseClient<AnonymousCredentials, HttpProfile> newClient() {
+    protected BaseClient<AnonymousCredentials, CommonProfile> newClient() {
         return this;
     }
 
