@@ -70,7 +70,7 @@
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
 		<module>pac4j-openid</module>
-		<module>pac4j-test-cas</module>
+		<!--module>pac4j-test-cas</module-->
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
 		<module>pac4j-gae</module>
@@ -206,12 +206,12 @@
 			<dependency>
 				<groupId>com.nimbusds</groupId>
 				<artifactId>oauth2-oidc-sdk</artifactId>
-				<version>5.0-alpha15</version>
+				<version>5.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.nimbusds</groupId>
 				<artifactId>nimbus-jose-jwt</artifactId>
-				<version>4.9</version>
+				<version>4.11</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>

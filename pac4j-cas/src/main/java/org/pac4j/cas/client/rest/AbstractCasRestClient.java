@@ -28,9 +28,9 @@ import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.client.direct.DirectHttpClient;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import java.io.BufferedReader;
@@ -56,7 +56,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
 
     public AbstractCasRestClient(final CasRestAuthenticator authenticator) {
         setAuthenticator(authenticator);
-        setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
+        setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, CommonProfile>());
     }
 
     public HttpTGTProfile requestTicketGrantingTicket(final WebContext context) {
@@ -130,7 +130,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
     }
 
     @Override
-    protected BaseClient<UsernamePasswordCredentials, HttpProfile> newClient() {
+    protected BaseClient<UsernamePasswordCredentials, CommonProfile> newClient() {
         final AbstractCasRestClient client = newClientType();
         client.setAuthenticator(getAuthenticator());
         return client;
