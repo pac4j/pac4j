@@ -61,7 +61,7 @@ import org.scribe.oauth.StateOAuth20ServiceImpl;
  * @author Mehdi BEN HAJ ABBES
  * @since 1.0.0
  */
-public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
+public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     
     private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
     
@@ -287,10 +287,5 @@ public class FacebookClient extends BaseOAuth20Client<FacebookProfile> {
     
     public void setRequiresExtendedToken(final boolean requiresExtendedToken) {
         this.requiresExtendedToken = requiresExtendedToken;
-    }
-    
-    @Override
-    protected boolean requiresStateParameter() {
-        return true;
     }
 }

@@ -80,11 +80,6 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }

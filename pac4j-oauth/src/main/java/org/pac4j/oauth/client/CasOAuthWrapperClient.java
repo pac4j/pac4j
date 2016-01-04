@@ -115,11 +115,6 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
     
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }

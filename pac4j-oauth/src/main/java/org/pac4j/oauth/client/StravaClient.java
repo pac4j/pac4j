@@ -88,11 +88,6 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-
-    @Override
     protected boolean hasBeenCancelled(WebContext context) {
         return false;
     }
