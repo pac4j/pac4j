@@ -40,9 +40,16 @@ public class ProfileManager<U extends UserProfile> {
      * @return the user profile
      */
     public U get(final boolean readFromSession) {
-        U profile = (U) this.context.getRequestAttribute(Pac4jConstants.USER_PROFILE);
+        U profile = null;
+        final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILE);
+        if (objSession != null && objSession instanceof UserProfile) {
+            profile = (U) objSession;
+        }
         if (profile == null && readFromSession) {
-            profile = (U) this.context.getSessionAttribute(Pac4jConstants.USER_PROFILE);
+            final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILE);
+            if (objRequest != null && objRequest instanceof UserProfile) {
+                profile = (U) objRequest;
+            }
         }
         return profile;
     }
