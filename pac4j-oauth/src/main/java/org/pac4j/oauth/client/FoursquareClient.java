@@ -82,11 +82,6 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     }
 
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-
-    @Override
     protected boolean hasBeenCancelled(WebContext context) {
         return false;
     }

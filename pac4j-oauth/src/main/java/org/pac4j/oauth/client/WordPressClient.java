@@ -88,11 +88,6 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     }
     
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }

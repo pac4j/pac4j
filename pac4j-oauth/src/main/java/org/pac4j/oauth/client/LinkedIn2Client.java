@@ -40,7 +40,7 @@ import org.scribe.oauth.LinkedInOAuth20ServiceImpl;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
+public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     public final static String DEFAULT_SCOPE = "r_fullprofile";
     
@@ -74,11 +74,6 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
                                                                              SignatureType.Header, this.scope, null),
                                                       this.connectTimeout, this.readTimeout, this.proxyHost,
                                                       this.proxyPort);
-    }
-    
-    @Override
-    protected boolean requiresStateParameter() {
-        return true;
     }
     
     @Override

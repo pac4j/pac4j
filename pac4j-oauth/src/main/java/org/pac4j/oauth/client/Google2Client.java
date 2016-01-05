@@ -39,7 +39,7 @@ import org.scribe.oauth.StateOAuth20ServiceImpl;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2Client extends BaseOAuth20Client<Google2Profile> {
+public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
 
     public enum Google2Scope {
         EMAIL,
@@ -118,11 +118,6 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
     }
 
     @Override
-    protected boolean requiresStateParameter() {
-        return requiresStateParameter;
-    }
-
-    @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         // user has denied permissions
@@ -139,5 +134,17 @@ public class Google2Client extends BaseOAuth20Client<Google2Profile> {
      */
     public void setUseStateParameter(boolean requiresStateParameter) {
         this.requiresStateParameter = requiresStateParameter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String retrieveAuthorizationUrl(final WebContext context) {
+        if (this.requiresStateParameter) {
+            return super.retrieveAuthorizationUrl(context);
+        } else {
+            return super.getAuthorizationUrl(null);
+        }
     }
 }

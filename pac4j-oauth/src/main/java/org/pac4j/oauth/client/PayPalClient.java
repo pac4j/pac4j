@@ -104,11 +104,6 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
     
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         return false;
     }

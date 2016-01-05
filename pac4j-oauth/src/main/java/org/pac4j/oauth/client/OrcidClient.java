@@ -55,11 +55,6 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-
-    @Override
     protected boolean hasBeenCancelled(WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
         final String errorDescription = context.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
