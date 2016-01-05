@@ -309,7 +309,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
         final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
-        if ((nameIdentifier.getValue() == null) && (context.getBaseID() == null)
+        if ((nameIdentifier == null || nameIdentifier.getValue() == null) && (context.getBaseID() == null)
                 && ((subjectConfirmations == null) || (subjectConfirmations.size() == 0))) {
             throw new SAMLException(
                     "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
