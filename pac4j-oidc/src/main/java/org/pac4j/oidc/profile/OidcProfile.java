@@ -109,8 +109,14 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         }
 
         public static BearerAccessTokenBean toBean(final BearerAccessToken token) {
-            return new BearerAccessTokenBean(token.getValue(),
-                    token.getLifetime(), token.getScope().toStringList());
+            final Scope scope = token.getScope();
+            if (scope != null) {
+                return new BearerAccessTokenBean(token.getValue(),
+                        token.getLifetime(), scope.toStringList());
+            } else {
+                return new BearerAccessTokenBean(token.getValue(),
+                        token.getLifetime(), null);
+            }
         }
 
         public static BearerAccessToken fromBean(final BearerAccessTokenBean token) {
