@@ -190,16 +190,6 @@ public class Clients extends InitializableObject {
         this.callbackUrl = callbackUrl;
     }
 
-    /**
-     * Use {@link #setClients(List)} instead.
-     * @param clients the clients to set
-     * @deprecated
-     */
-    @Deprecated
-    public void setClientsList(final List<Client> clients) {
-        this.clients = clients;
-    }
-
     public void setClients(final List<Client> clients) {
         this.clients = clients;
     }
