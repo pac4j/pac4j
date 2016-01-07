@@ -171,11 +171,4 @@ public class JwtAuthenticator implements TokenAuthenticator {
     public void setEncryptionSecret(final String encryptionSecret) {
         this.encryptionSecret = encryptionSecret;
     }
-
-    @Deprecated
-    public void setSecret(String secret) {
-        this.encryptionSecret = secret;
-        this.signingSecret = secret;
-        warning();
-    }
 }

@@ -20,6 +20,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -27,7 +28,6 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.UsernameProfileCreator;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
@@ -157,7 +157,13 @@ public final class TestFormClient implements TestsConstants {
     @Test
     public void testGetUserProfile() {
         final FormClient formClient = getFormClient();
-        formClient.setProfileCreator(new UsernameProfileCreator());
+        formClient.setProfileCreator(credentials -> {
+            String username = credentials.getUsername();
+            final HttpProfile profile = new HttpProfile();
+            profile.setId(username);
+            profile.addAttribute(CommonProfile.USERNAME, username);
+            return profile;
+        });
         final MockWebContext context = MockWebContext.create();
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);

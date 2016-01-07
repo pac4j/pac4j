@@ -63,18 +63,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
      */
     public CasSingleSignOutHandler() {
     }
-    
-    /**
-     * Construct an instance from a given {@link SingleSignOutHandler} class.
-     * The provided handler is not taken into account.
-     * 
-     * @param singleSignOutHandler the real SSOut handler
-     */
-    @Deprecated
-    public CasSingleSignOutHandler(final SingleSignOutHandler singleSignOutHandler) {
-        logger.warn("The provided CAS SingleSignOutHandler is not taken into account anymore!");
-    }
-    
+
     @Override
     public boolean isTokenRequest(final WebContext context) {
         final J2EContext j2eContext = (J2EContext) context;
