@@ -35,7 +35,6 @@ public class FacebookAttributesDefinition extends OAuthAttributesDefinition {
     public static final String LOCALE = "locale";
     public static final String LANGUAGES = "languages";
     public static final String LINK = "link";
-    public static final String USERNAME = "username";
     public static final String THIRD_PARTY_ID = "third_party_id";
     public static final String TIMEZONE = "timezone";
     public static final String UPDATED_TIME = "updated_time";
@@ -69,7 +68,7 @@ public class FacebookAttributesDefinition extends OAuthAttributesDefinition {
     
     public FacebookAttributesDefinition() {
         final String[] names = new String[] {
-            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, USERNAME, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
+            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
             RELIGION, WEBSITE
         };
         for (final String name : names) {
