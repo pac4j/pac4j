@@ -121,11 +121,6 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return false;
-    }
-
-    @Override
     protected OpenIdCredentials retrieveCredentials(final WebContext context) {
         final String mode = context.getRequestParameter(OPENID_MODE);
         // cancelled authentication

@@ -74,9 +74,4 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         logger.debug("accessToken : {}", accessToken);
         return accessToken;
     }
-
-    @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
 }

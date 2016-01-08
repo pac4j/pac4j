@@ -204,7 +204,7 @@ public class Clients extends InitializableObject {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
                 this.clientNameParameter, "clients", getClients());
     }
 }

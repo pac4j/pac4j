@@ -168,11 +168,6 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-
-    @Override
     public ClientType getClientType() {
         return ClientType.FORM_BASED;
     }

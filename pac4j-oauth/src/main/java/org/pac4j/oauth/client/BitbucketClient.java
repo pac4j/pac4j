@@ -41,11 +41,6 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
     public BitbucketClient() {
     }
 
-    @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-  
     public BitbucketClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);

@@ -49,11 +49,6 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	}
 
 	@Override
-	protected boolean isDirectRedirection() {
-		return true;
-	}
-
-	@Override
 	protected RedirectAction retrieveRedirectAction(WebContext context) {
 		String destinationUrl = computeFinalCallbackUrl(context);
 		String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl) : service.createLoginURL(destinationUrl, authDomain);
