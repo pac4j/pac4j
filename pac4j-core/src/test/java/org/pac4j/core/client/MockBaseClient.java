@@ -59,11 +59,6 @@ public class MockBaseClient<C extends Credentials> extends IndirectClient<C, Com
     }
     
     @Override
-    protected boolean isDirectRedirection() {
-        return this.isDirect;
-    }
-    
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         return RedirectAction.redirect(LOGIN_URL);
     }

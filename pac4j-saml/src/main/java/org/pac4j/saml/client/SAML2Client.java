@@ -218,11 +218,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return !this.configuration.getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI);
-    }
-
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);

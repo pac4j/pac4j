@@ -335,11 +335,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return false;
-    }
-
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
 
         Map<String, String> params = new HashMap<String, String>(getAuthParams());
