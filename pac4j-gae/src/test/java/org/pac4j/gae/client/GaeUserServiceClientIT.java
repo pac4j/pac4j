@@ -59,11 +59,6 @@ public class GaeUserServiceClientIT extends ClientIT implements TestsConstants {
     protected Client getClient() {
         final GaeUserServiceClient client = new GaeUserServiceClient() {
         	@Override
-        	protected boolean isDirectRedirection() { // For test, just redirect, and set the user with the helper
-        		return true;
-        	}
-        	
-        	@Override
         	protected RedirectAction retrieveRedirectAction(WebContext context) {
         		return RedirectAction.redirect(getCallbackUrl());
         	}

@@ -109,9 +109,4 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         }
         return profile;
     }
-
-    @Override
-    protected boolean isDirectRedirection() {
-        return false;
-    }
 }

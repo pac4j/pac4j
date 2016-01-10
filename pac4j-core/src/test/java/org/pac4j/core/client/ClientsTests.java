@@ -20,7 +20,11 @@ import java.util.List;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -33,7 +37,7 @@ import static org.junit.Assert.*;
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class TestClients implements TestsConstants {
+public final class ClientsTests implements TestsConstants {
 
     private MockBaseClient newFacebookClient() {
         return new MockBaseClient("FacebookClient");
@@ -161,5 +165,32 @@ public final class TestClients implements TestsConstants {
         final MockBaseClient client2 = new MockBaseClient(NAME);
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         clients.init();
+    }
+
+    private static class FakeClient extends DirectClient<Credentials, CommonProfile> {
+
+        @Override
+        protected BaseClient<Credentials, CommonProfile> newClient() {
+            return null;
+        }
+
+        @Override
+        public Credentials getCredentials(final WebContext context) throws RequiresHttpAction {
+            throw new UnsupportedOperationException("Not implemneted yet");
+        }
+
+        @Override
+        protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) {
+            throw new UnsupportedOperationException("Not implemneted yet");
+        }
+
+        @Override
+        public ClientType getClientType() {
+            throw new UnsupportedOperationException("Not implemneted yet");
+        }
+
+        @Override
+        protected void internalInit(final WebContext context) {
+        }
     }
 }

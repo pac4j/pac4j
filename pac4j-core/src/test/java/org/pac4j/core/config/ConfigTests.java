@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.authorization.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.FakeClient;
+import org.pac4j.core.client.MockBaseClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
@@ -56,7 +56,7 @@ public final class ConfigTests implements TestsConstants {
 
     @Test
     public void testConstructor() {
-        final Client client = new FakeClient();
+        final Client client = new MockBaseClient(NAME);
         final Config config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));
