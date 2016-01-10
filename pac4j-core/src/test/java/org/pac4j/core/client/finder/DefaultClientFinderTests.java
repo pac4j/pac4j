@@ -13,9 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.client.finder;
 
 import org.junit.Test;
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Clients;
+import org.pac4j.core.client.MockBaseClient;
+import org.pac4j.core.client.finder.DefaultClientFinder;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;

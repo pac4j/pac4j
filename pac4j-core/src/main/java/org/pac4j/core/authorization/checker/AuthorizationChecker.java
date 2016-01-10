@@ -13,19 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.authorization.checker;
 
+import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * The way to find the client.
+ * The way to check authorizations.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface ClientFinder {
+public interface AuthorizationChecker {
 
-    List<Client> find(Clients clients, WebContext context, String clientName);
+    boolean isAuthorized(WebContext context, UserProfile profile, String authorizerName, Map<String, Authorizer> authorizersMap);
+
+    boolean isAuthorized(WebContext context, UserProfile profile, List<Authorizer> authorizers);
 }

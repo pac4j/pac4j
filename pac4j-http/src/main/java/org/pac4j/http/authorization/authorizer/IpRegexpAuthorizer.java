@@ -15,7 +15,7 @@
  */
 package org.pac4j.http.authorization.authorizer;
 
-import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;

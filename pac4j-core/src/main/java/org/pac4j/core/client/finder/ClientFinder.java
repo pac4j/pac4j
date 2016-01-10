@@ -13,25 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.core.client.finder;
 
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.UserProfile;
+
+import java.util.List;
 
 /**
- * Checks if an access is authorized.
+ * The way to find the client.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface Authorizer<U extends UserProfile> {
+public interface ClientFinder {
 
-    /**
-     * Checks if the user profile is authorized for the current web context.
-     *
-     * @param context the web context
-     * @param profile the user profile
-     * @return if the access is authorized
-     */
-    boolean isAuthorized(WebContext context, U profile);
+    List<Client> find(Clients clients, WebContext context, String clientName);
 }
