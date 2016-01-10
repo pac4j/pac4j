@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.authorization.generator;
 
-import org.pac4j.core.authorization.AuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 

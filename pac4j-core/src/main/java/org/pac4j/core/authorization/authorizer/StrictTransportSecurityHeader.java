@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;

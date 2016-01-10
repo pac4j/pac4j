@@ -21,7 +21,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.pac4j.core.authorization.AuthorizationGenerator;
+import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 

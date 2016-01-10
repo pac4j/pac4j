@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.authorization.authorizer.AbstractRequireAnyAuthorizer;
 import org.pac4j.core.context.WebContext;
@@ -23,31 +23,29 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Checks an access if the user profile has any of the permissions.
+ * Checks an access if the user profile has any of the roles.
  *
  * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
 
-    public RequireAnyPermissionAuthorizer() { }
+    public RequireAnyRoleAuthorizer() { }
 
-    public RequireAnyPermissionAuthorizer(final String... permissions) {
-        setElements(permissions);
+    public RequireAnyRoleAuthorizer(final String... roles) {
+        setElements(roles);
     }
 
-    public RequireAnyPermissionAuthorizer(final List<String> permissions) {
-        setElements(permissions);
+    public RequireAnyRoleAuthorizer(final List<String> roles) {
+        setElements(roles);
     }
 
-    public RequireAnyPermissionAuthorizer(final Set<String> permissions) {
-        setElements(permissions);
-    }
+    public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
 
     @Override
     protected boolean check(final WebContext context, final U profile, final String element) {
-        final List<String> profilePermissions = profile.getPermissions();
-        return profilePermissions.contains(element);
+        final List<String> profileRoles = profile.getRoles();
+        return profileRoles.contains(element);
     }
 }

@@ -13,13 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.core.authorization.generator;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
+import org.pac4j.core.authorization.generator.FromAttributesAuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests {@link FromAttributesAuthorizationGenerator}.
@@ -27,7 +30,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class TestFromAttributesAuthorizationGenerator extends TestCase {
+public class FromAttributesAuthorizationGeneratorTests {
     
     private final static String ATTRIB1 = "attrib1";
     private final static String VALUE1 = "info11,info12";
@@ -37,13 +40,14 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
     
     private CommonProfile profile;
     
-    @Override
+    @Before
     public void setUp() {
         this.profile = new CommonProfile();
         this.profile.addAttribute(ATTRIB1, VALUE1);
         this.profile.addAttribute(ATTRIB2, VALUE2);
     }
-    
+
+    @Test
     public void testNoConfig() {
         final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
                                                                                                                                       null,
@@ -52,7 +56,8 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
     }
-    
+
+    @Test
     public void testRolePermission() {
         final String[] roleAttributes = new String[] {
             ATTRIB1
@@ -73,7 +78,8 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
         assertTrue(permissions.contains("info21"));
         assertTrue(permissions.contains("info22"));
     }
-    
+
+    @Test
     public void testNoRolePermission() {
         final String[] roleAttributes = new String[] {
             ATTRIB3
@@ -91,7 +97,8 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
         assertTrue(permissions.contains("info21"));
         assertTrue(permissions.contains("info22"));
     }
-    
+
+    @Test
     public void testRoleNoPermission() {
         final String[] roleAttributes = new String[] {
             ATTRIB1
@@ -109,7 +116,8 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
         assertTrue(roles.contains("info12"));
         assertEquals(0, this.profile.getPermissions().size());
     }
-    
+
+    @Test
     public void testRolePermissionChangeSplit() {
         final String[] roleAttributes = new String[] {
             ATTRIB1

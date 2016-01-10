@@ -15,7 +15,7 @@
  */
 package org.pac4j.core.config;
 
-import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.session.SessionStore;

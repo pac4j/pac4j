@@ -12,7 +12,7 @@
  */
 package org.pac4j.core.authorization.authorizer.csrf;
 
-import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
