@@ -149,11 +149,6 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     }
     
     @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-    
-    @Override
     public ClientType getClientType() {
         return ClientType.CAS_PROTOCOL;
     }

@@ -6,7 +6,6 @@ import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.JsonList;
@@ -55,8 +54,7 @@ public class StravaClientIT extends OAuthClientIT {
     protected HtmlPage getRedirectionPage(final WebClient webClient, final Client<?, ?> client,
             final J2EContext context) throws Exception {
         final BaseClient baseClient = (BaseClient) client;
-        // force immediate redirection for tests
-        baseClient.redirect(context, true);
+        baseClient.redirect(context);
 
         MockHttpServletResponse response = (MockHttpServletResponse) context.getResponse();
         final String redirectionUrl = response.getHeader(HttpConstants.LOCATION_HEADER);

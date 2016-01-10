@@ -107,11 +107,6 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-
-    @Override
     public ClientType getClientType() {
         return ClientType.BASICAUTH_BASED;
     }

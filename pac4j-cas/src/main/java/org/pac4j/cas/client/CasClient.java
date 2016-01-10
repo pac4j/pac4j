@@ -436,11 +436,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-
-    @Override
     public ClientType getClientType() {
         return ClientType.CAS_PROTOCOL;
     }
