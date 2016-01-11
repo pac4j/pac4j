@@ -15,30 +15,23 @@
  */
 package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.Authorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * Add a custom security header.
+ * Checks if an access is authorized.
  *
  * @author Jerome Leleu
- * @since 1.8.1
+ * @since 1.8.0
  */
-public class CustomSecurityHeader implements Authorizer<UserProfile> {
+public interface Authorizer<U extends UserProfile> {
 
-    private final String name;
-
-    private final String value;
-
-    public CustomSecurityHeader(final String name, final String value) {
-        this.name = name;
-        this.value = value;
-    }
-
-    @Override
-    public boolean isAuthorized(final WebContext context, final UserProfile profile) {
-        context.setResponseHeader(name, value);
-        return true;
-    }
+    /**
+     * Checks if the user profile is authorized for the current web context.
+     *
+     * @param context the web context
+     * @param profile the user profile
+     * @return if the access is authorized
+     */
+    boolean isAuthorized(WebContext context, U profile);
 }

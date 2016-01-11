@@ -16,8 +16,8 @@
 package org.pac4j.core.config;
 
 import org.junit.Test;
-import org.pac4j.core.authorization.Authorizer;
-import org.pac4j.core.authorization.RequireAnyRoleAuthorizer;
+import org.pac4j.core.authorization.authorizer.Authorizer;
+import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.MockBaseClient;
 import org.pac4j.core.exception.TechnicalException;

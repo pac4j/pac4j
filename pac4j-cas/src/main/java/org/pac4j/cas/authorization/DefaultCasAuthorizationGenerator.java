@@ -17,7 +17,7 @@
 package org.pac4j.cas.authorization;
 
 import org.pac4j.cas.client.CasClient;
-import org.pac4j.core.authorization.AuthorizationGenerator;
+import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
 
 /**

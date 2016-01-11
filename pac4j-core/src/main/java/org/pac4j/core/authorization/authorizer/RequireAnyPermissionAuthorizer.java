@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.authorizer.AbstractRequireAllAuthorizer;
+import org.pac4j.core.authorization.authorizer.AbstractRequireAnyAuthorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
@@ -23,25 +23,25 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Checks an access if the user profile has all the permissions.
+ * Checks an access if the user profile has any of the permissions.
  *
  * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAllPermissionsAuthorizer<U extends UserProfile> extends AbstractRequireAllAuthorizer<String, U> {
+public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
 
-    public RequireAllPermissionsAuthorizer() { }
+    public RequireAnyPermissionAuthorizer() { }
 
-    public RequireAllPermissionsAuthorizer(final String... permissions) {
+    public RequireAnyPermissionAuthorizer(final String... permissions) {
         setElements(permissions);
     }
 
-    public RequireAllPermissionsAuthorizer(final List<String> permissions) {
+    public RequireAnyPermissionAuthorizer(final List<String> permissions) {
         setElements(permissions);
     }
 
-    public RequireAllPermissionsAuthorizer(final Set<String> permissions) {
+    public RequireAnyPermissionAuthorizer(final Set<String> permissions) {
         setElements(permissions);
     }
 
