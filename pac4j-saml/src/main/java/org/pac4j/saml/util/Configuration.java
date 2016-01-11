@@ -40,6 +40,9 @@ public final class Configuration {
         parserPool.setCoalescing(true);
         parserPool.setIgnoreComments(true);
         parserPool.setNamespaceAware(true);
+        parserPool.setExpandEntityReferences(false);
+        parserPool.setXincludeAware(false);
+        parserPool.setIgnoreElementContentWhitespace(true);
 
         final Map<String, Object> builderAttributes = new HashMap<String, Object>();
         parserPool.setBuilderAttributes(builderAttributes);
@@ -48,6 +51,8 @@ public final class Configuration {
         features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
         features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
         features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
+        features.put("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
+        features.put("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
         parserPool.setBuilderFeatures(features);
 
         try {
