@@ -13,8 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.client.finder;
 
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;

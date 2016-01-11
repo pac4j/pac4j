@@ -13,10 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.core.authorization.checker;
 
 import org.junit.Test;
+import org.pac4j.core.authorization.authorizer.Authorizer;
+import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
+import org.pac4j.core.authorization.checker.AuthorizationChecker;
+import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;

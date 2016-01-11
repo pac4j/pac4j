@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.authorization;
+package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.authorizer.AbstractRequireAnyAuthorizer;
+import org.pac4j.core.authorization.authorizer.AbstractRequireAllAuthorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
@@ -23,29 +23,31 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Checks an access if the user profile has any of the roles.
+ * Checks an access if the user profile has all the permissions.
  *
  * @param <U> the user profile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyRoleAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAllPermissionsAuthorizer<U extends UserProfile> extends AbstractRequireAllAuthorizer<String, U> {
 
-    public RequireAnyRoleAuthorizer() { }
+    public RequireAllPermissionsAuthorizer() { }
 
-    public RequireAnyRoleAuthorizer(final String... roles) {
-        setElements(roles);
+    public RequireAllPermissionsAuthorizer(final String... permissions) {
+        setElements(permissions);
     }
 
-    public RequireAnyRoleAuthorizer(final List<String> roles) {
-        setElements(roles);
+    public RequireAllPermissionsAuthorizer(final List<String> permissions) {
+        setElements(permissions);
     }
 
-    public RequireAnyRoleAuthorizer(final Set<String> roles) { setElements(roles); }
+    public RequireAllPermissionsAuthorizer(final Set<String> permissions) {
+        setElements(permissions);
+    }
 
     @Override
     protected boolean check(final WebContext context, final U profile, final String element) {
-        final List<String> profileRoles = profile.getRoles();
-        return profileRoles.contains(element);
+        final List<String> profilePermissions = profile.getPermissions();
+        return profilePermissions.contains(element);
     }
 }
