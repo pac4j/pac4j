@@ -293,7 +293,4 @@ public final class SAML2ClientConfiguration implements Cloneable {
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

@@ -24,8 +24,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -212,10 +210,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         }
         return metadataManager;
     }
-    @Override
-    protected BaseClient<SAML2Credentials, SAML2Profile> newClient() {
-        return new SAML2Client(this.configuration.clone());
-    }
 
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext wc) {
@@ -292,11 +286,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     public final SAML2MetadataResolver getIdentityProviderMetadataResolver() {
         return this.idpMetadataResolver;
-    }
-
-    @Override
-    public final ClientType getClientType() {
-        return ClientType.SAML_PROTOCOL;
     }
 
     public final String getIdentityProviderResolvedEntityId() {

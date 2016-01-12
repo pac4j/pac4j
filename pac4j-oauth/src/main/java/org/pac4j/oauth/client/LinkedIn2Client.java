@@ -57,14 +57,6 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     }
     
     @Override
-    protected LinkedIn2Client newClient() {
-        final LinkedIn2Client newClient = new LinkedIn2Client();
-        newClient.setScope(this.scope);
-        newClient.setFields(this.fields);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);

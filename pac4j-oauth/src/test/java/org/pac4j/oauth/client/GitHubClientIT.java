@@ -39,14 +39,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class GitHubClientIT extends OAuthClientIT {
 
-    @Override
-    public void testClone() {
-        final GitHubClient oldClient = new GitHubClient();
-        oldClient.setScope(SCOPE);
-        final GitHubClient client = (GitHubClient) internalTestClone(oldClient);
-        assertEquals(oldClient.getScope(), client.getScope());
-    }
-
     @SuppressWarnings("rawtypes")
     @Override
     protected Client getClient() {

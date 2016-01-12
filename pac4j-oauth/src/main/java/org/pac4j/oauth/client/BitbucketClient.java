@@ -35,8 +35,7 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
-public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
-{
+public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
 
     public BitbucketClient() {
     }
@@ -47,17 +46,14 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
     }
 
     @Override
-    protected void internalInit(final WebContext context)
-    {
+    protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth10aServiceImpl(new BitBucketApi(),
-                                                    new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                                                                    SignatureType.Header, null, null),
-                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                    this.proxyPort);
+                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
+                        SignatureType.Header, null, null),
+                this.connectTimeout, this.readTimeout, this.proxyHost,
+                this.proxyPort);
     }
-  
-  
 
     @Override
     protected boolean hasBeenCancelled(WebContext context) {
@@ -83,10 +79,4 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile>
         }
        return profile;
     }
-
-    @Override
-    protected BitbucketClient newClient() {
-        return new BitbucketClient();
-    }
-  
 }

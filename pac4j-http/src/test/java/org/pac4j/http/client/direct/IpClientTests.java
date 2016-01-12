@@ -18,14 +18,11 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -38,19 +35,6 @@ import static org.junit.Assert.*;
 public final class IpClientTests implements TestsConstants {
 
     private final static String IP = "127.0.0.2";
-
-    @Test
-    public void testClone() {
-        final IpClient oldClient = new IpClient();
-        oldClient.setName(TYPE);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, CommonProfile>());
-        final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
-        oldClient.setAuthenticator(authenticator);
-        final IpClient client = (IpClient) oldClient.clone();
-        assertEquals(oldClient.getName(), client.getName());
-        assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
-    }
 
     @Test
     public void testMissingTokendAuthenticator() {

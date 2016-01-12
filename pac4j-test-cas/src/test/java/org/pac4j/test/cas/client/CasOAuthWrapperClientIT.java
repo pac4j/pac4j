@@ -17,7 +17,6 @@ package org.pac4j.test.cas.client;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -45,15 +44,6 @@ public final class CasOAuthWrapperClientIT extends ClientIT {
     private static final String USERNAME = "leleuj";
     
     private static final String CAS_SERVER_URL = "http://casserverurl/oauth2.0";
-    
-    public void testClone() {
-        final CasOAuthWrapperClient oldClient = new CasOAuthWrapperClient();
-        oldClient.setCasOAuthUrl(CAS_SERVER_URL);
-        oldClient.setSpringSecurityCompliant(true);
-        final CasOAuthWrapperClient client = (CasOAuthWrapperClient) internalTestClone(oldClient);
-        assertEquals(oldClient.getCasOAuthUrl(), client.getCasOAuthUrl());
-        assertEquals(oldClient.isSpringSecurityCompliant(), client.isSpringSecurityCompliant());
-    }
     
     public void testMissingCasOAuthUrl() {
         final CasOAuthWrapperClient client = (CasOAuthWrapperClient) getClient();
@@ -105,10 +95,5 @@ public final class CasOAuthWrapperClientIT extends ClientIT {
         assertEquals("eduPersonAffiliation", profile.getAttribute("eduPersonAffiliation"));
         assertEquals("groupMembership", profile.getAttribute("groupMembership"));
         assertEquals(4, profile.getAttributes().size());
-    }
-    
-    @Override
-    protected ClientType getClientType() {
-        return ClientType.OAUTH_PROTOCOL;
     }
 }

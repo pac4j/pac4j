@@ -53,11 +53,6 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected TwitterClient newClient() {
-        return new TwitterClient();
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         DefaultApi10a api;

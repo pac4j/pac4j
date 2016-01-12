@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -149,11 +148,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         this.clientId = clientId;
         this.secret = secret;
         this.discoveryURI = discoveryURI;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.OPENID_CONNECT_PROTOCOL;
     }
 
     public void setDiscoveryURI(final String discoveryURI) {
@@ -317,21 +311,6 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     protected ResourceRetriever createResourceRetriever() {
         return new DefaultResourceRetriever(getConnectTimeout(), getReadTimeout());
-    }
-
-    @Override
-    protected IndirectClient<OidcCredentials, OidcProfile> newClient() {
-        OidcClient client = new OidcClient();
-        client.setClientID(getClientID());
-        client.setSecret(getSecret());
-        client.setDiscoveryURI(getDiscoveryURI());
-        client.setAuthParams(getAuthParams());
-        client.setUseNonce(isUseNonce());
-        client.setPreferredJwsAlgorithm(getPreferredJwsAlgorithm());
-        client.setMaxClockSkew(getMaxClockSkew());
-        client.setConnectTimeout(getConnectTimeout());
-        client.setReadTimeout(getReadTimeout());
-        return client;
     }
 
     @Override

@@ -47,12 +47,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
         setKey(key);
         setSecret(secret);
     }
-    
-    @Override
-    protected YahooClient newClient() {
-        return new YahooClient();
-    }
-    
+
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);

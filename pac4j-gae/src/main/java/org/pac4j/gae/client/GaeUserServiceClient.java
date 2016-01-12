@@ -16,7 +16,6 @@
 package org.pac4j.gae.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -40,12 +39,6 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	String authDomain = null;
 	public GaeUserServiceClient() {
 		setName("GaeUserServiceClient");
-	}
-	@Override
-	protected IndirectClient<GaeUserCredentials, GaeUserServiceProfile> newClient() {
-		GaeUserServiceClient gaeUserServiceClient = new GaeUserServiceClient();
-		gaeUserServiceClient.setAuthDomain(authDomain);
-		return gaeUserServiceClient;
 	}
 
 	@Override
@@ -77,11 +70,6 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 			return gaeUserProfile;
 		}
 		return null;
-	}
-
-	@Override
-	public ClientType getClientType() {
-		return ClientType.GAE_PROVIDER;
 	}
 
 	@Override

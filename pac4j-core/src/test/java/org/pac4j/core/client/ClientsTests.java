@@ -170,22 +170,12 @@ public final class ClientsTests implements TestsConstants {
     private static class FakeClient extends DirectClient<Credentials, CommonProfile> {
 
         @Override
-        protected BaseClient<Credentials, CommonProfile> newClient() {
-            return null;
-        }
-
-        @Override
         public Credentials getCredentials(final WebContext context) throws RequiresHttpAction {
             throw new UnsupportedOperationException("Not implemneted yet");
         }
 
         @Override
         protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) {
-            throw new UnsupportedOperationException("Not implemneted yet");
-        }
-
-        @Override
-        public ClientType getClientType() {
             throw new UnsupportedOperationException("Not implemneted yet");
         }
 
