@@ -98,15 +98,6 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
     
     @Override
-    protected FacebookClient newClient() {
-        final FacebookClient newClient = new FacebookClient();
-        newClient.setScope(this.scope);
-        newClient.setFields(this.fields);
-        newClient.setLimit(this.limit);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         CommonHelper.assertNotBlank("fields", this.fields);

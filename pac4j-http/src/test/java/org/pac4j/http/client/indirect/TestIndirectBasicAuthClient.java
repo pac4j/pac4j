@@ -23,10 +23,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -37,23 +34,6 @@ import static org.junit.Assert.*;
  * @since 1.4.0
  */
 public final class TestIndirectBasicAuthClient implements TestsConstants {
-
-    @Test
-    public void testClone() {
-        final IndirectBasicAuthClient oldClient = new IndirectBasicAuthClient();
-        oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setName(TYPE);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, HttpProfile>());
-        oldClient.setRealmName(NAME);
-        final UsernamePasswordAuthenticator usernamePasswordAuthenticator = new SimpleTestUsernamePasswordAuthenticator();
-        oldClient.setAuthenticator(usernamePasswordAuthenticator);
-        final IndirectBasicAuthClient client = (IndirectBasicAuthClient) oldClient.clone();
-        assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getName(), client.getName());
-        assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
-        assertEquals(oldClient.getRealmName(), client.getRealmName());
-    }
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {

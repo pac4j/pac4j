@@ -15,8 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.util.TestsHelper;
 
@@ -47,32 +45,5 @@ public abstract class OAuthClientIT extends ClientIT {
         final BaseOAuthClient client = (BaseOAuthClient) getClient();
         client.setSecret(null);
         TestsHelper.initShouldFail(client, "secret cannot be blank");
-    }
-
-    protected BaseClient internalTestClone(final BaseClient oldBaseClient) {
-        BaseOAuthClient oldClient = (BaseOAuthClient) oldBaseClient;
-        oldClient.setKey(KEY);
-        oldClient.setSecret(SECRET);
-        oldClient.setConnectTimeout(CONNECT_TIMEOUT);
-        oldClient.setReadTimeout(READ_TIMEOUT);
-        oldClient.setProxyHost(PROXY_HOST);
-        oldClient.setProxyPort(PROXY_PORT);
-        BaseOAuthClient client = (BaseOAuthClient) super.internalTestClone(oldClient);
-        assertEquals(oldClient.getKey(), client.getKey());
-        assertEquals(oldClient.getSecret(), client.getSecret());
-        assertEquals(oldClient.getConnectTimeout(), client.getConnectTimeout());
-        assertEquals(oldClient.getReadTimeout(), client.getReadTimeout());
-        assertEquals(oldClient.getProxyHost(), client.getProxyHost());
-        assertEquals(oldClient.getProxyPort(), client.getProxyPort());
-        return client;
-    }
-    
-    public void testClone() {
-        internalTestClone((BaseClient) getClient());
-    }
-    
-    @Override
-    protected ClientType getClientType() {
-        return ClientType.OAUTH_PROTOCOL;
     }
 }

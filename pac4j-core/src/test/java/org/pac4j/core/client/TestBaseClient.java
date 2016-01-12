@@ -21,7 +21,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
 /**
@@ -31,15 +30,6 @@ import org.pac4j.core.util.TestsConstants;
  * @since 1.4.0
  */
 public final class TestBaseClient extends TestCase implements TestsConstants {
-
-    public void testClone() {
-        final IndirectClient<Credentials, CommonProfile> oldClient = new MockBaseClient<Credentials>(TYPE);
-        oldClient.setCallbackUrl(CALLBACK_URL);
-        final IndirectClient<Credentials, CommonProfile> newClient = (IndirectClient<Credentials, CommonProfile>) oldClient.clone();
-        assertEquals(oldClient.getName(), newClient.getName());
-        assertEquals(oldClient.getCallbackUrl(), newClient.getCallbackUrl());
-        assertEquals(oldClient.getAuthorizationGenerators(), newClient.getAuthorizationGenerators());
-    }
 
     public void testDirectClient() throws RequiresHttpAction {
         final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);

@@ -40,14 +40,7 @@ public class MockBaseClient<C extends Credentials> extends IndirectClient<C, Com
         setName(name);
         this.isDirect = isDirect;
     }
-    
-    @Override
-    protected IndirectClient<C, CommonProfile> newClient() {
-        MockBaseClient<C> client = new MockBaseClient<C>(getName());
-        client.setCallbackUrl(getCallbackUrl());
-        return client;
-    }
-    
+
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("callbackUrl", getCallbackUrl());
@@ -65,11 +58,6 @@ public class MockBaseClient<C extends Credentials> extends IndirectClient<C, Com
     
     @Override
     protected C retrieveCredentials(final WebContext context) throws RequiresHttpAction {
-        return null;
-    }
-    
-    @Override
-    public ClientType getClientType() {
         return null;
     }
 }

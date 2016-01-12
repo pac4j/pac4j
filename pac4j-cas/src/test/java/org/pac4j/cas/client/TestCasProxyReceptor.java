@@ -17,7 +17,6 @@ package org.pac4j.cas.client;
 
 import junit.framework.TestCase;
 
-import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
@@ -30,20 +29,6 @@ import org.pac4j.core.util.TestsHelper;
  * @since 1.4.0
  */
 public final class TestCasProxyReceptor extends TestCase implements TestsConstants {
-    
-    public void testClone() {
-        final CasProxyReceptor oldClient = new CasProxyReceptor();
-        oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setMillisBetweenCleanUps(MILLIS_BETWEEN_CLEANUPS);
-        final ProxyGrantingTicketStorageImpl proxyGrantingTicketStorageImpl = new ProxyGrantingTicketStorageImpl();
-        oldClient.setProxyGrantingTicketStorage(proxyGrantingTicketStorageImpl);
-        oldClient.setName(TYPE);
-        final CasProxyReceptor client = (CasProxyReceptor) oldClient.clone();
-        assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getMillisBetweenCleanUps(), client.getMillisBetweenCleanUps());
-        assertEquals(oldClient.getProxyGrantingTicketStorage(), client.getProxyGrantingTicketStorage());
-        assertEquals(oldClient.getName(), client.getName());
-    }
     
     public void testMissingCallbackUrl() {
         final CasProxyReceptor client = new CasProxyReceptor();

@@ -16,7 +16,6 @@
 
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
@@ -60,17 +59,5 @@ public class CookieClient extends DirectHttpClient<TokenCredentials>  {
         extractor = new CookieExtractor(this.cookieName, getName());
         super.internalInit(context);
 
-    }
-
-    @Override
-    protected CookieClient newClient() {
-        final CookieClient newClient = new CookieClient();
-        newClient.setCookieName(this.cookieName);
-        return newClient;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.COOKIE_BASED;
     }
 }

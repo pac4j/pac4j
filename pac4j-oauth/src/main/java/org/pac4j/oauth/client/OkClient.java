@@ -16,10 +16,8 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
@@ -54,11 +52,6 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         setKey(key);
         setSecret(secret);
         setPublicKey(publicKey);
-    }
-
-    @Override
-    protected BaseClient<OAuthCredentials, OkProfile> newClient() {
-        return new OkClient();
     }
 
     @Override
@@ -124,12 +117,5 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
 
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
-    }
-
-    @Override
-    public BaseOAuthClient<OkProfile> clone() {
-        OkClient clone = (OkClient) super.clone();
-        clone.setPublicKey(publicKey);
-        return clone;
     }
 }

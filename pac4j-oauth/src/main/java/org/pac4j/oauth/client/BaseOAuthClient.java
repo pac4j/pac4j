@@ -16,7 +16,6 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -71,22 +70,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     }
 
     @Override
-    public BaseOAuthClient<U> clone() {
-        final BaseOAuthClient<U> newClient = (BaseOAuthClient<U>) super.clone();
-        newClient.setKey(this.key);
-        newClient.setSecret(this.secret);
-        newClient.setCallbackUrl(this.callbackUrl);
-        newClient.setConnectTimeout(this.connectTimeout);
-        newClient.setReadTimeout(this.readTimeout);
-        newClient.setProxyHost(this.proxyHost);
-        newClient.setProxyPort(this.proxyPort);
-        return newClient;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         try {
             return RedirectAction.redirect(retrieveAuthorizationUrl(context));
@@ -97,9 +80,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     protected abstract String retrieveAuthorizationUrl(final WebContext context);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected OAuthCredentials retrieveCredentials(final WebContext context) {
         // check if the authentication has been cancelled
@@ -147,9 +127,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      */
     protected abstract OAuthCredentials getOAuthCredentials(final WebContext context);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) {
         try {
@@ -338,10 +315,5 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     public void setTokenAsHeader(boolean tokenAsHeader) {
         this.tokenAsHeader = tokenAsHeader;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.OAUTH_PROTOCOL;
     }
 }

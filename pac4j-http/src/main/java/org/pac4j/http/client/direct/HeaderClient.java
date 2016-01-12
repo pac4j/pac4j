@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
@@ -71,18 +70,5 @@ public class HeaderClient extends DirectHttpClient<TokenCredentials> {
 
     public void setPrefixHeader(String prefixHeader) {
         this.prefixHeader = prefixHeader;
-    }
-
-    @Override
-    protected HeaderClient newClient() {
-        final HeaderClient newClient = new HeaderClient();
-        newClient.setHeaderName(this.headerName);
-        newClient.setPrefixHeader(this.prefixHeader);
-        return newClient;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.HEADER_BASED;
     }
 }

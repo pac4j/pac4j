@@ -63,25 +63,10 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
 
     protected static final Logger logger = LoggerFactory.getLogger(ClientIT.class);
 
-    protected abstract ClientType getClientType();
-
-    public void testClientType() {
-        final BaseClient client = (BaseClient) getClient();
-        assertEquals(getClientType(), client.getClientType());
-    }
-
     public void testMissingCallbackUrl() {
         final IndirectClient client = (IndirectClient) getClient();
         client.setCallbackUrl(null);
         TestsHelper.initShouldFail(client, "callbackUrl cannot be blank");
-    }
-
-    protected IndirectClient internalTestClone(final IndirectClient oldClient) {
-        oldClient.setCallbackUrl(CALLBACK_URL);
-        final IndirectClient client = (IndirectClient) oldClient.clone();
-        assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getName(), client.getName());
-        return client;
     }
 
     public void testAuthenticationAndUserProfileRetrieval() throws Exception {

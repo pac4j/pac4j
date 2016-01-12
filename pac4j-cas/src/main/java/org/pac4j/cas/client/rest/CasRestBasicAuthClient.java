@@ -17,7 +17,6 @@
 package org.pac4j.cas.client.rest;
 
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
 
 /**
@@ -42,15 +41,5 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         super(authenticator);
         this.extractor = new BasicAuthExtractor(headerName, prefixHeader,
                 CasRestBasicAuthClient.class.getSimpleName());
-    }
-
-    @Override
-    protected AbstractCasRestClient newClientType() {
-        return new CasRestBasicAuthClient();
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.BASICAUTH_BASED;
     }
 }

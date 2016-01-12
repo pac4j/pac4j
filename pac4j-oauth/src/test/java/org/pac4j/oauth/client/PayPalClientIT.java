@@ -43,14 +43,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class PayPalClientIT extends OAuthClientIT {
     
-    @Override
-    public void testClone() {
-        final PayPalClient oldClient = new PayPalClient();
-        oldClient.setScope(SCOPE);
-        final PayPalClient client = (PayPalClient) internalTestClone(oldClient);
-        assertEquals(oldClient.getScope(), client.getScope());
-    }
-    
     public void testMissingFields() {
         final PayPalClient client = (PayPalClient) getClient();
         client.setScope(null);
