@@ -46,14 +46,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class Google2ClientIT extends OAuthClientIT {
 
-    @Override
-    public void testClone() {
-        final Google2Client oldClient = new Google2Client();
-        oldClient.setScope(Google2Scope.EMAIL_AND_PROFILE);
-        final Google2Client client = (Google2Client) internalTestClone(oldClient);
-        assertEquals(oldClient.getScope(), client.getScope());
-    }
-
     public void testMissingScope() {
         final Google2Client client = (Google2Client) getClient();
         client.setScope(null);

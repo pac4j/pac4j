@@ -46,16 +46,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class LinkedIn2ClientIT extends OAuthClientIT {
     
-    @Override
-    public void testClone() {
-        final LinkedIn2Client oldClient = new LinkedIn2Client();
-        oldClient.setScope(SCOPE);
-        oldClient.setFields(FIELDS);
-        final LinkedIn2Client client = (LinkedIn2Client) internalTestClone(oldClient);
-        assertEquals(oldClient.getScope(), client.getScope());
-        assertEquals(oldClient.getFields(), client.getFields());
-    }
-    
     public void testMissingScope() {
         final LinkedIn2Client client = (LinkedIn2Client) getClient();
         client.setScope(null);

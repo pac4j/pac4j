@@ -34,10 +34,7 @@ import org.slf4j.LoggerFactory;
  * <li>The initialization process is handled by the {@link InitializableWebObject} inheritance, the {@link #internalInit(WebContext)} must be implemented
  * in sub-classes. The {@link #init(WebContext)} method must be called implicitly by the main methods of the {@link Client} interface, so that no explicit call is
  * required to initialize the client</li>
- * <li>The cloning process is handled by the {@link #clone()} method, the {@link #newClient()} method must be implemented in sub-classes to
- * create a new instance</li>
  * <li>The name of the client is handled through the {@link #setName(String)} and {@link #getName()} methods</li>
- * <li>The {@link #getClientType()} method returns the implemented {@link ClientType} by the client.</li>
  * <li>After retrieving the user profile, the client can generate the authorization information (roles, permissions and remember-me) by using
  * the appropriate {@link AuthorizationGenerator}.</li>
  * </ul>
@@ -46,32 +43,13 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableWebObject implements
-        Client<C, U>, Cloneable {
+        Client<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String name;
 
     private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<AuthorizationGenerator<U>>();
-
-    /**
-     * Clone the current client.
-     * 
-     * @return the cloned client
-     */
-    @Override
-    public BaseClient<C, U> clone() {
-        final BaseClient<C, U> newClient = newClient();
-        newClient.setName(this.name);
-        return newClient;
-    }
-
-    /**
-     * Create a new instance of the client.
-     * 
-     * @return A new instance of the client
-     */
-    protected abstract BaseClient<C, U> newClient();
 
     public void setName(final String name) {
         this.name = name;
@@ -104,21 +82,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context);
 
-    /**
-     * Return the client type.
-     * 
-     * @return the client type
-     */
-    public abstract ClientType getClientType();
-
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName());
-    }
-
-    public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
-        CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
-        this.authorizationGenerators.add(authorizationGenerator);
     }
 
     public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
@@ -136,11 +102,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
 
     /**
-     * Add only one authorization generator.
+     * Add an authorization generator.
      * 
      * @param authorizationGenerator an authorizations generator
      */
     public void setAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
         addAuthorizationGenerator(authorizationGenerator);
+    }
+
+    public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
+        CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
+        this.authorizationGenerators.add(authorizationGenerator);
     }
 }

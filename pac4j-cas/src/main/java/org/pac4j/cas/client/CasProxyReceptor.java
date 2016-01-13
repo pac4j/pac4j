@@ -25,7 +25,6 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -62,16 +61,7 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     private Timer timer;
     
     private TimerTask timerTask;
-    
-    @Override
-    protected IndirectClient<CasCredentials, CasProfile> newClient() {
-        final CasProxyReceptor casProxyReceptor = new CasProxyReceptor();
-        casProxyReceptor.setCallbackUrl(this.callbackUrl);
-        casProxyReceptor.setProxyGrantingTicketStorage(this.proxyGrantingTicketStorage);
-        casProxyReceptor.setMillisBetweenCleanUps(this.millisBetweenCleanUps);
-        return casProxyReceptor;
-    }
-    
+
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
@@ -146,10 +136,5 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     @Override
     protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
-    }
-    
-    @Override
-    public ClientType getClientType() {
-        return ClientType.CAS_PROTOCOL;
     }
 }

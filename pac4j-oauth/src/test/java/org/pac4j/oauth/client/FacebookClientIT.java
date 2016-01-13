@@ -56,18 +56,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  */
 public class FacebookClientIT extends OAuthClientIT {
 
-    @Override
-    public void testClone() {
-        final FacebookClient oldClient = new FacebookClient();
-        oldClient.setScope(SCOPE);
-        oldClient.setFields(FIELDS);
-        oldClient.setLimit(LIMIT);
-        final FacebookClient client = (FacebookClient) internalTestClone(oldClient);
-        assertEquals(oldClient.getScope(), client.getScope());
-        assertEquals(oldClient.getFields(), client.getFields());
-        assertEquals(oldClient.getLimit(), client.getLimit());
-    }
-
     public void testMissingFields() {
         final FacebookClient client = (FacebookClient) getClient();
         client.setFields(null);

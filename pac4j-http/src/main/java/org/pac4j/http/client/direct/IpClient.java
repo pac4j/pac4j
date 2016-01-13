@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
@@ -48,15 +47,5 @@ public class IpClient extends DirectHttpClient<TokenCredentials> {
     protected void internalInit(final WebContext context) {
         extractor = new IpExtractor(getName());
         super.internalInit(context);
-    }
-
-    @Override
-    protected IpClient newClient() {
-        return new IpClient();
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.IP_BASED;
     }
 }

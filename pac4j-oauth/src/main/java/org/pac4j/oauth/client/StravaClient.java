@@ -74,13 +74,6 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected StravaClient newClient() {
-        StravaClient client = new StravaClient();
-        client.setScope(scope);
-        return client;
-    }
-
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(key, secret, computeFinalCallbackUrl(context),

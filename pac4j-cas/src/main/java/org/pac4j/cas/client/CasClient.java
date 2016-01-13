@@ -36,7 +36,6 @@ import org.pac4j.cas.logout.NoLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
@@ -145,21 +144,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
                 computeFinalCallbackUrl(context), this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);
-    }
-
-    @Override
-    protected IndirectClient<CasCredentials, CasProfile> newClient() {
-        final CasClient casClient = new CasClient();
-        casClient.setCallbackUrl(this.callbackUrl);
-        casClient.setCasLoginUrl(this.casLoginUrl);
-        casClient.setCasPrefixUrl(this.casPrefixUrl);
-        casClient.setCasProtocol(this.casProtocol);
-        casClient.setRenew(this.renew);
-        casClient.setGateway(this.gateway);
-        casClient.setAcceptAnyProxy(this.acceptAnyProxy);
-        casClient.setAllowedProxyChains(this.allowedProxyChains);
-        casClient.setCasProxyReceptor(this.casProxyReceptor);
-        return casClient;
     }
 
     @Override
@@ -433,10 +417,5 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
                 "casPrefixUrl", this.casPrefixUrl, "casProtocol", this.casProtocol, "renew", this.renew, "gateway",
                 this.gateway, "encoding", this.encoding, "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy,
                 "allowedProxyChains", this.allowedProxyChains, "casProxyReceptor", this.casProxyReceptor);
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.CAS_PROTOCOL;
     }
 }

@@ -15,10 +15,7 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.credentials.AnonymousCredentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.http.profile.AnonymousProfile;
@@ -49,11 +46,6 @@ public class AnonymousClient extends DirectHttpClient<AnonymousCredentials> {
     protected void internalInit(final WebContext context) { }
 
     @Override
-    protected BaseClient<AnonymousCredentials, CommonProfile> newClient() {
-        return this;
-    }
-
-    @Override
     public AnonymousCredentials getCredentials(WebContext context) throws RequiresHttpAction {
         return CREDENTIALS;
     }
@@ -61,10 +53,5 @@ public class AnonymousClient extends DirectHttpClient<AnonymousCredentials> {
     @Override
     protected AnonymousProfile retrieveUserProfile(final AnonymousCredentials credentials, final WebContext context) {
         return PROFILE;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.UNKNOWN;
     }
 }

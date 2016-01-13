@@ -44,15 +44,6 @@ public abstract class IndirectHttpClient<C extends Credentials> extends Indirect
     private ProfileCreator<C, HttpProfile> profileCreator =  AuthenticatorProfileCreator.INSTANCE;
 
     @Override
-    public IndirectHttpClient<C> clone() {
-        final IndirectHttpClient<C> newClient = (IndirectHttpClient<C>) super.clone();
-        newClient.setCallbackUrl(this.callbackUrl);
-        newClient.setAuthenticator(this.authenticator);
-        newClient.setProfileCreator(this.profileCreator);
-        return newClient;
-    }
-
-    @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("extractor", this.extractor);
         CommonHelper.assertNotNull("authenticator", getAuthenticator());

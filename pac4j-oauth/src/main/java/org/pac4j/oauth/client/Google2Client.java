@@ -66,13 +66,6 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
     }
 
     @Override
-    protected Google2Client newClient() {
-        final Google2Client newClient = new Google2Client();
-        newClient.setScope(this.scope);
-        return newClient;
-    }
-
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         CommonHelper.assertNotNull("scope", this.scope);

@@ -28,7 +28,6 @@ import org.scribe.model.Token;
 import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 import org.scribe.tokens.OrcidToken;
 
-
 /**
  * <p>This class is the OAuth client to authenticate users in ORCiD.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.</p>
@@ -103,12 +102,4 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
         }
         return profile;
     }
-
-    @Override
-    protected OrcidClient newClient() {
-        final OrcidClient newClient = new OrcidClient();
-        newClient.setScope(this.scope);
-        return newClient;
-    }
-
 }

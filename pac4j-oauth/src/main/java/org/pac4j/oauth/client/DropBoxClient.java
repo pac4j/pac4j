@@ -48,11 +48,6 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     }
     
     @Override
-    protected DropBoxClient newClient() {
-        return new DropBoxClient();
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth10aServiceImpl(new DropBoxApi(),

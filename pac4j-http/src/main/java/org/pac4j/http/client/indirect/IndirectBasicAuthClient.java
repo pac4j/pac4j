@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client.indirect;
 
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -62,18 +61,6 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     }
 
     @Override
-    public IndirectBasicAuthClient clone() {
-        final IndirectBasicAuthClient newClient = (IndirectBasicAuthClient) super.clone();
-        newClient.setRealmName(this.realmName);
-        return newClient;
-    }
-
-    @Override
-    protected IndirectBasicAuthClient newClient() {
-        return new IndirectBasicAuthClient();
-    }
-
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         return RedirectAction.redirect(computeFinalCallbackUrl(context));
     }
@@ -104,11 +91,6 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
                 this.realmName, "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.BASICAUTH_BASED;
     }
 
     public String getRealmName() {

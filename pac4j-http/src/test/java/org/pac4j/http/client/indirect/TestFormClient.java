@@ -28,7 +28,6 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -39,26 +38,6 @@ import static org.junit.Assert.*;
  * @since 1.4.0
  */
 public final class TestFormClient implements TestsConstants {
-
-    @Test
-    public void testClone() {
-        final FormClient oldClient = new FormClient();
-        oldClient.setCallbackUrl(CALLBACK_URL);
-        oldClient.setName(TYPE);
-        oldClient.setPasswordParameter(PASSWORD);
-        oldClient.setUsernameParameter(USERNAME);
-        oldClient.setLoginUrl(LOGIN_URL);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator());
-        oldClient.setAuthenticator(new SimpleTestUsernamePasswordAuthenticator());
-        final FormClient client = (FormClient) oldClient.clone();
-        assertEquals(oldClient.getCallbackUrl(), client.getCallbackUrl());
-        assertEquals(oldClient.getName(), client.getName());
-        assertEquals(oldClient.getUsernameParameter(), client.getUsernameParameter());
-        assertEquals(oldClient.getPasswordParameter(), client.getPasswordParameter());
-        assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
-        assertEquals(oldClient.getLoginUrl(), client.getLoginUrl());
-    }
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
