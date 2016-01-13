@@ -50,7 +50,7 @@ See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authenticatio
 
 ## Versions
 
-The next version **1.8.4-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
+The next version **1.8.5-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
 The source code can be cloned and locally built via Maven:
 
@@ -62,7 +62,7 @@ mvn clean install
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.2/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) documentation for more information.
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.4/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) documentation for more information.
 
 
 ## Need help?
