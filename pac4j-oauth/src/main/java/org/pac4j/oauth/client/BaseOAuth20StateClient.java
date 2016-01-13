@@ -18,7 +18,6 @@ package org.pac4j.oauth.client;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.BaseOAuth20Client;
 import org.pac4j.oauth.client.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -30,7 +29,7 @@ import org.scribe.oauth.StateOAuth20Service;
  * @author James Kleeh
  * @since 1.8.4
  */
-public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends BaseOAuth20Client {
+public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends BaseOAuth20Client<U> {
 
     private static final String STATE_PARAMETER = "#oauth20StateParameter";
 
@@ -46,7 +45,6 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
         return stateParameter;
     }
 
-
     public void setState(String stateParameter) {
         stateData = stateParameter;
     }
@@ -57,9 +55,6 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
         return authorizationUrl;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) {
         final String state = getState();
@@ -67,9 +62,6 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
         return getAuthorizationUrl(state);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         // check state parameter if required
@@ -91,5 +83,4 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
 
         return super.getOAuthCredentials(context);
     }
-
 }
