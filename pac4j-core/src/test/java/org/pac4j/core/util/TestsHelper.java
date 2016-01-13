@@ -18,6 +18,7 @@ package org.pac4j.core.util;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.Assert;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public final class TestsHelper {
             final String[] parts = keyValue.split("=");
             if (parts != null && parts.length >= 2) {
                 try {
-                    parameters.put(parts[0], URLDecoder.decode(parts[1], "UTF-8"));
+                    parameters.put(parts[0], URLDecoder.decode(parts[1], HttpConstants.UTF8_ENCODING));
                 } catch (final UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }

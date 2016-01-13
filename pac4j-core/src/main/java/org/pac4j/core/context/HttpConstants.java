@@ -51,7 +51,9 @@ public interface HttpConstants {
     String AUTHENTICATE_HEADER = "WWW-Authenticate";
 
     String CONTENT_TYPE_HEADER = "Content-Type";
-    
+
+    String UTF8_ENCODING = "UTF-8";
+
     String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
     String AJAX_HEADER_VALUE = "XMLHttpRequest";

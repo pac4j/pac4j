@@ -76,11 +76,6 @@ public abstract class BaseResponseContext implements WebContext {
     }
 
     @Override
-    public void setResponseCharacterEncoding(final String encoding) {
-        this.responseEncoding = encoding;
-    }
-
-    @Override
     public void setResponseContentType(final String content) {
         this.responseContentType = content;
     }
