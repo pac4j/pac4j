@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client.indirect;
 
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -67,19 +66,10 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
     }
 
     public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final ProfileCreator profileCreator) {
+                      final ProfileCreator profileCreator) {
         setLoginUrl(loginUrl);
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profileCreator);
-    }
-
-    @Override
-    protected IndirectHttpClient<UsernamePasswordCredentials> newClient() {
-        final FormClient newClient = new FormClient();
-        newClient.setLoginUrl(this.loginUrl);
-        newClient.setUsernameParameter(this.usernameParameter);
-        newClient.setPasswordParameter(this.passwordParameter);
-        return newClient;
     }
 
     @Override
@@ -127,7 +117,7 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
 
     /**
      * Return the error message depending on the thrown exception. Can be overriden for other message computation.
-     * 
+     *
      * @param e the technical exception
      * @return the error message
      */
@@ -165,10 +155,5 @@ public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> 
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
                 this.passwordParameter, "authenticator", getAuthenticator(), "profileCreator",
                 getProfileCreator());
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.FORM_BASED;
     }
 }

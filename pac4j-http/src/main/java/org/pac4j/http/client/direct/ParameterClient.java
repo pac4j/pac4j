@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
@@ -60,20 +59,6 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
         extractor = new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName());
         super.internalInit(context);
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
-    }
-
-    @Override
-    protected ParameterClient newClient() {
-        final ParameterClient newClient = new ParameterClient();
-        newClient.setParameterName(this.parameterName);
-        newClient.setSupportGetRequest(this.supportGetRequest);
-        newClient.setSupportPostRequest(this.supportPostRequest);
-        return newClient;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.PARAMETER_BASED;
     }
 
     public String getParameterName() {

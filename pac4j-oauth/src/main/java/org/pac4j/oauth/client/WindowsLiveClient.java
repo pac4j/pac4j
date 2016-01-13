@@ -47,11 +47,6 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected WindowsLiveClient newClient() {
-        return new WindowsLiveClient();
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new ProxyOAuth20ServiceImpl(new WindowsLiveApi(), new OAuthConfig(this.key, this.secret,

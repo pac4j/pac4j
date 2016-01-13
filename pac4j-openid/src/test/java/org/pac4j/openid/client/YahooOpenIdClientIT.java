@@ -16,12 +16,9 @@
  */
 package org.pac4j.openid.client;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Locale;
 
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -39,7 +36,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 /**
- * This class tests the {@link GoogleOpenIdClient} class by simulating a complete authentication.
+ * This class tests the {@link YahooOpenIdClient} class by simulating a complete authentication.
  * 
  * @author Patrice de Saint Steban
  * @since 1.6.0
@@ -97,10 +94,5 @@ public class YahooOpenIdClientIT extends ClientIT implements TestsConstants {
         assertCommonProfile(userProfile, "testscribeup@yahoo.fr", null, null, null, null,
                 Gender.UNSPECIFIED, Locale.FRANCE, null, null, null);
         assertEquals(2, profile.getAttributes().size());
-    }
-
-    @Override
-    protected ClientType getClientType() {
-        return ClientType.OPENID_PROTOCOL;
     }
 }

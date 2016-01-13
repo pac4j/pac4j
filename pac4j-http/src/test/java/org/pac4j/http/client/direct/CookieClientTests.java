@@ -25,7 +25,6 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
@@ -38,20 +37,6 @@ import static org.junit.Assert.assertEquals;
  * @since 1.8.0
  */
 public class CookieClientTests implements TestsConstants {
-
-    @Test
-    public void testClone() {
-        final CookieClient oldClient = new CookieClient();
-        oldClient.setName(TYPE);
-        final AuthenticatorProfileCreator profileCreator = new AuthenticatorProfileCreator();
-        oldClient.setProfileCreator(profileCreator);
-        final TokenAuthenticator authN = new SimpleTestTokenAuthenticator();
-        oldClient.setAuthenticator(authN);
-        final CookieClient client = (CookieClient) oldClient.clone();
-        assertEquals(oldClient.getName(), client.getName());
-        assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
-    }
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {

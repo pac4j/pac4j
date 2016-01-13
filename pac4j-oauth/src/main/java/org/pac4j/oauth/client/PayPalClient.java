@@ -58,13 +58,6 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
     
     @Override
-    protected PayPalClient newClient() {
-        final PayPalClient newClient = new PayPalClient();
-        newClient.setScope(this.scope);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);

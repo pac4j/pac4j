@@ -18,14 +18,11 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import static org.junit.Assert.*;
 
@@ -40,25 +37,6 @@ public final class ParameterClientTests implements TestsConstants {
     private final static String PARAMETER_NAME = "parameterName";
     private final static boolean SUPPORT_GET = true;
     private final static boolean SUPPORT_POST = false;
-
-    @Test
-    public void testClone() {
-        final ParameterClient oldClient = new ParameterClient();
-        oldClient.setName(TYPE);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, CommonProfile>());
-        final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
-        oldClient.setAuthenticator(authenticator);
-        oldClient.setParameterName(PARAMETER_NAME);
-        oldClient.setSupportGetRequest(SUPPORT_GET);
-        oldClient.setSupportPostRequest(SUPPORT_POST);
-        final ParameterClient client = (ParameterClient) oldClient.clone();
-        assertEquals(oldClient.getName(), client.getName());
-        assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
-        assertEquals(oldClient.getParameterName(), client.getParameterName());
-        assertEquals(oldClient.isSupportGetRequest(), client.isSupportGetRequest());
-        assertEquals(oldClient.isSupportPostRequest(), client.isSupportPostRequest());
-    }
 
     @Test
     public void testMissingTokendAuthenticator() {

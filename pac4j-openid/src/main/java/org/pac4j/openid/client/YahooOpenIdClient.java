@@ -20,11 +20,8 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.openid.client.BaseOpenIdClient;
-import org.pac4j.openid.credentials.OpenIdCredentials;
 import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
@@ -48,11 +45,6 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
-    }
-
-    @Override
-    protected BaseClient<OpenIdCredentials, YahooOpenIdProfile> newClient() {
-        return new YahooOpenIdClient();
     }
 
     @Override

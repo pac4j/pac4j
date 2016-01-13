@@ -16,7 +16,6 @@
 package org.pac4j.gae.client;
 
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.context.WebContext;
@@ -40,29 +39,30 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
  */
 @SuppressWarnings("rawtypes")
 public class GaeUserServiceClientIT extends ClientIT implements TestsConstants {
-	 private final LocalServiceTestHelper helper =
-		        new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-		            .setEnvIsAdmin(true).setEnvIsLoggedIn(true).setEnvEmail("test@example.com").setEnvAuthDomain("");
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		helper.setUp();
-	}
-	
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		helper.tearDown();
-	}
-	
+    private final LocalServiceTestHelper helper =
+            new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+                    .setEnvIsAdmin(true).setEnvIsLoggedIn(true).setEnvEmail("test@example.com").setEnvAuthDomain("");
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        helper.setUp();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        helper.tearDown();
+    }
+
     @Override
     protected Client getClient() {
         final GaeUserServiceClient client = new GaeUserServiceClient() {
-        	@Override
-        	protected RedirectAction retrieveRedirectAction(WebContext context) {
-        		return RedirectAction.redirect(getCallbackUrl());
-        	}
-        	
+            @Override
+            protected RedirectAction retrieveRedirectAction(WebContext context) {
+                return RedirectAction.redirect(getCallbackUrl());
+            }
+
         };
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
@@ -101,10 +101,5 @@ public class GaeUserServiceClientIT extends ClientIT implements TestsConstants {
         assertCommonProfile(userProfile, id, null, null, "test", null,
                 Gender.UNSPECIFIED, null, null, null, null);
         assertEquals(2, profile.getAttributes().size());
-    }
-
-    @Override
-    protected ClientType getClientType() {
-        return ClientType.GAE_PROVIDER;
     }
 }

@@ -53,14 +53,6 @@ public abstract class DirectHttpClient<C extends Credentials> extends DirectClie
     }
 
     @Override
-    public DirectHttpClient<C> clone() {
-        final DirectHttpClient<C> newClient = (DirectHttpClient<C>) super.clone();
-        newClient.setAuthenticator(this.authenticator);
-        newClient.setProfileCreator(this.profileCreator);
-        return newClient;
-    }
-
-    @Override
     public C getCredentials(WebContext context) throws RequiresHttpAction {
         init(context);
         try {

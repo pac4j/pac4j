@@ -17,7 +17,6 @@
 package org.pac4j.cas.client.rest;
 
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.http.credentials.extractor.FormExtractor;
 
 /**
@@ -37,15 +36,4 @@ public class CasRestFormClient extends AbstractCasRestClient {
                 authenticator.getPasswordParameter(),
                 CasRestFormClient.class.getSimpleName());
     }
-
-    @Override
-    protected AbstractCasRestClient newClientType() {
-        return new CasRestFormClient();
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.FORM_BASED;
-    }
-
 }

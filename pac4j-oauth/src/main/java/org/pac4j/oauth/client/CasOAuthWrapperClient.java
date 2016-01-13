@@ -55,14 +55,6 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
     
     @Override
-    protected CasOAuthWrapperClient newClient() {
-        final CasOAuthWrapperClient newClient = new CasOAuthWrapperClient();
-        newClient.setCasOAuthUrl(this.casOAuthUrl);
-        newClient.setSpringSecurityCompliant(this.springSecurityCompliant);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);

@@ -84,13 +84,6 @@ public class OkClientIT extends OAuthClientIT {
     private static final String TEST_APP_SECRET_KEY = "479452FD7CA726DF558B4303";
     /////////////////////////////////////////////
 
-    @Override
-    public void testClone() {
-        final OkClient oldClient = new OkClient();
-        final OkClient clone = (OkClient) internalTestClone(oldClient);
-        assertEquals(oldClient.getPublicKey(), clone.getPublicKey());
-    }
-
     public void testMissingFields() {
         final OkClient client = (OkClient) getClient();
         client.setPublicKey(null);

@@ -44,11 +44,6 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     }
 
     @Override
-    protected FoursquareClient newClient() {
-        return new FoursquareClient();
-    }
-
-    @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new FoursquareOAuth20ServiceImpl(new Foursquare2Api(),
