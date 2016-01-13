@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public final class CommonHelper {
      */
     private static String encodeText(final String text) {
         try {
-            return URLEncoder.encode(text, "UTF-8");
+            return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
         } catch (final UnsupportedEncodingException e) {
             String message = "Unable to encode text : " + text;
             throw new TechnicalException(message, e);
