@@ -163,11 +163,6 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public void setResponseCharacterEncoding(final String encoding) {
-        this.response.setCharacterEncoding(encoding);
-    }
-
-    @Override
     public void setResponseContentType(final String content) {
         this.response.setContentType(content);
     }

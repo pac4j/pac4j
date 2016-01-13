@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.saml.transport;
 
 import org.pac4j.core.context.WebContext;
@@ -22,7 +21,6 @@ import org.pac4j.core.exception.TechnicalException;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-
 
 /**
  * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
@@ -69,7 +67,6 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     @Override
     public void init() {
         setNoCacheHeaders();
-        setUTF8Encoding();
     }
 
     @Override
@@ -82,13 +79,9 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
         webContext.setResponseHeader("Pragma", "no-cache");
     }
 
-    public void setUTF8Encoding() {
-        webContext.setResponseCharacterEncoding(UTF8_ENCODING);
-    }
-
     @Override
     public void setContentType(final String type) {
-        webContext.setResponseContentType(type);
+        webContext.setResponseContentType(type + ";charset=" + UTF8_ENCODING);
     }
 
     @Override
