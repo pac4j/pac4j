@@ -13,16 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.saml.transport;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-
 
 /**
  * Empty response adapter containing a {@link ByteArrayOutputStream} in order opensaml can write
@@ -32,8 +31,6 @@ import java.io.UnsupportedEncodingException;
  * @since 1.8
  */
 public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
-    private static final String UTF8_ENCODING = "UTF-8";
-
     private final ByteArrayOutputStream outputStream;
     private final OutputStreamWriter outputStreamWriter;
     private final WebContext webContext;
@@ -69,7 +66,6 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     @Override
     public void init() {
         setNoCacheHeaders();
-        setUTF8Encoding();
     }
 
     @Override
@@ -82,13 +78,9 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
         webContext.setResponseHeader("Pragma", "no-cache");
     }
 
-    public void setUTF8Encoding() {
-        webContext.setResponseCharacterEncoding(UTF8_ENCODING);
-    }
-
     @Override
     public void setContentType(final String type) {
-        webContext.setResponseContentType(type);
+        webContext.setResponseContentType(type + ";charset=" + HttpConstants.UTF8_ENCODING);
     }
 
     @Override
@@ -104,13 +96,13 @@ public class DefaultPac4jSAMLResponse implements Pac4jSAMLResponse {
     private static class Pac4jServletOutputStreamWriter extends OutputStreamWriter {
         private final ByteArrayOutputStream outputStream;
         public Pac4jServletOutputStreamWriter(ByteArrayOutputStream out) throws UnsupportedEncodingException {
-            super(out, UTF8_ENCODING);
+            super(out, HttpConstants.UTF8_ENCODING);
             outputStream = out;
         }
 
         public final String getOutgoingContent() {
             try {
-                final String result = new String(this.outputStream.toByteArray(), UTF8_ENCODING);
+                final String result = new String(this.outputStream.toByteArray(), HttpConstants.UTF8_ENCODING);
                 return result;
             } catch (final Exception e) {
                 throw new RuntimeException(e);
