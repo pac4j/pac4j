@@ -20,6 +20,7 @@ import net.shibboleth.utilities.java.support.component.ComponentInitializationEx
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.resource.Resource;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
@@ -27,7 +28,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.opensaml.xml.util.XMLHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -167,7 +167,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     public String getMetadata() {
         if (getEntityDescriptorElement() != null
                 && getEntityDescriptorElement().getDOM() != null) {
-            return XMLHelper.nodeToString(getEntityDescriptorElement().getDOM());
+            return SerializeSupport.nodeToString(getEntityDescriptorElement().getDOM());
         }
         throw new TechnicalException("Metadata cannot be retrieved because entity descriptor is null");
     }
