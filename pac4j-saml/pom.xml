@@ -163,21 +163,6 @@
             <version>${spring.extensions.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>xmltooling</artifactId>
-            <version>1.4.4</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>joda-time</artifactId>
-                    <groupId>joda-time</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>xmlsec</artifactId>
-                    <groupId>org.apache.santuario</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
