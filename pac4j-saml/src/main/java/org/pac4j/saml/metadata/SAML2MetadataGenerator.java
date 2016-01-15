@@ -16,6 +16,7 @@
 
 package org.pac4j.saml.metadata;
 
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -35,7 +36,6 @@ import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.security.credential.UsageType;
-import org.opensaml.xml.util.XMLHelper;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
@@ -93,7 +93,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public final String getMetadata() throws Exception {
         final EntityDescriptor md = buildEntityDescriptor();
         final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
-        return XMLHelper.nodeToString(entityDescriptorElement);
+        return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
     @Override
