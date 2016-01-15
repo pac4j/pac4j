@@ -35,12 +35,12 @@ public class WordPressAttributesDefinition extends OAuthAttributesDefinition {
     public static final String LINKS = "links";
     
     public WordPressAttributesDefinition() {
-        addAttribute(DISPLAY_NAME, Converters.stringConverter);
-        addAttribute(USERNAME, Converters.stringConverter);
-        addAttribute(EMAIL, Converters.stringConverter);
-        addAttribute(PRIMARY_BLOG, Converters.integerConverter);
-        addAttribute(AVATAR_URL, Converters.urlConverter);
-        addAttribute(PROFILE_URL, Converters.urlConverter);
+        primary(DISPLAY_NAME, Converters.stringConverter);
+        primary(USERNAME, Converters.stringConverter);
+        primary(EMAIL, Converters.stringConverter);
+        primary(PRIMARY_BLOG, Converters.integerConverter);
+        primary(AVATAR_URL, Converters.urlConverter);
+        primary(PROFILE_URL, Converters.urlConverter);
         addAttribute(LINKS, WordPressConverters.linksConverter, false);
     }
 }

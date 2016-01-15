@@ -15,9 +15,10 @@
  */
 package org.pac4j.oauth.profile;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link JsonHelper} class.
@@ -25,7 +26,7 @@ import org.pac4j.core.util.TestsConstants;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestJsonHelper extends TestCase implements TestsConstants {
+public final class JsonHelperTests implements TestsConstants {
     
     private static final String GOOD_TEXT_JSON = "{ \"" + KEY + "\" : \"" + VALUE + "\" }";
     
@@ -36,35 +37,43 @@ public final class TestJsonHelper extends TestCase implements TestsConstants {
     private static final String GOOD_NODE_JSON = "{ \"" + KEY + "\" : " + GOOD_TEXT_JSON + " }";
     
     private static final String BAD_JSON = "this_is_definitively_not_a_json_text";
-    
+
+    @Test
     public void testGetFirstNodeOk() {
         assertNotNull(JsonHelper.getFirstNode(GOOD_TEXT_JSON));
     }
-    
+
+    @Test
     public void testGetFirstNodeKo() {
         assertNull(JsonHelper.getFirstNode(BAD_JSON));
     }
-    
+
+    @Test
     public void testGetText() {
         assertEquals(VALUE, JsonHelper.get(JsonHelper.getFirstNode(GOOD_TEXT_JSON), KEY));
     }
-    
+
+    @Test
     public void testGetNull() {
         assertNull(JsonHelper.get(null, KEY));
     }
-    
+
+    @Test
     public void testGetBadKey() {
         assertNull(JsonHelper.get(JsonHelper.getFirstNode(GOOD_TEXT_JSON), "bad" + KEY));
     }
-    
+
+    @Test
     public void testGetBoolean() {
         assertEquals(Boolean.TRUE, JsonHelper.get(JsonHelper.getFirstNode(GOOD_BOOLEAN_JSON), KEY));
     }
-    
+
+    @Test
     public void testGetNumber() {
         assertEquals(1, JsonHelper.get(JsonHelper.getFirstNode(GOOD_NUMBER_JSON), KEY));
     }
-    
+
+    @Test
     public void testGetNode() {
         assertEquals(JsonHelper.getFirstNode(GOOD_TEXT_JSON),
                      JsonHelper.get(JsonHelper.getFirstNode(GOOD_NODE_JSON), KEY));

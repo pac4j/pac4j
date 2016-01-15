@@ -18,7 +18,7 @@ package org.pac4j.oauth.profile.strava;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 
 /**
  * Encapsulates a Club from a profile.
@@ -34,7 +34,7 @@ import org.pac4j.oauth.profile.JsonObject;
  *
  * @author Adrian Papusoi
  */
-public class StravaClub extends JsonObject {
+public class StravaClub extends OldJsonObject {
 
     private static final long serialVersionUID = -1284645916528292643L;
 

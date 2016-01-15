@@ -15,11 +15,7 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a common Facebook object (id + name).
@@ -34,14 +30,15 @@ public class FacebookObject extends JsonObject {
     private String id;
     
     private String name;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        
+
+    public void setId(String id) {
+        this.id = id;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getId() {
         return this.id;
     }

@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile}.</p>
  * <p>More information at https://wiki.jasig.org/display/CASUM/OAuth+server+support</p>
  * 
- * @see org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile
  * @author Jerome Leleu
  * @since 1.3.0
  */
@@ -104,10 +103,5 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
         this.springSecurityCompliant = springSecurityCompliant;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

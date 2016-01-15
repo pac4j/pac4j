@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.yahoo;
 
 import org.pac4j.core.profile.converter.FormattedDateConverter;
 import org.pac4j.core.profile.converter.GenderConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
+import org.pac4j.oauth.profile.converter.OldJsonListConverter;
 import org.pac4j.oauth.profile.converter.JsonObjectConverter;
 
 /**
@@ -28,19 +28,19 @@ import org.pac4j.oauth.profile.converter.JsonObjectConverter;
  */
 public final class YahooConverters {
     
-    public final static JsonListConverter listAddressConverter = new JsonListConverter(YahooAddress.class);
+    public final static OldJsonListConverter listAddressConverter = new OldJsonListConverter(YahooAddress.class);
     
     public final static FormattedDateConverter birthdateConverter = new FormattedDateConverter("MM/dd");
     
     public final static FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
     
-    public final static JsonListConverter listDisclosureConverter = new JsonListConverter(YahooDisclosure.class);
+    public final static OldJsonListConverter listDisclosureConverter = new OldJsonListConverter(YahooDisclosure.class);
     
-    public final static JsonListConverter listEmailConverter = new JsonListConverter(YahooEmail.class);
+    public final static OldJsonListConverter listEmailConverter = new OldJsonListConverter(YahooEmail.class);
     
     public final static GenderConverter genderConverter = new GenderConverter("m", "f");
     
     public final static JsonObjectConverter imageConverter = new JsonObjectConverter(YahooImage.class);
     
-    public final static JsonListConverter listInterestConverter = new JsonListConverter(YahooInterest.class);
+    public final static OldJsonListConverter listInterestConverter = new OldJsonListConverter(YahooInterest.class);
 }

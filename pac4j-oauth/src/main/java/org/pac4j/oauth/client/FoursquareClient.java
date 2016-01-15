@@ -31,7 +31,6 @@ import org.scribe.oauth.FoursquareOAuth20ServiceImpl;
  * It returns a {@link org.pac4j.oauth.profile.foursquare.FoursquareProfile}.</p>
  * <p>More information at https://developer.foursquare.com/overview/auth.html</p>
  *
- * @see org.pac4j.oauth.profile.foursquare.FoursquareProfile
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
@@ -69,16 +68,11 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
         if (user != null) {
             profile.setId(JsonHelper.get(user, "id"));
 
-            for (final String attribute : OAuthAttributesDefinitions.foursquareDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.foursquareDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(user, attribute));
             }
         }
         return profile;
-    }
-
-    @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
     }
 
     @Override

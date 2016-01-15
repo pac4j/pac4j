@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client.exception;
+package org.pac4j.oauth.exception;
 
 import java.util.HashMap;
 import java.util.Map;

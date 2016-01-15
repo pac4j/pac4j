@@ -15,8 +15,10 @@
  */
 package org.pac4j.oauth.profile.bitbucket;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the Bitbucket profile.
@@ -24,7 +26,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
-public class BitbucketAttributesDefinition extends OAuthAttributesDefinition {
+public class BitbucketAttributesDefinition extends AttributesDefinition {
   
     public static final String USERNAME = "username";
     public static final String FIRST_NAME = "first_name";
@@ -36,13 +38,8 @@ public class BitbucketAttributesDefinition extends OAuthAttributesDefinition {
     public static final String EMAIL = "email";
 
     public BitbucketAttributesDefinition() {
-        addAttribute(USERNAME, Converters.stringConverter);
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(LAST_NAME, Converters.stringConverter);
-        addAttribute(DISPLAY_NAME, Converters.stringConverter);
-        addAttribute(IS_TEAM, Converters.booleanConverter);
-        addAttribute(AVATAR, Converters.stringConverter);
-        addAttribute(RESOURCE_URI, Converters.stringConverter);
-        addAttribute(EMAIL, Converters.stringConverter);
+        Arrays.stream(new String[] {USERNAME, FIRST_NAME, LAST_NAME, DISPLAY_NAME, IS_TEAM, AVATAR, RESOURCE_URI, EMAIL})
+                .forEach(a -> primary(a));
+        primary(IS_TEAM, Converters.booleanConverter);
     }
 }

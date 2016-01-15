@@ -36,13 +36,13 @@ public class PayPalAttributesDefinition extends OAuthAttributesDefinition {
     public static final String GIVEN_NAME = "given_name";
     
     public PayPalAttributesDefinition() {
-        addAttribute(ADDRESS, PayPalConverters.addressConverter);
-        addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(LANGUAGE, Converters.localeConverter);
-        addAttribute(LOCALE, Converters.localeConverter);
-        addAttribute(ZONEINFO, Converters.stringConverter);
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(EMAIL, Converters.stringConverter);
-        addAttribute(GIVEN_NAME, Converters.stringConverter);
+        primary(ADDRESS, PayPalConverters.addressConverter);
+        primary(FAMILY_NAME, Converters.stringConverter);
+        primary(LANGUAGE, Converters.localeConverter);
+        primary(LOCALE, Converters.localeConverter);
+        primary(ZONEINFO, Converters.stringConverter);
+        primary(NAME, Converters.stringConverter);
+        primary(EMAIL, Converters.stringConverter);
+        primary(GIVEN_NAME, Converters.stringConverter);
     }
 }

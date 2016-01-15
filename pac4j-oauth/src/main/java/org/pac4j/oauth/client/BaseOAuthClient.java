@@ -22,7 +22,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -117,7 +117,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * @param context the web context.
      * @return if the authentication has been cancelled.
      */
-    protected abstract boolean hasBeenCancelled(WebContext context);
+    protected boolean hasBeenCancelled(WebContext context) {
+        return false;
+    }
 
     /**
      * Get the OAuth credentials from the web context.

@@ -43,20 +43,20 @@ public class LinkedIn2AttributesDefinition extends OAuthAttributesDefinition {
     public static final String SITE_STANDARD_PROFILE_REQUEST = "site-standard-profile-request";
     
     public LinkedIn2AttributesDefinition() {
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(LAST_NAME, Converters.stringConverter);
-        addAttribute(MAIDEN_NAME, Converters.stringConverter);
-        addAttribute(FORMATTED_NAME, Converters.stringConverter);
-        addAttribute(LOCATION, LinkedIn2Converters.locationConverter);
-        addAttribute(EMAIL_ADDRESS, Converters.stringConverter);
-        addAttribute(HEADLINE, Converters.stringConverter);
-        addAttribute(INDUSTRY, Converters.stringConverter);
-        addAttribute(NUM_CONNECTIONS, Converters.integerConverter);
-        addAttribute(SUMMARY, Converters.stringConverter);
-        addAttribute(SPECIALTIES, Converters.stringConverter);
-        addAttribute(POSITIONS, LinkedIn2Converters.positionsConverter);
-        addAttribute(PICTURE_URL, Converters.stringConverter);
-        addAttribute(PUBLIC_PROFILE_URL, Converters.stringConverter);
+        primary(FIRST_NAME, Converters.stringConverter);
+        primary(LAST_NAME, Converters.stringConverter);
+        primary(MAIDEN_NAME, Converters.stringConverter);
+        primary(FORMATTED_NAME, Converters.stringConverter);
+        primary(LOCATION, LinkedIn2Converters.locationConverter);
+        primary(EMAIL_ADDRESS, Converters.stringConverter);
+        primary(HEADLINE, Converters.stringConverter);
+        primary(INDUSTRY, Converters.stringConverter);
+        primary(NUM_CONNECTIONS, Converters.integerConverter);
+        primary(SUMMARY, Converters.stringConverter);
+        primary(SPECIALTIES, Converters.stringConverter);
+        primary(POSITIONS, LinkedIn2Converters.positionsConverter);
+        primary(PICTURE_URL, Converters.stringConverter);
+        primary(PUBLIC_PROFILE_URL, Converters.stringConverter);
         addAttribute(SITE_STANDARD_PROFILE_REQUEST, Converters.stringConverter, false);
     }
 }

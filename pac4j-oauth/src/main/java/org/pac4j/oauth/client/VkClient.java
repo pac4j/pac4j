@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.vk.VkProfile}.</p>
  * <p>More information at https://vk.com/dev/users.get</p>
  * 
- * @see org.pac4j.oauth.profile.vk.VkProfile
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  * 
@@ -88,11 +87,6 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 			}
 		}
 		return profile;
-	}
-
-	@Override
-	protected boolean hasBeenCancelled(final WebContext context) {
-		return false;
 	}
 
 	public String getScope() {

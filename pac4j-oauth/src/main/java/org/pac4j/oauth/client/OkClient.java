@@ -55,11 +55,6 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
-    }
-
-    @Override
     protected String getProfileUrl(Token accessToken) {
         String baseParams =
                 "application_key=" + publicKey +

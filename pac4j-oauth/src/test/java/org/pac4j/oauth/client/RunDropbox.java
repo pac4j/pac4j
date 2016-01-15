@@ -15,34 +15,42 @@
  */
 package org.pac4j.oauth.client;
 
-import java.util.Locale;
-
+import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link DropBoxClient} class by simulating a complete authentication.
- * 
+ * Run manually a test for the {@link DropBoxClient}.
+ *
  * @author Jerome Leleu
- * @since 1.2.0
+ * @since 1.9.0
  */
-public class DropBoxClientIT extends OAuthClientIT {
+public class RunDropbox extends RunClient {
 
-    @SuppressWarnings("rawtypes")
+    public static void main(String[] args) throws Exception {
+        new RunDropbox().run();
+    }
+
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup@gmail.com";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final DropBoxClient dropBoxClient = new DropBoxClient();
         dropBoxClient.setKey("0194c6m79qll0ia");
         dropBoxClient.setSecret("a0ylze9a0bhsvxv");
@@ -51,37 +59,12 @@ public class DropBoxClientIT extends OAuthClientIT {
     }
 
     @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        webClient.waitForBackgroundJavaScript(5000);
-        HtmlForm form = authorizationPage.getForms().get(0);
-        final HtmlTextInput login = form.getInputByName("login_email");
-        login.setValueAttribute("testscribeup@gmail.com");
-        final HtmlPasswordInput passwd = form.getInputByName("login_password");
-        passwd.setValueAttribute("testpwdscribeup");
-        HtmlButton submit = form.getButtonByName("");
-        HtmlPage confirmPage = submit.click();
-        confirmPage = (HtmlPage) confirmPage.refresh();
-        webClient.waitForBackgroundJavaScript(5000);
-        form = confirmPage.getForms().get(0);
-        HtmlButton submit2 = form.getButtonByName("allow_access");
-        final HtmlPage callbackPage = submit2.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
-    }
-
-    @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(DropBoxProfile.class);
     }
 
     @Override
-    protected boolean isJavascriptEnabled() {
-        return true;
-    }
-
-    @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(UserProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("75206624", profile.getId());

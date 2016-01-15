@@ -16,28 +16,36 @@
 package org.pac4j.oauth.client;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import org.pac4j.core.client.Client;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 
-/**
- * This class tests the {@link BitbucketClient} class by simulating a complete 
- * authentication.
- *
- * @author Sebastian Sdorra
- * @since 1.5.1
- */
-public class BitbucketClientIT extends OAuthClientIT {
+import static org.junit.Assert.*;
 
-    @SuppressWarnings("rawtypes")
+/**
+ * Run manually a test for the {@link BitbucketClient}.
+ *
+ * @author Jerome Leleu
+ * @since 1.9.0
+ */
+public class RunBitbucket extends RunClient {
+
+    public static void main(String[] args) throws Exception {
+        new RunBitbucket().run();
+    }
+
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup78";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         BitbucketClient client = new BitbucketClient();
         client.setKey("bjEt8BMpLwFDqZUvp6");
         client.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
@@ -46,17 +54,8 @@ public class BitbucketClientIT extends OAuthClientIT {
     }
 
     @Override
-    protected String getCallbackUrl(WebClient webClient, HtmlPage authorizationPage) throws Exception {
-        HtmlForm form = authorizationPage.getHtmlElementById("login-form");
-        HtmlTextInput username = form.getInputByName("username");
-        username.setValueAttribute("testscribeup");
-        HtmlPasswordInput password = form.getInputByName("password");
-        password.setValueAttribute("testpwdscribeup78");
-        HtmlButton submit = form.getButtonByName("submit");
-        HtmlPage callbackPage = submit.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
+    protected void registerForKryo(Kryo kryo) {
+        kryo.register(BitbucketProfile.class);
     }
 
     @Override
@@ -70,10 +69,4 @@ public class BitbucketClientIT extends OAuthClientIT {
         assertTrue(profile.getPictureUrl().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
         assertEquals("/1.0/users/testscribeup", profile.getProfileUrl());
     }
-
-    @Override
-    protected void registerForKryo(Kryo kryo) {
-        kryo.register(BitbucketProfile.class);
-    }
-
 }

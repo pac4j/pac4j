@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.wordpress.WordPressProfile}.</p>
  * <p>More information at http://developer.wordpress.com/docs/oauth2/</p>
  * 
- * @see org.pac4j.oauth.profile.wordpress.WordPressProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */
@@ -70,7 +69,7 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "ID"));
-            for (final String attribute : OAuthAttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.wordPressDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
             json = json.get("meta");
@@ -80,10 +79,5 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

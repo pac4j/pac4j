@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.wordpress;
 
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class WordPressLinks extends JsonObject {
+public final class WordPressLinks extends OldJsonObject {
     
     private static final long serialVersionUID = 650184033370922722L;
     

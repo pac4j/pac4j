@@ -18,7 +18,7 @@ package org.pac4j.oauth.profile.converter;
 import java.lang.reflect.Constructor;
 
 import org.pac4j.core.profile.converter.AttributeConverter;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,26 +30,26 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class JsonObjectConverter implements AttributeConverter<JsonObject> {
+public final class JsonObjectConverter implements AttributeConverter<OldJsonObject> {
     
     private static final Logger logger = LoggerFactory.getLogger(JsonObjectConverter.class);
     
-    private final Class<? extends JsonObject> clazz;
+    private final Class<? extends OldJsonObject> clazz;
     
-    public JsonObjectConverter(final Class<? extends JsonObject> clazz) {
+    public JsonObjectConverter(final Class<? extends OldJsonObject> clazz) {
         this.clazz = clazz;
     }
     
     @Override
-    public JsonObject convert(final Object attribute) {
+    public OldJsonObject convert(final Object attribute) {
         if (attribute != null && (attribute instanceof String || attribute instanceof JsonNode)) {
             try {
-                final Constructor<? extends JsonObject> constructor = this.clazz.getDeclaredConstructor();
-                final JsonObject jsonObject = constructor.newInstance();
+                final Constructor<? extends OldJsonObject> constructor = this.clazz.getDeclaredConstructor();
+                final OldJsonObject jsonObject = constructor.newInstance();
                 jsonObject.buildFrom(attribute);
                 return jsonObject;
             } catch (final Exception e) {
-                logger.error("Cannot build JsonObject : {}", e, this.clazz);
+                logger.error("Cannot build OldJsonObject : {}", e, this.clazz);
             }
         }
         return null;

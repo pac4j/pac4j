@@ -15,17 +15,17 @@
  */
 package org.pac4j.oauth.profile.converter;
 
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * This class is a mock for JsonObject.
+ * This class is a mock for OldJsonObject.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class MockJsonObject extends JsonObject {
+public final class MockJsonObject extends OldJsonObject {
     
     private static final long serialVersionUID = -5424325226224232822L;
     

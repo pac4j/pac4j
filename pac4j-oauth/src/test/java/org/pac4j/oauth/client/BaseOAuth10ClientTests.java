@@ -15,8 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -24,15 +23,16 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.scribe.model.Token;
 
+import static org.junit.Assert.*;
+
 /**
  * This class tests the OAuth credential retrieval in the {@link org.pac4j.oauth.client.BaseOAuth10Client} class.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class BaseOAuth10ClientIT extends TestCase implements TestsConstants {
+public final class BaseOAuth10ClientTests implements TestsConstants {
     
-    @SuppressWarnings("rawtypes")
     private BaseOAuth10Client getClient() {
         final YahooClient client = new YahooClient();
         client.setKey(KEY);
@@ -40,7 +40,8 @@ public final class BaseOAuth10ClientIT extends TestCase implements TestsConstant
         client.setCallbackUrl(CALLBACK_URL);
         return client;
     }
-    
+
+    @Test
     public void testNoTokenNoVerifier() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
@@ -49,7 +50,8 @@ public final class BaseOAuth10ClientIT extends TestCase implements TestsConstant
             assertEquals("No credential found", e.getMessage());
         }
     }
-    
+
+    @Test
     public void testNoToken() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER,
@@ -59,7 +61,8 @@ public final class BaseOAuth10ClientIT extends TestCase implements TestsConstant
             assertEquals("No credential found", e.getMessage());
         }
     }
-    
+
+    @Test
     public void testNoVerifier() throws RequiresHttpAction {
         try {
             getClient().getCredentials(MockWebContext.create()
@@ -69,7 +72,8 @@ public final class BaseOAuth10ClientIT extends TestCase implements TestsConstant
             assertEquals("No credential found", e.getMessage());
         }
     }
-    
+
+    @Test
     public void testOk() throws RequiresHttpAction {
         final OAuthCredentials credentials = (OAuthCredentials) getClient()
             .getCredentials(MockWebContext

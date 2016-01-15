@@ -15,7 +15,8 @@
  */
 package org.pac4j.oauth.profile.github;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * General test cases for GitHubProfile.
@@ -23,13 +24,13 @@ import junit.framework.TestCase;
  * @author Jacob Severson
  * @since  1.8.0
  */
-public class TestGitHubProfile extends TestCase {
+public class TestGitHubProfile {
 
+    @Test
     public void testClearGitHubProfile() {
         GitHubProfile profile = new GitHubProfile();
         profile.setAccessToken("testToken");
         profile.clear();
-        assertEquals("", profile.getAccessToken());
+        Assert.assertEquals("", profile.getAccessToken());
     }
-
 }
