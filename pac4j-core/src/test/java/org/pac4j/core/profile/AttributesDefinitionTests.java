@@ -17,7 +17,6 @@ package org.pac4j.core.profile;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
@@ -32,47 +31,19 @@ public class AttributesDefinitionTests implements TestsConstants {
 
     private AttributesDefinition definition;
 
-    private class FakeConverter implements AttributeConverter<String> {
-
-        public String convert(final Object value) {
-            return FAKE_VALUE;
-        }
-    }
-
     @Before
     public void setUp() {
         definition = new AttributesDefinition();
     }
 
     @Test
-    public void testNoConverterNoEnforcement() {
+    public void testNoConverter() {
         assertEquals(VALUE, definition.convert(NAME, VALUE));
     }
 
     @Test
-    public void testNoConverterEnforcement() {
-        ProfileHelper.setEnforceProfileDefinition(true);
-        try {
-            assertNull(definition.convert(NAME, VALUE));
-        } finally {
-            ProfileHelper.setEnforceProfileDefinition(false);
-        }
-    }
-
-    @Test
     public void testConverterNoEnforcement() {
-        definition.addAttribute(NAME, new FakeConverter());
+        definition.primary(NAME, v -> { return FAKE_VALUE; });
         assertEquals(FAKE_VALUE, definition.convert(NAME, VALUE));
-    }
-
-    @Test
-    public void testConverterEnforcement() {
-        ProfileHelper.setEnforceProfileDefinition(true);
-        try {
-            definition.addAttribute(NAME, new FakeConverter());
-            assertEquals(FAKE_VALUE, definition.convert(NAME, VALUE));
-        } finally {
-            ProfileHelper.setEnforceProfileDefinition(false);
-        }
     }
 }

@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.twitter.TwitterProfile}.</p>
  * <p>More information at https://dev.twitter.com/docs/api/1/get/account/verify_credentials</p>
  * 
- * @see org.pac4j.oauth.profile.twitter.TwitterProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */

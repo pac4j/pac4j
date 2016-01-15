@@ -35,12 +35,12 @@ public class WindowsLiveAttributesDefinition extends OAuthAttributesDefinition {
     public static final String UPDATED_TIME = "updated_time";
     
     public WindowsLiveAttributesDefinition() {
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(LAST_NAME, Converters.stringConverter);
-        addAttribute(LINK, Converters.stringConverter);
-        addAttribute(GENDER, Converters.genderConverter);
-        addAttribute(LOCALE, Converters.localeConverter);
-        addAttribute(UPDATED_TIME, Converters.dateConverter);
+        primary(NAME, Converters.stringConverter);
+        primary(FIRST_NAME, Converters.stringConverter);
+        primary(LAST_NAME, Converters.stringConverter);
+        primary(LINK, Converters.stringConverter);
+        primary(GENDER, Converters.genderConverter);
+        primary(LOCALE, Converters.localeConverter);
+        primary(UPDATED_TIME, Converters.dateConverter);
     }
 }

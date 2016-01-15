@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.1.0
  */
 @SuppressWarnings("unchecked")
-public final class JsonList<T> extends JsonObject implements List<T> {
+public final class JsonList<T> extends OldJsonObject implements List<T> {
     
     private static final long serialVersionUID = -6244332281326848508L;
     
@@ -56,7 +56,7 @@ public final class JsonList<T> extends JsonObject implements List<T> {
     }
     
     /**
-     * Create a list of JsonObject from various inputs.
+     * Create a list of OldJsonObject from various inputs.
      * 
      * @param o object
      * @param clazz class
@@ -86,7 +86,7 @@ public final class JsonList<T> extends JsonObject implements List<T> {
                     }
                 }
                 // expect array of objects [ {...}, {...}, ...
-                else if (JsonObject.class.isAssignableFrom(clazz)) {
+                else if (OldJsonObject.class.isAssignableFrom(clazz)) {
                     if (!s.startsWith("[")) {
                         s = "[" + s + "]";
                     }
@@ -116,11 +116,11 @@ public final class JsonList<T> extends JsonObject implements List<T> {
     private void buildSingleNode(final JsonNode node) {
         if (this.clazz == String.class) {
             this.list.add((T) node.textValue());
-        } else if (JsonObject.class.isAssignableFrom(this.clazz)) {
+        } else if (OldJsonObject.class.isAssignableFrom(this.clazz)) {
             try {
                 final Constructor<T> constructor = this.clazz.getDeclaredConstructor();
                 final T object = constructor.newInstance();
-                ((JsonObject) object).buildFrom(node);
+                ((OldJsonObject) object).buildFrom(node);
                 this.list.add(object);
             } catch (final Exception e) {
                 logger.error("Cannot build object", e);

@@ -15,8 +15,6 @@
  */
 package org.pac4j.oauth.profile.foursquare;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
 
 /**
@@ -29,14 +27,26 @@ public class FoursquareUserPhoto extends JsonObject {
 
     private static final long serialVersionUID = -6808386671187616407L;
 
-    private String photoUrl;
-
-    @Override
-    protected void buildFromJson(JsonNode json) {
-        photoUrl = JsonHelper.get(json,"prefix") + "original" + JsonHelper.get(json,"suffix");
-    }
+    private String prefix;
+    private String suffix;
 
     public String getPhotoUrl() {
-        return photoUrl;
+        return prefix + "original" + suffix;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 }

@@ -55,31 +55,31 @@ public class VkAttributesDefinition extends OAuthAttributesDefinition {
 	public static final String RELATION = "relation";
 
 	public VkAttributesDefinition() {
-		addAttribute(FIRST_NAME, Converters.stringConverter);
-		addAttribute(LAST_NAME, Converters.stringConverter);
-		addAttribute(SEX, VkConverters.genderConverter);
-		addAttribute(BIRTH_DATE, VkConverters.dateConverter);
-		addAttribute(PHOTO_50, Converters.stringConverter);
-		addAttribute(PHOTO_100, Converters.stringConverter);
-		addAttribute(PHOTO_200_ORIG, Converters.stringConverter);
-		addAttribute(PHOTO_200, Converters.stringConverter);
-		addAttribute(PHOTO_400_ORIG, Converters.stringConverter);
-		addAttribute(PHOTO_MAX, Converters.stringConverter);
-		addAttribute(PHOTO_MAX_ORIG, Converters.stringConverter);
-		addAttribute(ONLINE, VkConverters.booleanConverter);
-		addAttribute(ONLINE_MOBILE, VkConverters.booleanConverter);
-		addAttribute(DOMAIN, Converters.stringConverter);
-		addAttribute(HAS_MOBILE, VkConverters.booleanConverter);
-		addAttribute(MOBILE_PHONE, Converters.stringConverter);
-		addAttribute(HOME_PHONE, Converters.stringConverter);
-		addAttribute(SKYPE, Converters.stringConverter);
-		addAttribute(SITE, Converters.stringConverter);
-		addAttribute(CAN_POST, VkConverters.booleanConverter);
-		addAttribute(CAN_SEE_ALL_POST, VkConverters.booleanConverter);
-		addAttribute(CAN_SEE_AUDIO, VkConverters.booleanConverter);
-		addAttribute(CAN_WRITE_PRIVATE_MESSAGE, VkConverters.booleanConverter);
-		addAttribute(STATUS, Converters.stringConverter);
-		addAttribute(COMMON_COUNT, Converters.integerConverter);
-		addAttribute(RELATION, Converters.integerConverter);
+		primary(FIRST_NAME, Converters.stringConverter);
+		primary(LAST_NAME, Converters.stringConverter);
+		primary(SEX, VkConverters.genderConverter);
+		primary(BIRTH_DATE, VkConverters.dateConverter);
+		primary(PHOTO_50, Converters.stringConverter);
+		primary(PHOTO_100, Converters.stringConverter);
+		primary(PHOTO_200_ORIG, Converters.stringConverter);
+		primary(PHOTO_200, Converters.stringConverter);
+		primary(PHOTO_400_ORIG, Converters.stringConverter);
+		primary(PHOTO_MAX, Converters.stringConverter);
+		primary(PHOTO_MAX_ORIG, Converters.stringConverter);
+		primary(ONLINE, VkConverters.booleanConverter);
+		primary(ONLINE_MOBILE, VkConverters.booleanConverter);
+		primary(DOMAIN, Converters.stringConverter);
+		primary(HAS_MOBILE, VkConverters.booleanConverter);
+		primary(MOBILE_PHONE, Converters.stringConverter);
+		primary(HOME_PHONE, Converters.stringConverter);
+		primary(SKYPE, Converters.stringConverter);
+		primary(SITE, Converters.stringConverter);
+		primary(CAN_POST, VkConverters.booleanConverter);
+		primary(CAN_SEE_ALL_POST, VkConverters.booleanConverter);
+		primary(CAN_SEE_AUDIO, VkConverters.booleanConverter);
+		primary(CAN_WRITE_PRIVATE_MESSAGE, VkConverters.booleanConverter);
+		primary(STATUS, Converters.stringConverter);
+		primary(COMMON_COUNT, Converters.integerConverter);
+		primary(RELATION, Converters.integerConverter);
 	}
 }

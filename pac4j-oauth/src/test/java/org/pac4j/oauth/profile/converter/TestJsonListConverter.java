@@ -25,16 +25,16 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonList;
 
 /**
- * This class tests the {@link JsonListConverter} class.
+ * This class tests the {@link OldJsonListConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public final class TestJsonListConverter extends TestCase implements TestsConstants {
     
-    private final JsonListConverter converterForString = new JsonListConverter(String.class);
+    private final OldJsonListConverter converterForString = new OldJsonListConverter(String.class);
     
-    private final JsonListConverter converterForMockJsonObject = new JsonListConverter(MockJsonObject.class);
+    private final OldJsonListConverter converterForMockJsonObject = new OldJsonListConverter(MockJsonObject.class);
     
     private final static String JSON_LIST = "[\"" + ELEMENT + "\",\"" + ELEMENT2 + "\"]";
     

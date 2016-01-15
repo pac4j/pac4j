@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.yahoo.YahooProfile}.</p>
  * <p>More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html</p>
  * 
- * @see org.pac4j.oauth.profile.yahoo.YahooProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -63,9 +62,6 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
         return "https://social.yahooapis.com/v1/me/guid?format=xml";
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
         // get the guid : https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
@@ -96,10 +92,5 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

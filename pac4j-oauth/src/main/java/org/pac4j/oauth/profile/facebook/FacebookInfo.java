@@ -17,11 +17,9 @@ package org.pac4j.oauth.profile.facebook;
 
 import java.util.Date;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook info (id + name + category + created_time).
@@ -38,30 +36,40 @@ public final class FacebookInfo extends JsonObject {
     private String category;
     
     private String name;
-    
+
+    @JsonProperty("created_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssz")
     private Date createdTime;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.category = (String) JsonHelper.convert(Converters.stringConverter, json, "category");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.createdTime = (Date) JsonHelper.convert(Converters.dateConverter, json, "created_time");
-    }
-    
+
     public String getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getCategory() {
-        return this.category;
+        return category;
     }
-    
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Date getCreatedTime() {
-        return this.createdTime;
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 }

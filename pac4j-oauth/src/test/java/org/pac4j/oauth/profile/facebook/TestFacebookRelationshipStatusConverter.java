@@ -17,7 +17,6 @@ package org.pac4j.oauth.profile.facebook;
 
 import junit.framework.TestCase;
 
-import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
 
 /**

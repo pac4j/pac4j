@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.paypal;
 
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.4.2
  */
-public class PayPalAddress extends JsonObject {
+public class PayPalAddress extends OldJsonObject {
     
     private static final long serialVersionUID = -6856575643675582895L;
     

@@ -16,7 +16,6 @@
 package org.pac4j.core.profile;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.pac4j.core.util.CommonHelper;
@@ -32,8 +31,6 @@ import org.slf4j.LoggerFactory;
 public final class ProfileHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
-
-    private static boolean enforceProfileDefinition = false;
 
     /**
      * Indicate if the user identifier matches this kind of profile.
@@ -129,20 +126,5 @@ public final class ProfileHelper {
      */
     public static void setKeepRawData(final boolean keepRawData) {
         RawDataObject.setKeepRawData(keepRawData);
-    }
-
-    public static boolean isEnforceProfileDefinition() {
-        return enforceProfileDefinition;
-    }
-
-    /**
-     * Set whether the profile definition (= attributes definition) should be enforced (= undefined attributes are ignored).
-     * <code>false</code> since version 1.8. It was <code>true</code> before.
-     *
-     * @param enforceProfileDefinition whether the profile definition should be enforced
-     * @since 1.8.0
-     */
-    public static void setEnforceProfileDefinition(boolean enforceProfileDefinition) {
-        ProfileHelper.enforceProfileDefinition = enforceProfileDefinition;
     }
 }

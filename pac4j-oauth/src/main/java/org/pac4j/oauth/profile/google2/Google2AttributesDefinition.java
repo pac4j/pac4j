@@ -15,8 +15,10 @@
  */
 package org.pac4j.oauth.profile.google2;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.oauth.profile.converter.JsonListConverter;
 
 /**
  * This class defines the attributes of the Google profile (using OAuth 2.0 protocol).
@@ -24,7 +26,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2AttributesDefinition extends OAuthAttributesDefinition {
+public class Google2AttributesDefinition extends AttributesDefinition {
 
     public static final String GENDER = "gender";
     public static final String DISPLAY_NAME = "displayName";
@@ -37,14 +39,14 @@ public class Google2AttributesDefinition extends OAuthAttributesDefinition {
     public static final String EMAILS = "emails";
 
     public Google2AttributesDefinition() {
-        addAttribute(GENDER, Converters.genderConverter);
-        addAttribute(DISPLAY_NAME, Converters.stringConverter);
-        addAttribute(GIVEN_NAME, Converters.stringConverter);
-        addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(URL, Converters.stringConverter);
-        addAttribute(PICTURE, Converters.stringConverter);
-        addAttribute(LANGUAGE, Converters.localeConverter);
-        addAttribute(BIRTHDAY, Google2Converters.dateConverter);
-        addAttribute(EMAILS, Google2Converters.listEmailConverter);
+        primary(DISPLAY_NAME);
+        primary(GIVEN_NAME);
+        primary(FAMILY_NAME);
+        primary(URL);
+        primary(PICTURE);
+        primary(GENDER, Converters.genderConverter);
+        primary(LANGUAGE, Converters.localeConverter);
+        primary(BIRTHDAY, new FormattedDateConverter("yyyy-MM-dd"));
+        primary(EMAILS, new JsonListConverter(Google2Email.class, Google2Email[].class));
     }
 }

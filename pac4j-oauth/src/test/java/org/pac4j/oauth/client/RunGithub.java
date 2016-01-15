@@ -15,33 +15,41 @@
  */
 package org.pac4j.oauth.client;
 
+import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link GitHubClient} class by simulating a complete authentication.
- * 
+ * Run manually a test for the {@link GitHubClient}.
+ *
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.9.0
  */
-public class GitHubClientIT extends OAuthClientIT {
+public class RunGithub extends RunClient {
 
-    @SuppressWarnings("rawtypes")
+    public static void main(String[] args) throws Exception {
+        new RunGithub().run();
+    }
+
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup@gmail.com";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup1";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final GitHubClient githubClient = new GitHubClient();
         githubClient.setKey("62374f5573a89a8f9900");
         githubClient.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
@@ -51,27 +59,13 @@ public class GitHubClientIT extends OAuthClientIT {
     }
 
     @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(2);
-        final HtmlTextInput login = form.getInputByName("login");
-        login.setValueAttribute("testscribeup@gmail.com");
-        final HtmlPasswordInput password = form.getInputByName("password");
-        password.setValueAttribute("testpwdscribeup1");
-        final HtmlSubmitInput submit = form.getInputByName("commit");
-        final HtmlPage callbackPage = submit.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
-    }
-
-    @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(GitHubProfile.class);
         kryo.register(GitHubPlan.class);
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(UserProfile userProfile) {
         final GitHubProfile profile = (GitHubProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());

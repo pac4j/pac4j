@@ -50,27 +50,27 @@ public class YahooAttributesDefinition extends OAuthAttributesDefinition {
     public static final String URI = "uri";
     
     public YahooAttributesDefinition() {
-        addAttribute(ABOUT_ME, Converters.stringConverter);
-        addAttribute(ADDRESSES, YahooConverters.listAddressConverter);
-        addAttribute(BIRTH_YEAR, Converters.integerConverter);
-        addAttribute(BIRTHDATE, YahooConverters.birthdateConverter);
-        addAttribute(CREATED, YahooConverters.dateConverter);
-        addAttribute(DISPLAY_AGE, Converters.integerConverter);
-        addAttribute(DISCLOSURES, YahooConverters.listDisclosureConverter);
-        addAttribute(EMAILS, YahooConverters.listEmailConverter);
-        addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(GENDER, YahooConverters.genderConverter);
-        addAttribute(GIVEN_NAME, Converters.stringConverter);
-        addAttribute(IMAGE, YahooConverters.imageConverter);
-        addAttribute(INTERESTS, YahooConverters.listInterestConverter);
-        addAttribute(IS_CONNECTED, Converters.booleanConverter);
-        addAttribute(LANG, Converters.localeConverter);
-        addAttribute(LOCATION, Converters.stringConverter);
-        addAttribute(MEMBER_SINCE, YahooConverters.dateConverter);
-        addAttribute(NICKNAME, Converters.stringConverter);
-        addAttribute(PROFILE_URL, Converters.stringConverter);
-        addAttribute(TIME_ZONE, Converters.stringConverter);
-        addAttribute(UPDATED, YahooConverters.dateConverter);
-        addAttribute(URI, Converters.stringConverter);
+        primary(ABOUT_ME, Converters.stringConverter);
+        primary(ADDRESSES, YahooConverters.listAddressConverter);
+        primary(BIRTH_YEAR, Converters.integerConverter);
+        primary(BIRTHDATE, YahooConverters.birthdateConverter);
+        primary(CREATED, YahooConverters.dateConverter);
+        primary(DISPLAY_AGE, Converters.integerConverter);
+        primary(DISCLOSURES, YahooConverters.listDisclosureConverter);
+        primary(EMAILS, YahooConverters.listEmailConverter);
+        primary(FAMILY_NAME, Converters.stringConverter);
+        primary(GENDER, YahooConverters.genderConverter);
+        primary(GIVEN_NAME, Converters.stringConverter);
+        primary(IMAGE, YahooConverters.imageConverter);
+        primary(INTERESTS, YahooConverters.listInterestConverter);
+        primary(IS_CONNECTED, Converters.booleanConverter);
+        primary(LANG, Converters.localeConverter);
+        primary(LOCATION, Converters.stringConverter);
+        primary(MEMBER_SINCE, YahooConverters.dateConverter);
+        primary(NICKNAME, Converters.stringConverter);
+        primary(PROFILE_URL, Converters.stringConverter);
+        primary(TIME_ZONE, Converters.stringConverter);
+        primary(UPDATED, YahooConverters.dateConverter);
+        primary(URI, Converters.stringConverter);
     }
 }

@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.XmlHelper;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
@@ -33,7 +33,6 @@ import org.scribe.tokens.OrcidToken;
  * <p>It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.</p>
  * <p>More information at http://support.orcid.org/knowledgebase/articles/175079-tutorial-retrieve-data-from-an-orcid-record-with</p>
  *
- * @see org.pac4j.oauth.profile.orcid.OrcidProfile
  * @author Jens Tinglev
  * @since 1.6.0
  */

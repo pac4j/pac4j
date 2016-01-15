@@ -15,13 +15,9 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import java.util.List;
-
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 
 /**
  * This class represents an education object for Facebook.
@@ -43,34 +39,43 @@ public final class FacebookEducation extends JsonObject {
     
     private String type;
     
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.school = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "school");
-        this.degree = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "degree");
-        this.year = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "year");
-        this.concentration = (List<FacebookObject>) JsonHelper.convert(FacebookConverters.listObjectConverter, json,
-                                                                       "concentration");
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
-    }
-    
     public FacebookObject getSchool() {
-        return this.school;
+        return school;
     }
-    
+
+    public void setSchool(FacebookObject school) {
+        this.school = school;
+    }
+
     public FacebookObject getDegree() {
-        return this.degree;
+        return degree;
     }
-    
+
+    public void setDegree(FacebookObject degree) {
+        this.degree = degree;
+    }
+
     public FacebookObject getYear() {
-        return this.year;
+        return year;
     }
-    
+
+    public void setYear(FacebookObject year) {
+        this.year = year;
+    }
+
     public List<FacebookObject> getConcentration() {
-        return this.concentration;
+        return concentration;
     }
-    
+
+    public void setConcentration(List<FacebookObject> concentration) {
+        this.concentration = concentration;
+    }
+
     public String getType() {
-        return this.type;
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

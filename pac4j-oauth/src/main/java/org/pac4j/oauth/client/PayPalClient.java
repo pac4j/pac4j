@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.paypal.PayPalProfile}.</p>
  * <p>More information at https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/</p>
  * 
- * @see org.pac4j.oauth.profile.paypal.PayPalProfile
  * @author Jerome Leleu
  * @since 1.4.2
  */
@@ -94,10 +93,5 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     
     public void setScope(final String scope) {
         this.scope = scope;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

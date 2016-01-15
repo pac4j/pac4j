@@ -15,56 +15,44 @@
  */
 package org.pac4j.oauth.client;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
-import org.pac4j.core.profile.Gender;
-import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsHelper;
-import org.pac4j.oauth.profile.JsonList;
-import org.pac4j.oauth.profile.facebook.FacebookApplication;
-import org.pac4j.oauth.profile.facebook.FacebookEducation;
-import org.pac4j.oauth.profile.facebook.FacebookEvent;
-import org.pac4j.oauth.profile.facebook.FacebookGroup;
-import org.pac4j.oauth.profile.facebook.FacebookInfo;
-import org.pac4j.oauth.profile.facebook.FacebookMusicData;
-import org.pac4j.oauth.profile.facebook.FacebookMusicListen;
-import org.pac4j.oauth.profile.facebook.FacebookObject;
-import org.pac4j.oauth.profile.facebook.FacebookPhoto;
-import org.pac4j.oauth.profile.facebook.FacebookPicture;
-import org.pac4j.oauth.profile.facebook.FacebookProfile;
-import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
-import org.pac4j.oauth.profile.facebook.FacebookWork;
-
 import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.*;
+import org.pac4j.oauth.profile.facebook.*;
+
+import java.util.*;
+import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link FacebookClient} class by simulating a complete authentication.
+ * Run manually a test for the {@link FacebookClient}.
  *
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.9.0
  */
-public class FacebookClientIT extends OAuthClientIT {
+public class RunFacebook extends RunClient {
 
-    public void testMissingFields() {
-        final FacebookClient client = (FacebookClient) getClient();
-        client.setFields(null);
-        TestsHelper.initShouldFail(client, "fields cannot be blank");
+    public static void main(String[] args) throws Exception {
+        new RunFacebook().run();
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup@gmail.com";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup";
+    }
+
+    @Override
+    protected boolean canCancel() {
+        return true;
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final FacebookClient facebookClient = new FacebookClient();
         facebookClient.setKey("1002857006444390");
         facebookClient.setSecret("c352c9668493d3f9ac3f0fa71f04c187");
@@ -78,24 +66,9 @@ public class FacebookClientIT extends OAuthClientIT {
     }
 
     @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(0);
-        final HtmlTextInput email = form.getInputByName("email");
-        email.setValueAttribute("testscribeup@gmail.com");
-        final HtmlPasswordInput password = form.getInputByName("pass");
-        password.setValueAttribute("testpwdscribeup");
-        final HtmlSubmitInput submit = form.getInputByName("login");
-        final HtmlPage callbackPage = submit.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
-    }
-
-    @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(FacebookProfile.class);
         kryo.register(FacebookObject.class);
-        kryo.register(JsonList.class);
         kryo.register(FacebookEvent.class);
         kryo.register(FacebookInfo.class);
         kryo.register(FacebookMusicListen.class);
@@ -119,7 +92,7 @@ public class FacebookClientIT extends OAuthClientIT {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null, Gender.MALE,
-                Locale.FRANCE, "https://scontent.xx.fbcdn.net/hprofile-xfa1/v/t1.0-1/c170.50.621.621/s50x50/550165_168023156660068_12755354_n.jpg?oh=da4a84bb0dee8c777e8275b3681ca501&oe=56902D0A",
+                Locale.FRANCE, "https://scontent.xx.fbcdn.net/hprofile-xaf1/v/t1.0-1/c170.50.621.621/s50x50/550165_168023156660068_12755354_n.jpg?oh=",
                 "https://www.facebook.com/app_scoped_user_id/771361542992890/", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
@@ -205,13 +178,12 @@ public class FacebookClientIT extends OAuthClientIT {
         assertNotNull(event.getEndTime());
         final List<FacebookGroup> groups = profile.getGroups();
         final FacebookGroup group = groups.get(0);
-        assertNull(group.getVersion());
         assertEquals("Dev ScribeUP", group.getName());
         assertEquals("167694120024728", group.getId());
         final List<FacebookMusicListen> musicListens = profile.getMusicListens();
         assertNull(musicListens);
         final FacebookPicture picture = profile.getPicture();
-        assertFalse(picture.getIsSilhouette());
+        assertFalse(picture.getSilhouette());
         assertEquals(35, profile.getAttributes().size());
     }
 }

@@ -31,7 +31,6 @@ import org.scribe.oauth.ProxyOAuth10aServiceImpl;
  * 
  * It returns a {@link org.pac4j.oauth.profile.bitbucket.BitbucketProfile}.
  * 
- * @see org.pac4j.oauth.profile.bitbucket.BitbucketProfile
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
@@ -56,11 +55,6 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
     }
 
     @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
-    }
-
-    @Override
     protected String getProfileUrl(Token accessToken) {
         return "https://bitbucket.org/api/1.0/user/";
     }
@@ -72,7 +66,7 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
         if (json != null) {
             json = (JsonNode) JsonHelper.get(json, "user");
             if (json != null) {
-                for (final String attribute : OAuthAttributesDefinitions.bitbucketDefinition.getAllAttributes()) {
+                for (final String attribute : OAuthAttributesDefinitions.bitbucketDefinition.getPrimaryAttributes()) {
                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

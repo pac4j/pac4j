@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.windowslive.WindowsLiveProfile}.</p>
  * <p>More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx</p>
  * 
- * @see org.pac4j.oauth.profile.windowslive.WindowsLiveProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */
@@ -72,10 +71,5 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

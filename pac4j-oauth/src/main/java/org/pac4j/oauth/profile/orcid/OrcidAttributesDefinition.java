@@ -36,12 +36,12 @@ public class OrcidAttributesDefinition extends OAuthAttributesDefinition {
 
 
     public OrcidAttributesDefinition() {
-        addAttribute(ORCID, Converters.stringConverter);
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(URI, Converters.stringConverter);
-        addAttribute(CREATION_METHOD, Converters.stringConverter);
-        addAttribute(CLAIMED, Converters.booleanConverter);
-        addAttribute(LOCALE, Converters.localeConverter);
+        primary(ORCID, Converters.stringConverter);
+        primary(FIRST_NAME, Converters.stringConverter);
+        primary(FAMILY_NAME, Converters.stringConverter);
+        primary(URI, Converters.stringConverter);
+        primary(CREATION_METHOD, Converters.stringConverter);
+        primary(CLAIMED, Converters.booleanConverter);
+        primary(LOCALE, Converters.localeConverter);
     }
 }

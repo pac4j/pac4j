@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.strava;
 
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  * @author Adrian Papusoi
  */
-public class StravaGear extends JsonObject {
+public class StravaGear extends OldJsonObject {
 
     private static final long serialVersionUID = -5738356602119292294L;
 

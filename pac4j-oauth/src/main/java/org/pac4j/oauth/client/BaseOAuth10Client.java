@@ -16,7 +16,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
 import org.scribe.model.Token;

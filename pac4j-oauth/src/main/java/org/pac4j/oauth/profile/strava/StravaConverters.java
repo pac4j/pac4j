@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.strava;
 
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.core.profile.converter.FormattedDateConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
+import org.pac4j.oauth.profile.converter.OldJsonListConverter;
 
 /**
  * Strava profile fields specific converters.
@@ -26,8 +26,8 @@ import org.pac4j.oauth.profile.converter.JsonListConverter;
  */
 public final class StravaConverters {
 
-    public final static JsonListConverter clubListConverter = new JsonListConverter(StravaClub.class);
-    public final static JsonListConverter gearListConverter = new JsonListConverter(StravaGear.class);
+    public final static OldJsonListConverter clubListConverter = new OldJsonListConverter(StravaClub.class);
+    public final static OldJsonListConverter gearListConverter = new OldJsonListConverter(StravaGear.class);
     /**
      * Looks like the time zone is missused by Strava. To be verified!
      */

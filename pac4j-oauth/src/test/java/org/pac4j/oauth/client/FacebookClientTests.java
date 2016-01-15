@@ -13,18 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.profile.foursquare;
+package org.pac4j.oauth.client;
 
-import org.pac4j.oauth.profile.converter.JsonObjectConverter;
+import org.junit.Test;
+import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
 
 /**
- * This class defines all the converters specific to Foursquare.
+ * Tests {@link FacebookClient}.
  *
- * @author Alexey Ogarkov
- * @since 1.5.0
+ * @author Jerome Leleu
+ * @since 1.9.0
  */
-public class FoursquareConverters {
-    public final static JsonObjectConverter friendsConverter = new JsonObjectConverter(FoursquareUserFriends.class);
-    public final static JsonObjectConverter contactConverter = new JsonObjectConverter(FoursquareUserContact.class);
-    public final static JsonObjectConverter photoConverter = new JsonObjectConverter(FoursquareUserPhoto.class);
+public class FacebookClientTests implements TestsConstants {
+
+    @Test
+    public void testMissingFields() {
+        final FacebookClient client = new FacebookClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setFields(null);
+        TestsHelper.initShouldFail(client, "fields cannot be blank");
+    }
 }

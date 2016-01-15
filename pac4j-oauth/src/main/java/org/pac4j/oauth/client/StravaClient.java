@@ -81,11 +81,6 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
-    }
-
-    @Override
     protected String getProfileUrl(Token accessToken) {
         return "https://www.strava.com/api/v3/athlete";
     }

@@ -15,10 +15,7 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.Serializable;
 
 /**
  * This class represents a Facebook application.
@@ -26,24 +23,17 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class FacebookApplication extends FacebookObject {
+public final class FacebookApplication implements Serializable {
     
     private static final long serialVersionUID = 8888597071833762957L;
     
     private String namespace;
     
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        super.buildFromJson(json);
-        this.namespace = (String) JsonHelper.convert(Converters.stringConverter, json, "namespace");
-    }
-    
-    @Override
-    protected boolean isRootObject() {
-        return false;
-    }
-    
     public String getNamespace() {
-        return this.namespace;
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 }

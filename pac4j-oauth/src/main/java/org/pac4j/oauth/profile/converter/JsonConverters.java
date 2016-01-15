@@ -23,5 +23,5 @@ package org.pac4j.oauth.profile.converter;
  */
 public final class JsonConverters {
     
-    public final static JsonListConverter listStringConverter = new JsonListConverter(String.class);
+    public final static OldJsonListConverter listStringConverter = new OldJsonListConverter(String.class);
 }

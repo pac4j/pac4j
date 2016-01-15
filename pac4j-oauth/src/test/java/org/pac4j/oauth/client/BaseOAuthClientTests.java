@@ -15,14 +15,15 @@
  */
 package org.pac4j.oauth.client;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link BaseOAuthClient} class.
@@ -30,25 +31,28 @@ import org.pac4j.oauth.credentials.OAuthCredentials;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-@SuppressWarnings("rawtypes")
-public final class BaseOAuthClientIT extends TestCase implements TestsConstants {
-    
+public final class BaseOAuthClientTests implements TestsConstants {
+
+    @Test
     public void testDefaultName10() {
         final BaseOAuth10Client client = new YahooClient();
         assertEquals("YahooClient", client.getName());
     }
-    
+
+    @Test
     public void testDefaultName20() {
         final BaseOAuth20Client client = new FacebookClient();
         assertEquals("FacebookClient", client.getName());
     }
-    
+
+    @Test
     public void testDefinedName() {
         final BaseOAuth20Client client = new FacebookClient();
         client.setName(TYPE);
         assertEquals(TYPE, client.getName());
     }
-    
+
+    @Test
     public void testGetCredentialOK() throws RequiresHttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
@@ -57,7 +61,8 @@ public final class BaseOAuthClientIT extends TestCase implements TestsConstants 
         assertTrue(client.getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE,
                                                                                      FAKE_VALUE)) instanceof OAuthCredentials);
     }
-    
+
+    @Test
     public void testGetCredentialError() throws RequiresHttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);

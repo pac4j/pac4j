@@ -136,19 +136,19 @@ public class StravaAttributesDefinition extends OAuthAttributesDefinition {
         final String[] names = new String[] { FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, PROFILE, CITY, STATE, COUNTRY,
                 SEX, DATE_PREFERENCE, MEASUREMENT_PREFERENCE, EMAIL };
         for (final String name : names) {
-            addAttribute(name, Converters.stringConverter);
+            primary(name, Converters.stringConverter);
         }
-        addAttribute(ID, Converters.longConverter);
-        addAttribute(RESOURCE_STATE, Converters.integerConverter);
-        addAttribute(PREMIUM, Converters.booleanConverter);
-        addAttribute(CREATED_AT, StravaConverters.dateConverter);
-        addAttribute(UPDATED_AT, StravaConverters.dateConverter);
-        addAttribute(BADGE_TYPE_ID, Converters.integerConverter);
-        addAttribute(FOLLOWER_COUNT, Converters.integerConverter);
-        addAttribute(FRIEND_COUNT, Converters.integerConverter);
+        primary(ID, Converters.longConverter);
+        primary(RESOURCE_STATE, Converters.integerConverter);
+        primary(PREMIUM, Converters.booleanConverter);
+        primary(CREATED_AT, StravaConverters.dateConverter);
+        primary(UPDATED_AT, StravaConverters.dateConverter);
+        primary(BADGE_TYPE_ID, Converters.integerConverter);
+        primary(FOLLOWER_COUNT, Converters.integerConverter);
+        primary(FRIEND_COUNT, Converters.integerConverter);
 
-        addAttribute(CLUBS, StravaConverters.clubListConverter);
-        addAttribute(BIKES, StravaConverters.gearListConverter);
-        addAttribute(SHOES, StravaConverters.gearListConverter);
+        primary(CLUBS, StravaConverters.clubListConverter);
+        primary(BIKES, StravaConverters.gearListConverter);
+        primary(SHOES, StravaConverters.gearListConverter);
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.JsonObject;
+import org.pac4j.oauth.profile.OldJsonObject;
 import org.pac4j.oauth.profile.converter.JsonConverters;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooInterest extends JsonObject {
+public final class YahooInterest extends OldJsonObject {
     
     private static final long serialVersionUID = 3613314161531695788L;
     

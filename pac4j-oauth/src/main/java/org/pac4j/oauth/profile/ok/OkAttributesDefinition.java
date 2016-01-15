@@ -48,25 +48,25 @@ public class OkAttributesDefinition extends OAuthAttributesDefinition {
 
 
     public OkAttributesDefinition() {
-        addAttribute(UID, Converters.stringConverter);
-        addAttribute(BIRTHDAY, Converters.stringConverter);
-        addAttribute(AGE, Converters.stringConverter);
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(LOCALE, Converters.stringConverter);
-        addAttribute(GENDER, Converters.stringConverter);
-        addAttribute(LOCATION_CITY, Converters.stringConverter);
-        addAttribute(LOCATION_COUNTRY, Converters.stringConverter);
-        addAttribute(LOCATION_COUNTRY_CODE, Converters.stringConverter);
-        addAttribute(LOCATION_COUNTRY_NAME, Converters.stringConverter);
-        addAttribute(ONLINE, Converters.stringConverter);
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(LAST_NAME, Converters.stringConverter);
-        addAttribute(HAS_EMAIL, Converters.stringConverter);
-        addAttribute(CURRENT_STATUS, Converters.stringConverter);
-        addAttribute(CURRENT_STATUS_ID, Converters.stringConverter);
-        addAttribute(CURRENT_STATUS_DATE, Converters.stringConverter);
-        addAttribute(PIC_1, Converters.stringConverter);
-        addAttribute(PIC_2, Converters.stringConverter);
+        primary(UID, Converters.stringConverter);
+        primary(BIRTHDAY, Converters.stringConverter);
+        primary(AGE, Converters.stringConverter);
+        primary(NAME, Converters.stringConverter);
+        primary(LOCALE, Converters.stringConverter);
+        primary(GENDER, Converters.stringConverter);
+        primary(LOCATION_CITY, Converters.stringConverter);
+        primary(LOCATION_COUNTRY, Converters.stringConverter);
+        primary(LOCATION_COUNTRY_CODE, Converters.stringConverter);
+        primary(LOCATION_COUNTRY_NAME, Converters.stringConverter);
+        primary(ONLINE, Converters.stringConverter);
+        primary(FIRST_NAME, Converters.stringConverter);
+        primary(LAST_NAME, Converters.stringConverter);
+        primary(HAS_EMAIL, Converters.stringConverter);
+        primary(CURRENT_STATUS, Converters.stringConverter);
+        primary(CURRENT_STATUS_ID, Converters.stringConverter);
+        primary(CURRENT_STATUS_DATE, Converters.stringConverter);
+        primary(PIC_1, Converters.stringConverter);
+        primary(PIC_2, Converters.stringConverter);
 
     }
 }
