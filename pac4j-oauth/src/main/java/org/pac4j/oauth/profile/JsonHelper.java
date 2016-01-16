@@ -119,17 +119,4 @@ public final class JsonHelper {
         }
         return null;
     }
-
-    /**
-     * Convert a JSON attribute.
-     *
-     * @param converter converter
-     * @param json json
-     * @param name attribute name
-     * @return the converted JSON attribute
-     */
-    public static Object convert(final AttributeConverter<? extends Object> converter, final JsonNode json,
-                                 final String name) {
-        return converter.convert(get(json, name));
-    }
 }

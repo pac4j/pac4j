@@ -17,11 +17,8 @@ package org.pac4j.oauth.profile.yahoo;
 
 import java.util.Date;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OldJsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents a Yahoo disclosure.
@@ -29,39 +26,48 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooDisclosure extends OldJsonObject {
+public final class YahooDisclosure extends JsonObject {
     
     private static final long serialVersionUID = 1592628531426071633L;
     
     private String acceptance;
     
     private String name;
-    
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date seen;
     
     private String version;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.acceptance = (String) JsonHelper.convert(Converters.stringConverter, json, "acceptance");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.seen = (Date) JsonHelper.convert(YahooConverters.dateConverter, json, "seen");
-        this.version = (String) JsonHelper.convert(Converters.stringConverter, json, "version");
-    }
-    
+
     public String getAcceptance() {
-        return this.acceptance;
+        return acceptance;
     }
-    
+
+    public void setAcceptance(String acceptance) {
+        this.acceptance = acceptance;
+    }
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Date getSeen() {
-        return this.seen;
+        return seen;
     }
-    
+
+    public void setSeen(Date seen) {
+        this.seen = seen;
+    }
+
     public String getVersion() {
-        return this.version;
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

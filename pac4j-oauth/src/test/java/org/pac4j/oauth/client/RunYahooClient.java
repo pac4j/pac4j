@@ -15,93 +15,75 @@
  */
 package org.pac4j.oauth.client;
 
+import com.esotericsoftware.kryo.Kryo;
+import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.RunClient;
+import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oauth.profile.yahoo.*;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientIT;
-import org.pac4j.core.profile.Gender;
-import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
-import org.pac4j.oauth.profile.JsonList;
-import org.pac4j.oauth.profile.yahoo.YahooAddress;
-import org.pac4j.oauth.profile.yahoo.YahooDisclosure;
-import org.pac4j.oauth.profile.yahoo.YahooEmail;
-import org.pac4j.oauth.profile.yahoo.YahooImage;
-import org.pac4j.oauth.profile.yahoo.YahooInterest;
-import org.pac4j.oauth.profile.yahoo.YahooProfile;
-
-import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link YahooClient} class by simulating a complete authentication.
- * 
+ * Run manually a test for the {@link YahooClient}.
+ *
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.9.0
  */
-public class YahooClientIT extends ClientIT {
-    
-    @SuppressWarnings("rawtypes")
+public class RunYahooClient extends RunClient {
+
+    public static void main(String[] args) throws Exception {
+        new RunYahooClient().run();
+    }
+
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup@yahoo.fr";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final YahooClient yahooClient = new YahooClient();
         yahooClient
-            .setKey("dj0yJmk9djFiREdkbHc0dWdMJmQ9WVdrOVYwNHdkbnBWTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD03MQ--");
+                .setKey("dj0yJmk9djFiREdkbHc0dWdMJmQ9WVdrOVYwNHdkbnBWTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD03MQ--");
         yahooClient.setSecret("227eb8180d8212181a3856969a83e93fa14f1116");
         yahooClient.setCallbackUrl(PAC4J_BASE_URL);
         return yahooClient;
     }
-    
-    @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        HtmlForm form = authorizationPage.getFormByName("login_form");
-        final HtmlTextInput login = form.getInputByName("login");
-        login.setValueAttribute("testscribeup@yahoo.fr");
-        final HtmlPasswordInput passwd = form.getInputByName("passwd");
-        passwd.setValueAttribute("testpwdscribeup");
-        final HtmlButton button = form.getButtonByName(".save");
-        final HtmlPage confirmPage = button.click();
-        form = confirmPage.getFormByName("rcForm");
-        final HtmlSubmitInput submit = form.getInputByName("agree");
-        final HtmlPage callbackPage = submit.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
-    }
-    
+
     @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(YahooProfile.class);
-        kryo.register(JsonList.class);
         kryo.register(YahooDisclosure.class);
         kryo.register(YahooInterest.class);
         kryo.register(YahooImage.class);
         kryo.register(YahooEmail.class);
         kryo.register(YahooAddress.class);
     }
-    
+
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(UserProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
-        logger.debug("userProfile : {}", profile);
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
         assertEquals(YahooProfile.class.getSimpleName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
-                     profile.getTypedId());
+                profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@yahoo.fr", "Test", "ScribeUP", "Test ScribeUP", "Test",
-                            Gender.MALE, Locale.FRANCE,
-                            "/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",
-                            "http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", "Chatou, Ile-de-France");
+                Gender.MALE, Locale.FRANCE,
+                "/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",
+                "http://profile.yahoo.com/PCSXZCYSWC6XUJNMZKRGWVPHNU", "Chatou, Ile-de-France");
         assertEquals("my profile", profile.getAboutMe());
         final List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());
@@ -117,7 +99,7 @@ public class YahooClientIT extends ClientIT {
         assertEquals(1976, profile.getBirthYear().intValue());
         assertEquals("03/10", profile.getBirthdate().toString());
         assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
-        assertEquals(38, profile.getDisplayAge().intValue());
+        assertEquals(39, profile.getDisplayAge().intValue());
         final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
         final YahooDisclosure disclosure = disclosures.get(0);
@@ -146,9 +128,10 @@ public class YahooClientIT extends ClientIT {
         assertTrue(profile.getIsConnected());
         assertEquals("2012-02-06T12:46:36Z", profile.getMemberSince().toString());
         assertEquals("Europe/Paris", profile.getTimeZone());
-        assertEquals("2014-04-21T14:04:30Z", profile.getUpdated().toString());
+        assertEquals("2016-01-16T17:31:06Z", profile.getUpdated().toString());
         assertEquals("https://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
         assertNotNull(profile.getAccessSecret());
-        assertEquals(24, profile.getAttributes().size());
+        assertEquals("A", profile.getAgeCategory());
+        assertEquals(25, profile.getAttributes().size());
     }
 }

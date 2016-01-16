@@ -15,76 +15,57 @@
  */
 package org.pac4j.oauth.client;
 
+import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientIT;
+import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link WordPressClient} class by simulating a complete authentication.
- * 
+ * Run manually a test for the {@link WordPressClient}.
+ *
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.9.0
  */
-public class WordPressClientIT extends ClientIT {
+public class RunWordPressClient extends RunClient {
 
-    @SuppressWarnings("rawtypes")
+    public static void main(String[] args) throws Exception {
+        new RunWordPressClient().run();
+    }
+
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final WordPressClient wordPressClient = new WordPressClient();
         wordPressClient.setKey("209");
         wordPressClient.setSecret("xJBXMRVvKrvHqyvM6BpzkenJVMIdQrIWKjPJsezjGYu71y7sDgt8ibz6s9IFLqU8");
-        wordPressClient.setCallbackUrl(GOOGLE_URL + "/");
+        wordPressClient.setCallbackUrl(PAC4J_URL);
         return wordPressClient;
     }
 
     @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        HtmlForm form = authorizationPage.getFormByName("loginform");
-        final HtmlTextInput login = form.getInputByName("log");
-        login.setValueAttribute("testscribeup");
-        final HtmlPasswordInput passwd = form.getInputByName("pwd");
-        passwd.setValueAttribute("testpwdscribeup");
-
-        HtmlElement button = (HtmlElement) authorizationPage.createElement("button");
-        button.setAttribute("type", "submit");
-        form.appendChild(button);
-        // HtmlButton button = form.getButtonByName("wp-submit");
-
-        final HtmlPage confirmPage = button.click();
-        form = confirmPage.getFormByName("loginform");
-
-        button = (HtmlElement) confirmPage.createElement("button");
-        button.setAttribute("type", "submit");
-        form.appendChild(button);
-        // button = form.getButtonByName("wp-submit");
-
-        final HtmlPage callbackPage = button.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
-    }
-
-    @Override
     protected void registerForKryo(final Kryo kryo) {
-        kryo.register(WordPressProfile.class);
-        kryo.register(WordPressLinks.class);
+        kryo.register(WindowsLiveProfile.class);
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(UserProfile userProfile) {
         final WordPressProfile profile = (WordPressProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("35944437", profile.getId());

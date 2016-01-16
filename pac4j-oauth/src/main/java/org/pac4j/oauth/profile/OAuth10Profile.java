@@ -25,14 +25,16 @@ package org.pac4j.oauth.profile;
 public abstract class OAuth10Profile extends OAuth20Profile {
     
     private static final long serialVersionUID = 3407397824720340476L;
-    
+
+    private transient static final String ACCESS_SECRET = "access_secret";
+
     /**
      * Set the access token secret
      * 
      * @param accessSecret the access token secret
      */
     public void setAccessSecret(final String accessSecret) {
-        addAttribute(OAuthAttributesDefinition.ACCESS_SECRET, accessSecret);
+        addAttribute(ACCESS_SECRET, accessSecret);
     }
     
     /**
@@ -41,6 +43,6 @@ public abstract class OAuth10Profile extends OAuth20Profile {
      * @return the access token secret
      */
     public String getAccessSecret() {
-        return (String) getAttribute(OAuthAttributesDefinition.ACCESS_SECRET);
+        return (String) getAttribute(ACCESS_SECRET);
     }
 }
