@@ -91,7 +91,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, StravaAttributesDefinition.ID));
-            for (final String attribute : OAuthAttributesDefinitions.stravaDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.stravaDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

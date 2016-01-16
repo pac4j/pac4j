@@ -84,4 +84,12 @@ public class OAuthClientsTests implements TestsConstants {
         client.setFields(null);
         TestsHelper.initShouldFail(client, "fields cannot be blank");
     }
+
+    @Test
+    public void testMissingFieldsPaypal() {
+        final PayPalClient client = new PayPalClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setScope(null);
+        TestsHelper.initShouldFail(client, "scope cannot be blank");
+    }
 }

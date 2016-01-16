@@ -34,13 +34,13 @@ public class LinkedIn2Position extends JsonObject {
     
     private String summary;
 
-    @JsonProperty("is-current")
+    @JsonProperty("isCurrent")
     private Boolean isCurrent;
 
-    @JsonProperty("start-date")
+    @JsonProperty("startDate")
     private LinkedIn2Date startDate;
 
-    @JsonProperty("end-date")
+    @JsonProperty("endDate")
     private LinkedIn2Date endDate;
     
     private LinkedIn2Company company;

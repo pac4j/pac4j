@@ -66,7 +66,6 @@ public class RunDropboxClient extends RunClient {
     @Override
     protected void verifyProfile(UserProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
-        logger.debug("userProfile : {}", profile);
         assertEquals("75206624", profile.getId());
         assertEquals(DropBoxProfile.class.getSimpleName() + UserProfile.SEPARATOR + "75206624", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));

@@ -15,11 +15,8 @@
  */
 package org.pac4j.oauth.profile.paypal;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OldJsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents a PayPal address.
@@ -27,39 +24,49 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.4.2
  */
-public class PayPalAddress extends OldJsonObject {
+public class PayPalAddress extends JsonObject {
     
     private static final long serialVersionUID = -6856575643675582895L;
-    
+
+    @JsonProperty("street_address")
     private String streetAddress;
     
     private String locality;
-    
+
+    @JsonProperty("postal_code")
     private String postalCode;
     
     private String country;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.streetAddress = (String) JsonHelper.convert(Converters.stringConverter, json, "street_address");
-        this.locality = (String) JsonHelper.convert(Converters.stringConverter, json, "locality");
-        this.postalCode = (String) JsonHelper.convert(Converters.stringConverter, json, "postal_code");
-        this.country = (String) JsonHelper.convert(Converters.stringConverter, json, "country");
-    }
-    
+
     public String getStreetAddress() {
-        return this.streetAddress;
+        return streetAddress;
     }
-    
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
     public String getLocality() {
-        return this.locality;
+        return locality;
     }
-    
+
+    public void setLocality(String locality) {
+        this.locality = locality;
+    }
+
     public String getPostalCode() {
-        return this.postalCode;
+        return postalCode;
     }
-    
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
     public String getCountry() {
-        return this.country;
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

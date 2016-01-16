@@ -92,7 +92,6 @@ public class RunOkClient extends RunClient {
     @Override
     protected void verifyProfile(UserProfile userProfile) {
         final OkProfile profile = (OkProfile) userProfile;
-        logger.debug("userProfile : {}", profile);
         assertEquals(TEST_PROFILE_ID, profile.getId());
         assertEquals(OkProfile.class.getSimpleName() + UserProfile.SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());
