@@ -60,6 +60,7 @@ public abstract class RunClient implements TestsConstants {
         context.addRequestParameters(parameters);
         final OAuthCredentials credentials = (OAuthCredentials) client.getCredentials(context);
         final UserProfile profile = client.getUserProfile(credentials, context);
+        logger.debug("userProfile: {}", profile);
         if (profile != null || !canCancel()) {
             verifyProfile(profile);
 

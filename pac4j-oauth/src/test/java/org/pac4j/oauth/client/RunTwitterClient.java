@@ -15,12 +15,9 @@
  */
 package org.pac4j.oauth.client;
 
-import java.util.List;
-import java.util.Locale;
-
+import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
-import org.pac4j.core.client.ClientIT;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -28,26 +25,34 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link TwitterClient} class by simulating a complete authentication.
- * 
+ * Run manually a test for the {@link TwitterClient}.
+ *
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.9.0
  */
-public class TwitterClientIT extends ClientIT {
+public class RunTwitterClient extends RunClient {
 
-    @SuppressWarnings("rawtypes")
+    public static void main(String[] args) throws Exception {
+        new RunTwitterClient().run();
+    }
+
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "testscribeup@gmail.com";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "testpwdscribeup";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final TwitterClient twitterClient = new TwitterClient();
         twitterClient.setKey("3nJPbVTVRZWAyUgoUKQ8UA");
         twitterClient.setSecret("h6LZyZJmcW46Vu8R47MYfeXTSYGI30EqnWaSwVhFkbA");
@@ -56,28 +61,18 @@ public class TwitterClientIT extends ClientIT {
     }
 
     @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(0);
-        final HtmlTextInput sessionUsernameOrEmail = form.getInputByName("session[username_or_email]");
-        sessionUsernameOrEmail.setValueAttribute("testscribeup@gmail.com");
-        final HtmlPasswordInput sessionPassword = form.getInputByName("session[password]");
-        sessionPassword.setValueAttribute("testpwdscribeup");
-        final HtmlSubmitInput submit = authorizationPage.getHtmlElementById("allow");
-        final HtmlPage callbackPage = submit.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
-    }
-
-    @Override
     protected void registerForKryo(final Kryo kryo) {
         kryo.register(TwitterProfile.class);
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected boolean canCancel() {
+        return true;
+    }
+
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
         final TwitterProfile profile = (TwitterProfile) userProfile;
-        logger.debug("userProfile : {}", profile);
         assertEquals("488358057", profile.getId());
         assertEquals(TwitterProfile.class.getSimpleName() + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
@@ -115,31 +110,9 @@ public class TwitterClientIT extends ClientIT {
         assertNull(profile.getShowAllInlineMedia());
         assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(7200, profile.getUtcOffset().intValue());
+        assertEquals(3600, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertNotNull(profile.getAccessSecret());
         assertEquals(37, profile.getAttributes().size());
-    }
-
-    @Override
-    protected boolean isCancellable() {
-        return true;
-    }
-
-    @Override
-    protected String getCallbackUrlForCancel(final HtmlPage authorizationPage) throws Exception {
-        final HtmlSubmitInput submit = authorizationPage.getHtmlElementById("cancel");
-        final HtmlPage callbackPage = submit.click();
-        final List<HtmlAnchor> anchors = callbackPage.getAnchors();
-        String callbackUrl = null;
-        for (final HtmlAnchor anchor : anchors) {
-            final String url = anchor.getHrefAttribute();
-            if (url.startsWith(PAC4J_URL)) {
-                callbackUrl = url;
-                break;
-            }
-        }
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
     }
 }

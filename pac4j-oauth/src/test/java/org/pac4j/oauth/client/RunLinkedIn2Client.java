@@ -74,7 +74,6 @@ public class RunLinkedIn2Client extends RunClient {
     @Override
     protected void verifyProfile(UserProfile userProfile) {
         final LinkedIn2Profile profile = (LinkedIn2Profile) userProfile;
-        logger.debug("profile : {}", profile);
         assertEquals("JJjS_5BOzW", profile.getId());
         assertEquals(LinkedIn2Profile.class.getSimpleName() + UserProfile.SEPARATOR + "JJjS_5BOzW",
                 profile.getTypedId());

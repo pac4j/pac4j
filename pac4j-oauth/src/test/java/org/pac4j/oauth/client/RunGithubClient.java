@@ -67,7 +67,6 @@ public class RunGithubClient extends RunClient {
     @Override
     protected void verifyProfile(UserProfile userProfile) {
         final GitHubProfile profile = (GitHubProfile) userProfile;
-        logger.debug("userProfile : {}", profile);
         assertEquals("1412558", profile.getId());
         assertEquals(GitHubProfile.class.getSimpleName() + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));

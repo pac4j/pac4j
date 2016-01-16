@@ -87,7 +87,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.twitterDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.twitterDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

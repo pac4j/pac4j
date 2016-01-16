@@ -15,32 +15,24 @@
  */
 package org.pac4j.oauth.profile.strava;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OldJsonObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
- * Encapsulates a Club from a profile.
- * <br>
- * Example of a club:
- * {
- * "id": 37365,
- * "resource_state": 2,
- * "name": "Amicale Cycliste des Baltringues de Longchamp",
- * "profile_medium": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/37365\/1022943\/1\/medium.jpg",
- * "profile": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/37365\/1022943\/1\/large.jpg"
- * }
+ * A Strava club.
  *
  * @author Adrian Papusoi
+ * @since 1.7.0
  */
-public class StravaClub extends OldJsonObject {
+public class StravaClub extends JsonObject {
 
     private static final long serialVersionUID = -1284645916528292643L;
 
     private String id;
+    @JsonProperty("resource_state")
     private Integer resourceState;
     private String name;
+    @JsonProperty("profile_medium")
     private String profileMedium;
     private String profile;
 
@@ -83,15 +75,4 @@ public class StravaClub extends OldJsonObject {
     public void setProfile(String profile) {
         this.profile = profile;
     }
-
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.resourceState = (Integer) JsonHelper.convert(Converters.integerConverter, json, "resource_state");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.profileMedium = (String) JsonHelper.convert(Converters.stringConverter, json, "profile_medium");
-        this.profile = (String) JsonHelper.convert(Converters.stringConverter, json, "profile");
-    }
-
-
 }
