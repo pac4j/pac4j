@@ -17,11 +17,7 @@ package org.pac4j.oauth.profile.yahoo;
 
 import java.util.Locale;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OldJsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents a Yahoo address.
@@ -29,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooAddress extends OldJsonObject {
+public final class YahooAddress extends JsonObject {
     
     private static final long serialVersionUID = 5415315569181241541L;
     
@@ -48,48 +44,68 @@ public final class YahooAddress extends OldJsonObject {
     private String street;
     
     private String type;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (Integer) JsonHelper.convert(Converters.integerConverter, json, "id");
-        this.current = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "current");
-        this.country = (Locale) JsonHelper.convert(Converters.localeConverter, json, "country");
-        this.state = (String) JsonHelper.convert(Converters.stringConverter, json, "state");
-        this.city = (String) JsonHelper.convert(Converters.stringConverter, json, "city");
-        this.postalCode = (String) JsonHelper.convert(Converters.stringConverter, json, "postalCode");
-        this.street = (String) JsonHelper.convert(Converters.stringConverter, json, "street");
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
-    }
-    
+
     public Integer getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Boolean getCurrent() {
-        return this.current;
+        return current;
     }
-    
+
+    public void setCurrent(Boolean current) {
+        this.current = current;
+    }
+
     public Locale getCountry() {
-        return this.country;
+        return country;
     }
-    
+
+    public void setCountry(Locale country) {
+        this.country = country;
+    }
+
     public String getState() {
-        return this.state;
+        return state;
     }
-    
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public String getCity() {
-        return this.city;
+        return city;
     }
-    
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getPostalCode() {
-        return this.postalCode;
+        return postalCode;
     }
-    
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
     public String getStreet() {
-        return this.street;
+        return street;
     }
-    
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     public String getType() {
-        return this.type;
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

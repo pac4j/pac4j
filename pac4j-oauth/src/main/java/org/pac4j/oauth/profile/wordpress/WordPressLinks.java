@@ -15,11 +15,7 @@
  */
 package org.pac4j.oauth.profile.wordpress;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OldJsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents the links in WordPress.
@@ -27,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class WordPressLinks extends OldJsonObject {
+public final class WordPressLinks extends JsonObject {
     
     private static final long serialVersionUID = 650184033370922722L;
     
@@ -36,23 +32,28 @@ public final class WordPressLinks extends OldJsonObject {
     private String help;
     
     private String site;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.self = (String) JsonHelper.convert(Converters.urlConverter, json, "self");
-        this.help = (String) JsonHelper.convert(Converters.urlConverter, json, "help");
-        this.site = (String) JsonHelper.convert(Converters.urlConverter, json, "site");
-    }
-    
+
     public String getSelf() {
-        return this.self;
+        return self;
     }
-    
+
+    public void setSelf(String self) {
+        this.self = self;
+    }
+
     public String getHelp() {
-        return this.help;
+        return help;
     }
-    
+
+    public void setHelp(String help) {
+        this.help = help;
+    }
+
     public String getSite() {
-        return this.site;
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
     }
 }

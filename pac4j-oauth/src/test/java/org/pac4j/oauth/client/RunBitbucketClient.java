@@ -17,6 +17,7 @@ package org.pac4j.oauth.client;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 

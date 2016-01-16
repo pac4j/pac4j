@@ -66,7 +66,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.windowsLiveDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(json, attribute));
             }
         }

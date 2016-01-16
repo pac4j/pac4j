@@ -86,7 +86,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.get(json, "guid"));
-                for (final String attribute : OAuthAttributesDefinitions.yahooDefinition.getAllAttributes()) {
+                for (final String attribute : OAuthAttributesDefinitions.yahooDefinition.getPrimaryAttributes()) {
                     profile.addAttribute(attribute, JsonHelper.get(json, attribute));
                 }
             }

@@ -25,16 +25,18 @@ import org.pac4j.core.profile.CommonProfile;
  * @since 1.3.0
  */
 public abstract class OAuth20Profile extends CommonProfile {
-    
+
     private static final long serialVersionUID = -2313972372691233648L;
-    
+
+    private transient static final String ACCESS_TOKEN = "access_token";
+
     /**
      * Set the access token
      * 
      * @param accessToken the access token secret
      */
     public void setAccessToken(final String accessToken) {
-        addAttribute(OAuthAttributesDefinition.ACCESS_TOKEN, accessToken);
+        addAttribute(ACCESS_TOKEN, accessToken);
     }
     
     /**
@@ -43,7 +45,7 @@ public abstract class OAuth20Profile extends CommonProfile {
      * @return the access token
      */
     public String getAccessToken() {
-        return (String) getAttribute(OAuthAttributesDefinition.ACCESS_TOKEN);
+        return (String) getAttribute(ACCESS_TOKEN);
     }
 
     @Override

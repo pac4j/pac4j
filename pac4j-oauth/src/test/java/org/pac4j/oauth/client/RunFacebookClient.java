@@ -18,6 +18,7 @@ package org.pac4j.oauth.client;
 import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.*;
 import org.pac4j.oauth.profile.facebook.*;
 

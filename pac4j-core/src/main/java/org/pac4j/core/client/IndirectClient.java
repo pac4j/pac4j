@@ -139,7 +139,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * Retrieve the credentials.
      *
      * @param context the web context
-     * @return the credentials.
+     * @return the credentials
+     * @throws RequiresHttpAction whether an additional HTTP action is required
      */
     protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
 

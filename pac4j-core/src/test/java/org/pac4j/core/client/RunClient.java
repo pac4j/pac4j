@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client;
+package org.pac4j.core.client;
 
 import com.esotericsoftware.kryo.Kryo;
-import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.kryo.ColorSerializer;
 import org.pac4j.core.kryo.FormattedDateSerializer;
 import org.pac4j.core.kryo.LocaleSerializer;
@@ -26,7 +26,6 @@ import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.KryoSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,7 @@ public abstract class RunClient implements TestsConstants {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected void run() throws Exception {
+    public void run() throws Exception {
         final IndirectClient client = getClient();
         final MockWebContext context = MockWebContext.create();
         final String url = client.getRedirectAction(context).getLocation();
@@ -58,7 +57,7 @@ public abstract class RunClient implements TestsConstants {
         final String returnedUrl = scanner.nextLine();
         final Map<String, String> parameters = TestsHelper.getParametersFromUrl(returnedUrl);
         context.addRequestParameters(parameters);
-        final OAuthCredentials credentials = (OAuthCredentials) client.getCredentials(context);
+        final Credentials credentials = client.getCredentials(context);
         final UserProfile profile = client.getUserProfile(credentials, context);
         logger.debug("userProfile: {}", profile);
         if (profile != null || !canCancel()) {
