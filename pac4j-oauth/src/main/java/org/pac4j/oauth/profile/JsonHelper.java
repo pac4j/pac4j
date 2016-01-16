@@ -111,7 +111,7 @@ public final class JsonHelper {
      * @param obj the object
      * @return the JSON string
      */
-    public static String stringify(final Object obj) {
+    public static String toJSONString(final Object obj) {
         try {
             return mapper.writeValueAsString(obj);
         } catch (final JsonProcessingException e) {

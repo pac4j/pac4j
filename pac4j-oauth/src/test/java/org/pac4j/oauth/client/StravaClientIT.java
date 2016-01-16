@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.Gender;
@@ -26,7 +27,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * Strava integration test. It performs authentication on Strava and retrieves a StravaProfile.
  * @author Adrian Papusoi
  */
-public class StravaClientIT extends OAuthClientIT {
+public class StravaClientIT extends ClientIT {
     @Override
     protected Client getClient() {
         final StravaClient stravaClient = new StravaClient();

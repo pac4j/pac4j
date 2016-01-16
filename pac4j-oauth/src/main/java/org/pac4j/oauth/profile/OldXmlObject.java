@@ -13,37 +13,36 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.profile.linkedin2;
+package org.pac4j.oauth.profile;
 
-import java.io.Serializable;
+import org.pac4j.core.profile.RawDataObject;
 
 /**
- * This class represents a LinkedIn company.
+ * This class is an object which can be built from XML.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Company implements Serializable {
+public abstract class OldXmlObject extends RawDataObject {
     
-    private static final long serialVersionUID = -2516111031032736648L;
+    private static final long serialVersionUID = 7281757045791685668L;
     
-    private String name;
+    /**
+     * Build an object from XML.
+     * 
+     * @param xml xml
+     */
+    public final void buildFrom(final String xml) {
+        if (keepRawData && isRootObject()) {
+            this.data = xml;
+        }
+        buildFromXml(xml);
+    }
     
-    private String industry;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
+    /**
+     * Build an object from a XML text.
+     * 
+     * @param xml xml
+     */
+    protected abstract void buildFromXml(String xml);
 }

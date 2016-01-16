@@ -26,6 +26,6 @@ import java.io.Serializable;
 public abstract class JsonObject implements Serializable {
 
     public String toString() {
-        return JsonHelper.stringify(this);
+        return JsonHelper.toJSONString(this);
     }
 }

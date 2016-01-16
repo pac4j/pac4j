@@ -15,26 +15,30 @@
  */
 package org.pac4j.oauth.profile.converter;
 
-import org.pac4j.oauth.profile.OldXmlObject;
+import org.pac4j.core.profile.converter.AttributeConverter;
+import org.pac4j.oauth.profile.XmlList;
 
 /**
- * This class is a mock for OldXmlObject.
+ * This class converts a XML text into a list of objects.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public final class MockXmlObject extends OldXmlObject {
+@SuppressWarnings({
+    "rawtypes", "unchecked"
+})
+public final class OldXmlListConverter implements AttributeConverter<XmlList> {
     
-    private static final long serialVersionUID = 8482186401170683300L;
+    private final Class<? extends Object> clazz;
     
-    private String value;
-    
-    @Override
-    protected void buildFromXml(final String xml) {
-        this.value = xml;
+    public OldXmlListConverter(final Class<? extends Object> clazz) {
+        this.clazz = clazz;
     }
     
-    public String getValue() {
-        return this.value;
+    public XmlList convert(final Object attribute) {
+        if (attribute != null && attribute instanceof String) {
+            return new XmlList((String) attribute, this.clazz);
+        }
+        return null;
     }
 }

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public final class XmlList<T> extends XmlObject implements List<T> {
+public final class XmlList<T> extends OldXmlObject implements List<T> {
     
     private static final long serialVersionUID = -3439014616371376590L;
     
@@ -53,7 +53,7 @@ public final class XmlList<T> extends XmlObject implements List<T> {
     }
     
     /**
-     * Create a list of XmlObject from a XML text.
+     * Create a list of OldXmlObject from a XML text.
      * 
      * @param xml xml
      * @param clazz class
@@ -98,11 +98,11 @@ public final class XmlList<T> extends XmlObject implements List<T> {
     private void buildSingleNode(final String xml) {
         if (this.clazz == String.class) {
             this.list.add((T) xml);
-        } else if (XmlObject.class.isAssignableFrom(this.clazz)) {
+        } else if (OldXmlObject.class.isAssignableFrom(this.clazz)) {
             try {
                 final Constructor<T> constructor = this.clazz.getDeclaredConstructor();
                 final T object = constructor.newInstance();
-                ((XmlObject) object).buildFrom(xml);
+                ((OldXmlObject) object).buildFrom(xml);
                 this.list.add(object);
             } catch (final Exception e) {
                 logger.error("Cannot build object", e);

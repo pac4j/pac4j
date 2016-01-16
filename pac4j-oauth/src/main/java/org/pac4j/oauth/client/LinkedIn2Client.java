@@ -15,9 +15,11 @@
  */
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.XmlHelper;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
@@ -45,7 +47,7 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     protected String scope = DEFAULT_SCOPE;
     
-    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,location,email-address,headline,industry,num-connections,summary,specialties,positions,picture-url,site-standard-profile-request,public-profile-url";
+    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address";
     
     public LinkedIn2Client() {
     }
@@ -83,22 +85,27 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     @Override
     protected String getProfileUrl(final Token accessToken) {
-        return "https://api.linkedin.com/v1/people/~:(" + this.fields + ")";
+        return "https://api.linkedin.com/v1/people/~?:(" + this.fields + ")&format=json";
     }
     
     @Override
     protected LinkedIn2Profile extractUserProfile(final String body) {
         LinkedIn2Profile profile = new LinkedIn2Profile();
-        profile.setId(XmlHelper.get(body, "id"));
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        profile.setId(JsonHelper.get(json, "id"));
         for (final String attribute : OAuthAttributesDefinitions.linkedin2Definition.getPrimaryAttributes()) {
-            profile.addAttribute(attribute, XmlHelper.get(body, attribute));
+            profile.addAttribute(attribute, JsonHelper.get(json, attribute));
         }
-        String url = XmlHelper.get(XmlHelper.get(body, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST),
-                                   "url");
-        profile.addAttribute(LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST, url);
+        addUrl(profile, json, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST);
+        addUrl(profile, json, LinkedIn2AttributesDefinition.API_STANDARD_PROFILE_REQUEST);
         return profile;
     }
-    
+
+    private void addUrl(final LinkedIn2Profile profile, final JsonNode json, final String name) {
+        final String url = (String) JsonHelper.get(json, name + ".url");
+        profile.addAttribute(name, url);
+    }
+
     public String getScope() {
         return this.scope;
     }

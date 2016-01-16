@@ -24,7 +24,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.XmlList;
 
 /**
- * This class tests the {@link XmlListConverter} class.
+ * This class tests the {@link OldXmlListConverter} class.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
@@ -32,9 +32,9 @@ import org.pac4j.oauth.profile.XmlList;
 @SuppressWarnings("unchecked")
 public final class TestXmlListConverter extends TestCase implements TestsConstants {
     
-    private final XmlListConverter converterForString = new XmlListConverter(String.class);
+    private final OldXmlListConverter converterForString = new OldXmlListConverter(String.class);
     
-    private final XmlListConverter converterForMockXmlObject = new XmlListConverter(MockXmlObject.class);
+    private final OldXmlListConverter converterForMockXmlObject = new OldXmlListConverter(MockXmlObject.class);
     
     private final static String XML_LIST = "<el>" + ELEMENT + "</el><el>" + ELEMENT2 + "</el>";
     

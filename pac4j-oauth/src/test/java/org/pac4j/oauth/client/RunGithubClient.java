@@ -32,10 +32,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunGithub extends RunClient {
+public class RunGithubClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
-        new RunGithub().run();
+        new RunGithubClient().run();
     }
 
     @Override

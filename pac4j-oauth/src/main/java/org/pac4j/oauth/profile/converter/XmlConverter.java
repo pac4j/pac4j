@@ -13,25 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client;
+package org.pac4j.oauth.profile.converter;
 
-import org.junit.Test;
-import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
+import org.pac4j.core.profile.converter.AttributeConverter;
+import org.pac4j.oauth.profile.XmlHelper;
 
 /**
- * Tests {@link FacebookClient}.
- *
+ * This class converts a XML text into an object.
+ * 
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class FacebookClientTests implements TestsConstants {
+public final class XmlConverter<T extends Object> implements AttributeConverter<T> {
 
-    @Test
-    public void testMissingFields() {
-        final FacebookClient client = new FacebookClient(KEY, SECRET);
-        client.setCallbackUrl(CALLBACK_URL);
-        client.setFields(null);
-        TestsHelper.initShouldFail(client, "fields cannot be blank");
+    private final Class<T> clazz;
+
+    public XmlConverter(final Class<T> clazz) {
+        this.clazz = clazz;
+    }
+
+    public T convert(final Object attribute) {
+        if (attribute != null && attribute instanceof String) {
+            return XmlHelper.getAsType((String) attribute, clazz);
+        }
+        return null;
     }
 }

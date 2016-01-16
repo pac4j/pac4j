@@ -23,48 +23,7 @@ import java.util.Locale;
 /**
  * <p>This class is the user profile for ORCiD with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oauth.client.OrcidClient}.</p>
- * <table summary="" border="1" cellspacing="2px">
- * <tr>
- * <th>Method :</th>
- * <th>From the XML profile response :</th>
- * </tr>
- * <tr>
- * <th colspan="2">The attributes of the {@link org.pac4j.core.profile.CommonProfile}</th>
- * </tr>
- * <tr>
- * <td>String getFirstName()</td>
- * <td>the <i>first-names</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getFamilyName()</td>
- * <td>the <i>family-name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Locale getLocale()</td>
- * <td>the <i>locale</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileUrl()</td>
- * <td>the <i>public-profile-url</i> attribute</td>
- * </tr>
- * <tr>
- * <th colspan="2">More specific attributes</th>
- * </tr>
- * <tr>
- * <td>String getOrcid()</td>
- * <td>the <i>path</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getCreationMethod()</td>
- * <td>the <i>creation-method</i> attribute</td>
- * </tr>
- * <tr>
- * <td>boolean getClaimed()</td>
- * <td>the <i>claimed</i> attribute</td>
- * </tr>
- * </table>
  *
- * @see org.pac4j.oauth.client.OrcidClient
  * @author Jens Tinglev
  * @since 1.6.0
  */
