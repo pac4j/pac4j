@@ -18,7 +18,7 @@ package org.pac4j.oauth.profile.converter;
 import java.lang.reflect.Constructor;
 
 import org.pac4j.core.profile.converter.AttributeConverter;
-import org.pac4j.oauth.profile.XmlObject;
+import org.pac4j.oauth.profile.OldXmlObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,26 +28,26 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public final class XmlObjectConverter implements AttributeConverter<XmlObject> {
+public final class XmlObjectConverter implements AttributeConverter<OldXmlObject> {
     
     private static final Logger logger = LoggerFactory.getLogger(XmlObjectConverter.class);
     
-    private final Class<? extends XmlObject> clazz;
+    private final Class<? extends OldXmlObject> clazz;
     
-    public XmlObjectConverter(final Class<? extends XmlObject> clazz) {
+    public XmlObjectConverter(final Class<? extends OldXmlObject> clazz) {
         this.clazz = clazz;
     }
     
     @Override
-    public XmlObject convert(final Object attribute) {
+    public OldXmlObject convert(final Object attribute) {
         if (attribute != null && attribute instanceof String) {
             try {
-                final Constructor<? extends XmlObject> constructor = this.clazz.getDeclaredConstructor();
-                final XmlObject xmlObject = constructor.newInstance();
+                final Constructor<? extends OldXmlObject> constructor = this.clazz.getDeclaredConstructor();
+                final OldXmlObject xmlObject = constructor.newInstance();
                 xmlObject.buildFrom((String) attribute);
                 return xmlObject;
             } catch (final Exception e) {
-                logger.error("Cannot build XmlObject : {}", e, this.clazz);
+                logger.error("Cannot build OldXmlObject : {}", e, this.clazz);
             }
         }
         return null;

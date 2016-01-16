@@ -15,7 +15,14 @@
  */
 package org.pac4j.oauth.profile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.pac4j.core.profile.converter.AttributeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Some XML helper mirroring the {@link JsonHelper}.
@@ -24,7 +31,31 @@ import org.pac4j.core.profile.converter.AttributeConverter;
  * @since 1.4.1
  */
 public final class XmlHelper {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(XmlHelper.class);
+
+    private static XmlMapper mapper;
+
+    static {
+        mapper = new XmlMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+    /**
+     * Return an Object from a XML text.
+     *
+     * @param xml a XML text
+     * @return the parsed object
+     */
+    public static <T extends Object> T getAsType(final String xml, final Class<T> clazz) {
+        try {
+            return mapper.readValue(xml, clazz);
+        } catch (final IOException e) {
+            logger.error("Cannot get as type", e);
+        }
+        return null;
+    }
+
     /**
      * Get a sub-text between tags from a text.
      * 
@@ -39,7 +70,22 @@ public final class XmlHelper {
         }
         return null;
     }
-    
+
+    /**
+     * Returns the XML string for the object.
+     *
+     * @param obj the object
+     * @return the XML string
+     */
+    public static String toXMLString(final Object obj) {
+        try {
+            return mapper.writeValueAsString(obj);
+        } catch (final JsonProcessingException e) {
+            logger.error("Cannot to XML string", e);
+        }
+        return null;
+    }
+
     /**
      * Get a XML match between tags from a text, starting at a certain position.
      * 

@@ -33,10 +33,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunDropbox extends RunClient {
+public class RunDropboxClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
-        new RunDropbox().run();
+        new RunDropboxClient().run();
     }
 
     @Override

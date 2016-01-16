@@ -96,7 +96,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     @Override
     protected OrcidProfile extractUserProfile(String body) {
         OrcidProfile profile = new OrcidProfile();
-        for(final String attribute : OAuthAttributesDefinitions.orcidDefinition.getAllAttributes()) {
+        for(final String attribute : OAuthAttributesDefinitions.orcidDefinition.getPrimaryAttributes()) {
             profile.addAttribute(attribute, XmlHelper.get(body, attribute));
         }
         return profile;

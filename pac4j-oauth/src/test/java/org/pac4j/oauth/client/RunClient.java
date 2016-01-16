@@ -50,6 +50,9 @@ public abstract class RunClient implements TestsConstants {
         final String url = client.getRedirectAction(context).getLocation();
         logger.warn("Redirect to: \n{}", url);
         logger.warn("Use credentials: {} / {}", getLogin(), getPassword());
+        if (canCancel()) {
+            logger.warn("You can CANCEL the authentication.");
+        }
         logger.warn("Returned url:");
         Scanner scanner = new Scanner(System.in);
         final String returnedUrl = scanner.nextLine();

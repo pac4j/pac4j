@@ -30,10 +30,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunFacebook extends RunClient {
+public class RunFacebookClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
-        new RunFacebook().run();
+        new RunFacebookClient().run();
     }
 
     @Override

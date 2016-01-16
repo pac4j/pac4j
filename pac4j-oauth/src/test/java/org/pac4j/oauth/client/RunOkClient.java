@@ -16,35 +16,25 @@
 package org.pac4j.oauth.client;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.Client;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.profile.ok.OkProfile;
 
 import java.util.Locale;
 
+import static org.junit.Assert.*;
+
 /**
- * This class tests the {@link OkClient} class by simulating a complete authentication.
+ * Run manually a test for the {@link OkClient}.
  *
- * @author imayka (imayka[at]ymail[dot]com)
- * @since 1.8
+ * @author Jerome Leleu
+ * @since 1.9.0
  */
-public class OkClientIT extends OAuthClientIT {
-    /////////////////////////////////////////////
-    /**
-     * Real profile login.
-     */
-    private static final String OK_LOGIN = "";
-    /**
-     * Real profile password.
-     */
-    private static final String OK_PASSWORD = "";
-    /////////////////////////////////////////////
+public class RunOkClient extends RunClient {
+
     /**
      * Real profile id.
      */
@@ -69,49 +59,29 @@ public class OkClientIT extends OAuthClientIT {
      * Real profile picture url.
      */
     private static final String TEST_PROFILE_PICTURE_URL = "";
-    /**
-     * Application id.
-     */
-    /////////////////////////////////////////////
-    private static final String TEST_APP_ID = "1139019264";
-    /**
-     * Application public key.
-     */
-    private static final String TEST_APP_PUBLIC_KEY = "CBAPAFOEEBABABABA";
-    /**
-     * Application secret key.
-     */
-    private static final String TEST_APP_SECRET_KEY = "479452FD7CA726DF558B4303";
-    /////////////////////////////////////////////
 
-    public void testMissingFields() {
-        final OkClient client = (OkClient) getClient();
-        client.setPublicKey(null);
-        TestsHelper.initShouldFail(client, "publicKey cannot be blank");
+    public static void main(String[] args) throws Exception {
+        new RunOkClient().run();
     }
 
     @Override
-    protected Client getClient() {
+    protected String getLogin() {
+        return "";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
         final OkClient okClient = new OkClient();
-        okClient.setKey(TEST_APP_ID);
-        okClient.setPublicKey(TEST_APP_PUBLIC_KEY);
-        okClient.setSecret(TEST_APP_SECRET_KEY);
+        okClient.setKey("1139019264");
+        okClient.setPublicKey("CBAPAFOEEBABABABA");
+        okClient.setSecret("479452FD7CA726DF558B4303");
         okClient.setCallbackUrl(PAC4J_URL);
         return okClient;
-    }
-
-    @Override
-    protected String getCallbackUrl(final WebClient webClient, final HtmlPage authorizationPage) throws Exception {
-        final HtmlForm form = authorizationPage.getForms().get(0);
-        final HtmlTextInput email = form.getInputByName("fr.email");
-        email.setValueAttribute(OK_LOGIN);
-        final HtmlPasswordInput password = form.getInputByName("fr.password");
-        password.setValueAttribute(OK_PASSWORD);
-        HtmlSubmitInput submit = (HtmlSubmitInput) form.getByXPath("//input[@type='submit']").get(0);
-        final HtmlPage callbackPage = submit.click();
-        final String callbackUrl = callbackPage.getUrl().toString();
-        logger.debug("callbackUrl : {}", callbackUrl);
-        return callbackUrl;
     }
 
     @Override
@@ -120,7 +90,7 @@ public class OkClientIT extends OAuthClientIT {
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(UserProfile userProfile) {
         final OkProfile profile = (OkProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals(TEST_PROFILE_ID, profile.getId());
@@ -140,6 +110,5 @@ public class OkClientIT extends OAuthClientIT {
                 TEST_PROFILE_PICTURE_URL,
                 OkProfile.BASE_PROFILE_URL + TEST_PROFILE_ID,
                 TEST_LOCATION);
-
     }
 }

@@ -15,17 +15,21 @@
  */
 package org.pac4j.oauth.profile.vk;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.GenderIntegerConverter;
+import org.pac4j.oauth.profile.vk.converter.VkBooleanConverter;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the Vk profile.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
- * 
  */
-public class VkAttributesDefinition extends OAuthAttributesDefinition {
+public class VkAttributesDefinition extends AttributesDefinition {
 
 	public static final String FIRST_NAME = "first_name";
 	public static final String LAST_NAME = "last_name";
@@ -55,31 +59,14 @@ public class VkAttributesDefinition extends OAuthAttributesDefinition {
 	public static final String RELATION = "relation";
 
 	public VkAttributesDefinition() {
-		primary(FIRST_NAME, Converters.stringConverter);
-		primary(LAST_NAME, Converters.stringConverter);
-		primary(SEX, VkConverters.genderConverter);
-		primary(BIRTH_DATE, VkConverters.dateConverter);
-		primary(PHOTO_50, Converters.stringConverter);
-		primary(PHOTO_100, Converters.stringConverter);
-		primary(PHOTO_200_ORIG, Converters.stringConverter);
-		primary(PHOTO_200, Converters.stringConverter);
-		primary(PHOTO_400_ORIG, Converters.stringConverter);
-		primary(PHOTO_MAX, Converters.stringConverter);
-		primary(PHOTO_MAX_ORIG, Converters.stringConverter);
-		primary(ONLINE, VkConverters.booleanConverter);
-		primary(ONLINE_MOBILE, VkConverters.booleanConverter);
-		primary(DOMAIN, Converters.stringConverter);
-		primary(HAS_MOBILE, VkConverters.booleanConverter);
-		primary(MOBILE_PHONE, Converters.stringConverter);
-		primary(HOME_PHONE, Converters.stringConverter);
-		primary(SKYPE, Converters.stringConverter);
-		primary(SITE, Converters.stringConverter);
-		primary(CAN_POST, VkConverters.booleanConverter);
-		primary(CAN_SEE_ALL_POST, VkConverters.booleanConverter);
-		primary(CAN_SEE_AUDIO, VkConverters.booleanConverter);
-		primary(CAN_WRITE_PRIVATE_MESSAGE, VkConverters.booleanConverter);
-		primary(STATUS, Converters.stringConverter);
+		Arrays.stream(new String[] {FIRST_NAME, LAST_NAME, PHOTO_50, PHOTO_100, PHOTO_200_ORIG, PHOTO_200, PHOTO_400_ORIG,
+				PHOTO_MAX, PHOTO_MAX_ORIG, DOMAIN, MOBILE_PHONE, HOME_PHONE, SKYPE, SITE, STATUS}).forEach(a -> primary(a));
 		primary(COMMON_COUNT, Converters.integerConverter);
 		primary(RELATION, Converters.integerConverter);
+		final VkBooleanConverter booleanConverter = new VkBooleanConverter();
+		Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO, CAN_WRITE_PRIVATE_MESSAGE})
+				.forEach(a -> primary(a, booleanConverter));
+		primary(BIRTH_DATE, new FormattedDateConverter("dd.MM.yyyy"));
+		primary(SEX, new GenderIntegerConverter(2, 1));
 	}
 }

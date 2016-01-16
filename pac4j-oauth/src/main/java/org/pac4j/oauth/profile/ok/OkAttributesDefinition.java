@@ -15,8 +15,9 @@
  */
 package org.pac4j.oauth.profile.ok;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.core.profile.AttributesDefinition;
+
+import java.util.Arrays;
 
 /**
  * Represents attributes definitions of user profile on Ok.ru (Odnoklassniki.ru)
@@ -24,7 +25,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author imayka (imayka[at]ymail[dot]com)
  * @since 1.8
  */
-public class OkAttributesDefinition extends OAuthAttributesDefinition {
+public class OkAttributesDefinition extends AttributesDefinition {
 
     public static final String UID = "uid";
     public static final String BIRTHDAY = "birthday";
@@ -48,25 +49,8 @@ public class OkAttributesDefinition extends OAuthAttributesDefinition {
 
 
     public OkAttributesDefinition() {
-        primary(UID, Converters.stringConverter);
-        primary(BIRTHDAY, Converters.stringConverter);
-        primary(AGE, Converters.stringConverter);
-        primary(NAME, Converters.stringConverter);
-        primary(LOCALE, Converters.stringConverter);
-        primary(GENDER, Converters.stringConverter);
-        primary(LOCATION_CITY, Converters.stringConverter);
-        primary(LOCATION_COUNTRY, Converters.stringConverter);
-        primary(LOCATION_COUNTRY_CODE, Converters.stringConverter);
-        primary(LOCATION_COUNTRY_NAME, Converters.stringConverter);
-        primary(ONLINE, Converters.stringConverter);
-        primary(FIRST_NAME, Converters.stringConverter);
-        primary(LAST_NAME, Converters.stringConverter);
-        primary(HAS_EMAIL, Converters.stringConverter);
-        primary(CURRENT_STATUS, Converters.stringConverter);
-        primary(CURRENT_STATUS_ID, Converters.stringConverter);
-        primary(CURRENT_STATUS_DATE, Converters.stringConverter);
-        primary(PIC_1, Converters.stringConverter);
-        primary(PIC_2, Converters.stringConverter);
-
+        Arrays.stream(new String[] {UID, BIRTHDAY, AGE, NAME, LOCALE, GENDER, LOCATION_CITY, LOCATION_COUNTRY, LOCATION_COUNTRY_CODE,
+                LOCATION_COUNTRY_NAME, ONLINE, FIRST_NAME, LAST_NAME, HAS_EMAIL, CURRENT_STATUS, CURRENT_STATUS_ID, CURRENT_STATUS_DATE,
+                PIC_1, PIC_2}).forEach(a -> primary(a));
     }
 }

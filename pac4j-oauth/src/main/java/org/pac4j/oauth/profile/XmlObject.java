@@ -15,34 +15,17 @@
  */
 package org.pac4j.oauth.profile;
 
-import org.pac4j.core.profile.RawDataObject;
+import java.io.Serializable;
 
 /**
- * This class is an object which can be built from XML.
+ * Return an Object as a XML string.
  * 
  * @author Jerome Leleu
- * @since 1.4.1
+ * @since 1.9.0
  */
-public abstract class XmlObject extends RawDataObject {
-    
-    private static final long serialVersionUID = 7281757045791685668L;
-    
-    /**
-     * Build an object from XML.
-     * 
-     * @param xml xml
-     */
-    public final void buildFrom(final String xml) {
-        if (keepRawData && isRootObject()) {
-            this.data = xml;
-        }
-        buildFromXml(xml);
+public abstract class XmlObject implements Serializable {
+
+    public String toString() {
+        return XmlHelper.toXMLString(this);
     }
-    
-    /**
-     * Build an object from a XML text.
-     * 
-     * @param xml xml
-     */
-    protected abstract void buildFromXml(String xml);
 }

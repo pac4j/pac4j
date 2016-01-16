@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class converts a JSON node, a string or a list of strings into a list of objects.
+ * This class converts a JSON node, a JSON string or a list of JSON strings into a list of objects.
  * 
  * @author Jerome Leleu
  * @since 1.9.0

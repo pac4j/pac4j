@@ -28,10 +28,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunBitbucket extends RunClient {
+public class RunBitbucketClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
-        new RunBitbucket().run();
+        new RunBitbucketClient().run();
     }
 
     @Override

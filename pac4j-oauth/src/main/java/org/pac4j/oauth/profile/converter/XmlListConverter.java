@@ -16,29 +16,52 @@
 package org.pac4j.oauth.profile.converter;
 
 import org.pac4j.core.profile.converter.AttributeConverter;
-import org.pac4j.oauth.profile.XmlList;
+import org.pac4j.oauth.profile.XmlHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class converts a XML text into a list of objects.
+ * This class converts a XML string or a list of XML strings into a list of objects.
  * 
  * @author Jerome Leleu
- * @since 1.4.1
+ * @since 1.9.0
  */
-@SuppressWarnings({
-    "rawtypes", "unchecked"
-})
-public final class XmlListConverter implements AttributeConverter<XmlList> {
-    
-    private final Class<? extends Object> clazz;
-    
-    public XmlListConverter(final Class<? extends Object> clazz) {
-        this.clazz = clazz;
+public final class XmlListConverter implements AttributeConverter<Object> {
+
+    private final Class arrayClazz;
+
+    private final Class elementClazz;
+
+    public XmlListConverter(final Class elementClazz, final Class  arrayClazz) {
+        this.elementClazz = elementClazz;
+        this.arrayClazz = arrayClazz;
     }
-    
-    public XmlList convert(final Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            return new XmlList((String) attribute, this.clazz);
+
+    public Object convert(final Object attribute) {
+        if (attribute != null) {
+            if (attribute instanceof String) {
+                return parseString((String) attribute, arrayClazz);
+            } else if (attribute instanceof List) {
+                final List list = (List) attribute;
+                final List newList = new ArrayList<>();
+                for (final Object o : list) {
+                    if (o instanceof String) {
+                        final String s = (String) o;
+                        if (elementClazz.isAssignableFrom(String.class)) {
+                            newList.add(s);
+                        } else {
+                            newList.add(parseString(s, elementClazz));
+                        }
+                    }
+                }
+                return newList;
+            }
         }
         return null;
+    }
+
+    private Object parseString(final String s, final Class type) {
+        return XmlHelper.getAsType(s, type);
     }
 }

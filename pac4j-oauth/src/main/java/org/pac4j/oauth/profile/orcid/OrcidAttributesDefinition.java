@@ -15,8 +15,8 @@
  */
 package org.pac4j.oauth.profile.orcid;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
 
 /**
  * This class defines the attributes of the {@link OrcidProfile}.
@@ -24,7 +24,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jens Tinglev
  * @since 1.6.0
  */
-public class OrcidAttributesDefinition extends OAuthAttributesDefinition {
+public class OrcidAttributesDefinition extends AttributesDefinition {
 
     public static final String ORCID = "path";
     public static final String FIRST_NAME = "given-names";
@@ -34,13 +34,12 @@ public class OrcidAttributesDefinition extends OAuthAttributesDefinition {
     public static final String CLAIMED = "claimed";
     public static final String LOCALE = "locale";
 
-
     public OrcidAttributesDefinition() {
-        primary(ORCID, Converters.stringConverter);
-        primary(FIRST_NAME, Converters.stringConverter);
-        primary(FAMILY_NAME, Converters.stringConverter);
-        primary(URI, Converters.stringConverter);
-        primary(CREATION_METHOD, Converters.stringConverter);
+        primary(ORCID);
+        primary(FIRST_NAME);
+        primary(FAMILY_NAME);
+        primary(URI);
+        primary(CREATION_METHOD);
         primary(CLAIMED, Converters.booleanConverter);
         primary(LOCALE, Converters.localeConverter);
     }

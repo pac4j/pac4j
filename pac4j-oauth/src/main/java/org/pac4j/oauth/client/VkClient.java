@@ -82,7 +82,7 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 			ArrayNode array = (ArrayNode) json.get("response");
 			JsonNode userNode = array.get(0);
 			profile.setId(JsonHelper.get(userNode, "uid"));
-			for (final String attribute : OAuthAttributesDefinitions.vkDefinition.getAllAttributes()) {
+			for (final String attribute : OAuthAttributesDefinitions.vkDefinition.getPrimaryAttributes()) {
 				profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
 			}
 		}

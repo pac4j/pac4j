@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.Client;
+import org.pac4j.core.client.ClientIT;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -47,7 +48,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class YahooClientIT extends OAuthClientIT {
+public class YahooClientIT extends ClientIT {
     
     @SuppressWarnings("rawtypes")
     @Override

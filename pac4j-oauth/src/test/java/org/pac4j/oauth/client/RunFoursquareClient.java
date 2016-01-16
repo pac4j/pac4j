@@ -32,10 +32,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunFoursquare extends RunClient {
+public class RunFoursquareClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
-        new RunFoursquare().run();
+        new RunFoursquareClient().run();
     }
 
     @Override

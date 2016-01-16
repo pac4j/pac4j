@@ -21,7 +21,7 @@ import java.util.Map;
 import org.pac4j.core.exception.CredentialsException;
 
 /**
- * This class represents an exception occuring during OAuth credentials retrieval.
+ * This class represents an exception occurring during OAuth credentials retrieval.
  * 
  * @author Jerome Leleu
  * @since 1.3.0

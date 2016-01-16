@@ -20,6 +20,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 
@@ -79,5 +80,25 @@ public final class BaseOAuthClientTests implements TestsConstants {
         } catch (final TechnicalException e) {
             assertEquals("Failed to retrieve OAuth credentials, error parameters found", e.getMessage());
         }
+    }
+
+    private BaseOAuthClient getClient() {
+        final FacebookClient client = new FacebookClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        return client;
+    }
+
+    @Test
+    public void testMissingKey() {
+        final BaseOAuthClient client = (BaseOAuthClient) getClient();
+        client.setKey(null);
+        TestsHelper.initShouldFail(client, "key cannot be blank");
+    }
+
+    @Test
+    public void testMissingSecret() {
+        final BaseOAuthClient client = (BaseOAuthClient) getClient();
+        client.setSecret(null);
+        TestsHelper.initShouldFail(client, "secret cannot be blank");
     }
 }

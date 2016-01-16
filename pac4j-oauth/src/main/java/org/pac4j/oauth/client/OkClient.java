@@ -77,7 +77,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
             profile.setId(JsonHelper.get(userNode, OkAttributesDefinition.UID));
-            for (final String attribute : OAuthAttributesDefinitions.okDefinition.getAllAttributes()) {
+            for (final String attribute : OAuthAttributesDefinitions.okDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
             }
         }
