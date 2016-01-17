@@ -39,9 +39,9 @@ public class PayPalAttributesDefinition extends AttributesDefinition {
     public static final String GIVEN_NAME = "given_name";
     
     public PayPalAttributesDefinition() {
-        Arrays.stream(new String[] {FAMILY_NAME, ZONEINFO, NAME, EMAIL, GIVEN_NAME}).forEach(a -> primary(a, Converters.stringConverter));
+        Arrays.stream(new String[] {FAMILY_NAME, ZONEINFO, NAME, EMAIL, GIVEN_NAME}).forEach(a -> primary(a, Converters.STRING));
         primary(ADDRESS, new JsonConverter<>(PayPalAddress.class));
-        primary(LANGUAGE, Converters.localeConverter);
-        primary(LOCALE, Converters.localeConverter);
+        primary(LANGUAGE, Converters.LOCALE);
+        primary(LOCALE, Converters.LOCALE);
     }
 }

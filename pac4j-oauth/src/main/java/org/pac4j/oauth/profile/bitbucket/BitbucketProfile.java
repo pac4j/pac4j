@@ -17,7 +17,6 @@ package org.pac4j.oauth.profile.bitbucket;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth10Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Bitbucket with appropriate getters.</p>
@@ -29,10 +28,12 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 public class BitbucketProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = -8943779913358140436L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new BitbucketAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.bitbucketDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

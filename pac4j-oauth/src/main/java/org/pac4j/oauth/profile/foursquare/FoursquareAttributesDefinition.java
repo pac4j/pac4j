@@ -42,8 +42,8 @@ public class FoursquareAttributesDefinition extends AttributesDefinition {
     public FoursquareAttributesDefinition() {
         Arrays.stream(new String[] {
                 FIRST_NAME, LAST_NAME, GENDER, HOME_CITY, BIO, EMAIL, PHOTO
-        }).forEach(a -> primary(a));
-        primary(GENDER, Converters.genderConverter);
+        }).forEach(a -> primary(a, Converters.STRING));
+        primary(GENDER, Converters.GENDER);
         primary(FIRENDS, new JsonConverter<>(FoursquareUserFriends.class));
         primary(CONTACT, new JsonConverter<>(FoursquareUserContact.class));
         primary(PHOTO, new JsonConverter<>(FoursquareUserPhoto.class));

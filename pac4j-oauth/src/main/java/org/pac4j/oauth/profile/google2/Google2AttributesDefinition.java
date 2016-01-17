@@ -39,13 +39,13 @@ public class Google2AttributesDefinition extends AttributesDefinition {
     public static final String EMAILS = "emails";
 
     public Google2AttributesDefinition() {
-        primary(DISPLAY_NAME);
-        primary(GIVEN_NAME);
-        primary(FAMILY_NAME);
-        primary(URL);
-        primary(PICTURE);
-        primary(GENDER, Converters.genderConverter);
-        primary(LANGUAGE, Converters.localeConverter);
+        primary(DISPLAY_NAME, Converters.STRING);
+        primary(GIVEN_NAME, Converters.STRING);
+        primary(FAMILY_NAME, Converters.STRING);
+        primary(URL, Converters.STRING);
+        primary(PICTURE, Converters.STRING);
+        primary(GENDER, Converters.GENDER);
+        primary(LANGUAGE, Converters.LOCALE);
         primary(BIRTHDAY, new FormattedDateConverter("yyyy-MM-dd"));
         primary(EMAILS, new JsonListConverter(Google2Email.class, Google2Email[].class));
     }

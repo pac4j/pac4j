@@ -42,8 +42,16 @@ public class AttributesDefinitionTests implements TestsConstants {
     }
 
     @Test
-    public void testConverterNoEnforcement() {
+    public void testConverterPrimary() {
         definition.primary(NAME, v -> { return FAKE_VALUE; });
+        assertEquals(NAME, definition.getPrimaryAttributes().get(0));
+        assertEquals(FAKE_VALUE, definition.convert(NAME, VALUE));
+    }
+
+    @Test
+    public void testConverterSecondary() {
+        definition.secondary(NAME, v -> { return FAKE_VALUE; });
+        assertEquals(NAME, definition.getSecondaryAttributes().get(0));
         assertEquals(FAKE_VALUE, definition.convert(NAME, VALUE));
     }
 }

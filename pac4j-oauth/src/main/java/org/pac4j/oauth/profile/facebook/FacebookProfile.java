@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -33,10 +32,12 @@ import org.pac4j.oauth.profile.OAuth20Profile;
 public class FacebookProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 6339376303764855109L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new FacebookAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.facebookDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

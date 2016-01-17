@@ -75,14 +75,14 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
         final CasOAuthWrapperProfile userProfile = new CasOAuthWrapperProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            userProfile.setId(JsonHelper.get(json, "id"));
+            userProfile.setId(JsonHelper.getElement(json, "id"));
             json = json.get("attributes");
             if (json != null) {
                 final Iterator<JsonNode> nodes = json.iterator();
                 while (nodes.hasNext()) {
                     json = nodes.next();
                     final String attribute = json.fieldNames().next();
-                    userProfile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                    userProfile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }

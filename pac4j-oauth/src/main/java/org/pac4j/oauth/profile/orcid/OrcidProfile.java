@@ -17,7 +17,7 @@ package org.pac4j.oauth.profile.orcid;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
+
 import java.util.Locale;
 
 /**
@@ -29,11 +29,13 @@ import java.util.Locale;
  */
 
 public class OrcidProfile extends OAuth20Profile {
-    private static final long serialVersionUID = 7626472295622786149L;	
+    private static final long serialVersionUID = 7626472295622786149L;
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new OrcidAttributesDefinition();
 
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.orcidDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
 
     public String getOrcid() {

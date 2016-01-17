@@ -36,12 +36,12 @@ public class WordPressAttributesDefinition extends AttributesDefinition {
     public static final String LINKS = "links";
     
     public WordPressAttributesDefinition() {
-        primary(DISPLAY_NAME, Converters.stringConverter);
-        primary(USERNAME, Converters.stringConverter);
-        primary(EMAIL, Converters.stringConverter);
-        primary(PRIMARY_BLOG, Converters.integerConverter);
-        primary(AVATAR_URL, Converters.urlConverter);
-        primary(PROFILE_URL, Converters.urlConverter);
+        primary(DISPLAY_NAME, Converters.STRING);
+        primary(USERNAME, Converters.STRING);
+        primary(EMAIL, Converters.STRING);
+        primary(PRIMARY_BLOG, Converters.INTEGER);
+        primary(AVATAR_URL, Converters.URL);
+        primary(PROFILE_URL, Converters.URL);
         secondary(LINKS, new JsonConverter<>(WordPressLinks.class));
     }
 }

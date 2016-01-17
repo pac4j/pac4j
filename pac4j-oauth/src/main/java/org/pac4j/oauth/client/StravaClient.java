@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 import org.scribe.builder.api.StravaApi;
@@ -90,9 +89,9 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         final StravaProfile profile = new StravaProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, StravaAttributesDefinition.ID));
-            for (final String attribute : OAuthAttributesDefinitions.stravaDefinition.getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, StravaAttributesDefinition.ID));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

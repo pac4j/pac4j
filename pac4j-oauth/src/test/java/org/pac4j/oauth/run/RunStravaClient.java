@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client;
+package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.oauth.profile.JsonList;
+import org.pac4j.oauth.client.StravaClient;
 import org.pac4j.oauth.profile.strava.StravaClub;
 import org.pac4j.oauth.profile.strava.StravaGear;
 import org.pac4j.oauth.profile.strava.StravaProfile;
@@ -65,7 +65,6 @@ public class RunStravaClient extends RunClient {
         kryo.register(StravaProfile.class);
         kryo.register(StravaGear.class);
         kryo.register(StravaClub.class);
-        kryo.register(JsonList.class);
     }
 
     @Override

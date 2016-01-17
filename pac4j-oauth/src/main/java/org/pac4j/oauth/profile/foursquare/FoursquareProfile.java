@@ -17,7 +17,6 @@ package org.pac4j.oauth.profile.foursquare;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Foursquare with appropriate getters.</p>
@@ -30,9 +29,11 @@ public class FoursquareProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 8919122885219420820L;
 
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new FoursquareAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.foursquareDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
 
     public String getBio() {

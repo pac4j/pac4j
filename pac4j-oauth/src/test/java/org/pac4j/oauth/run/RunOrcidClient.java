@@ -13,61 +13,52 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client;
+package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
-
-import static org.junit.Assert.*;
+import org.pac4j.oauth.client.OrcidClient;
+import org.pac4j.oauth.profile.orcid.OrcidProfile;
 
 /**
- * Run manually a test for the {@link BitbucketClient}.
+ * Run manually a test for the {@link OrcidClient}. Doesn't work for a public API, requires a member API.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunBitbucketClient extends RunClient {
+public class RunOrcidClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
-        new RunBitbucketClient().run();
+        new RunOrcidClient().run();
     }
 
     @Override
     protected String getLogin() {
-        return "testscribeup";
+        return "testpac4j@gmail.com";
     }
 
     @Override
     protected String getPassword() {
-        return "testpwdscribeup78";
+        return "testpwdpac4j";
     }
 
     @Override
     protected IndirectClient getClient() {
-        BitbucketClient client = new BitbucketClient();
-        client.setKey("bjEt8BMpLwFDqZUvp6");
-        client.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
-        client.setCallbackUrl(PAC4J_BASE_URL);
+        final OrcidClient client = new OrcidClient();
+        client.setKey("APP-IVZK2KU3UNHH2AH0");
+        client.setSecret("852f8210-ff83-45ff-9a04-a52a39b41abd");
+        client.setCallbackUrl(PAC4J_URL);
         return client;
     }
 
     @Override
-    protected void registerForKryo(Kryo kryo) {
-        kryo.register(BitbucketProfile.class);
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(OrcidProfile.class);
     }
 
     @Override
     protected void verifyProfile(UserProfile userProfile) {
-        BitbucketProfile profile = (BitbucketProfile) userProfile;
-        assertEquals("testscribeup", profile.getUsername());
-        assertEquals("Test", profile.getFirstName());
-        assertEquals("Scribeup", profile.getFamilyName());
-        assertEquals("Test Scribeup", profile.getDisplayName());
-        assertFalse(profile.isTeam());
-        assertTrue(profile.getPictureUrl().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
-        assertEquals("/1.0/users/testscribeup", profile.getProfileUrl());
     }
 }

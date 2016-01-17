@@ -13,30 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.profile.converter;
+package org.pac4j.oauth.profile.github;
 
-import org.pac4j.oauth.profile.OldJsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * This class is a mock for OldJsonObject.
- * 
- * @author Jerome Leleu
- * @since 1.1.0
+ * General test cases for GitHubProfile.
+ *
+ * @author Jacob Severson
+ * @since  1.8.0
  */
-public final class MockJsonObject extends OldJsonObject {
-    
-    private static final long serialVersionUID = -5424325226224232822L;
-    
-    private String value;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.value = json.textValue();
-    }
-    
-    public String getValue() {
-        return this.value;
+public class GitHubProfileTests {
+
+    @Test
+    public void testClearGitHubProfile() {
+        GitHubProfile profile = new GitHubProfile();
+        profile.setAccessToken("testToken");
+        profile.clear();
+        Assert.assertEquals("", profile.getAccessToken());
     }
 }

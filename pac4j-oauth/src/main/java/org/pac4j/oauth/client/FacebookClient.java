@@ -26,7 +26,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.scribe.builder.api.ExtendedFacebookApi;
@@ -166,9 +165,9 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
         final FacebookProfile profile = new FacebookProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.facebookDefinition.getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
             extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
             extractData(profile, json, FacebookAttributesDefinition.MOVIES);
@@ -185,9 +184,9 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
     
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
-        final JsonNode data = (JsonNode) JsonHelper.get(json, name);
+        final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
-            profile.addAttribute(name, JsonHelper.get(data, "data"));
+            profile.addAttribute(name, JsonHelper.getElement(data, "data"));
         }
     }
     

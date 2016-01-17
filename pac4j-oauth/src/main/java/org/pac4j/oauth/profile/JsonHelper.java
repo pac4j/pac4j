@@ -80,7 +80,7 @@ public final class JsonHelper {
      * @param name node name
      * @return the field
      */
-    public static Object get(final JsonNode json, final String name) {
+    public static Object getElement(final JsonNode json, final String name) {
         if (json != null && name != null) {
             JsonNode node = json;
             for (String nodeName : name.split("\\.")) {

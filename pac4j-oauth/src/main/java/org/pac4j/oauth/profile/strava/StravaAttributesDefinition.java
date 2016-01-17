@@ -17,7 +17,6 @@ package org.pac4j.oauth.profile.strava;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
 import org.pac4j.core.profile.converter.GenderConverter;
 import org.pac4j.oauth.profile.converter.JsonListConverter;
 
@@ -60,17 +59,16 @@ public class StravaAttributesDefinition extends AttributesDefinition {
 
     public StravaAttributesDefinition() {
         Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, PROFILE, CITY, STATE, COUNTRY,
-                DATE_PREFERENCE, MEASUREMENT_PREFERENCE, EMAIL }).forEach(a -> primary(a, Converters.stringConverter));
-        primary(ID, Converters.longConverter);
-        primary(RESOURCE_STATE, Converters.integerConverter);
-        primary(BADGE_TYPE_ID, Converters.integerConverter);
-        primary(FOLLOWER_COUNT, Converters.integerConverter);
-        primary(FRIEND_COUNT, Converters.integerConverter);
-        primary(PREMIUM, Converters.booleanConverter);
+                DATE_PREFERENCE, MEASUREMENT_PREFERENCE, EMAIL }).forEach(a -> primary(a, Converters.STRING));
+        primary(ID, Converters.LONG);
+        primary(RESOURCE_STATE, Converters.INTEGER);
+        primary(BADGE_TYPE_ID, Converters.INTEGER);
+        primary(FOLLOWER_COUNT, Converters.INTEGER);
+        primary(FRIEND_COUNT, Converters.INTEGER);
+        primary(PREMIUM, Converters.BOOLEAN);
         primary(SEX, new GenderConverter("m", "f"));
-        final FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        primary(CREATED_AT, dateConverter);
-        primary(UPDATED_AT, dateConverter);
+        primary(CREATED_AT, Converters.DATE_TZ_RFC822);
+        primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(CLUBS, new JsonListConverter(StravaClub.class, StravaClub[].class));
         final JsonListConverter multiGearConverter = new JsonListConverter(StravaGear.class, StravaGear[].class);
         primary(BIKES, multiGearConverter);

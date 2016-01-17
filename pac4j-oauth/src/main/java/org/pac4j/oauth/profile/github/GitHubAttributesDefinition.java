@@ -17,7 +17,6 @@ package org.pac4j.oauth.profile.github;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 
 import java.util.Arrays;
@@ -59,15 +58,14 @@ public class GitHubAttributesDefinition extends AttributesDefinition {
     public GitHubAttributesDefinition() {
         Arrays.asList(new String[] {
             URL, COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, GRAVATAR_ID, AVATAR_URL, HTML_URL, BIO
-        }).forEach(a -> primary(a));
+        }).forEach(a -> primary(a, Converters.STRING));
         Arrays.asList(new String[] {
             FOLLOWING, PUBLIC_REPOS, PUBLIC_GISTS, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPOS, TOTAL_PRIVATE_REPOS,
             PRIVATE_GISTS, FOLLOWERS
-        }).forEach(a -> primary(a, Converters.integerConverter));
-        primary(HIREABLE, Converters.booleanConverter);
-        final FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        primary(CREATED_AT, dateConverter);
-        primary(UPDATED_AT, dateConverter);
+        }).forEach(a -> primary(a, Converters.INTEGER));
+        primary(HIREABLE, Converters.BOOLEAN);
+        primary(CREATED_AT, Converters.DATE_TZ_RFC822);
+        primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(PLAN, new JsonConverter<>(GitHubPlan.class));
     }
 }

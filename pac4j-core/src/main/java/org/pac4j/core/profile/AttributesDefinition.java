@@ -30,22 +30,11 @@ import org.pac4j.core.profile.converter.AttributeConverter;
  */
 public class AttributesDefinition {
     
-    protected List<String> all = new ArrayList<>();
-    
     protected List<String> primaries = new ArrayList<>();
     
     protected List<String> secondaries = new ArrayList<>();
     
     protected Map<String, AttributeConverter<? extends Object>> converters = new HashMap<>();
-    
-    /**
-     * Return all the attributes names.
-     * 
-     * @return all the attributes names
-     */
-    public List<String> getAllAttributes() {
-        return this.all;
-    }
     
     /**
      * Return the primary attributes names.
@@ -66,31 +55,14 @@ public class AttributesDefinition {
     }
 
     /**
-     * Add an attribute as a primary one and no converter.
-     *
-     * @param name name of the attribute
-     */
-    protected void primary(final String name) {
-        addAttribute(name, null, true);
-    }
-
-    /**
      * Add an attribute as a primary one and its converter.
      * 
      * @param name name of the attribute
      * @param converter converter
      */
     protected void primary(final String name, final AttributeConverter<? extends Object> converter) {
-        addAttribute(name, converter, true);
-    }
-
-    /**
-     * Add an attribute as a secondary one and no converter.
-     *
-     * @param name name of the attribute
-     */
-    protected void secondary(final String name) {
-        addAttribute(name, null, false);
+        primaries.add(name);
+        converters.put(name, converter);
     }
 
     /**
@@ -100,27 +72,10 @@ public class AttributesDefinition {
      * @param converter converter
      */
     protected void secondary(final String name, final AttributeConverter<? extends Object> converter) {
-        addAttribute(name, converter, false);
+        secondaries.add(name);
+        converters.put(name, converter);
     }
 
-    /**
-     * Add an attribute, its primary aspect and its converter to this attributes definition.
-     * 
-     * @param name name of the attribute
-     * @param converter converter
-     * @param principal whether the attribute is principal
-     */
-    protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter,
-                                final boolean principal) {
-        this.all.add(name);
-        this.converters.put(name, converter);
-        if (principal) {
-            this.primaries.add(name);
-        } else {
-            this.secondaries.add(name);
-        }
-    }
-    
     /**
      * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is returned.
      * 

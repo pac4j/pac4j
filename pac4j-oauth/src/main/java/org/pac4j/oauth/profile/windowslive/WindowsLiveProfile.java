@@ -18,7 +18,6 @@ package org.pac4j.oauth.profile.windowslive;
 import java.util.Date;
 
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -31,10 +30,12 @@ import org.pac4j.oauth.profile.OAuth20Profile;
 public class WindowsLiveProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 1648212768999086087L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new WindowsLiveAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.windowsLiveDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

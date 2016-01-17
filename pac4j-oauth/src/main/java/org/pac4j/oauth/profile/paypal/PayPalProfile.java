@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for PayPal with appropriate getters.</p>
@@ -31,10 +30,12 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 public class PayPalProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = -9019988559486637233L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new PayPalAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.payPalDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

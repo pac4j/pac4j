@@ -55,9 +55,9 @@ public class LinkedIn2AttributesDefinition extends AttributesDefinition {
     public LinkedIn2AttributesDefinition() {
         Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, MAIDEN_NAME, FORMATTED_NAME, PHONETIC_FIRST_NAME, PHONETIC_LAST_NAME,
                 FORMATTED_PHONETIC_NAME, HEADLINE, INDUSTRY, CURRENT_SHARE, SUMMARY, SPECIALTIES, PICTURE_URL, PUBLIC_PROFILE_URL,
-                EMAIL_ADDRESS}).forEach(a -> primary(a, Converters.stringConverter));
-        primary(NUM_CONNECTIONS, Converters.integerConverter);
-        primary(NUM_CONNECTIONS_CAPPED, Converters.booleanConverter);
+                EMAIL_ADDRESS}).forEach(a -> primary(a, Converters.STRING));
+        primary(NUM_CONNECTIONS, Converters.INTEGER);
+        primary(NUM_CONNECTIONS_CAPPED, Converters.BOOLEAN);
         primary(LOCATION, new JsonConverter<>(LinkedIn2Location.class));
         primary(POSITIONS, new JsonListConverter(LinkedIn2Position.class, LinkedIn2Position[].class));
     }

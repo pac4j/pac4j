@@ -20,7 +20,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 import org.scribe.builder.api.LinkedInApi20;
@@ -91,9 +90,9 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     protected LinkedIn2Profile extractUserProfile(final String body) {
         LinkedIn2Profile profile = new LinkedIn2Profile();
         final JsonNode json = JsonHelper.getFirstNode(body);
-        profile.setId(JsonHelper.get(json, "id"));
-        for (final String attribute : OAuthAttributesDefinitions.linkedin2Definition.getPrimaryAttributes()) {
-            profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+        profile.setId(JsonHelper.getElement(json, "id"));
+        for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+            profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
         }
         addUrl(profile, json, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST);
         addUrl(profile, json, LinkedIn2AttributesDefinition.API_STANDARD_PROFILE_REQUEST);
@@ -101,7 +100,7 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     }
 
     private void addUrl(final LinkedIn2Profile profile, final JsonNode json, final String name) {
-        final String url = (String) JsonHelper.get(json, name + ".url");
+        final String url = (String) JsonHelper.getElement(json, name + ".url");
         profile.addAttribute(name, url);
     }
 

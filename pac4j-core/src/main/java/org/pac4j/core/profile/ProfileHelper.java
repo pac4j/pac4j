@@ -117,14 +117,4 @@ public final class ProfileHelper {
         logger.debug("userProfile built : {}", userProfile);
         return userProfile;
     }
-
-    /**
-     * Set whether the input data should be stored in object to be restored for CAS serialization when toString() is called.
-     * Save memory if <code>false</code>.
-     * 
-     * @param keepRawData should we keep the raw data (for CAS)
-     */
-    public static void setKeepRawData(final boolean keepRawData) {
-        RawDataObject.setKeepRawData(keepRawData);
-    }
 }

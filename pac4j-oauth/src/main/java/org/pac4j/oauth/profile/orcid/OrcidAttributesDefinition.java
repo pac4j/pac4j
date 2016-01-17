@@ -35,12 +35,12 @@ public class OrcidAttributesDefinition extends AttributesDefinition {
     public static final String LOCALE = "locale";
 
     public OrcidAttributesDefinition() {
-        primary(ORCID, Converters.stringConverter);
-        primary(FIRST_NAME, Converters.stringConverter);
-        primary(FAMILY_NAME, Converters.stringConverter);
-        primary(URI, Converters.stringConverter);
-        primary(CREATION_METHOD);
-        primary(CLAIMED, Converters.booleanConverter);
-        primary(LOCALE, Converters.localeConverter);
+        primary(ORCID, Converters.STRING);
+        primary(FIRST_NAME, Converters.STRING);
+        primary(FAMILY_NAME, Converters.STRING);
+        primary(URI, Converters.STRING);
+        primary(CREATION_METHOD, Converters.STRING);
+        primary(CLAIMED, Converters.BOOLEAN);
+        primary(LOCALE, Converters.LOCALE);
     }
 }

@@ -18,7 +18,6 @@ package org.pac4j.oauth.profile.ok;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 import java.util.Locale;
 
@@ -34,9 +33,11 @@ public class OkProfile extends OAuth20Profile {
 
     public static final String BASE_PROFILE_URL = "http://ok.ru/profile/";
 
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new OkAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.okDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
 
     @Override
