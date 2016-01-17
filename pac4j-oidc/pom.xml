@@ -23,14 +23,16 @@
 		<version>1.8.4</version>
 	</parent>
 
-	<artifactId>pac4j-oidc</artifactId>
+	<artifactId>pac4j-oidc-autocare</artifactId>
 	<packaging>jar</packaging>
+	<version>1.8.4</version>
 	<name>pac4j for OpenID Connect protocol</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
+			<version>1.8.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.nimbusds</groupId>
@@ -40,6 +42,7 @@
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
+			<version>1.8.4-autocare</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.nimbusds.jose.JWSObject;
+import com.nimbusds.jose.util.JSONObjectUtils;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
@@ -414,19 +419,97 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
 
+            /*
+            logger.info("Token response: status={}, content={}", httpResponse.getStatusCode(),
+                    httpResponse.getContentAsJSONObject().toJSONString());
+            */
+
             final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
             if (response instanceof TokenErrorResponse) {
                 logger.error("Bad token response, error={}", ((TokenErrorResponse) response).getErrorObject());
                 return null;
             }
             logger.debug("Token response successful");
+
             final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
+
             final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
             final BearerAccessToken accessToken = (BearerAccessToken) oidcTokens.getAccessToken();
 
             // Create Oidc profile
             OidcProfile profile = new OidcProfile(accessToken);
             profile.setIdTokenString(oidcTokens.getIDTokenString());
+
+            try{
+
+                /*
+                {
+                    "jti": "0bf6168b-63dc-4ccf-829f-2c075eb616d2",
+                        "exp": 1452958208,
+                        "nbf": 0,
+                        "iat": 1452957908,
+                        "iss": "http://localhost:8080/auth/realms/oic",
+                        "aud": "permis-app",
+                        "sub": "c2779323-14c6-4f97-bb77-11f4ee74105a",
+                        "azp": "permis-app",
+                        "session_state": "0a66e98d-0a84-4c21-9a6e-42504a2f28a3",
+                        "client_session": "bb78310f-f44c-42d6-9096-fc57f288ab1c",
+                        "allowed-origins": [
+                    "http://localhost:8080/*",
+                            "*",
+                            "http://localhost:9000/*"
+                    ],
+                    "realm_access": {
+                    "roles": [
+                    "supervisor"
+                    ]
+                },
+                    "resource_access": {
+                    "permis-app": {
+                        "roles": [
+                        "transporter",
+                                "admin"
+                        ]
+                    },
+                    "account": {
+                        "roles": [
+                        "manage-account",
+                                "view-profile"
+                        ]
+                    }
+                },
+                    "name": "xx xx",
+                        "preferred_username": "xxx",
+                        "given_name": "xx",
+                        "family_name": "xx"
+                }
+                */
+
+
+                //Jboss Keycload Open ID Connect roles retrieval
+                logger.debug("accessToken value= " + accessToken.getValue());
+
+                JWSObject at = JWSObject.parse(accessToken.getValue());
+                logger.debug("parsed accessToken Payload= " + at.getPayload().toJSONObject());
+                JSONObject pl = at.getPayload().toJSONObject();
+
+                //audientc -> client_id
+                String aud = JSONObjectUtils.getString(at.getPayload().toJSONObject(), "aud");
+                JSONObject resource_access = JSONObjectUtils.getJSONObject(pl, "resource_access");
+                logger.debug("aud= " + aud);
+                logger.debug("resource_access= " + resource_access);
+
+                JSONObject app_ressource = JSONObjectUtils.getJSONObject(resource_access, aud);
+                logger.debug("app_ressource= " + app_ressource);
+
+                List<String> app_roles = JSONObjectUtils.getStringList(app_ressource, "roles");
+                logger.debug("app_roles= " + app_roles);
+
+                profile.addRoles(app_roles);
+
+            } catch (Exception e) {
+                logger.warn("Failed to parse accessToken for Jboss Keycloak! Roles will be unavailable.");
+            }
 
             // User Info request
             UserInfo userInfo = null;
@@ -461,7 +544,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             }
             // Check ID Token
             final IDTokenClaimsSet claimsSet = getIdTokenValidator().validate(oidcTokens.getIDToken(), nonce);
-            CommonHelper.assertNotNull("claimsSet", claimsSet);
+
             profile.setId(claimsSet.getSubject());
 
             return profile;

@@ -25,6 +25,7 @@
 
     <artifactId>pac4j-core</artifactId>
     <packaging>jar</packaging>
+    <version>1.8.4-autocare</version>
     <name>pac4j core</name>
     <dependencies>
         <dependency>
