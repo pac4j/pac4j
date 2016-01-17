@@ -2,6 +2,8 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
+Module `pac4j-oidc` updated to handle Jboss Keycloak's roles.
+
 `pac4j` is a **Java security engine** to authenticate users, get their profiles and manage their authorizations in order to secure Java web applications. It's available under the Apache 2 license.
 
 It is currently **available for many frameworks / tools and supports most authentication mechanisms**. Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
