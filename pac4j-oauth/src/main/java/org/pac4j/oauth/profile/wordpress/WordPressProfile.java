@@ -16,7 +16,6 @@
 package org.pac4j.oauth.profile.wordpress;
 
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -29,10 +28,12 @@ import org.pac4j.oauth.profile.OAuth20Profile;
 public class WordPressProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 6790248892408246089L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new WordPressAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.wordPressDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

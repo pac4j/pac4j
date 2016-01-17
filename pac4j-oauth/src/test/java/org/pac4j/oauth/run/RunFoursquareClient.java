@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client;
+package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
@@ -21,6 +21,7 @@ import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oauth.client.FoursquareClient;
 import org.pac4j.oauth.profile.foursquare.*;
 
 import java.util.ArrayList;

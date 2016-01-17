@@ -21,7 +21,6 @@ import java.util.List;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Strava with appropriate getters.</p>
@@ -36,9 +35,11 @@ public class StravaProfile extends OAuth20Profile {
 
     private static final String STRAVA_PROFILE_BASE_URL = "http://www.strava.com/athletes/";
 
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new StravaAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.stravaDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
 
     @Override

@@ -21,7 +21,6 @@ import java.util.Locale;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Color;
 import org.pac4j.oauth.profile.OAuth10Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Twitter with appropriate getters.</p>
@@ -33,10 +32,12 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 public class TwitterProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = -6473348745856820192L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new TwitterAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.twitterDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

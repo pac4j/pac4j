@@ -58,11 +58,11 @@ public class YahooAttributesDefinition extends AttributesDefinition {
     
     public YahooAttributesDefinition() {
         Arrays.stream(new String[] {ABOUT_ME, FAMILY_NAME, GIVEN_NAME, LOCATION, NICKNAME, PROFILE_URL, TIME_ZONE, URI, AGE_CATEGORY})
-                .forEach(a -> primary(a, Converters.stringConverter));
-        primary(IS_CONNECTED, Converters.booleanConverter);
-        primary(BIRTH_YEAR, Converters.integerConverter);
-        primary(LANG, Converters.localeConverter);
-        primary(DISPLAY_AGE, Converters.integerConverter);
+                .forEach(a -> primary(a, Converters.STRING));
+        primary(IS_CONNECTED, Converters.BOOLEAN);
+        primary(BIRTH_YEAR, Converters.INTEGER);
+        primary(LANG, Converters.LOCALE);
+        primary(DISPLAY_AGE, Converters.INTEGER);
         primary(BIRTHDATE, new FormattedDateConverter("MM/dd"));
         primary(ADDRESSES, new JsonListConverter(YahooAddress.class, YahooAddress[].class));
         primary(DISCLOSURES, new JsonListConverter(YahooDisclosure.class, YahooDisclosure[].class));
@@ -70,9 +70,8 @@ public class YahooAttributesDefinition extends AttributesDefinition {
         primary(GENDER, new GenderConverter("m", "f"));
         primary(IMAGE, new JsonConverter<>(YahooImage.class));
         primary(INTERESTS, new JsonListConverter(YahooInterest.class, YahooInterest[].class));
-        final FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        primary(CREATED, dateConverter);
-        primary(MEMBER_SINCE, dateConverter);
-        primary(UPDATED, dateConverter);
+        primary(CREATED, Converters.DATE_TZ_RFC822);
+        primary(MEMBER_SINCE, Converters.DATE_TZ_RFC822);
+        primary(UPDATED, Converters.DATE_TZ_RFC822);
     }
 }

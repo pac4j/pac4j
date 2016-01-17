@@ -18,7 +18,6 @@ package org.pac4j.oauth.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.builder.api.TwitterApi;
@@ -86,9 +85,9 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
         final TwitterProfile profile = new TwitterProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.twitterDefinition.getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

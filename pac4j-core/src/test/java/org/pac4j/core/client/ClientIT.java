@@ -70,8 +70,6 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
     }
 
     public void testAuthenticationAndUserProfileRetrieval() throws Exception {
-        ProfileHelper.setKeepRawData(true);
-        try {
             final Client client = getClient();
 
             final J2EContext context = getJ2EContext();
@@ -114,9 +112,6 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
             bytes = kryoSerializationHelper.serializeToBytes(profile);
             final UserProfile profile4 = (UserProfile) kryoSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile4);
-        } finally {
-            ProfileHelper.setKeepRawData(false);
-        }
     }
 
     protected J2EContext getJ2EContext() {

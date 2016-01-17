@@ -37,9 +37,9 @@ public class WindowsLiveAttributesDefinition extends AttributesDefinition {
     public static final String UPDATED_TIME = "updated_time";
     
     public WindowsLiveAttributesDefinition() {
-        Arrays.stream(new String[] {NAME, FIRST_NAME, LAST_NAME, LINK}).forEach(a -> primary(a, Converters.stringConverter));
-        primary(GENDER, Converters.genderConverter);
-        primary(LOCALE, Converters.localeConverter);
-        primary(UPDATED_TIME, Converters.dateConverter);
+        Arrays.stream(new String[] {NAME, FIRST_NAME, LAST_NAME, LINK}).forEach(a -> primary(a, Converters.STRING));
+        primary(GENDER, Converters.GENDER);
+        primary(LOCALE, Converters.LOCALE);
+        primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
     }
 }

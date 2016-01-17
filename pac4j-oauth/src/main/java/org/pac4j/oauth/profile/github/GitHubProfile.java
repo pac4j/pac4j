@@ -18,7 +18,6 @@ package org.pac4j.oauth.profile.github;
 import java.util.Date;
 
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -31,10 +30,12 @@ import org.pac4j.oauth.profile.OAuth20Profile;
 public class GitHubProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = -8030906034414268058L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new GitHubAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.githubDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

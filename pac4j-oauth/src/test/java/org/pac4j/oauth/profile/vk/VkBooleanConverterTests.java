@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
  * @since 1.5
  * 
  */
-public final class TestVkBooleanConverter {
+public final class VkBooleanConverterTests {
 
 	private final VkBooleanConverter converter = new VkBooleanConverter();
 

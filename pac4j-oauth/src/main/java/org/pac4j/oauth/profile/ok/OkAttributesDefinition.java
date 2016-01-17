@@ -16,6 +16,7 @@
 package org.pac4j.oauth.profile.ok;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.profile.converter.Converters;
 
 import java.util.Arrays;
 
@@ -51,6 +52,6 @@ public class OkAttributesDefinition extends AttributesDefinition {
     public OkAttributesDefinition() {
         Arrays.stream(new String[] {UID, BIRTHDAY, AGE, NAME, LOCALE, GENDER, LOCATION_CITY, LOCATION_COUNTRY, LOCATION_COUNTRY_CODE,
                 LOCATION_COUNTRY_NAME, ONLINE, FIRST_NAME, LAST_NAME, HAS_EMAIL, CURRENT_STATUS, CURRENT_STATUS_ID, CURRENT_STATUS_DATE,
-                PIC_1, PIC_2}).forEach(a -> primary(a));
+                PIC_1, PIC_2}).forEach(a -> primary(a, Converters.STRING));
     }
 }

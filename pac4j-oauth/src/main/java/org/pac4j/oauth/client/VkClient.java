@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.vk.VkProfile;
 import org.scribe.builder.api.VkApi;
 import org.scribe.model.OAuthConfig;
@@ -81,9 +80,9 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 		if (json != null) {
 			ArrayNode array = (ArrayNode) json.get("response");
 			JsonNode userNode = array.get(0);
-			profile.setId(JsonHelper.get(userNode, "uid"));
-			for (final String attribute : OAuthAttributesDefinitions.vkDefinition.getPrimaryAttributes()) {
-				profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
+			profile.setId(JsonHelper.getElement(userNode, "uid"));
+			for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+				profile.addAttribute(attribute, JsonHelper.getElement(userNode, attribute));
 			}
 		}
 		return profile;

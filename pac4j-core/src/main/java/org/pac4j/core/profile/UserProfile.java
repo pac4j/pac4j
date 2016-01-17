@@ -43,15 +43,15 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
 
     private String id;
 
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<>();
 
     public transient static final String SEPARATOR = "#";
 
     private boolean isRemembered = false;
 
-    private List<String> roles = new ArrayList<String>();
+    private List<String> roles = new ArrayList<>();
 
-    private List<String> permissions = new ArrayList<String>();
+    private List<String> permissions = new ArrayList<>();
 
     /**
      * Build a profile from user identifier and attributes.
@@ -65,11 +65,11 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
-     * Return the attributes definition for this user profile. Null for this (generic) user profile.
+     * Return the attributes definition for this user profile. <code>null</code> for a (generic) user profile.
      * 
      * @return the attributes definition
      */
-    protected AttributesDefinition getAttributesDefinition() {
+    public AttributesDefinition getAttributesDefinition() {
         return null;
     }
 

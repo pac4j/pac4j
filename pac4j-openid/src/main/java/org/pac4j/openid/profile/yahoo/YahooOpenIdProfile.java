@@ -84,7 +84,7 @@ public class YahooOpenIdProfile extends OpenIdProfile {
     private static final long serialVersionUID = 7866288887408897456L;
     
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
+    public AttributesDefinition getAttributesDefinition() {
         return OpenIdAttributesDefinitions.yahooOpenIdDefinition;
     }
     

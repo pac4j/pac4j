@@ -15,11 +15,12 @@
  */
 package org.pac4j.oauth.credentials;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.scribe.model.Token;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link OAuthCredentials} class.
@@ -27,10 +28,11 @@ import org.scribe.model.Token;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestOAuthCredentials extends TestCase implements TestsConstants {
+public final class OAuthCredentialsTests implements TestsConstants {
     
     private final static Token REQUEST_TOKEN = new Token(TOKEN, SECRET);
-    
+
+    @Test
     public void testOAuthCredentials() {
         final OAuthCredentials credentials = new OAuthCredentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
         assertEquals(TOKEN, credentials.getToken());
@@ -49,6 +51,7 @@ public final class TestOAuthCredentials extends TestCase implements TestsConstan
         assertEquals(credentials.getClientName(), credentials2.getClientName());
     }
 
+    @Test
     public void testClearOAuthCredentials() {
         final OAuthCredentials credentials = new OAuthCredentials(REQUEST_TOKEN, TOKEN, VERIFIER, TYPE);
         final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();

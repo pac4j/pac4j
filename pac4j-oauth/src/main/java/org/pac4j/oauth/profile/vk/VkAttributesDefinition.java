@@ -60,9 +60,9 @@ public class VkAttributesDefinition extends AttributesDefinition {
 
 	public VkAttributesDefinition() {
 		Arrays.stream(new String[] {FIRST_NAME, LAST_NAME, PHOTO_50, PHOTO_100, PHOTO_200_ORIG, PHOTO_200, PHOTO_400_ORIG,
-				PHOTO_MAX, PHOTO_MAX_ORIG, DOMAIN, MOBILE_PHONE, HOME_PHONE, SKYPE, SITE, STATUS}).forEach(a -> primary(a));
-		primary(COMMON_COUNT, Converters.integerConverter);
-		primary(RELATION, Converters.integerConverter);
+				PHOTO_MAX, PHOTO_MAX_ORIG, DOMAIN, MOBILE_PHONE, HOME_PHONE, SKYPE, SITE, STATUS}).forEach(a -> primary(a, Converters.STRING));
+		primary(COMMON_COUNT, Converters.INTEGER);
+		primary(RELATION, Converters.INTEGER);
 		final VkBooleanConverter booleanConverter = new VkBooleanConverter();
 		Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO, CAN_WRITE_PRIVATE_MESSAGE})
 				.forEach(a -> primary(a, booleanConverter));

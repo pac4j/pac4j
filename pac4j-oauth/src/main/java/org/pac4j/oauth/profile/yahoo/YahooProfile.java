@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth10Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Yahoo with appropriate getters.</p>
@@ -34,10 +33,12 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 public class YahooProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = 791758805376191144L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new YahooAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.yahooDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

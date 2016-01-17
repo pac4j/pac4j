@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oauth.client;
+package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +22,7 @@ import org.pac4j.core.client.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.oauth.client.WordPressClient;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;

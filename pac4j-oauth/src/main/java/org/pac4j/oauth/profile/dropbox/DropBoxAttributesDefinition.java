@@ -34,11 +34,11 @@ public class DropBoxAttributesDefinition extends AttributesDefinition {
     public static final String NORMAL = "normal";
     
     public DropBoxAttributesDefinition() {
-        primary(REFERRAL_LINK);
-        primary(DISPLAY_NAME);
-        primary(COUNTRY, Converters.localeConverter);
-        secondary(SHARED, Converters.longConverter);
-        secondary(QUOTA, Converters.longConverter);
-        secondary(NORMAL, Converters.longConverter);
+        primary(REFERRAL_LINK, Converters.STRING);
+        primary(DISPLAY_NAME, Converters.STRING);
+        primary(COUNTRY, Converters.LOCALE);
+        secondary(SHARED, Converters.LONG);
+        secondary(QUOTA, Converters.LONG);
+        secondary(NORMAL, Converters.LONG);
     }
 }

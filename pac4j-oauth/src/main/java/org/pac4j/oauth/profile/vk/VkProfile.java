@@ -21,7 +21,6 @@ import java.util.Locale;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Vk with appropriate getters.</p>
@@ -34,9 +33,11 @@ public class VkProfile extends OAuth20Profile {
 
 	private static final long serialVersionUID = -7889265305949082980L;
 
+	private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new VkAttributesDefinition();
+
 	@Override
-	protected AttributesDefinition getAttributesDefinition() {
-		return OAuthAttributesDefinitions.vkDefinition;
+	public AttributesDefinition getAttributesDefinition() {
+		return ATTRIBUTES_DEFINITION;
 	}
 
 	@Override

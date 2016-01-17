@@ -69,18 +69,18 @@ public class TwitterAttributesDefinition extends AttributesDefinition {
     
     public TwitterAttributesDefinition() {
         Arrays.stream(new String[] {DESCRIPTION, LOCATION, NAME, SCREEN_NAME, TIME_ZONE, URL})
-                .forEach(a -> primary(a, Converters.stringConverter));
+                .forEach(a -> primary(a, Converters.STRING));
         Arrays.stream(new String[] {CONTRIBUTORS_ENABLED, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FOLLOW_REQUEST_SENT, FOLLOWING,
                 GEO_ENABLED, IS_TRANSLATOR, NOTIFICATIONS, PROFILE_USE_BACKGROUND_IMAGE, PROTECTED, SHOW_ALL_INLINE_MEDIA,
                 PROFILE_BACKGROUND_TILE, VERIFIED})
-                .forEach(a -> primary(a, Converters.booleanConverter));
+                .forEach(a -> primary(a, Converters.BOOLEAN));
         Arrays.stream(new String[] {FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, LISTED_COUNT, STATUSES_COUNT, UTC_OFFSET})
-                .forEach(a -> primary(a, Converters.integerConverter));
+                .forEach(a -> primary(a, Converters.INTEGER));
         Arrays.stream(new String[] {PROFILE_BACKGROUND_IMAGE_URL, PROFILE_BACKGROUND_IMAGE_URL_HTTPS,
-                PROFILE_IMAGE_URL, PROFILE_IMAGE_URL_HTTPS}).forEach(a -> primary(a, Converters.urlConverter));
+                PROFILE_IMAGE_URL, PROFILE_IMAGE_URL_HTTPS}).forEach(a -> primary(a, Converters.URL));
         Arrays.stream(new String[] {PROFILE_BACKGROUND_COLOR, PROFILE_LINK_COLOR, PROFILE_SIDEBAR_BORDER_COLOR,
-                PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.colorConverter));
-        primary(LANG, Converters.localeConverter);
+                PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.COLOR));
+        primary(LANG, Converters.LOCALE);
         primary(CREATED_AT, new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
     }
 }

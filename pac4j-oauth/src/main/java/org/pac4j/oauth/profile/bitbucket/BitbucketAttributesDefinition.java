@@ -39,7 +39,7 @@ public class BitbucketAttributesDefinition extends AttributesDefinition {
 
     public BitbucketAttributesDefinition() {
         Arrays.stream(new String[] {USERNAME, FIRST_NAME, LAST_NAME, DISPLAY_NAME, IS_TEAM, AVATAR, RESOURCE_URI, EMAIL})
-                .forEach(a -> primary(a));
-        primary(IS_TEAM, Converters.booleanConverter);
+                .forEach(a -> primary(a, Converters.STRING));
+        primary(IS_TEAM, Converters.BOOLEAN);
     }
 }

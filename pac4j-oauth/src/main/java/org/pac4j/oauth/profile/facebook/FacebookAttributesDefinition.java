@@ -75,16 +75,16 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
         Arrays.stream(new String[] {
             NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
             RELIGION, WEBSITE
-        }).forEach(name -> primary(name));
-        primary(TIMEZONE, Converters.integerConverter);
-        primary(VERIFIED, Converters.booleanConverter);
+        }).forEach(a -> primary(a, Converters.STRING));
+        primary(TIMEZONE, Converters.INTEGER);
+        primary(VERIFIED, Converters.BOOLEAN);
         final JsonConverter<FacebookObject> objectConverter = new JsonConverter<>(FacebookObject.class);
         final JsonListConverter multiObjectConverter = new JsonListConverter(FacebookObject.class, FacebookObject[].class);
         final JsonListConverter multiStringConverter = new JsonListConverter(String.class, String[].class);
         final JsonListConverter multiInfoConverter = new JsonListConverter(FacebookInfo.class, FacebookInfo[].class);
-        primary(GENDER, Converters.genderConverter);
-        primary(LOCALE, Converters.localeConverter);
-        primary(UPDATED_TIME, Converters.dateConverter);
+        primary(GENDER, Converters.GENDER);
+        primary(LOCALE, Converters.LOCALE);
+        primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new FormattedDateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
         primary(LANGUAGES, multiObjectConverter);

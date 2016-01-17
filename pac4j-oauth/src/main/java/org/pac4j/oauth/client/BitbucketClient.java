@@ -18,7 +18,6 @@ package org.pac4j.oauth.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 import org.scribe.builder.api.BitBucketApi;
 import org.scribe.model.OAuthConfig;
@@ -64,10 +63,10 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
         BitbucketProfile profile = new BitbucketProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            json = (JsonNode) JsonHelper.get(json, "user");
+            json = (JsonNode) JsonHelper.getElement(json, "user");
             if (json != null) {
-                for (final String attribute : OAuthAttributesDefinitions.bitbucketDefinition.getPrimaryAttributes()) {
-                   profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                   profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }

@@ -32,7 +32,7 @@ public class GaeUserServiceAttributesDefinition extends AttributesDefinition {
     public static final GaeUserServiceAttributesDefinition gaeUserServiceAttibuteDefinition = new GaeUserServiceAttributesDefinition();
     
     public GaeUserServiceAttributesDefinition() {
-        primary(DISPLAYNAME, Converters.stringConverter);
-        primary(EMAIL, Converters.stringConverter);
+        primary(DISPLAYNAME, Converters.STRING);
+        primary(EMAIL, Converters.STRING);
     }
 }
