@@ -81,7 +81,7 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
  * @author Michael Remond
  * @since 1.7.0
  */
-public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
+public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCredentials, U> {
 
     /* state attribute name in session */
     private static final String STATE_ATTRIBUTE = "oidcStateAttribute";
@@ -92,7 +92,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* default max clock skew */
     private static final int DEFAULT_MAX_CLOCK_SKEW = 30;
 
-    /* OpenID client_id */
+    /* OpenID client identifier */
     private String clientId;
 
     /* OpenID secret */
@@ -117,7 +117,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private String scope;
 
     /* Map containing user defined parameters */
-    private Map<String, String> customParams = new HashMap<String, String>();
+    private Map<String, String> customParams = new HashMap<>();
 
     /* client authentication object at the token End Point (basic, form or JWT) */
     private ClientAuthentication clientAuthentication;
@@ -158,8 +158,8 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         return this.discoveryURI;
     }
 
-    public void setClientID(final String clientID) {
-        this.clientId = clientID;
+    public void setClientID(final String clientId) {
+        this.clientId = clientId;
     }
 
     public String getClientID() {
@@ -234,11 +234,11 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     @Override
     protected void internalInit(final WebContext context) {
 
-        CommonHelper.assertNotBlank(getClientID(), "clientID cannot be blank");
+        CommonHelper.assertNotBlank(getClientID(), "clientId cannot be blank");
         CommonHelper.assertNotBlank(getSecret(), "secret cannot be blank");
         CommonHelper.assertNotBlank(getDiscoveryURI(), "discoveryURI cannot be blank");
 
-        this.authParams = new HashMap<String, String>();
+        this.authParams = new HashMap<>();
 
         // add scope
         if(StringUtils.isNotBlank(getScope())){
@@ -316,7 +316,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
 
-        Map<String, String> params = new HashMap<String, String>(getAuthParams());
+        Map<String, String> params = new HashMap<>(getAuthParams());
 
         // Init state for CSRF mitigation
         State state = new State();
@@ -375,7 +375,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     @Override
-    protected OidcProfile retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
+    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
 
         final TokenRequest request = buildTokenRequest(credentials);
         HTTPResponse httpResponse;
@@ -398,12 +398,12 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
             final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
             final BearerAccessToken accessToken = (BearerAccessToken) oidcTokens.getAccessToken();
 
-            // Create Oidc profile
-            OidcProfile profile = new OidcProfile(accessToken);
+            // Create profile
+            final U profile = createProfile();
+            profile.setAccessToken(accessToken);
             profile.setIdTokenString(oidcTokens.getIDTokenString());
 
             // User Info request
-            UserInfo userInfo = null;
             if (getProviderMetadata().getUserInfoEndpointURI() != null) {
                 UserInfoRequest userInfoRequest = buildUserInfoRequest(accessToken);
                 HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
@@ -419,9 +419,9 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                     logger.error("Bad User Info response, error={}",
                             ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
-                    UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    userInfo = userInfoSuccessResponse.getUserInfo();
-                    if(userInfo != null){
+                    final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                    final UserInfo userInfo = userInfoSuccessResponse.getUserInfo();
+                    if (userInfo != null){
                     	profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
                     }
                 }
@@ -447,6 +447,15 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     /**
+     * Create the appropriate profile type.
+     *
+     * @return the profile
+     */
+    protected U createProfile() {
+        return (U) new OidcProfile();
+    }
+
+    /**
      * @param credentials
      * @return the TokenRequest object that will be used to query the OIDC Token endpoint.
      */
@@ -464,7 +473,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     private Map<String, String> toSingleParameter(final Map<String, String[]> requestParameters) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (Entry<String, String[]> entry : requestParameters.entrySet()) {
             map.put(entry.getKey(), entry.getValue()[0]);
         }

@@ -114,7 +114,7 @@ public final class ProfileHelper {
                 .forName(completeName).getDeclaredConstructor();
         final UserProfile userProfile = constructor.newInstance();
         userProfile.build(typedId, attributes);
-        logger.debug("userProfile built : {}", userProfile);
+        logger.debug("userProfile built: {}", userProfile);
         return userProfile;
     }
 }

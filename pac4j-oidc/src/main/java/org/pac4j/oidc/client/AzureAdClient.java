@@ -1,11 +1,27 @@
-package org.pac4j.oidc.azuread;
+/*
+  Copyright 2012 - 2015 pac4j organization
 
-import org.pac4j.oidc.client.OidcClient;
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+package org.pac4j.oidc.client;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.http.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+import org.pac4j.oidc.client.azuread.AzureAdIdTokenValidator;
+import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
+import org.pac4j.oidc.profile.AzureAdProfile;
 
 /**
  * A specialized {@link OidcClient} for authenticating againt Microsoft Azure AD. Microsoft Azure
@@ -22,11 +38,14 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
  * Authentication against the common endpoint results in a ID token with a {@code issuer} different
  * from the {@code issuer} mentioned in the discovery data. This class uses to special validator
  * to correctly validate the issuer returned by Azure AD.
+ *
+ * More information at: https://msdn.microsoft.com/en-us/library/azure/dn645541.aspx
  * 
  * @author Emond Papegaaij
  * @since 1.8.3
  */
-public class AzureAdClient extends OidcClient {
+public class AzureAdClient extends OidcClient<AzureAdProfile> {
+
     public AzureAdClient() {
     }
 	
@@ -34,7 +53,7 @@ public class AzureAdClient extends OidcClient {
         super(clientId, secret, discoveryURI);
     }
 	
-	protected IDTokenValidator createRSATokenValidator(JWSAlgorithm jwsAlgorithm, ClientID clientID) throws java.net.MalformedURLException {
+	protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) throws java.net.MalformedURLException {
 		return new AzureAdIdTokenValidator(super.createRSATokenValidator(jwsAlgorithm, clientID));
 	}
 	
@@ -42,4 +61,9 @@ public class AzureAdClient extends OidcClient {
 	protected ResourceRetriever createResourceRetriever() {
 		return new AzureAdResourceRetriever();
 	}
+
+    @Override
+    protected AzureAdProfile createProfile() {
+        return new AzureAdProfile();
+    }
 }

@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.jwt.JWT;
@@ -49,7 +48,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
     public OidcProfile() {
     }
 
-    public OidcProfile(BearerAccessToken accessToken) {
+    public void setAccessToken(BearerAccessToken accessToken) {
         this.accessToken = accessToken;
     }
 
@@ -69,7 +68,6 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         if (this.idToken == null && this.idTokenString != null) {
             this.idToken = JWTParser.parse(this.idTokenString);
         }
-
         return this.idToken;
     }
 

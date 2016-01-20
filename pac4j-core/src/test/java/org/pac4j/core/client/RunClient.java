@@ -16,11 +16,11 @@
 package org.pac4j.core.client;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.kryo.ColorSerializer;
 import org.pac4j.core.kryo.FormattedDateSerializer;
-import org.pac4j.core.kryo.LocaleSerializer;
 import org.pac4j.core.profile.*;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.KryoSerializationHelper;
@@ -72,7 +72,7 @@ public abstract class RunClient implements TestsConstants {
             // Kryo serialization
             final Kryo kryo = new Kryo();
             kryo.register(HashMap.class);
-            kryo.register(Locale.class, new LocaleSerializer());
+            kryo.register(Locale.class, new DefaultSerializers.LocaleSerializer());
             kryo.register(Date.class);
             kryo.register(FormattedDate.class, new FormattedDateSerializer());
             kryo.register(Gender.class);
