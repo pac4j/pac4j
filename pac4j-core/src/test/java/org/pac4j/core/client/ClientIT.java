@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import junit.framework.TestCase;
 
 import org.pac4j.core.context.HttpConstants;
@@ -29,7 +30,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.kryo.ColorSerializer;
 import org.pac4j.core.kryo.FormattedDateSerializer;
-import org.pac4j.core.kryo.LocaleSerializer;
 import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.FormattedDate;
@@ -101,7 +101,7 @@ public abstract class ClientIT extends TestCase implements TestsConstants {
             // Kryo serialization
             final Kryo kryo = new Kryo();
             kryo.register(HashMap.class);
-            kryo.register(Locale.class, new LocaleSerializer());
+            kryo.register(Locale.class, new DefaultSerializers.LocaleSerializer());
             kryo.register(Date.class);
             kryo.register(FormattedDate.class, new FormattedDateSerializer());
             kryo.register(Gender.class);
