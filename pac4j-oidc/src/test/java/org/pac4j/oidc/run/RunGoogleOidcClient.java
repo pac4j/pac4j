@@ -55,7 +55,7 @@ public class RunGoogleOidcClient extends RunClient {
     @Override
     protected IndirectClient getClient() {
         final GoogleOidcClient client = new GoogleOidcClient();
-        client.setKey("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
+        client.setClientID("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         client.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
