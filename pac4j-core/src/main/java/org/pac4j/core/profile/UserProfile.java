@@ -20,11 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.pac4j.core.Clearable;
 import org.pac4j.core.util.CommonHelper;
@@ -47,15 +43,15 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
 
     private String id;
 
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<>();
 
     public transient static final String SEPARATOR = "#";
 
     private boolean isRemembered = false;
 
-    private List<String> roles = new ArrayList<String>();
+    private List<String> roles = new ArrayList<>();
 
-    private List<String> permissions = new ArrayList<String>();
+    private List<String> permissions = new ArrayList<>();
 
     /**
      * Build a profile from user identifier and attributes.
@@ -69,11 +65,11 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
-     * Return the attributes definition for this user profile. Null for this (generic) user profile.
+     * Return the attributes definition for this user profile. <code>null</code> for a (generic) user profile.
      * 
      * @return the attributes definition
      */
-    protected AttributesDefinition getAttributesDefinition() {
+    public AttributesDefinition getAttributesDefinition() {
         return null;
     }
 
@@ -88,15 +84,22 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
             final AttributesDefinition definition = getAttributesDefinition();
             // no attributes definition -> no conversion
             if (definition == null) {
-                logger.debug("no conversion => key : {} / value : {} / {}",
+                logger.debug("no conversion => key: {} / value: {} / {}",
                         new Object[] { key, value, value.getClass() });
                 this.attributes.put(key, value);
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
-                    logger.debug("converted to => key : {} / value : {} / {}",
-                            new Object[] { key, value, value.getClass() });
-                    this.attributes.put(key, value);
+                    // for OAuth: convert array as list
+                    Object value2;
+                    if (value instanceof Object[]) {
+                        value2 = new ArrayList(Arrays.asList((Object[]) value));
+                    } else {
+                        value2 = value;
+                    }
+                    logger.debug("converted to => key: {} / value: {} / {}",
+                            new Object[] { key, value2, value2.getClass() });
+                    this.attributes.put(key, value2);
                 }
             }
         }

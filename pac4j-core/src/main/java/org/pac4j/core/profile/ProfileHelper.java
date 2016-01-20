@@ -16,7 +16,6 @@
 package org.pac4j.core.profile;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.pac4j.core.util.CommonHelper;
@@ -32,8 +31,6 @@ import org.slf4j.LoggerFactory;
 public final class ProfileHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
-
-    private static boolean enforceProfileDefinition = false;
 
     /**
      * Indicate if the user identifier matches this kind of profile.
@@ -119,30 +116,5 @@ public final class ProfileHelper {
         userProfile.build(typedId, attributes);
         logger.debug("userProfile built : {}", userProfile);
         return userProfile;
-    }
-
-    /**
-     * Set whether the input data should be stored in object to be restored for CAS serialization when toString() is called.
-     * Save memory if <code>false</code>.
-     * 
-     * @param keepRawData should we keep the raw data (for CAS)
-     */
-    public static void setKeepRawData(final boolean keepRawData) {
-        RawDataObject.setKeepRawData(keepRawData);
-    }
-
-    public static boolean isEnforceProfileDefinition() {
-        return enforceProfileDefinition;
-    }
-
-    /**
-     * Set whether the profile definition (= attributes definition) should be enforced (= undefined attributes are ignored).
-     * <code>false</code> since version 1.8. It was <code>true</code> before.
-     *
-     * @param enforceProfileDefinition whether the profile definition should be enforced
-     * @since 1.8.0
-     */
-    public static void setEnforceProfileDefinition(boolean enforceProfileDefinition) {
-        ProfileHelper.enforceProfileDefinition = enforceProfileDefinition;
     }
 }

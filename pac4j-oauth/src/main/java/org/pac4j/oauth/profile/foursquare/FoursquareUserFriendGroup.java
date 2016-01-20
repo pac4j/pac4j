@@ -15,10 +15,7 @@
  */
 package org.pac4j.oauth.profile.foursquare;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.pac4j.oauth.profile.JsonObject;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,44 +25,44 @@ import java.util.List;
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareUserFriendGroup extends JsonObject {
+public class FoursquareUserFriendGroup implements Serializable {
 
     private static final long serialVersionUID = -8744746298033480494L;
 
     private int count;
     private String name;
     private String type;
-
-    private List<FoursquareUserFriend> friends = new ArrayList<FoursquareUserFriend>();
-
-    @Override
-    protected void buildFromJson(JsonNode json) {
-        count = json.get("count").asInt();
-        name = json.get("name").asText();
-        type = json.get("type").asText();
-
-        ArrayNode groupsArray = (ArrayNode) json.get("items");
-
-        for (int i=0;i<groupsArray.size();i++) {
-            FoursquareUserFriend friend = new FoursquareUserFriend();
-            friend.buildFromJson(groupsArray.get(i));
-            friends.add(friend);
-        }
-    }
-
-    public List<FoursquareUserFriend> getFriends() {
-        return friends;
-    }
+    private List<FoursquareUserFriend> friends = new ArrayList<>();
 
     public int getCount() {
         return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<FoursquareUserFriend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<FoursquareUserFriend> friends) {
+        this.friends = friends;
     }
 }

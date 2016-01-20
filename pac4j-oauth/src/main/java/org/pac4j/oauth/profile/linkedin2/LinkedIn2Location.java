@@ -15,8 +15,7 @@
  */
 package org.pac4j.oauth.profile.linkedin2;
 
-import org.pac4j.oauth.profile.XmlHelper;
-import org.pac4j.oauth.profile.XmlObject;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents a LinkedIn location.
@@ -24,25 +23,27 @@ import org.pac4j.oauth.profile.XmlObject;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Location extends XmlObject {
+public class LinkedIn2Location extends JsonObject {
     
     private static final long serialVersionUID = -7548166141136051112L;
     
     private String name;
     
     private String code;
-    
-    @Override
-    protected void buildFromXml(final String xml) {
-        this.name = XmlHelper.get(xml, "name");
-        this.code = XmlHelper.get(xml, "code");
-    }
-    
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getCode() {
-        return this.code;
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

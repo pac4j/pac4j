@@ -15,11 +15,7 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook group.
@@ -30,43 +26,34 @@ import com.fasterxml.jackson.databind.JsonNode;
 public final class FacebookGroup extends JsonObject {
     
     private static final long serialVersionUID = -846266834053161809L;
-    
-    private Integer version;
-    
-    private String name;
-    
+
     private String id;
-    
-    private Boolean administrator;
-    
-    private Integer bookmarkOrder;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.version = (Integer) JsonHelper.convert(Converters.integerConverter, json, "version");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.administrator = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "administrator");
-        this.bookmarkOrder = (Integer) JsonHelper.convert(Converters.integerConverter, json, "bookmark_order");
-    }
-    
-    public Integer getVersion() {
-        return this.version;
-    }
-    
-    public String getName() {
-        return this.name;
-    }
-    
+
+    private String name;
+
+    private String privacy;
+
     public String getId() {
-        return this.id;
+        return id;
     }
-    
-    public Boolean getAdministrator() {
-        return this.administrator;
+
+    public void setId(String id) {
+        this.id = id;
     }
-    
-    public Integer getBookmarkOrder() {
-        return this.bookmarkOrder;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(String privacy) {
+        this.privacy = privacy;
     }
 }

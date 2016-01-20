@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 import org.scribe.builder.api.WordPressApi;
@@ -33,7 +32,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.wordpress.WordPressProfile}.</p>
  * <p>More information at http://developer.wordpress.com/docs/oauth2/</p>
  * 
- * @see org.pac4j.oauth.profile.wordpress.WordPressProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */
@@ -69,21 +67,16 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
         final WordPressProfile profile = new WordPressProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "ID"));
-            for (final String attribute : OAuthAttributesDefinitions.wordPressDefinition.getPrincipalAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "ID"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
             json = json.get("meta");
             if (json != null) {
                 final String attribute = WordPressAttributesDefinition.LINKS;
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

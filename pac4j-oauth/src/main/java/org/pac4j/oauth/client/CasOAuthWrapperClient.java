@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile}.</p>
  * <p>More information at https://wiki.jasig.org/display/CASUM/OAuth+server+support</p>
  * 
- * @see org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile
  * @author Jerome Leleu
  * @since 1.3.0
  */
@@ -76,14 +75,14 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
         final CasOAuthWrapperProfile userProfile = new CasOAuthWrapperProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            userProfile.setId(JsonHelper.get(json, "id"));
+            userProfile.setId(JsonHelper.getElement(json, "id"));
             json = json.get("attributes");
             if (json != null) {
                 final Iterator<JsonNode> nodes = json.iterator();
                 while (nodes.hasNext()) {
                     json = nodes.next();
                     final String attribute = json.fieldNames().next();
-                    userProfile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                    userProfile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }
@@ -104,10 +103,5 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
         this.springSecurityCompliant = springSecurityCompliant;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

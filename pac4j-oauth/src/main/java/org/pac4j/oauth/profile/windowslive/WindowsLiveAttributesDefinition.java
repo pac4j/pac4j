@@ -15,8 +15,10 @@
  */
 package org.pac4j.oauth.profile.windowslive;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the Windows Live profile.
@@ -24,7 +26,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WindowsLiveAttributesDefinition extends OAuthAttributesDefinition {
+public class WindowsLiveAttributesDefinition extends AttributesDefinition {
     
     public static final String NAME = "name";
     public static final String FIRST_NAME = "first_name";
@@ -35,12 +37,9 @@ public class WindowsLiveAttributesDefinition extends OAuthAttributesDefinition {
     public static final String UPDATED_TIME = "updated_time";
     
     public WindowsLiveAttributesDefinition() {
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(LAST_NAME, Converters.stringConverter);
-        addAttribute(LINK, Converters.stringConverter);
-        addAttribute(GENDER, Converters.genderConverter);
-        addAttribute(LOCALE, Converters.localeConverter);
-        addAttribute(UPDATED_TIME, Converters.dateConverter);
+        Arrays.stream(new String[] {NAME, FIRST_NAME, LAST_NAME, LINK}).forEach(a -> primary(a, Converters.STRING));
+        primary(GENDER, Converters.GENDER);
+        primary(LOCALE, Converters.LOCALE);
+        primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
     }
 }

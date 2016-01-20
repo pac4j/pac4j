@@ -21,92 +21,10 @@ import java.util.List;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
- * <p>Encapsulates a Strava athlete profile.</p>
- * 
- * Exemple of a json sent by Strava:
- * {
- * "id": 1321007,
- * "resource_state": 3,
- * "firstname": "Adrian",
- * "lastname": "Papusoi",
- * "profile_medium": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/athletes\/1321007\/361713\/1\/medium.jpg",
- * "profile": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/athletes\/1321007\/361713\/1\/large.jpg",
- * "city": "Courbevoie",
- * "state": "\u00cele-de-France",
- * "country": "France",
- * "sex": "M",
- * "friend": null,
- * "follower": null,
- * "premium": false,
- * "created_at": "2012-11-13T10:13:38Z",
- * "updated_at": "2014-12-17T13:30:39Z",
- * "badge_type_id": 0,
- * "follower_count": 24,
- * "friend_count": 30,
- * "mutual_friend_count": 0,
- * "date_preference": "%d\/%m\/%Y",
- * "measurement_preference": "meters",
- * "email": "adrian.papusoi@gmail.com",
- * "ftp": null,
- * "clubs": [
- * {
- * "id": 37365,
- * "resource_state": 2,
- * "name": "Amicale Cycliste des Baltringues de Longchamp",
- * "profile_medium": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/37365\/1022943\/1\/medium.jpg",
- * "profile": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/37365\/1022943\/1\/large.jpg"
- * },
- * {
- * "id": 45060,
- * "resource_state": 2,
- * "name": "VeloViewer",
- * "profile_medium": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/45060\/1141016\/3\/medium.jpg",
- * "profile": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/45060\/1141016\/3\/large.jpg"
- * },
- * {
- * "id": 21017,
- * "resource_state": 2,
- * "name": "Paris cycling meetup group",
- * "profile_medium": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/21017\/449495\/1\/medium.jpg",
- * "profile": "http:\/\/dgalywyr863hv.cloudfront.net\/pictures\/clubs\/21017\/449495\/1\/large.jpg"
- * }
- * ],
- * "bikes": [
- * {
- * "id": "b1232920",
- * "primary": false,
- * "name": "BH G5",
- * "resource_state": 2,
- * "distance": 4587858
- * },
- * {
- * "id": "b662369",
- * "primary": false,
- * "name": "Gitane '80s",
- * "resource_state": 2,
- * "distance": 371587
- * },
- * {
- * "id": "b526413",
- * "primary": false,
- * "name": "Grand Canyon AL 6.0",
- * "resource_state": 2,
- * "distance": 362774
- * },
- * {
- * "id": "b1534132",
- * "primary": true,
- * "name": "Kona Dr Good",
- * "resource_state": 2,
- * "distance": 1303618
- * }
- * ],
- * "shoes": [
- * ]
- * }
+ * <p>This class is the user profile for Strava with appropriate getters.</p>
+ * <p>It is returned by the {@link org.pac4j.oauth.client.StravaClient}.</p>
  *
  * @since 1.7.0
  * @author Adrian Papusoi
@@ -117,14 +35,16 @@ public class StravaProfile extends OAuth20Profile {
 
     private static final String STRAVA_PROFILE_BASE_URL = "http://www.strava.com/athletes/";
 
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new StravaAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.stravaDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
 
     @Override
     public String getFirstName() {
-        return (String) getAttribute("firstname");
+        return (String) getAttribute(StravaAttributesDefinition.FIRST_NAME);
     }
 
     @Override
@@ -134,7 +54,7 @@ public class StravaProfile extends OAuth20Profile {
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(StravaAttributesDefinition.FIRST_NAME);
+        return (String) getAttribute(StravaAttributesDefinition.FIRST_NAME) + " " + getAttribute(StravaAttributesDefinition.LAST_NAME);
     }
 
     @Override
@@ -159,14 +79,7 @@ public class StravaProfile extends OAuth20Profile {
 
     @Override
     public Gender getGender() {
-        String sex = (String) getAttribute(StravaAttributesDefinition.SEX);
-        Gender result = Gender.UNSPECIFIED;
-        if ("M".equals(sex)) {
-            result = Gender.MALE;
-        } else if ("F".equals(sex)) {
-            result = Gender.FEMALE;
-        }
-        return result;
+        return (Gender) getAttribute(StravaAttributesDefinition.SEX);
     }
 
     public Integer getResourceState() {

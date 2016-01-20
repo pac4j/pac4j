@@ -28,6 +28,6 @@ import org.pac4j.core.profile.converter.Converters;
 public class HttpAttributesDefinition extends AttributesDefinition {
     
     public HttpAttributesDefinition() {
-        addAttribute(CommonProfile.USERNAME, Converters.stringConverter);
+        primary(CommonProfile.USERNAME, Converters.STRING);
     }
 }

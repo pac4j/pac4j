@@ -15,11 +15,7 @@
  */
 package org.pac4j.oauth.profile.yahoo;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo image.
@@ -38,28 +34,36 @@ public final class YahooImage extends JsonObject {
     private Integer height;
     
     private String size;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.imageUrl = (String) JsonHelper.convert(Converters.stringConverter, json, "imageUrl");
-        this.width = (Integer) JsonHelper.convert(Converters.integerConverter, json, "width");
-        this.height = (Integer) JsonHelper.convert(Converters.integerConverter, json, "height");
-        this.size = (String) JsonHelper.convert(Converters.stringConverter, json, "size");
-    }
-    
+
     public String getImageUrl() {
-        return this.imageUrl;
+        return imageUrl;
     }
-    
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Integer getWidth() {
-        return this.width;
+        return width;
     }
-    
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
     public Integer getHeight() {
-        return this.height;
+        return height;
     }
-    
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
     public String getSize() {
-        return this.size;
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }

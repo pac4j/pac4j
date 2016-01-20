@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.scribe.builder.api.GitHubApi;
 import org.scribe.model.OAuthConfig;
@@ -30,11 +29,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * <p>This class is the OAuth client to authenticate users in GitHub.</p>
  * <p>The <i>scope</i> can be defined to require specific permissions from the user by using the {@link #setScope(String)} method. By default,
- * the <i>scope</i> is : <code>user</code>.</p>
+ * the <i>scope</i> is: <code>user</code>.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.github.GitHubProfile}.</p>
  * <p>More information at http://developer.github.com/v3/users/</p>
  * 
- * @see org.pac4j.oauth.profile.github.GitHubProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -72,19 +70,14 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
         final GitHubProfile profile = new GitHubProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.githubDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
     }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
-    }
-    
+
     public String getScope() {
         return this.scope;
     }

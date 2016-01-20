@@ -15,13 +15,9 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import java.util.Date;
-
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Date;
 
 /**
  * This class represents a Facebook music listened.
@@ -44,7 +40,7 @@ public final class FacebookMusicListen extends JsonObject {
     private Date publishTime;
     
     private FacebookApplication application;
-    
+
     private FacebookMusicData song;
     
     private FacebookMusicData musician;
@@ -54,69 +50,92 @@ public final class FacebookMusicListen extends JsonObject {
     private String type;
     
     private Boolean noFeedStory;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.from = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "from");
-        this.startTime = (Date) JsonHelper.convert(Converters.dateConverter, json, "start_time");
-        this.endTime = (Date) JsonHelper.convert(Converters.dateConverter, json, "end_time");
-        this.publishTime = (Date) JsonHelper.convert(Converters.dateConverter, json, "publish_time");
-        this.application = (FacebookApplication) JsonHelper.convert(FacebookConverters.applicationConverter, json,
-                                                                    "application");
-        final JsonNode data = (JsonNode) JsonHelper.get(json, "data");
-        if (data != null) {
-            this.song = (FacebookMusicData) JsonHelper.convert(FacebookConverters.musicDataConverter, data, "song");
-            this.musician = (FacebookMusicData) JsonHelper.convert(FacebookConverters.musicDataConverter, data,
-                                                                   "musician");
-            this.radioStation = (FacebookMusicData) JsonHelper.convert(FacebookConverters.musicDataConverter, data,
-                                                                       "radio_station");
-        }
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
-        this.noFeedStory = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "no_feed_story");
-    }
-    
+
     public String getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public FacebookObject getFrom() {
-        return this.from;
+        return from;
     }
-    
+
+    public void setFrom(FacebookObject from) {
+        this.from = from;
+    }
+
     public Date getStartTime() {
-        return this.startTime;
+        return startTime;
     }
-    
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
     public Date getEndTime() {
-        return this.endTime;
+        return endTime;
     }
-    
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     public Date getPublishTime() {
-        return this.publishTime;
+        return publishTime;
     }
-    
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
     public FacebookApplication getApplication() {
-        return this.application;
+        return application;
     }
-    
-    public FacebookMusicData getSong() {
-        return this.song;
+
+    public void setApplication(FacebookApplication application) {
+        this.application = application;
     }
-    
-    public FacebookMusicData getMusician() {
-        return this.musician;
-    }
-    
-    public FacebookMusicData getRadioStation() {
-        return this.radioStation;
-    }
-    
+
     public String getType() {
-        return this.type;
+        return type;
     }
-    
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Boolean getNoFeedStory() {
-        return this.noFeedStory;
+        return noFeedStory;
+    }
+
+    public void setNoFeedStory(Boolean noFeedStory) {
+        this.noFeedStory = noFeedStory;
+    }
+
+    public FacebookMusicData getSong() {
+        return song;
+    }
+
+    public void setSong(FacebookMusicData song) {
+        this.song = song;
+    }
+
+    public FacebookMusicData getMusician() {
+        return musician;
+    }
+
+    public void setMusician(FacebookMusicData musician) {
+        this.musician = musician;
+    }
+
+    public FacebookMusicData getRadioStation() {
+        return radioStation;
+    }
+
+    public void setRadioStation(FacebookMusicData radioStation) {
+        this.radioStation = radioStation;
     }
 }

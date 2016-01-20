@@ -15,8 +15,7 @@
  */
 package org.pac4j.oauth.profile.linkedin2;
 
-import org.pac4j.oauth.profile.XmlHelper;
-import org.pac4j.oauth.profile.XmlObject;
+import java.io.Serializable;
 
 /**
  * This class represents a LinkedIn company.
@@ -24,25 +23,27 @@ import org.pac4j.oauth.profile.XmlObject;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Company extends XmlObject {
+public class LinkedIn2Company implements Serializable {
     
     private static final long serialVersionUID = -2516111031032736648L;
     
     private String name;
     
     private String industry;
-    
-    @Override
-    protected void buildFromXml(final String xml) {
-        this.name = XmlHelper.get(xml, "name");
-        this.industry = XmlHelper.get(xml, "industry");
-    }
-    
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getIndustry() {
-        return this.industry;
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
     }
 }

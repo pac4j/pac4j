@@ -15,8 +15,14 @@
  */
 package org.pac4j.oauth.profile.yahoo;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.GenderConverter;
+import org.pac4j.oauth.profile.converter.JsonConverter;
+import org.pac4j.oauth.profile.converter.JsonListConverter;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the Yahoo profile.
@@ -24,9 +30,10 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class YahooAttributesDefinition extends OAuthAttributesDefinition {
+public class YahooAttributesDefinition extends AttributesDefinition {
     
     public static final String ABOUT_ME = "aboutMe";
+    public static final String AGE_CATEGORY = "ageCategory";
     public static final String ADDRESSES = "addresses";
     public static final String BIRTH_YEAR = "birthYear";
     public static final String BIRTHDATE = "birthdate";
@@ -50,27 +57,21 @@ public class YahooAttributesDefinition extends OAuthAttributesDefinition {
     public static final String URI = "uri";
     
     public YahooAttributesDefinition() {
-        addAttribute(ABOUT_ME, Converters.stringConverter);
-        addAttribute(ADDRESSES, YahooConverters.listAddressConverter);
-        addAttribute(BIRTH_YEAR, Converters.integerConverter);
-        addAttribute(BIRTHDATE, YahooConverters.birthdateConverter);
-        addAttribute(CREATED, YahooConverters.dateConverter);
-        addAttribute(DISPLAY_AGE, Converters.integerConverter);
-        addAttribute(DISCLOSURES, YahooConverters.listDisclosureConverter);
-        addAttribute(EMAILS, YahooConverters.listEmailConverter);
-        addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(GENDER, YahooConverters.genderConverter);
-        addAttribute(GIVEN_NAME, Converters.stringConverter);
-        addAttribute(IMAGE, YahooConverters.imageConverter);
-        addAttribute(INTERESTS, YahooConverters.listInterestConverter);
-        addAttribute(IS_CONNECTED, Converters.booleanConverter);
-        addAttribute(LANG, Converters.localeConverter);
-        addAttribute(LOCATION, Converters.stringConverter);
-        addAttribute(MEMBER_SINCE, YahooConverters.dateConverter);
-        addAttribute(NICKNAME, Converters.stringConverter);
-        addAttribute(PROFILE_URL, Converters.stringConverter);
-        addAttribute(TIME_ZONE, Converters.stringConverter);
-        addAttribute(UPDATED, YahooConverters.dateConverter);
-        addAttribute(URI, Converters.stringConverter);
+        Arrays.stream(new String[] {ABOUT_ME, FAMILY_NAME, GIVEN_NAME, LOCATION, NICKNAME, PROFILE_URL, TIME_ZONE, URI, AGE_CATEGORY})
+                .forEach(a -> primary(a, Converters.STRING));
+        primary(IS_CONNECTED, Converters.BOOLEAN);
+        primary(BIRTH_YEAR, Converters.INTEGER);
+        primary(LANG, Converters.LOCALE);
+        primary(DISPLAY_AGE, Converters.INTEGER);
+        primary(BIRTHDATE, new FormattedDateConverter("MM/dd"));
+        primary(ADDRESSES, new JsonListConverter(YahooAddress.class, YahooAddress[].class));
+        primary(DISCLOSURES, new JsonListConverter(YahooDisclosure.class, YahooDisclosure[].class));
+        primary(EMAILS, new JsonListConverter(YahooEmail.class, YahooEmail[].class));
+        primary(GENDER, new GenderConverter("m", "f"));
+        primary(IMAGE, new JsonConverter<>(YahooImage.class));
+        primary(INTERESTS, new JsonListConverter(YahooInterest.class, YahooInterest[].class));
+        primary(CREATED, Converters.DATE_TZ_RFC822);
+        primary(MEMBER_SINCE, Converters.DATE_TZ_RFC822);
+        primary(UPDATED, Converters.DATE_TZ_RFC822);
     }
 }

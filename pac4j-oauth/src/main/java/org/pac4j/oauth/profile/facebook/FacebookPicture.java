@@ -15,11 +15,8 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook picture.
@@ -32,20 +29,23 @@ public final class FacebookPicture extends JsonObject {
     private static final long serialVersionUID = -797546775636792491L;
     
     private String url;
-    
+
+    @JsonProperty("is_silhouette")
     private Boolean isSilhouette;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.url = (String) JsonHelper.convert(Converters.stringConverter, json, "url");
-        this.isSilhouette = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "is_silhouette");
-    }
-    
+
     public String getUrl() {
-        return this.url;
+        return url;
     }
-    
-    public Boolean getIsSilhouette() {
-        return this.isSilhouette;
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Boolean getSilhouette() {
+        return isSilhouette;
+    }
+
+    public void setSilhouette(Boolean silhouette) {
+        isSilhouette = silhouette;
     }
 }

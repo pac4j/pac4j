@@ -15,8 +15,11 @@
  */
 package org.pac4j.oauth.profile.paypal;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.oauth.profile.converter.JsonConverter;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the PayPal profile.
@@ -24,7 +27,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.4.2
  */
-public class PayPalAttributesDefinition extends OAuthAttributesDefinition {
+public class PayPalAttributesDefinition extends AttributesDefinition {
     
     public static final String ADDRESS = "address";
     public static final String FAMILY_NAME = "family_name";
@@ -36,13 +39,9 @@ public class PayPalAttributesDefinition extends OAuthAttributesDefinition {
     public static final String GIVEN_NAME = "given_name";
     
     public PayPalAttributesDefinition() {
-        addAttribute(ADDRESS, PayPalConverters.addressConverter);
-        addAttribute(FAMILY_NAME, Converters.stringConverter);
-        addAttribute(LANGUAGE, Converters.localeConverter);
-        addAttribute(LOCALE, Converters.localeConverter);
-        addAttribute(ZONEINFO, Converters.stringConverter);
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(EMAIL, Converters.stringConverter);
-        addAttribute(GIVEN_NAME, Converters.stringConverter);
+        Arrays.stream(new String[] {FAMILY_NAME, ZONEINFO, NAME, EMAIL, GIVEN_NAME}).forEach(a -> primary(a, Converters.STRING));
+        primary(ADDRESS, new JsonConverter<>(PayPalAddress.class));
+        primary(LANGUAGE, Converters.LOCALE);
+        primary(LOCALE, Converters.LOCALE);
     }
 }

@@ -54,5 +54,4 @@ public class OrcidApi20 extends DefaultApi20 {
     public Verb getAccessTokenVerb() {
         return Verb.POST;
     }
-
 }

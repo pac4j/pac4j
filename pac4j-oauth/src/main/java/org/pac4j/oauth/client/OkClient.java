@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
 import org.pac4j.oauth.profile.ok.OkProfile;
 import org.scribe.builder.api.OkApi;
@@ -55,11 +54,6 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
-    }
-
-    @Override
     protected String getProfileUrl(Token accessToken) {
         String baseParams =
                 "application_key=" + publicKey +
@@ -81,9 +75,9 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         final OkProfile profile = new OkProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
-            profile.setId(JsonHelper.get(userNode, OkAttributesDefinition.UID));
-            for (final String attribute : OAuthAttributesDefinitions.okDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
+            profile.setId(JsonHelper.getElement(userNode, OkAttributesDefinition.UID));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(userNode, attribute));
             }
         }
         return profile;

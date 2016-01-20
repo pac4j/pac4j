@@ -18,9 +18,8 @@ package org.pac4j.oauth.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 import org.scribe.builder.api.GoogleApi20;
 import org.scribe.model.OAuthConfig;
@@ -35,7 +34,6 @@ import org.scribe.oauth.StateOAuth20ServiceImpl;
  * <p>It returns a {@link org.pac4j.oauth.profile.google2.Google2Profile}.</p>
  * <p>More information at https://developers.google.com/accounts/docs/OAuth2Login</p>
  *
- * @see org.pac4j.oauth.profile.google2.Google2Profile
  * @author Jerome Leleu
  * @since 1.2.0
  */
@@ -94,9 +92,9 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
         final Google2Profile profile = new Google2Profile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.google2Definition.getPrincipalAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

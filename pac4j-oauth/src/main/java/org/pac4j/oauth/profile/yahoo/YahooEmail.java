@@ -15,11 +15,7 @@
  */
 package org.pac4j.oauth.profile.yahoo;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo email.
@@ -38,28 +34,36 @@ public final class YahooEmail extends JsonObject {
     private String handle;
     
     private String type;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (Integer) JsonHelper.convert(Converters.integerConverter, json, "id");
-        this.primary = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "primary");
-        this.handle = (String) JsonHelper.convert(Converters.stringConverter, json, "handle");
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
-    }
-    
+
     public Integer getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Boolean getPrimary() {
-        return this.primary;
+        return primary;
     }
-    
+
+    public void setPrimary(Boolean primary) {
+        this.primary = primary;
+    }
+
     public String getHandle() {
-        return this.handle;
+        return handle;
     }
-    
+
+    public void setHandle(String handle) {
+        this.handle = handle;
+    }
+
     public String getType() {
-        return this.type;
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
