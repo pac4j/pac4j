@@ -1,6 +1,5 @@
 package org.pac4j.test.cas.client.rest;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
@@ -12,6 +11,8 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.test.cas.client.CasClientIT;
+
+import java.util.Base64;
 
 /**
  * The {@link CasClientRestProtocolIT} is responsible for...
@@ -53,7 +54,7 @@ public class CasClientRestProtocolIT extends CasClientIT {
 
         final MockWebContext context = MockWebContext.create();
         final String token = creds.getUsername() + ":" + creds.getPassword();
-        context.addRequestHeader("cas-rest", Base64.encodeBase64String(token.getBytes()));
+        context.addRequestHeader("cas-rest", Base64.getEncoder().encodeToString(token.getBytes()));
 
         final HttpTGTProfile profile = client.requestTicketGrantingTicket(context);
         final CasCredentials casCreds = client.requestServiceTicket("http://www.pac4j.org/", profile);

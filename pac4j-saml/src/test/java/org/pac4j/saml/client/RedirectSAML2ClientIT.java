@@ -18,7 +18,6 @@ package org.pac4j.saml.client;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -36,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Base64;
 import java.util.List;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -134,7 +134,7 @@ public final class RedirectSAML2ClientIT extends SAML2ClientIT implements TestsC
     private String getInflatedAuthnRequest(final String location) throws Exception {
         final List<NameValuePair> pairs = URLEncodedUtils.parse(URI.create(location), "UTF-8");
         final Inflater inflater = new Inflater(true);
-        final byte[] decodedRequest = Base64.decodeBase64(pairs.get(0).getValue());
+        final byte[] decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
         final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
         final InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));

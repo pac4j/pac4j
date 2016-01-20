@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.client.indirect;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
@@ -24,6 +23,8 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+
+import java.util.Base64;
 
 import static org.junit.Assert.*;
 
@@ -101,7 +102,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
     public void testGetCredentialsMissingSemiColon() throws RequiresHttpAction {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = getContextWithAuthorizationHeader(
-                "Basic " + Base64.encodeBase64String("fake".getBytes()));
+                "Basic " + Base64.getEncoder().encodeToString("fake".getBytes()));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
@@ -110,7 +111,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + PASSWORD;
         final MockWebContext context = getContextWithAuthorizationHeader("Basic "
-                + Base64.encodeBase64String(header.getBytes()));
+                + Base64.getEncoder().encodeToString(header.getBytes()));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
@@ -120,7 +121,7 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
         final String header = USERNAME + ":" + USERNAME;
         final UsernamePasswordCredentials credentials = basicAuthClient.getCredentials(
                 getContextWithAuthorizationHeader(
-                        "Basic " + Base64.encodeBase64String(header.getBytes())));
+                        "Basic " + Base64.getEncoder().encodeToString(header.getBytes())));
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }

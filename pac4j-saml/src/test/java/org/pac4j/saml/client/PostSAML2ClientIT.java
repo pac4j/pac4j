@@ -23,7 +23,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.NotImplementedException;
 import org.junit.Test;
@@ -42,6 +41,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.URL;
+import java.util.Base64;
 
 public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConstants {
 
@@ -79,7 +79,7 @@ public final class PostSAML2ClientIT extends SAML2ClientIT implements TestsConst
         }
         final HtmlForm form = page.getForms().get(0);
         final HtmlInput samlRequest = form.getInputByName("SAMLRequest");
-        return new String(Base64.decodeBase64(samlRequest.getValueAttribute()));
+        return new String(Base64.getDecoder().decode(samlRequest.getValueAttribute()));
     }
 
     @Test

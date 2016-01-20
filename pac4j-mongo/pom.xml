@@ -56,11 +56,6 @@
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<!-- for testing -->
 	</dependencies>
 
