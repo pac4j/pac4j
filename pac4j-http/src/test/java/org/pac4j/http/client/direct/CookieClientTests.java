@@ -16,7 +16,6 @@
 
 package org.pac4j.http.client.direct;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.MockWebContext;
@@ -27,6 +26,8 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
+
+import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
 
@@ -72,7 +73,7 @@ public class CookieClientTests implements TestsConstants {
         client.setCookieName(USERNAME);
         final MockWebContext context = MockWebContext.create();
 
-        final Cookie c = new Cookie(USERNAME, Base64.encodeBase64String(getClass().getName().getBytes()));
+        final Cookie c = new Cookie(USERNAME, Base64.getEncoder().encodeToString(getClass().getName().getBytes()));
         context.getRequestCookies().add(c);
         final TokenCredentials credentials = client.getCredentials(context);
         final UserProfile profile = client.getUserProfile(credentials, context);

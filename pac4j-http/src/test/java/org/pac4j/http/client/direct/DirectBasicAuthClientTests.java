@@ -14,7 +14,6 @@
    limitations under the License.
  */package org.pac4j.http.client.direct;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
@@ -24,6 +23,8 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
+
+import java.util.Base64;
 
 import static org.junit.Assert.*;
 
@@ -58,7 +59,8 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         final MockWebContext context = MockWebContext.create();
         final String header = USERNAME + ":" + USERNAME;
-        context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Basic " + Base64.encodeBase64String(header.getBytes()));
+        context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
+                "Basic " + Base64.getEncoder().encodeToString(header.getBytes()));
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final UserProfile profile = client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());
