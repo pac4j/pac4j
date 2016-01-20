@@ -17,11 +17,9 @@ package org.pac4j.oauth.profile.facebook;
 
 import java.util.Date;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook work.
@@ -30,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.0.0
  */
 public final class FacebookWork extends JsonObject {
-    
+
     private static final long serialVersionUID = -5698634125512204910L;
     
     private FacebookObject employer;
@@ -40,42 +38,60 @@ public final class FacebookWork extends JsonObject {
     private FacebookObject position;
     
     private String description;
-    
+
+    @JsonProperty("start_date")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM")
     private Date startDate;
-    
+
+    @JsonProperty("end_date")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM")
     private Date endDate;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.employer = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "employer");
-        this.location = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "location");
-        this.position = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "position");
-        this.description = (String) JsonHelper.convert(Converters.stringConverter, json, "description");
-        this.startDate = (Date) JsonHelper.convert(FacebookConverters.workDateConverter, json, "start_date");
-        this.endDate = (Date) JsonHelper.convert(FacebookConverters.workDateConverter, json, "end_date");
-    }
-    
+
     public FacebookObject getEmployer() {
-        return this.employer;
+        return employer;
     }
-    
+
+    public void setEmployer(FacebookObject employer) {
+        this.employer = employer;
+    }
+
     public FacebookObject getLocation() {
-        return this.location;
+        return location;
     }
-    
+
+    public void setLocation(FacebookObject location) {
+        this.location = location;
+    }
+
     public FacebookObject getPosition() {
-        return this.position;
+        return position;
     }
-    
+
+    public void setPosition(FacebookObject position) {
+        this.position = position;
+    }
+
     public String getDescription() {
-        return this.description;
+        return description;
     }
-    
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Date getStartDate() {
-        return this.startDate;
+        return startDate;
     }
-    
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     public Date getEndDate() {
-        return this.endDate;
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

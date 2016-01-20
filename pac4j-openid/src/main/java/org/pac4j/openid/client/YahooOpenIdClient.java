@@ -74,7 +74,7 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
-            for (final String name : OpenIdAttributesDefinitions.yahooOpenIdDefinition.getAllAttributes()) {
+            for (final String name : OpenIdAttributesDefinitions.yahooOpenIdDefinition.getPrimaryAttributes()) {
                 profile.addAttribute(name, fetchResp.getAttributeValue(name));
             }
         }

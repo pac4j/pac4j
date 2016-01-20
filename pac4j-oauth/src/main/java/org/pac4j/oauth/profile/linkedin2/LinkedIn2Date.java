@@ -15,9 +15,7 @@
  */
 package org.pac4j.oauth.profile.linkedin2;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.XmlHelper;
-import org.pac4j.oauth.profile.XmlObject;
+import java.io.Serializable;
 
 /**
  * This class represents a LinkedIn date.
@@ -25,25 +23,27 @@ import org.pac4j.oauth.profile.XmlObject;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Date extends XmlObject {
+public class LinkedIn2Date implements Serializable {
     
     private static final long serialVersionUID = 7741232980013691057L;
     
     private Integer year;
     
     private Integer month;
-    
-    @Override
-    protected void buildFromXml(final String xml) {
-        this.year = (Integer) XmlHelper.convert(Converters.integerConverter, xml, "year");
-        this.month = (Integer) XmlHelper.convert(Converters.integerConverter, xml, "month");
-    }
-    
+
     public Integer getYear() {
-        return this.year;
+        return year;
     }
-    
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
     public Integer getMonth() {
-        return this.month;
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 }

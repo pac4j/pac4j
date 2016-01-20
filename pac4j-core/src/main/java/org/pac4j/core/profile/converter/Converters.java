@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.profile.converter;
 
-
 /**
  * This class defines the default converters.
  * 
@@ -24,21 +23,22 @@ package org.pac4j.core.profile.converter;
  */
 public final class Converters {
     
-    public final static LocaleConverter localeConverter = new LocaleConverter();
+    public final static LocaleConverter LOCALE = new LocaleConverter();
     
-    public final static StringConverter stringConverter = new StringConverter();
+    public final static StringConverter STRING = new StringConverter();
     
-    public final static BooleanConverter booleanConverter = new BooleanConverter();
+    public final static BooleanConverter BOOLEAN = new BooleanConverter();
     
-    public final static IntegerConverter integerConverter = new IntegerConverter();
+    public final static IntegerConverter INTEGER = new IntegerConverter();
     
-    public final static LongConverter longConverter = new LongConverter();
+    public final static LongConverter LONG = new LongConverter();
     
-    public final static ColorConverter colorConverter = new ColorConverter();
+    public final static ColorConverter COLOR = new ColorConverter();
     
-    public final static GenderConverter genderConverter = new GenderConverter("male", "female");
+    public final static GenderConverter GENDER = new GenderConverter("male", "female");
     
-    public final static FormattedDateConverter dateConverter = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz");
-    
-    public final static StringReplaceConverter urlConverter = new StringReplaceConverter("\\/", "/");
+    public final static FormattedDateConverter DATE_TZ_GENERAL = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz");
+    public final static FormattedDateConverter DATE_TZ_RFC822 = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    public final static StringReplaceConverter URL = new StringReplaceConverter("\\/", "/");
 }

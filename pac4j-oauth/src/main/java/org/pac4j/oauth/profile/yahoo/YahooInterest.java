@@ -17,12 +17,7 @@ package org.pac4j.oauth.profile.yahoo;
 
 import java.util.List;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
-import org.pac4j.oauth.profile.converter.JsonConverters;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Yahoo interest.
@@ -37,20 +32,20 @@ public final class YahooInterest extends JsonObject {
     private List<String> declaredInterests;
     
     private String interestCategory;
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.interestCategory = (String) JsonHelper.convert(Converters.stringConverter, json, "interestCategory");
-        this.declaredInterests = (List<String>) JsonHelper.convert(JsonConverters.listStringConverter, json,
-                                                                   "declaredInterests");
-    }
-    
+
     public List<String> getDeclaredInterests() {
-        return this.declaredInterests;
+        return declaredInterests;
     }
-    
+
+    public void setDeclaredInterests(List<String> declaredInterests) {
+        this.declaredInterests = declaredInterests;
+    }
+
     public String getInterestCategory() {
-        return this.interestCategory;
+        return interestCategory;
+    }
+
+    public void setInterestCategory(String interestCategory) {
+        this.interestCategory = interestCategory;
     }
 }

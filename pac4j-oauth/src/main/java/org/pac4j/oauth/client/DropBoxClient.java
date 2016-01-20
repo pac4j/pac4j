@@ -16,9 +16,9 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.scribe.builder.api.DropBoxApi;
 import org.scribe.model.OAuthConfig;
@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.dropbox.DropBoxProfile}.</p>
  * <p>More information at https://www.dropbox.com/developers/reference/api#account-info</p>
  * 
- * @see org.pac4j.oauth.profile.dropbox.DropBoxProfile
  * @author Jerome Leleu
  * @since 1.2.0
  */
@@ -62,9 +61,6 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
         return "https://api.dropbox.com/1/account/info";
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         // get tokenRequest from session
@@ -81,23 +77,19 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     protected DropBoxProfile extractUserProfile(final String body) {
         final DropBoxProfile profile = new DropBoxProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
+        final AttributesDefinition definition = profile.getAttributesDefinition();
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "uid"));
-            for (final String attribute : OAuthAttributesDefinitions.dropBoxDefinition.getPrincipalAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "uid"));
+            for (final String attribute : definition.getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
-            json = (JsonNode) JsonHelper.get(json, "quota_info");
+            json = (JsonNode) JsonHelper.getElement(json, "quota_info");
             if (json != null) {
-                for (final String attribute : OAuthAttributesDefinitions.dropBoxDefinition.getOtherAttributes()) {
-                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                for (final String attribute : definition.getSecondaryAttributes()) {
+                    profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

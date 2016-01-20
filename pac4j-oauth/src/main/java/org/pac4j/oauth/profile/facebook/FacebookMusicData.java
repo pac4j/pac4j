@@ -15,11 +15,7 @@
  */
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.Serializable;
 
 /**
  * This class represents a Facebook music data : song, musician or radio_station.
@@ -27,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class FacebookMusicData extends JsonObject {
+public final class FacebookMusicData implements Serializable {
     
     private static final long serialVersionUID = 3242237840580051260L;
     
@@ -38,33 +34,36 @@ public final class FacebookMusicData extends JsonObject {
     private String type;
     
     private String title;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.url = (String) JsonHelper.convert(Converters.stringConverter, json, "url");
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
-        this.title = (String) JsonHelper.convert(Converters.stringConverter, json, "title");
-    }
-    
+
     public String getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getUrl() {
-        return this.url;
+        return url;
     }
-    
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getType() {
-        return this.type;
+        return type;
     }
-    
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getTitle() {
-        return this.title;
+        return title;
     }
-    
-    @Override
-    protected boolean isRootObject() {
-        return false;
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

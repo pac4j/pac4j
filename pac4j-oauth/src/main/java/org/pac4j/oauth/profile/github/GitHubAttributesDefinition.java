@@ -15,8 +15,11 @@
  */
 package org.pac4j.oauth.profile.github;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.oauth.profile.converter.JsonConverter;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the GitHub profile.
@@ -24,7 +27,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubAttributesDefinition extends OAuthAttributesDefinition {
+public class GitHubAttributesDefinition extends AttributesDefinition {
     
     public static final String TYPE = "type";
     public static final String BLOG = "blog";
@@ -53,22 +56,16 @@ public class GitHubAttributesDefinition extends OAuthAttributesDefinition {
     public static final String LOCATION = "location";
     
     public GitHubAttributesDefinition() {
-        String[] names = new String[] {
+        Arrays.asList(new String[] {
             URL, COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, GRAVATAR_ID, AVATAR_URL, HTML_URL, BIO
-        };
-        for (final String name : names) {
-            addAttribute(name, Converters.stringConverter);
-        }
-        names = new String[] {
+        }).forEach(a -> primary(a, Converters.STRING));
+        Arrays.asList(new String[] {
             FOLLOWING, PUBLIC_REPOS, PUBLIC_GISTS, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPOS, TOTAL_PRIVATE_REPOS,
             PRIVATE_GISTS, FOLLOWERS
-        };
-        for (final String name : names) {
-            addAttribute(name, Converters.integerConverter);
-        }
-        addAttribute(HIREABLE, Converters.booleanConverter);
-        addAttribute(CREATED_AT, GitHubConverters.dateConverter);
-        addAttribute(UPDATED_AT, GitHubConverters.dateConverter);
-        addAttribute(PLAN, GitHubConverters.planConverter);
+        }).forEach(a -> primary(a, Converters.INTEGER));
+        primary(HIREABLE, Converters.BOOLEAN);
+        primary(CREATED_AT, Converters.DATE_TZ_RFC822);
+        primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
+        primary(PLAN, new JsonConverter<>(GitHubPlan.class));
     }
 }

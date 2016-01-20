@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.scribe.builder.api.WindowsLiveApi;
 import org.scribe.model.OAuthConfig;
@@ -32,7 +31,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.windowslive.WindowsLiveProfile}.</p>
  * <p>More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx</p>
  * 
- * @see org.pac4j.oauth.profile.windowslive.WindowsLiveProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */
@@ -66,16 +64,11 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
         final WindowsLiveProfile profile = new WindowsLiveProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

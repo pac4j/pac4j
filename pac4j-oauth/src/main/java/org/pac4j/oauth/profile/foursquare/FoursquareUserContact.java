@@ -15,8 +15,6 @@
  */
 package org.pac4j.oauth.profile.foursquare;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.JsonObject;
 
 /**
@@ -34,22 +32,27 @@ public class FoursquareUserContact extends JsonObject {
     private String twitter;
     private String facebook;
 
-    @Override
-    protected void buildFromJson(JsonNode json) {
-        email = (String) JsonHelper.get(json, "email");
-        twitter = (String) JsonHelper.get(json, "twitter");
-        facebook = (String) JsonHelper.get(json, "facebook");
-    }
-
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getTwitter() {
         return twitter;
     }
 
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
     public String getFacebook() {
         return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
     }
 }

@@ -148,7 +148,7 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>2.5.1</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jasig.cas.client</groupId>
@@ -488,5 +488,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<jackson.version>2.7.0</jackson.version>
 	</properties>
 </project>

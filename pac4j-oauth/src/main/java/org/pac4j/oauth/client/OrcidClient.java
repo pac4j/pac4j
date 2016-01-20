@@ -15,10 +15,9 @@
  */
 package org.pac4j.oauth.client;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.XmlHelper;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
 import org.scribe.builder.api.OrcidApi20;
 import org.scribe.exceptions.OAuthException;
@@ -33,7 +32,6 @@ import org.scribe.tokens.OrcidToken;
  * <p>It returns a {@link org.pac4j.oauth.profile.orcid.OrcidProfile}.</p>
  * <p>More information at http://support.orcid.org/knowledgebase/articles/175079-tutorial-retrieve-data-from-an-orcid-record-with</p>
  *
- * @see org.pac4j.oauth.profile.orcid.OrcidProfile
  * @author Jens Tinglev
  * @since 1.6.0
  */
@@ -97,8 +95,8 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     @Override
     protected OrcidProfile extractUserProfile(String body) {
         OrcidProfile profile = new OrcidProfile();
-        for(final String attribute : OAuthAttributesDefinitions.orcidDefinition.getAllAttributes()) {
-            profile.addAttribute(attribute, XmlHelper.get(body, attribute));
+        for(final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+            profile.addAttribute(attribute, StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
         }
         return profile;
     }

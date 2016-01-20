@@ -15,11 +15,8 @@
  */
 package org.pac4j.oauth.profile.github;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a GitHub plan.
@@ -36,30 +33,39 @@ public final class GitHubPlan extends JsonObject {
     private Integer collaborators;
     
     private Integer space;
-    
+
+    @JsonProperty("private_repos")
     private Integer privateRepos;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.collaborators = (Integer) JsonHelper.convert(Converters.integerConverter, json, "collaborators");
-        this.space = (Integer) JsonHelper.convert(Converters.integerConverter, json, "space");
-        this.privateRepos = (Integer) JsonHelper.convert(Converters.integerConverter, json, "private_repos");
-    }
-    
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Integer getCollaborators() {
-        return this.collaborators;
+        return collaborators;
     }
-    
+
+    public void setCollaborators(Integer collaborators) {
+        this.collaborators = collaborators;
+    }
+
     public Integer getSpace() {
-        return this.space;
+        return space;
     }
-    
+
+    public void setSpace(Integer space) {
+        this.space = space;
+    }
+
     public Integer getPrivateRepos() {
-        return this.privateRepos;
+        return privateRepos;
+    }
+
+    public void setPrivateRepos(Integer privateRepos) {
+        this.privateRepos = privateRepos;
     }
 }

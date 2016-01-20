@@ -15,8 +15,8 @@
  */
 package org.pac4j.oauth.profile.dropbox;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
 
 /**
  * This class defines the attributes of the DropBox profile.
@@ -24,7 +24,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxAttributesDefinition extends OAuthAttributesDefinition {
+public class DropBoxAttributesDefinition extends AttributesDefinition {
     
     public static final String REFERRAL_LINK = "referral_link";
     public static final String DISPLAY_NAME = "display_name";
@@ -34,11 +34,11 @@ public class DropBoxAttributesDefinition extends OAuthAttributesDefinition {
     public static final String NORMAL = "normal";
     
     public DropBoxAttributesDefinition() {
-        addAttribute(REFERRAL_LINK, Converters.stringConverter);
-        addAttribute(DISPLAY_NAME, Converters.stringConverter);
-        addAttribute(COUNTRY, Converters.localeConverter);
-        addAttribute(SHARED, Converters.longConverter, false);
-        addAttribute(QUOTA, Converters.longConverter, false);
-        addAttribute(NORMAL, Converters.longConverter, false);
+        primary(REFERRAL_LINK, Converters.STRING);
+        primary(DISPLAY_NAME, Converters.STRING);
+        primary(COUNTRY, Converters.LOCALE);
+        secondary(SHARED, Converters.LONG);
+        secondary(QUOTA, Converters.LONG);
+        secondary(NORMAL, Converters.LONG);
     }
 }

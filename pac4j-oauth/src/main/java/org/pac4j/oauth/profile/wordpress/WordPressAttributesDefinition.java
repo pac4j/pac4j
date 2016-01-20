@@ -15,8 +15,9 @@
  */
 package org.pac4j.oauth.profile.wordpress;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.oauth.profile.converter.JsonConverter;
 
 /**
  * This class defines the attributes of the WordPress profile.
@@ -24,7 +25,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WordPressAttributesDefinition extends OAuthAttributesDefinition {
+public class WordPressAttributesDefinition extends AttributesDefinition {
     
     public static final String DISPLAY_NAME = "display_name";
     public static final String USERNAME = "username";
@@ -35,12 +36,12 @@ public class WordPressAttributesDefinition extends OAuthAttributesDefinition {
     public static final String LINKS = "links";
     
     public WordPressAttributesDefinition() {
-        addAttribute(DISPLAY_NAME, Converters.stringConverter);
-        addAttribute(USERNAME, Converters.stringConverter);
-        addAttribute(EMAIL, Converters.stringConverter);
-        addAttribute(PRIMARY_BLOG, Converters.integerConverter);
-        addAttribute(AVATAR_URL, Converters.urlConverter);
-        addAttribute(PROFILE_URL, Converters.urlConverter);
-        addAttribute(LINKS, WordPressConverters.linksConverter, false);
+        primary(DISPLAY_NAME, Converters.STRING);
+        primary(USERNAME, Converters.STRING);
+        primary(EMAIL, Converters.STRING);
+        primary(PRIMARY_BLOG, Converters.INTEGER);
+        primary(AVATAR_URL, Converters.URL);
+        primary(PROFILE_URL, Converters.URL);
+        secondary(LINKS, new JsonConverter<>(WordPressLinks.class));
     }
 }

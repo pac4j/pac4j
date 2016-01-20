@@ -32,9 +32,9 @@ public class YahooOpenIdAttributesDefinition extends AttributesDefinition {
     public static final String PROFILEPICTURE = "picture_url";
     
     public YahooOpenIdAttributesDefinition() {
-        addAttribute(EMAIL, Converters.stringConverter);
-        addAttribute(LANGUAGE, Converters.localeConverter);
-        addAttribute(FULLNAME, Converters.stringConverter);
-        addAttribute(PROFILEPICTURE, Converters.genderConverter);
+        primary(EMAIL, Converters.STRING);
+        primary(LANGUAGE, Converters.LOCALE);
+        primary(FULLNAME, Converters.STRING);
+        primary(PROFILEPICTURE, Converters.GENDER);
     }
 }

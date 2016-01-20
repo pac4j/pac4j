@@ -15,11 +15,8 @@
  */
 package org.pac4j.oauth.profile.google2;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents an email object for Google.
@@ -31,20 +28,23 @@ public final class Google2Email extends JsonObject {
 
     private static final long serialVersionUID = 3273984944635729083L;
 
+    @JsonProperty("value")
     private String email;
     private String type;
 
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.email = (String) JsonHelper.convert(Converters.stringConverter, json, "value");
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
+    public String getEmail() {
+        return email;
     }
 
-    public String getEmail() {
-        return this.email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getType() {
-        return this.type;
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

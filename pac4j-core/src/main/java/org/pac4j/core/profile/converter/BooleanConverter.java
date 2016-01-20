@@ -15,7 +15,6 @@
  */
 package org.pac4j.core.profile.converter;
 
-
 /**
  * This class converts a String into a Boolean or returns the Boolean in input.
  * 

@@ -15,47 +15,17 @@
  */
 package org.pac4j.oauth.profile;
 
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.RawDataObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.Serializable;
 
 /**
- * This class is an object which can be built from JSON.
+ * Return an Object as a JSON string.
  * 
  * @author Jerome Leleu
- * @since 1.1.0
+ * @since 1.9.0
  */
-public abstract class JsonObject extends RawDataObject {
-    
-    private static final long serialVersionUID = 4261523645471006190L;
-    
-    /**
-     * Build an object from JSON (String or JsonNode).
-     * 
-     * @param json json
-     */
-    public final void buildFrom(final Object json) {
-        if (json != null) {
-            if (json instanceof String) {
-                final String s = (String) json;
-                buildFromJson(JsonHelper.getFirstNode(s));
-            } else if (json instanceof JsonNode) {
-                final JsonNode jsonNode = (JsonNode) json;
-                if (keepRawData && isRootObject()) {
-                    this.data = jsonNode.toString();
-                }
-                buildFromJson(jsonNode);
-            } else {
-                throw new TechnicalException(json.getClass() + " not supported");
-            }
-        }
+public abstract class JsonObject implements Serializable {
+
+    public String toString() {
+        return JsonHelper.toJSONString(this);
     }
-    
-    /**
-     * Build an object from a JsonNode.
-     * 
-     * @param json json
-     */
-    protected abstract void buildFromJson(JsonNode json);
 }

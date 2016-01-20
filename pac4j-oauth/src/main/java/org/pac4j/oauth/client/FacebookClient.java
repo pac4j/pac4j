@@ -24,9 +24,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.scribe.builder.api.ExtendedFacebookApi;
@@ -47,7 +46,7 @@ import org.scribe.oauth.StateOAuth20ServiceImpl;
  * <p>The <i>scope</i> can be defined to require permissions from the user and retrieve fields from Facebook, by using the
  * {@link #setScope(String)} method.</p>
  * <p>By default, the following <i>fields</i> are requested to Facebook : id, name, first_name, middle_name, last_name, gender, locale,
- * languages, link, username, third_party_id, timezone, updated_time, verified, bio, birthday, education, email, hometown, interested_in,
+ * languages, link, third_party_id, timezone, updated_time, verified, bio, birthday, education, email, hometown, interested_in,
  * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.</p>
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
@@ -56,7 +55,6 @@ import org.scribe.oauth.StateOAuth20ServiceImpl;
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
  * 
- * @see org.pac4j.oauth.profile.facebook.FacebookProfile
  * @author Jerome Leleu
  * @author Mehdi BEN HAJ ABBES
  * @since 1.0.0
@@ -167,9 +165,9 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
         final FacebookProfile profile = new FacebookProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.facebookDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
             extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
             extractData(profile, json, FacebookAttributesDefinition.MOVIES);
@@ -186,9 +184,9 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
     
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
-        final JsonNode data = (JsonNode) JsonHelper.get(json, name);
+        final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
-            profile.addAttribute(name, JsonHelper.get(data, "data"));
+            profile.addAttribute(name, JsonHelper.getElement(data, "data"));
         }
     }
     

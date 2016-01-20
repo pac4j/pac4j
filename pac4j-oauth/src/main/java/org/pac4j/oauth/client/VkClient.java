@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.vk.VkProfile;
 import org.scribe.builder.api.VkApi;
 import org.scribe.model.OAuthConfig;
@@ -36,7 +35,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.vk.VkProfile}.</p>
  * <p>More information at https://vk.com/dev/users.get</p>
  * 
- * @see org.pac4j.oauth.profile.vk.VkProfile
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  * 
@@ -82,17 +80,12 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 		if (json != null) {
 			ArrayNode array = (ArrayNode) json.get("response");
 			JsonNode userNode = array.get(0);
-			profile.setId(JsonHelper.get(userNode, "uid"));
-			for (final String attribute : OAuthAttributesDefinitions.vkDefinition.getAllAttributes()) {
-				profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
+			profile.setId(JsonHelper.getElement(userNode, "uid"));
+			for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+				profile.addAttribute(attribute, JsonHelper.getElement(userNode, attribute));
 			}
 		}
 		return profile;
-	}
-
-	@Override
-	protected boolean hasBeenCancelled(final WebContext context) {
-		return false;
 	}
 
 	public String getScope() {

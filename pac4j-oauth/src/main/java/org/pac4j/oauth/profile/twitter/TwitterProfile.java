@@ -21,195 +21,23 @@ import java.util.Locale;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Color;
 import org.pac4j.oauth.profile.OAuth10Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Twitter with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oauth.client.TwitterClient}.</p>
- * <table summary="" border="1" cellspacing="2px">
- * <tr>
- * <th>Method :</th>
- * <th>From the JSON profile response :</th>
- * </tr>
- * <tr>
- * <th colspan="2">The attributes of the {@link org.pac4j.core.profile.CommonProfile}</th>
- * </tr>
- * <tr>
- * <td>String getEmail()</td>
- * <td>null</td>
- * </tr>
- * <tr>
- * <td>String getFirstName()</td>
- * <td>null</td>
- * </tr>
- * <tr>
- * <td>String getFamilyName()</td>
- * <td>null</td>
- * </tr>
- * <tr>
- * <td>String getDisplayName()</td>
- * <td>the <i>name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getUsername()</td>
- * <td>the <i>screen_name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Gender getGender()</td>
- * <td>{@link org.pac4j.core.profile.Gender#UNSPECIFIED}</td>
- * </tr>
- * <tr>
- * <td>Locale getLocale()</td>
- * <td>the <i>lang</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getPictureUrl()</td>
- * <td>the <i>profile_image_url</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileUrl()</td>
- * <td>the <i>url</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getLocation()</td>
- * <td>the <i>location</i> attribute</td>
- * </tr>
- * <tr>
- * <th colspan="2">More specific attributes</th>
- * </tr>
- * <tr>
- * <td>Boolean getContributorsEnabled()</td>
- * <td>the <i>contributors_enabled</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Date getCreatedAt()</td>
- * <td>the <i>created_at</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getDefaultProfile()</td>
- * <td>the <i>default_profile</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getDefaultProfileImage()</td>
- * <td>the <i>default_profile_image</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getDescription()</td>
- * <td>the <i>description</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Integer getFavouritesCount()</td>
- * <td>the <i>favourites_count</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getFollowRequestSent()</td>
- * <td>the <i>follow_request_sent</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Integer getFollowersCount()</td>
- * <td>the <i>followers_count</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getFollowing()</td>
- * <td>the <i>following</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Integer getFriendsCount()</td>
- * <td>the <i>friends_count</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getGeoEnabled()</td>
- * <td>the <i>geo_enabled</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getIsTranslator()</td>
- * <td>the <i>is_translator</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Integer getListedCount()</td>
- * <td>the <i>listed_count</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getNotifications()</td>
- * <td>the <i>notifications</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Color getProfileBackgroundColor()</td>
- * <td>the <i>profile_background_color</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileBackgroundImageUrl()</td>
- * <td>the <i>profile_background_image_url</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileBackgroundImageUrlHttps()</td>
- * <td>the <i>profile_background_image_url_https</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getProfileBackgroundTile()</td>
- * <td>the <i>profile_background_tile</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileImageUrlHttps()</td>
- * <td>the <i>profile_image_url_https</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Color getProfileLinkColor()</td>
- * <td>the <i>profile_link_color</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Color getProfileSidebarBorderColor()</td>
- * <td>the <i>profile_sidebar_border_color</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Color getProfileSidebarFillColor()</td>
- * <td>the <i>profile_sidebar_fill_color</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Color getProfileTextColor()</td>
- * <td>the <i>profile_text_color</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getProfileUseBackgroundImage()</td>
- * <td>the <i>profile_use_background_image</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getProtected()</td>
- * <td>the <i>protected</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getShowAllInlineMedia()</td>
- * <td>the <i>show_all_inline_media</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Integer getStatusesCount()</td>
- * <td>the <i>statuses_count</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getTimeZone()</td>
- * <td>the <i>time_zone</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Integer getUtcOffset()</td>
- * <td>the <i>utc_offset</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Boolean getVerified()</td>
- * <td>the <i>verified</i> attribute</td>
- * </tr>
- * </table>
- * 
- * @see org.pac4j.oauth.client.TwitterClient
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public class TwitterProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = -6473348745856820192L;
-    
+
+    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new TwitterAttributesDefinition();
+
     @Override
-    protected AttributesDefinition getAttributesDefinition() {
-        return OAuthAttributesDefinitions.twitterDefinition;
+    public AttributesDefinition getAttributesDefinition() {
+        return ATTRIBUTES_DEFINITION;
     }
     
     @Override

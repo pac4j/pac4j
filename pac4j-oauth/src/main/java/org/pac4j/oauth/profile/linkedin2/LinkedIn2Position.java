@@ -15,9 +15,8 @@
  */
 package org.pac4j.oauth.profile.linkedin2;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.XmlHelper;
-import org.pac4j.oauth.profile.XmlObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents a LinkedIn position.
@@ -25,7 +24,7 @@ import org.pac4j.oauth.profile.XmlObject;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Position extends XmlObject {
+public class LinkedIn2Position extends JsonObject {
     
     private static final long serialVersionUID = 5545320712620544612L;
     
@@ -34,51 +33,71 @@ public class LinkedIn2Position extends XmlObject {
     private String title;
     
     private String summary;
-    
+
+    @JsonProperty("isCurrent")
     private Boolean isCurrent;
-    
+
+    @JsonProperty("startDate")
     private LinkedIn2Date startDate;
-    
+
+    @JsonProperty("endDate")
     private LinkedIn2Date endDate;
     
     private LinkedIn2Company company;
-    
-    @Override
-    protected void buildFromXml(final String xml) {
-        this.id = XmlHelper.get(xml, "id");
-        this.title = XmlHelper.get(xml, "title");
-        this.summary = XmlHelper.get(xml, "summary");
-        this.isCurrent = (Boolean) XmlHelper.convert(Converters.booleanConverter, xml, "is-current");
-        this.startDate = (LinkedIn2Date) XmlHelper.convert(LinkedIn2Converters.dateConverter, xml, "start-date");
-        this.endDate = (LinkedIn2Date) XmlHelper.convert(LinkedIn2Converters.dateConverter, xml, "end-date");
-        this.company = (LinkedIn2Company) XmlHelper.convert(LinkedIn2Converters.companyConverter, xml, "company");
-    }
-    
+
     public String getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getTitle() {
-        return this.title;
+        return title;
     }
-    
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getSummary() {
-        return this.summary;
+        return summary;
     }
-    
-    public Boolean getIsCurrent() {
-        return this.isCurrent;
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
-    
+
+    public Boolean getCurrent() {
+        return isCurrent;
+    }
+
+    public void setCurrent(Boolean current) {
+        isCurrent = current;
+    }
+
     public LinkedIn2Date getStartDate() {
-        return this.startDate;
+        return startDate;
     }
-    
+
+    public void setStartDate(LinkedIn2Date startDate) {
+        this.startDate = startDate;
+    }
+
     public LinkedIn2Date getEndDate() {
-        return this.endDate;
+        return endDate;
     }
-    
+
+    public void setEndDate(LinkedIn2Date endDate) {
+        this.endDate = endDate;
+    }
+
     public LinkedIn2Company getCompany() {
-        return this.company;
+        return company;
+    }
+
+    public void setCompany(LinkedIn2Company company) {
+        this.company = company;
     }
 }
