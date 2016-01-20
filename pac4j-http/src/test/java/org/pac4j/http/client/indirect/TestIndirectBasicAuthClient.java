@@ -80,6 +80,54 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
     public void testGetCredentialsMissingHeader() {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = MockWebContext.create();
+        verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
+    }
+
+    @Test
+    public void testGetCredentialsNotABasicHeader() {
+        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
+        final MockWebContext context = getContextWithAuthorizationHeader("fakeHeader");
+        verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
+    }
+
+    @Test
+    public void testGetCredentialsBadFormatHeader() throws RequiresHttpAction {
+        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
+        final MockWebContext context = getContextWithAuthorizationHeader("Basic fakeHeader");
+        verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
+    }
+
+    @Test
+    public void testGetCredentialsMissingSemiColon() throws RequiresHttpAction {
+        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
+        final MockWebContext context = getContextWithAuthorizationHeader(
+                "Basic " + Base64.encodeBase64String("fake".getBytes()));
+        verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
+    }
+
+    @Test
+    public void testGetCredentialsBadCredentials() {
+        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
+        final String header = USERNAME + ":" + PASSWORD;
+        final MockWebContext context = getContextWithAuthorizationHeader("Basic "
+                + Base64.encodeBase64String(header.getBytes()));
+        verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
+    }
+
+    @Test
+    public void testGetCredentialsGoodCredentials() throws RequiresHttpAction {
+        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
+        final String header = USERNAME + ":" + USERNAME;
+        final UsernamePasswordCredentials credentials = basicAuthClient.getCredentials(
+                getContextWithAuthorizationHeader(
+                        "Basic " + Base64.encodeBase64String(header.getBytes())));
+        assertEquals(USERNAME, credentials.getUsername());
+        assertEquals(USERNAME, credentials.getPassword());
+    }
+
+    private void verifyGetCredentialsFailsWithAuthenticationRequired(
+            IndirectBasicAuthClient basicAuthClient,
+            MockWebContext context) {
         try {
             basicAuthClient.getCredentials(context);
             fail("should throw RequiresHttpAction");
@@ -91,78 +139,8 @@ public final class TestIndirectBasicAuthClient implements TestsConstants {
         }
     }
 
-    @Test
-    public void testGetCredentialsNotABasicHeader() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = MockWebContext.create();
-        try {
-            basicAuthClient.getCredentials(context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "fakeHeader"));
-            fail("should throw RequiresHttpAction");
-        } catch (final RequiresHttpAction e) {
-            assertEquals(401, context.getResponseStatus());
-            assertEquals("Basic realm=\"authentication required\"",
-                    context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires authentication", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testGetCredentialsBadFormatHeader() throws RequiresHttpAction {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = MockWebContext.create();
-        try {
-            basicAuthClient.getCredentials(context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
-                    "Basic fakeHeader"));
-            fail("should throw RequiresHttpAction");
-        } catch (final RequiresHttpAction e) {
-            assertEquals(401, context.getResponseStatus());
-            assertEquals("Basic realm=\"authentication required\"",
-                    context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires authentication", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testGetCredentialsMissingSemiColon() throws RequiresHttpAction {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final MockWebContext context = MockWebContext.create();
-        try {
-            basicAuthClient.getCredentials(context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
-                    "Basic " + Base64.encodeBase64String("fake".getBytes())));
-            fail("should throw RequiresHttpAction");
-        } catch (final RequiresHttpAction e) {
-            assertEquals(401, context.getResponseStatus());
-            assertEquals("Basic realm=\"authentication required\"",
-                    context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires authentication", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testGetCredentialsBadCredentials() {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final String header = USERNAME + ":" + PASSWORD;
-        final MockWebContext context = MockWebContext.create();
-        try {
-            basicAuthClient.getCredentials(context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Basic "
-                    + Base64.encodeBase64String(header.getBytes())));
-            fail("should throw RequiresHttpAction");
-        } catch (final RequiresHttpAction e) {
-            assertEquals(401, context.getResponseStatus());
-            assertEquals("Basic realm=\"authentication required\"",
-                    context.getResponseHeaders().get(HttpConstants.AUTHENTICATE_HEADER));
-            assertEquals("Requires authentication", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testGetCredentialsGoodCredentials() throws RequiresHttpAction {
-        final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
-        final String header = USERNAME + ":" + USERNAME;
-        final UsernamePasswordCredentials credentials = basicAuthClient.getCredentials(MockWebContext.create()
-                .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
-                        "Basic " + Base64.encodeBase64String(header.getBytes())));
-        assertEquals(USERNAME, credentials.getUsername());
-        assertEquals(USERNAME, credentials.getPassword());
+    private MockWebContext getContextWithAuthorizationHeader(String value) {
+        MockWebContext context = MockWebContext.create();
+        return context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, value);
     }
 }
