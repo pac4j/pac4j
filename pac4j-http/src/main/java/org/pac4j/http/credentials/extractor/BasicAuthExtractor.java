@@ -15,7 +15,6 @@
  */
 package org.pac4j.http.credentials.extractor;
 
-import org.apache.commons.codec.binary.Base64;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -23,6 +22,7 @@ import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 /**
  * To extract basic auth header.
@@ -52,7 +52,7 @@ public class BasicAuthExtractor implements Extractor<UsernamePasswordCredentials
             return null;
         }
 
-        final byte[] decoded = Base64.decodeBase64(credentials.getToken());
+        final byte[] decoded = Base64.getDecoder().decode(credentials.getToken());
 
         String token;
         try {
