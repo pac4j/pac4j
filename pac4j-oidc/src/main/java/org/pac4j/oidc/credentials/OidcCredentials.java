@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.oidc.credentials;
 
 import org.pac4j.core.credentials.Credentials;
@@ -30,7 +29,7 @@ public class OidcCredentials extends Credentials {
 
     private AuthorizationCode code;
 
-    public OidcCredentials(AuthorizationCode code, String clientName) {
+    public OidcCredentials(final AuthorizationCode code, final String clientName) {
         this.code = code;
         this.setClientName(clientName);
     }
