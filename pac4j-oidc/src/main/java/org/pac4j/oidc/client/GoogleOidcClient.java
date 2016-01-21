@@ -13,26 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.oidc.credentials;
+package org.pac4j.oidc.client;
 
-import com.nimbusds.oauth2.sdk.AuthorizationCode;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.pac4j.oidc.profile.GoogleOidcProfile;
 
 /**
- * General test cases for {@link OidcCredentials}.
+ * <p>This class is the OpenID Connect client to authenticate users in Google.</p>
+ * <p>More information at: https://developers.google.com/identity/protocols/OpenIDConnect</p>
  *
- * @author Jacob Severson
- * @since  1.8.0
+ * @author Jerome Leleu
+ * @since 1.9.0
  */
-public class TestOidcCredentials {
+public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
 
-    @Test
-    public void testClearOidcCredentials() {
-        OidcCredentials oidcCredentials = new OidcCredentials(new AuthorizationCode(), "testClient");
-        oidcCredentials.clear();
-        assertNull(oidcCredentials.getClientName());
-        assertNull(oidcCredentials.getCode());
+    public GoogleOidcClient() {
+        setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
+    }
+
+    @Override
+    protected GoogleOidcProfile createProfile() {
+        return new GoogleOidcProfile();
     }
 }
