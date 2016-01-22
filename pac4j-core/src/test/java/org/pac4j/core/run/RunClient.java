@@ -13,14 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.core.client;
+package org.pac4j.core.run;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.kryo.ColorSerializer;
 import org.pac4j.core.kryo.FormattedDateSerializer;
+import org.pac4j.core.kryo.LocaleSerializer;
 import org.pac4j.core.profile.*;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.KryoSerializationHelper;
@@ -63,16 +64,18 @@ public abstract class RunClient implements TestsConstants {
         if (profile != null || !canCancel()) {
             verifyProfile(profile);
 
+            logger.warn("## Java serialization");
             // Java serialization
             final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
             byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
             final UserProfile profile2 = (UserProfile) javaSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile2);
 
+            logger.warn("## Kryo serialization");
             // Kryo serialization
             final Kryo kryo = new Kryo();
             kryo.register(HashMap.class);
-            kryo.register(Locale.class, new DefaultSerializers.LocaleSerializer());
+            kryo.register(Locale.class, new LocaleSerializer());
             kryo.register(Date.class);
             kryo.register(FormattedDate.class, new FormattedDateSerializer());
             kryo.register(Gender.class);
@@ -84,6 +87,7 @@ public abstract class RunClient implements TestsConstants {
             final UserProfile profile3 = (UserProfile) kryoSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile3);
 
+            logger.warn("## CAS serialization");
             // CAS serialization
             final Map<String, Object> attributes = profile3.getAttributes();
             final Map<String, Object> newAttributes = new HashMap<>();
@@ -101,6 +105,11 @@ public abstract class RunClient implements TestsConstants {
             }
             final UserProfile profile4 = ProfileHelper.buildProfile(profile3.getTypedId(), newAttributes);
             verifyProfile(profile4);
+
+            logger.warn("## Auto-rebuild");
+            // auto-rebuild
+            final UserProfile profile5 = ProfileHelper.buildProfile(profile3.getTypedId(), attributes);
+            verifyProfile(profile5);
         }
         logger.warn("################");
         logger.warn("Test successful!");
