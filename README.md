@@ -30,7 +30,7 @@ You can even implement `pac4j` for a new framework / tool by following these [gu
 
 | In the pac4j project | In a pac4j implementation |
 |----------------------|---------------------------|
-| A [**client**](https://github.com/pac4j/pac4j/wiki/Clients) represents an authentication mechanism.<p />It performs the login process and returns a user profile.<p />An indirect client is for UI authentication while a direct client is for web services|The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) checks:<ul><li>that the user is authenticated or starts / performs the login process (according to the clients configuration)</li><li>then the authorizations (according to the authorizers configuration)</li></ul>|
+| A [**client**](https://github.com/pac4j/pac4j/wiki/Clients) represents an authentication mechanism.<p />It performs the login process and returns a user profile.<p />An indirect client is for UI authentication while a direct client is for web services|The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) protects an url by checking that:<ul><li>the user is authenticated or starts / performs the login process (according to the clients configuration)</li><li>the authorizations are valid (according to the authorizers configuration)</li></ul>|
 |An [**authorizer**](https://github.com/pac4j/pac4j/wiki/Authorizers) is meant to check authorizations on the authenticated user profile or on the current web context|The "**callback controller**" finishes the authentication process for an indirect client|
 
 
