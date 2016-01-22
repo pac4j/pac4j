@@ -36,14 +36,18 @@ public final class GenderConverter implements AttributeConverter<Gender> {
     
     @Override
     public Gender convert(final Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            final String s = ((String) attribute).toLowerCase();
-            if (s.equals(this.maleText) || Gender.MALE.toString().toLowerCase().equals(s)) {
-                return Gender.MALE;
-            } else if (s.equals(this.femaleText) || Gender.FEMALE.toString().toLowerCase().equals(s)) {
-                return Gender.FEMALE;
-            } else {
-                return Gender.UNSPECIFIED;
+        if (attribute != null) {
+            if (attribute instanceof String) {
+                final String s = ((String) attribute).toLowerCase();
+                if (s.equals(this.maleText) || Gender.MALE.toString().toLowerCase().equals(s)) {
+                    return Gender.MALE;
+                } else if (s.equals(this.femaleText) || Gender.FEMALE.toString().toLowerCase().equals(s)) {
+                    return Gender.FEMALE;
+                } else {
+                    return Gender.UNSPECIFIED;
+                }
+            } else if (attribute instanceof Gender) {
+                return (Gender) attribute;
             }
         }
         return null;

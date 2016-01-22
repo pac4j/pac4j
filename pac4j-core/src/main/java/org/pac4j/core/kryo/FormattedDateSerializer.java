@@ -19,7 +19,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers.*;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import org.pac4j.core.profile.FormattedDate;
 
 import java.util.Date;
@@ -33,9 +33,9 @@ import java.util.Locale;
  */
 public class FormattedDateSerializer extends Serializer<FormattedDate> {
 
-    private final LongSerializer longSerializer = new LongSerializer();
+    private final DefaultSerializers.LongSerializer longSerializer = new DefaultSerializers.LongSerializer();
 
-    private final StringSerializer stringSerializer = new StringSerializer();
+    private final DefaultSerializers.StringSerializer stringSerializer = new DefaultSerializers.StringSerializer();
 
     private final LocaleSerializer localeSerializer = new LocaleSerializer();
 
