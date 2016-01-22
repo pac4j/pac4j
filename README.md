@@ -2,9 +2,9 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
-`pac4j` is a **Java security engine** to authenticate users, get their profiles and manage their authorizations in order to secure Java web applications. It's available under the Apache 2 license.
+`pac4j` is an [**easy and powerful**](#main-concepts) **Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It's available under the Apache 2 license.
 
-It is currently **available for many frameworks / tools and supports most authentication mechanisms**. Its core API is provided by the `pac4j-core` submodule (groupId: `org.pac4j`).
+It is currently **available for most [frameworks / tools](#frameworks--tools-implementing-pac4j)** and **supports most [authentication](https://github.com/pac4j/pac4j/wiki/Clients) / [authorization](https://github.com/pac4j/pac4j/wiki/Authorizers) mechanisms**.
 
 [![pac4j big picture](https://pac4j.github.io/pac4j/img/pac4j.png)](https://pac4j.github.io/pac4j/img/pac4j.png)
 
@@ -26,26 +26,12 @@ It is currently **available for many frameworks / tools and supports most authen
 
 You can even implement `pac4j` for a new framework / tool by following these [guidelines](https://github.com/pac4j/pac4j/wiki/Implement-pac4j-for-a-new-framework---tool).
 
-## Supported authentication / authorization mechanisms:
+## Main concepts:
 
-`pac4j` supports most authentication mechanisms, called [**clients**](https://github.com/pac4j/pac4j/wiki/Clients):
-
-- **indirect / stateful clients** are for UI when the user authenticates once at an external provider (like Facebook, a CAS server...) or via a local form (or basic auth popup)  
-- **direct / stateless clients** are for web services when credentials (like basic auth, tokens...) are passed for each HTTP request.
-
-See the [authentication flows](https://github.com/pac4j/pac4j/wiki/Authentication-flows).
-
-| The authentication mechanism you want | The `pac4j-*` submodule(s) you must use
-|---------------------------------------|----------------------------------------
-| OAuth (1.0 & 2.0): Facebook, Twitter, Google, Yahoo, LinkedIn, Github... | `pac4j-oauth`
-| CAS (1.0, 2.0, 3.0, SAML, logout, proxy) | `pac4j-cas`
-| SAML (2.0) | `pac4j-saml`
-| OpenID Connect (1.0) | `pac4j-oidc`
-| HTTP (form, basic auth, IP, header, cookie, GET/POST parameter)<br />+<br />JWT<br />or LDAP<br />or Relational DB<br />or MongoDB<br />or Stormpath<br />or CAS REST API| `pac4j-http`<br />+<br />`pac4j-jwt`<br />or `pac4j-ldap`<br />or `pac4j-sql`<br />or `pac4j-mongo`<br />or `pac4j-stormpath`<br />or `pac4j-cas`
-| Google App Engine UserService | `pac4j-gae`
-| OpenID | `pac4j-openid`
-
-`pac4j` supports many authorization checks, called [**authorizers**](https://github.com/pac4j/pac4j/wiki/Authorizers) available in the `pac4j-core` (and `pac4j-http`) submodules: role / permission checks, IP check, profile type verification, HTTP method verification... as well as regular security protections for CSRF, XSS, cache control, Xframe...
+| In the pac4j project | In a pac4j implementation |
+|----------------------|---------------------------|
+| A [**client**](https://github.com/pac4j/pac4j/wiki/Clients) represents an authentication mechanism.<p />It performs the login process and returns a user profile.<p />An indirect client is for UI authentication while a direct client is for web services|The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) checks:<ul><li>that the user is authenticated or starts / performs the login process (according to the clients configuration)</li><li>then the authorizations (according to the authorizers configuration)</li></ul>|
+|An [**authorizer**](https://github.com/pac4j/pac4j/wiki/Authorizers) is meant to check authorizations on the authenticated user profile or on the current web context|The "**callback controller**" finishes the authentication process for an indirect client|
 
 
 ## Versions
