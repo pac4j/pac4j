@@ -33,13 +33,12 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
     public CasRestBasicAuthClient(final CasRestAuthenticator authenticator) {
         super(authenticator);
-        this.extractor = new BasicAuthExtractor(CasRestBasicAuthClient.class.getSimpleName());
+        this.extractor = new BasicAuthExtractor(getName());
     }
 
     public CasRestBasicAuthClient(final CasRestAuthenticator authenticator,
                                   final String headerName, final String prefixHeader) {
         super(authenticator);
-        this.extractor = new BasicAuthExtractor(headerName, prefixHeader,
-                CasRestBasicAuthClient.class.getSimpleName());
+        this.extractor = new BasicAuthExtractor(headerName, prefixHeader, getName());
     }
 }
