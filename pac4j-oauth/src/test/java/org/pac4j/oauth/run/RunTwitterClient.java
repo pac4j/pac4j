@@ -18,7 +18,7 @@ package org.pac4j.oauth.run;
 import com.esotericsoftware.kryo.Kryo;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.RunClient;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;

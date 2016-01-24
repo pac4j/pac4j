@@ -35,7 +35,9 @@ public final class JsonConverter<T extends Object> implements AttributeConverter
 
     public T convert(final Object attribute) {
         if (attribute != null) {
-            if (attribute instanceof String) {
+            if (attribute.getClass().isAssignableFrom(clazz)) {
+                return (T) attribute;
+            } else if (attribute instanceof String) {
                 final JsonNode node = JsonHelper.getFirstNode((String) attribute);
                 return JsonHelper.getAsType(node, clazz);
             } else if (attribute instanceof JsonNode) {

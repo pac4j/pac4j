@@ -48,18 +48,22 @@ public class DateConverter implements AttributeConverter<Date> {
     
     @Override
     public Date convert(final Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            SimpleDateFormat simpleDateFormat;
-            if (this.locale == null) {
-                simpleDateFormat = new SimpleDateFormat(this.format);
-            } else {
-                simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
-            }
-            final String s = (String) attribute;
-            try {
-                return simpleDateFormat.parse(s);
-            } catch (final ParseException e) {
-                logger.error("parse exception on " + s + " with format : " + this.format, e);
+        if (attribute != null) {
+            if (attribute instanceof String) {
+                SimpleDateFormat simpleDateFormat;
+                if (this.locale == null) {
+                    simpleDateFormat = new SimpleDateFormat(this.format);
+                } else {
+                    simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
+                }
+                final String s = (String) attribute;
+                try {
+                    return simpleDateFormat.parse(s);
+                } catch (final ParseException e) {
+                    logger.error("parse exception on " + s + " with format : " + this.format, e);
+                }
+            } else if (attribute instanceof Date) {
+                return (Date) attribute;
             }
         }
         return null;

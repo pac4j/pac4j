@@ -17,7 +17,6 @@ package org.pac4j.core.profile.converter;
 
 import java.util.Locale;
 
-
 /**
  * This class converts a String to a Locale.
  * 
@@ -28,14 +27,18 @@ public final class LocaleConverter implements AttributeConverter<Locale> {
     
     @Override
     public Locale convert(final Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            final String s = ((String) attribute).replaceAll("-", "_");
-            final String[] parts = s.split("_");
-            final int length = parts.length;
-            if (length == 2) {
-                return new Locale(parts[0], parts[1]);
-            } else if (length == 1) {
-                return new Locale(parts[0]);
+        if (attribute != null) {
+            if (attribute instanceof String) {
+                final String s = ((String) attribute).replaceAll("-", "_");
+                final String[] parts = s.split("_");
+                final int length = parts.length;
+                if (length == 2) {
+                    return new Locale(parts[0], parts[1]);
+                } else if (length == 1) {
+                    return new Locale(parts[0]);
+                }
+            } else if (attribute instanceof Locale) {
+                return (Locale) attribute;
             }
         }
         return null;

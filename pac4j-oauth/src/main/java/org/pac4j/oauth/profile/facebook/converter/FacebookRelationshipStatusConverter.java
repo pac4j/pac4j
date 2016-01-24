@@ -27,32 +27,36 @@ import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 public final class FacebookRelationshipStatusConverter implements AttributeConverter<FacebookRelationshipStatus> {
     
     public FacebookRelationshipStatus convert(final Object attribute) {
-        if (attribute != null && attribute instanceof String) {
-            String s = ((String) attribute).toLowerCase();
-            s = s.replaceAll("_", " ");
-            s = s.replaceAll("'", "");
-            if ("single".equals(s)) {
-                return FacebookRelationshipStatus.SINGLE;
-            } else if ("in a relationship".equals(s)) {
-                return FacebookRelationshipStatus.IN_A_RELATIONSHIP;
-            } else if ("engaged".equals(s)) {
-                return FacebookRelationshipStatus.ENGAGED;
-            } else if ("married".equals(s)) {
-                return FacebookRelationshipStatus.MARRIED;
-            } else if ("its complicated".equals(s)) {
-                return FacebookRelationshipStatus.ITS_COMPLICATED;
-            } else if ("in an open relationship".equals(s)) {
-                return FacebookRelationshipStatus.IN_AN_OPEN_RELATIONSHIP;
-            } else if ("widowed".equals(s)) {
-                return FacebookRelationshipStatus.WIDOWED;
-            } else if ("separated".equals(s)) {
-                return FacebookRelationshipStatus.SEPARATED;
-            } else if ("divorced".equals(s)) {
-                return FacebookRelationshipStatus.DIVORCED;
-            } else if ("in a civil union".equals(s)) {
-                return FacebookRelationshipStatus.IN_A_CIVIL_UNION;
-            } else if ("in a domestic partnership".equals(s)) {
-                return FacebookRelationshipStatus.IN_A_DOMESTIC_PARTNERSHIP;
+        if (attribute != null) {
+            if (attribute instanceof String) {
+                String s = ((String) attribute).toLowerCase();
+                s = s.replaceAll("_", " ");
+                s = s.replaceAll("'", "");
+                if ("single".equals(s)) {
+                    return FacebookRelationshipStatus.SINGLE;
+                } else if ("in a relationship".equals(s)) {
+                    return FacebookRelationshipStatus.IN_A_RELATIONSHIP;
+                } else if ("engaged".equals(s)) {
+                    return FacebookRelationshipStatus.ENGAGED;
+                } else if ("married".equals(s)) {
+                    return FacebookRelationshipStatus.MARRIED;
+                } else if ("its complicated".equals(s)) {
+                    return FacebookRelationshipStatus.ITS_COMPLICATED;
+                } else if ("in an open relationship".equals(s)) {
+                    return FacebookRelationshipStatus.IN_AN_OPEN_RELATIONSHIP;
+                } else if ("widowed".equals(s)) {
+                    return FacebookRelationshipStatus.WIDOWED;
+                } else if ("separated".equals(s)) {
+                    return FacebookRelationshipStatus.SEPARATED;
+                } else if ("divorced".equals(s)) {
+                    return FacebookRelationshipStatus.DIVORCED;
+                } else if ("in a civil union".equals(s)) {
+                    return FacebookRelationshipStatus.IN_A_CIVIL_UNION;
+                } else if ("in a domestic partnership".equals(s)) {
+                    return FacebookRelationshipStatus.IN_A_DOMESTIC_PARTNERSHIP;
+                }
+            } else if (attribute instanceof FacebookRelationshipStatus) {
+                return (FacebookRelationshipStatus) attribute;
             }
         }
         return null;
