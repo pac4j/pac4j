@@ -71,7 +71,7 @@ public class RunGoogleOidcClient extends RunClient {
     protected void verifyProfile(final UserProfile userProfile) {
         final GoogleOidcProfile profile = (GoogleOidcProfile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(GoogleOidcProfile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
+        assertEquals(GoogleOidcProfile.class.getName() + UserProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
         assertNotNull(profile.getAccessToken());

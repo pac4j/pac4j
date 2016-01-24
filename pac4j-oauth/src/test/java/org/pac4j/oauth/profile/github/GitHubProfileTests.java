@@ -17,6 +17,12 @@ package org.pac4j.oauth.profile.github;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.util.TestsConstants;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * General test cases for GitHubProfile.
@@ -24,7 +30,7 @@ import org.junit.Test;
  * @author Jacob Severson
  * @since  1.8.0
  */
-public class GitHubProfileTests {
+public class GitHubProfileTests implements TestsConstants {
 
     @Test
     public void testClearGitHubProfile() {
@@ -32,5 +38,29 @@ public class GitHubProfileTests {
         profile.setAccessToken("testToken");
         profile.clear();
         Assert.assertEquals("", profile.getAccessToken());
+    }
+
+    @Test
+    public void testBuildProfileOldTypedId() {
+        final GitHubProfile profile = new GitHubProfile();
+        profile.setId(ID);
+        final GitHubProfile profile2 = (GitHubProfile) ProfileHelper.buildProfile(profile.getOldTypedId(), profile.getAttributes());
+        assertEquals(ID, profile2.getId());
+        final GitHubProfile profile3 = (GitHubProfile) ProfileHelper.buildProfile(profile.getOldTypedId(), profile.getAttributes());
+        assertEquals(ID, profile3.getId());
+    }
+
+    @Test
+    public void testBuildProfileTypedId() {
+        final GitHubProfile profile = new GitHubProfile();
+        profile.setId(ID);
+        profile.addAttribute(NAME, VALUE);
+        final GitHubProfile profile2 = (GitHubProfile) ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
+        assertEquals(ID, profile2.getId());
+        final Map<String, Object> attributes = profile2.getAttributes();
+        assertEquals(1, attributes.size());
+        assertEquals(VALUE, attributes.get(NAME));
+        final GitHubProfile profile3 = (GitHubProfile) ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
+        assertEquals(ID, profile3.getId());
     }
 }
