@@ -76,7 +76,7 @@ public class RunTwitterClient extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final TwitterProfile profile = (TwitterProfile) userProfile;
         assertEquals("488358057", profile.getId());
-        assertEquals(TwitterProfile.class.getSimpleName() + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
+        assertEquals(TwitterProfile.class.getName() + UserProfile.SEPARATOR + "488358057", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,

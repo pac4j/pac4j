@@ -74,7 +74,7 @@ public class RunFoursquareClient extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final FoursquareProfile profile = (FoursquareProfile) userProfile;
         assertEquals("81827700", profile.getId());
-        assertEquals(FoursquareProfile.class.getSimpleName() + UserProfile.SEPARATOR + "81827700", profile.getTypedId());
+        assertEquals(FoursquareProfile.class.getName() + UserProfile.SEPARATOR + "81827700", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FoursquareProfile.class));
         assertCommonProfile(userProfile,
                 "pac4j@mailinator.com",

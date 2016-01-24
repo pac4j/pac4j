@@ -41,56 +41,54 @@ public class OidcProfile extends CommonProfile implements Externalizable {
 
     private static final long serialVersionUID = -52855988661742374L;
 
-    private BearerAccessToken accessToken;
-    private String idTokenString;
-    private JWT idToken;
+    private transient static final String ACCESS_TOKEN = "access_token";
+    private transient static final String ID_TOKEN = "id_token";
 
     public OidcProfile() {
     }
 
     public void setAccessToken(BearerAccessToken accessToken) {
-        this.accessToken = accessToken;
+        addAttribute(ACCESS_TOKEN, accessToken);
     }
 
     public BearerAccessToken getAccessToken() {
-        return this.accessToken;
+        return (BearerAccessToken) getAttribute(ACCESS_TOKEN);
     }
 
     public String getIdTokenString() {
-        return idTokenString;
+        return (String) getAttribute(ID_TOKEN);
     }
 
     public void setIdTokenString(String idTokenString) {
-        this.idTokenString = idTokenString;
+        addAttribute(ID_TOKEN, idTokenString);
     }
 
     public JWT getIdToken() throws ParseException {
-        if (this.idToken == null && this.idTokenString != null) {
-            this.idToken = JWTParser.parse(this.idTokenString);
+        if (getIdTokenString() != null) {
+            return JWTParser.parse(getIdTokenString());
         }
-        return this.idToken;
+        return null;
     }
-
 
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        final BearerAccessTokenBean bean = BearerAccessTokenBean.toBean(this.accessToken);
+        final BearerAccessTokenBean bean = BearerAccessTokenBean.toBean(getAccessToken());
         out.writeObject(bean);
-        out.writeObject(this.idTokenString);
+        out.writeObject(getIdTokenString());
     }
 
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
-        this.accessToken = BearerAccessTokenBean.fromBean(bean);
-        this.idTokenString = (String) in.readObject();
+        setAccessToken(BearerAccessTokenBean.fromBean(bean));
+        setIdTokenString((String) in.readObject());
     }
 
     @Override
     public void clear() {
-        this.accessToken = null;
+        removeAttribute(ACCESS_TOKEN);
     }
 
     private static class BearerAccessTokenBean implements Serializable {

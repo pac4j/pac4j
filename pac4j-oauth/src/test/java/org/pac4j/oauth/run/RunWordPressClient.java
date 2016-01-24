@@ -70,7 +70,7 @@ public class RunWordPressClient extends RunClient {
         final WordPressProfile profile = (WordPressProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals("35944437", profile.getId());
-        assertEquals(WordPressProfile.class.getSimpleName() + UserProfile.SEPARATOR + "35944437", profile.getTypedId());
+        assertEquals(WordPressProfile.class.getName() + UserProfile.SEPARATOR + "35944437", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WordPressProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "testscribeup", "testscribeup",

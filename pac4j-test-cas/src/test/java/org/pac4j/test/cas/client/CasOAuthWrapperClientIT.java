@@ -87,7 +87,7 @@ public final class CasOAuthWrapperClientIT extends ClientIT {
         final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(CasOAuthWrapperProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME,
+        assertEquals(CasOAuthWrapperProfile.class.getName() + UserProfile.SEPARATOR + USERNAME,
                      profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CasOAuthWrapperProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));

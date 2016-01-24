@@ -74,13 +74,12 @@ public class RunGoogleOidcClient extends RunClient {
         assertEquals(GoogleOidcProfile.class.getName() + UserProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
-        assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getIdTokenString());
         assertCommonProfile(userProfile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
                 Gender.MALE, Locale.ENGLISH,
                 "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                 "https://plus.google.com/113675986756217860428", null);
-        assertEquals(10, profile.getAttributes().size());
+        assertEquals(12, profile.getAttributes().size());
         assertTrue(profile.getEmailVerified());
     }
 }

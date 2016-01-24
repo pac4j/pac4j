@@ -71,7 +71,7 @@ public class RunPaypalClient extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final PayPalProfile profile = (PayPalProfile) userProfile;
         assertEquals("YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getId());
-        assertEquals(PayPalProfile.class.getSimpleName() + UserProfile.SEPARATOR
+        assertEquals(PayPalProfile.class.getName() + UserProfile.SEPARATOR
                 + "YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), PayPalProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));

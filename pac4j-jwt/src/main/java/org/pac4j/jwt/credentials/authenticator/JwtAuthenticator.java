@@ -135,7 +135,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
         String subject = claimSet.getSubject();
 
         if (!subject.contains(UserProfile.SEPARATOR)) {
-            subject = JwtProfile.class.getSimpleName() + UserProfile.SEPARATOR + subject;
+            subject = JwtProfile.class.getName() + UserProfile.SEPARATOR + subject;
         }
 
         Map<String, Object> claims = new HashMap<>(claimSet.getClaims());

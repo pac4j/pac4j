@@ -147,7 +147,7 @@ public final class TestFormClient implements TestsConstants {
         final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(HttpProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertEquals(HttpProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());
