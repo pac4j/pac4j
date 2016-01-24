@@ -33,7 +33,6 @@ public class CasRestFormClient extends AbstractCasRestClient {
     public CasRestFormClient(final CasRestAuthenticator authenticator) {
         super(authenticator);
         this.extractor = new FormExtractor(authenticator.getUsernameParameter(),
-                authenticator.getPasswordParameter(),
-                CasRestFormClient.class.getSimpleName());
+                authenticator.getPasswordParameter(), getName());
     }
 }
