@@ -18,7 +18,7 @@ package org.pac4j.oidc.run;
 import com.esotericsoftware.kryo.Kryo;
 import com.nimbusds.oauth2.sdk.token.AccessTokenType;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.RunClient;
+import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;

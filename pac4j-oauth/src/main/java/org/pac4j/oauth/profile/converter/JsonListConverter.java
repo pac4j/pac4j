@@ -49,12 +49,16 @@ public final class JsonListConverter implements AttributeConverter<Object> {
                 final List list = (List) attribute;
                 final List newList = new ArrayList<>();
                 for (final Object o : list) {
-                    if (o instanceof String) {
-                        final String s = (String) o;
-                        if (elementClazz.isAssignableFrom(String.class)) {
-                            newList.add(s);
-                        } else {
-                            newList.add(parseString(s, elementClazz));
+                    if (o != null) {
+                        if (o instanceof String) {
+                            final String s = (String) o;
+                            if (elementClazz.isAssignableFrom(String.class)) {
+                                newList.add(s);
+                            } else {
+                                newList.add(parseString(s, elementClazz));
+                            }
+                        } else if (o.getClass().isAssignableFrom(elementClazz)) {
+                            newList.add(o);
                         }
                     }
                 }
