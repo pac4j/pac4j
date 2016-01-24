@@ -88,7 +88,7 @@ public class YahooOpenIdClientIT extends ClientIT implements TestsConstants {
         logger.debug("userProfile : {}", profile);
         final String id = "mnsYAxIag.AfFGVrKZckRIVkvVYLEYRM4Q--#02050";
         assertEquals("https://me.yahoo.com/a/" + id, profile.getId());
-        assertEquals(YahooOpenIdProfile.class.getSimpleName() + UserProfile.SEPARATOR
+        assertEquals(YahooOpenIdProfile.class.getName() + UserProfile.SEPARATOR
                + "https://me.yahoo.com/a/" + id, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooOpenIdProfile.class));
         assertCommonProfile(userProfile, "testscribeup@yahoo.fr", null, null, null, null,

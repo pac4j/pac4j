@@ -117,6 +117,15 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
+     * Remove an attribute byt its key.
+     *
+     * @param key the key
+     */
+    public void removeAttribute(final String key) {
+        attributes.remove(key);
+    }
+
+    /**
      * Set the identifier and convert it if necessary.
      * 
      * @param id user identifier
