@@ -17,6 +17,7 @@ package org.pac4j.core.profile;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ public final class ProfileHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
 
+    private static final Map<String, Constructor<? extends UserProfile>> constructorsCache = new ConcurrentHashMap<>();
+
     /**
      * Indicate if the user identifier matches this kind of profile.
      * 
@@ -40,11 +43,12 @@ public final class ProfileHelper {
      * @return if the user identifier matches this kind of profile
      */
     public static boolean isTypedIdOf(final String id, final Class<? extends UserProfile> clazz) {
-        if (id != null && clazz != null && id.startsWith(clazz.getSimpleName() + UserProfile.SEPARATOR)) {
-            return true;
-        } else {
-            return false;
+        if (id != null && clazz != null) {
+            boolean typedId = id.startsWith(clazz.getName() + UserProfile.SEPARATOR);
+            boolean oldTypedId = id.startsWith(clazz.getSimpleName() + UserProfile.SEPARATOR);
+            return typedId || oldTypedId;
         }
+        return false;
     }
 
     /**
@@ -62,10 +66,18 @@ public final class ProfileHelper {
         logger.info("Building user profile based on typedId {}", typedId);
         try {
             final String[] values = typedId.split(UserProfile.SEPARATOR);
-            if (values.length >= 1) {
+            if (values != null && values.length >= 1) {
                 final String className = values[0];
-                final String completeName = determineProfileClassByName(className);
-                return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
+                if (CommonHelper.isNotBlank(className)) {
+                    final String completeName;
+                    if (className.indexOf(".") >=0 ) {
+                        completeName = className;
+                    } else {
+                        logger.warn("Typed identifier starting with only a simple class name (without package name) are deprecated and will be removed in future versions. See profile#getOldTypedId() versus profile#getTypedId()");
+                        completeName = determineProfileClassByName(className);
+                    }
+                    return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
+                }
             }
         } catch (final Exception e) {
             logger.error("Cannot build instance", e);
@@ -73,6 +85,7 @@ public final class ProfileHelper {
         return null;
     }
 
+    @Deprecated
     private static String determineProfileClassByName(final String className) {
         final String completeName;
         if ("CasProfile".equals(className) || "CasProxyProfile".equals(className)) {
@@ -107,14 +120,26 @@ public final class ProfileHelper {
     }
 
     private static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
-                                                                   final String completeName)
-            throws Exception {
-        @SuppressWarnings("unchecked")
-        final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
-                .forName(completeName).getDeclaredConstructor();
+                                                                   final String completeName) throws Exception {
+        final Constructor<? extends UserProfile> constructor = getConstructor(completeName);
         final UserProfile userProfile = constructor.newInstance();
         userProfile.build(typedId, attributes);
         logger.debug("userProfile built: {}", userProfile);
         return userProfile;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Constructor<? extends UserProfile> getConstructor(final String name) throws Exception{
+        Constructor<? extends UserProfile> constructor = constructorsCache.get(name);
+        if (constructor == null) {
+            synchronized (constructorsCache) {
+                constructor = constructorsCache.get(name);
+                if (constructor == null) {
+                    constructor = (Constructor<? extends UserProfile>) Class.forName(name).getDeclaredConstructor();
+                    constructorsCache.put(name, constructor);
+                }
+            }
+        }
+        return constructor;
     }
 }
