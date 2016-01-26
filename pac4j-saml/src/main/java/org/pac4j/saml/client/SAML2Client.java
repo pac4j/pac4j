@@ -245,10 +245,8 @@ public class SAML2Client extends BaseClient<SAML2Credentials, SAML2Profile> {
     protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
-        final String clientName = getName();
-        if (CommonHelper.isBlank(clientName)) {
-            credentials.setClientName(clientName);
-        }
+        // The profile handler sets a hard-coded client name, we need the real one.
+        credentials.setClientName(getName());
         return credentials;
     }
 
