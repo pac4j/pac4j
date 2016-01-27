@@ -70,14 +70,13 @@ public class RunAzureAdClient extends RunClient {
     protected void verifyProfile(final UserProfile userProfile) {
         final AzureAdProfile profile = (AzureAdProfile) userProfile;
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
-        assertEquals(AzureAdProfile.class.getSimpleName() + UserProfile.SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
+        assertEquals(AzureAdProfile.class.getName() + UserProfile.SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), AzureAdProfile.class));
-        assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getIdTokenString());
         assertCommonProfile(userProfile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
                 Gender.UNSPECIFIED, null, null, null, null);
         assertEquals("live.com", profile.getIdp());
-        assertEquals(8, profile.getAttributes().size());
+        assertEquals(10, profile.getAttributes().size());
     }
 }

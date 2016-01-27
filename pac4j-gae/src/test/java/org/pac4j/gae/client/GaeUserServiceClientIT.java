@@ -95,7 +95,7 @@ public class GaeUserServiceClientIT extends ClientIT implements TestsConstants {
         logger.debug("userProfile : {}", profile);
         final String id = "test@example.com";
         assertEquals(id, profile.getId());
-        assertEquals(GaeUserServiceProfile.class.getSimpleName() + UserProfile.SEPARATOR
+        assertEquals(GaeUserServiceProfile.class.getName() + UserProfile.SEPARATOR
                 + id, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GaeUserServiceProfile.class));
         assertCommonProfile(userProfile, id, null, null, "test", null,

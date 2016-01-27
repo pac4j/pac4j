@@ -117,6 +117,15 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
+     * Remove an attribute byt its key.
+     *
+     * @param key the key
+     */
+    public void removeAttribute(final String key) {
+        attributes.remove(key);
+    }
+
+    /**
      * Set the identifier and convert it if necessary.
      * 
      * @param id user identifier
@@ -124,9 +133,12 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     public void setId(final Object id) {
         if (id != null) {
             String sId = id.toString();
-            final String type = this.getClass().getSimpleName();
-            if (sId.startsWith(type + SEPARATOR)) {
-                sId = sId.substring(type.length() + SEPARATOR.length());
+            final String oldType = this.getClass().getSimpleName() + SEPARATOR;
+            final String type = this.getClass().getName() + SEPARATOR;
+            if (sId.startsWith(type)) {
+                sId = sId.substring(type.length());
+            } else if (sId.startsWith(oldType)) {
+                sId = sId.substring(oldType.length());
             }
             logger.debug("identifier : {}", sId);
             this.id = sId;
@@ -143,11 +155,23 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
-     * Get the user identifier with a prefix which is the profile type. This identifier is unique through all providers.
+     * Get the user identifier with a prefix which is the profile type (full class name with package).
+     * This identifier is unique through all providers.
      * 
      * @return the typed user identifier
      */
     public String getTypedId() {
+        return this.getClass().getName() + SEPARATOR + this.id;
+    }
+
+    /**
+     * Get the old typed id with a class name without package. Use {@link #getTypedId()} instead.
+     *
+     * @return the old typed id.
+     * @deprecated
+     */
+    @Deprecated
+    public String getOldTypedId() {
         return this.getClass().getSimpleName() + SEPARATOR + this.id;
     }
 

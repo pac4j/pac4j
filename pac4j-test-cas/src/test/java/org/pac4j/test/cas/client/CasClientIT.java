@@ -85,7 +85,7 @@ public abstract class CasClientIT extends ClientIT {
         final CasProfile profile = (CasProfile) userProfile;
         logger.debug("userProfile : {}", profile);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(CasProfile.class.getSimpleName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertEquals(CasProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CasProfile.class));
         if (getCasProtocol() == CasProtocol.SAML) {
             assertEquals("uid", profile.getAttribute("uid"));

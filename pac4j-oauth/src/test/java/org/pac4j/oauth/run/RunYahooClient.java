@@ -77,7 +77,7 @@ public class RunYahooClient extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
-        assertEquals(YahooProfile.class.getSimpleName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
+        assertEquals(YahooProfile.class.getName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));

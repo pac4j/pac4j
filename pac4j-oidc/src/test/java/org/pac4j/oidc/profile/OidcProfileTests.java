@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
  * @author Misagh Moayyed
  * @since  1.8.0
  */
-public class TestOidcProfile {
+public class OidcProfileTests {
 
     @Test
     public void testClearProfile() {

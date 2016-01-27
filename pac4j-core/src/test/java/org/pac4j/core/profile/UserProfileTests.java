@@ -18,9 +18,10 @@ package org.pac4j.core.profile;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
+
+import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link UserProfile} class.
@@ -28,13 +29,14 @@ import org.pac4j.core.util.TestsConstants;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class TestUserProfile extends TestCase implements TestsConstants {
+public final class UserProfileTests implements TestsConstants {
 
     private static final String ID = "id";
 
     private static final String ROLE1 = "role1";
     private static final String PERMISSION = "onePermission";
 
+    @Test
     public void testSetId() {
         final UserProfile userProfile = new UserProfile();
         assertNull(userProfile.getId());
@@ -42,6 +44,7 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         assertEquals(ID, userProfile.getId());
     }
 
+    @Test
     public void testAddAttribute() {
         final UserProfile userProfile = new UserProfile();
         assertEquals(0, userProfile.getAttributes().size());
@@ -50,6 +53,7 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
 
+    @Test
     public void testAddAttributes() {
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(KEY, VALUE);
@@ -60,6 +64,7 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
 
+    @Test
     public void testUnsafeAddAttribute() {
         final UserProfile userProfile = new UserProfile();
         try {
@@ -69,6 +74,7 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         }
     }
 
+    @Test
     public void testRoles() {
         final UserProfile profile = new UserProfile();
         assertEquals(0, profile.getRoles().size());
@@ -77,6 +83,7 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         assertEquals(ROLE1, profile.getRoles().get(0));
     }
 
+    @Test
     public void testPermissions() {
         final UserProfile profile = new UserProfile();
         assertEquals(0, profile.getPermissions().size());
@@ -85,10 +92,25 @@ public final class TestUserProfile extends TestCase implements TestsConstants {
         assertEquals(PERMISSION, profile.getPermissions().get(0));
     }
 
+    @Test
     public void testRme() {
         final UserProfile profile = new UserProfile();
         assertFalse(profile.isRemembered());
         profile.setRemembered(true);
         assertTrue(profile.isRemembered());
+    }
+
+    @Test
+    public void testTypeId() {
+        final UserProfile profile = new UserProfile();
+        profile.setId(ID);
+        assertEquals("org.pac4j.core.profile.UserProfile" + UserProfile.SEPARATOR + ID, profile.getTypedId());
+    }
+
+    @Test
+    public void testOldTypeId() {
+        final UserProfile profile = new UserProfile();
+        profile.setId(ID);
+        assertEquals("UserProfile" + UserProfile.SEPARATOR + ID, profile.getOldTypedId());
     }
 }

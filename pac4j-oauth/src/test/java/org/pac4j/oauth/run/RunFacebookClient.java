@@ -88,7 +88,7 @@ public class RunFacebookClient extends RunClient {
     protected void verifyProfile(final UserProfile userProfile) {
         final FacebookProfile profile = (FacebookProfile) userProfile;
         assertEquals("771361542992890", profile.getId());
-        assertEquals(FacebookProfile.class.getSimpleName() + UserProfile.SEPARATOR + "771361542992890",
+        assertEquals(FacebookProfile.class.getName() + UserProfile.SEPARATOR + "771361542992890",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
