@@ -98,7 +98,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
                 final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                return new CasCredentials(in.readLine(), getClass().getSimpleName());
+                return new CasCredentials(in.readLine(), getName());
             }
             throw new TechnicalException("Service ticket request for `" + profile + "` failed: " +
                     HttpUtils.buildHttpErrorMessage(connection));

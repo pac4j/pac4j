@@ -77,7 +77,7 @@ public class RunGoogle2Client extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final Google2Profile profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(Google2Profile.class.getSimpleName() + UserProfile.SEPARATOR + "113675986756217860428",
+        assertEquals(Google2Profile.class.getName() + UserProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), Google2Profile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));

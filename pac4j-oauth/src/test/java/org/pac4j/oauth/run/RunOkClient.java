@@ -95,7 +95,7 @@ public class RunOkClient extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final OkProfile profile = (OkProfile) userProfile;
         assertEquals(TEST_PROFILE_ID, profile.getId());
-        assertEquals(OkProfile.class.getSimpleName() + UserProfile.SEPARATOR + TEST_PROFILE_ID,
+        assertEquals(OkProfile.class.getName() + UserProfile.SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), OkProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));

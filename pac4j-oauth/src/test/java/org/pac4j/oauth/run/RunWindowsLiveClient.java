@@ -69,7 +69,7 @@ public class RunWindowsLiveClient extends RunClient {
     protected void verifyProfile(UserProfile userProfile) {
         final WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
         assertEquals("416c383b220392d8", profile.getId());
-        assertEquals(WindowsLiveProfile.class.getSimpleName() + UserProfile.SEPARATOR + "416c383b220392d8",
+        assertEquals(WindowsLiveProfile.class.getName() + UserProfile.SEPARATOR + "416c383b220392d8",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
         assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
