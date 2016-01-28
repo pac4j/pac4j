@@ -17,9 +17,8 @@ package org.pac4j.oauth.client;
 
 import java.util.Iterator;
 
-import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -54,12 +53,15 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        this.service = new OAuth20Service(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant),
-                buildOAuthConfig(context, SignatureType.Header, null));
+        super.internalInit(context);
     }
-    
+
+    @Override
+    protected Api getApi() {
+        return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant);
+    }
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return this.casOAuthUrl + "/profile";

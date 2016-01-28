@@ -15,6 +15,7 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.*;
 import com.github.scribejava.core.oauth.OAuthService;
@@ -60,6 +61,45 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+
+        this.service = getApi().createService(buildOAuthConfig(context));
+    }
+
+    /**
+     * Build an OAuth configuration.
+     *
+     * @param context the web context
+     * @return the OAuth configuration
+     */
+    protected OAuthConfig buildOAuthConfig(final WebContext context) {
+        return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
+                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null);
+    }
+
+    /**
+     * Define the OAuth API for this client.
+     *
+     * @return the OAuth API
+     */
+    protected abstract Api getApi();
+
+    /**
+     * Define the OAuth scope for this client.
+     *
+     * @return the OAuth scope
+     */
+    protected String getOAuthScope() {
+        return null;
+    }
+
+
+    /**
+     * Whether the grant type must be added.
+     *
+     * @return Whether the grant type must be added
+     */
+    protected boolean hasOAuthGrantType() {
+        return false;
     }
 
     @Override
@@ -171,7 +211,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     protected U retrieveUserProfileFromToken(final Token accessToken) {
         final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
-            throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
+            throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
         final U profile = extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
@@ -194,7 +234,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * @return the user data response
      */
     protected String sendRequestForData(final Token accessToken, final String dataUrl) {
-        logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
+        logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final OAuthRequest request = createOAuthRequest(dataUrl);
         this.service.signRequest(accessToken, request);
@@ -206,8 +246,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         final int code = response.getCode();
         final String body = response.getBody();
         final long t1 = System.currentTimeMillis();
-        logger.debug("Request took : " + (t1 - t0) + " ms for : " + dataUrl);
-        logger.debug("response code : {} / response body : {}", code, body);
+        logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
+        logger.debug("response code: {} / response body: {}", code, body);
         if (code != 200) {
             throw new HttpCommunicationException(code, body);
         }
@@ -255,22 +295,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     protected void addAccessTokenToProfile(final U profile, final Token accessToken) {
         if (profile != null) {
             final String token = accessToken.getToken();
-            logger.debug("add access_token : {} to profile", token);
+            logger.debug("add access_token: {} to profile", token);
             profile.setAccessToken(token);
         }
-    }
-
-    /**
-     * Build an OAuth configuration.
-     *
-     * @param context the web context
-     * @param type the signature type
-     * @param scope the scope
-     * @return the OAuth configuration
-     */
-    protected OAuthConfig buildOAuthConfig(final WebContext context, final SignatureType type, final String scope) {
-        return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                type, scope, null, this.connectTimeout, this.readTimeout, null);
     }
 
     public void setKey(final String key) {

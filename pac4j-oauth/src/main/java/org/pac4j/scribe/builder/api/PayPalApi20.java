@@ -13,14 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.utils.OAuthEncoder;
+import com.github.scribejava.core.utils.Preconditions;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.PayPalJsonExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.utils.OAuthEncoder;
-import org.scribe.utils.Preconditions;
+import org.pac4j.scribe.extractors.PayPalJsonExtractor;
 
 /**
  * This class represents the OAuth API implementation for PayPal. It could be part of the Scribe library.

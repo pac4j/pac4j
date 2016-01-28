@@ -15,7 +15,6 @@
  */
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -50,33 +49,17 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) {
         // create a specific configuration with state
-        final OAuthConfig config = getOAuthConfig(context);
+        final OAuthConfig config = buildOAuthConfig(context);
         final String state = getState();
         config.setState(state);
         // save state
         context.setSessionAttribute(getName() + STATE_PARAMETER, state);
         // create a specific service
-        final OAuth20Service newService = new OAuth20Service(getApi(), config);
+        final OAuth20Service newService = (OAuth20Service) getApi().createService(config);
         final String authorizationUrl = newService.getAuthorizationUrl();
         logger.debug("authorizationUrl: {}", authorizationUrl);
         return authorizationUrl;
     }
-
-    /**
-     * Define the OAuth API for this client.
-     *
-     * @return the OAuth API
-     */
-    protected abstract DefaultApi20 getApi();
-
-
-    /**
-     * Define the OAuth configuration for this client.
-     *
-     * @param context the web context
-     * @return the OAuth configuration
-     */
-    protected abstract OAuthConfig getOAuthConfig(final WebContext context);
 
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) {
@@ -87,13 +70,13 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
             final String sessionState = (String) context.getSessionAttribute(getName() + STATE_PARAMETER);
             // clean from session after retrieving it
             context.setSessionAttribute(getName() + STATE_PARAMETER, null);
-            logger.debug("sessionState : {} / stateParameter : {}", sessionState, stateParameter);
+            logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
             if (!stateParameter.equals(sessionState)) {
-                final String message = "State parameter mismatch : session expired or possible threat of cross-site request forgery";
+                final String message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
                 throw new OAuthCredentialsException(message);
             }
         } else {
-            final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
+            final String message = "Missing state parameter: session expired or possible threat of cross-site request forgery";
             throw new OAuthCredentialsException(message);
         }
 

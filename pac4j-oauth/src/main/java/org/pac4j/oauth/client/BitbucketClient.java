@@ -16,10 +16,8 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import com.github.scribejava.core.oauth.OAuth10aService;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 import org.pac4j.scribe.builder.api.BitBucketApi;
@@ -43,9 +41,8 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new OAuth10aService(new BitBucketApi(), buildOAuthConfig(context, SignatureType.Header, null));
+    protected Api getApi() {
+        return new BitBucketApi();
     }
 
     @Override

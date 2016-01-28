@@ -16,10 +16,8 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.GitHubApi;
-import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import com.github.scribejava.core.oauth.OAuth20Service;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 
@@ -50,11 +48,15 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
     
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new OAuth20Service(GitHubApi.instance(), buildOAuthConfig(context, SignatureType.Header, this.scope));
+    protected Api getApi() {
+        return GitHubApi.instance();
     }
-    
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://api.github.com/user";
