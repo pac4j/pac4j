@@ -13,21 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.StravaJsonExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-import org.scribe.utils.OAuthEncoder;
-import org.scribe.utils.Preconditions;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.utils.OAuthEncoder;
+import com.github.scribejava.core.utils.Preconditions;
+import org.pac4j.scribe.extractors.StravaJsonExtractor;
 
 /**
  * This class represents the OAuth API implementation for Strava.
  *
  * @author Adrian Papusoi
  */
-public final class StravaApi extends DefaultApi20 {
+public final class StravaApi20 extends DefaultApi20 {
 
     /**
      * Strava authorization URL
@@ -49,7 +50,7 @@ public final class StravaApi extends DefaultApi20 {
      */
     private String approvalPrompt;
 
-    public StravaApi(String approvalPrompt) {
+    public StravaApi20(String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;
     }
 

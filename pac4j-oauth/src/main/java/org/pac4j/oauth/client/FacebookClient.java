@@ -20,9 +20,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.FacebookApi;
+import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.*;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
@@ -89,19 +89,18 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     
     @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("fields", this.fields);
-        this.service = new OAuth20Service(getApi(), getOAuthConfig(context));
+        super.internalInit(context);
     }
 
     @Override
-    protected DefaultApi20 getApi() {
+    protected Api getApi() {
         return FacebookApi.instance();
     }
 
     @Override
-    protected OAuthConfig getOAuthConfig(final WebContext context) {
-        return buildOAuthConfig(context, SignatureType.Header, this.scope);
+    protected String getOAuthScope() {
+        return this.scope;
     }
 
     @Override
@@ -139,7 +138,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
             logger.debug("response code: {} / response body: {}", code, body);
             if (code == 200) {
                 logger.debug("Retrieve extended token from  {}", body);
-                final Token extendedAccessToken = getApi().getAccessTokenExtractor().extract(body);
+                final Token extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(body);
                 logger.debug("Extended token: {}", extendedAccessToken);
                 addAccessTokenToProfile(profile, extendedAccessToken);
             } else {

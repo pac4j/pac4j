@@ -16,16 +16,14 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.apis.GoogleApi20;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.google2.Google2Profile;
-import org.scribe.builder.api.GoogleApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.StateOAuth20ServiceImpl;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
@@ -65,7 +63,6 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotNull("scope", this.scope);
         if (this.scope == Google2Scope.EMAIL) {
             this.scopeValue = this.EMAIL_SCOPE;
@@ -74,12 +71,17 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
         } else {
             this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
-        this.service = new StateOAuth20ServiceImpl(new GoogleApi20(), new OAuthConfig(this.key, this.secret,
-                computeFinalCallbackUrl(context),
-                SignatureType.Header,
-                this.scopeValue, null),
-                this.connectTimeout, this.readTimeout, this.proxyHost,
-                this.proxyPort, false, true);
+        super.internalInit(context);
+    }
+
+    @Override
+    protected Api getApi() {
+        return GoogleApi20.instance();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scopeValue;
     }
 
     @Override
@@ -116,26 +118,5 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Enable or disable usage of the 'state' parameter as a CSRF protection in OAuth.
-     * Default is true.
-     * @param requiresStateParameter whether the 'state' parameter must be used
-     */
-    public void setUseStateParameter(boolean requiresStateParameter) {
-        this.requiresStateParameter = requiresStateParameter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) {
-        if (this.requiresStateParameter) {
-            return super.retrieveAuthorizationUrl(context);
-        } else {
-            return super.getAuthorizationUrl(null);
-        }
     }
 }

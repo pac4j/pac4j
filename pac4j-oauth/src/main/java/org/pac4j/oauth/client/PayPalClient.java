@@ -15,16 +15,14 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
-import org.scribe.builder.api.PayPalApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.PayPalOAuth20ServiceImpl;
+import org.pac4j.scribe.builder.api.PayPalApi20;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -57,16 +55,25 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     
     @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
-        this.service = new PayPalOAuth20ServiceImpl(new PayPalApi20(), new OAuthConfig(this.key, this.secret,
-                                                                                       computeFinalCallbackUrl(context),
-                                                                                       SignatureType.Header,
-                                                                                       this.scope, null),
-                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                    this.proxyPort);
+        super.internalInit(context);
     }
-    
+
+    @Override
+    protected Api getApi() {
+        return new PayPalApi20();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
+    }
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://api.paypal.com/v1/identity/openidconnect/userinfo?schema=openid";

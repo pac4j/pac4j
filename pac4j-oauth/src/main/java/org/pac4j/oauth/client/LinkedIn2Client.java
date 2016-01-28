@@ -16,18 +16,15 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.apis.LinkedInApi20;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
-import org.scribe.builder.api.LinkedInApi20;
-import org.scribe.builder.api.StateApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.LinkedInOAuth20ServiceImpl;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
@@ -57,16 +54,21 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
-        StateApi20 api20 = new LinkedInApi20();
-        this.service = new LinkedInOAuth20ServiceImpl(api20, new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                                                                             SignatureType.Header, this.scope, null),
-                                                      this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                      this.proxyPort);
+        super.internalInit(context);
     }
-    
+
+    @Override
+    protected Api getApi() {
+        return LinkedInApi20.instance();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);

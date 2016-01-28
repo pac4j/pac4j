@@ -15,17 +15,15 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.Token;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
-import org.scribe.builder.api.OrcidApi20;
-import org.scribe.exceptions.OAuthException;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
-import org.scribe.tokens.OrcidToken;
+import org.pac4j.scribe.builder.api.OrcidApi20;
+import org.pac4j.scribe.model.OrcidToken;
 
 /**
  * <p>This class is the OAuth client to authenticate users in ORCiD.</p>
@@ -41,14 +39,29 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
 
     protected String scope = DEFAULT_SCOPE;
 
+    public OrcidClient() {
+        setTokenAsHeader(true);
+    }
+
     public OrcidClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
         setTokenAsHeader(true);
     }
 
-    public OrcidClient() {
-        setTokenAsHeader(true);
+    @Override
+    protected Api getApi() {
+        return new OrcidApi20();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
     }
 
     @Override
@@ -74,14 +87,12 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new ProxyOAuth20ServiceImpl(new OrcidApi20(), new OAuthConfig(this.key,
-                this.secret,
-                computeFinalCallbackUrl(context),
-                SignatureType.Header,
-                this.getScope(),
-                null), this.connectTimeout, this.readTimeout, this.proxyHost, this.proxyPort, false, true);
+    protected OrcidProfile extractUserProfile(String body) {
+        OrcidProfile profile = new OrcidProfile();
+        for(final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+            profile.addAttribute(attribute, StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
+        }
+        return profile;
     }
 
     public String getScope() {
@@ -90,14 +101,5 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
 
     public void setScope(final String scope) {
         this.scope = scope;
-    }
-
-    @Override
-    protected OrcidProfile extractUserProfile(String body) {
-        OrcidProfile profile = new OrcidProfile();
-        for(final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-            profile.addAttribute(attribute, StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
-        }
-        return profile;
     }
 }

@@ -13,14 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.extractors;
+package org.pac4j.scribe.extractors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.scribe.exceptions.OAuthException;
-import org.scribe.model.Token;
-import org.scribe.utils.Preconditions;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.utils.Preconditions;
 
 import java.io.IOException;
 
@@ -76,6 +77,4 @@ public class StravaJsonExtractor implements AccessTokenExtractor {
             this.accessToken = accessToken;
         }
     }
-
-
 }

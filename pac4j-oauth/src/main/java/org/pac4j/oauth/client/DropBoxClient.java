@@ -16,9 +16,8 @@
 package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.DropBoxApi;
-import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -44,13 +43,12 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new OAuth10aService(DropBoxApi.instance(), buildOAuthConfig(context, SignatureType.Header, null));
+    protected Api getApi() {
+        return DropBoxApi.instance();
     }
-    
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://api.dropbox.com/1/account/info";

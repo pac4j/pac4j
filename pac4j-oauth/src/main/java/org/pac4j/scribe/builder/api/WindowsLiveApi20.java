@@ -13,13 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.JsonTokenExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.utils.OAuthEncoder;
-import org.scribe.utils.Preconditions;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.extractors.JsonTokenExtractor;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.utils.OAuthEncoder;
+import com.github.scribejava.core.utils.Preconditions;
 
 /**
  * Fix url endpoints (waiting for the next Scribe release).
@@ -27,7 +28,7 @@ import org.scribe.utils.Preconditions;
  * @author Jerome Leleu
  * @since 1.6.0
  */
-public class WindowsLiveApi extends DefaultApi20 {
+public class WindowsLiveApi20 extends DefaultApi20 {
     
     private static final String AUTHORIZE_URL = "https://login.live.com/oauth20_authorize.srf?client_id=%s&redirect_uri=%s&response_type=code";
     private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";

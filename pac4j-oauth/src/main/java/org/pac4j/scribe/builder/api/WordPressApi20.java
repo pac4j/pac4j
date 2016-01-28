@@ -13,15 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.JsonTokenExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-import org.scribe.utils.OAuthEncoder;
-import org.scribe.utils.Preconditions;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.extractors.JsonTokenExtractor;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.utils.OAuthEncoder;
+import com.github.scribejava.core.utils.Preconditions;
 
 /**
  * This class represents the OAuth API implementation for WordPress. It could be part of the Scribe library.
@@ -29,7 +29,7 @@ import org.scribe.utils.Preconditions;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class WordPressApi extends DefaultApi20 {
+public final class WordPressApi20 extends DefaultApi20 {
     private static final String BASE_URL = "https://public-api.wordpress.com/oauth2/";
     
     private static final String AUTHORIZE_URL = BASE_URL + "authorize?client_id=%s&redirect_uri=%s&response_type=code";

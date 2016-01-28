@@ -13,12 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.extractors;
+package org.pac4j.scribe.extractors;
 
-import org.scribe.exceptions.OAuthException;
-import org.scribe.model.Token;
-import org.scribe.tokens.OrcidToken;
-import org.scribe.utils.Preconditions;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.utils.Preconditions;
+import org.pac4j.scribe.model.OrcidToken;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

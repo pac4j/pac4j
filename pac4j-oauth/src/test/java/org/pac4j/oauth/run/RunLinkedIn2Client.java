@@ -92,8 +92,8 @@ public class RunLinkedIn2Client extends RunClient {
                 null,
                 null,
                 null);
-        assertEquals("https://www.linkedin.com/profile/view?id=167439971&authType=name&authToken=_IWF&trk=api*a167383*s175634*", profile.getSiteStandardProfileRequest());
-        assertEquals("167439971", profile.getOAuth10Id());
+        assertEquals("https://www.linkedin.com/profile/view?id=AAoAAAn67mMBxVIxeJXn2T6XBvOFEAMLv7RiJQQ&authType=name&authToken=_IWF&trk=api*a167383*s175634*", profile.getSiteStandardProfileRequest());
+        assertEquals("AAoAAAn67mMBxVIxeJXn2T6XBvOFEAMLv7RiJQQ", profile.getOAuth10Id());
         assertEquals(5, profile.getAttributes().size());
     }
 }

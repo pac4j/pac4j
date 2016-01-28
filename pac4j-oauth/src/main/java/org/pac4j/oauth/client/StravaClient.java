@@ -15,15 +15,12 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
-import org.scribe.builder.api.StravaApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+import org.pac4j.scribe.builder.api.StravaApi20;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -56,27 +53,14 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         setSecret(secret);
     }
 
-    public String getApprovalPrompt() {
-        return approvalPrompt;
-    }
-
-    public void setApprovalPrompt(String approvalPrompt) {
-        this.approvalPrompt = approvalPrompt;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
+    @Override
+    protected Api getApi() {
+        return new StravaApi20(approvalPrompt);
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(key, secret, computeFinalCallbackUrl(context),
-                SignatureType.Header, scope, null), connectTimeout, readTimeout, proxyHost, proxyPort, false, false);
+    protected String getOAuthScope() {
+        return this.scope;
     }
 
     @Override
@@ -95,5 +79,21 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
             }
         }
         return profile;
+    }
+
+    public String getApprovalPrompt() {
+        return approvalPrompt;
+    }
+
+    public void setApprovalPrompt(String approvalPrompt) {
+        this.approvalPrompt = approvalPrompt;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }
