@@ -63,6 +63,11 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
 
     @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
+    }
+
+    @Override
     protected String getProfileUrl(final Token accessToken) {
         return this.casOAuthUrl + "/profile";
     }
