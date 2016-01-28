@@ -15,6 +15,9 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -26,12 +29,6 @@ import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.scribe.exceptions.OAuthException;
-import org.scribe.model.ProxyOAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,19 +45,15 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     protected OAuthService service;
 
-    protected String key;
+    private String key;
 
-    protected String secret;
+    private String secret;
 
-    protected boolean tokenAsHeader = false;
+    private boolean tokenAsHeader = false;
 
-    protected int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
-    protected int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
-
-    protected String proxyHost = null;
-
-    protected int proxyPort = 8080;
+    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     @Override
     protected void internalInit(final WebContext context) {
@@ -78,6 +71,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         }
     }
 
+    /**
+     * Retrieve the authorization url to redirect to the OAuth provider.
+     *
+     * @param context the web context
+     * @return the authorization url
+     */
     protected abstract String retrieveAuthorizationUrl(final WebContext context);
 
     @Override
@@ -90,8 +89,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         // check errors
         try {
             boolean errorFound = false;
-            final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
-                    "Failed to retrieve OAuth credentials, error parameters found");
+            final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             String errorMessage = "";
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
                 final String value = context.getRequestParameter(key);
@@ -198,7 +196,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     protected String sendRequestForData(final Token accessToken, final String dataUrl) {
         logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
-        final ProxyOAuthRequest request = createProxyRequest(dataUrl);
+        final OAuthRequest request = createOAuthRequest(dataUrl);
         this.service.signRequest(accessToken, request);
         // Let the client to decide if the token should be in header
         if (this.isTokenAsHeader()) {
@@ -217,6 +215,16 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     }
 
     /**
+     * Create an OAuth request.
+     *
+     * @param url the url to call
+     * @return the request
+     */
+    protected OAuthRequest createOAuthRequest(final String url) {
+        return new OAuthRequest(Verb.GET, url, this.service);
+    }
+
+    /**
      * Make a request to the OAuth provider to access a protected resource. The profile should contain a valid access token (and secret if
      * needed).
      * 
@@ -228,17 +236,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         final String secret = profile.getAccessSecret();
         final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
         return sendRequestForData(accessToken, dataUrl);
-    }
-
-    /**
-     * Create a proxy request.
-     * 
-     * @param url url of the data
-     * @return a proxy request
-     */
-    protected ProxyOAuthRequest createProxyRequest(final String url) {
-        return new ProxyOAuthRequest(Verb.GET, url, this.connectTimeout, this.readTimeout, this.proxyHost,
-                this.proxyPort);
     }
 
     /**
@@ -261,6 +258,19 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
             logger.debug("add access_token : {} to profile", token);
             profile.setAccessToken(token);
         }
+    }
+
+    /**
+     * Build an OAuth configuration.
+     *
+     * @param context the web context
+     * @param type the signature type
+     * @param scope the scope
+     * @return the OAuth configuration
+     */
+    protected OAuthConfig buildOAuthConfig(final WebContext context, final SignatureType type, final String scope) {
+        return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
+                type, scope, null, this.connectTimeout, this.readTimeout, null);
     }
 
     public void setKey(final String key) {
@@ -293,22 +303,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     public int getReadTimeout() {
         return this.readTimeout;
-    }
-
-    public String getProxyHost() {
-        return this.proxyHost;
-    }
-
-    public void setProxyHost(final String proxyHost) {
-        this.proxyHost = proxyHost;
-    }
-
-    public int getProxyPort() {
-        return this.proxyPort;
-    }
-
-    public void setProxyPort(final int proxyPort) {
-        this.proxyPort = proxyPort;
     }
 
     public boolean isTokenAsHeader() {

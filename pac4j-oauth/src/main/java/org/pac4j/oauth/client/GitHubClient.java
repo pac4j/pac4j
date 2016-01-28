@@ -15,14 +15,13 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.apis.GitHubApi;
+import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
-import org.scribe.builder.api.GitHubApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -53,11 +52,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
-        this.service = new ProxyOAuth20ServiceImpl(new GitHubApi(), new OAuthConfig(this.key, this.secret,
-                                                                                    computeFinalCallbackUrl(context),
-                                                                                    SignatureType.Header, this.scope,
-                                                                                    null), this.connectTimeout,
-                                                   this.readTimeout, this.proxyHost, this.proxyPort);
+        this.service = new OAuth20Service(GitHubApi.instance(), buildOAuthConfig(context, SignatureType.Header, this.scope));
     }
     
     @Override

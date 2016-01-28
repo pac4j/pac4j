@@ -15,9 +15,9 @@
  */
 package org.pac4j.oauth.credentials;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
-import org.scribe.model.Token;
 
 /**
  * This class represents an OAuth credentials for OAuth 1.0 &amp; 2.0 : a request token, a token and a verifier.

@@ -16,14 +16,13 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.apis.Foursquare2Api;
+import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
-import org.scribe.builder.api.Foursquare2Api;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.FoursquareOAuth20ServiceImpl;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Foursquare.
@@ -44,12 +43,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
-        this.service = new FoursquareOAuth20ServiceImpl(new Foursquare2Api(),
-                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, "user", null),
-                this.connectTimeout,
-                this.readTimeout,
-                this.proxyHost,
-                this.proxyPort);
+        this.service = new OAuth20Service(Foursquare2Api.instance(), buildOAuthConfig(context, SignatureType.Header, "user"));
     }
 
     @Override
