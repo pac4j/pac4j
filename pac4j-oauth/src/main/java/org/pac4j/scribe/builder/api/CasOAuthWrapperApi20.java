@@ -13,14 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.JsonTokenExtractor;
-import org.scribe.extractors.TokenExtractor20Impl;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-import org.scribe.utils.OAuthEncoder;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.extractors.JsonTokenExtractor;
+import com.github.scribejava.core.extractors.TokenExtractor20Impl;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.utils.OAuthEncoder;
 
 /**
  * This class represents the OAuth API implementation for the CAS OAuth wrapper.
