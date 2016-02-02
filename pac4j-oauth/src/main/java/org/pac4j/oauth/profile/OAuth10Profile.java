@@ -45,4 +45,10 @@ public abstract class OAuth10Profile extends OAuth20Profile {
     public String getAccessSecret() {
         return (String) getAttribute(ACCESS_SECRET);
     }
+
+    @Override
+    public void clearSensitiveData() {
+        super.clearSensitiveData();
+        removeAttribute(ACCESS_SECRET);
+    }
 }

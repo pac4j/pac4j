@@ -50,6 +50,6 @@ public abstract class OAuth20Profile extends CommonProfile {
 
     @Override
     public void clearSensitiveData() {
-        this.setAccessToken("");
+        removeAttribute(ACCESS_TOKEN);
     }
 }

@@ -15,14 +15,13 @@
  */
 package org.pac4j.oauth.profile.github;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * General test cases for GitHubProfile.
@@ -37,7 +36,7 @@ public class GitHubProfileTests implements TestsConstants {
         GitHubProfile profile = new GitHubProfile();
         profile.setAccessToken("testToken");
         profile.clearSensitiveData();
-        Assert.assertEquals("", profile.getAccessToken());
+        assertNull(profile.getAccessToken());
     }
 
     @Test

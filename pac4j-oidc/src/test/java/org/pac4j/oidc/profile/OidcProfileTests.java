@@ -20,6 +20,7 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
 
@@ -30,14 +31,16 @@ import static org.junit.Assert.*;
  * @author Misagh Moayyed
  * @since  1.8.0
  */
-public class OidcProfileTests {
+public class OidcProfileTests implements TestsConstants {
 
     @Test
     public void testClearProfile() {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken());
+        profile.setIdTokenString(ID);
         profile.clearSensitiveData();
         assertNull(profile.getAccessToken());
+        assertNull(profile.getIdTokenString());
     }
 
     @Test
