@@ -33,7 +33,4 @@ public class AnonymousCredentials extends HttpCredentials {
     public int hashCode() {
         return 0;
     }
-
-    @Override
-    public void clear() {}
 }

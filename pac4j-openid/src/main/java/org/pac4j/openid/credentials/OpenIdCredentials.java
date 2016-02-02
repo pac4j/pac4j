@@ -56,11 +56,4 @@ public class OpenIdCredentials extends Credentials {
         return CommonHelper.toString(this.getClass(), "discoveryInformation", this.discoveryInformation,
                                      "parameterList", this.parameterList, "clientName", getClientName());
     }
-
-    @Override
-    public void clear() {
-        this.parameterList = null;
-        this.discoveryInformation = null;
-        this.setClientName(null);
-    }
 }

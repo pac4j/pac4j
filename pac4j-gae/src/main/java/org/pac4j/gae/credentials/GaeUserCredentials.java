@@ -35,10 +35,4 @@ public class GaeUserCredentials extends Credentials {
 	public User getUser() {
 		return user;
 	}
-
-	@Override
-	public void clear() {
-		this.user = null;
-		this.setClientName(null);
-	}
 }
