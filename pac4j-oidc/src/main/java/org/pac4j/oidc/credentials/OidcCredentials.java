@@ -39,10 +39,4 @@ public class OidcCredentials extends Credentials {
     public AuthorizationCode getCode() {
         return this.code;
     }
-
-    @Override
-    public void clear() {
-        this.code = null;
-        this.setClientName(null);
-    }
 }

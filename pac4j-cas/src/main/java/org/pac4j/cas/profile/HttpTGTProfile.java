@@ -43,7 +43,7 @@ public final class HttpTGTProfile extends HttpProfile {
     }
 
     @Override
-    public void clear() {
+    public void clearSensitiveData() {
         this.ticketGrantingTicketId = null;
     }
 

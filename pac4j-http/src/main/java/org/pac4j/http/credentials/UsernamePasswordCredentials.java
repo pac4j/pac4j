@@ -69,12 +69,4 @@ public class UsernamePasswordCredentials extends HttpCredentials {
         return CommonHelper.toString(this.getClass(), "username", this.username, "password", "[PROTECTED]",
                 "clientName", getClientName());
     }
-
-    @Override
-    public void clear() {
-        this.username = null;
-        this.password = null;
-        this.setClientName(null);
-        this.setUserProfile(null);
-    }
 }

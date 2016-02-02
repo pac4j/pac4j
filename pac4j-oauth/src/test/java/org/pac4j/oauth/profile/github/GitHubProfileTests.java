@@ -36,7 +36,7 @@ public class GitHubProfileTests implements TestsConstants {
     public void testClearGitHubProfile() {
         GitHubProfile profile = new GitHubProfile();
         profile.setAccessToken("testToken");
-        profile.clear();
+        profile.clearSensitiveData();
         Assert.assertEquals("", profile.getAccessToken());
     }
 

@@ -36,7 +36,7 @@ public class OidcProfileTests {
     public void testClearProfile() {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken());
-        profile.clear();
+        profile.clearSensitiveData();
         assertNull(profile.getAccessToken());
     }
 

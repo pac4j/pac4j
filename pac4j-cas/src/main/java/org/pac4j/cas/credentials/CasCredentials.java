@@ -44,10 +44,4 @@ public class CasCredentials extends Credentials {
         return CommonHelper.toString(this.getClass(), "serviceTicket", this.serviceTicket, "clientName",
                                      getClientName());
     }
-
-    @Override
-    public void clear() {
-        this.serviceTicket = null;
-        this.setClientName(null);
-    }
 }

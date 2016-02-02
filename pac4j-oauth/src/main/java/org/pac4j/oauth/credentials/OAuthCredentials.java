@@ -66,12 +66,4 @@ public class OAuthCredentials extends Credentials {
         return CommonHelper.toString(this.getClass(), "requestToken", this.requestToken, "token", this.token,
                                      "verifier", this.verifier, "clientName", getClientName());
     }
-
-    @Override
-    public void clear() {
-        this.token = null;
-        this.requestToken = null;
-        this.verifier = null;
-        this.setClientName(null);
-    }
 }
