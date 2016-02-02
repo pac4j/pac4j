@@ -16,14 +16,14 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.apis.Foursquare2Api;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
-import org.scribe.builder.api.Foursquare2Api;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.FoursquareOAuth20ServiceImpl;
+import org.pac4j.scribe.oauth.Foursquare20Service;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Foursquare.
@@ -34,6 +34,7 @@ import org.scribe.oauth.FoursquareOAuth20ServiceImpl;
  * @since 1.5.0
  */
 public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
+
     public FoursquareClient() {}
 
     public FoursquareClient(String key, String secret) {
@@ -44,12 +45,22 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
-        this.service = new FoursquareOAuth20ServiceImpl(new Foursquare2Api(),
-                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, "user", null),
-                this.connectTimeout,
-                this.readTimeout,
-                this.proxyHost,
-                this.proxyPort);
+        this.service = new Foursquare20Service((DefaultApi20) getApi(), buildOAuthConfig(context));
+    }
+
+    @Override
+    protected Api getApi() {
+        return Foursquare2Api.instance();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return "user";
+    }
+
+    @Override
+    protected String getProfileUrl(final Token accessToken) {
+        return "https://api.foursquare.com/v2/users/self?v=20131118";
     }
 
     @Override
@@ -72,10 +83,5 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
             }
         }
         return profile;
-    }
-
-    @Override
-    protected String getProfileUrl(Token accessToken) {
-        return "https://api.foursquare.com/v2/users/self?v=20131118";
     }
 }

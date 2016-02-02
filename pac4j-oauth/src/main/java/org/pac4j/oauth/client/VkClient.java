@@ -15,14 +15,11 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.apis.VkontakteApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.vk.VkProfile;
-import org.scribe.builder.api.VkApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -60,11 +57,13 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected void internalInit(final WebContext context) {
-		super.internalInit(context);
-		this.service = new ProxyOAuth20ServiceImpl(new VkApi(),
-				new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, this.scope, null), this.connectTimeout, this.readTimeout,
-				this.proxyHost, this.proxyPort);
+	protected Api getApi() {
+		return VkontakteApi.instance();
+	}
+
+	@Override
+	protected String getOAuthScope() {
+		return this.scope;
 	}
 
 	@Override

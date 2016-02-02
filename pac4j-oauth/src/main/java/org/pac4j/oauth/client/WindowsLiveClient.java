@@ -15,16 +15,13 @@
  */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
-import org.scribe.builder.api.WindowsLiveApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.pac4j.scribe.builder.api.WindowsLiveApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Windows Live (SkyDrive, Hotmail and Messenger).</p>
@@ -43,15 +40,15 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new ProxyOAuth20ServiceImpl(new WindowsLiveApi(), new OAuthConfig(this.key, this.secret,
-                                                                                  computeFinalCallbackUrl(context),
-                                                                                  SignatureType.Header, "wl.basic",
-                                                                                  null), this.connectTimeout,
-                                                   this.readTimeout, this.proxyHost, this.proxyPort);
+    protected Api getApi() {
+        return new WindowsLiveApi20();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return "wl.basic";
     }
     
     @Override

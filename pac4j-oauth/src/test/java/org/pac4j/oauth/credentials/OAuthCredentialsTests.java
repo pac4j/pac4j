@@ -15,10 +15,10 @@
  */
 package org.pac4j.oauth.credentials;
 
+import com.github.scribejava.core.model.Token;
 import org.junit.Test;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
-import org.scribe.model.Token;
 
 import static org.junit.Assert.*;
 

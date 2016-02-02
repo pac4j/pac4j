@@ -13,28 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.oauth;
+package org.pac4j.scribe.oauth;
 
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Token;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.AbstractRequest;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.oauth.OAuth20Service;
 
 /**
  * This service is dedicated for Foursquare service using OAuth protocol version 2.0.
- * 
+ *
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareOAuth20ServiceImpl extends ProxyOAuth20ServiceImpl {
+public final class Foursquare20Service extends OAuth20Service {
 
-    public FoursquareOAuth20ServiceImpl(final DefaultApi20 api, final OAuthConfig config, final int connectTimeout,
-                                      final int readTimeout, final String proxyHost, final int proxyPort) {
-        super(api, config, connectTimeout, readTimeout, proxyHost, proxyPort);
+    public Foursquare20Service(DefaultApi20 api, OAuthConfig config) {
+        super(api, config);
     }
 
     @Override
-    public void signRequest(final Token accessToken, final OAuthRequest request) {
+    public void signRequest(final Token accessToken, final AbstractRequest request) {
         request.addQuerystringParameter("oauth_token", accessToken.getToken());
     }
 }

@@ -13,13 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.OrcidJsonExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-import org.scribe.utils.OAuthEncoder;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.utils.OAuthEncoder;
+import org.pac4j.scribe.extractors.OrcidJsonExtractor;
 
 /**
  * This class represents the OAuth API implementation for ORCiD using OAuth protocol version 2.
