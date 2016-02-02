@@ -13,33 +13,35 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.scribe.builder.api;
+package org.pac4j.scribe.builder.api;
 
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.utils.OAuthEncoder;
-import org.scribe.utils.Preconditions;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.extractors.AccessTokenExtractor;
+import com.github.scribejava.core.extractors.JsonTokenExtractor;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.utils.OAuthEncoder;
+import com.github.scribejava.core.utils.Preconditions;
 
 /**
- * This class represents the OAuth API implementation for GitHub. It could be part of the Scribe library.
- * 
+ * Fix url endpoints (waiting for the next Scribe release).
+ *
  * @author Jerome Leleu
- * @since 1.0.0
+ * @since 1.6.0
  */
-public final class GitHubApi extends DefaultApi20 {
+public class WindowsLiveApi20 extends DefaultApi20 {
     
-    private static final String AUTHORIZE_URL = "https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s";
+    private static final String AUTHORIZE_URL = "https://login.live.com/oauth20_authorize.srf?client_id=%s&redirect_uri=%s&response_type=code";
     private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";
     
     @Override
     public String getAccessTokenEndpoint() {
-        return "https://github.com/login/oauth/access_token";
+        return "https://login.live.com/oauth20_token.srf?grant_type=authorization_code";
     }
     
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config) {
+    public String getAuthorizationUrl(OAuthConfig config) {
         Preconditions.checkValidUrl(config.getCallback(),
-                                    "Must provide a valid url as callback. GitHub does not support OOB");
+                                    "Must provide a valid url as callback. Live does not support OOB");
         
         // Append scope if present
         if (config.hasScope()) {
@@ -48,5 +50,10 @@ public final class GitHubApi extends DefaultApi20 {
         } else {
             return String.format(AUTHORIZE_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
+    }
+    
+    @Override
+    public AccessTokenExtractor getAccessTokenExtractor() {
+        return new JsonTokenExtractor();
     }
 }

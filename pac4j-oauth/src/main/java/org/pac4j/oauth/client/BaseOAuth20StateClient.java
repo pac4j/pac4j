@@ -15,13 +15,14 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.scribe.oauth.StateOAuth20Service;
 
 /**
  * This class is the base implementation for client supporting OAuth protocol version 2.0 with the state parameter.
@@ -45,21 +46,19 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
         return stateParameter;
     }
 
-    public void setState(String stateParameter) {
-        stateData = stateParameter;
-    }
-
-    protected String getAuthorizationUrl(String state) {
-        final String authorizationUrl = ((StateOAuth20Service) this.service).getAuthorizationUrl(state);
-        logger.debug("authorizationUrl : {}", authorizationUrl);
-        return authorizationUrl;
-    }
-
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) {
+        // create a specific configuration with state
+        final OAuthConfig config = buildOAuthConfig(context);
         final String state = getState();
+        config.setState(state);
+        // save state
         context.setSessionAttribute(getName() + STATE_PARAMETER, state);
-        return getAuthorizationUrl(state);
+        // create a specific service
+        final OAuth20Service newService = (OAuth20Service) getApi().createService(config);
+        final String authorizationUrl = newService.getAuthorizationUrl();
+        logger.debug("authorizationUrl: {}", authorizationUrl);
+        return authorizationUrl;
     }
 
     @Override
@@ -71,16 +70,24 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
             final String sessionState = (String) context.getSessionAttribute(getName() + STATE_PARAMETER);
             // clean from session after retrieving it
             context.setSessionAttribute(getName() + STATE_PARAMETER, null);
-            logger.debug("sessionState : {} / stateParameter : {}", sessionState, stateParameter);
+            logger.debug("sessionState: {} / stateParameter: {}", sessionState, stateParameter);
             if (!stateParameter.equals(sessionState)) {
-                final String message = "State parameter mismatch : session expired or possible threat of cross-site request forgery";
+                final String message = "State parameter mismatch: session expired or possible threat of cross-site request forgery";
                 throw new OAuthCredentialsException(message);
             }
         } else {
-            final String message = "Missing state parameter : session expired or possible threat of cross-site request forgery";
+            final String message = "Missing state parameter: session expired or possible threat of cross-site request forgery";
             throw new OAuthCredentialsException(message);
         }
 
         return super.getOAuthCredentials(context);
+    }
+
+    public String getStateData() {
+        return stateData;
+    }
+
+    public void setStateData(String stateData) {
+        this.stateData = stateData;
     }
 }

@@ -16,16 +16,14 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.apis.OdnoklassnikiApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
 import org.pac4j.oauth.profile.ok.OkProfile;
-import org.scribe.builder.api.OkApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -53,6 +51,23 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         setPublicKey(publicKey);
     }
 
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("publicKey", this.publicKey);
+        super.internalInit(context);
+    }
+
+    @Override
+    protected Api getApi() {
+        return OdnoklassnikiApi.instance();
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
+    }
+
     @Override
     protected String getProfileUrl(Token accessToken) {
         String baseParams =
@@ -61,7 +76,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
                         "&method=users.getCurrentUser";
         String finalSign;
         try {
-            String preSign = getMD5SignAsHexString(accessToken.getToken() + secret);
+            String preSign = getMD5SignAsHexString(accessToken.getToken() + getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -94,15 +109,6 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
             }
         }
         return result.toString();
-    }
-
-    @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        CommonHelper.assertNotBlank("publicKey", this.publicKey);
-        this.service = new ProxyOAuth20ServiceImpl(new OkApi(),
-                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, null, null), this.connectTimeout, this.readTimeout,
-                this.proxyHost, this.proxyPort, false, true);
     }
 
     public String getPublicKey() {

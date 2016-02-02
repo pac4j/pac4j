@@ -15,16 +15,13 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.apis.YahooApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
-import org.scribe.builder.api.YahooApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -47,15 +44,10 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new ProxyOAuth10aServiceImpl(new YahooApi(), new OAuthConfig(this.key, this.secret,
-                                                                                    computeFinalCallbackUrl(context),
-                                                                                    SignatureType.Header, null, null),
-                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                    this.proxyPort);
+    protected Api getApi() {
+        return YahooApi.instance();
     }
-    
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://social.yahooapis.com/v1/me/guid?format=xml";

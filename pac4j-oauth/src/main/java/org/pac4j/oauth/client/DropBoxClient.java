@@ -15,16 +15,14 @@
  */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.apis.DropBoxApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
-import org.scribe.builder.api.DropBoxApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -45,17 +43,12 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new ProxyOAuth10aServiceImpl(new DropBoxApi(),
-                                                    new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                                                                    SignatureType.Header, null, null),
-                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                    this.proxyPort);
+    protected Api getApi() {
+        return DropBoxApi.instance();
     }
-    
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://api.dropbox.com/1/account/info";
@@ -65,11 +58,11 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     protected OAuthCredentials getOAuthCredentials(final WebContext context) {
         // get tokenRequest from session
         final Token tokenRequest = (Token) context.getSessionAttribute(getRequestTokenSessionAttributeName());
-        logger.debug("tokenRequest : {}", tokenRequest);
+        logger.debug("tokenRequest: {}", tokenRequest);
         // don't get parameters from url
         // token and verifier are equals and extracted from saved request token
         final String token = tokenRequest.getToken();
-        logger.debug("token = verifier : {}", token);
+        logger.debug("token = verifier: {}", token);
         return new OAuthCredentials(tokenRequest, token, token, getName());
     }
     

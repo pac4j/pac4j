@@ -17,15 +17,13 @@ package org.pac4j.oauth.client;
 
 import java.util.Iterator;
 
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
-import org.scribe.builder.api.CasOAuthWrapperApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -55,16 +53,20 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        this.service = new ProxyOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl,
-                                                                            this.springSecurityCompliant),
-                                                   new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                                                                   SignatureType.Header, null, null),
-                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                   this.proxyPort, false, true);
+        super.internalInit(context);
     }
-    
+
+    @Override
+    protected Api getApi() {
+        return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant);
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
+    }
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return this.casOAuthUrl + "/profile";
