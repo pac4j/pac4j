@@ -133,4 +133,8 @@ public final class TestCommonHelper extends TestCase {
     public void testAreEqualsSameValue() {
         assertTrue(CommonHelper.areEquals(VALUE, VALUE));
     }
+    
+    public void testClassPathPrefix() {
+    	assertNotNull(CommonHelper.getInputStreamFromName("classpath:testFile.txt"));
+    }
 }
