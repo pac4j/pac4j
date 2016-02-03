@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package org.pac4j.saml.credentials;
 
 import java.util.List;
@@ -62,13 +61,5 @@ public class SAML2Credentials extends Credentials {
     @Override
     public final String toString() {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
-    }
-
-    @Override
-    public void clear() {
-        this.conditions = null;
-        this.nameId = null;
-        this.attributes = null;
-        this.setClientName(null);
     }
 }

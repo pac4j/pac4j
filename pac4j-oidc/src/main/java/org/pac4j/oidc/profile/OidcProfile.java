@@ -87,8 +87,9 @@ public class OidcProfile extends CommonProfile implements Externalizable {
     }
 
     @Override
-    public void clear() {
+    public void clearSensitiveData() {
         removeAttribute(ACCESS_TOKEN);
+        removeAttribute(ID_TOKEN);
     }
 
     private static class BearerAccessTokenBean implements Serializable {
