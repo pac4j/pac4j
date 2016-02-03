@@ -26,18 +26,17 @@
 	<artifactId>pac4j-gae</artifactId>
 	<packaging>jar</packaging>
 	<name>pac4j for GAE UserService mechanism</name>
+
     <properties>
-		<gae.version>1.9.0</gae.version>
+		<gae.version>1.9.31</gae.version>
+		<jsr107cache.version>1.1</jsr107cache.version>
     </properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.openid4java</groupId>
-            <artifactId>openid4java</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -55,7 +54,7 @@
         <dependency>
             <groupId>net.sf.jsr107cache</groupId>
             <artifactId>jsr107cache</artifactId>
-            <version>1.1</version>
+            <version>${jsr107cache.version}</version>
         </dependency>
 		<!-- for testing -->
 		<dependency>
@@ -75,23 +74,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo-shaded</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

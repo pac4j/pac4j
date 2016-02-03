@@ -25,9 +25,6 @@ import org.pac4j.http.credentials.UsernamePasswordCredentials;
  */
 public interface UsernamePasswordAuthenticator extends Authenticator<UsernamePasswordCredentials> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     void validate(UsernamePasswordCredentials credentials);
 }

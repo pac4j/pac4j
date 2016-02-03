@@ -54,7 +54,6 @@ public class UsernamePasswordCredentials extends HttpCredentials {
 
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
         return !(password != null ? !password.equals(that.password) : that.password != null);
-
     }
 
     @Override

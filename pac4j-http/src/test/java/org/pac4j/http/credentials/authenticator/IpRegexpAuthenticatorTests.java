@@ -18,6 +18,7 @@ package org.pac4j.http.credentials.authenticator;
 import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.profile.IpProfile;
 
@@ -29,12 +30,10 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class IpRegexpAuthenticatorTests {
+public final class IpRegexpAuthenticatorTests implements TestsConstants {
 
     private final static String GOOD_IP = "127.0.0.1";
     private final static String BAD_IP = "192.168.0.1";
-
-    private final static String CLIENT_NAME = "clientName";
 
     private final static IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator(GOOD_IP);
 

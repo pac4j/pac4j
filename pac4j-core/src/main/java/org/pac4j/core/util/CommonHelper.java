@@ -146,7 +146,7 @@ public final class CommonHelper {
                 sb.append(name);
                 sb.append("=");
                 if (value != null) {
-                    sb.append(encodeText(value));
+                    sb.append(urlEncode(value));
                 }
             }
             return sb.toString();
@@ -155,12 +155,12 @@ public final class CommonHelper {
     }
 
     /**
-     * Encode a text using UTF-8.
+     * URL encode a text using UTF-8.
      * 
      * @param text text to encode
      * @return the encoded text
      */
-    private static String encodeText(final String text) {
+    public static String urlEncode(final String text) {
         try {
             return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
         } catch (final UnsupportedEncodingException e) {

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class KryoSerializationHelperTests implements TestsConstants {
+public final class KryoSerializationHelperTests implements TestsConstants {
 
     private KryoSerializationHelper helper = new KryoSerializationHelper();
 

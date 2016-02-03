@@ -30,7 +30,7 @@ import javax.sql.DataSource;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DbServer implements TestsConstants{
+public final class DbServer implements TestsConstants {
 
     private static DataSource ds;
 

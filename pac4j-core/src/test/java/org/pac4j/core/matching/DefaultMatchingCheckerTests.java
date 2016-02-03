@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class DefaultMatchingCheckerTests implements TestsConstants {
+public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     private final static MatchingChecker checker = new DefaultMatchingChecker();
 

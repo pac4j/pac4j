@@ -27,7 +27,7 @@ import org.pac4j.core.util.TestsHelper;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class OAuthClientsTests implements TestsConstants {
+public final class OAuthClientsTests implements TestsConstants {
 
     @Test
     public void testMissingFieldsFacebook() {

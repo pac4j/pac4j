@@ -18,6 +18,7 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.TokenCredentials;
 
 import static org.junit.Assert.*;
@@ -28,7 +29,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class HeaderExtractorTests {
+public final class HeaderExtractorTests implements TestsConstants {
 
     private final static String GOOD_HEADER = "goodHeader";
     private final static String BAD_HEADER = "badHeader";
@@ -36,9 +37,7 @@ public final class HeaderExtractorTests {
     private final static String GOOD_PREFIX = "goodPrefix ";
     private final static String BAD_PREFIX = "badPrefix ";
 
-    private final static String VALUE = "value";
-
-    private final static HeaderExtractor extractor = new HeaderExtractor(GOOD_HEADER, GOOD_PREFIX, "clientName");
+    private final static HeaderExtractor extractor = new HeaderExtractor(GOOD_HEADER, GOOD_PREFIX, CLIENT_NAME);
 
     @Test
     public void testRetrieveHeaderOk() {

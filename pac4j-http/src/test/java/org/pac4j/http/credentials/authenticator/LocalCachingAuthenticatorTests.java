@@ -32,6 +32,7 @@ import static org.junit.Assert.assertTrue;
  * @author Misagh Moayyed
  * @since 1.8
  */
+@SuppressWarnings("unchecked")
 public class LocalCachingAuthenticatorTests {
 
     private class OnlyOneCallAuthenticator implements UsernamePasswordAuthenticator {

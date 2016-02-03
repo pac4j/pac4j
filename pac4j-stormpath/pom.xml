@@ -41,14 +41,12 @@
             <artifactId>stormpath-sdk-api</artifactId>
             <version>${stormpath.sdk.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.stormpath.sdk</groupId>
             <artifactId>stormpath-sdk-httpclient</artifactId>
             <version>${stormpath.sdk.version}</version>
             <scope>runtime</scope>
         </dependency>
-
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>
