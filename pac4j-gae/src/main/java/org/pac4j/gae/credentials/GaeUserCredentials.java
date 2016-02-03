@@ -19,7 +19,14 @@ import org.pac4j.core.credentials.Credentials;
 
 import com.google.appengine.api.users.User;
 
+/**
+ * Credential for Google App Engine.
+ *
+ * @author Patrice de Saint Steban
+ * @since 1.6.0
+ */
 public class GaeUserCredentials extends Credentials {
+
 	private static final long serialVersionUID = -135519596194113906L;
 	
 	private User user;

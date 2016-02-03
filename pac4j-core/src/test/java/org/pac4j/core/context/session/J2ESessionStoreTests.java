@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class J2ESessionStoreTests implements TestsConstants {
+public final class J2ESessionStoreTests implements TestsConstants {
 
     @Test
     public void testDefaultSessionStore() {

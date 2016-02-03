@@ -13,7 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.context.WebContext;
@@ -25,12 +24,13 @@ import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
  * Allows direct authentication based on a cookie.
+ *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
 public class CookieClient extends DirectHttpClient<TokenCredentials>  {
-    private String cookieName;
 
+    private String cookieName;
 
     public CookieClient() {
     }
@@ -45,19 +45,18 @@ public class CookieClient extends DirectHttpClient<TokenCredentials>  {
         setProfileCreator(profileCreator);
     }
 
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("cookieName", this.cookieName);
+        extractor = new CookieExtractor(this.cookieName, getName());
+        super.internalInit(context);
+    }
+
     public String getCookieName() {
         return cookieName;
     }
 
     public void setCookieName(String cookieName) {
         this.cookieName = cookieName;
-    }
-
-    @Override
-    protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("cookieName", this.cookieName);
-        extractor = new CookieExtractor(this.cookieName, getName());
-        super.internalInit(context);
-
     }
 }

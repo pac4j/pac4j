@@ -112,7 +112,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
             }
 
             final String redirectionUrl = authRequest.getDestinationUrl(true);
-            logger.debug("redirectionUrl : {}", redirectionUrl);
+            logger.debug("redirectionUrl: {}", redirectionUrl);
             return RedirectAction.redirect(redirectionUrl);
         } catch (final OpenIDException e) {
             throw new TechnicalException("OpenID exception", e);
@@ -137,7 +137,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
 
         // create credentials
         final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList, getName());
-        logger.debug("credentials : {}", credentials);
+        logger.debug("credentials: {}", credentials);
         return credentials;
     }
 
@@ -154,8 +154,8 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     protected U retrieveUserProfile(final OpenIdCredentials credentials, final WebContext context) {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
-        logger.debug("parameterList : {}", parameterList);
-        logger.debug("discoveryInformation : {}", discoveryInformation);
+        logger.debug("parameterList: {}", parameterList);
+        logger.debug("discoveryInformation: {}", discoveryInformation);
 
         try {
             // verify the response
@@ -166,11 +166,11 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
             final Identifier verified = verification.getVerifiedId();
             if (verified != null) {
                 final AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
-                logger.debug("authSuccess : {}", authSuccess);
+                logger.debug("authSuccess: {}", authSuccess);
 
                 final U profile = createProfile(authSuccess);
                 profile.setId(verified.getIdentifier());
-                logger.debug("profile : {}", profile);
+                logger.debug("profile: {}", profile);
                 return profile;
             }
         } catch (final OpenIDException e) {

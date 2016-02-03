@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtTests implements TestsConstants {
+public final class JwtTests implements TestsConstants {
 
     private final static String JWT_KEY = "12345678901234567890123456789012";
     private final static String JWT_KEY2 = "02345678901234567890123456789010";

@@ -26,6 +26,7 @@ import org.pac4j.http.profile.HttpProfile;
  * @since 1.8.0
  */
 public final class HttpTGTProfile extends HttpProfile {
+
     private static final long serialVersionUID = -1688563185891330018L;
 
     private String ticketGrantingTicketId;

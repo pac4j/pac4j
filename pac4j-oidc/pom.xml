@@ -63,7 +63,6 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<!-- for testing -->
 	</dependencies>
 

@@ -29,9 +29,6 @@ public class AuthenticatorProfileCreator<C extends HttpCredentials, P extends Us
 
     public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator<>();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UserProfile create(final HttpCredentials credentials) {
         return credentials.getUserProfile();

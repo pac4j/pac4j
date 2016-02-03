@@ -59,5 +59,4 @@ public class StormpathProfile extends HttpProfile {
     public AccountStatus getStatus() {
         return getAttribute("status", AccountStatus.class);
     }
-
 }

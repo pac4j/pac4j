@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunPaypalClient extends RunClient {
+public final class RunPaypalClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunPaypalClient().run();

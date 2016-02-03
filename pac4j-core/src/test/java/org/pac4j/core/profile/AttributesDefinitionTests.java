@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AttributesDefinitionTests implements TestsConstants {
+public final class AttributesDefinitionTests implements TestsConstants {
 
     private AttributesDefinition definition;
 

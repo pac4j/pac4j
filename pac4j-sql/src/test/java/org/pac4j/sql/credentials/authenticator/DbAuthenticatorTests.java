@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DbAuthenticatorTests implements TestsConstants {
+public final class DbAuthenticatorTests implements TestsConstants {
 
     private DataSource ds = DbServer.getInstance();
 

@@ -23,9 +23,7 @@ package org.pac4j.http.credentials.password;
  */
 public class NopPasswordEncoder implements PasswordEncoder {
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String encode(final String password) {
         return password;
     }

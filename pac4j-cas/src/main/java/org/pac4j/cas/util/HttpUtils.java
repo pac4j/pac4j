@@ -16,11 +16,12 @@
  */
 package org.pac4j.cas.util;
 
+import org.pac4j.core.util.CommonHelper;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 /**
  * This is {@link HttpUtils} that provides utility functions
@@ -31,7 +32,6 @@ import java.net.URLEncoder;
  * @since 1.8.0
  */
 public final class HttpUtils {
-    private static final String DEFAULT_QUERY_PARAM_ENCODING = "UTF-8";
 
     private HttpUtils() {
     }
@@ -62,7 +62,7 @@ public final class HttpUtils {
     }
 
     public static String encodeQueryParam(final String paramName, final String paramValue) throws UnsupportedEncodingException {
-        return URLEncoder.encode(paramName, DEFAULT_QUERY_PARAM_ENCODING) + "=" + URLEncoder.encode(paramValue, DEFAULT_QUERY_PARAM_ENCODING);
+        return CommonHelper.urlEncode(paramName) + "=" + CommonHelper.urlEncode(paramValue);
     }
 
     public static void closeConnection(final HttpURLConnection connection) {

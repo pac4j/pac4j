@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DefaultClientFinderTests implements TestsConstants {
+public final class DefaultClientFinderTests implements TestsConstants {
 
     private final DefaultClientFinder finder = new DefaultClientFinder();
 

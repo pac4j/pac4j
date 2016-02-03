@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.5.0
  */
-public class FromAttributesAuthorizationGeneratorTests {
+public final class FromAttributesAuthorizationGeneratorTests {
     
     private final static String ATTRIB1 = "attrib1";
     private final static String VALUE1 = "info11,info12";

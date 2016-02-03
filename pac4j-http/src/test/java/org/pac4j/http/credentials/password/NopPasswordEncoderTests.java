@@ -16,6 +16,7 @@
 package org.pac4j.http.credentials.password;
 
 import org.junit.Test;
+import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
 
@@ -25,9 +26,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class NopPasswordEncoderTests {
-
-    private final static String PASSWORD = "password";
+public final class NopPasswordEncoderTests implements TestsConstants {
 
     @Test
     public void test() {
