@@ -13,25 +13,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.gae.credentials;
+package org.pac4j.oauth.profile.dropbox;
 
-import com.google.appengine.api.users.User;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 
 /**
- * General test cases for GaeUserCredentials.
+ * General test cases for the {@link DropBoxProfile}.
  *
- * @author  Jacob Severson
- * @since   1.8.0
+ * @author Jerome Leleu
+ * @since  1.9.0
  */
-public class TestGaeUserCredentials extends TestCase implements TestsConstants {
+public class DropBoxProfileTests implements TestsConstants {
 
-    public void testClearGaeUserCredentials() {
-        GaeUserCredentials gaeUserCredentials = new GaeUserCredentials ();
-        gaeUserCredentials.setUser(new User("testEmail@test.com", "test.com", "testUserId"));
-        gaeUserCredentials.clear();
-        assertNull(gaeUserCredentials.getUser());
-        assertNull(gaeUserCredentials.getClientName());
+    @Test
+    public void testClear() {
+        DropBoxProfile profile = new DropBoxProfile();
+        profile.setAccessToken(VALUE);
+        profile.setAccessSecret(VALUE);
+        profile.clearSensitiveData();
+        Assert.assertNull(profile.getAccessToken());
+        Assert.assertNull(profile.getAccessSecret());
     }
 }

@@ -58,11 +58,4 @@ public class TokenCredentials extends HttpCredentials {
     public int hashCode() {
         return token != null ? token.hashCode() : 0;
     }
-
-    @Override
-    public void clear() {
-        this.token = null;
-        this.setClientName(null);
-        this.setUserProfile(null);
-    }
 }

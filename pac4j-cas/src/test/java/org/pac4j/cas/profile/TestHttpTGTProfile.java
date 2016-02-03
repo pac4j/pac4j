@@ -27,7 +27,7 @@ public class TestHttpTGTProfile extends TestCase {
 
     public void testClearProfile() {
         final HttpTGTProfile profile = new HttpTGTProfile("testId", "testUser");
-        profile.clear();
+        profile.clearSensitiveData();
         assertNull(profile.getTicketGrantingTicketId());
     }
 }

@@ -15,8 +15,6 @@
  */
 package org.pac4j.core.credentials;
 
-import org.pac4j.core.Clearable;
-
 import java.io.Serializable;
 
 /**
@@ -25,7 +23,7 @@ import java.io.Serializable;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class Credentials implements Serializable, Clearable {
+public abstract class Credentials implements Serializable {
 
     private static final long serialVersionUID = 4864923514027378583L;
 

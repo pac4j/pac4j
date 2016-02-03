@@ -22,7 +22,6 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.*;
 
-import org.pac4j.core.Clearable;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile implements Serializable, Externalizable, Clearable {
+public class UserProfile implements Serializable, Externalizable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
@@ -315,8 +314,7 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
         this.permissions = (List) in.readObject();
     }
 
-    @Override
-    public void clear() {
+    public void clearSensitiveData() {
         // No-op. Allow subtypes to specify which state should be cleared out.
     }
 }
