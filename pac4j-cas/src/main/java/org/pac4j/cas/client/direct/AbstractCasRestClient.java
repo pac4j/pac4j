@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.pac4j.cas.client.rest;
+package org.pac4j.cas.client.direct;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
