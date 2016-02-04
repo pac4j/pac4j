@@ -27,6 +27,11 @@
 	<packaging>jar</packaging>
 	<name>pac4j for relational DB</name>
 
+	<properties>
+		<jdbi.version>2.71</jdbi.version>
+		<h2.version>1.4.191</h2.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -39,6 +44,7 @@
 		<dependency>
 			<groupId>org.jdbi</groupId>
 			<artifactId>jdbi</artifactId>
+			<version>${jdbi.version}</version>
 		</dependency>
 		<!-- for testing -->
 		<dependency>
@@ -60,6 +66,8 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- for testing -->
 	</dependencies>
