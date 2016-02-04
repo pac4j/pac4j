@@ -27,6 +27,10 @@
     <packaging>jar</packaging>
     <name>pac4j for Stormpath</name>
 
+    <properties>
+        <stormpath.sdk.version>0.9.3</stormpath.sdk.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -82,7 +86,4 @@
         </plugins>
     </build>
 
-    <properties>
-        <stormpath.sdk.version>0.9.3</stormpath.sdk.version>
-    </properties>
 </project>

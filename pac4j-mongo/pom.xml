@@ -27,6 +27,11 @@
 	<packaging>jar</packaging>
 	<name>pac4j for MongoDB</name>
 
+	<properties>
+		<mongo-driver.version>3.2.1</mongo-driver.version>
+		<flapdoodle.version>1.50.2</flapdoodle.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -39,6 +44,7 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
+			<version>${mongo-driver.version}</version>
 		</dependency>
 		<!-- for testing -->
 		<dependency>
@@ -65,6 +71,8 @@
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>${flapdoodle.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- for testing -->
 	</dependencies>

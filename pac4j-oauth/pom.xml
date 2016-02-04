@@ -27,6 +27,12 @@
 	<packaging>jar</packaging>
 	<name>pac4j for OAuth protocol</name>
 
+	<properties>
+		<commons-lang.version>3.4</commons-lang.version>
+		<scribe.version>2.2.2</scribe.version>
+		<jackson.version>2.7.1-1</jackson.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -35,6 +41,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+			<version>${commons-lang.version}</version>
         </dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -43,14 +50,17 @@
 		<dependency>
 			<groupId>com.github.scribejava</groupId>
 			<artifactId>scribejava-apis</artifactId>
+			<version>${scribe.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- for testing -->
         <dependency>
