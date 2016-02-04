@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class MongoAuthenticatorTests implements TestsConstants {
+public class MongoAuthenticatorIT implements TestsConstants {
 
     private final static int PORT = 37017;
 
