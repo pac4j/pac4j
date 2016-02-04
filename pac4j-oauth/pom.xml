@@ -28,7 +28,6 @@
 	<name>pac4j for OAuth protocol</name>
 
 	<properties>
-		<commons-lang.version>3.4</commons-lang.version>
 		<scribe.version>2.2.2</scribe.version>
 		<jackson.version>2.7.1-1</jackson.version>
 	</properties>
@@ -38,11 +37,6 @@
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-			<version>${commons-lang.version}</version>
-        </dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>

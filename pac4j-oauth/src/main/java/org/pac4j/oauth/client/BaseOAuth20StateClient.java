@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -41,7 +40,7 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
         if (CommonHelper.isNotBlank(stateData)) {
             stateParameter = stateData;
         } else {
-            stateParameter = RandomStringUtils.randomAlphanumeric(10);
+            stateParameter = CommonHelper.randomString(10);
         }
         return stateParameter;
     }
