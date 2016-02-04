@@ -56,9 +56,9 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("parameterName", this.parameterName);
         extractor = new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName());
         super.internalInit(context);
-        CommonHelper.assertNotBlank("parameterName", this.parameterName);
     }
 
     public String getParameterName() {

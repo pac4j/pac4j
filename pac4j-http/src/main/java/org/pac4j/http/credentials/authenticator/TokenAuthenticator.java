@@ -25,9 +25,6 @@ import org.pac4j.http.credentials.TokenCredentials;
  */
 public interface TokenAuthenticator extends Authenticator<TokenCredentials> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     void validate(TokenCredentials credentials);
 }

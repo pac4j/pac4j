@@ -16,65 +16,11 @@
 package org.pac4j.http.profile;
 
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.http.client.indirect.FormClient;
-import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
 
 /**
  * <p>This class is the user profile for sites using HTTP protocol.</p>
- * <p>It is returned by the {@link FormClient} or the {@link IndirectBasicAuthClient}.</p>
- * <table summary="" border="1" cellspacing="2px">
- * <tr>
- * <th>Method :</th>
- * <th>From the JSON profile response :</th>
- * </tr>
- * <tr>
- * <th colspan="2">The attributes of the {@link org.pac4j.core.profile.CommonProfile}</th>
- * </tr>
- * <tr>
- * <td>String getEmail()</td>
- * <td>the <i>email</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getFirstName()</td>
- * <td>the <i>first_name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getFamilyName()</td>
- * <td>the <i>last_name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getDisplayName()</td>
- * <td>the <i>display_name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getUsername()</td>
- * <td>the <i>username</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Gender getGender()</td>
- * <td>the <i>gender</i> attribute</td>
- * </tr>
- * <tr>
- * <td>Locale getLocale()</td>
- * <td>the <i>locale</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getPictureUrl()</td>
- * <td>the <i>picture_url</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileUrl()</td>
- * <td>the <i>profile_url</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getLocation()</td>
- * <td>the <i>location</i> attribute</td>
- * </tr>
- * </table>
- * <p>All other attributes must be retrieved using the {@link #getAttributes()} method.</p>
- * 
- * @see FormClient
- * @see IndirectBasicAuthClient
+ * <p>It is returned by all HTTP clients.</p>
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */

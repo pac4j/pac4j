@@ -35,10 +35,15 @@ import com.google.appengine.api.users.UserServiceFactory;
  * @since 1.6.0
  */
 public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, GaeUserServiceProfile> {
-	UserService service;
-	String authDomain = null;
-	public GaeUserServiceClient() {
-		setName("GaeUserServiceClient");
+
+	protected UserService service;
+	protected String authDomain = null;
+
+	@Override
+	protected void internalInit(final WebContext context) {
+		service = UserServiceFactory.getUserService();
+		CommonHelper.assertNotNull("service", this.service);
+		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
 	}
 
 	@Override
@@ -72,12 +77,6 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 		return null;
 	}
 
-	@Override
-	protected void internalInit(final WebContext context) {
-		service = UserServiceFactory.getUserService();
-		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-	}
-	
 	/**
 	 * Set the authDomain for connect to google apps for domain with the UserService
 	 * @param authDomain the authentication domain
@@ -89,5 +88,4 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	public String getAuthDomain() {
 		return authDomain;
 	}
-
 }

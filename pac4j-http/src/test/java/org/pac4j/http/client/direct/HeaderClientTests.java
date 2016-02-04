@@ -37,12 +37,14 @@ public final class HeaderClientTests implements TestsConstants {
     @Test
     public void testMissingTokendAuthenticator() {
         final HeaderClient client = new HeaderClient(null);
+        client.setHeaderName(VALUE);
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), null);
+        client.setHeaderName(NAME);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 

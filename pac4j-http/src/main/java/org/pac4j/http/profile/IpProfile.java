@@ -23,7 +23,7 @@ package org.pac4j.http.profile;
  */
 public class IpProfile extends HttpProfile {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4017369503998168023L;
 
     public IpProfile(final String ip) {
         setId(ip);

@@ -15,8 +15,6 @@
  */
 package org.pac4j.core.util;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.Assert;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
@@ -38,18 +36,6 @@ import java.util.*;
 public final class TestsHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(TestsHelper.class);
-
-    public static WebClient newWebClient(final boolean isJavascriptEnabled) {
-        final WebClient webClient = new WebClient();
-        webClient.getOptions().setRedirectEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setJavaScriptEnabled(isJavascriptEnabled);
-        if (isJavascriptEnabled) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        }
-        return webClient;
-    }
 
     public static Map<String, String> getParametersFromUrl(String url) {
         int pos = url.indexOf("?");

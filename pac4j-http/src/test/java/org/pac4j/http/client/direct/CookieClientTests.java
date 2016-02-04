@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CookieClientTests implements TestsConstants {
+public final class CookieClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {

@@ -26,32 +26,19 @@ public interface TestsConstants {
     // simple objects
     String ID = "id";
     String VALUE = "value";
-    int MILLIS_BETWEEN_CLEANUPS = 30000;
     String TYPE = "type";
-    String SCOPE = "scope";
-    String FIELDS = "fields";
-    int LIMIT = 112;
-    String REALM_NAME = "realmName";
     String HEADER_NAME = "headerName";
     String PREFIX_HEADER = "prefixHeader";
     String USERNAME = "username";
     String PASSWORD = "password";
-    String STRING_ID = "id";
     String KEY = "key";
-    String PARAMETER_NAME = "parameterName";
     String FAKE_VALUE = "fakeValue";
     String SECRET = "secret";
     String TOKEN = "token";
     String VERIFIER = "verifier";
     String CODE = "code";
-    String ELEMENT = "element";
-    String ELEMENT2 = "element2";
     String NAME = "name";
-    String BAD_JSON = "{ }";
-    String TITLE = "title";
-    String NAMESPACE = "namespace";
-    int INT_ID = 1234;
-    String SALT = "sel";
+    String SALT = "salt";
     String GOOD_USERNAME = "jle";
     String GOOD_USERNAME2 = "jleleu";
     String BAD_USERNAME = "michael";
@@ -61,6 +48,7 @@ public interface TestsConstants {
     String CLIENT_NAME = "clientname";
     String ROLE = "role";
     String PATH = "/tmp/path";
+    String EMAIL = "test@example.com";
 
     // urls
     String CALLBACK_URL = "http://myserver/callback";

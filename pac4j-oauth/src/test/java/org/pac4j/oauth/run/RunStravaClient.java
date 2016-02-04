@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunStravaClient extends RunClient {
+public final class RunStravaClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunStravaClient().run();

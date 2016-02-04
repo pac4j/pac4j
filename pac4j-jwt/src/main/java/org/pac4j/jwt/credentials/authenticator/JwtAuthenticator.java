@@ -144,30 +144,18 @@ public class JwtAuthenticator implements TokenAuthenticator {
         credentials.setUserProfile(profile);
     }
 
-    /**
-     * @since 1.8.2
-     */
     public String getSigningSecret() {
         return signingSecret;
     }
 
-    /**
-     * @since 1.8.2
-     */
     public void setSigningSecret(final String signingSecret) {
         this.signingSecret = signingSecret;
     }
 
-    /**
-     * @since 1.8.2
-     */
     public String getEncryptionSecret() {
         return encryptionSecret;
     }
 
-    /**
-     * @since 1.8.2
-     */
     public void setEncryptionSecret(final String encryptionSecret) {
         this.encryptionSecret = encryptionSecret;
     }

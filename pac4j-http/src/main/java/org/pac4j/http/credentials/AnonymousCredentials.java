@@ -22,6 +22,7 @@ package org.pac4j.http.credentials;
  * @since 1.8.1
  */
 public class AnonymousCredentials extends HttpCredentials {
+
     private static final long serialVersionUID = 7526472295622776147L;
 
     @Override

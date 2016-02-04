@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  * @author Misagh Moayyed
  * @since  1.8.0
  */
-public class OidcProfileTests implements TestsConstants {
+public final class OidcProfileTests implements TestsConstants {
 
     @Test
     public void testClearProfile() {

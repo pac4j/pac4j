@@ -26,7 +26,7 @@ import org.pac4j.core.util.TestsConstants;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapServer implements TestsConstants {
+public final class LdapServer implements TestsConstants {
 
     public final static String BASE_DN = "dc=example,dc=com";
     public final static String BASE_PEOPLE_DN = "ou=people,dc=example,dc=com";

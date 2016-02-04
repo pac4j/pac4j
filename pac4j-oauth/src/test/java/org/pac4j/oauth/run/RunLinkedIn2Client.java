@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunLinkedIn2Client extends RunClient {
+public final class RunLinkedIn2Client extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunLinkedIn2Client().run();

@@ -28,7 +28,7 @@ import org.pac4j.oauth.profile.orcid.OrcidProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunOrcidClient extends RunClient {
+public final class RunOrcidClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunOrcidClient().run();
