@@ -70,7 +70,6 @@
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
 		<module>pac4j-openid</module>
-		<!--module>pac4j-test-cas</module-->
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
 		<module>pac4j-gae</module>
@@ -114,22 +113,6 @@
 				<artifactId>pac4j-oidc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.jasig.cas</groupId>
-				<artifactId>cas-server-webapp</artifactId>
-				<version>${cas.version}</version>
-				<type>war</type>
-			</dependency>
-			<dependency>
-				<groupId>org.jasig.cas</groupId>
-				<artifactId>cas-server-support-oauth</artifactId>
-				<version>${cas.version}</version>
-			</dependency>
-            <dependency>
-                <groupId>org.jasig.cas</groupId>
-                <artifactId>cas-server-integration-restlet</artifactId>
-                <version>${cas.version}</version>
-            </dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -257,37 +240,10 @@
 				<version>4.11</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.3.5</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.sourceforge.nekohtml</groupId>
-				<artifactId>nekohtml</artifactId>
-				<version>1.9.21</version>
-			</dependency>
-			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.sourceforge.htmlunit</groupId>
-				<artifactId>htmlunit</artifactId>
-				<version>2.15</version>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
@@ -340,8 +296,6 @@
 				<version>2.12.4</version>
 				<configuration>
 					<includes>
-						<include>**/Test*.java</include>
-						<include>**/*Test.java</include>
 						<include>**/*Tests.java</include>
 					</includes>
 				</configuration>
@@ -483,7 +437,6 @@
 
 	<properties>
 		<spring.version>4.1.5.RELEASE</spring.version>
-		<cas.version>3.6.0</cas.version>
 		<slf4j.version>1.7.12</slf4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunOkClient extends RunClient {
+public final class RunOkClient extends RunClient {
 
     /**
      * Real profile id.

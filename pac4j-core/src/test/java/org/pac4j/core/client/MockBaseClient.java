@@ -28,7 +28,7 @@ import org.pac4j.core.util.TestsConstants;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockBaseClient<C extends Credentials> extends IndirectClient<C, CommonProfile> implements TestsConstants {
+public final class MockBaseClient<C extends Credentials> extends IndirectClient<C, CommonProfile> implements TestsConstants {
     
     private boolean isDirect = true;
     

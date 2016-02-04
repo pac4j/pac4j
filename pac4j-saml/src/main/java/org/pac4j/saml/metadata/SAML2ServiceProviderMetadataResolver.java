@@ -56,11 +56,6 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
 
-    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath,
-                                                final String callbackUrl) {
-        this(spMetadataPath, callbackUrl, null, false, credentialProvider);
-    }
-
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
                                                 final String callbackUrl,
                                                 @Nullable final String spEntityId,

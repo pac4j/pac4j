@@ -22,7 +22,6 @@ import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
 
@@ -38,10 +37,6 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 
     public static final String YAHOO_GENERIC_USER_IDENTIFIER = "https://me.yahoo.com";
 
-    public YahooOpenIdClient() {
-    	setName("YahooOpenIdClient");
-	}
-    
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
@@ -74,7 +69,7 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
-            for (final String name : OpenIdAttributesDefinitions.yahooOpenIdDefinition.getPrimaryAttributes()) {
+            for (final String name : profile.getAttributesDefinition().getPrimaryAttributes()) {
                 profile.addAttribute(name, fetchResp.getAttributeValue(name));
             }
         }

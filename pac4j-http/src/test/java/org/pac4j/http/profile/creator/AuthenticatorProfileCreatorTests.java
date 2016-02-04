@@ -17,6 +17,7 @@ package org.pac4j.http.profile.creator;
 
 import org.junit.Test;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.HttpCredentials;
 import org.pac4j.http.credentials.TokenCredentials;
 
@@ -29,10 +30,7 @@ import static org.junit.Assert.assertNull;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class AuthenticatorProfileCreatorTests {
-
-    private final static String TOKEN = "token";
-    private final static String CLIENT_NAME = "clientName";
+public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     private final static AuthenticatorProfileCreator creator = new AuthenticatorProfileCreator();
 

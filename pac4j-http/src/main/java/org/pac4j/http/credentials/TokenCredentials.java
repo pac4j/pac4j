@@ -51,7 +51,6 @@ public class TokenCredentials extends HttpCredentials {
         TokenCredentials that = (TokenCredentials) o;
 
         return !(token != null ? !token.equals(that.token) : that.token != null);
-
     }
 
     @Override

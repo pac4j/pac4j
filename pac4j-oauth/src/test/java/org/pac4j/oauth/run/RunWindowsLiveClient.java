@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class RunWindowsLiveClient extends RunClient {
+public final class RunWindowsLiveClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunWindowsLiveClient().run();

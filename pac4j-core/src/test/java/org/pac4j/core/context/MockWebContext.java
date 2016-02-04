@@ -26,7 +26,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockWebContext extends BaseResponseContext {
+public final class MockWebContext extends BaseResponseContext {
 
     protected final Map<String, String> parameters = new HashMap<String, String>();
 

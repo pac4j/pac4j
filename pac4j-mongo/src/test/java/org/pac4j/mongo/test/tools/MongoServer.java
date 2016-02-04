@@ -41,7 +41,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class MongoServer implements TestsConstants {
+public final class MongoServer implements TestsConstants {
 
     private MongodExecutable mongodExecutable;
 

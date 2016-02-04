@@ -28,7 +28,7 @@ import org.ldaptive.pool.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class AuthenticatorGenerator {
+public final class AuthenticatorGenerator {
 
     public static Authenticator create() {
         final FormatDnResolver dnResolver = new FormatDnResolver();

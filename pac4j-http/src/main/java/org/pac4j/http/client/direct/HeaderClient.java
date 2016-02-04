@@ -51,9 +51,9 @@ public class HeaderClient extends DirectHttpClient<TokenCredentials> {
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("headerName", this.headerName);
         extractor = new HeaderExtractor(this.headerName, this.prefixHeader, getName());
         super.internalInit(context);
-        CommonHelper.assertNotBlank("headerName", this.headerName);
     }
 
     public String getHeaderName() {
