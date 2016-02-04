@@ -17,7 +17,6 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -85,7 +84,7 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             final String userId = (String) JsonHelper.getElement(json, "user_id");
-            profile.setId(StringUtils.substringAfter(userId, "/user/"));
+            profile.setId(CommonHelper.substringAfter(userId, "/user/"));
             for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
                 profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }

@@ -18,8 +18,8 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.Token;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
 import org.pac4j.scribe.builder.api.OrcidApi20;
@@ -90,7 +90,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     protected OrcidProfile extractUserProfile(String body) {
         OrcidProfile profile = new OrcidProfile();
         for(final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-            profile.addAttribute(attribute, StringUtils.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
+            profile.addAttribute(attribute, CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
         }
         return profile;
     }

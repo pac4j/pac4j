@@ -16,10 +16,10 @@
 package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.*;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.profile.facebook.*;
 
@@ -91,14 +91,14 @@ public final class RunFacebookClient extends RunClient {
         assertEquals(FacebookProfile.class.getName() + UserProfile.SEPARATOR + "771361542992890",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
-        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
+        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null, Gender.MALE,
                 Locale.FRANCE, "https://scontent.xx.fbcdn.net/hprofile-xaf1/v/t1.0-1/c170.50.621.621/s50x50/550165_168023156660068_12755354_n.jpg?oh=",
                 "https://www.facebook.com/app_scoped_user_id/771361542992890/", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
-        assertTrue(StringUtils.isNotBlank(profile.getThirdPartyId()));
+        assertTrue(CommonHelper.isNotBlank(profile.getThirdPartyId()));
         assertEquals(1, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getBio());
