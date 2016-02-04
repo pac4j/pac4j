@@ -29,7 +29,7 @@
 
 	<properties>
 		<ldaptive.version>1.1.0</ldaptive.version>
-		<unboudid.version>3.1.0</unboudid.version>
+		<unboundid.version>3.1.0</unboundid.version>
 	</properties>
 
 	<dependencies>
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>com.unboundid</groupId>
 			<artifactId>unboundid-ldapsdk</artifactId>
-			<version>${unboudid.version}</version>
+			<version>${unboundid.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- for testing -->
