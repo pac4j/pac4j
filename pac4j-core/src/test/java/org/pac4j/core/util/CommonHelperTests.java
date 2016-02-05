@@ -186,11 +186,6 @@ public final class CommonHelperTests {
     }
 
     @Test
-    public void testSubstringBefore() {
-        assertEquals("before", CommonHelper.substringBefore("beforeLimit", "Limit"));
-    }
-
-    @Test
     public void testSubstringAfter() {
         assertEquals("after", CommonHelper.substringAfter("before###after", "###"));
     }

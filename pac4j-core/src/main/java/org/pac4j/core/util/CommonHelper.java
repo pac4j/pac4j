@@ -252,20 +252,6 @@ public final class CommonHelper {
         return null;
     }
 
-    public static String substringBefore(String str, String separator) {
-        if (isEmpty(str) || separator == null) {
-            return str;
-        }
-        if (separator.length() == 0) {
-            return EMPTY;
-        }
-        int pos = str.indexOf(separator);
-        if (pos == INDEX_NOT_FOUND) {
-            return str;
-        }
-        return str.substring(0, pos);
-    }
-
     public static String substringAfter(String str, String separator) {
         if (isEmpty(str)) {
             return str;
