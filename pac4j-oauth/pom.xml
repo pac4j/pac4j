@@ -29,7 +29,7 @@
 
 	<properties>
 		<scribe.version>2.2.2</scribe.version>
-		<jackson.version>2.7.1-1</jackson.version>
+		<jackson.version>2.6.5</jackson.version>
 	</properties>
 
 	<dependencies>
