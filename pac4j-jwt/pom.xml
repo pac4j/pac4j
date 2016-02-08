@@ -27,6 +27,11 @@
 	<packaging>jar</packaging>
 	<name>pac4j for JWT</name>
 
+	<properties>
+		<jose-jwt.version>4.12</jose-jwt.version>
+		<bcprov.version>1.54</bcprov.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -39,10 +44,12 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>${jose-jwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
+			<version>${bcprov.version}</version>
 		</dependency>
 		<!-- for testing -->
 		<dependency>

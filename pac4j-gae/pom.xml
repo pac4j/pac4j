@@ -37,10 +37,6 @@
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
 		 <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
@@ -56,6 +52,11 @@
             <artifactId>jsr107cache</artifactId>
             <version>${jsr107cache.version}</version>
         </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<!-- for testing -->
 		<dependency>
 			<groupId>org.pac4j</groupId>

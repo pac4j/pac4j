@@ -179,4 +179,19 @@ public final class CommonHelperTests {
     public void testAssertNull_notNull() {
         CommonHelper.assertNull("var", "notnull");
     }
+
+    @Test
+    public void testRandomString() {
+        assertNotNull(CommonHelper.randomString(10));
+    }
+
+    @Test
+    public void testSubstringAfter() {
+        assertEquals("after", CommonHelper.substringAfter("before###after", "###"));
+    }
+
+    @Test
+    public void testSubstringBetween() {
+        assertEquals("bet", CommonHelper.substringBetween("123startbet##456", "start", "##"));
+    }
 }

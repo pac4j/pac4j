@@ -16,11 +16,11 @@
 package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.run.RunClient;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 
@@ -70,7 +70,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         assertEquals(CasOAuthWrapperProfile.class.getName() + UserProfile.SEPARATOR + USERNAME,
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CasOAuthWrapperProfile.class));
-        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
+        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertEquals("uid", profile.getAttribute("uid"));
         assertEquals("eduPersonAffiliation", profile.getAttribute("eduPersonAffiliation"));
         assertEquals("groupMembership", profile.getAttribute("groupMembership"));

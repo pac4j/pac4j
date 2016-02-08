@@ -18,8 +18,8 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.apis.YahooApi;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
 
@@ -57,9 +57,9 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
-        final String guid = StringUtils.substringBetween(body, "<value>", "</value>");
+        final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
-        if (StringUtils.isBlank(guid)) {
+        if (CommonHelper.isBlank(guid)) {
             final String message = "Cannot find guid from body : " + body;
             throw new HttpCommunicationException(message);
         }

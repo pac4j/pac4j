@@ -16,12 +16,12 @@
 package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oauth.profile.yahoo.*;
 
@@ -80,7 +80,7 @@ public final class RunYahooClient extends RunClient {
         assertEquals(YahooProfile.class.getName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
-        assertTrue(StringUtils.isNotBlank(profile.getAccessToken()));
+        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@yahoo.fr", "Test", "ScribeUP", "Test ScribeUP", "Test",
                 Gender.MALE, Locale.FRANCE,
                 "/users/1DJGkdA6uAAECQWEo8AceAQ==.large.png",

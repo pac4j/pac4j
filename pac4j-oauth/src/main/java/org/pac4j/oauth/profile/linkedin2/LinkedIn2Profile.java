@@ -17,8 +17,8 @@ package org.pac4j.oauth.profile.linkedin2;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -35,7 +35,7 @@ public class LinkedIn2Profile extends OAuth20Profile {
     
     public String getOAuth10Id() {
         String url = getSiteStandardProfileRequest();
-        return StringUtils.substringBetween(url, "id=", "&authType=");
+        return CommonHelper.substringBetween(url, "id=", "&authType=");
     }
 
     private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new LinkedIn2AttributesDefinition();
