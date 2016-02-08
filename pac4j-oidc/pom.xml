@@ -27,6 +27,10 @@
 	<packaging>jar</packaging>
 	<name>pac4j for OpenID Connect protocol</name>
 
+	<properties>
+		<oauth-oidc-sdk.version>5.5</oauth-oidc-sdk.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -35,6 +39,7 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>oauth2-oidc-sdk</artifactId>
+			<version>${oauth-oidc-sdk.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>

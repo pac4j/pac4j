@@ -220,4 +220,53 @@ public final class CommonHelper {
             }
         }
     }
+
+    /**
+     * Return a random string of a certain size.
+     *
+     * @param size the size
+     * @return the random size
+     */
+    public static String randomString(final int size) {
+        return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+    }
+
+    /**
+     * Taken from commons-lang3
+     */
+
+    private static final String EMPTY = "";
+    private static final int INDEX_NOT_FOUND = -1;
+
+    public static String substringBetween(String str, String open, String close) {
+        if (str == null || open == null || close == null) {
+            return null;
+        }
+        int start = str.indexOf(open);
+        if (start != INDEX_NOT_FOUND) {
+            int end = str.indexOf(close, start + open.length());
+            if (end != INDEX_NOT_FOUND) {
+                return str.substring(start + open.length(), end);
+            }
+        }
+        return null;
+    }
+
+    public static String substringAfter(String str, String separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (separator == null) {
+            return EMPTY;
+        }
+        int pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+            return EMPTY;
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    private static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
 }

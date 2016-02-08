@@ -27,14 +27,20 @@
     <packaging>jar</packaging>
     <name>pac4j for SAML protocol</name>
 
+    <properties>
+        <opensaml.version>3.1.1</opensaml.version>
+        <joda-time.version>2.9.2</joda-time.version>
+        <velocity.version>1.7</velocity.version>
+        <spring.extensions.version>5.1.1</spring.extensions.version>
+        <cryptacular.version>1.1.0</cryptacular.version>
+        <xalan.version>2.7.2</xalan.version>
+        <java-support.version>7.1.1</java-support.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opensaml</groupId>
@@ -45,7 +51,7 @@
         <dependency>
             <groupId>net.shibboleth.utilities</groupId>
             <artifactId>java-support</artifactId>
-            <version>7.1.1</version>
+            <version>${java-support.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -109,7 +115,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.cryptacular</groupId>
@@ -150,6 +155,10 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.shibboleth.ext</groupId>
             <artifactId>spring-extensions</artifactId>
             <version>${spring.extensions.version}</version>
@@ -184,6 +193,19 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- for testing -->
     </dependencies>
@@ -203,16 +225,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <opensaml.version>3.1.1</opensaml.version>
-        <joda-time.version>2.7</joda-time.version>
-        <velocity.version>1.7</velocity.version>
-        <spring.extensions.version>5.1.1</spring.extensions.version>
-        <guava.version>18.0</guava.version>
-        <cryptacular.version>1.0</cryptacular.version>
-        <xalan.version>2.7.2</xalan.version>
-    </properties>
 
     <repositories>
         <repository>

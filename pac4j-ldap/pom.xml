@@ -27,6 +27,11 @@
 	<packaging>jar</packaging>
 	<name>pac4j for LDAP</name>
 
+	<properties>
+		<ldaptive.version>1.1.0</ldaptive.version>
+		<unboundid.version>3.1.0</unboundid.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -39,17 +44,18 @@
 		<dependency>
 			<groupId>org.ldaptive</groupId>
 			<artifactId>ldaptive</artifactId>
+			<version>${ldaptive.version}</version>
 		</dependency>
 		<!-- for testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-core</artifactId>
 			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -60,6 +66,8 @@
 		<dependency>
 			<groupId>com.unboundid</groupId>
 			<artifactId>unboundid-ldapsdk</artifactId>
+			<version>${unboundid.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- for testing -->
 	</dependencies>

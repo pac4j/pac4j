@@ -20,7 +20,7 @@ import com.github.scribejava.core.extractors.AccessTokenExtractor;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.scribe.extractors.PayPalJsonExtractor;
 
 /**
@@ -36,7 +36,7 @@ public class PayPalApi20 extends DefaultApi20 {
     public String getAuthorizationUrl(final OAuthConfig config) {
         Preconditions.checkValidUrl(config.getCallback(),
                                     "Must provide a valid url as callback. PayPal does not support OOB");
-        final String nonce = System.currentTimeMillis() + RandomStringUtils.random(10, true, true);
+        final String nonce = System.currentTimeMillis() + CommonHelper.randomString(10);
         return String.format(AUTHORIZATION_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
                              OAuthEncoder.encode(config.getScope()), nonce);
     }

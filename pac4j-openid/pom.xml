@@ -27,6 +27,11 @@
     <packaging>jar</packaging>
     <name>pac4j for OpenId protocol</name>
 
+    <properties>
+        <openid4java.version>1.0.0</openid4java.version>
+        <xml-apis.version>2.0.2</xml-apis.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
@@ -35,18 +40,27 @@
         <dependency>
             <groupId>org.openid4java</groupId>
             <artifactId>openid4java</artifactId>
+            <version>${openid4java.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
+            <version>${xml-apis.version}</version>
 		</dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- for testing -->
         <dependency>
