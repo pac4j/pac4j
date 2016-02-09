@@ -73,7 +73,10 @@ public class OidcProfile extends CommonProfile implements Externalizable {
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         super.writeExternal(out);
-        final BearerAccessTokenBean bean = BearerAccessTokenBean.toBean(getAccessToken());
+        BearerAccessTokenBean bean = null; 
+        if (getAccessToken() != null) {
+            bean = BearerAccessTokenBean.toBean(getAccessToken());
+        }
         out.writeObject(bean);
         out.writeObject(getIdTokenString());
     }
@@ -82,7 +85,9 @@ public class OidcProfile extends CommonProfile implements Externalizable {
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
-        setAccessToken(BearerAccessTokenBean.fromBean(bean));
+        if (bean != null) {
+            setAccessToken(BearerAccessTokenBean.fromBean(bean));
+        }
         setIdTokenString((String) in.readObject());
     }
 
