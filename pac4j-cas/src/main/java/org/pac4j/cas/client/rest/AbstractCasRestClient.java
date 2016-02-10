@@ -31,6 +31,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.http.client.direct.DirectHttpClient;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.authenticator.Authenticator;
+import org.pac4j.http.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
 
 import java.io.BufferedReader;
@@ -50,25 +52,16 @@ import java.net.URL;
  * @since 1.8.0
  */
 public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePasswordCredentials> {
-    public AbstractCasRestClient() {
-        super();
-    }
 
-    public AbstractCasRestClient(final CasRestAuthenticator authenticator) {
+    public AbstractCasRestClient(final Authenticator authenticator) {
         setAuthenticator(authenticator);
         setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, CommonProfile>());
-    }
-
-    public HttpTGTProfile requestTicketGrantingTicket(final WebContext context) {
-        final UsernamePasswordCredentials creds = this.extractor.extract(context);
-        getAuthenticator().validate(creds);
-        return (HttpTGTProfile) getProfileCreator().create(creds);
     }
 
     public void destroyTicketGrantingTicket(final WebContext context, final HttpTGTProfile profile) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
+            final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
             final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
             connection = HttpUtils.openDeleteConnection(deleteURL);
             final int responseCode = connection.getResponseCode();
@@ -86,7 +79,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
     public CasCredentials requestServiceTicket(final String serviceURL, final HttpTGTProfile profile) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = new URL(getAuthenticator().getCasRestUrl());
+            final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
             final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
 
             connection = HttpUtils.openPostConnection(ticketURL);
@@ -112,7 +105,7 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
 
     public CasProfile validateServiceTicket(final String serviceURL, final CasCredentials ticket) {
         try {
-            final Assertion assertion = getAuthenticator().getTicketValidator()
+            final Assertion assertion = getCasRestAuthenticator().getTicketValidator()
                     .validate(ticket.getServiceTicket(), serviceURL);
             final AttributePrincipal principal = assertion.getPrincipal();
             final CasProfile casProfile = new CasProfile();
@@ -124,9 +117,15 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
         }
     }
 
-    @Override
-    public CasRestAuthenticator getAuthenticator() {
-        return (CasRestAuthenticator) super.getAuthenticator();
+    public CasRestAuthenticator getCasRestAuthenticator() {
+        Authenticator authenticator = getAuthenticator();
+        if (authenticator instanceof LocalCachingAuthenticator) {
+            authenticator = ((LocalCachingAuthenticator) authenticator).getDelegate();
+        }
+        if (authenticator instanceof CasRestAuthenticator) {
+            return (CasRestAuthenticator) authenticator;
+        }
+        throw new TechnicalException("authenticator must be a CasRestAuthenticator (through a LocalCachingAuthenticator)");
     }
 
     @Override
