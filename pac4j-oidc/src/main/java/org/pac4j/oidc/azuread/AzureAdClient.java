@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.http.client.indirect;
+package org.pac4j.oidc.azuread;
 
 /**
- * Use {@link IndirectFormClient} instead.
+ * Use {@link org.pac4j.oidc.client.AzureAdClient} instead.
  *
  * @deprecated
  */
 @Deprecated
-public abstract class FormClient extends IndirectFormClient {
+public abstract class AzureAdClient extends org.pac4j.oidc.client.AzureAdClient {
 }

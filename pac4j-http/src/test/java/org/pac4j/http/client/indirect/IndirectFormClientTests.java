@@ -32,44 +32,44 @@ import org.pac4j.http.profile.HttpProfile;
 import static org.junit.Assert.*;
 
 /**
- * This class tests the {@link FormClient} class.
+ * This class tests the {@link IndirectFormClient} class.
  *
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class FormClientTests implements TestsConstants {
+public final class IndirectFormClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, null);
+        final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, null);
         TestsHelper.initShouldFail(formClient, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), null);
+        final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         formClient.init(null);
     }
 
     @Test
     public void testMissingLoginUrl() {
-        final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator());
+        final IndirectFormClient formClient = new IndirectFormClient(null, new SimpleTestUsernamePasswordAuthenticator());
         TestsHelper.initShouldFail(formClient, "loginUrl cannot be blank");
     }
 
-    private FormClient getFormClient() {
-        return new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+    private IndirectFormClient getFormClient() {
+        return new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
     }
 
     @Test
     public void testRedirectionUrl() throws RequiresHttpAction {
-        final FormClient formClient = getFormClient();
+        final IndirectFormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
         formClient.redirect(context);
         assertEquals(LOGIN_URL, context.getResponseLocation());
@@ -77,7 +77,7 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testGetCredentialsMissingUsername() {
-        final FormClient formClient = getFormClient();
+        final IndirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
             formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME));
@@ -86,14 +86,14 @@ public final class FormClientTests implements TestsConstants {
             assertEquals("Username and password cannot be blank -> return to the form with error", e.getMessage());
             assertEquals(302, context.getResponseStatus());
             assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                    + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
+                    + IndirectFormClient.ERROR_PARAMETER + "=" + IndirectFormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
                     .get(HttpConstants.LOCATION_HEADER));
         }
     }
 
     @Test
     public void testGetCredentialsMissingPassword() {
-        final FormClient formClient = getFormClient();
+        final IndirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
             formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
@@ -101,14 +101,14 @@ public final class FormClientTests implements TestsConstants {
         } catch (final RequiresHttpAction e) {
             assertEquals("Username and password cannot be blank -> return to the form with error", e.getMessage());
             assertEquals(302, context.getResponseStatus());
-            assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
-                    + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
+            assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + IndirectFormClient.ERROR_PARAMETER + "="
+                    + IndirectFormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
         }
     }
 
     @Test
     public void testGetCredentials() {
-        final FormClient formClient = getFormClient();
+        final IndirectFormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         try {
             formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -118,14 +118,14 @@ public final class FormClientTests implements TestsConstants {
             assertEquals("Credentials validation fails -> return to the form with error", e.getMessage());
             assertEquals(302, context.getResponseStatus());
             assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                    + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
+                    + IndirectFormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
                     .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
         }
     }
 
     @Test
     public void testGetRightCredentials() throws RequiresHttpAction {
-        final FormClient formClient = getFormClient();
+        final IndirectFormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
                 .addRequestParameter(formClient.getPasswordParameter(), USERNAME));
@@ -135,7 +135,7 @@ public final class FormClientTests implements TestsConstants {
 
     @Test
     public void testGetUserProfile() {
-        final FormClient formClient = getFormClient();
+        final IndirectFormClient formClient = getFormClient();
         formClient.setProfileCreator(credentials -> {
             String username = credentials.getUsername();
             final HttpProfile profile = new HttpProfile();
