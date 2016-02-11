@@ -37,6 +37,8 @@ public interface HttpConstants {
     int TEMP_REDIRECT = 302;
 
     int DEFAULT_PORT = 80;
+
+	int DEFAULT_HTTPS_PORT = 443;
     
     int DEFAULT_CONNECT_TIMEOUT = 500;
     
