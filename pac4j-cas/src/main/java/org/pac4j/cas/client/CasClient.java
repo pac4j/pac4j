@@ -140,8 +140,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
      */
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        final String computedCasLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
-        final String redirectionUrl = CommonUtils.constructRedirectUrl(computedCasLoginUrl, SERVICE_PARAMETER,
+        final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
                 computeFinalCallbackUrl(context), this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);
@@ -169,7 +168,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             throw new TechnicalException("casLoginUrl and casPrefixUrl cannot be both blank");
         }
 
-        initializeClientConfiguration();
+        initializeClientConfiguration(context);
 
         initializeLogoutHandler(context);
 
@@ -261,7 +260,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         cas10TicketValidator.setEncoding(this.encoding);
     }
 
-    protected void initializeClientConfiguration() {
+    protected void initializeClientConfiguration(final WebContext context) {
         if (this.casPrefixUrl != null && !this.casPrefixUrl.endsWith("/")) {
             this.casPrefixUrl += "/";
         }
@@ -270,6 +269,8 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         } else if (CommonHelper.isBlank(this.casLoginUrl)) {
             this.casLoginUrl = this.casPrefixUrl + "login";
         }
+        this.casPrefixUrl = callbackUrlResolver.compute(this.casPrefixUrl, context);
+        this.casLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
     }
 
     /**

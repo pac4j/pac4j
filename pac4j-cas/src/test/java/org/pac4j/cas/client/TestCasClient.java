@@ -19,7 +19,9 @@ import junit.framework.TestCase;
 
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -30,9 +32,11 @@ import org.pac4j.core.util.TestsHelper;
  * @since 1.4.0
  */
 public final class TestCasClient extends TestCase implements TestsConstants {
-    
+
+    private static final String CAS = "/cas";
+    private static final String HOST = "protocol://myHost";
+    private static final String LOGIN = "/login";
     private static final String PREFIX_URL = "http://myserver/";
-    
     private static final String PREFIX_URL_WITHOUT_SLASH = "http://myserver";
     
     public void testMissingCasUrls() {
@@ -67,7 +71,23 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.init(null);
         assertEquals(LOGIN_URL, casClient.getCasLoginUrl());
     }
-    
+
+    public void testInitCallbackUrlResolver() {
+        final CasClient casClient = new CasClient();
+        casClient.setCallbackUrl(CALLBACK_URL);
+        casClient.setCasPrefixUrl(CAS);
+        casClient.setCasLoginUrl(CAS + LOGIN);
+        casClient.setCallbackUrlResolver(new CallbackUrlResolver() {
+            @Override
+            public String compute(String callbackUrl, WebContext context) {
+                return HOST + callbackUrl;
+            }
+        });
+        casClient.init(null);
+        assertEquals(HOST + CAS + LOGIN, casClient.getCasLoginUrl());
+        assertEquals(HOST + CAS + "/", casClient.getCasPrefixUrl());
+    }
+
     public void testRenew() throws RequiresHttpAction {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
