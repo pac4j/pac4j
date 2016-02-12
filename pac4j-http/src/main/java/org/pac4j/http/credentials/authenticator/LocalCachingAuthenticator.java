@@ -19,7 +19,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.credentials.HttpCredentials;
 import org.slf4j.Logger;
@@ -68,6 +67,10 @@ public class LocalCachingAuthenticator<T extends HttpCredentials> implements Aut
         this.cacheLoader.setDelegate(delegate);
     }
 
+    public Authenticator<T> getDelegate() {
+        return this.cacheLoader.getDelegate();
+    }
+
     public void removeFromCache(final T credentials) {
         this.cache.invalidate(credentials);
     }
@@ -97,6 +100,10 @@ public class LocalCachingAuthenticator<T extends HttpCredentials> implements Aut
             final UserProfile profile = credentials.getUserProfile();
             logger.debug("Cached authentication result");
             return profile;
+        }
+
+        public Authenticator<T> getDelegate() {
+            return delegate;
         }
 
         public void setDelegate(final Authenticator<T> delegate) {
