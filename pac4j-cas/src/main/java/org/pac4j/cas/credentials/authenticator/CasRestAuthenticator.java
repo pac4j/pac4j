@@ -32,7 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * This is {@link CasRestAuthenticator}.
+ * This is a specific Authenticator to deal with the CAS REST API.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
@@ -73,8 +73,8 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openPostConnection(new URL(getCasRestUrl()));
-            final String payload = HttpUtils.encodeQueryParam(getUsernameParameter(), username)
-                    + "&" + HttpUtils.encodeQueryParam(getPasswordParameter(), password);
+            final String payload = HttpUtils.encodeQueryParam("username", username)
+                    + "&" + HttpUtils.encodeQueryParam("password", password);
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             out.write(payload);
@@ -95,14 +95,6 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         }
     }
 
-    public String getUsernameParameter() {
-        return "username";
-    }
-
-    public String getPasswordParameter() {
-        return "password";
-    }
-
     public String getCasServerPrefixUrl() {
         return casServerPrefixUrl;
     }
@@ -115,4 +107,3 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
         return new Cas20ServiceTicketValidator(getCasServerPrefixUrl());
     }
 }
-

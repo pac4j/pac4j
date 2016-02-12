@@ -23,4 +23,9 @@ package org.pac4j.cas.client.rest;
  */
 @Deprecated
 public abstract class CasRestBasicAuthClient extends org.pac4j.cas.client.direct.CasRestBasicAuthClient {
+
+    public CasRestBasicAuthClient() {
+        super(null);
+        throw new UnsupportedOperationException("Use the org.pac4j.cas.client.direct.CasRestBasicAuthClient instead");
+    }
 }
