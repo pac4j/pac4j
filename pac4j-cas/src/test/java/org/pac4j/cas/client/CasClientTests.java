@@ -31,9 +31,12 @@ import static org.junit.Assert.*;
  * @since 1.4.0
  */
 public final class CasClientTests implements TestsConstants {
-    
+
+    private static final String CAS = "/cas";
+    private static final String CASBACK = "/casback";
+    private static final String HOST = "protocol://myHost";
+    private static final String LOGIN = "/login";
     private static final String PREFIX_URL = "http://myserver/";
-    
     private static final String PREFIX_URL_WITHOUT_SLASH = "http://myserver";
 
     @Test
@@ -71,6 +74,19 @@ public final class CasClientTests implements TestsConstants {
         assertEquals(null, casClient.getCasLoginUrl());
         casClient.init(null);
         assertEquals(LOGIN_URL, casClient.getCasLoginUrl());
+    }
+
+    @Test
+    public void testInitCallbackUrlResolver() {
+        final CasClient casClient = new CasClient();
+        casClient.setCallbackUrl(CASBACK);
+        casClient.setCasPrefixUrl(CAS);
+        casClient.setCasLoginUrl(CAS + LOGIN);
+        casClient.setCallbackUrlResolver((callbackUrl, context) -> HOST + callbackUrl);
+        casClient.init(null);
+        assertEquals(HOST + CAS + LOGIN, casClient.getCasLoginUrl());
+        assertEquals(HOST + CAS + "/", casClient.getCasPrefixUrl());
+        assertEquals(HOST + CASBACK, casClient.getCasServiceUrl());
     }
 
     @Test
