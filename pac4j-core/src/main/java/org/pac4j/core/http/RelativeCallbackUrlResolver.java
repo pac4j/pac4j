@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.http;
 
+import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 
@@ -33,8 +34,8 @@ public class RelativeCallbackUrlResolver implements CallbackUrlResolver {
 
             sb.append(context.getScheme()).append("://").append(context.getServerName());
 
-            if(("http".contentEquals(context.getScheme()) && context.getServerPort() != HttpConstants.DEFAULT_PORT) || 
-              ("https".contentEquals(context.getScheme()) && context.getServerPort() != HttpConstants.DEFAULT_HTTPS_PORT)) {
+            if((ContextHelper.isHttp(context) && context.getServerPort() != HttpConstants.DEFAULT_PORT) || 
+              (ContextHelper.isHttps(context) && context.getServerPort() != HttpConstants.DEFAULT_HTTPS_PORT)) {
                 sb.append(":").append(context.getServerPort());
             }
 
