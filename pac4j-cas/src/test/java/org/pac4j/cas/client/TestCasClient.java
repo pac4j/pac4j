@@ -34,6 +34,7 @@ import org.pac4j.core.util.TestsHelper;
 public final class TestCasClient extends TestCase implements TestsConstants {
 
     private static final String CAS = "/cas";
+    private static final String CASBACK = "/casback";
     private static final String HOST = "protocol://myHost";
     private static final String LOGIN = "/login";
     private static final String PREFIX_URL = "http://myserver/";
@@ -74,7 +75,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
 
     public void testInitCallbackUrlResolver() {
         final CasClient casClient = new CasClient();
-        casClient.setCallbackUrl(CALLBACK_URL);
+        casClient.setCallbackUrl(CASBACK);
         casClient.setCasPrefixUrl(CAS);
         casClient.setCasLoginUrl(CAS + LOGIN);
         casClient.setCallbackUrlResolver(new CallbackUrlResolver() {
@@ -86,6 +87,7 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.init(null);
         assertEquals(HOST + CAS + LOGIN, casClient.getCasLoginUrl());
         assertEquals(HOST + CAS + "/", casClient.getCasPrefixUrl());
+        assertEquals(HOST + CASBACK, casClient.getCasServiceUrl());
     }
 
     public void testRenew() throws RequiresHttpAction {
