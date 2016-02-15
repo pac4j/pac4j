@@ -38,6 +38,8 @@ public interface HttpConstants {
 
     int DEFAULT_PORT = 80;
     
+    int DEFAULT_HTTPS_PORT = 443;
+
     int DEFAULT_CONNECT_TIMEOUT = 500;
     
     int DEFAULT_READ_TIMEOUT = 5000;
