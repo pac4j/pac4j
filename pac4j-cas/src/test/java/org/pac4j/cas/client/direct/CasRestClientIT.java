@@ -21,10 +21,15 @@ import org.pac4j.cas.profile.HttpTGTProfile;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.authenticator.Authenticator;
+import org.pac4j.http.credentials.authenticator.LocalCachingAuthenticator;
 
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -36,39 +41,60 @@ import static org.junit.Assert.*;
  */
 public final class CasRestClientIT implements TestsConstants {
 
-    private final static String CAS_LOGIN_URL = "http://casserverpac4j.herokuapp.com/";
+    private final static String CAS_REST_URL = "http://casserverpac4j.herokuapp.com/";
 
     @Test
-    public void testRestProtocolForm() throws Exception {
-        final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_LOGIN_URL);
-        final CasRestFormClient client = new CasRestFormClient(authenticator);
-        final UsernamePasswordCredentials creds = new UsernamePasswordCredentials(USERNAME, USERNAME, client.getName());
-
-        final MockWebContext context = MockWebContext.create();
-        context.addRequestParameter(client.getAuthenticator().getUsernameParameter(), creds.getUsername());
-        context.addRequestParameter(client.getAuthenticator().getPasswordParameter(), creds.getPassword());
-
-        final HttpTGTProfile profile = client.requestTicketGrantingTicket(context);
-        final CasCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
-        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
-        assertNotNull(casProfile);
-        client.destroyTicketGrantingTicket(context, profile);
+    public void testRestForm() throws RequiresHttpAction {
+        internalTestRestForm(new CasRestAuthenticator(CAS_REST_URL));
     }
 
     @Test
-    public void testRestProtocolBasic() throws Exception {
-        final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_LOGIN_URL);
-        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(authenticator, "cas-rest", "");
-        final UsernamePasswordCredentials creds = new UsernamePasswordCredentials(USERNAME, USERNAME, client.getName());
+    public void testRestFormWithCaching() throws RequiresHttpAction {
+        internalTestRestForm(new LocalCachingAuthenticator<>(new CasRestAuthenticator(CAS_REST_URL), 100, 100, TimeUnit.SECONDS));
+    }
+
+    private void internalTestRestForm(final Authenticator authenticator) throws RequiresHttpAction {
+        final CasRestFormClient client = new CasRestFormClient(authenticator);
 
         final MockWebContext context = MockWebContext.create();
-        final String token = creds.getUsername() + ":" + creds.getPassword();
-        context.addRequestHeader("cas-rest", Base64.getEncoder().encodeToString(token.getBytes()));
+        context.addRequestParameter(client.getUsername(), USERNAME);
+        context.addRequestParameter(client.getPassword(), USERNAME);
 
-        final HttpTGTProfile profile = client.requestTicketGrantingTicket(context);
+        final UsernamePasswordCredentials credentials = client.getCredentials(context);
+        final HttpTGTProfile profile = (HttpTGTProfile) client.getUserProfile(credentials, context);
+        assertEquals(USERNAME, profile.getId());
+        assertNotNull(profile.getTicketGrantingTicketId());
+
         final CasCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
+        assertEquals(USERNAME, casProfile.getId());
+    }
+
+    @Test
+    public void testRestBasic() throws RequiresHttpAction {
+        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(new CasRestAuthenticator(CAS_REST_URL), VALUE, NAME);
+
+        final MockWebContext context = MockWebContext.create();
+        final String token = USERNAME + ":" + USERNAME;
+        context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes()));
+
+        final UsernamePasswordCredentials credentials = client.getCredentials(context);
+        final HttpTGTProfile profile = (HttpTGTProfile) client.getUserProfile(credentials, context);
+        assertEquals(USERNAME, profile.getId());
+        assertNotNull(profile.getTicketGrantingTicketId());
+
+        final CasCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
+        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
+        assertNotNull(casProfile);
+        assertEquals(USERNAME, casProfile.getId());
         client.destroyTicketGrantingTicket(context, profile);
+
+        try {
+            client.requestServiceTicket(PAC4J_BASE_URL, profile);
+            fail("shoud fail");
+        } catch (final TechnicalException e) {
+            assertEquals("Service ticket request for `<HttpTGTProfile> | id: username | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found", e.getMessage());
+        }
     }
 }

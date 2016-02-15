@@ -16,7 +16,7 @@
  */
 package org.pac4j.cas.client.direct;
 
-import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
+import org.pac4j.http.credentials.authenticator.Authenticator;
 import org.pac4j.http.credentials.extractor.FormExtractor;
 
 /**
@@ -26,13 +26,28 @@ import org.pac4j.http.credentials.extractor.FormExtractor;
  * @since 1.8.0
  */
 public class CasRestFormClient extends AbstractCasRestClient {
-    public CasRestFormClient() {
-        super();
+
+    private String username = "username";
+
+    private String password = "password";
+
+    public CasRestFormClient(final Authenticator authenticator) {
+        super(authenticator);
+        this.extractor = new FormExtractor(username, password, CasRestFormClient.class.getSimpleName());
     }
 
-    public CasRestFormClient(final CasRestAuthenticator authenticator) {
+    public CasRestFormClient(final Authenticator authenticator, final String username, final String password) {
         super(authenticator);
-        this.extractor = new FormExtractor(authenticator.getUsernameParameter(),
-                authenticator.getPasswordParameter(), getName());
+        this.username = username;
+        this.password = password;
+        this.extractor = new FormExtractor(username, password, CasRestFormClient.class.getSimpleName());
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

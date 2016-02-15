@@ -23,4 +23,9 @@ package org.pac4j.cas.client.rest;
  */
 @Deprecated
 public abstract class CasRestFormClient extends org.pac4j.cas.client.direct.CasRestFormClient {
+
+    public CasRestFormClient() {
+        super(null);
+        throw new UnsupportedOperationException("Use the org.pac4j.cas.client.direct.CasRestFormClient instead");
+    }
 }
