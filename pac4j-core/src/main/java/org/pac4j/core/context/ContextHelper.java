@@ -75,4 +75,24 @@ public final class ContextHelper {
     public static boolean isHttpsOrSecure(final WebContext context) {
         return "HTTPS".equalsIgnoreCase(context.getScheme()) || context.isSecure();
     }
+
+    /**
+     * Whether the request is HTTP.
+     *
+     * @param context the current web context
+     * @return whether the request is HTTP
+     */
+    public static boolean isHttp(final WebContext context) {
+        return "HTTP".equalsIgnoreCase(context.getScheme());
+    }
+
+    /**
+     * Whether the request is HTTPS.
+     *
+     * @param context the current web context
+     * @return whether the request is HTTPS
+     */
+    public static boolean isHttps(final WebContext context) {
+        return "HTTPS".equalsIgnoreCase(context.getScheme());
+    }
 }
