@@ -31,12 +31,14 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.jwt.JwtConstants;
+import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -138,9 +140,19 @@ public class JwtAuthenticator implements TokenAuthenticator {
             subject = JwtProfile.class.getName() + UserProfile.SEPARATOR + subject;
         }
 
-        Map<String, Object> claims = new HashMap<>(claimSet.getClaims());
-        claims.remove(JwtConstants.SUBJECT);
-        final UserProfile profile = ProfileHelper.buildProfile(subject, claims);
+        final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
+        attributes.remove(JwtConstants.SUBJECT);
+        final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
+        attributes.remove(JwtGenerator.INTERNAL_ROLES);
+        final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
+        attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
+        final UserProfile profile = ProfileHelper.buildProfile(subject, attributes);
+        if (roles != null) {
+            profile.addRoles(roles);
+        }
+        if (permissions != null) {
+            profile.addPermissions(permissions);
+        }
         credentials.setUserProfile(profile);
     }
 
