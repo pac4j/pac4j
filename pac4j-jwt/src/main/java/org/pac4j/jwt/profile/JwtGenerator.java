@@ -45,6 +45,9 @@ import java.util.Map;
  */
 public class JwtGenerator<U extends UserProfile> {
 
+    public final static String INTERNAL_ROLES = "$int_roles";
+    public final static String INTERNAL_PERMISSIONS = "$int_perms";
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String signingSecret;
@@ -87,6 +90,8 @@ public class JwtGenerator<U extends UserProfile> {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
         CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
+        CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
+        CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
         CommonHelper.assertNotBlank("signingSecret", signingSecret);
         CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
 
@@ -104,6 +109,8 @@ public class JwtGenerator<U extends UserProfile> {
             for (final String key : attributes.keySet()) {
                 builder.claim(key, attributes.get(key));
             }
+            builder.claim(INTERNAL_ROLES, profile.getRoles());
+            builder.claim(INTERNAL_PERMISSIONS, profile.getPermissions());
 
             // claims
             final JWTClaimsSet claims = builder.build();
@@ -156,6 +163,11 @@ public class JwtGenerator<U extends UserProfile> {
         return jwsAlgorithm;
     }
 
+    /**
+     * Only the HS256, HS384 and HS512 are currently supported.
+     *
+     * @param jwsAlgorithm the signing algorithm
+     */
     public void setJwsAlgorithm(JWSAlgorithm jwsAlgorithm) {
         this.jwsAlgorithm = jwsAlgorithm;
     }

@@ -26,6 +26,9 @@ import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -34,10 +37,13 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtTests implements TestsConstants {
+public final class JwtTests implements TestsConstants {
 
     private final static String JWT_KEY = "12345678901234567890123456789012";
     private final static String JWT_KEY2 = "02345678901234567890123456789010";
+
+    private final static List<String> ROLES = Arrays.asList(new String[] { "role1", "role2"});
+    private final static List<String> PERMISSIONS = Arrays.asList(new String[] { "perm1"});
 
     @Test
     public void testGenericJwt() {
@@ -78,7 +84,7 @@ public class JwtTests implements TestsConstants {
 
     @Test
     public void testGenerateAuthenticateNotEncrypted() {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY, false);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
@@ -93,6 +99,18 @@ public class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testGenerateAuthenticateAndEncryptedWithRolesPermissions() {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY, JWT_KEY);
+        final FacebookProfile profile = createProfile();
+        profile.addRoles(ROLES);
+        profile.addPermissions(PERMISSIONS);
+        final String token = generator.generate(profile);
+        final UserProfile profile2 = assertToken(profile, token);
+        assertEquals(ROLES, profile2.getRoles());
+        assertEquals(PERMISSIONS, profile2.getPermissions());
+    }
+
+    @Test
     public void testGenerateAuthenticateAndEncryptedDifferentKeys() {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY, JWT_KEY2);
         final FacebookProfile profile = createProfile();
@@ -100,11 +118,11 @@ public class JwtTests implements TestsConstants {
         assertToken(profile, token, new JwtAuthenticator(JWT_KEY, JWT_KEY2));
     }
 
-    private void assertToken(FacebookProfile profile, String token) {
-        assertToken(profile, token, new JwtAuthenticator(JWT_KEY));
+    private UserProfile assertToken(FacebookProfile profile, String token) {
+        return assertToken(profile, token, new JwtAuthenticator(JWT_KEY));
     }
 
-    private void assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
+    private UserProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
         authenticator.validate(credentials);
         final UserProfile profile2 = credentials.getUserProfile();
@@ -115,6 +133,7 @@ public class JwtTests implements TestsConstants {
         assertEquals(profile.getDisplayName(), fbProfile.getDisplayName());
         assertEquals(profile.getFamilyName(), fbProfile.getFamilyName());
         assertEquals(profile.getVerified(), fbProfile.getVerified());
+        return profile2;
     }
 
     private FacebookProfile createProfile() {
