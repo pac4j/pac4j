@@ -31,25 +31,25 @@ public class StormpathProfile extends CommonProfile {
 
     @Override
     public String getDisplayName() {
-        return getAttribute("fullName").toString();
+        return (String) getAttribute("fullName");
     }
 
     @Override
     public String getFamilyName() {
-        return getAttribute("surName").toString();
+        return (String) getAttribute("surName");
     }
 
     @Override
     public String getFirstName() {
-        return getAttribute("givenName").toString();
+        return (String) getAttribute("givenName");
     }
 
     public String getMiddleName() {
-        return getAttribute("middleName").toString();
+        return (String) getAttribute("middleName");
     }
 
     public GroupList getGroups() {
-        return getAttribute("middleName", GroupList.class);
+        return getAttribute("groups", GroupList.class);
     }
 
     public GroupMembershipList getGroupMemberships() {

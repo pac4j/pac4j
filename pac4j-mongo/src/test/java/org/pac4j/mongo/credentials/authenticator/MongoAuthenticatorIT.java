@@ -57,21 +57,21 @@ public class MongoAuthenticatorIT implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testNullPasswordEncoder() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME);
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNullAttribute() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), null, new NopPasswordEncoder());
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNullMongoClient() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(null, FIRSTNAME, new NopPasswordEncoder());
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
@@ -79,7 +79,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
     public void testNullDatabase() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setUsersDatabase(null);
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
@@ -87,7 +87,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
     public void testNullCollection() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setUsersCollection(null);
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
@@ -95,7 +95,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
     public void testNullUsername() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setUsernameAttribute(null);
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
@@ -103,7 +103,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
     public void testNullPassword() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setPasswordAttribute(null);
-
+        authenticator.init(null);
         authenticator.validate(null);
     }
 
@@ -114,6 +114,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), attribute);
         authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
+        authenticator.init(null);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials);

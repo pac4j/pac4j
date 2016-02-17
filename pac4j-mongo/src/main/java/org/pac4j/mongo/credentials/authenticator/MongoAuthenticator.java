@@ -20,6 +20,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
@@ -60,8 +61,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
     protected String usersDatabase = "users";
     protected String usersCollection = "users";
 
-    public MongoAuthenticator() {
-    }
+    public MongoAuthenticator() {}
 
     public MongoAuthenticator(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
@@ -75,18 +75,23 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
     public MongoAuthenticator(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
         this.attributes = attributes;
-        this.passwordEncoder = passwordEncoder;
+        setPasswordEncoder(passwordEncoder);
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);
         CommonHelper.assertNotNull("passwordAttribute", this.passwordAttribute);
         CommonHelper.assertNotNull("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotNull("usersCollection", this.usersCollection);
         CommonHelper.assertNotNull("attributes", this.attributes);
-        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
+
+        super.internalInit(context);
+    }
+
+    @Override
+    public void validate(UsernamePasswordCredentials credentials) {
 
         final String username = credentials.getUsername();
 
@@ -100,6 +105,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
                 i++;
             }
         }
+        logger.debug("Fonund {} users for username: {}", users.size(), username);
 
         if (users.isEmpty()) {
             throw new AccountNotFoundException("No account found for: " + username);
@@ -107,7 +113,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
             throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
         } else {
             final Map<String, Object> user = users.get(0);
-            final String expectedPassword = passwordEncoder.encode(credentials.getPassword());
+            final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
             final String returnedPassword = (String) user.get(passwordAttribute);
             if (CommonHelper.areNotEquals(returnedPassword, expectedPassword)) {
                 throw new BadCredentialsException("Bad credentials for: " + username);

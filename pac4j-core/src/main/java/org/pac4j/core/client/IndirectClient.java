@@ -72,8 +72,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     /**
      * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
      * {@link #redirect(WebContext)} should be generally called instead.</p>
-     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials), a forbidden response (403 HTTP status code) is returned.</p>
-     * <p>If the request is an AJAX one, an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
+     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is an AJAX one,
+     * an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
      *
      * @param context context
      * @return the redirection action
@@ -86,12 +86,12 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             cleanRequestedUrl(context);
             throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
         }
-        // authentication has already been tried -> forbidden
+        // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
+            throw RequiresHttpAction.unauthorized("authentication already tried -> forbidden", context, null);
         }
 
         init(context);

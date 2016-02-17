@@ -57,21 +57,21 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testNullAuthenticator() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator();
-
+        ldapAuthenticator.init(null);
         ldapAuthenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
     public void testNullAttributes() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, null);
-
+        ldapAuthenticator.init(null);
         ldapAuthenticator.validate(null);
     }
 
     @Test(expected = BadCredentialsException.class)
     public void authentFailed() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
-
+        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
     }
@@ -79,7 +79,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test
     public void authentSuccessNoAttribute() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
-
+        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
@@ -94,7 +94,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test
     public void authentSuccessSingleAttribute() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN);
-
+        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
@@ -111,7 +111,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test
     public void authentSuccessMultiAttribute() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN + "," + LdapServer.ROLE);
-
+        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
