@@ -21,7 +21,7 @@ import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.pac4j.ldap.test.tools.AuthenticatorGenerator;
 import org.pac4j.ldap.test.tools.LdapServer;

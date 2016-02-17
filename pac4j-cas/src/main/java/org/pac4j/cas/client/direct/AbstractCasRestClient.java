@@ -24,15 +24,12 @@ import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.HttpTGTProfile;
 import org.pac4j.cas.util.HttpUtils;
+import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.http.client.direct.DirectHttpClient;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.Authenticator;
-import org.pac4j.http.credentials.authenticator.LocalCachingAuthenticator;
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -50,14 +47,9 @@ import java.net.URL;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePasswordCredentials> {
+public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswordCredentials, HttpTGTProfile> {
 
-    public AbstractCasRestClient(final Authenticator authenticator) {
-        setAuthenticator(authenticator);
-        setProfileCreator(new AuthenticatorProfileCreator<UsernamePasswordCredentials, CommonProfile>());
-    }
-
-    public void destroyTicketGrantingTicket(final WebContext context, final HttpTGTProfile profile) {
+    public void destroyTicketGrantingTicket(final HttpTGTProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
@@ -124,6 +116,6 @@ public abstract class AbstractCasRestClient extends DirectHttpClient<UsernamePas
         if (authenticator instanceof CasRestAuthenticator) {
             return (CasRestAuthenticator) authenticator;
         }
-        throw new TechnicalException("authenticator must be a CasRestAuthenticator (through a LocalCachingAuthenticator)");
+        throw new TechnicalException("authenticator must be a CasRestAuthenticator (or via a LocalCachingAuthenticator)");
     }
 }

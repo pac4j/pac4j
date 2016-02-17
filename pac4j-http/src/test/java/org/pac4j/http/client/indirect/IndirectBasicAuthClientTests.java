@@ -22,7 +22,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 import java.util.Base64;
 
@@ -38,16 +38,24 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null);
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, null);
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
+        basicAuthClient.setProfileCreator(null);
         TestsHelper.initShouldFail(basicAuthClient, "profileCreator cannot be null");
+    }
+
+    @Test
+    public void testMissingRealm() {
+        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null, new SimpleTestUsernamePasswordAuthenticator());
+        basicAuthClient.setCallbackUrl(CALLBACK_URL);
+        TestsHelper.initShouldFail(basicAuthClient, "realmName cannot be blank");
     }
 
     @Test

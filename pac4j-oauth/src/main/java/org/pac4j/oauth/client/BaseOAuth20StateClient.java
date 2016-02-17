@@ -29,13 +29,14 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @author James Kleeh
  * @since 1.8.4
  */
-public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends BaseOAuth20Client<U> {
+public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends BaseOAuth20Client<U> {
 
     private static final String STATE_PARAMETER = "#oauth20StateParameter";
 
     private String stateData;
 
-    protected String getState() {
+    @Override
+    protected String getStateParameter(final WebContext context) {
         final String stateParameter;
         if (CommonHelper.isNotBlank(stateData)) {
             stateParameter = stateData;
@@ -49,7 +50,7 @@ public abstract  class BaseOAuth20StateClient<U extends OAuth20Profile> extends 
     protected String retrieveAuthorizationUrl(final WebContext context) {
         // create a specific configuration with state
         final OAuthConfig config = buildOAuthConfig(context);
-        final String state = getState();
+        final String state = getStateParameter(context);
         config.setState(state);
         // save state
         context.setSessionAttribute(getName() + STATE_PARAMETER, state);

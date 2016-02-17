@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.credentials;
 
+import org.pac4j.core.profile.UserProfile;
+
 import java.io.Serializable;
 
 /**
@@ -29,6 +31,8 @@ public abstract class Credentials implements Serializable {
 
     private String clientName;
 
+    private UserProfile userProfile = null;
+
     public String getClientName() {
         return this.clientName;
     }
@@ -36,4 +40,16 @@ public abstract class Credentials implements Serializable {
     public void setClientName(final String clientName) {
         this.clientName = clientName;
     }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public abstract boolean equals(Object o);
+
+    public abstract int hashCode();
 }

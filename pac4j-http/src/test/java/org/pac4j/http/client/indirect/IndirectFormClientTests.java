@@ -26,8 +26,7 @@ import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 import static org.junit.Assert.*;
 
@@ -42,18 +41,22 @@ public final class IndirectFormClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, null);
+        formClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(formClient, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator(), null);
+        final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        formClient.setCallbackUrl(CALLBACK_URL);
+        formClient.setProfileCreator(null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
         final IndirectFormClient formClient = new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        formClient.setCallbackUrl(CALLBACK_URL);
         formClient.init(null);
     }
 
@@ -64,7 +67,9 @@ public final class IndirectFormClientTests implements TestsConstants {
     }
 
     private IndirectFormClient getFormClient() {
-        return new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        final IndirectFormClient client = new IndirectFormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
+        client.setCallbackUrl(CALLBACK_URL);
+        return client;
     }
 
     @Test
@@ -138,17 +143,17 @@ public final class IndirectFormClientTests implements TestsConstants {
         final IndirectFormClient formClient = getFormClient();
         formClient.setProfileCreator(credentials -> {
             String username = credentials.getUsername();
-            final HttpProfile profile = new HttpProfile();
+            final CommonProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(CommonProfile.USERNAME, username);
             return profile;
         });
         final MockWebContext context = MockWebContext.create();
-        final HttpProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
+        final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(HttpProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
-        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
+        assertEquals(CommonProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());
     }

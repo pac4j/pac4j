@@ -21,7 +21,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
 import static org.junit.Assert.*;
@@ -44,7 +44,8 @@ public final class IpClientTests implements TestsConstants {
 
     @Test
     public void testMissingProfileCreator() {
-        final IpClient client = new IpClient(new SimpleTestTokenAuthenticator(), null);
+        final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
+        client.setProfileCreator(null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 

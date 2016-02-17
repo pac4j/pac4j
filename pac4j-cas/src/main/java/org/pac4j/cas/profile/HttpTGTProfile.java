@@ -16,7 +16,7 @@
  */
 package org.pac4j.cas.profile;
 
-import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 /**
  * This is {@link HttpTGTProfile} that represents
@@ -25,7 +25,7 @@ import org.pac4j.http.profile.HttpProfile;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public final class HttpTGTProfile extends HttpProfile {
+public final class HttpTGTProfile extends CommonProfile {
 
     private static final long serialVersionUID = -1688563185891330018L;
 

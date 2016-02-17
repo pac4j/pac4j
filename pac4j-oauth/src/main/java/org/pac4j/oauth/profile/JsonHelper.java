@@ -19,7 +19,6 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.pac4j.core.profile.converter.AttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +61,7 @@ public final class JsonHelper {
      * Return an Object from a JSON node.
      *
      * @param node a JSON node
+     * @param clazz the class to cast to
      * @return the parsed object
      */
     public static <T extends Object> T getAsType(final JsonNode node, final Class<T> clazz) {

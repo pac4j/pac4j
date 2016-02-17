@@ -18,9 +18,8 @@ package org.pac4j.http.credentials.authenticator.test;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.HttpProfile;
+import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
         if (CommonHelper.areNotEquals(username, password)) {
             throwsException("Username : '" + username + "' does not match password");
         }
-        final HttpProfile profile = new HttpProfile();
+        final CommonProfile profile = new CommonProfile();
         profile.setId(username);
         profile.addAttribute(CommonProfile.USERNAME, username);
         credentials.setUserProfile(profile);

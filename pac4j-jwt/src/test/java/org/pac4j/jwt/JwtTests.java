@@ -20,7 +20,7 @@ import org.pac4j.core.exception.TechnicalException;
 
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;

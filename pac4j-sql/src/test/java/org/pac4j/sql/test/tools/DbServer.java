@@ -17,8 +17,8 @@ package org.pac4j.sql.test.tools;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.password.PasswordEncoder;
-import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
+import org.pac4j.core.credentials.password.PasswordEncoder;
+import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 

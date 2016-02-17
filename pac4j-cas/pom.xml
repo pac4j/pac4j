@@ -37,11 +37,6 @@
             <artifactId>pac4j-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-http</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${cas.version}</version>

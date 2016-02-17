@@ -21,7 +21,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import java.util.Base64;
@@ -44,7 +44,8 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingProfileCreator() {
-        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
+        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+        basicAuthClient.setProfileCreator(null);
         TestsHelper.initShouldFail(basicAuthClient, "profileCreator cannot be null");
     }
 
