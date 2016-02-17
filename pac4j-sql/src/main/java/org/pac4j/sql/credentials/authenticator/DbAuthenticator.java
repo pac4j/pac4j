@@ -15,6 +15,7 @@
  */
 package org.pac4j.sql.credentials.authenticator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
@@ -57,8 +58,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     protected String startQuery = "select username, password";
     protected String endQuery = " from users where username = :username";
 
-    public DbAuthenticator() {
-    }
+    public DbAuthenticator() {}
 
     public DbAuthenticator(final DataSource dataSource) {
         this.dataSource = dataSource;
@@ -72,26 +72,20 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     public DbAuthenticator(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         this.attributes = attributes;
-        this.passwordEncoder = passwordEncoder;
+        setPasswordEncoder(passwordEncoder);
     }
 
-    protected void initDbi() {
-        if (this.dbi == null) {
-            synchronized (this) {
-                if (this.dbi == null) {
-                    this.dbi = new DBI(this.dataSource);
-                }
-            }
-        }
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotNull("dataSource", this.dataSource);
+        CommonHelper.assertNotNull("attributes", this.attributes);
+        this.dbi = new DBI(this.dataSource);
+
+        super.internalInit(context);
     }
 
     @Override
     public void validate(UsernamePasswordCredentials credentials) {
-        CommonHelper.assertNotNull("dataSource", this.dataSource);
-        CommonHelper.assertNotNull("attributes", this.attributes);
-        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
-
-        initDbi();
 
         Handle h = null;
         try {
@@ -112,7 +106,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
                 throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
             } else {
                 final Map<String, Object> result = results.get(0);
-                final String expectedPassword = passwordEncoder.encode(credentials.getPassword());
+                final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
                 final String returnedPassword = (String) result.get("password");
                 if (CommonHelper.areNotEquals(returnedPassword, expectedPassword)) {
                     throw new BadCredentialsException("Bad credentials for: " + username);

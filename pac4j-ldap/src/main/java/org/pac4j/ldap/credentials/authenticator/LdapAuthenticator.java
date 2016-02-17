@@ -22,6 +22,7 @@ import org.ldaptive.auth.AuthenticationRequest;
 import org.ldaptive.auth.AuthenticationResponse;
 import org.ldaptive.auth.AuthenticationResultCode;
 import org.ldaptive.auth.Authenticator;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
@@ -29,6 +30,7 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapAuthenticator implements UsernamePasswordAuthenticator {
+public class LdapAuthenticator extends InitializableWebObject implements UsernamePasswordAuthenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -48,8 +50,7 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
 
     private String attributes = "";
 
-    public LdapAuthenticator() {
-    }
+    public LdapAuthenticator() {}
 
     public LdapAuthenticator(final Authenticator ldapAuthenticator) {
         this.ldapAuthenticator = ldapAuthenticator;
@@ -61,9 +62,13 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
         CommonHelper.assertNotNull("attributes", attributes);
+    }
+
+    @Override
+    public void validate(UsernamePasswordCredentials credentials) {
 
         final String username = credentials.getUsername();
         final String[] ldapAttributes = attributes.split(",");
