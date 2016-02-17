@@ -19,10 +19,11 @@ import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.password.PasswordEncoder;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 /**
  * Authenticator for users stored in relational database, based on the JDBI library.
- * It creates the user profile and stores it in the credentials for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * It creates the user profile and stores it in the credentials for the {@link AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0

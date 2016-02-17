@@ -16,7 +16,8 @@
 package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.extractor.Extractor;
 
 /**
  * To extract a remote IP address.

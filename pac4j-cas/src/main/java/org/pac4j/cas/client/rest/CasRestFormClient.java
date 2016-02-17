@@ -26,6 +26,5 @@ public abstract class CasRestFormClient extends org.pac4j.cas.client.direct.CasR
 
     public CasRestFormClient() {
         super(null);
-        throw new UnsupportedOperationException("Use the org.pac4j.cas.client.direct.CasRestFormClient instead");
     }
 }

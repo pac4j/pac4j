@@ -15,38 +15,30 @@
  */
 package org.pac4j.http.client.direct;
 
+import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
-import org.pac4j.http.profile.creator.ProfileCreator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP basic auth.</p>
- * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
- * 
- * @see org.pac4j.http.profile.HttpProfile
+ *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DirectBasicAuthClient extends DirectHttpClient<UsernamePasswordCredentials> {
+public class DirectBasicAuthClient extends DirectClient2<UsernamePasswordCredentials, CommonProfile> {
 
-    public DirectBasicAuthClient() {
-    }
+    public DirectBasicAuthClient() {}
 
     public DirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
     }
 
-    public DirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                                 final ProfileCreator profileCreator) {
-        setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
-    }
-
     @Override
     protected void internalInit(final WebContext context) {
-        extractor = new BasicAuthExtractor(getName());
+        setExtractor(new BasicAuthExtractor(getName()));
         super.internalInit(context);
     }
 }

@@ -59,6 +59,27 @@ public class SAML2Credentials extends Credentials {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final SAML2Credentials that = (SAML2Credentials) o;
+
+        if (nameId != null ? !nameId.equals(that.nameId) : that.nameId != null) return false;
+        if (attributes != null ? !attributes.equals(that.attributes) : that.attributes != null) return false;
+        return !(conditions != null ? !conditions.equals(that.conditions) : that.conditions != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = nameId != null ? nameId.hashCode() : 0;
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        result = 31 * result + (conditions != null ? conditions.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public final String toString() {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
     }

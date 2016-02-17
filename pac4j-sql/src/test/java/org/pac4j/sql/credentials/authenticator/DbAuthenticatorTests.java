@@ -22,9 +22,9 @@ import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.password.NopPasswordEncoder;
-import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.password.NopPasswordEncoder;
+import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
 import org.pac4j.sql.profile.DbProfile;
 import org.pac4j.sql.test.tools.DbServer;
 

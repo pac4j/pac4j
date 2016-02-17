@@ -23,9 +23,8 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.profile.HttpProfile;
 
 import static org.junit.Assert.*;
 
@@ -45,7 +44,8 @@ public final class DirectFormClientTests implements TestsConstants {
 
     @Test
     public void testMissingProfileCreator() {
-        final DirectFormClient formClient = new DirectFormClient(new SimpleTestUsernamePasswordAuthenticator(), null);
+        final DirectFormClient formClient = new DirectFormClient(new SimpleTestUsernamePasswordAuthenticator());
+        formClient.setProfileCreator(null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
     }
 
@@ -96,7 +96,7 @@ public final class DirectFormClientTests implements TestsConstants {
         final DirectFormClient formClient = getFormClient();
         formClient.setProfileCreator(credentials -> {
             String username = credentials.getUsername();
-            final HttpProfile profile = new HttpProfile();
+            final CommonProfile profile = new CommonProfile();
             profile.setId(username);
             profile.addAttribute(CommonProfile.USERNAME, username);
             return profile;
@@ -105,8 +105,8 @@ public final class DirectFormClientTests implements TestsConstants {
         final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(HttpProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
-        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
+        assertEquals(CommonProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());
     }

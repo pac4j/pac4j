@@ -28,8 +28,8 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import org.bson.Document;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.password.PasswordEncoder;
-import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
+import org.pac4j.core.credentials.password.PasswordEncoder;
+import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -38,10 +38,6 @@
 			<artifactId>pac4j-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.pac4j</groupId>
-			<artifactId>pac4j-http</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.jdbi</groupId>
 			<artifactId>jdbi</artifactId>
 			<version>${jdbi.version}</version>

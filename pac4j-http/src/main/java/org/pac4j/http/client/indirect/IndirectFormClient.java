@@ -15,29 +15,29 @@
  */
 package org.pac4j.http.client.indirect;
 
+import org.pac4j.core.client.IndirectClient2;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.extractor.FormExtractor;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.profile.creator.ProfileCreator;
+import org.pac4j.core.credentials.extractor.FormExtractor;
+import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 /**
  * <p>This class is the client to authenticate users through HTTP form.</p>
  * <p>The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is redirected to
  * this login form. The username and password inputs must be posted on the callback url. Their names can be defined by using the
  * {@link #setUsernameParameter(String)} and {@link #setPasswordParameter(String)} methods.</p>
- * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
- * 
- * @see org.pac4j.http.profile.HttpProfile
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class IndirectFormClient extends IndirectHttpClient<UsernamePasswordCredentials> {
+public class IndirectFormClient extends IndirectClient2<UsernamePasswordCredentials, CommonProfile> {
 
     private String loginUrl;
 
@@ -45,43 +45,34 @@ public class IndirectFormClient extends IndirectHttpClient<UsernamePasswordCrede
 
     public final static String MISSING_FIELD_ERROR = "missing_field";
 
-    public final static String DEFAULT_USERNAME_PARAMETER = "username";
+    private String usernameParameter = Pac4jConstants.USERNAME;
 
-    private String usernameParameter = DEFAULT_USERNAME_PARAMETER;
-
-    public final static String DEFAULT_PASSWORD_PARAMETER = "password";
-
-    private String passwordParameter = DEFAULT_PASSWORD_PARAMETER;
+    private String passwordParameter = Pac4jConstants.PASSWORD;
 
     public IndirectFormClient() {
     }
 
-    public IndirectFormClient(final String loginUrl) {
-        setLoginUrl(loginUrl);
-    }
-
     public IndirectFormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
-        setLoginUrl(loginUrl);
+        this.loginUrl = loginUrl;
         setAuthenticator(usernamePasswordAuthenticator);
     }
 
-    public IndirectFormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                              final ProfileCreator profileCreator) {
-        setLoginUrl(loginUrl);
+    public IndirectFormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
+                              final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+        this.loginUrl = loginUrl;
+        this.usernameParameter = usernameParameter;
+        this.passwordParameter = passwordParameter;
         setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
     }
 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
-        extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
+        CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
+        CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
+        setRedirector(webContext -> RedirectAction.redirect(this.loginUrl));
+        setExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
         super.internalInit(context);
-    }
-
-    @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        return RedirectAction.redirect(this.loginUrl);
     }
 
     @Override
@@ -90,12 +81,12 @@ public class IndirectFormClient extends IndirectHttpClient<UsernamePasswordCrede
         UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials
-            credentials = extractor.extract(context);
-            logger.debug("usernamePasswordCredentials : {}", credentials);
+            credentials = getExtractor().extract(context);
+            logger.debug("usernamePasswordCredentials: {}", credentials);
             if (credentials == null) {
                 String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
                 redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
-                logger.debug("redirectionUrl : {}", redirectionUrl);
+                logger.debug("redirectionUrl: {}", redirectionUrl);
                 final String message = "Username and password cannot be blank -> return to the form with error";
                 logger.debug(message);
                 throw RequiresHttpAction.redirect(message, context, redirectionUrl);
@@ -106,7 +97,7 @@ public class IndirectFormClient extends IndirectHttpClient<UsernamePasswordCrede
             String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
             String errorMessage = computeErrorMessage(e);
             redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
-            logger.debug("redirectionUrl : {}", redirectionUrl);
+            logger.debug("redirectionUrl: {}", redirectionUrl);
             final String message = "Credentials validation fails -> return to the form with error";
             logger.debug(message);
             throw RequiresHttpAction.redirect(message, context, redirectionUrl);
@@ -152,8 +143,8 @@ public class IndirectFormClient extends IndirectHttpClient<UsernamePasswordCrede
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
-                this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
-                this.passwordParameter, "authenticator", getAuthenticator(), "profileCreator",
-                getProfileCreator());
+                this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
+                "redirector", getRedirector(), "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "profileCreator", getProfileCreator());
     }
 }

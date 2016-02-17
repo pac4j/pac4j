@@ -15,22 +15,21 @@
  */
 package org.pac4j.http.client.direct;
 
+import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.http.credentials.extractor.ParameterExtractor;
-import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
  * <p>This class is the client to authenticate users directly based on a provided parameter (in a GET and/or POST request).</p>
- * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
  *
- * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ParameterClient extends DirectHttpClient<TokenCredentials> {
+public class ParameterClient extends DirectClient2<TokenCredentials, CommonProfile> {
 
     private String parameterName = "";
 
@@ -38,26 +37,17 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
 
     private boolean supportPostRequest = true;
 
-    public ParameterClient() {
-    }
+    public ParameterClient() {}
 
     public ParameterClient(final String parameterName, final TokenAuthenticator tokenAuthenticator) {
         this.parameterName = parameterName;
         setAuthenticator(tokenAuthenticator);
     }
 
-    public ParameterClient(final String parameterName,
-                           final TokenAuthenticator tokenAuthenticator,
-                           final ProfileCreator profileCreator) {
-        this.parameterName = parameterName;
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
-    }
-
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
-        extractor = new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName());
+        setExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
         super.internalInit(context);
     }
 
@@ -83,5 +73,12 @@ public class ParameterClient extends DirectHttpClient<TokenCredentials> {
 
     public void setSupportPostRequest(boolean supportPostRequest) {
         this.supportPostRequest = supportPostRequest;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "parameterName", this.parameterName,
+                "supportGetRequest", this.supportGetRequest, "supportPostRequest", this.supportPostRequest,
+                "extractor", getExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

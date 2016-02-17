@@ -48,6 +48,14 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
 
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
+        CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
+    }
+
     @Override
     public final void redirect(final WebContext context)
             throws RequiresHttpAction {
@@ -154,20 +162,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         throw new UnsupportedOperationException("To be implemented in subclasses if required");
     }
 
-    /**
-     * Returns if the client name should be implicitly added to the callback url if it is not already specified
-     *
-     * @return if the client name should be implicitly added to the callback url if it is not already specified
-     */
     public boolean isIncludeClientNameInCallbackUrl() {
         return this.includeClientNameInCallbackUrl;
     }
 
-    /**
-     * Sets whether the client name should be implicitly added to the callback url for this client.
-     *
-     * @param includeClientNameInCallbackUrl enable inclusion of the client name in the callback url.
-     */
     public void setIncludeClientNameInCallbackUrl(final boolean includeClientNameInCallbackUrl) {
         this.includeClientNameInCallbackUrl = includeClientNameInCallbackUrl;
     }

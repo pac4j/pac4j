@@ -49,7 +49,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private String name;
 
-    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<AuthorizationGenerator<U>>();
+    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
 
     public void setName(final String name) {
         this.name = name;

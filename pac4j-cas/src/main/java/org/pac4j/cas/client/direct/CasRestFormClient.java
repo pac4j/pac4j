@@ -16,38 +16,65 @@
  */
 package org.pac4j.cas.client.direct;
 
-import org.pac4j.http.credentials.authenticator.Authenticator;
-import org.pac4j.http.credentials.extractor.FormExtractor;
+import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.extractor.FormExtractor;
+import org.pac4j.core.util.CommonHelper;
 
 /**
- * CAS rest client that uses a {@link FormExtractor}.
+ * Direct client which receives credentials as form parameters and validates them via the CAS REST API.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
 public class CasRestFormClient extends AbstractCasRestClient {
 
-    private String username = "username";
+    private String usernameParameter = Pac4jConstants.USERNAME;
 
-    private String password = "password";
+    private String passwordParameter = Pac4jConstants.PASSWORD;
+
+    public CasRestFormClient() {}
 
     public CasRestFormClient(final Authenticator authenticator) {
-        super(authenticator);
-        this.extractor = new FormExtractor(username, password, CasRestFormClient.class.getSimpleName());
+        setAuthenticator(authenticator);
     }
 
-    public CasRestFormClient(final Authenticator authenticator, final String username, final String password) {
-        super(authenticator);
-        this.username = username;
-        this.password = password;
-        this.extractor = new FormExtractor(username, password, CasRestFormClient.class.getSimpleName());
+    public CasRestFormClient(final Authenticator authenticator, final String usernameParameter, final String passwordParameter) {
+        this(authenticator);
+        this.usernameParameter = usernameParameter;
+        this.passwordParameter = passwordParameter;
     }
 
-    public String getUsername() {
-        return username;
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
+        CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
+        setExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter, getName()));
+        super.internalInit(context);
     }
 
-    public String getPassword() {
-        return password;
+    public String getUsernameParameter() {
+        return usernameParameter;
+    }
+
+    public void setUsernameParameter(String usernameParameter) {
+        this.usernameParameter = usernameParameter;
+    }
+
+    public String getPasswordParameter() {
+        return passwordParameter;
+    }
+
+    public void setPasswordParameter(String passwordParameter) {
+        this.passwordParameter = passwordParameter;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
+                "passwordParameter", this.passwordParameter, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "profileCreator", getProfileCreator());
     }
 }
