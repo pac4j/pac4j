@@ -17,7 +17,9 @@ package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
@@ -39,16 +41,26 @@ public class ParameterClient extends DirectClient2<TokenCredentials, CommonProfi
 
     public ParameterClient() {}
 
-    public ParameterClient(final String parameterName, final TokenAuthenticator tokenAuthenticator) {
+    public ParameterClient(final String parameterName, final Authenticator tokenAuthenticator) {
         this.parameterName = parameterName;
         setAuthenticator(tokenAuthenticator);
     }
+
+    public ParameterClient(final String parameterName,
+                           final Authenticator tokenAuthenticator,
+                           final ProfileCreator profileCreator) {
+        this.parameterName = parameterName;
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profileCreator);
+    }
+
 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
         setExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
         super.internalInit(context);
+        assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 
     public String getParameterName() {

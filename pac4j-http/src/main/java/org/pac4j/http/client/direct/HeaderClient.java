@@ -17,7 +17,9 @@ package org.pac4j.http.client.direct;
 
 import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
@@ -37,16 +39,42 @@ public class HeaderClient extends DirectClient2<TokenCredentials, CommonProfile>
 
     public HeaderClient() {}
 
-    public HeaderClient(final String headerName, final TokenAuthenticator tokenAuthenticator) {
+    @Deprecated
+    public HeaderClient(final Authenticator tokenAuthenticator) {
+        setAuthenticator(tokenAuthenticator);
+    }
+
+    public HeaderClient(final String headerName, final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
         setAuthenticator(tokenAuthenticator);
     }
 
     public HeaderClient(final String headerName, final String prefixHeader,
-                        final TokenAuthenticator tokenAuthenticator) {
+                        final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
         setAuthenticator(tokenAuthenticator);
+    }
+
+    @Deprecated
+    public HeaderClient(final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profileCreator);
+    }
+
+    public HeaderClient(final String headerName, final Authenticator tokenAuthenticator,
+                        final ProfileCreator profileCreator) {
+        this.headerName = headerName;
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profileCreator);
+    }
+
+    public HeaderClient(final String headerName, final String prefixHeader,
+                        final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
+        this.headerName = headerName;
+        this.prefixHeader = prefixHeader;
+        setAuthenticator(tokenAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     @Override
@@ -55,6 +83,7 @@ public class HeaderClient extends DirectClient2<TokenCredentials, CommonProfile>
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
         setExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
         super.internalInit(context);
+        assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 
     public String getHeaderName() {

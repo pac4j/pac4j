@@ -19,10 +19,12 @@ import org.pac4j.core.client.IndirectClient2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
@@ -52,17 +54,24 @@ public class FormClient extends IndirectClient2<UsernamePasswordCredentials, Com
     public FormClient() {
     }
 
-    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+    public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
         setAuthenticator(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
-                      final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+                      final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
         setAuthenticator(usernamePasswordAuthenticator);
+    }
+
+    public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator,
+                      final ProfileCreator profileCreator) {
+        this.loginUrl = loginUrl;
+        setAuthenticator(usernamePasswordAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     @Override
@@ -73,6 +82,7 @@ public class FormClient extends IndirectClient2<UsernamePasswordCredentials, Com
         setRedirector(webContext -> RedirectAction.redirect(this.loginUrl));
         setExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
         super.internalInit(context);
+        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     @Override
