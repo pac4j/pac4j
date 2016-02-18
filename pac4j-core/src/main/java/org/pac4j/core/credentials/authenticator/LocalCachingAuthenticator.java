@@ -42,16 +42,22 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final LoadingCache<T, UserProfile> cache;
-    private final UserProfileCacheLoader<T> cacheLoader;
+    private Authenticator<T> delegate;
+    private long cacheSize;
+    private long timeout;
+    private TimeUnit timeUnit;
 
-    public LocalCachingAuthenticator(final Authenticator<T> delegate,
-                                     final long cacheSize, final long timeout,
-                                     final TimeUnit timeUnit) {
+    private LoadingCache<T, UserProfile> cache;
+    private UserProfileCacheLoader<T> cacheLoader;
 
-        this.cacheLoader = new UserProfileCacheLoader<>(delegate);
-        this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize)
-                .expireAfterWrite(timeout, timeUnit).build(this.cacheLoader);
+    public LocalCachingAuthenticator() {}
+
+    public LocalCachingAuthenticator(final Authenticator<T> delegate, final long cacheSize,
+                                     final long timeout, final TimeUnit timeUnit) {
+        this.delegate = delegate;
+        this.cacheSize = cacheSize;
+        this.timeout = timeout;
+        this.timeUnit = timeUnit;
     }
 
     @Override
@@ -68,19 +74,20 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     @Override
     protected void internalInit(final WebContext context) {
-        final  Authenticator<T> delegate = getDelegate();
+        CommonHelper.assertNotNull("delegate", this.delegate);
+        CommonHelper.assertTrue(cacheSize > 0, "cacheSize must be > 0");
+        CommonHelper.assertTrue(timeout > 0, "timeout must be > 0");
+        CommonHelper.assertNotNull("timeUnit", this.timeUnit);
+
         if (delegate instanceof InitializableWebObject) {
             ((InitializableWebObject) delegate).init(context);
         }
+
+        this.cacheLoader = new UserProfileCacheLoader<>(delegate);
+        this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize)
+                .expireAfterWrite(timeout, timeUnit).build(this.cacheLoader);
     }
 
-    public void setDelegate(final Authenticator<T> delegate) {
-        this.cacheLoader.setDelegate(delegate);
-    }
-
-    public Authenticator<T> getDelegate() {
-        return this.cacheLoader.getDelegate();
-    }
 
     public void removeFromCache(final T credentials) {
         this.cache.invalidate(credentials);
@@ -93,6 +100,47 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     public boolean clearCache() {
         this.cache.invalidateAll();
         return this.cache.asMap().isEmpty();
+    }
+
+    public Authenticator<T> getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(Authenticator<T> delegate) {
+        this.delegate = delegate;
+        if (this.cacheLoader != null) {
+            this.cacheLoader.setDelegate(delegate);
+        }
+    }
+
+    public long getCacheSize() {
+        return cacheSize;
+    }
+
+    public void setCacheSize(long cacheSize) {
+        this.cacheSize = cacheSize;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
+    public TimeUnit getTimeUnit() {
+        return timeUnit;
+    }
+
+    public void setTimeUnit(TimeUnit timeUnit) {
+        this.timeUnit = timeUnit;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "delegate", this.delegate, "cacheSize", this.cacheSize,
+                "timeout", this.timeout, "timeUnit", this.timeUnit);
     }
 
     private static class UserProfileCacheLoader<T extends Credentials> extends CacheLoader<T, UserProfile> {

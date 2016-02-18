@@ -15,6 +15,7 @@
  */
 package org.pac4j.oauth.profile.wordpress;
 
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.converter.JsonConverter;
@@ -28,7 +29,6 @@ import org.pac4j.oauth.profile.converter.JsonConverter;
 public class WordPressAttributesDefinition extends AttributesDefinition {
     
     public static final String DISPLAY_NAME = "display_name";
-    public static final String USERNAME = "username";
     public static final String EMAIL = "email";
     public static final String PRIMARY_BLOG = "primary_blog";
     public static final String AVATAR_URL = "avatar_URL";
@@ -37,7 +37,7 @@ public class WordPressAttributesDefinition extends AttributesDefinition {
     
     public WordPressAttributesDefinition() {
         primary(DISPLAY_NAME, Converters.STRING);
-        primary(USERNAME, Converters.STRING);
+        primary(Pac4jConstants.USERNAME, Converters.STRING);
         primary(EMAIL, Converters.STRING);
         primary(PRIMARY_BLOG, Converters.INTEGER);
         primary(AVATAR_URL, Converters.URL);
