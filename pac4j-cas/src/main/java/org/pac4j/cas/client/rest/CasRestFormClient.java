@@ -107,8 +107,8 @@ public class CasRestFormClient extends AbstractCasRestClient {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "casServerPrefixUrl", casServerPrefixUrl,
-                "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "extractor", getExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
+        return CommonHelper.toString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
+                "passwordParameter", this.passwordParameter, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "profileCreator", getProfileCreator());
     }
 }

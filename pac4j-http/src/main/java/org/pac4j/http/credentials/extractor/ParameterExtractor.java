@@ -19,6 +19,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.Extractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * To extract a parameter value.
@@ -63,5 +64,11 @@ public class ParameterExtractor implements Extractor<TokenCredentials> {
         }
 
         return new TokenCredentials(value, clientName);
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "parameterName", parameterName, "clientName", clientName,
+                "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
     }
 }

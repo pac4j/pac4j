@@ -46,6 +46,8 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
     private String casServerPrefixUrl;
     private String casRestUrl;
 
+    private TicketValidator ticketValidator;
+
     public CasRestAuthenticator() {}
 
     public CasRestAuthenticator(final String casServerPrefixUrl) {
@@ -67,6 +69,9 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             }
             casRestUrl += "v1/tickets";
         }
+        if (this.ticketValidator == null) {
+            this.ticketValidator =  new Cas20ServiceTicketValidator(this.casServerPrefixUrl);
+        }
     }
 
     @Override
@@ -82,7 +87,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
     private String requestTicketGrantingTicket(final String username, final String password) {
         HttpURLConnection connection = null;
         try {
-            connection = HttpUtils.openPostConnection(new URL(getCasRestUrl()));
+            connection = HttpUtils.openPostConnection(new URL(this.casRestUrl));
             final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
@@ -122,6 +127,16 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
     }
 
     public TicketValidator getTicketValidator() {
-        return new Cas20ServiceTicketValidator(getCasServerPrefixUrl());
+        return ticketValidator;
+    }
+
+    public void setTicketValidator(TicketValidator ticketValidator) {
+        this.ticketValidator = ticketValidator;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "casServerPrefixUrl", this.casServerPrefixUrl,
+                "casRestUrl", this.casRestUrl, "ticketValidator", this.ticketValidator);
     }
 }

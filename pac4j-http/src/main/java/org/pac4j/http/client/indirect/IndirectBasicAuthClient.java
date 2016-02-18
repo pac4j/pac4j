@@ -18,9 +18,11 @@ package org.pac4j.http.client.indirect;
 import org.pac4j.core.client.IndirectClient2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
@@ -41,13 +43,18 @@ public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCre
 
     public IndirectBasicAuthClient() {}
 
-    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+    public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
     }
 
-    public IndirectBasicAuthClient(final String realmName, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+    public IndirectBasicAuthClient(final String realmName, final Authenticator usernamePasswordAuthenticator) {
         this.realmName = realmName;
         setAuthenticator(usernamePasswordAuthenticator);
+    }
+
+    public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator, final ProfileCreator profileCreator) {
+        setAuthenticator(usernamePasswordAuthenticator);
+        setProfileCreator(profileCreator);
     }
 
     @Override
@@ -56,6 +63,7 @@ public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCre
         setRedirector(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         setExtractor(new BasicAuthExtractor(getName()));
         super.internalInit(context);
+        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     @Override
@@ -89,7 +97,8 @@ public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCre
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
-                this.realmName, "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
+                "realmName", this.realmName, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "profileCreator", getProfileCreator());
     }
 }
