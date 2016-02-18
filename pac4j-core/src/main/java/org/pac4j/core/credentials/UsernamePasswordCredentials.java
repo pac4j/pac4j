@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.credentials;
 
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -65,7 +66,7 @@ public class UsernamePasswordCredentials extends Credentials {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "username", this.username, "password", "[PROTECTED]",
-                "clientName", getClientName());
+        return CommonHelper.toString(this.getClass(), Pac4jConstants.USERNAME, this.username,
+                Pac4jConstants.PASSWORD, "[PROTECTED]", "clientName", getClientName());
     }
 }

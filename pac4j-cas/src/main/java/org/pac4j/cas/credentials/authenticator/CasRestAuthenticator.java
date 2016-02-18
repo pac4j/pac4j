@@ -21,6 +21,7 @@ import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.util.HttpUtils;
 import org.pac4j.cas.profile.HttpTGTProfile;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -82,8 +83,8 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
         HttpURLConnection connection = null;
         try {
             connection = HttpUtils.openPostConnection(new URL(getCasRestUrl()));
-            final String payload = HttpUtils.encodeQueryParam("username", username)
-                    + "&" + HttpUtils.encodeQueryParam("password", password);
+            final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
+                    + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
             final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             out.write(payload);

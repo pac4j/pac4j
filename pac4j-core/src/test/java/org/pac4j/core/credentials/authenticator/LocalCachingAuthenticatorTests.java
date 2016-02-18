@@ -68,6 +68,7 @@ public class LocalCachingAuthenticatorTests {
     public void testDoubleCalls() {
         final OnlyOneCallAuthenticator authenticator = new OnlyOneCallAuthenticator();
         final LocalCachingAuthenticator localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
+        localCachingAuthenticator.init(null);
         final Credentials credentials1 = new UsernamePasswordCredentials("a", "a", this.getClass().getName());
         localCachingAuthenticator.validate(credentials1);
         final Credentials credentials2 = new UsernamePasswordCredentials("a", "a", this.getClass().getName());
@@ -78,6 +79,7 @@ public class LocalCachingAuthenticatorTests {
     public void testNoCache() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
+        authenticator.init(null);
 
         assertFalse(authenticator.isCached(this.credentials));
     }
@@ -86,6 +88,7 @@ public class LocalCachingAuthenticatorTests {
     public void testValidateAndCache() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
+        authenticator.init(null);
 
         authenticator.validate(this.credentials);
         assertTrue(authenticator.isCached(this.credentials));
@@ -95,6 +98,7 @@ public class LocalCachingAuthenticatorTests {
     public void testValidateAndCacheSwitchDelegate() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
+        authenticator.init(null);
 
         authenticator.validate(this.credentials);
         assertTrue(authenticator.isCached(this.credentials));
@@ -107,18 +111,19 @@ public class LocalCachingAuthenticatorTests {
     public void testValidateAndNoCacheSwitchDelegate() throws Exception {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.MINUTES);
+        authenticator.init(null);
         authenticator.validate(this.credentials);
         assertTrue(authenticator.isCached(this.credentials));
         authenticator.setDelegate(new ThrowingAuthenticator());
         authenticator.removeFromCache(this.credentials);
         authenticator.validate(this.credentials);
-
     }
 
     @Test
     public void testValidateAndCacheAndRemove() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
+        authenticator.init(null);
 
         authenticator.validate(this.credentials);
         assertTrue(authenticator.isCached(this.credentials));
@@ -130,6 +135,7 @@ public class LocalCachingAuthenticatorTests {
     public void testValidateAndCacheAndClean() {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
+        authenticator.init(null);
 
         authenticator.validate(this.credentials);
         assertTrue(authenticator.isCached(this.credentials));
@@ -141,6 +147,7 @@ public class LocalCachingAuthenticatorTests {
     public void testValidateAndExpire() throws Exception {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 500, TimeUnit.MILLISECONDS);
+        authenticator.init(null);
 
         authenticator.validate(this.credentials);
         assertTrue(authenticator.isCached(this.credentials));

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.pac4j.cas.client.direct;
+package org.pac4j.cas.client.rest;
 
 import org.junit.Test;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
@@ -74,7 +74,7 @@ public final class CasRestClientIT implements TestsConstants {
 
     @Test
     public void testRestBasic() throws RequiresHttpAction {
-        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(new CasRestAuthenticator(CAS_PREFIX_URL), VALUE, NAME);
+        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME);
 
         final MockWebContext context = MockWebContext.create();
         final String token = USERNAME + ":" + USERNAME;

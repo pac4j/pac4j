@@ -15,6 +15,7 @@
  */
 package org.pac4j.http.credentials.authenticator.test;
 
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -51,7 +52,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
         }
         final CommonProfile profile = new CommonProfile();
         profile.setId(username);
-        profile.addAttribute(CommonProfile.USERNAME, username);
+        profile.addAttribute(Pac4jConstants.USERNAME, username);
         credentials.setUserProfile(profile);
     }
 

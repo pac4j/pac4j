@@ -17,6 +17,7 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -98,7 +99,7 @@ public final class DirectFormClientTests implements TestsConstants {
             String username = credentials.getUsername();
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);
-            profile.addAttribute(CommonProfile.USERNAME, username);
+            profile.addAttribute(Pac4jConstants.USERNAME, username);
             return profile;
         });
         final MockWebContext context = MockWebContext.create();

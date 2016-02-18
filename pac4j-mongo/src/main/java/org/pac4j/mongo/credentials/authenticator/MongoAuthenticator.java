@@ -20,6 +20,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
@@ -56,8 +57,8 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
      * This must a list of attribute names separated by commas.
      */
     protected String attributes = "";
-    protected String usernameAttribute = "username";
-    protected String passwordAttribute = "password";
+    protected String usernameAttribute = Pac4jConstants.USERNAME;
+    protected String passwordAttribute = Pac4jConstants.PASSWORD;
     protected String usersDatabase = "users";
     protected String usersCollection = "users";
 

@@ -16,7 +16,9 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
@@ -74,6 +76,21 @@ public abstract class DirectClient2<C extends Credentials, U extends CommonProfi
         return profile;
     }
 
+    protected void assertAuthenticatorTypes(final Class<? extends Authenticator>... classes) {
+        if (this.authenticator != null && classes != null) {
+            for (final Class<? extends Authenticator> clazz : classes) {
+                Class<? extends Authenticator> authClazz = this.authenticator.getClass();
+                if (LocalCachingAuthenticator.class.isAssignableFrom(authClazz)) {
+                    authClazz = ((LocalCachingAuthenticator) this.authenticator).getDelegate().getClass();
+                }
+                if (!clazz.isAssignableFrom(authClazz)) {
+                    throw new TechnicalException("Unsupported authenticator type: " + authClazz);
+                }
+            }
+        }
+    }
+
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "extractor", this.extractor,
@@ -95,7 +112,9 @@ public abstract class DirectClient2<C extends Credentials, U extends CommonProfi
     }
 
     public void setAuthenticator(final Authenticator<C> authenticator) {
-        this.authenticator = authenticator;
+        if (this.authenticator == null) {
+            this.authenticator = authenticator;
+        }
     }
 
     public ProfileCreator<C, U> getProfileCreator() {
@@ -103,6 +122,8 @@ public abstract class DirectClient2<C extends Credentials, U extends CommonProfi
     }
 
     public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
-        this.profileCreator = profileCreator;
+        if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
+            this.profileCreator = profileCreator;
+        }
     }
 }
