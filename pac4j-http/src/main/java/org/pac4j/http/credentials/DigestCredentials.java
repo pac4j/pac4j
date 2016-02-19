@@ -20,7 +20,6 @@ import java.util.StringTokenizer;
 public class DigestCredentials extends TokenCredentials {
 
     private String username;
-    private String response;
 
     private String realm;
     private String nonce;
@@ -31,31 +30,22 @@ public class DigestCredentials extends TokenCredentials {
 
     private String httpMethod;
 
-    public DigestCredentials(final String token, final String httpMethod, final String clientName) {
+    public DigestCredentials(final String token, final String httpMethod, final String clientName, String username, String realm, String nonce, String uri, String cnonce, String nc, String qop) {
+        //the token represents the client response attribute value in digest authorization header
         super(token, clientName);
-        Map<String, String> valueMap = parseTokenValue(token);
 
-        username = valueMap.get("username");
-        response = valueMap.get("response");
-
-        if (CommonHelper.isBlank(username) || CommonHelper.isBlank(response)) {
-            throw new CredentialsException("Bad format of the digest auth header");
-        }
-        realm = valueMap.get("realm");
-        nonce = valueMap.get("nonce");
-        uri = valueMap.get("uri");
-        cnonce = valueMap.get("cnonce");
-        nc = valueMap.get("nc");
-        qop = valueMap.get("qop");
+        this.username = username;
+        this.realm = realm;
+        this.nonce = nonce;
+        this.uri = uri;
+        this.cnonce = cnonce;
+        this.nc = nc;
+        this.qop = qop;
         this.httpMethod = httpMethod;
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public String getResponse() {
-        return response;
     }
 
     public String calculateServerDigest(boolean passwordAlreadyEncoded, String password) {
@@ -64,43 +54,12 @@ public class DigestCredentials extends TokenCredentials {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DigestCredentials that = (DigestCredentials) o;
-
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        return !(response != null ? !response.equals(that.response) : that.response != null);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = username != null ? username.hashCode() : 0;
-        result = 31 * result + (response != null ? response.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
                 "clientName", getClientName());
     }
 
-    private Map<String, String> parseTokenValue(String token) {
-        StringTokenizer tokenizer = new StringTokenizer(token, ", ");
-        String keyval;
-        Map map = new HashMap<String, String>();
-        while (tokenizer.hasMoreElements()) {
-            keyval = tokenizer.nextToken();
-            if (keyval.contains("=")) {
-                String key = keyval.substring(0, keyval.indexOf("="));
-                String value = keyval.substring(keyval.indexOf("=") + 1);
-                map.put(key.trim(), value.replaceAll("\"", "").trim());
-            }
-        }
-        return map;
-    }
+
 
     private String generateDigest(boolean passwordAlreadyEncoded, String username,
                                  String realm, String password, String httpMethod, String uri, String qop,
@@ -111,8 +70,7 @@ public class DigestCredentials extends TokenCredentials {
 
         if (passwordAlreadyEncoded) {
             ha1 = password;
-        }
-        else {
+        } else {
             ha1 = CredentialUtil.H(username + ":" + realm + ":" +password);
         }
 
@@ -121,12 +79,10 @@ public class DigestCredentials extends TokenCredentials {
         if (qop == null) {
             // as per RFC 2069 compliant clients (also reaffirmed by RFC 2617)
             digest = CredentialUtil.KD(ha1, nonce + ":" + ha2);
-        }
-        else if ("auth".equals(qop)) {
+        } else if ("auth".equals(qop)) {
             // As per RFC 2617 compliant clients
             digest = CredentialUtil.KD(ha1, nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Invalid qop: '"
                     + qop + "'");
         }

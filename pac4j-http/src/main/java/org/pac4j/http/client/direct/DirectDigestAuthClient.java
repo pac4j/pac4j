@@ -1,13 +1,11 @@
 package org.pac4j.http.client.direct;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.CredentialUtil;
 import org.pac4j.http.credentials.DigestCredentials;
 import org.pac4j.http.credentials.authenticator.DigestAuthenticator;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 import org.pac4j.http.profile.creator.ProfileCreator;
 
@@ -70,8 +68,6 @@ public class DirectDigestAuthClient extends DirectHttpClient<DigestCredentials> 
         Date d = new Date();
         SimpleDateFormat f = new SimpleDateFormat("yyyy:MM:dd:hh:mm:ss");
         String fmtDate = f.format(d);
-        Random rand = new Random(100000);
-        Integer randomInt = rand.nextInt();
-        return CredentialUtil.H(fmtDate + randomInt.toString());
+        return CredentialUtil.H(fmtDate + CommonHelper.randomString(10));
     }
 }
