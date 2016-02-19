@@ -66,7 +66,6 @@ public abstract class IndirectClient2<C extends Credentials, U extends CommonPro
 
     @Override
     protected C retrieveCredentials(final WebContext context) throws RequiresHttpAction {
-        init(context);
         try {
             final C credentials = this.extractor.extract(context);
             if (credentials == null) {
