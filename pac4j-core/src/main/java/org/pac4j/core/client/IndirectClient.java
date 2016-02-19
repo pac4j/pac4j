@@ -48,7 +48,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
 
-
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
