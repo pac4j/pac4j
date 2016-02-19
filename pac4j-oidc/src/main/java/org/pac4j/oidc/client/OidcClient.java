@@ -416,8 +416,9 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
             final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
             if (response instanceof TokenErrorResponse) {
-                logger.error("Bad token response, error={}", ((TokenErrorResponse) response).getErrorObject());
-                return null;
+                final String msg = "Bad token response, error=" + ((TokenErrorResponse) response).getErrorObject();
+                logger.error(msg);
+                throw new TechnicalException(msg);
             }
             logger.debug("Token response successful");
             final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
