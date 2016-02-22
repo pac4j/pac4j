@@ -115,8 +115,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     protected CasProxyReceptor casProxyReceptor;
 
-    protected String casServiceUrl;
-
     public CasClient() { }
 
     public CasClient(final String casLoginUrl) {
@@ -142,7 +140,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
-                this.casServiceUrl, this.renew, this.gateway);
+                computeFinalCallbackUrl(context), this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);
     }
@@ -185,7 +183,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         }
         this.casPrefixUrl = callbackUrlResolver.compute(this.casPrefixUrl, context);
         this.casLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
-        this.casServiceUrl = computeFinalCallbackUrl(context);
     }
 
     private void initializeLogoutHandler(final WebContext context) {
@@ -304,7 +301,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
         final String ticket = credentials.getServiceTicket();
         try {
-            final Assertion assertion = this.ticketValidator.validate(ticket, this.casServiceUrl);
+            final Assertion assertion = this.ticketValidator.validate(ticket, computeFinalCallbackUrl(context));
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal : {}", principal);
             final CasProfile casProfile;
@@ -412,10 +409,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     public void setEncoding(final String encoding) {
         this.encoding = encoding;
-    }
-
-    public String getCasServiceUrl() {
-        return casServiceUrl;
     }
 
     @Override
