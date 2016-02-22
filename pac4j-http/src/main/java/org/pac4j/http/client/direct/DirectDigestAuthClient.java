@@ -9,9 +9,8 @@ import org.pac4j.http.credentials.authenticator.DigestAuthenticator;
 import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
 import org.pac4j.http.profile.creator.ProfileCreator;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * <p>This class is the client to authenticate users directly through HTTP digest auth.</p>
@@ -36,16 +35,16 @@ public class DirectDigestAuthClient extends DirectHttpClient<DigestCredentials> 
         setProfileCreator(profileCreator);
     }
 
+    /** Per RFC 2617
+     * If a server receives a request for an access-protected object, and an
+     * acceptable Authorization header is not sent, the server responds with
+     * a "401 Unauthorized" status code, and a WWW-Authenticate header
+     */
     @Override
-    public DigestCredentials getCredentials(WebContext context) throws RequiresHttpAction {
+    public DigestCredentials getCredentials(final WebContext context) throws RequiresHttpAction {
         DigestCredentials credentials = super.getCredentials(context);
         if (credentials == null) {
             String nonce = calculateNonce();
-            /* Per RFC 2617
-            If a server receives a request for an access-protected object, and an
-            acceptable Authorization header is not sent, the server responds with
-            a "401 Unauthorized" status code, and a WWW-Authenticate header
-             */
             RequiresHttpAction.unauthorizedDigest("Digest required", context, realm, "auth", nonce);
         }
         return credentials;
@@ -57,17 +56,18 @@ public class DirectDigestAuthClient extends DirectHttpClient<DigestCredentials> 
         super.internalInit(context);
     }
 
-    public void setRealm(String realm) {
+    public void setRealm(final String realm) {
         this.realm = realm;
     }
 
     /**
      * A server-specified data string which should be uniquely generated each time a 401 response is made (RFC 2617)
+     * Based on current time including nanoseconds
      */
     private String calculateNonce() {
-        Date d = new Date();
-        SimpleDateFormat f = new SimpleDateFormat("yyyy:MM:dd:hh:mm:ss");
-        String fmtDate = f.format(d);
-        return CredentialUtil.H(fmtDate + CommonHelper.randomString(10));
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss.SSS");
+        String fmtTime = formatter.format(time);
+        return CredentialUtil.encryptMD5(fmtTime + CommonHelper.randomString(10));
     }
 }
