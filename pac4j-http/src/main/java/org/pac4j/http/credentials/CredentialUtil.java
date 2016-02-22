@@ -20,12 +20,11 @@ public class CredentialUtil {
      * @param data data
      * @return MD5(data)
      */
-    public static String H(String data) {
+    public static String encryptMD5(String data) {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             return copyValueOf(Hex.encodeHex(digest.digest(data.getBytes())));
         } catch (NoSuchAlgorithmException ex) {
-            // shouldn't happen
             throw new RuntimeException("Failed to instantiate an MD5 algorithm", ex);
         }
     }
@@ -37,7 +36,7 @@ public class CredentialUtil {
      * @param secret secret
      * @return H(concat(secret, ":", data));
      */
-    public static String KD(String secret, String data) {
-        return H(secret + ":" + data);
+    public static String encryptMD5(String secret, String data) {
+        return encryptMD5(secret + ":" + data);
     }
 }

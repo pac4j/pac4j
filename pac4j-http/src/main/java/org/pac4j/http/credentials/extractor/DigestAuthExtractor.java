@@ -6,12 +6,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
 import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -36,6 +31,23 @@ public class DigestAuthExtractor implements Extractor<DigestCredentials> {
         this.clientName = clientName;
     }
 
+    /**
+     * Extracts digest Authorization header components.
+     * As per RFC 2617 :
+     * username is the user's name in the specified realm
+     * qop is quality of protection
+     * uri is the request uri
+     * response is the client response
+     * nonce is a server-specified data string which should be uniquely generated
+     *   each time a 401 response is made
+     * cnonce is the client nonce
+     * nc is the nonce count
+     * If in the Authorization header it is not specified a username and response, we throw CredentialsException because
+     * the client uses an username and a password to authenticate. response is just a MD5 encoded value
+     * based on user provided password and RFC 2617 digest authentication encoding rules
+     * @param context the current web context
+     * @return
+     */
     @Override
     public DigestCredentials extract(WebContext context) {
         final TokenCredentials credentials = this.extractor.extract(context);
