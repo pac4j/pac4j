@@ -86,7 +86,6 @@ public final class CasClientTests implements TestsConstants {
         casClient.init(null);
         assertEquals(HOST + CAS + LOGIN, casClient.getCasLoginUrl());
         assertEquals(HOST + CAS + "/", casClient.getCasPrefixUrl());
-        assertEquals(HOST + CASBACK, casClient.getCasServiceUrl());
     }
 
     @Test
