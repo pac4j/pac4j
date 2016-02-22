@@ -87,7 +87,6 @@ public final class TestCasClient extends TestCase implements TestsConstants {
         casClient.init(null);
         assertEquals(HOST + CAS + LOGIN, casClient.getCasLoginUrl());
         assertEquals(HOST + CAS + "/", casClient.getCasPrefixUrl());
-        assertEquals(HOST + CASBACK, casClient.getCasServiceUrl());
     }
 
     public void testRenew() throws RequiresHttpAction {
