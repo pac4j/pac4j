@@ -17,12 +17,12 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.credentials.extractor.Extractor;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -30,14 +30,14 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 
 /**
- * New direct client type using the {@link Extractor}, {@link Authenticator} and {@link ProfileCreator} concepts.
+ * New direct client type using the {@link CredentialsExtractor}, {@link Authenticator} and {@link ProfileCreator} concepts.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
 public abstract class DirectClient2<C extends Credentials, U extends CommonProfile> extends DirectClient<C, U> {
 
-    private Extractor<C> extractor;
+    private CredentialsExtractor<C> credentialsExtractor;
 
     private Authenticator<C> authenticator;
 
@@ -45,7 +45,7 @@ public abstract class DirectClient2<C extends Credentials, U extends CommonProfi
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("extractor", this.extractor);
+        CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
         if (authenticator instanceof InitializableWebObject) {
@@ -57,7 +57,7 @@ public abstract class DirectClient2<C extends Credentials, U extends CommonProfi
     public C getCredentials(final WebContext context) throws RequiresHttpAction {
         init(context);
         try {
-            final C credentials = this.extractor.extract(context);
+            final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
                 return null;
             }
@@ -93,17 +93,17 @@ public abstract class DirectClient2<C extends Credentials, U extends CommonProfi
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "extractor", this.extractor,
+        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
                 "authenticator", this.authenticator, "profileCreator", this.profileCreator);
     }
 
-    public Extractor<C> getExtractor() {
-        return extractor;
+    public CredentialsExtractor<C> getCredentialsExtractor() {
+        return credentialsExtractor;
     }
 
-    public void setExtractor(final Extractor<C> extractor) {
-        if (this.extractor == null) {
-            this.extractor = extractor;
+    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+        if (this.credentialsExtractor == null) {
+            this.credentialsExtractor = credentialsExtractor;
         }
     }
 

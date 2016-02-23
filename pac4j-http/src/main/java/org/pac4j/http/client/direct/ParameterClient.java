@@ -58,7 +58,7 @@ public class ParameterClient extends DirectClient2<TokenCredentials, CommonProfi
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
-        setExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
+        setCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }
@@ -91,6 +91,6 @@ public class ParameterClient extends DirectClient2<TokenCredentials, CommonProfi
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "parameterName", this.parameterName,
                 "supportGetRequest", this.supportGetRequest, "supportPostRequest", this.supportPostRequest,
-                "extractor", getExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
+                "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

@@ -19,19 +19,19 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
-import org.pac4j.core.credentials.extractor.Extractor;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
-import org.pac4j.core.redirect.Redirector;
+import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 
 /**
- * New indirect client type using the {@link Redirector}, {@link Extractor}, {@link Authenticator}
+ * New indirect client type using the {@link RedirectActionBuilder}, {@link CredentialsExtractor}, {@link Authenticator}
  * and {@link ProfileCreator} concepts.
  * 
  * @author Jerome Leleu
@@ -39,9 +39,9 @@ import org.pac4j.core.util.InitializableWebObject;
  */
 public abstract class IndirectClient2<C extends Credentials, U extends CommonProfile> extends IndirectClient<C, U> {
 
-    private Redirector redirector;
+    private RedirectActionBuilder redirectActionBuilder;
 
-    private Extractor<C> extractor;
+    private CredentialsExtractor<C> credentialsExtractor;
 
     private Authenticator<C> authenticator;
 
@@ -50,8 +50,8 @@ public abstract class IndirectClient2<C extends Credentials, U extends CommonPro
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
-        CommonHelper.assertNotNull("redirector", this.redirector);
-        CommonHelper.assertNotNull("extractor", this.extractor);
+        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
+        CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
         if (authenticator instanceof InitializableWebObject) {
@@ -61,13 +61,13 @@ public abstract class IndirectClient2<C extends Credentials, U extends CommonPro
 
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        return redirector.redirect(context);
+        return redirectActionBuilder.redirect(context);
     }
 
     @Override
     protected C retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         try {
-            final C credentials = this.extractor.extract(context);
+            final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
                 return null;
             }
@@ -102,27 +102,27 @@ public abstract class IndirectClient2<C extends Credentials, U extends CommonPro
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "redirector", this.redirector, "extractor", this.extractor,
+        return CommonHelper.toString(this.getClass(), "name", getName(), "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
                 "authenticator", this.authenticator, "profileCreator", this.profileCreator);
     }
 
-    public Redirector getRedirector() {
-        return redirector;
+    public RedirectActionBuilder getRedirectActionBuilder() {
+        return redirectActionBuilder;
     }
 
-    public void setRedirector(final Redirector redirector) {
-        if (this.redirector == null) {
-            this.redirector = redirector;
+    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+        if (this.redirectActionBuilder == null) {
+            this.redirectActionBuilder = redirectActionBuilder;
         }
     }
 
-    public Extractor<C> getExtractor() {
-        return extractor;
+    public CredentialsExtractor<C> getCredentialsExtractor() {
+        return credentialsExtractor;
     }
 
-    public void setExtractor(final Extractor<C> extractor) {
-        if (this.extractor == null) {
-            this.extractor = extractor;
+    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+        if (this.credentialsExtractor == null) {
+            this.credentialsExtractor = credentialsExtractor;
         }
     }
 

@@ -61,7 +61,7 @@ public class DirectFormClient extends DirectClient2<UsernamePasswordCredentials,
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("usernameParameter", usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
-        setExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
+        setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
@@ -85,7 +85,7 @@ public class DirectFormClient extends DirectClient2<UsernamePasswordCredentials,
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
-                "passwordParameter", this.passwordParameter, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "passwordParameter", this.passwordParameter, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }
 }

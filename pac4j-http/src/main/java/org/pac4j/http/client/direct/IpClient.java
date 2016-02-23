@@ -45,7 +45,7 @@ public class IpClient extends DirectClient2<TokenCredentials, CommonProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        setExtractor(new IpExtractor(getName()));
+        setCredentialsExtractor(new IpExtractor(getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }

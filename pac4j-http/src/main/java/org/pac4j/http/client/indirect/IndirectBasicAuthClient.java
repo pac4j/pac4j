@@ -60,8 +60,8 @@ public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCre
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("realmName", this.realmName);
-        setRedirector(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
-        setExtractor(new BasicAuthExtractor(getName()));
+        setRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
+        setCredentialsExtractor(new BasicAuthExtractor(getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
@@ -71,7 +71,7 @@ public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCre
         final UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials
-            credentials = getExtractor().extract(context);
+            credentials = getCredentialsExtractor().extract(context);
             logger.debug("credentials : {}", credentials);
             
             if (credentials == null) {
@@ -98,7 +98,7 @@ public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCre
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
-                "realmName", this.realmName, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "realmName", this.realmName, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }
 }

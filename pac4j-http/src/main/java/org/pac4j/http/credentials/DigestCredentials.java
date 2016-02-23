@@ -1,13 +1,15 @@
 package org.pac4j.http.credentials;
 
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.CommonHelper;
 
 /**
  * <p>This credentials is retrieved from a HTTP request.</p>
- * <p>A user profile can be attached with the credentials if it has been created by a {@link org.pac4j.http.credentials.authenticator.Authenticator}.
- * In that case, the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator} must be used to retrieve the attached user profile.</p>
+ * <p>A user profile can be attached with the credentials if it has been created by a {@link org.pac4j.core.credentials.authenticator.Authenticator}.
+ * In that case, the {@link org.pac4j.core.profile.creator.AuthenticatorProfileCreator} must be used to retrieve the attached user profile.</p>
  *
  * @author Mircea Carasel
+ * @since 1.9.0
  */
 public class DigestCredentials extends TokenCredentials {
 
@@ -38,10 +40,6 @@ public class DigestCredentials extends TokenCredentials {
         this.httpMethod = httpMethod;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     /**
      * This calculates the server digest value based on user stored password. If the server stores password in clear format
      * then passwordAlreadyEncoded should be false. If the server stores the password in ha1, digest then the
@@ -55,13 +53,6 @@ public class DigestCredentials extends TokenCredentials {
         return generateDigest(passwordAlreadyEncoded, username,
                 realm, password, httpMethod, uri, qop, nonce, nc, cnonce);
     }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
-                "clientName", getClientName());
-    }
-
 
     /**
      * generate digest token based on RFC 2069 and RFC 2617 guidelines
@@ -94,5 +85,15 @@ public class DigestCredentials extends TokenCredentials {
         }
 
         return digest;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
+                "clientName", getClientName());
     }
 }
