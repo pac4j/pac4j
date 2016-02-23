@@ -90,6 +90,22 @@ public class RequiresHttpAction extends Exception {
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
     }
+
+    /**
+     * Build a digest auth popup credentials.
+     *
+     * @param message message
+     * @param context context
+     * @param realmName realm name
+     * @return a digest auth popup credentials
+     */
+    public static RequiresHttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, final String nonce) {
+        if (CommonHelper.isNotBlank(realmName)) {
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\"" + qop + "\", nonce=\"" + nonce + "\"");
+        }
+        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
+        return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
+    }
     
     /**
      * Build a forbidden response.
