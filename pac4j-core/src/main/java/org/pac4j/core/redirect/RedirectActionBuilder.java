@@ -24,7 +24,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface Redirector {
+public interface RedirectActionBuilder {
 
     /**
      * Return a redirect action for the web context.

@@ -25,7 +25,7 @@ import org.pac4j.core.credentials.TokenCredentials;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class HeaderExtractor implements Extractor<TokenCredentials> {
+public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String headerName;
 

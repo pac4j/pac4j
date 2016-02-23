@@ -26,7 +26,7 @@ import org.pac4j.core.exception.CredentialsException;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface Extractor<C extends Credentials> {
+public interface CredentialsExtractor<C extends Credentials> {
 
     /**
      * Extract the right credentials. It should throw a {@link CredentialsException} in case of failure.

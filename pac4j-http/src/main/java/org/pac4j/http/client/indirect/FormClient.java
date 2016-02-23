@@ -79,8 +79,8 @@ public class FormClient extends IndirectClient2<UsernamePasswordCredentials, Com
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
-        setRedirector(webContext -> RedirectAction.redirect(this.loginUrl));
-        setExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
+        setRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
+        setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
@@ -91,7 +91,7 @@ public class FormClient extends IndirectClient2<UsernamePasswordCredentials, Com
         UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials
-            credentials = getExtractor().extract(context);
+            credentials = getCredentialsExtractor().extract(context);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (credentials == null) {
                 String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
@@ -154,7 +154,7 @@ public class FormClient extends IndirectClient2<UsernamePasswordCredentials, Com
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "redirector", getRedirector(), "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "redirectActionBuilder", getRedirectActionBuilder(), "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }
 }

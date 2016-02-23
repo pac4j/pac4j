@@ -66,7 +66,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
         if (CommonHelper.isNotBlank(this.casServerPrefixUrl)) {
             setAuthenticator(new CasRestAuthenticator(this.casServerPrefixUrl));
         }
-        setExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter, getName()));
+        setCredentialsExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter, getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(CasRestAuthenticator.class);
     }
@@ -108,7 +108,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
-                "passwordParameter", this.passwordParameter, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "passwordParameter", this.passwordParameter, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }
 }

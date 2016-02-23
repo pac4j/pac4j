@@ -81,7 +81,7 @@ public class HeaderClient extends DirectClient2<TokenCredentials, CommonProfile>
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
-        setExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
+        setCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
         super.internalInit(context);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }
@@ -105,7 +105,7 @@ public class HeaderClient extends DirectClient2<TokenCredentials, CommonProfile>
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "headerName", this.headerName,
-                "prefixHeader", this.prefixHeader, "extractor", getExtractor(), "authenticator", getAuthenticator(),
+                "prefixHeader", this.prefixHeader, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
                 "profileCreator", getProfileCreator());
     }
 }
