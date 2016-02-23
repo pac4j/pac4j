@@ -60,7 +60,7 @@ public abstract class IndirectClient2<C extends Credentials, U extends CommonPro
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
         return redirectActionBuilder.redirect(context);
     }
 

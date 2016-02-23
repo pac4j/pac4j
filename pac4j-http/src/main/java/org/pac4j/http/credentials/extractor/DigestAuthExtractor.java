@@ -6,6 +6,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -49,10 +50,10 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * the client uses an username and a password to authenticate. response is just a MD5 encoded value
      * based on user provided password and RFC 2617 digest authentication encoding rules
      * @param context the current web context
-     * @return
+     * @return the Digest credentials
      */
     @Override
-    public DigestCredentials extract(WebContext context) {
+    public DigestCredentials extract(WebContext context) throws RequiresHttpAction {
         final TokenCredentials credentials = this.extractor.extract(context);
 
         if (credentials == null) {

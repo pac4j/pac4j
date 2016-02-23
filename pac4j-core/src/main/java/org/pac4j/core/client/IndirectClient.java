@@ -114,8 +114,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context the web context
      * @return the redirection action
+     * @throws RequiresHttpAction requires a specific HTTP action if necessary
      */
-    protected abstract RedirectAction retrieveRedirectAction(final WebContext context);
+    protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction;
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown:</p>

@@ -17,6 +17,7 @@ package org.pac4j.http.credentials.authenticator.test;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
@@ -35,7 +36,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements UsernamePassword
     protected static final Logger logger = LoggerFactory.getLogger(SimpleTestUsernamePasswordAuthenticator.class);
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials) {
+    public void validate(final UsernamePasswordCredentials credentials) throws RequiresHttpAction {
         if (credentials == null) {
             throwsException("No credential");
         }

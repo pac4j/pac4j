@@ -62,6 +62,7 @@ public final class JsonHelper {
      *
      * @param node a JSON node
      * @param clazz the class to cast to
+     * @param <T> the class to cast to
      * @return the parsed object
      */
     public static <T extends Object> T getAsType(final JsonNode node, final Class<T> clazz) {

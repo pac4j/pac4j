@@ -18,6 +18,7 @@ package org.pac4j.core.credentials.extractor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 
 /**
  * To extract header value.
@@ -40,7 +41,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
+    public TokenCredentials extract(WebContext context) throws RequiresHttpAction {
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
             return null;

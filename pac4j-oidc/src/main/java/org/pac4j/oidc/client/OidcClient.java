@@ -455,7 +455,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     /**
-     * @param credentials
+     * @param credentials the OpenID Connect credentials
      * @return the TokenRequest object that will be used to query the OIDC Token endpoint.
      */
     protected TokenRequest buildTokenRequest(OidcCredentials credentials) {
@@ -464,7 +464,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     /**
-     * @param accessToken
+     * @param accessToken the access token
      * @return The UserInfoRequest object that will be used to query the OIDC UserInfo endpoint
      */
     protected UserInfoRequest buildUserInfoRequest(BearerAccessToken accessToken) {

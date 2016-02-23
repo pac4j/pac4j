@@ -16,6 +16,7 @@
 package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 
 /**
  * This interface represents the contract to validate a username / password credentials.
@@ -26,5 +27,5 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 public interface UsernamePasswordAuthenticator extends Authenticator<UsernamePasswordCredentials> {
 
     @Override
-    void validate(UsernamePasswordCredentials credentials);
+    void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction;
 }

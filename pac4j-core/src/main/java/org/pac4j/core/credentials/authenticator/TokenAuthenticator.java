@@ -16,6 +16,7 @@
 package org.pac4j.core.credentials.authenticator;
 
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 
 /**
  * This interface represents the contract to validate a token credentials.
@@ -26,5 +27,5 @@ import org.pac4j.core.credentials.TokenCredentials;
 public interface TokenAuthenticator extends Authenticator<TokenCredentials> {
 
     @Override
-    void validate(TokenCredentials credentials);
+    void validate(TokenCredentials credentials) throws RequiresHttpAction;
 }

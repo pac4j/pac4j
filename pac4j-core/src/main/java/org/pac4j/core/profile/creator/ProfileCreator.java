@@ -29,7 +29,7 @@ public interface ProfileCreator<C extends Credentials, U extends UserProfile> {
 
     /**
      * Create a profile from a credentials.
-     * 
+     *
      * @param credentials the given credentials.
      * @return the created profile
      */
