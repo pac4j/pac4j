@@ -97,6 +97,8 @@ public class RequiresHttpAction extends Exception {
      * @param message message
      * @param context context
      * @param realmName realm name
+     * @param qop qop
+     * @param nonce nonce
      * @return a digest auth popup credentials
      */
     public static RequiresHttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, final String nonce) {

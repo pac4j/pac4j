@@ -18,6 +18,7 @@ package org.pac4j.http.credentials.extractor;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -34,7 +35,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
         this.clientName = clientName;
     }
 
-    public TokenCredentials extract(WebContext context) {
+    public TokenCredentials extract(WebContext context) throws RequiresHttpAction {
         final String ip = context.getRemoteAddr();
         if (ip == null) {
             return null;

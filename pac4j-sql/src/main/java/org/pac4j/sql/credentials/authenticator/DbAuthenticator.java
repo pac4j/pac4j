@@ -17,10 +17,7 @@ package org.pac4j.sql.credentials.authenticator;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.AccountNotFoundException;
-import org.pac4j.core.exception.BadCredentialsException;
-import org.pac4j.core.exception.MultipleAccountsFoundException;
-import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -86,7 +83,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) {
+    public void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction {
 
         Handle h = null;
         try {

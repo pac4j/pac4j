@@ -26,8 +26,20 @@ public class DigestCredentials extends TokenCredentials {
 
     /**
      * the token represents the client response attribute value in digest authorization header
+     *
+     * @param token the token
+     * @param httpMethod the HTTP method
+     * @param clientName the client name
+     * @param username the user name
+     * @param realm the realm
+     * @param nonce nonce
+     * @param uri uri
+     * @param cnonce cnonce
+     * @param nc nc
+     * @param qop qop
      */
-    public DigestCredentials(final String token, final String httpMethod, final String clientName, String username, String realm, String nonce, String uri, String cnonce, String nc, String qop) {
+    public DigestCredentials(final String token, final String httpMethod, final String clientName, final String username, final String realm,
+                             final String nonce, final String uri, final String cnonce, final String nc, final String qop) {
         super(token, clientName);
 
         this.username = username;
