@@ -60,7 +60,28 @@ public class OAuthCredentials extends Credentials {
     public String getVerifier() {
         return this.verifier;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final OAuthCredentials that = (OAuthCredentials) o;
+
+        if (requestToken != null ? !requestToken.equals(that.requestToken) : that.requestToken != null) return false;
+        if (token != null ? !token.equals(that.token) : that.token != null) return false;
+        return !(verifier != null ? !verifier.equals(that.verifier) : that.verifier != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = requestToken != null ? requestToken.hashCode() : 0;
+        result = 31 * result + (token != null ? token.hashCode() : 0);
+        result = 31 * result + (verifier != null ? verifier.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "requestToken", this.requestToken, "token", this.token,

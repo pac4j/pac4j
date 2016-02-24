@@ -124,16 +124,13 @@ public final class MockWebContext extends BaseResponseContext {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Object getRequestAttribute(final String name) { return this.attributes.get(name); }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setRequestAttribute(final String name, final Object value) { this.attributes.put(name, value); }
 
+    @Override
     public String getRequestParameter(final String name) {
         return this.parameters.get(name);
     }
@@ -143,31 +140,35 @@ public final class MockWebContext extends BaseResponseContext {
         return this;
     }
 
+    @Override
     public String getRequestHeader(final String name) {
         return this.headers.get(name);
     }
 
+    @Override
     public void setSessionAttribute(final String name, final Object value) {
         this.session.put(name, value);
     }
 
+    @Override
     public Object getSessionAttribute(final String name) {
         return this.session.get(name);
     }
-
-    public void invalidateSession() { this.session.clear(); }
 
     @Override
     public Object getSessionIdentifier() {
         return hashCode();
     }
 
+    @Override
     public String getRequestMethod() {
         return this.method;
     }
 
+    @Override
     public String getRemoteAddr() { return this.ip; }
 
+    @Override
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<String, String[]>();
         for (final String key : this.parameters.keySet()) {
@@ -178,11 +179,12 @@ public final class MockWebContext extends BaseResponseContext {
         return map;
     }
 
-
+    @Override
     public String getServerName() {
         return serverName;
     }
 
+    @Override
     public int getServerPort() {
         return serverPort;
     }
@@ -195,6 +197,7 @@ public final class MockWebContext extends BaseResponseContext {
         this.serverPort = serverPort;
     }
 
+    @Override
     public String getScheme() {
         return scheme;
     }
@@ -204,6 +207,7 @@ public final class MockWebContext extends BaseResponseContext {
         return this;
     }
 
+    @Override
     public boolean isSecure() { return this.secure; }
 
     public MockWebContext setSecure(final boolean secure) {
@@ -211,6 +215,7 @@ public final class MockWebContext extends BaseResponseContext {
         return this;
     }
 
+    @Override
     public String getFullRequestURL() {
         if (fullRequestURL != null) {
             return fullRequestURL;
@@ -231,9 +236,7 @@ public final class MockWebContext extends BaseResponseContext {
 
     public Collection<Cookie> getResponseCookies() { return this.responseCookies; }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public String getPath() {
         return path;
     }

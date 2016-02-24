@@ -22,24 +22,28 @@ import org.ldaptive.auth.AuthenticationRequest;
 import org.ldaptive.auth.AuthenticationResponse;
 import org.ldaptive.auth.AuthenticationResultCode;
 import org.ldaptive.auth.Authenticator;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Authenticator for LDAP based on the Ldaptive library and its core {@link org.ldaptive.auth.Authenticator} class.
- * It creates the user profile and stores it in the credentials for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * It creates the user profile and stores it in the credentials for the {@link AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapAuthenticator implements UsernamePasswordAuthenticator {
+public class LdapAuthenticator extends InitializableWebObject implements UsernamePasswordAuthenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -47,8 +51,7 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
 
     private String attributes = "";
 
-    public LdapAuthenticator() {
-    }
+    public LdapAuthenticator() {}
 
     public LdapAuthenticator(final Authenticator ldapAuthenticator) {
         this.ldapAuthenticator = ldapAuthenticator;
@@ -60,9 +63,13 @@ public class LdapAuthenticator implements UsernamePasswordAuthenticator {
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
         CommonHelper.assertNotNull("attributes", attributes);
+    }
+
+    @Override
+    public void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction {
 
         final String username = credentials.getUsername();
         final String[] ldapAttributes = attributes.split(",");

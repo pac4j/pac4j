@@ -16,9 +16,10 @@
 package org.pac4j.sql.test.tools;
 
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.password.PasswordEncoder;
-import org.pac4j.http.credentials.password.BasicSaltedSha512PasswordEncoder;
+import org.pac4j.core.credentials.password.PasswordEncoder;
+import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
@@ -35,7 +36,7 @@ public final class DbServer implements TestsConstants {
     private static DataSource ds;
 
     static {
-        ds = JdbcConnectionPool.create("jdbc:h2:mem:test", "username", "password");
+        ds = JdbcConnectionPool.create("jdbc:h2:mem:test", Pac4jConstants.USERNAME, Pac4jConstants.PASSWORD);
         final DBI dbi = new DBI(ds);
         final Handle h = dbi.open();
         final PasswordEncoder encoder = new BasicSaltedSha512PasswordEncoder(SALT);

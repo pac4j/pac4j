@@ -17,15 +17,19 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
-import org.pac4j.http.profile.HttpProfile;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -50,8 +54,14 @@ public final class DirectFormClientTests implements TestsConstants {
     }
 
     @Test
+    public void testBadAuthenticatorType() {
+        final DirectFormClient formClient = new DirectFormClient(new SimpleTestTokenAuthenticator());
+        TestsHelper.initShouldFail(formClient, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator");
+    }
+
+    @Test
     public void testHasDefaultProfileCreator() {
-        final DirectFormClient formClient = new DirectFormClient(new SimpleTestUsernamePasswordAuthenticator());
+        final DirectFormClient formClient = new DirectFormClient(new LocalCachingAuthenticator<>(new SimpleTestUsernamePasswordAuthenticator(), 10, 10, TimeUnit.DAYS));
         formClient.init(null);
     }
 
@@ -96,17 +106,17 @@ public final class DirectFormClientTests implements TestsConstants {
         final DirectFormClient formClient = getFormClient();
         formClient.setProfileCreator(credentials -> {
             String username = credentials.getUsername();
-            final HttpProfile profile = new HttpProfile();
+            final CommonProfile profile = new CommonProfile();
             profile.setId(username);
-            profile.addAttribute(CommonProfile.USERNAME, username);
+            profile.addAttribute(Pac4jConstants.USERNAME, username);
             return profile;
         });
         final MockWebContext context = MockWebContext.create();
         final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(HttpProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
-        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), HttpProfile.class));
+        assertEquals(CommonProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());
     }

@@ -37,11 +37,6 @@
 			<artifactId>commons-codec</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<optional>true</optional>
-		</dependency>
 		<!-- for testing -->
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -67,6 +62,11 @@
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>
 			<artifactId>kryo-shaded</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- for testing -->

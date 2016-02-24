@@ -15,9 +15,11 @@
  */
 package org.pac4j.http.credentials.authenticator;
 
+import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.profile.IpProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,7 @@ public class IpRegexpAuthenticator implements TokenAuthenticator {
     }
 
     @Override
-    public void validate(final TokenCredentials credentials) {
+    public void validate(final TokenCredentials credentials) throws RequiresHttpAction {
         CommonHelper.assertNotNull("pattern", pattern);
 
         final String ip = credentials.getToken();

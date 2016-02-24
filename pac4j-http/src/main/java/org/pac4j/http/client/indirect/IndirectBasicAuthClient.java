@@ -15,54 +15,55 @@
  */
 package org.pac4j.http.client.indirect;
 
+import org.pac4j.core.client.IndirectClient2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.extractor.BasicAuthExtractor;
-import org.pac4j.http.profile.creator.ProfileCreator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth. It was previously named: <code>BasicAuthClient</code>.</p>
  * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
  * specific exception : {@link RequiresHttpAction} is returned which must be handled by the application to force
  * authentication.</p>
- * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
- * 
- * @see org.pac4j.http.profile.HttpProfile
+ *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePasswordCredentials> {
+public class IndirectBasicAuthClient extends IndirectClient2<UsernamePasswordCredentials, CommonProfile> {
 
     private String realmName = "authentication required";
 
-    public IndirectBasicAuthClient() { }
+    public IndirectBasicAuthClient() {}
 
-    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+    public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
     }
 
-    public IndirectBasicAuthClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-                                   final ProfileCreator profileCreator) {
+    public IndirectBasicAuthClient(final String realmName, final Authenticator usernamePasswordAuthenticator) {
+        this.realmName = realmName;
+        setAuthenticator(usernamePasswordAuthenticator);
+    }
+
+    public IndirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator, final ProfileCreator profileCreator) {
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profileCreator);
     }
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotBlank("realmName", this.realmName);
-        extractor = new BasicAuthExtractor(getName());
+        setRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
+        setCredentialsExtractor(new BasicAuthExtractor(getName()));
         super.internalInit(context);
-    }
-
-    @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        return RedirectAction.redirect(computeFinalCallbackUrl(context));
+        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
         final UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials
-            credentials = extractor.extract(context);
+            credentials = getCredentialsExtractor().extract(context);
             logger.debug("credentials : {}", credentials);
             
             if (credentials == null) {
@@ -80,17 +81,10 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
             // validate credentials
             getAuthenticator().validate(credentials);
         } catch (final CredentialsException e) {
-            throw RequiresHttpAction.unauthorized("Requires authentication", context,
-                    this.realmName);
+            throw RequiresHttpAction.unauthorized("Requires authentication", context, this.realmName);
         }
 
         return credentials;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "realmName",
-                this.realmName, "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 
     public String getRealmName() {
@@ -99,5 +93,12 @@ public class IndirectBasicAuthClient extends IndirectHttpClient<UsernamePassword
 
     public void setRealmName(String realmName) {
         this.realmName = realmName;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(),
+                "realmName", this.realmName, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
+                "profileCreator", getProfileCreator());
     }
 }

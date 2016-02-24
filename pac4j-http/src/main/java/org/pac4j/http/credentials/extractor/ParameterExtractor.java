@@ -16,8 +16,11 @@
 package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * To extract a parameter value.
@@ -25,7 +28,7 @@ import org.pac4j.http.credentials.TokenCredentials;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ParameterExtractor implements Extractor<TokenCredentials> {
+public class ParameterExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String parameterName;
 
@@ -48,7 +51,7 @@ public class ParameterExtractor implements Extractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) {
+    public TokenCredentials extract(WebContext context) throws RequiresHttpAction {
         final String method = context.getRequestMethod();
         if ("GET".equals(method) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");
@@ -62,5 +65,11 @@ public class ParameterExtractor implements Extractor<TokenCredentials> {
         }
 
         return new TokenCredentials(value, clientName);
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "parameterName", parameterName, "clientName", clientName,
+                "supportGetRequest", supportGetRequest, "supportPostRequest", supportPostRequest);
     }
 }

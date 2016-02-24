@@ -15,6 +15,8 @@
  */
 package org.pac4j.core.profile;
 
+import org.pac4j.core.context.Pac4jConstants;
+
 import java.util.Locale;
 
 /**
@@ -26,9 +28,7 @@ import java.util.Locale;
 public class CommonProfile extends UserProfile {
     
     private static final long serialVersionUID = -1856159870249261877L;
-    
-    public transient static final String USERNAME = "username";
-    
+
     /**
      * Return the email of the user.
      * 
@@ -71,7 +71,7 @@ public class CommonProfile extends UserProfile {
      * @return the username of the user
      */
     public String getUsername() {
-        return (String) getAttribute(USERNAME);
+        return (String) getAttribute(Pac4jConstants.USERNAME);
     }
     
     /**
