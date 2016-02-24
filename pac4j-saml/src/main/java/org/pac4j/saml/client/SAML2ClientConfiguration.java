@@ -57,6 +57,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
+    private boolean wantsAssertionsSigned = true;
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
                                     final String privateKeyPassword, final String identityProviderMetadataPath) {
@@ -268,6 +269,14 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
     public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
         this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
+    }
+
+    public boolean getWantsAssertionsSigned() {
+        return this.wantsAssertionsSigned;
+    }
+
+    public void setWantsAssertionsSigned(boolean wantsAssertionsSigned) {
+        this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
     @Override
