@@ -22,6 +22,7 @@ import java.util.List;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -49,7 +50,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private String name;
 
-    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<AuthorizationGenerator<U>>();
+    private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
 
     public void setName(final String name) {
         this.name = name;

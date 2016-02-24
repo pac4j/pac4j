@@ -23,13 +23,17 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.jwt.JwtConstants;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
@@ -43,12 +47,12 @@ import java.util.Map;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
- * for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * for the {@link AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator implements TokenAuthenticator {
+public class JwtAuthenticator extends InitializableWebObject implements TokenAuthenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -67,11 +71,20 @@ public class JwtAuthenticator implements TokenAuthenticator {
     }
 
     /**
+     * Initializes the authenticator that will validate JWT tokens.
+     *
+     * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
+     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null} for encrypted JWT
      * @since 1.8.2
      */
     public JwtAuthenticator(final String signingSecret, final String encryptionSecret) {
         this.signingSecret = signingSecret;
         this.encryptionSecret = encryptionSecret;
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("signingSecret", signingSecret);
     }
 
     /**
@@ -82,17 +95,16 @@ public class JwtAuthenticator implements TokenAuthenticator {
      */
     public UserProfile validateToken(final String token) {
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
-        validate(credentials);
+        try {
+            validate(credentials);
+        } catch (final RequiresHttpAction e) {
+            throw new TechnicalException(e);
+        }
         return credentials.getUserProfile();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void validate(final TokenCredentials credentials) {
-        CommonHelper.assertNotBlank("signingSecret", signingSecret);
-
+    public void validate(final TokenCredentials credentials) throws RequiresHttpAction {
         final String token = credentials.getToken();
         boolean verified = false;
         SignedJWT signedJWT = null;

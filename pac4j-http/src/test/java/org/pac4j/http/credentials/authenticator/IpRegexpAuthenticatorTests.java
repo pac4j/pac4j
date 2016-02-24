@@ -17,9 +17,10 @@ package org.pac4j.http.credentials.authenticator;
 
 import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.profile.IpProfile;
 
 import static org.junit.Assert.*;
@@ -38,13 +39,13 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     private final static IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator(GOOD_IP);
 
     @Test(expected = TechnicalException.class)
-    public void testNoPattern() {
+    public void testNoPattern() throws RequiresHttpAction {
         IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
         authenticator.validate(null);
     }
 
     @Test
-    public void testValidateGoodIP() {
+    public void testValidateGoodIP() throws RequiresHttpAction {
         final TokenCredentials credentials = new TokenCredentials(GOOD_IP, CLIENT_NAME);
         authenticator.validate(credentials);
         final IpProfile profile = (IpProfile) credentials.getUserProfile();
@@ -52,7 +53,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void testValidateBadIP() {
+    public void testValidateBadIP() throws RequiresHttpAction {
         try {
             final TokenCredentials credentials = new TokenCredentials(BAD_IP, CLIENT_NAME);
             authenticator.validate(credentials);

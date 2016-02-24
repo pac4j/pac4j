@@ -49,6 +49,13 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
 
     @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
+        CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
+    }
+
+    @Override
     public final void redirect(final WebContext context)
             throws RequiresHttpAction {
         final RedirectAction action = getRedirectAction(context);
@@ -64,8 +71,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     /**
      * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
      * {@link #redirect(WebContext)} should be generally called instead.</p>
-     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials), a forbidden response (403 HTTP status code) is returned.</p>
-     * <p>If the request is an AJAX one, an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
+     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is an AJAX one,
+     * an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
      *
      * @param context context
      * @return the redirection action
@@ -78,12 +85,12 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             cleanRequestedUrl(context);
             throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
         }
-        // authentication has already been tried -> forbidden
+        // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw RequiresHttpAction.forbidden("authentication already tried -> forbidden", context);
+            throw RequiresHttpAction.unauthorized("authentication already tried -> forbidden", context, null);
         }
 
         init(context);
@@ -107,8 +114,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context the web context
      * @return the redirection action
+     * @throws RequiresHttpAction requires a specific HTTP action if necessary
      */
-    protected abstract RedirectAction retrieveRedirectAction(final WebContext context);
+    protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction;
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown:</p>
@@ -154,20 +162,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         throw new UnsupportedOperationException("To be implemented in subclasses if required");
     }
 
-    /**
-     * Returns if the client name should be implicitly added to the callback url if it is not already specified
-     *
-     * @return if the client name should be implicitly added to the callback url if it is not already specified
-     */
     public boolean isIncludeClientNameInCallbackUrl() {
         return this.includeClientNameInCallbackUrl;
     }
 
-    /**
-     * Sets whether the client name should be implicitly added to the callback url for this client.
-     *
-     * @param includeClientNameInCallbackUrl enable inclusion of the client name in the callback url.
-     */
     public void setIncludeClientNameInCallbackUrl(final boolean includeClientNameInCallbackUrl) {
         this.includeClientNameInCallbackUrl = includeClientNameInCallbackUrl;
     }

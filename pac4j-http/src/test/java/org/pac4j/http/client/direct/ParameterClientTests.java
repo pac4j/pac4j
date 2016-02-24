@@ -21,8 +21,9 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.TokenCredentials;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import static org.junit.Assert.*;
 
@@ -51,6 +52,12 @@ public final class ParameterClientTests implements TestsConstants {
     }
 
     @Test
+    public void testBadAuthenticatorType() {
+        final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestUsernamePasswordAuthenticator());
+        TestsHelper.initShouldFail(client, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator");
+    }
+
+    @Test
     public void testHasDefaultProfileCreator() {
         final ParameterClient client = new ParameterClient(null, new SimpleTestTokenAuthenticator());
         client.setParameterName(PARAMETER_NAME);
@@ -66,7 +73,6 @@ public final class ParameterClientTests implements TestsConstants {
     @Test
     public void testAuthentication() throws RequiresHttpAction {
         final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator());
-        client.setParameterName(PARAMETER_NAME);
         client.setSupportGetRequest(SUPPORT_GET);
         client.setSupportPostRequest(SUPPORT_POST);
         final MockWebContext context = MockWebContext.create();

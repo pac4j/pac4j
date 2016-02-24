@@ -2,10 +2,13 @@ package org.pac4j.http.credentials.extractor;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.DigestCredentials;
-import org.pac4j.http.credentials.TokenCredentials;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +18,9 @@ import java.util.StringTokenizer;
  * To extract digest auth header.
  *
  * @author Mircea Carasel
+ * @since 1.9.0
  */
-public class DigestAuthExtractor implements Extractor<DigestCredentials> {
+public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentials> {
 
     private final HeaderExtractor extractor;
 
@@ -46,10 +50,10 @@ public class DigestAuthExtractor implements Extractor<DigestCredentials> {
      * the client uses an username and a password to authenticate. response is just a MD5 encoded value
      * based on user provided password and RFC 2617 digest authentication encoding rules
      * @param context the current web context
-     * @return
+     * @return the Digest credentials
      */
     @Override
-    public DigestCredentials extract(WebContext context) {
+    public DigestCredentials extract(WebContext context) throws RequiresHttpAction {
         final TokenCredentials credentials = this.extractor.extract(context);
 
         if (credentials == null) {
@@ -88,5 +92,10 @@ public class DigestAuthExtractor implements Extractor<DigestCredentials> {
             }
         }
         return map;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "extractor", extractor, "clientName", clientName);
     }
 }

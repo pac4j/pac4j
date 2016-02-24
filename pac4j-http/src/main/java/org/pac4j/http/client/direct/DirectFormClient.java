@@ -15,38 +15,43 @@
  */
 package org.pac4j.http.client.direct;
 
+import org.pac4j.core.client.DirectClient2;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.extractor.FormExtractor;
-import org.pac4j.http.profile.creator.ProfileCreator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.extractor.FormExtractor;
 
 /**
- * <p>This class is the client to authenticate users, based on form HTTP parameters.</p>
- * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
+ * This class is the client to authenticate users, based on form HTTP parameters.
  *
  * @author Jerome Leleu
  * @since 1.8.6
  */
-public class DirectFormClient extends DirectHttpClient<UsernamePasswordCredentials> {
+public class DirectFormClient extends DirectClient2<UsernamePasswordCredentials, CommonProfile> {
 
-    public final static String DEFAULT_USERNAME_PARAMETER = "username";
+    private String usernameParameter = Pac4jConstants.USERNAME;
 
-    private String usernameParameter = DEFAULT_USERNAME_PARAMETER;
+    private String passwordParameter = Pac4jConstants.PASSWORD;
 
-    public final static String DEFAULT_PASSWORD_PARAMETER = "password";
+    public DirectFormClient() {}
 
-    private String passwordParameter = DEFAULT_PASSWORD_PARAMETER;
-
-    public DirectFormClient() {
-    }
-
-    public DirectFormClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+    public DirectFormClient(final Authenticator usernamePasswordAuthenticator) {
         setAuthenticator(usernamePasswordAuthenticator);
     }
 
-    public DirectFormClient(final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+    public DirectFormClient(final String usernameParameter, final String passwordParameter,
+                            final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+        this.usernameParameter = usernameParameter;
+        this.passwordParameter = passwordParameter;
+        setAuthenticator(usernamePasswordAuthenticator);
+    }
+
+    public DirectFormClient(final Authenticator usernamePasswordAuthenticator,
                             final ProfileCreator profileCreator) {
         setAuthenticator(usernamePasswordAuthenticator);
         setProfileCreator(profileCreator);
@@ -54,8 +59,11 @@ public class DirectFormClient extends DirectHttpClient<UsernamePasswordCredentia
 
     @Override
     protected void internalInit(final WebContext context) {
-        extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
+        CommonHelper.assertNotBlank("usernameParameter", usernameParameter);
+        CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
+        setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
         super.internalInit(context);
+        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     public String getUsernameParameter() {
@@ -77,7 +85,7 @@ public class DirectFormClient extends DirectHttpClient<UsernamePasswordCredentia
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "usernameParameter", this.usernameParameter,
-                "passwordParameter", this.passwordParameter, "authenticator", getAuthenticator(), "profileCreator",
-                getProfileCreator());
+                "passwordParameter", this.passwordParameter, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
+                "profileCreator", getProfileCreator());
     }
 }

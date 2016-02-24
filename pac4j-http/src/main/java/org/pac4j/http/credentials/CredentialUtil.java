@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
  * (MD5 for http digest)
  *
  * @author Mircea Carasel
+ * @since 1.9.0
  */
 public class CredentialUtil {
 

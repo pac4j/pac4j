@@ -1,13 +1,15 @@
 package org.pac4j.http.credentials;
 
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.CommonHelper;
 
 /**
  * <p>This credentials is retrieved from a HTTP request.</p>
- * <p>A user profile can be attached with the credentials if it has been created by a {@link org.pac4j.http.credentials.authenticator.Authenticator}.
- * In that case, the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator} must be used to retrieve the attached user profile.</p>
+ * <p>A user profile can be attached with the credentials if it has been created by a {@link org.pac4j.core.credentials.authenticator.Authenticator}.
+ * In that case, the {@link org.pac4j.core.profile.creator.AuthenticatorProfileCreator} must be used to retrieve the attached user profile.</p>
  *
  * @author Mircea Carasel
+ * @since 1.9.0
  */
 public class DigestCredentials extends TokenCredentials {
 
@@ -24,8 +26,20 @@ public class DigestCredentials extends TokenCredentials {
 
     /**
      * the token represents the client response attribute value in digest authorization header
+     *
+     * @param token the token
+     * @param httpMethod the HTTP method
+     * @param clientName the client name
+     * @param username the user name
+     * @param realm the realm
+     * @param nonce nonce
+     * @param uri uri
+     * @param cnonce cnonce
+     * @param nc nc
+     * @param qop qop
      */
-    public DigestCredentials(final String token, final String httpMethod, final String clientName, String username, String realm, String nonce, String uri, String cnonce, String nc, String qop) {
+    public DigestCredentials(final String token, final String httpMethod, final String clientName, final String username, final String realm,
+                             final String nonce, final String uri, final String cnonce, final String nc, final String qop) {
         super(token, clientName);
 
         this.username = username;
@@ -36,10 +50,6 @@ public class DigestCredentials extends TokenCredentials {
         this.nc = nc;
         this.qop = qop;
         this.httpMethod = httpMethod;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     /**
@@ -55,13 +65,6 @@ public class DigestCredentials extends TokenCredentials {
         return generateDigest(passwordAlreadyEncoded, username,
                 realm, password, httpMethod, uri, qop, nonce, nc, cnonce);
     }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
-                "clientName", getClientName());
-    }
-
 
     /**
      * generate digest token based on RFC 2069 and RFC 2617 guidelines
@@ -94,5 +97,15 @@ public class DigestCredentials extends TokenCredentials {
         }
 
         return digest;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
+                "clientName", getClientName());
     }
 }

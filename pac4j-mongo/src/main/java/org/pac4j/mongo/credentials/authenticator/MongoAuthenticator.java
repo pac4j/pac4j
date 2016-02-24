@@ -20,13 +20,17 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.password.PasswordEncoder;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +43,7 @@ import static com.mongodb.client.model.Filters.*;
 
 /**
  * Authenticator for users stored in a MongoDB database, based on the {@link MongoClient} class from the Java Mongo driver.
- * It creates the user profile and stores it in the credentials for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * It creates the user profile and stores it in the credentials for the {@link AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -54,13 +58,12 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
      * This must a list of attribute names separated by commas.
      */
     protected String attributes = "";
-    protected String usernameAttribute = "username";
-    protected String passwordAttribute = "password";
+    protected String usernameAttribute = Pac4jConstants.USERNAME;
+    protected String passwordAttribute = Pac4jConstants.PASSWORD;
     protected String usersDatabase = "users";
     protected String usersCollection = "users";
 
-    public MongoAuthenticator() {
-    }
+    public MongoAuthenticator() {}
 
     public MongoAuthenticator(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
@@ -74,18 +77,23 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
     public MongoAuthenticator(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
         this.attributes = attributes;
-        this.passwordEncoder = passwordEncoder;
+        setPasswordEncoder(passwordEncoder);
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);
         CommonHelper.assertNotNull("passwordAttribute", this.passwordAttribute);
         CommonHelper.assertNotNull("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotNull("usersCollection", this.usersCollection);
         CommonHelper.assertNotNull("attributes", this.attributes);
-        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
+
+        super.internalInit(context);
+    }
+
+    @Override
+    public void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction {
 
         final String username = credentials.getUsername();
 
@@ -99,6 +107,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
                 i++;
             }
         }
+        logger.debug("Fonund {} users for username: {}", users.size(), username);
 
         if (users.isEmpty()) {
             throw new AccountNotFoundException("No account found for: " + username);
@@ -106,7 +115,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
             throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
         } else {
             final Map<String, Object> user = users.get(0);
-            final String expectedPassword = passwordEncoder.encode(credentials.getPassword());
+            final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
             final String returnedPassword = (String) user.get(passwordAttribute);
             if (CommonHelper.areNotEquals(returnedPassword, expectedPassword)) {
                 throw new BadCredentialsException("Bad credentials for: " + username);

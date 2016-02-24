@@ -86,8 +86,8 @@ public final class BaseClientTests implements TestsConstants {
             client.redirect(context);
             fail("should fail");
         } catch (RequiresHttpAction e) {
-            assertEquals(403, e.getCode());
-            assertEquals(403, context.getResponseStatus());
+            assertEquals(401, e.getCode());
+            assertEquals(401, context.getResponseStatus());
         }
     }
 

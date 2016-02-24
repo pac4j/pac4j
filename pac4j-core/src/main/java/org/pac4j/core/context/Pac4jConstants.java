@@ -67,4 +67,8 @@ public interface Pac4jConstants {
 
     /* Matcher name configuration parameter */
     String MATCHER_NAME = "matcherName";
+
+    String USERNAME = "username";
+
+    String PASSWORD = "password";
 }

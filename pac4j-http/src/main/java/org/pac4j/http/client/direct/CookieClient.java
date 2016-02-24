@@ -15,12 +15,15 @@
  */
 package org.pac4j.http.client.direct;
 
+import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.extractor.CookieExtractor;
-import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
  * Allows direct authentication based on a cookie.
@@ -28,18 +31,24 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CookieClient extends DirectHttpClient<TokenCredentials>  {
+public class CookieClient extends DirectClient2<TokenCredentials, CommonProfile> {
 
     private String cookieName;
 
-    public CookieClient() {
-    }
+    public CookieClient() {}
 
-    public CookieClient(final TokenAuthenticator cookieAuthenticator) {
+    @Deprecated
+    public CookieClient(final Authenticator cookieAuthenticator) {
         setAuthenticator(cookieAuthenticator);
     }
 
-    public CookieClient(final TokenAuthenticator cookieAuthenticator,
+    public CookieClient(final String cookieName, final Authenticator cookieAuthenticator) {
+        this.cookieName = cookieName;
+        setAuthenticator(cookieAuthenticator);
+    }
+
+    @Deprecated
+    public CookieClient(final Authenticator cookieAuthenticator,
                         final ProfileCreator profileCreator) {
         setAuthenticator(cookieAuthenticator);
         setProfileCreator(profileCreator);
@@ -48,8 +57,9 @@ public class CookieClient extends DirectHttpClient<TokenCredentials>  {
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
-        extractor = new CookieExtractor(this.cookieName, getName());
+        setCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));
         super.internalInit(context);
+        assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 
     public String getCookieName() {
