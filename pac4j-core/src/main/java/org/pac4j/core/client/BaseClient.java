@@ -46,7 +46,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         if (CommonHelper.isBlank(this.name)) {
             return this.getClass().getSimpleName();
         }
-        return this.name;
+        return this.name.trim();
     }
 
     @Override
