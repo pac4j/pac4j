@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -8,7 +9,6 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
-import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.criterion.EntityRoleCriterion;
 import org.opensaml.saml.criterion.ProtocolCriterion;
@@ -57,8 +57,6 @@ import org.pac4j.saml.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.namespace.QName;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -81,12 +79,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     /** The default maximum authentication lifetime, in seconds. Used for {@link #maximumAuthenticationLifetime} if a meaningless (&lt;=0) value is passed to the constructor. */
     private static final int DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME = 3600;
- 
+
     /* maximum skew in seconds between SP and IDP clocks */
     private int acceptedSkew = 120;
 
     /* maximum lifetime after a successful authentication on an IDP */
     private int maximumAuthenticationLifetime;
+
+    private final boolean wantsAssertionsSigned;
 
     private final SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
@@ -96,18 +96,21 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                          final Decrypter decrypter,
-                                         final int maximumAuthenticationLifetime) {
-        this(engine, decrypter, maximumAuthenticationLifetime, new BasicURLComparator());
+                                         final int maximumAuthenticationLifetime,
+                                         final boolean wantsAssertionsSigned) {
+        this(engine, decrypter, maximumAuthenticationLifetime, wantsAssertionsSigned, new BasicURLComparator());
     }
 
     public SAML2DefaultResponseValidator(final SAML2SignatureTrustEngineProvider engine,
                                          final Decrypter decrypter,
                                          final int maximumAuthenticationLifetime,
+                                         final boolean wantsAssertionsSigned,
                                          final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = engine;
         this.decrypter = decrypter;
         this.maximumAuthenticationLifetime = (maximumAuthenticationLifetime > 0 ? maximumAuthenticationLifetime : DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME);
         this.uriComparator = uriComparator;
+        this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
     /**
@@ -635,12 +638,18 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             final String entityId = peerContext.getEntityId();
             validateSignature(signature, entityId, engine);
         } else {
-            SPSSODescriptor spDescriptor = (context == null) ? null : context.getSPSSODescriptor();
-            Boolean wantAssertionsSigned = (spDescriptor == null) ? Boolean.FALSE : spDescriptor.getWantAssertionsSigned();
-            if (wantAssertionsSigned && !peerContext.isAuthenticated()) {
+            if (wantsAssertionsSigned(context) && !peerContext.isAuthenticated()) {
                 throw new SAMLException("Assertion or response must be signed");
             }
         }
+    }
+
+    @VisibleForTesting
+    Boolean wantsAssertionsSigned(SAML2MessageContext context) {
+        if (context == null) return wantsAssertionsSigned;
+        SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
+        if (spDescriptor == null) return wantsAssertionsSigned;
+        return spDescriptor.getWantAssertionsSigned();
     }
 
     /**
