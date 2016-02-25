@@ -31,9 +31,15 @@ public class DefaultClientFinder implements ClientFinder {
                 final Client client = clients.findClient(context);
                 final String nameFound = client.getName();
                 // if allowed -> return it
-                if (names.contains(nameFound)) {
-                    result.add(client);
-                } else {
+                boolean found = false;
+                for (final String name : names) {
+                    if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, nameFound)) {
+                        result.add(client);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     throw new TechnicalException("Client not allowed: " + nameFound);
                 }
             } else {

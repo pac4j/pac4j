@@ -116,12 +116,9 @@ public class Clients extends InitializableObject {
      */
     public Client findClient(final String name) {
         init();
-        if (name != null) {
-            final String trimName = name.trim();
-            for (final Client client : getClients()) {
-                if (trimName.equalsIgnoreCase(client.getName())) {
-                    return client;
-                }
+        for (final Client client : getClients()) {
+            if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
+                return client;
             }
         }
         final String message = "No client found for name: " + name;

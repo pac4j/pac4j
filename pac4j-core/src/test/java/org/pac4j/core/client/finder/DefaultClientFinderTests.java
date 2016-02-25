@@ -31,12 +31,7 @@ public final class DefaultClientFinderTests implements TestsConstants {
 
     @Test
     public void testClientOnRequestAllowed() {
-        final Client client = new MockBaseClient(NAME);
-        final Clients clients = new Clients(client);
-        final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final List<Client> currentClients = finder.find(clients, context, NAME);
-        assertEquals(1, currentClients.size());
-        assertEquals(client, currentClients.get(0));
+        internalTestClientOnRequestAllowedList(NAME, NAME);
     }
 
     @Test(expected = TechnicalException.class)
@@ -49,10 +44,19 @@ public final class DefaultClientFinderTests implements TestsConstants {
 
     @Test
     public void testClientOnRequestAllowedList() {
+        internalTestClientOnRequestAllowedList(NAME, FAKE_VALUE + "," + NAME);
+    }
+
+    @Test
+    public void testClientOnRequestAllowedListCaseTrim() {
+        internalTestClientOnRequestAllowedList("NaMe  ", FAKE_VALUE.toUpperCase() + "  ,       nAmE");
+    }
+
+    private void internalTestClientOnRequestAllowedList(final String parameterName, final String names) {
         final Client client = new MockBaseClient(NAME);
         final Clients clients = new Clients(client);
-        final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
-        final List<Client> currentClients = finder.find(clients, context, FAKE_VALUE + "," + NAME);
+        final WebContext context = MockWebContext.create().addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, parameterName);
+        final List<Client> currentClients = finder.find(clients, context, names);
         assertEquals(1, currentClients.size());
         assertEquals(client, currentClients.get(0));
     }
@@ -103,6 +107,11 @@ public final class DefaultClientFinderTests implements TestsConstants {
     @Test
     public void testNoClientOnRequestListBlankSpaces() {
         internalTestNoClientOnRequestList(CLIENT_NAME + " ," + NAME);
+    }
+
+    @Test
+    public void testNoClientOnRequestListDifferentCase() {
+        internalTestNoClientOnRequestList(CLIENT_NAME.toUpperCase() + "," + NAME);
     }
 
     @Test
