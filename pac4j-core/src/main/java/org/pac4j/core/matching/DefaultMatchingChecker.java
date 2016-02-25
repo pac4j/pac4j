@@ -17,13 +17,13 @@ import java.util.Map;
 public class DefaultMatchingChecker implements MatchingChecker {
 
     @Override
-    public boolean matches(final WebContext context, final String matcherName, final Map<String, Matcher> matchersMap) {
+    public boolean matches(final WebContext context, final String matcherNames, final Map<String, Matcher> matchersMap) {
         // if we have a matcher name (which may be a list of matchers names)
-        if (CommonHelper.isNotBlank(matcherName)) {
+        if (CommonHelper.isNotBlank(matcherNames)) {
             final List<Matcher> matchers = new ArrayList<>();
             // we must have matchers
             CommonHelper.assertNotNull("matchersMap", matchersMap);
-            final String[] names = matcherName.split(Pac4jConstants.ELEMENT_SEPRATOR);
+            final String[] names = matcherNames.split(Pac4jConstants.ELEMENT_SEPRATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
                 final String name = names[i];

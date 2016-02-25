@@ -14,5 +14,5 @@ import java.util.List;
  */
 public interface ClientFinder {
 
-    List<Client> find(Clients clients, WebContext context, String clientName);
+    List<Client> find(Clients clients, WebContext context, String clientNames);
 }
