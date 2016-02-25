@@ -93,6 +93,8 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
         decodedCtx.getProfileRequestContext().setProfileId(SAML2_WEBSSO_PROFILE_URI);
 
+        decodedCtx.getSAMLSelfMetadataContext().setRoleDescriptor(context.getSPSSODescriptor());
+
         return this.validator.validate(decodedCtx);
     }
 }
