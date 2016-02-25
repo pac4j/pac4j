@@ -107,6 +107,9 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     /* client authentication object at the token End Point (basic, form or JWT) */
     private ClientAuthentication clientAuthentication;
 
+    /* client authentication method used at token End Point */
+    private ClientAuthenticationMethod clientAuthenticationMethod;
+
     /* clientID object */
     private ClientID _clientID;
 
@@ -273,9 +276,23 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             throw new TechnicalException(e);
         }
 
-        final ClientAuthenticationMethod method = getProviderMetadata().getTokenEndpointAuthMethods() != null
-                && getProviderMetadata().getTokenEndpointAuthMethods().size() > 0 ? getProviderMetadata()
-                .getTokenEndpointAuthMethods().get(0) : ClientAuthenticationMethod.getDefault();
+        // check authentication methods
+        final List<ClientAuthenticationMethod> methods = getProviderMetadata().getTokenEndpointAuthMethods();
+        final ClientAuthenticationMethod method;
+
+        if (!methods.isEmpty()) {
+            if (methods.contains(getClientAuthenticationMethod())) {
+                method = getClientAuthenticationMethod();
+            } else {
+                method = getProviderMetadata().getTokenEndpointAuthMethods().get(0);
+                logger.warn("Preferred token endpoint Authentication method: {} not available. Defaulting to: {}",
+                        getClientAuthenticationMethod(), method);
+            }
+        } else {
+            method = ClientAuthenticationMethod.getDefault();
+            logger.warn("Provider metadata does not provide Token endpoint authentication methods. Defaulting to: {}",
+                    method);
+        }
 
         if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(method)) {
             this.clientAuthentication = new ClientSecretPost(this._clientID, this._secret);
@@ -490,5 +507,13 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
 
     public void setMaxClockSkew(int maxClockSkew) {
         this.maxClockSkew = maxClockSkew;
+    }
+
+    public ClientAuthenticationMethod getClientAuthenticationMethod() {
+        return clientAuthenticationMethod;
+    }
+
+    public void setClientAuthenticationMethod(ClientAuthenticationMethod clientAuthenticationMethod) {
+        this.clientAuthenticationMethod = clientAuthenticationMethod;
     }
 }
