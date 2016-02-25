@@ -27,7 +27,13 @@ public class DefaultMatchingChecker implements MatchingChecker {
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
                 final String name = names[i];
-                final Matcher result = matchersMap.get(name);
+                Matcher result = null;
+                for (final String key : matchersMap.keySet()) {
+                    if (CommonHelper.areEqualsIgnoreCaseAndTrim(key, name)) {
+                        result = matchersMap.get(key);
+                        break;
+                    }
+                }
                 // we must have an matcher defined for this name
                 CommonHelper.assertNotNull("matchersMap['" + name + "']", result);
                 matchers.add(result);
