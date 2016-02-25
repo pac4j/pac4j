@@ -1,5 +1,6 @@
 package org.pac4j.config.client;
 
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.client.Clients;
@@ -43,6 +44,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(OIDC_USE_NONCE, "true");
         properties.put(OIDC_PREFERRED_JWS_ALGORITHM, "RS384");
         properties.put(OIDC_MAX_CLOCK_SKEW, "60");
+        properties.put(OIDC_CLIENT_AUTHENTICATION_METHOD, "CLIENT_SECRET_POST");
         properties.put(OIDC_CUSTOM_PARAM_KEY1, KEY);
         properties.put(OIDC_CUSTOM_PARAM_VALUE1, VALUE);
         final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
@@ -62,5 +64,6 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         assertNotNull(saml2client);
         final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
         assertNotNull(oidcClient);
+        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getClientAuthenticationMethod().toString().toLowerCase());
     }
 }
