@@ -142,7 +142,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.responseValidator = new SAML2DefaultResponseValidator(
                 this.signatureTrustEngineProvider,
                 this.decrypter,
-                this.configuration.getMaximumAuthenticationLifetime());
+                this.configuration.getMaximumAuthenticationLifetime(),
+                this.configuration.getWantsAssertionsSigned());
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
