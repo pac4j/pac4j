@@ -61,6 +61,13 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
     }
 
     @Test
+    public void testMatchCasTrim() {
+        final Map<String, Matcher> matchers = new HashMap<>();
+        matchers.put(NAME, new NullContextMatcher());
+        assertTrue(checker.matches(MockWebContext.create(), "  NAmE  ", matchers));
+    }
+
+    @Test
     public void testDontMatch() {
         final Map<String, Matcher> matchers = new HashMap<>();
         matchers.put(NAME, new NullContextMatcher());

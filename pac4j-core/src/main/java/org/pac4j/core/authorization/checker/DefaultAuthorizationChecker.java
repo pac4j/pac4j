@@ -38,7 +38,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPRATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
-                final String name = names[i];
+                final String name = names[i].trim();
                 if ("hsts".equalsIgnoreCase(name)) {
                     authorizers.add(STRICT_TRANSPORT_SECURITY_HEADER);
                 } else if ("nosniff".equalsIgnoreCase(name)) {
@@ -65,7 +65,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 } else {
                     // we must have authorizers
                     CommonHelper.assertNotNull("authorizersMap", authorizersMap);
-                    final Authorizer result = authorizersMap.get(name);
+                    Authorizer result = null;
+                    for (final String key : authorizersMap.keySet()) {
+                        if (CommonHelper.areEqualsIgnoreCaseAndTrim(key, name)) {
+                            result = authorizersMap.get(key);
+                            break;
+                        }
+                    }
                     // we must have an authorizer defined for this name
                     CommonHelper.assertNotNull("authorizersMap['" + name + "']", result);
                     authorizers.add(result);
