@@ -22,17 +22,26 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.extractor.FormExtractor;
-import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.UsernamePasswordCredentials;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.http.credentials.extractor.FormExtractor;
 import org.pac4j.http.profile.creator.ProfileCreator;
 
 /**
- * <p>This class is the client to authenticate users through HTTP form.</p>
- * <p>The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is redirected to
- * this login form. The username and password inputs must be posted on the callback url. Their names can be defined by using the
- * {@link #setUsernameParameter(String)} and {@link #setPasswordParameter(String)} methods.</p>
- * <p>It returns a {@link org.pac4j.http.profile.HttpProfile}.</p>
+ * <p>
+ * This class is the client to authenticate users through HTTP form.
+ * </p>
+ * <p>
+ * The login url of the form must be defined through the
+ * {@link #setLoginUrl(String)} method. For authentication, the user is
+ * redirected to this login form. The username and password inputs must be
+ * posted on the callback url. Their names can be defined by using the
+ * {@link #setUsernameParameter(String)} and
+ * {@link #setPasswordParameter(String)} methods.
+ * </p>
+ * <p>
+ * It returns a {@link org.pac4j.http.profile.HttpProfile}.
+ * </p>
  * 
  * @see org.pac4j.http.profile.HttpProfile
  * @author Jerome Leleu
@@ -40,140 +49,154 @@ import org.pac4j.http.profile.creator.ProfileCreator;
  */
 public class FormClient extends IndirectHttpClient<UsernamePasswordCredentials> {
 
-    private String loginUrl;
+	private String loginUrl;
 
-    public final static String ERROR_PARAMETER = "error";
+	public final static String ERROR_PARAMETER = "error";
 
-    public final static String MISSING_FIELD_ERROR = "missing_field";
+	public final static String MISSING_FIELD_ERROR = "missing_field";
 
-    public final static String DEFAULT_USERNAME_PARAMETER = "username";
+	public final static String DEFAULT_USERNAME_PARAMETER = "username";
 
-    private String usernameParameter = DEFAULT_USERNAME_PARAMETER;
+	private String usernameParameter = DEFAULT_USERNAME_PARAMETER;
 
-    public final static String DEFAULT_PASSWORD_PARAMETER = "password";
+	public final static String DEFAULT_PASSWORD_PARAMETER = "password";
 
-    private String passwordParameter = DEFAULT_PASSWORD_PARAMETER;
+	private String passwordParameter = DEFAULT_PASSWORD_PARAMETER;
 
-    public FormClient() {
-    }
+	public FormClient() {
+	}
 
-    public FormClient(final String loginUrl) {
-        setLoginUrl(loginUrl);
-    }
+	public FormClient(final String loginUrl) {
+		setLoginUrl(loginUrl);
+	}
 
-    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
-        setLoginUrl(loginUrl);
-        setAuthenticator(usernamePasswordAuthenticator);
-    }
+	public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+		setLoginUrl(loginUrl);
+		setAuthenticator(usernamePasswordAuthenticator);
+	}
 
-    public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
-            final ProfileCreator profileCreator) {
-        setLoginUrl(loginUrl);
-        setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
-    }
+	public FormClient(final String loginUrl, final UsernamePasswordAuthenticator usernamePasswordAuthenticator,
+			final ProfileCreator profileCreator) {
+		setLoginUrl(loginUrl);
+		setAuthenticator(usernamePasswordAuthenticator);
+		setProfileCreator(profileCreator);
+	}
 
-    @Override
-    protected IndirectHttpClient<UsernamePasswordCredentials> newClient() {
-        final FormClient newClient = new FormClient();
-        newClient.setLoginUrl(this.loginUrl);
-        newClient.setUsernameParameter(this.usernameParameter);
-        newClient.setPasswordParameter(this.passwordParameter);
-        return newClient;
-    }
+	@Override
+	protected IndirectHttpClient<UsernamePasswordCredentials> newClient() {
+		final FormClient newClient = new FormClient();
+		newClient.setLoginUrl(this.loginUrl);
+		newClient.setUsernameParameter(this.usernameParameter);
+		newClient.setPasswordParameter(this.passwordParameter);
+		return newClient;
+	}
 
-    @Override
-    protected void internalInit(final WebContext context) {
-        extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
-        super.internalInit(context);
-        CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
-    }
+	@Override
+	protected void internalInit(final WebContext context) {
+		extractor = new FormExtractor(usernameParameter, passwordParameter, getName());
+		super.internalInit(context);
+		CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
+	}
 
-    @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        return RedirectAction.redirect(this.loginUrl);
-    }
+	@Override
+	protected RedirectAction retrieveRedirectAction(final WebContext context) {
+		return RedirectAction.redirect(this.loginUrl);
+	}
 
-    @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
-        final String username = context.getRequestParameter(this.usernameParameter);
-        UsernamePasswordCredentials credentials;
-        try {
-            // retrieve credentials
-            credentials = extractor.extract(context);
-            logger.debug("usernamePasswordCredentials : {}", credentials);
-            if (credentials == null) {
-                String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
-                logger.debug("redirectionUrl : {}", redirectionUrl);
-                final String message = "Username and password cannot be blank -> return to the form with error";
-                logger.debug(message);
-                throw RequiresHttpAction.redirect(message, context, redirectionUrl);
-            }
-            // validate credentials
-            getAuthenticator().validate(credentials);
-        } catch (final CredentialsException e) {
-            String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-            String errorMessage = computeErrorMessage(e);
-            redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
-            logger.debug("redirectionUrl : {}", redirectionUrl);
-            final String message = "Credentials validation fails -> return to the form with error";
-            logger.debug(message);
-            throw RequiresHttpAction.redirect(message, context, redirectionUrl);
-        }
+	@Override
+	protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+		final String username = context.getRequestParameter(this.usernameParameter);
+		UsernamePasswordCredentials credentials;
+		try {
+			// retrieve credentials
+			credentials = extractor.extract(context);
+			logger.debug("usernamePasswordCredentials : {}", credentials);
+			if (credentials == null) {
+				// it's an AJAX request -> unauthorized (instead of a
+				// redirection)
+				if (getAjaxRequestResolver().isAjax(context)) {
+					logger.info("AJAX request detected -> returning 401");
+					throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
+				} else {
+					String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+					redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
+					logger.debug("redirectionUrl : {}", redirectionUrl);
+					final String message = "Username and password cannot be blank -> return to the form with error";
+					logger.debug(message);
+					throw RequiresHttpAction.redirect(message, context, redirectionUrl);
+				}
+			}
+			// validate credentials
+			getAuthenticator().validate(credentials);
+		} catch (final CredentialsException e) {
+			// it's an AJAX request -> forbidden (instead of a redirection)
+			if (getAjaxRequestResolver().isAjax(context)) {
+				logger.info("AJAX request detected -> returning 403");
+				throw RequiresHttpAction.forbidden("AJAX request -> 403", context);
+			} else {
+				String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+				String errorMessage = computeErrorMessage(e);
+				redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
+				logger.debug("redirectionUrl : {}", redirectionUrl);
+				final String message = "Credentials validation fails -> return to the form with error";
+				logger.debug(message);
+				throw RequiresHttpAction.redirect(message, context, redirectionUrl);
+			}
+		}
 
-        return credentials;
-    }
+		return credentials;
+	}
 
-    /**
-     * Return the error message depending on the thrown exception. Can be overriden for other message computation.
-     * 
-     * @param e the technical exception
-     * @return the error message
-     */
-    protected String computeErrorMessage(final TechnicalException e) {
-        return e.getClass().getSimpleName();
-    }
+	/**
+	 * Return the error message depending on the thrown exception. Can be
+	 * overriden for other message computation.
+	 * 
+	 * @param e
+	 *            the technical exception
+	 * @return the error message
+	 */
+	protected String computeErrorMessage(final TechnicalException e) {
+		return e.getClass().getSimpleName();
+	}
 
-    public String getLoginUrl() {
-        return this.loginUrl;
-    }
+	public String getLoginUrl() {
+		return this.loginUrl;
+	}
 
-    public void setLoginUrl(final String loginUrl) {
-        this.loginUrl = loginUrl;
-    }
+	public void setLoginUrl(final String loginUrl) {
+		this.loginUrl = loginUrl;
+	}
 
-    public String getUsernameParameter() {
-        return this.usernameParameter;
-    }
+	public String getUsernameParameter() {
+		return this.usernameParameter;
+	}
 
-    public void setUsernameParameter(final String usernameParameter) {
-        this.usernameParameter = usernameParameter;
-    }
+	public void setUsernameParameter(final String usernameParameter) {
+		this.usernameParameter = usernameParameter;
+	}
 
-    public String getPasswordParameter() {
-        return this.passwordParameter;
-    }
+	public String getPasswordParameter() {
+		return this.passwordParameter;
+	}
 
-    public void setPasswordParameter(final String passwordParameter) {
-        this.passwordParameter = passwordParameter;
-    }
+	public void setPasswordParameter(final String passwordParameter) {
+		this.passwordParameter = passwordParameter;
+	}
 
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
-                this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter",
-                this.passwordParameter, "authenticator", getAuthenticator(), "profileCreator",
-                getProfileCreator());
-    }
+	@Override
+	public String toString() {
+		return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
+				this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
+				"authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
+	}
 
-    @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
+	@Override
+	protected boolean isDirectRedirection() {
+		return true;
+	}
 
-    @Override
-    public ClientType getClientType() {
-        return ClientType.FORM_BASED;
-    }
+	@Override
+	public ClientType getClientType() {
+		return ClientType.FORM_BASED;
+	}
 }
