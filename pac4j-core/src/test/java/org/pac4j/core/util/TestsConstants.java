@@ -35,6 +35,17 @@ public interface TestsConstants {
     String PATH = "/tmp/path";
     String EMAIL = "test@example.com";
 
+    //Digest components
+    String DIGEST_RESPONSE = "0353b452a373c2bf9dbff4e0abaf3be7";
+    String REALM = "testRealm";
+    String NONCE = "a19574258e80cb0833c58819e009303e";
+    String URI = "/api/users/list?accountid=testaccount";
+    String NC = "00000001";
+    String QOP = "auth";
+    String CNONCE = "ICAgICAgICAgICAgICAgICAgICAgICAgICA1NzI2NzA=";
+    String DIGEST_AUTHORIZATION_HEADER_VALUE = "Digest username=\"" + USERNAME + ",realm=\"" + REALM + "\",nonce=\"" + NONCE + "\"," +
+            "uri=\"" + URI + "\",response=\"" + DIGEST_RESPONSE + "\",qop=\"" + QOP + "\",nc=\"" + NC + "\",cnonce=\"" + CNONCE + "\"";
+
     // urls
     String CALLBACK_URL = "http://myserver/callback";
     String GOOGLE_URL = "http://www.google.com";
