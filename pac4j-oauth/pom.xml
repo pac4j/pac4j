@@ -42,7 +42,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scribe</groupId>
-			<artifactId>scribe</artifactId>
+			<artifactId>scribe-pac4j</artifactId>
+			<version>1.3.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
