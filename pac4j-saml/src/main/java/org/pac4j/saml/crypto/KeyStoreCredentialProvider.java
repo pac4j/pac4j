@@ -39,6 +39,8 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
  */
 public class KeyStoreCredentialProvider implements CredentialProvider {
 
+	private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
+
 	private final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
 
 	private final CredentialResolver credentialResolver;
@@ -46,7 +48,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 	private final String privateKey;
 
 	public KeyStoreCredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-		this(null, null, "JKS", null, name, storePasswd, privateKeyPasswd);
+		this(null, null, DEFAULT_KEYSTORE_TYPE, null, name, storePasswd, privateKeyPasswd);
 	}
 
 	public KeyStoreCredentialProvider(final KeyStore keyStore, final String keyStoreAlias, String keyStoreType,
@@ -78,7 +80,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 	}
 
 	public KeyStoreCredentialProvider(SAML2ClientConfiguration configuration) {
-		this(configuration.getKeyStore(), configuration.getKeyStoreAlias(), configuration.getKeyStoreType(),
+		this(configuration.getKeyStore(), configuration.getKeyStoreAlias(), (configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType()),
 				configuration.getKeystoreResource(), configuration.getKeystorePath(),
 				configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
 	}
