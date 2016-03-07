@@ -51,7 +51,7 @@ public final class ClientsTests implements TestsConstants {
     public void testTwoClients() {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
-        final List<Client> clients = new ArrayList<Client>();
+        final List<Client> clients = new ArrayList<>();
         clients.add(facebookClient);
         clients.add(yahooClient);
         final Clients clientsGroup = new Clients();
@@ -87,7 +87,7 @@ public final class ClientsTests implements TestsConstants {
     public void testAllClients() {
         final MockBaseClient facebookClient = newFacebookClient();
         final MockBaseClient yahooClient = newYahooClient();
-        final List<Client> clients = new ArrayList<Client>();
+        final List<Client> clients = new ArrayList<>();
         clients.add(facebookClient);
         clients.add(yahooClient);
         final Clients clientsGroup = new Clients();
@@ -128,28 +128,65 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testByClass1() {
+        internalTestByClass(false);
+    }
+
+    @Test
+    public void testByClass2() {
+        internalTestByClass(true);
+    }
+
+    private void internalTestByClass(final boolean fakeFirst) {
         final MockBaseClient facebookClient = newFacebookClient();
         final FakeClient fakeClient = new FakeClient();
-        final Clients clients = new Clients(CALLBACK_URL, facebookClient, fakeClient);
+        final Clients clients;
+        if (fakeFirst) {
+            clients = new Clients(CALLBACK_URL, fakeClient, facebookClient);
+        } else {
+            clients = new Clients(CALLBACK_URL, facebookClient, fakeClient);
+        }
         assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
         assertEquals(fakeClient, clients.findClient(FakeClient.class));
     }
 
     @Test
-    public void testByClass2() {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final FakeClient fakeClient = new FakeClient();
-        final Clients clients = new Clients(CALLBACK_URL, fakeClient, facebookClient);
-        assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
-        assertEquals(fakeClient, clients.findClient(FakeClient.class));
-    }
-
-    @Test(expected = TechnicalException.class)
     public void rejectSameName() {
         final MockBaseClient client1 = new MockBaseClient(NAME);
         final MockBaseClient client2 = new MockBaseClient(NAME);
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
-        clients.init();
+        TestsHelper.initShouldFail(clients, "Duplicate name in clients: name");
+    }
+
+    @Test
+    public void rejectSameNameDifferentCase() {
+        final MockBaseClient client1 = new MockBaseClient(NAME);
+        final MockBaseClient client2 = new MockBaseClient(NAME.toUpperCase());
+        final Clients clients = new Clients(CALLBACK_URL, client1, client2);
+        TestsHelper.initShouldFail(clients, "Duplicate name in clients: NAME");
+    }
+
+    @Test
+    public void testFindByName() {
+        final MockBaseClient facebookClient = newFacebookClient();
+        final MockBaseClient yahooClient = newYahooClient();
+        final Clients clients = new Clients(facebookClient, yahooClient);
+        assertNotNull(clients.findClient("FacebookClient"));
+    }
+
+    @Test
+    public void testFindByNameCase() {
+        final MockBaseClient facebookClient = newFacebookClient();
+        final MockBaseClient yahooClient = newYahooClient();
+        final Clients clients = new Clients(facebookClient, yahooClient);
+        assertNotNull(clients.findClient("FACEBOOKclient"));
+    }
+
+    @Test
+    public void testFindByNameBlankSpaces() {
+        final MockBaseClient facebookClient = newFacebookClient();
+        final MockBaseClient yahooClient = newYahooClient();
+        final Clients clients = new Clients(facebookClient, yahooClient);
+        assertNotNull(clients.findClient(" FacebookClient          "));
     }
 
     private static class FakeClient extends DirectClient<Credentials, CommonProfile> {

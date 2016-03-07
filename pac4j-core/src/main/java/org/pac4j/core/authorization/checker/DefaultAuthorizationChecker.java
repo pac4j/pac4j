@@ -31,14 +31,14 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
 
     @Override
-    public boolean isAuthorized(final WebContext context, final UserProfile profile, final String authorizerName, final Map<String, Authorizer> authorizersMap) {
+    public boolean isAuthorized(final WebContext context, final UserProfile profile, final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
-        if (CommonHelper.isNotBlank(authorizerName)) {
-            final String[] names = authorizerName.split(Pac4jConstants.ELEMENT_SEPRATOR);
+        if (CommonHelper.isNotBlank(authorizerNames)) {
+            final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPRATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
-                final String name = names[i];
+                final String name = names[i].trim();
                 if ("hsts".equalsIgnoreCase(name)) {
                     authorizers.add(STRICT_TRANSPORT_SECURITY_HEADER);
                 } else if ("nosniff".equalsIgnoreCase(name)) {
@@ -65,7 +65,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 } else {
                     // we must have authorizers
                     CommonHelper.assertNotNull("authorizersMap", authorizersMap);
-                    final Authorizer result = authorizersMap.get(name);
+                    Authorizer result = null;
+                    for (final String key : authorizersMap.keySet()) {
+                        if (CommonHelper.areEqualsIgnoreCaseAndTrim(key, name)) {
+                            result = authorizersMap.get(key);
+                            break;
+                        }
+                    }
                     // we must have an authorizer defined for this name
                     CommonHelper.assertNotNull("authorizersMap['" + name + "']", result);
                     authorizers.add(result);
