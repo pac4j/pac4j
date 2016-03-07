@@ -8,8 +8,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
@@ -26,8 +24,6 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("rawtypes")
 public class Clients extends InitializableObject {
-
-    private static final Logger logger = LoggerFactory.getLogger(Clients.class);
 
     public final static String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
 
@@ -76,10 +72,11 @@ public class Clients extends InitializableObject {
         final HashSet<String> names = new HashSet<>();
         for (final Client client : getClients()) {
             final String name = client.getName();
-            if (names.contains(name)) {
+            final String lowerName = name.toLowerCase();
+            if (names.contains(lowerName)) {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
-            names.add(name);
+            names.add(lowerName);
             if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
                 final IndirectClient indirectClient = (IndirectClient) client;
                 String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
@@ -120,7 +117,7 @@ public class Clients extends InitializableObject {
     public Client findClient(final String name) {
         init();
         for (final Client client : getClients()) {
-            if (CommonHelper.areEquals(name, client.getName())) {
+            if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
                 return client;
             }
         }
