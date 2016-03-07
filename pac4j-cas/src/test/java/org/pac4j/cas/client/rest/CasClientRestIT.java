@@ -55,6 +55,7 @@ public final class CasClientRestIT implements TestsConstants {
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
         assertEquals(USERNAME, casProfile.getId());
+        assertEquals(0, casProfile.getAttributes().size());
     }
 
     @Test
@@ -76,6 +77,7 @@ public final class CasClientRestIT implements TestsConstants {
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
         assertEquals(USERNAME, casProfile.getId());
+        assertEquals(3, casProfile.getAttributes().size());
         client.destroyTicketGrantingTicket(context, profile);
 
         try {
