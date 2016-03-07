@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.vk;
 
 import java.util.Date;
@@ -21,85 +6,11 @@ import java.util.Locale;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 
 /**
  * <p>This class is the user profile for Vk with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oauth.client.VkClient}.</p>
- * <table summary="" border="1" cellspacing="2px">
- * <tr>
- * <th>Method :</th>
- * <th>From the JSON profile response :</th>
- * </tr>
- * <tr>
- * <th colspan="2">The attributes of the
- * {@link org.pac4j.core.profile.CommonProfile}</th>
- * </tr>
- * <tr>
- * <td>String getEmail()</td>
- * <td>empty string</td>
- * </tr>
- * <tr>
- * <td>String getFirstName()</td>
- * <td>the <i>first_name</i> field</td>
- * </tr>
- * <tr>
- * <td>String getFamilyName()</td>
- * <td>the <i>last_name</i> field</td>
- * </tr>
- * <tr>
- * <td>String getDisplayName()</td>
- * <td>the <i>first_name</i> and <i>last_name</i> fields</td>
- * </tr>
- * <tr>
- * <td>String getUsername()</td>
- * <td>the <i>domain</i> attribute or <i>id</i></td>
- * </tr>
- * <tr>
- * <td>Gender getGender()</td>
- * <td>{@link org.pac4j.core.profile.Gender#UNSPECIFIED}</td>
- * </tr>
- * <tr>
- * <td>Locale getLocale()</td>
- * <td>null</td>
- * </tr>
- * <tr>
- * <td>String getPictureUrl()</td>
- * <td>the <i>photo_max</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getProfileUrl()</td>
- * <td>url to vk.com user page</td>
- * </tr>
- * <tr>
- * <td>String getLocation()</td>
- * <td>null</td>
- * </tr>
- * <tr>
- * <th colspan="2">More specific attributes</th>
- * </tr>
- * <tr>
- * <td>String getLastName()</td>
- * <td>the <i>last_name</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getDomain()</td>
- * <td>the <i>domain</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getBirhtDate()</td>
- * <td>the <i>bdate</i> attribute</td>
- * </tr>
- * <tr>
- * <td>String getFoto50()</td>
- * <td>the <i>photo_50</i> attribute</td>
- * </tr>
- * <tr>
- * <td colspan="2">...</td>
- * </tr>
- * </table>
- * 
- * @see org.pac4j.oauth.client.VkClient
+ *
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  */
@@ -107,9 +18,11 @@ public class VkProfile extends OAuth20Profile {
 
 	private static final long serialVersionUID = -7889265305949082980L;
 
+	private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new VkAttributesDefinition();
+
 	@Override
-	protected AttributesDefinition getAttributesDefinition() {
-		return OAuthAttributesDefinitions.vkDefinition;
+	public AttributesDefinition getAttributesDefinition() {
+		return ATTRIBUTES_DEFINITION;
 	}
 
 	@Override

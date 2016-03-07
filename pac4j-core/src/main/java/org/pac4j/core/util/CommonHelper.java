@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.util;
 
 import java.io.File;
@@ -27,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.slf4j.Logger;
@@ -54,8 +40,7 @@ public final class CommonHelper {
 	/**
 	 * Return if the String is not blank.
 	 * 
-	 * @param s
-	 *            string
+     * @param s string
 	 * @return if the String is not blank
 	 */
 	public static boolean isNotBlank(final String s) {
@@ -68,8 +53,7 @@ public final class CommonHelper {
 	/**
 	 * Return if the String is blank.
 	 * 
-	 * @param s
-	 *            string
+     * @param s string
 	 * @return if the String is blank
 	 */
 	public static boolean isBlank(final String s) {
@@ -79,10 +63,8 @@ public final class CommonHelper {
 	/**
 	 * Compare two String to see if they are equals (both null is ok).
 	 * 
-	 * @param s1
-	 *            string
-	 * @param s2
-	 *            string
+     * @param s1 string
+     * @param s2 string
 	 * @return if two String are equals
 	 */
 	public static boolean areEquals(final String s1, final String s2) {
@@ -92,10 +74,8 @@ public final class CommonHelper {
 	/**
 	 * Compare two String to see if they are not equals.
 	 * 
-	 * @param s1
-	 *            string
-	 * @param s2
-	 *            string
+     * @param s1 string
+     * @param s2 string
 	 * @return if two String are not equals
 	 */
 	public static boolean areNotEquals(final String s1, final String s2) {
@@ -103,13 +83,10 @@ public final class CommonHelper {
 	}
 
 	/**
-	 * Verify that a boolean is true otherwise throw an
-	 * {@link TechnicalException}.
+     * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
 	 * 
-	 * @param value
-	 *            the value to be checked for truth
-	 * @param message
-	 *            the message to include in the exception if the value is false
+     * @param value the value to be checked for truth
+     * @param message the message to include in the exception if the value is false
 	 */
 	public static void assertTrue(final boolean value, final String message) {
 		if (!value) {
@@ -118,40 +95,41 @@ public final class CommonHelper {
 	}
 
 	/**
-	 * Verify that a String is not blank otherwise throw an
-	 * {@link TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
 	 * 
-	 * @param name
-	 *            name if the string
-	 * @param value
-	 *            value of the string
+     * @param name name if the string
+     * @param value value of the string
 	 */
 	public static void assertNotBlank(final String name, final String value) {
 		assertTrue(!isBlank(value), name + " cannot be blank");
 	}
 
 	/**
-	 * Verify that an Object is not <code>null</code> otherwise throw an
-	 * {@link TechnicalException}.
+     * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
 	 * 
-	 * @param name
-	 *            name of the object
-	 * @param obj
-	 *            object
+     * @param name name of the object
+     * @param obj object
 	 */
 	public static void assertNotNull(final String name, final Object obj) {
 		assertTrue(obj != null, name + " cannot be null");
 	}
 
 	/**
+     * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
+     *
+     * @param name name of the object
+     * @param obj object
+     */
+    public static void assertNull(final String name, final Object obj) {
+        assertTrue(obj == null, name + " must be null");
+    }
+
+    /**
 	 * Add a new parameter to an url.
 	 * 
-	 * @param url
-	 *            url
-	 * @param name
-	 *            name of the parameter
-	 * @param value
-	 *            value of the parameter
+     * @param url url
+     * @param name name of the parameter
+     * @param value value of the parameter
 	 * @return the new url with the parameter appended
 	 */
 	public static String addParameter(final String url, final String name, final String value) {
@@ -167,7 +145,7 @@ public final class CommonHelper {
 				sb.append(name);
 				sb.append("=");
 				if (value != null) {
-					sb.append(encodeText(value));
+                    sb.append(urlEncode(value));
 				}
 			}
 			return sb.toString();
@@ -176,15 +154,14 @@ public final class CommonHelper {
 	}
 
 	/**
-	 * Encode a text using UTF-8.
+     * URL encode a text using UTF-8.
 	 * 
-	 * @param text
-	 *            text to encode
+     * @param text text to encode
 	 * @return the encoded text
 	 */
-	private static String encodeText(final String text) {
+    public static String urlEncode(final String text) {
 		try {
-			return URLEncoder.encode(text, "UTF-8");
+            return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
 		} catch (final UnsupportedEncodingException e) {
 			String message = "Unable to encode text : " + text;
 			throw new TechnicalException(message, e);
@@ -194,10 +171,8 @@ public final class CommonHelper {
 	/**
 	 * Build a normalized "toString" text for an object.
 	 * 
-	 * @param clazz
-	 *            class
-	 * @param args
-	 *            arguments
+     * @param clazz class
+     * @param args arguments
 	 * @return a normalized "toString" text
 	 */
 	public static String toString(final Class<?> clazz, final Object... args) {
@@ -222,12 +197,11 @@ public final class CommonHelper {
 	}
 
 	/**
-	 * Returns an {@link InputStream} from given name depending on its format: -
-	 * loads from the classloader if name starts with "resource:" - loads as
-	 * {@link FileInputStream} otherwise
+     * Returns an {@link InputStream} from given name depending on its format:
+     * - loads from the classloader if name starts with "resource:"
+     * - loads as {@link FileInputStream} otherwise
 	 * 
-	 * @param name
-	 *            name of the resource
+     * @param name name of the resource
 	 * @return the input stream
 	 */
 	public static InputStream getInputStreamFromName(String name) {
@@ -344,4 +318,52 @@ public final class CommonHelper {
 		};
 	}
 
+    /**
+     * Return a random string of a certain size.
+     *
+     * @param size the size
+     * @return the random size
+     */
+    public static String randomString(final int size) {
+        return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+    }
+
+    /**
+     * Taken from commons-lang3
+     */
+
+    private static final String EMPTY = "";
+    private static final int INDEX_NOT_FOUND = -1;
+
+    public static String substringBetween(String str, String open, String close) {
+        if (str == null || open == null || close == null) {
+            return null;
+        }
+        int start = str.indexOf(open);
+        if (start != INDEX_NOT_FOUND) {
+            int end = str.indexOf(close, start + open.length());
+            if (end != INDEX_NOT_FOUND) {
+                return str.substring(start + open.length(), end);
+            }
+        }
+        return null;
+    }
+
+    public static String substringAfter(String str, String separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (separator == null) {
+            return EMPTY;
+        }
+        int pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+            return EMPTY;
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    private static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
 }

@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.cas.client;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
@@ -36,7 +21,6 @@ import org.pac4j.cas.logout.NoLogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
@@ -140,26 +124,10 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
      */
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        final String computedCasLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
-        final String redirectionUrl = CommonUtils.constructRedirectUrl(computedCasLoginUrl, SERVICE_PARAMETER,
+        final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
                 computeFinalCallbackUrl(context), this.renew, this.gateway);
         logger.debug("redirectionUrl : {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);
-    }
-
-    @Override
-    protected IndirectClient<CasCredentials, CasProfile> newClient() {
-        final CasClient casClient = new CasClient();
-        casClient.setCallbackUrl(this.callbackUrl);
-        casClient.setCasLoginUrl(this.casLoginUrl);
-        casClient.setCasPrefixUrl(this.casPrefixUrl);
-        casClient.setCasProtocol(this.casProtocol);
-        casClient.setRenew(this.renew);
-        casClient.setGateway(this.gateway);
-        casClient.setAcceptAnyProxy(this.acceptAnyProxy);
-        casClient.setAllowedProxyChains(this.allowedProxyChains);
-        casClient.setCasProxyReceptor(this.casProxyReceptor);
-        return casClient;
     }
 
     @Override
@@ -169,7 +137,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             throw new TechnicalException("casLoginUrl and casPrefixUrl cannot be both blank");
         }
 
-        initializeClientConfiguration();
+        initializeClientConfiguration(context);
 
         initializeLogoutHandler(context);
 
@@ -186,9 +154,21 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         } else if (this.casProtocol == CasProtocol.SAML) {
             initializeSAMLProtocol();
         }
-        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<CasProfile>());
+        addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
+    protected void initializeClientConfiguration(final WebContext context) {
+        if (this.casPrefixUrl != null && !this.casPrefixUrl.endsWith("/")) {
+            this.casPrefixUrl += "/";
+        }
+        if (CommonHelper.isBlank(this.casPrefixUrl)) {
+            this.casPrefixUrl = this.casLoginUrl.replaceFirst("/login$", "/");
+        } else if (CommonHelper.isBlank(this.casLoginUrl)) {
+            this.casLoginUrl = this.casPrefixUrl + "login";
+        }
+        this.casPrefixUrl = callbackUrlResolver.compute(this.casPrefixUrl, context);
+        this.casLoginUrl = callbackUrlResolver.compute(this.casLoginUrl, context);
+    }
 
     private void initializeLogoutHandler(final WebContext context) {
         if (this.logoutHandler == null) {
@@ -259,17 +239,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         this.ticketValidator = new Cas10TicketValidator(this.casPrefixUrl);
         final Cas10TicketValidator cas10TicketValidator = (Cas10TicketValidator) this.ticketValidator;
         cas10TicketValidator.setEncoding(this.encoding);
-    }
-
-    protected void initializeClientConfiguration() {
-        if (this.casPrefixUrl != null && !this.casPrefixUrl.endsWith("/")) {
-            this.casPrefixUrl += "/";
-        }
-        if (CommonHelper.isBlank(this.casPrefixUrl)) {
-            this.casPrefixUrl = this.casLoginUrl.replaceFirst("/login", "/");
-        } else if (CommonHelper.isBlank(this.casLoginUrl)) {
-            this.casLoginUrl = this.casPrefixUrl + "login";
-        }
     }
 
     /**
@@ -433,15 +402,5 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
                 "casPrefixUrl", this.casPrefixUrl, "casProtocol", this.casProtocol, "renew", this.renew, "gateway",
                 this.gateway, "encoding", this.encoding, "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy,
                 "allowedProxyChains", this.allowedProxyChains, "casProxyReceptor", this.casProxyReceptor);
-    }
-
-    @Override
-    protected boolean isDirectRedirection() {
-        return true;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.CAS_PROTOCOL;
     }
 }

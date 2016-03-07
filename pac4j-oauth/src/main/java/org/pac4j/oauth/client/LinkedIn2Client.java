@@ -1,33 +1,15 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.apis.LinkedInApi20;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
-import org.pac4j.oauth.profile.XmlHelper;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
-import org.scribe.builder.api.LinkedInApi20;
-import org.scribe.builder.api.StateApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.LinkedInOAuth20ServiceImpl;
 
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
@@ -36,17 +18,16 @@ import org.scribe.oauth.LinkedInOAuth20ServiceImpl;
  * fields through the {@link #setFields(String)} method.</p>
  * <p>More information at https://developer.linkedin.com/documents/profile-api</p>
  * 
- * @see org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
+public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     public final static String DEFAULT_SCOPE = "r_fullprofile";
     
     protected String scope = DEFAULT_SCOPE;
     
-    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,location,email-address,headline,industry,num-connections,summary,specialties,positions,picture-url,site-standard-profile-request,public-profile-url";
+    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address";
     
     public LinkedIn2Client() {
     }
@@ -57,30 +38,22 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
     }
     
     @Override
-    protected LinkedIn2Client newClient() {
-        final LinkedIn2Client newClient = new LinkedIn2Client();
-        newClient.setScope(this.scope);
-        newClient.setFields(this.fields);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
-        StateApi20 api20 = new LinkedInApi20();
-        this.service = new LinkedInOAuth20ServiceImpl(api20, new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                                                                             SignatureType.Header, this.scope, null),
-                                                      this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                      this.proxyPort);
+        super.internalInit(context);
     }
-    
+
     @Override
-    protected boolean requiresStateParameter() {
-        return true;
+    protected Api getApi() {
+        return LinkedInApi20.instance();
     }
-    
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
@@ -97,22 +70,27 @@ public class LinkedIn2Client extends BaseOAuth20Client<LinkedIn2Profile> {
     
     @Override
     protected String getProfileUrl(final Token accessToken) {
-        return "https://api.linkedin.com/v1/people/~:(" + this.fields + ")";
+        return "https://api.linkedin.com/v1/people/~?:(" + this.fields + ")&format=json";
     }
     
     @Override
     protected LinkedIn2Profile extractUserProfile(final String body) {
         LinkedIn2Profile profile = new LinkedIn2Profile();
-        profile.setId(XmlHelper.get(body, "id"));
-        for (final String attribute : OAuthAttributesDefinitions.linkedin2Definition.getPrincipalAttributes()) {
-            profile.addAttribute(attribute, XmlHelper.get(body, attribute));
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        profile.setId(JsonHelper.getElement(json, "id"));
+        for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+            profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
         }
-        String url = XmlHelper.get(XmlHelper.get(body, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST),
-                                   "url");
-        profile.addAttribute(LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST, url);
+        addUrl(profile, json, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST);
+        addUrl(profile, json, LinkedIn2AttributesDefinition.API_STANDARD_PROFILE_REQUEST);
         return profile;
     }
-    
+
+    private void addUrl(final LinkedIn2Profile profile, final JsonNode json, final String name) {
+        final String url = (String) JsonHelper.getElement(json, name + ".url");
+        profile.addAttribute(name, url);
+    }
+
     public String getScope() {
         return this.scope;
     }

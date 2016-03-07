@@ -1,27 +1,10 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.facebook;
 
 import java.util.Date;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * This class represents a Facebook event.
@@ -36,46 +19,65 @@ public final class FacebookEvent extends JsonObject {
     private String id;
     
     private String name;
-    
+
+    @JsonProperty("start_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date startTime;
-    
+
+    @JsonProperty("end_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date endTime;
     
     private String location;
-    
+
+    @JsonProperty("rsvp_status")
     private String rsvpStatus;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.startTime = (Date) JsonHelper.convert(FacebookConverters.eventDateConverter, json, "start_time");
-        this.endTime = (Date) JsonHelper.convert(FacebookConverters.eventDateConverter, json, "end_time");
-        this.location = (String) JsonHelper.convert(Converters.stringConverter, json, "location");
-        this.rsvpStatus = (String) JsonHelper.convert(Converters.stringConverter, json, "rsvp_status");
-    }
-    
+
     public String getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Date getStartTime() {
-        return this.startTime;
+        return startTime;
     }
-    
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
     public Date getEndTime() {
-        return this.endTime;
+        return endTime;
     }
-    
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     public String getLocation() {
-        return this.location;
+        return location;
     }
-    
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public String getRsvpStatus() {
-        return this.rsvpStatus;
+        return rsvpStatus;
+    }
+
+    public void setRsvpStatus(String rsvpStatus) {
+        this.rsvpStatus = rsvpStatus;
     }
 }

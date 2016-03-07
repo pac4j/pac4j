@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.client;
 
 import java.util.Arrays;
@@ -27,28 +12,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
- * This class is made to group multiple clients using a specific parameter to
- * distinguish them, generally on one callback url.
- * </p>
- * <p>
- * The {@link #init()} method is used to initialize the callback urls of the
- * clients from the callback url of the clients group if empty and a specific
- * parameter added to define the client targeted. It is implicitly called by the
- * "finders" methods and doesn't need to be called explicitly.
- * </p>
- * <p>
- * The {@link #findClient(WebContext)}, {@link #findClient(String)} or
- * {@link #findClient(Class)} methods must be called to find the right client
- * according to the input context or type. The {@link #findAllClients()} method
- * returns all the clients.
- * </p>
+ * <p>This class is made to group multiple clients using a specific parameter to distinguish them, generally on one
+ * callback url.</p>
+ * <p>The {@link #init()} method is used to initialize the callback urls of the clients from the callback url of the
+ * clients group if empty and a specific parameter added to define the client targeted. It is implicitly called by the
+ * "finders" methods and doesn't need to be called explicitly.</p>
+ * <p>The {@link #findClient(WebContext)}, {@link #findClient(String)} or {@link #findClient(Class)} methods must be called
+ * to find the right client according to the input context or type. The {@link #findAllClients()} method returns all the
+ * clients.</p>
  * 
  * @author Jerome Leleu
  * @since 1.3.0
  */
 @SuppressWarnings("rawtypes")
-public final class Clients extends InitializableObject {
+public class Clients extends InitializableObject {
 
 	private static final Logger logger = LoggerFactory.getLogger(Clients.class);
 
@@ -96,9 +73,9 @@ public final class Clients extends InitializableObject {
 	 */
 	@Override
 	protected void internalInit() {
-		CommonHelper.assertNotNull("clients", this.clients);
+        CommonHelper.assertNotNull("clients", getClients());
 		final HashSet<String> names = new HashSet<>();
-		for (final Client client : this.clients) {
+        for (final Client client : getClients()) {
 			final String name = client.getName();
 			if (names.contains(name)) {
 				throw new TechnicalException("Duplicate name in clients: " + name);
@@ -107,19 +84,17 @@ public final class Clients extends InitializableObject {
 			if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
 				final IndirectClient indirectClient = (IndirectClient) client;
 				String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-				// no callback url defined for the client -> set it with the
-				// group callback url
+                // no callback url defined for the client -> set it with the group callback url
 				if (indirectClientCallbackUrl == null) {
 					indirectClient.setCallbackUrl(this.callbackUrl);
 					indirectClientCallbackUrl = this.callbackUrl;
 				}
-				// if the "client_name" parameter is not already part of the
-				// callback url, add it unless the client
+                // if the "client_name" parameter is not already part of the callback url, add it unless the client
 				// has indicated to not include it.
-				if (indirectClient.isIncludeClientNameInCallbackUrl()
-						&& indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-					indirectClient.setCallbackUrl(
-							CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, name));
+                if (indirectClient.isIncludeClientNameInCallbackUrl() &&
+                        indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
+                            name));
 				}
 			}
 		}
@@ -128,12 +103,11 @@ public final class Clients extends InitializableObject {
 	/**
 	 * Return the right client according to the web context.
 	 * 
-	 * @param context
-	 *            web context
+     * @param context web context
 	 * @return the right client
 	 */
 	public Client findClient(final WebContext context) {
-		String name = context.getRequestParameter(this.clientNameParameter);
+        final String name = context.getRequestParameter(this.clientNameParameter);
 		if (name == null && defaultClient != null) {
 			return defaultClient;
 		}
@@ -144,13 +118,12 @@ public final class Clients extends InitializableObject {
 	/**
 	 * Return the right client according to the specific name.
 	 *
-	 * @param name
-	 *            name of the client
+     * @param name name of the client
 	 * @return the right client
 	 */
 	public Client findClient(final String name) {
 		init();
-		for (final Client client : this.clients) {
+        for (final Client client : getClients()) {
 			if (CommonHelper.areEquals(name, client.getName())) {
 				return client;
 			}
@@ -162,17 +135,15 @@ public final class Clients extends InitializableObject {
 	/**
 	 * Return the right client according to the specific class.
 	 *
-	 * @param clazz
-	 *            class of the client
-	 * @param <C>
-	 *            the kind of client
+     * @param clazz class of the client
+     * @param <C> the kind of client
 	 * @return the right client
 	 */
 	@SuppressWarnings("unchecked")
 	public <C extends Client> C findClient(final Class<C> clazz) {
 		init();
 		if (clazz != null) {
-			for (final Client client : this.clients) {
+          for (final Client client : getClients()) {
 				if (clazz.isAssignableFrom(client.getClass())) {
 					return (C) client;
 				}
@@ -189,7 +160,7 @@ public final class Clients extends InitializableObject {
 	 */
 	public List<Client> findAllClients() {
 		init();
-		return this.clients;
+        return getClients();
 	}
 
 	public String getClientNameParameter() {
@@ -208,17 +179,6 @@ public final class Clients extends InitializableObject {
 		this.callbackUrl = callbackUrl;
 	}
 
-	/**
-	 * Use {@link #setClients(List)} instead.
-	 * 
-	 * @param clients
-	 *            the clients to set
-	 * @deprecated
-	 */
-	@Deprecated
-	public void setClientsList(final List<Client> clients) {
-		this.clients = clients;
-	}
 
 	public void setClients(final List<Client> clients) {
 		this.clients = clients;
@@ -229,13 +189,13 @@ public final class Clients extends InitializableObject {
 	}
 
 	public List<Client> getClients() {
-		return clients;
+        return this.clients;
 	}
 
 	@Override
 	public String toString() {
-		return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientTypeParameter",
-				this.clientNameParameter, "clients", this.clients);
+        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
+                this.clientNameParameter, "clients", getClients());
 	}
 
 	public void setDefaultClient(Client defaultClient) {

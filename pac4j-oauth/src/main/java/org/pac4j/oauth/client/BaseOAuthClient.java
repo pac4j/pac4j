@@ -1,37 +1,20 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.exceptions.OAuthException;
+import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.client.exception.OAuthCredentialsException;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
 import org.pac4j.oauth.profile.OAuth20Profile;
-import org.scribe.exceptions.OAuthException;
-import org.scribe.model.ProxyOAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,45 +31,62 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     protected OAuthService service;
 
-    protected String key;
+    private String key;
 
-    protected String secret;
+    private String secret;
 
-    protected boolean tokenAsHeader = false;
+    private boolean tokenAsHeader = false;
 
-    // 0,5 second
-    protected int connectTimeout = 500;
+    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
-    // 2 seconds
-    protected int readTimeout = 2000;
-
-    protected String proxyHost = null;
-
-    protected int proxyPort = 8080;
+    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("key", this.key);
         CommonHelper.assertNotBlank("secret", this.secret);
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-    }
 
-    @Override
-    public BaseOAuthClient<U> clone() {
-        final BaseOAuthClient<U> newClient = (BaseOAuthClient<U>) super.clone();
-        newClient.setKey(this.key);
-        newClient.setSecret(this.secret);
-        newClient.setCallbackUrl(this.callbackUrl);
-        newClient.setConnectTimeout(this.connectTimeout);
-        newClient.setReadTimeout(this.readTimeout);
-        newClient.setProxyHost(this.proxyHost);
-        newClient.setProxyPort(this.proxyPort);
-        return newClient;
+        this.service = getApi().createService(buildOAuthConfig(context));
     }
 
     /**
-     * {@inheritDoc}
+     * Build an OAuth configuration.
+     *
+     * @param context the web context
+     * @return the OAuth configuration
      */
+    protected OAuthConfig buildOAuthConfig(final WebContext context) {
+        return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
+                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null);
+    }
+
+    /**
+     * Define the OAuth API for this client.
+     *
+     * @return the OAuth API
+     */
+    protected abstract Api getApi();
+
+    /**
+     * Define the OAuth scope for this client.
+     *
+     * @return the OAuth scope
+     */
+    protected String getOAuthScope() {
+        return null;
+    }
+
+
+    /**
+     * Whether the grant type must be added.
+     *
+     * @return Whether the grant type must be added
+     */
+    protected boolean hasOAuthGrantType() {
+        return false;
+    }
+
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         try {
@@ -96,11 +96,14 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         }
     }
 
+    /**
+     * Retrieve the authorization url to redirect to the OAuth provider.
+     *
+     * @param context the web context
+     * @return the authorization url
+     */
     protected abstract String retrieveAuthorizationUrl(final WebContext context);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected OAuthCredentials retrieveCredentials(final WebContext context) {
         // check if the authentication has been cancelled
@@ -111,8 +114,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         // check errors
         try {
             boolean errorFound = false;
-            final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException(
-                    "Failed to retrieve OAuth credentials, error parameters found");
+            final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             String errorMessage = "";
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
                 final String value = context.getRequestParameter(key);
@@ -138,7 +140,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * @param context the web context.
      * @return if the authentication has been cancelled.
      */
-    protected abstract boolean hasBeenCancelled(WebContext context);
+    protected boolean hasBeenCancelled(WebContext context) {
+        return false;
+    }
 
     /**
      * Get the OAuth credentials from the web context.
@@ -148,9 +152,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      */
     protected abstract OAuthCredentials getOAuthCredentials(final WebContext context);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) {
         try {
@@ -195,7 +196,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     protected U retrieveUserProfileFromToken(final Token accessToken) {
         final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
-            throw new HttpCommunicationException("Not data found for accessToken : " + accessToken);
+            throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
         final U profile = extractUserProfile(body);
         addAccessTokenToProfile(profile, accessToken);
@@ -218,9 +219,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * @return the user data response
      */
     protected String sendRequestForData(final Token accessToken, final String dataUrl) {
-        logger.debug("accessToken : {} / dataUrl : {}", accessToken, dataUrl);
+        logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
-        final ProxyOAuthRequest request = createProxyRequest(dataUrl);
+        final OAuthRequest request = createOAuthRequest(dataUrl);
         this.service.signRequest(accessToken, request);
         // Let the client to decide if the token should be in header
         if (this.isTokenAsHeader()) {
@@ -230,12 +231,22 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         final int code = response.getCode();
         final String body = response.getBody();
         final long t1 = System.currentTimeMillis();
-        logger.debug("Request took : " + (t1 - t0) + " ms for : " + dataUrl);
-        logger.debug("response code : {} / response body : {}", code, body);
+        logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
+        logger.debug("response code: {} / response body: {}", code, body);
         if (code != 200) {
             throw new HttpCommunicationException(code, body);
         }
         return body;
+    }
+
+    /**
+     * Create an OAuth request.
+     *
+     * @param url the url to call
+     * @return the request
+     */
+    protected OAuthRequest createOAuthRequest(final String url) {
+        return new OAuthRequest(Verb.GET, url, this.service);
     }
 
     /**
@@ -250,17 +261,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         final String secret = profile.getAccessSecret();
         final Token accessToken = new Token(profile.getAccessToken(), secret == null ? "" : secret);
         return sendRequestForData(accessToken, dataUrl);
-    }
-
-    /**
-     * Create a proxy request.
-     * 
-     * @param url url of the data
-     * @return a proxy request
-     */
-    protected ProxyOAuthRequest createProxyRequest(final String url) {
-        return new ProxyOAuthRequest(Verb.GET, url, this.connectTimeout, this.readTimeout, this.proxyHost,
-                this.proxyPort);
     }
 
     /**
@@ -280,7 +280,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     protected void addAccessTokenToProfile(final U profile, final Token accessToken) {
         if (profile != null) {
             final String token = accessToken.getToken();
-            logger.debug("add access_token : {} to profile", token);
+            logger.debug("add access_token: {} to profile", token);
             profile.setAccessToken(token);
         }
     }
@@ -317,32 +317,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         return this.readTimeout;
     }
 
-    public String getProxyHost() {
-        return this.proxyHost;
-    }
-
-    public void setProxyHost(final String proxyHost) {
-        this.proxyHost = proxyHost;
-    }
-
-    public int getProxyPort() {
-        return this.proxyPort;
-    }
-
-    public void setProxyPort(final int proxyPort) {
-        this.proxyPort = proxyPort;
-    }
-
     public boolean isTokenAsHeader() {
         return tokenAsHeader;
     }
 
     public void setTokenAsHeader(boolean tokenAsHeader) {
         this.tokenAsHeader = tokenAsHeader;
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.OAUTH_PROTOCOL;
     }
 }

@@ -1,24 +1,10 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.config;
 
-import org.pac4j.core.authorization.Authorizer;
+import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
 
@@ -41,6 +27,8 @@ public class Config {
     protected Map<String, Matcher> matchers = new HashMap<>();
 
     protected SessionStore sessionStore;
+
+    protected HttpActionAdapter httpActionAdapter;
 
     public Config() {}
 
@@ -151,5 +139,13 @@ public class Config {
 
     public void setSessionStore(SessionStore sessionStore) {
         this.sessionStore = sessionStore;
+    }
+
+    public HttpActionAdapter getHttpActionAdapter() {
+        return httpActionAdapter;
+    }
+
+    public void setHttpActionAdapter(HttpActionAdapter httpActionAdapter) {
+        this.httpActionAdapter = httpActionAdapter;
     }
 }

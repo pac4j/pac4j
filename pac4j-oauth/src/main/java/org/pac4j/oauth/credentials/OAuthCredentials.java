@@ -1,23 +1,8 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.credentials;
 
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
-import org.scribe.model.Token;
 
 /**
  * This class represents an OAuth credentials for OAuth 1.0 &amp; 2.0 : a request token, a token and a verifier.
@@ -60,18 +45,31 @@ public class OAuthCredentials extends Credentials {
     public String getVerifier() {
         return this.verifier;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final OAuthCredentials that = (OAuthCredentials) o;
+
+        if (requestToken != null ? !requestToken.equals(that.requestToken) : that.requestToken != null) return false;
+        if (token != null ? !token.equals(that.token) : that.token != null) return false;
+        return !(verifier != null ? !verifier.equals(that.verifier) : that.verifier != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = requestToken != null ? requestToken.hashCode() : 0;
+        result = 31 * result + (token != null ? token.hashCode() : 0);
+        result = 31 * result + (verifier != null ? verifier.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "requestToken", this.requestToken, "token", this.token,
                                      "verifier", this.verifier, "clientName", getClientName());
-    }
-
-    @Override
-    public void clear() {
-        this.token = null;
-        this.requestToken = null;
-        this.verifier = null;
-        this.setClientName(null);
     }
 }

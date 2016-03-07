@@ -1,34 +1,14 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.pac4j.core.client.BaseClient;
+import com.github.scribejava.apis.OdnoklassnikiApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
 import org.pac4j.oauth.profile.ok.OkProfile;
-import org.scribe.builder.api.OkApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -56,19 +36,21 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         setPublicKey(publicKey);
     }
 
+
     @Override
-    protected BaseClient<OAuthCredentials, OkProfile> newClient() {
-        return new OkClient();
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("publicKey", this.publicKey);
+        super.internalInit(context);
     }
 
     @Override
-    protected boolean requiresStateParameter() {
-        return false;
+    protected Api getApi() {
+        return OdnoklassnikiApi.instance();
     }
 
     @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
+    protected  boolean hasOAuthGrantType() {
+        return true;
     }
 
     @Override
@@ -79,7 +61,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
                         "&method=users.getCurrentUser";
         String finalSign;
         try {
-            String preSign = getMD5SignAsHexString(accessToken.getToken() + secret);
+            String preSign = getMD5SignAsHexString(accessToken.getToken() + getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -93,9 +75,9 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         final OkProfile profile = new OkProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
-            profile.setId(JsonHelper.get(userNode, OkAttributesDefinition.UID));
-            for (final String attribute : OAuthAttributesDefinitions.okDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
+            profile.setId(JsonHelper.getElement(userNode, OkAttributesDefinition.UID));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(userNode, attribute));
             }
         }
         return profile;
@@ -114,27 +96,11 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         return result.toString();
     }
 
-    @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        CommonHelper.assertNotBlank("publicKey", this.publicKey);
-        this.service = new ProxyOAuth20ServiceImpl(new OkApi(),
-                new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, null, null), this.connectTimeout, this.readTimeout,
-                this.proxyHost, this.proxyPort, false, true);
-    }
-
     public String getPublicKey() {
         return publicKey;
     }
 
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
-    }
-
-    @Override
-    public BaseOAuthClient<OkProfile> clone() {
-        OkClient clone = (OkClient) super.clone();
-        clone.setPublicKey(publicKey);
-        return clone;
     }
 }

@@ -1,31 +1,20 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.vk;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.GenderIntegerConverter;
+import org.pac4j.oauth.profile.vk.converter.VkBooleanConverter;
+
+import java.util.Arrays;
 
 /**
  * This class defines the attributes of the Vk profile.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
- * 
  */
-public class VkAttributesDefinition extends OAuthAttributesDefinition {
+public class VkAttributesDefinition extends AttributesDefinition {
 
 	public static final String FIRST_NAME = "first_name";
 	public static final String LAST_NAME = "last_name";
@@ -55,31 +44,14 @@ public class VkAttributesDefinition extends OAuthAttributesDefinition {
 	public static final String RELATION = "relation";
 
 	public VkAttributesDefinition() {
-		addAttribute(FIRST_NAME, Converters.stringConverter);
-		addAttribute(LAST_NAME, Converters.stringConverter);
-		addAttribute(SEX, VkConverters.genderConverter);
-		addAttribute(BIRTH_DATE, VkConverters.dateConverter);
-		addAttribute(PHOTO_50, Converters.stringConverter);
-		addAttribute(PHOTO_100, Converters.stringConverter);
-		addAttribute(PHOTO_200_ORIG, Converters.stringConverter);
-		addAttribute(PHOTO_200, Converters.stringConverter);
-		addAttribute(PHOTO_400_ORIG, Converters.stringConverter);
-		addAttribute(PHOTO_MAX, Converters.stringConverter);
-		addAttribute(PHOTO_MAX_ORIG, Converters.stringConverter);
-		addAttribute(ONLINE, VkConverters.booleanConverter);
-		addAttribute(ONLINE_MOBILE, VkConverters.booleanConverter);
-		addAttribute(DOMAIN, Converters.stringConverter);
-		addAttribute(HAS_MOBILE, VkConverters.booleanConverter);
-		addAttribute(MOBILE_PHONE, Converters.stringConverter);
-		addAttribute(HOME_PHONE, Converters.stringConverter);
-		addAttribute(SKYPE, Converters.stringConverter);
-		addAttribute(SITE, Converters.stringConverter);
-		addAttribute(CAN_POST, VkConverters.booleanConverter);
-		addAttribute(CAN_SEE_ALL_POST, VkConverters.booleanConverter);
-		addAttribute(CAN_SEE_AUDIO, VkConverters.booleanConverter);
-		addAttribute(CAN_WRITE_PRIVATE_MESSAGE, VkConverters.booleanConverter);
-		addAttribute(STATUS, Converters.stringConverter);
-		addAttribute(COMMON_COUNT, Converters.integerConverter);
-		addAttribute(RELATION, Converters.integerConverter);
+		Arrays.stream(new String[] {FIRST_NAME, LAST_NAME, PHOTO_50, PHOTO_100, PHOTO_200_ORIG, PHOTO_200, PHOTO_400_ORIG,
+				PHOTO_MAX, PHOTO_MAX_ORIG, DOMAIN, MOBILE_PHONE, HOME_PHONE, SKYPE, SITE, STATUS}).forEach(a -> primary(a, Converters.STRING));
+		primary(COMMON_COUNT, Converters.INTEGER);
+		primary(RELATION, Converters.INTEGER);
+		final VkBooleanConverter booleanConverter = new VkBooleanConverter();
+		Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO, CAN_WRITE_PRIVATE_MESSAGE})
+				.forEach(a -> primary(a, booleanConverter));
+		primary(BIRTH_DATE, new FormattedDateConverter("dd.MM.yyyy"));
+		primary(SEX, new GenderIntegerConverter(2, 1));
 	}
 }

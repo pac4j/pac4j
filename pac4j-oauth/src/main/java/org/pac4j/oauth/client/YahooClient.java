@@ -1,31 +1,12 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
-import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.apis.YahooApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
-import org.scribe.builder.api.YahooApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth10aServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -34,7 +15,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.yahoo.YahooProfile}.</p>
  * <p>More information at http://developer.yahoo.com/social/rest_api_guide/extended-profile-resource.html</p>
  * 
- * @see org.pac4j.oauth.profile.yahoo.YahooProfile
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -47,37 +27,24 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
-    protected YahooClient newClient() {
-        return new YahooClient();
+    protected Api getApi() {
+        return YahooApi.instance();
     }
-    
-    @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new ProxyOAuth10aServiceImpl(new YahooApi(), new OAuthConfig(this.key, this.secret,
-                                                                                    computeFinalCallbackUrl(context),
-                                                                                    SignatureType.Header, null, null),
-                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                    this.proxyPort);
-    }
-    
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://social.yahooapis.com/v1/me/guid?format=xml";
     }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
-        // get the guid : https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
+        // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
-        final String guid = StringUtils.substringBetween(body, "<value>", "</value>");
+        final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
-        if (StringUtils.isBlank(guid)) {
+        if (CommonHelper.isBlank(guid)) {
             final String message = "Cannot find guid from body : " + body;
             throw new HttpCommunicationException(message);
         }
@@ -94,17 +61,12 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
         if (json != null) {
             json = json.get("profile");
             if (json != null) {
-                profile.setId(JsonHelper.get(json, "guid"));
-                for (final String attribute : OAuthAttributesDefinitions.yahooDefinition.getAllAttributes()) {
-                    profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                profile.setId(JsonHelper.getElement(json, "guid"));
+                for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                    profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

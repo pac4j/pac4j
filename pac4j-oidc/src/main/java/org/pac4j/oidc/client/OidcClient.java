@@ -1,21 +1,7 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oidc.client;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -24,14 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
-import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
-import com.nimbusds.openid.connect.sdk.token.verifiers.IDTokenVerifier;
 import org.apache.commons.lang3.StringUtils;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -39,6 +21,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -50,7 +33,10 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
 import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import com.nimbusds.oauth2.sdk.http.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
@@ -66,9 +52,11 @@ import com.nimbusds.openid.connect.sdk.UserInfoErrorResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoRequest;
 import com.nimbusds.openid.connect.sdk.UserInfoResponse;
 import com.nimbusds.openid.connect.sdk.UserInfoSuccessResponse;
+import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
+import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
@@ -78,7 +66,7 @@ import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
  * @author Michael Remond
  * @since 1.7.0
  */
-public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
+public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCredentials, U> {
 
     /* state attribute name in session */
     private static final String STATE_ATTRIBUTE = "oidcStateAttribute";
@@ -89,7 +77,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* default max clock skew */
     private static final int DEFAULT_MAX_CLOCK_SKEW = 30;
 
-    /* OpenID client_id */
+    /* OpenID client identifier */
     private String clientId;
 
     /* OpenID secret */
@@ -102,7 +90,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private String discoveryURI;
 
     /* ID Token verifier */
-    private IDTokenVerifier idTokenVerifier;
+    private IDTokenValidator idTokenValidator;
 
     /* OIDC metadata */
     private OIDCProviderMetadata oidcProvider;
@@ -114,10 +102,13 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     private String scope;
 
     /* Map containing user defined parameters */
-    private Map<String, String> customParams = new HashMap<String, String>();
+    private Map<String, String> customParams = new HashMap<>();
 
     /* client authentication object at the token End Point (basic, form or JWT) */
     private ClientAuthentication clientAuthentication;
+
+    /* client authentication method used at token End Point */
+    private ClientAuthenticationMethod clientAuthenticationMethod;
 
     /* clientID object */
     private ClientID _clientID;
@@ -134,6 +125,11 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     /* max clock skew in seconds */
     private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
 
+    /* timeouts for token and userinfo requests */
+    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+
+    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
+
     public OidcClient() { }
 
     public OidcClient(final String clientId, final String secret, final String discoveryURI) {
@@ -142,25 +138,40 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         this.discoveryURI = discoveryURI;
     }
 
-    @Override
-    public ClientType getClientType() {
-        return ClientType.OPENID_CONNECT_PROTOCOL;
-    }
-
     public void setDiscoveryURI(final String discoveryURI) {
         this.discoveryURI = discoveryURI;
     }
+    
+    public String getDiscoveryURI() {
+        return this.discoveryURI;
+    }
 
-    public void setClientID(final String clientID) {
-        this.clientId = clientID;
+    public void setClientID(final String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientID() {
+        return this.clientId;
     }
 
     public void setSecret(final String secret) {
         this.secret = secret;
     }
+    
+    public String getSecret() {
+        return this.secret;
+    }
 
     public void setScope(String scope) {
-		this.scope = scope;
+        this.scope = scope;
+    }
+
+    public String getScope() {
+        return this.scope;
+    }
+
+    public IDTokenValidator getIdTokenValidator() {
+		return idTokenValidator;
 	}
 
     public void addCustomParam(final String key, final String value) {
@@ -172,66 +183,116 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         this.customParams = customParams;
     }
 
+    public Map<String, String> getCustomParams() {
+        return this.customParams;
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
+	}
+
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public Map<String, String> getAuthParams() {
+        return this.authParams;
+    }
+
+    public OIDCProviderMetadata getProviderMetadata() {
+        return this.oidcProvider;
+    }
+    
+    public URI getRedirectURI() {
+        return this.redirectURI;
+    }
+
+    public ClientAuthentication getClientAuthentication() {
+        return this.clientAuthentication;
+    }
+
     @Override
     protected void internalInit(final WebContext context) {
 
-        CommonHelper.assertNotBlank(this.clientId, "clientID cannot be blank");
-        CommonHelper.assertNotBlank(this.secret, "secret cannot be blank");
-        CommonHelper.assertNotBlank(this.discoveryURI, "discoveryURI cannot be blank");
+        CommonHelper.assertNotBlank(getClientID(), "clientId cannot be blank");
+        CommonHelper.assertNotBlank(getSecret(), "secret cannot be blank");
+        CommonHelper.assertNotBlank(getDiscoveryURI(), "discoveryURI cannot be blank");
 
-        this.authParams = new HashMap<String, String>();
+        this.authParams = new HashMap<>();
 
         // add scope
-        if(StringUtils.isNotBlank(this.scope)){
-        	this.authParams.put("scope", this.scope);
+        if(StringUtils.isNotBlank(getScope())){
+            this.authParams.put("scope", getScope());
         } else {
-	        // default values
-	        this.authParams.put("scope", "openid profile email");
+            // default values
+            this.authParams.put("scope", "openid profile email");
         }
 
         this.authParams.put("response_type", "code");
         final String computedCallbackUrl = computeFinalCallbackUrl(context);
         this.authParams.put("redirect_uri", computedCallbackUrl);
         // add custom values
-        this.authParams.putAll(this.customParams);
+        this.authParams.putAll(getCustomParams());
         // Override with required values
-        this.authParams.put("client_id", this.clientId);
-        this.authParams.put("client_secret", this.secret);
+        this.authParams.put("client_id", getClientID());
+        this.authParams.put("client_secret", getSecret());
 
-        this._clientID = new ClientID(this.clientId);
-        this._secret = new Secret(this.secret);
+        this._clientID = new ClientID(getClientID());
+        this._secret = new Secret(getSecret());
 
         try {
             // Download OIDC metadata
-            DefaultResourceRetriever resourceRetriever = new DefaultResourceRetriever();
+            ResourceRetriever resourceRetriever = createResourceRetriever();
             this.oidcProvider = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
-                    new URL(this.discoveryURI)).getContent());
+                    new URL(getDiscoveryURI())).getContent());
             this.redirectURI = new URI(computedCallbackUrl);
             // check algorithms
-            final List<JWSAlgorithm> algorithms = oidcProvider.getIDTokenJWSAlgs();
+            final List<JWSAlgorithm> algorithms = getProviderMetadata().getIDTokenJWSAlgs();
             CommonHelper.assertTrue(algorithms != null && algorithms.size() > 0, "There must at least one JWS algorithm supported on the OpenID Connect provider side");
             final JWSAlgorithm jwsAlgorithm;
-            if (algorithms.contains(preferredJwsAlgorithm)) {
-                jwsAlgorithm = preferredJwsAlgorithm;
+            if (algorithms.contains(getPreferredJwsAlgorithm())) {
+                jwsAlgorithm = getPreferredJwsAlgorithm();
             } else {
                 jwsAlgorithm = algorithms.get(0);
-                logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredJwsAlgorithm, jwsAlgorithm);
+                logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", getPreferredJwsAlgorithm(), jwsAlgorithm);
             }
             // Init IDTokenVerifier
-            if (CommonHelper.isNotBlank(secret) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
-                this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, _secret);
+            if (CommonHelper.isNotBlank(getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
+                this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
             } else {
-                this.idTokenVerifier = new IDTokenVerifier(oidcProvider.getIssuer(), _clientID, jwsAlgorithm, this.oidcProvider.getJWKSetURI().toURL());
+                this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
             }
-            idTokenVerifier.setMaxClockSkew(this.maxClockSkew);
+            getIdTokenValidator().setMaxClockSkew(getMaxClockSkew());
 
         } catch (final IOException | ParseException | URISyntaxException e) {
             throw new TechnicalException(e);
         }
 
-        final ClientAuthenticationMethod method = this.oidcProvider.getTokenEndpointAuthMethods() != null
-                && this.oidcProvider.getTokenEndpointAuthMethods().size() > 0 ? this.oidcProvider
-                .getTokenEndpointAuthMethods().get(0) : ClientAuthenticationMethod.getDefault();
+        // check authentication methods
+        final List<ClientAuthenticationMethod> methods = getProviderMetadata().getTokenEndpointAuthMethods();
+        final ClientAuthenticationMethod method;
+
+        if (!methods.isEmpty()) {
+            if (methods.contains(getClientAuthenticationMethod())) {
+                method = getClientAuthenticationMethod();
+            } else {
+                method = getProviderMetadata().getTokenEndpointAuthMethods().get(0);
+                logger.warn("Preferred token endpoint Authentication method: {} not available. Defaulting to: {}",
+                        getClientAuthenticationMethod(), method);
+            }
+        } else {
+            method = ClientAuthenticationMethod.getDefault();
+            logger.warn("Provider metadata does not provide Token endpoint authentication methods. Defaulting to: {}",
+                    method);
+        }
 
         if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(method)) {
             this.clientAuthentication = new ClientSecretPost(this._clientID, this._secret);
@@ -240,35 +301,31 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         }
     }
 
-    @Override
-    protected IndirectClient<OidcCredentials, OidcProfile> newClient() {
-        OidcClient client = new OidcClient();
-        client.setClientID(this.clientId);
-        client.setSecret(this.secret);
-        client.setDiscoveryURI(this.discoveryURI);
-        client.setAuthParams(this.authParams);
-        client.setUseNonce(this.useNonce);
-        client.setPreferredJwsAlgorithm(this.preferredJwsAlgorithm);
-        client.setMaxClockSkew(this.maxClockSkew);
-        return client;
-    }
+	protected IDTokenValidator createRSATokenValidator(
+			final JWSAlgorithm jwsAlgorithm, ClientID clientID) throws MalformedURLException {
+		return new IDTokenValidator(getProviderMetadata().getIssuer(), clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
+	}
 
-    @Override
-    protected boolean isDirectRedirection() {
-        return false;
+	protected IDTokenValidator createHMACTokenValidator(
+			final JWSAlgorithm jwsAlgorithm, final ClientID clientID, final Secret secret) {
+		return new IDTokenValidator(getProviderMetadata().getIssuer(), clientID, jwsAlgorithm, secret);
+	}
+
+    protected ResourceRetriever createResourceRetriever() {
+        return new DefaultResourceRetriever(getConnectTimeout(), getReadTimeout());
     }
 
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
 
-        Map<String, String> params = new HashMap<String, String>(this.authParams);
+        Map<String, String> params = new HashMap<>(getAuthParams());
 
         // Init state for CSRF mitigation
         State state = new State();
         params.put("state", state.getValue());
         context.setSessionAttribute(STATE_ATTRIBUTE, state);
         // Init nonce for replay attack mitigation
-        if (this.useNonce) {
+        if (isUseNonce()) {
             Nonce nonce = new Nonce();
             params.put("nonce", nonce.getValue());
             context.setSessionAttribute(NONCE_ATTRIBUTE, nonce.getValue());
@@ -281,7 +338,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         } catch (Exception e) {
             throw new TechnicalException(e);
         }
-        String location = this.oidcProvider.getAuthorizationEndpointURI().toString() + "?" + queryString;
+        String location = getProviderMetadata().getAuthorizationEndpointURI().toString() + "?" + queryString;
         logger.debug("Authentication request url : {}", location);
 
         return RedirectAction.redirect(location);
@@ -294,7 +351,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
         Map<String, String> parameters = toSingleParameter(context.getRequestParameters());
         AuthenticationResponse response;
         try {
-            response = AuthenticationResponseParser.parse(this.redirectURI, parameters);
+            response = AuthenticationResponseParser.parse(getRedirectURI(), parameters);
         } catch (ParseException e) {
             throw new TechnicalException(e);
         }
@@ -320,37 +377,40 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     @Override
-    protected OidcProfile retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
+    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
 
-        final TokenRequest request = new TokenRequest(this.oidcProvider.getTokenEndpointURI(), this.clientAuthentication,
-                new AuthorizationCodeGrant(credentials.getCode(), this.redirectURI));
+        final TokenRequest request = buildTokenRequest(credentials);
         HTTPResponse httpResponse;
         try {
             // Token request
-            httpResponse = request.toHTTPRequest().send();
+            HTTPRequest tokenHttpRequest = request.toHTTPRequest();
+            tokenHttpRequest.setConnectTimeout(getConnectTimeout());
+            tokenHttpRequest.setReadTimeout(getReadTimeout());
+            httpResponse = tokenHttpRequest.send();
             logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                     httpResponse.getContent());
 
             final TokenResponse response = OIDCTokenResponseParser.parse(httpResponse);
             if (response instanceof TokenErrorResponse) {
-                logger.error("Bad token response, error={}", ((TokenErrorResponse) response).getErrorObject());
-                return null;
+                throw new TechnicalException("Bad token response, error=" + ((TokenErrorResponse) response).getErrorObject());
             }
             logger.debug("Token response successful");
             final OIDCTokenResponse tokenSuccessResponse = (OIDCTokenResponse) response;
             final OIDCTokens oidcTokens = tokenSuccessResponse.getOIDCTokens();
             final BearerAccessToken accessToken = (BearerAccessToken) oidcTokens.getAccessToken();
 
-            // Create Oidc profile
-            OidcProfile profile = new OidcProfile(accessToken);
+            // Create profile
+            final U profile = createProfile();
+            profile.setAccessToken(accessToken);
             profile.setIdTokenString(oidcTokens.getIDTokenString());
 
             // User Info request
-            UserInfo userInfo = null;
-            if (this.oidcProvider.getUserInfoEndpointURI() != null) {
-                UserInfoRequest userInfoRequest = new UserInfoRequest(this.oidcProvider.getUserInfoEndpointURI(),
-                        accessToken);
-                httpResponse = userInfoRequest.toHTTPRequest().send();
+            if (getProviderMetadata().getUserInfoEndpointURI() != null) {
+                UserInfoRequest userInfoRequest = buildUserInfoRequest(accessToken);
+                HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
+                userInfoHttpRequest.setConnectTimeout(getConnectTimeout());
+                userInfoHttpRequest.setReadTimeout(getReadTimeout());
+                httpResponse = userInfoHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());
 
@@ -360,24 +420,24 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
                     logger.error("Bad User Info response, error={}",
                             ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
-                    UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    userInfo = userInfoSuccessResponse.getUserInfo();
-                    if(userInfo != null){
+                    final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
+                    final UserInfo userInfo = userInfoSuccessResponse.getUserInfo();
+                    if (userInfo != null){
                     	profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
                     }
                 }
             }
 
             final Nonce nonce;
-            if (this.useNonce) {
+            if (isUseNonce()) {
                 nonce = new Nonce((String) context.getSessionAttribute(NONCE_ATTRIBUTE));
             } else {
                 nonce = null;
             }
             // Check ID Token
-            final IDTokenClaimsSet claimsSet = this.idTokenVerifier.verify(oidcTokens.getIDToken(), nonce);
+            final IDTokenClaimsSet claimsSet = getIdTokenValidator().validate(oidcTokens.getIDToken(), nonce);
             CommonHelper.assertNotNull("claimsSet", claimsSet);
-          	profile.setId(claimsSet.getSubject());
+            profile.setId(claimsSet.getSubject());
 
             return profile;
 
@@ -387,8 +447,34 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
 
     }
 
+    /**
+     * Create the appropriate profile type.
+     *
+     * @return the profile
+     */
+    protected U createProfile() {
+        return (U) new OidcProfile();
+    }
+
+    /**
+     * @param credentials the OpenID Connect credentials
+     * @return the TokenRequest object that will be used to query the OIDC Token endpoint.
+     */
+    protected TokenRequest buildTokenRequest(OidcCredentials credentials) {
+        return new TokenRequest(getProviderMetadata().getTokenEndpointURI(), getClientAuthentication(),
+                new AuthorizationCodeGrant(credentials.getCode(), getRedirectURI()));
+    }
+
+    /**
+     * @param accessToken the access token
+     * @return The UserInfoRequest object that will be used to query the OIDC UserInfo endpoint
+     */
+    protected UserInfoRequest buildUserInfoRequest(BearerAccessToken accessToken) {
+        return new UserInfoRequest(getProviderMetadata().getUserInfoEndpointURI(), accessToken);
+    }
+
     private Map<String, String> toSingleParameter(final Map<String, String[]> requestParameters) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (Entry<String, String[]> entry : requestParameters.entrySet()) {
             map.put(entry.getKey(), entry.getValue()[0]);
         }
@@ -400,7 +486,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     public JWSAlgorithm getPreferredJwsAlgorithm() {
-        return preferredJwsAlgorithm;
+        return this.preferredJwsAlgorithm;
     }
 
     public void setPreferredJwsAlgorithm(JWSAlgorithm preferredJwsAlgorithm) {
@@ -408,7 +494,7 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     public boolean isUseNonce() {
-        return useNonce;
+        return this.useNonce;
     }
 
     public void setUseNonce(boolean useNonce) {
@@ -416,10 +502,18 @@ public class OidcClient extends IndirectClient<OidcCredentials, OidcProfile> {
     }
 
     public int getMaxClockSkew() {
-        return maxClockSkew;
+        return this.maxClockSkew;
     }
 
     public void setMaxClockSkew(int maxClockSkew) {
         this.maxClockSkew = maxClockSkew;
+    }
+
+    public ClientAuthenticationMethod getClientAuthenticationMethod() {
+        return clientAuthenticationMethod;
+    }
+
+    public void setClientAuthenticationMethod(ClientAuthenticationMethod clientAuthenticationMethod) {
+        this.clientAuthenticationMethod = clientAuthenticationMethod;
     }
 }

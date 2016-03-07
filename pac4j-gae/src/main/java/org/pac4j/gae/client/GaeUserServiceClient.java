@@ -1,22 +1,6 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.gae.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -36,21 +20,15 @@ import com.google.appengine.api.users.UserServiceFactory;
  * @since 1.6.0
  */
 public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, GaeUserServiceProfile> {
-	UserService service;
-	String authDomain = null;
-	public GaeUserServiceClient() {
-		setName("GaeUserServiceClient");
-	}
-	@Override
-	protected IndirectClient<GaeUserCredentials, GaeUserServiceProfile> newClient() {
-		GaeUserServiceClient gaeUserServiceClient = new GaeUserServiceClient();
-		gaeUserServiceClient.setAuthDomain(authDomain);
-		return gaeUserServiceClient;
-	}
+
+	protected UserService service;
+	protected String authDomain = null;
 
 	@Override
-	protected boolean isDirectRedirection() {
-		return true;
+	protected void internalInit(final WebContext context) {
+		service = UserServiceFactory.getUserService();
+		CommonHelper.assertNotNull("service", this.service);
+		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
 	}
 
 	@Override
@@ -84,17 +62,6 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 		return null;
 	}
 
-	@Override
-	public ClientType getClientType() {
-		return ClientType.GAE_PROVIDER;
-	}
-
-	@Override
-	protected void internalInit(final WebContext context) {
-		service = UserServiceFactory.getUserService();
-		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-	}
-	
 	/**
 	 * Set the authDomain for connect to google apps for domain with the UserService
 	 * @param authDomain the authentication domain
@@ -106,5 +73,4 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	public String getAuthDomain() {
 		return authDomain;
 	}
-
 }

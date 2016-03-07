@@ -1,0 +1,100 @@
+package org.pac4j.oauth.run;
+
+import com.esotericsoftware.kryo.Kryo;
+import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.run.RunClient;
+import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.client.OkClient;
+import org.pac4j.oauth.profile.ok.OkProfile;
+
+import java.util.Locale;
+
+import static org.junit.Assert.*;
+
+/**
+ * Run manually a test for the {@link OkClient}.
+ *
+ * @author Jerome Leleu
+ * @since 1.9.0
+ */
+public final class RunOkClient extends RunClient {
+
+    /**
+     * Real profile id.
+     */
+    private static final String TEST_PROFILE_ID = "";
+    /**
+     * Real profile location.
+     */
+    private static final String TEST_LOCATION = "";
+    /**
+     * Real profile locale.
+     */
+    private static final java.lang.String TEST_LOCALE = "ru";
+    /**
+     * Real profile first name.
+     */
+    private static final String TEST_FIRST_NAME = "";
+    /**
+     * Real profile last name.
+     */
+    private static final String TEST_LAST_NAME = "";
+    /**
+     * Real profile picture url.
+     */
+    private static final String TEST_PROFILE_PICTURE_URL = "";
+
+    public static void main(String[] args) throws Exception {
+        new RunOkClient().run();
+    }
+
+    @Override
+    protected String getLogin() {
+        return "";
+    }
+
+    @Override
+    protected String getPassword() {
+        return "";
+    }
+
+    @Override
+    protected IndirectClient getClient() {
+        final OkClient okClient = new OkClient();
+        okClient.setKey("1139019264");
+        okClient.setPublicKey("CBAPAFOEEBABABABA");
+        okClient.setSecret("479452FD7CA726DF558B4303");
+        okClient.setCallbackUrl(PAC4J_URL);
+        return okClient;
+    }
+
+    @Override
+    protected void registerForKryo(final Kryo kryo) {
+        kryo.register(OkProfile.class);
+    }
+
+    @Override
+    protected void verifyProfile(UserProfile userProfile) {
+        final OkProfile profile = (OkProfile) userProfile;
+        assertEquals(TEST_PROFILE_ID, profile.getId());
+        assertEquals(OkProfile.class.getName() + UserProfile.SEPARATOR + TEST_PROFILE_ID,
+                profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), OkProfile.class));
+        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertCommonProfile(
+                userProfile,
+                null,
+                TEST_FIRST_NAME,
+                TEST_LAST_NAME,
+                TEST_FIRST_NAME + " " + TEST_LAST_NAME,
+                TEST_PROFILE_ID,
+                Gender.MALE,
+                new Locale(TEST_LOCALE),
+                TEST_PROFILE_PICTURE_URL,
+                OkProfile.BASE_PROFILE_URL + TEST_PROFILE_ID,
+                TEST_LOCATION);
+    }
+}

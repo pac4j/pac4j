@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 -2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.util;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
@@ -55,14 +40,20 @@ public final class Configuration {
         parserPool.setCoalescing(true);
         parserPool.setIgnoreComments(true);
         parserPool.setNamespaceAware(true);
+        parserPool.setExpandEntityReferences(false);
+        parserPool.setXincludeAware(false);
+        parserPool.setIgnoreElementContentWhitespace(true);
 
         final Map<String, Object> builderAttributes = new HashMap<String, Object>();
         parserPool.setBuilderAttributes(builderAttributes);
 
-        final Map<String, Boolean> features = new HashMap<String, Boolean>();
+        final Map<String, Boolean> features = new HashMap<>();
         features.put("http://apache.org/xml/features/disallow-doctype-decl", Boolean.TRUE);
         features.put("http://apache.org/xml/features/validation/schema/normalized-value", Boolean.FALSE);
         features.put("http://javax.xml.XMLConstants/feature/secure-processing", Boolean.TRUE);
+        features.put("http://xml.org/sax/features/external-general-entities", Boolean.FALSE);
+        features.put("http://xml.org/sax/features/external-parameter-entities", Boolean.FALSE);
+
         parserPool.setBuilderFeatures(features);
 
         try {

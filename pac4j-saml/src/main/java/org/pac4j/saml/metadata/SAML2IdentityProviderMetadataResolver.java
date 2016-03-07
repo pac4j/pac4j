@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.metadata;
 
 import java.io.FileNotFoundException;
@@ -28,7 +13,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.opensaml.xml.util.XMLHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
@@ -43,6 +27,7 @@ import org.w3c.dom.Element;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 
 /**
@@ -55,7 +40,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 	protected final static String HTTP_PREFIX = "http";
 	protected final static String FILE_PREFIX = "file:";
 
-	private final Resource idpMetadataResource;
+    private final Resource idpMetadataResource;
 	private String idpEntityId;
 	private DOMMetadataResolver idpMetadataProvider;
 
@@ -83,10 +68,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 	@Override
 	public final MetadataResolver resolve() {
 
-		// No locks are used since saml2client's init does in turn invoke
-		// resolve and idpMetadataProvider is set.
-		// idpMetadataProvider is initialized by
-		// Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
+    	// No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
+    	// idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
 		// Usage of locks will adversly impact performance.
 		if (idpMetadataProvider != null) {
 			return idpMetadataProvider;
@@ -94,11 +77,11 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
 		try {
 
-			if (this.idpMetadataResource == null) {
-				throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
+            if (this.idpMetadataResource == null) {
+                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
 			}
 
-			try (final InputStream in = this.idpMetadataResource.getInputStream()) {
+            try (final InputStream in = this.idpMetadataResource.getInputStream()) {
 				final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
 				final Element metadataRoot = inCommonMDDoc.getDocumentElement();
 				idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
@@ -112,8 +95,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 						+ CommonHelper.INVALID_PATH_MESSAGE, e);
 			}
 
-			// If no idpEntityId declared, select first EntityDescriptor
-			// entityId as our IDP entityId
+            // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
 			if (this.idpEntityId == null) {
 				final Iterator<EntityDescriptor> it = idpMetadataProvider.iterator();
 
@@ -154,13 +136,14 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
 	@Override
 	public String getMetadataPath() {
-		return idpMetadataResource.getFilename();
+        return idpMetadataResource.getFilename();
 	}
 
 	@Override
 	public String getMetadata() {
-		if (getEntityDescriptorElement() != null && getEntityDescriptorElement().getDOM() != null) {
-			return XMLHelper.nodeToString(getEntityDescriptorElement().getDOM());
+        if (getEntityDescriptorElement() != null
+                && getEntityDescriptorElement().getDOM() != null) {
+            return SerializeSupport.nodeToString(getEntityDescriptorElement().getDOM());
 		}
 		throw new TechnicalException("Metadata cannot be retrieved because entity descriptor is null");
 	}

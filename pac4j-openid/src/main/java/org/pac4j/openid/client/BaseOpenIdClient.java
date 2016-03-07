@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.openid.client;
 
 import java.util.List;
@@ -28,7 +13,6 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -113,16 +97,11 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
             }
 
             final String redirectionUrl = authRequest.getDestinationUrl(true);
-            logger.debug("redirectionUrl : {}", redirectionUrl);
+            logger.debug("redirectionUrl: {}", redirectionUrl);
             return RedirectAction.redirect(redirectionUrl);
         } catch (final OpenIDException e) {
             throw new TechnicalException("OpenID exception", e);
         }
-    }
-
-    @Override
-    protected boolean isDirectRedirection() {
-        return false;
     }
 
     @Override
@@ -143,7 +122,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
 
         // create credentials
         final OpenIdCredentials credentials = new OpenIdCredentials(discoveryInformation, parameterList, getName());
-        logger.debug("credentials : {}", credentials);
+        logger.debug("credentials: {}", credentials);
         return credentials;
     }
 
@@ -160,8 +139,8 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     protected U retrieveUserProfile(final OpenIdCredentials credentials, final WebContext context) {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
-        logger.debug("parameterList : {}", parameterList);
-        logger.debug("discoveryInformation : {}", discoveryInformation);
+        logger.debug("parameterList: {}", parameterList);
+        logger.debug("discoveryInformation: {}", discoveryInformation);
 
         try {
             // verify the response
@@ -172,11 +151,11 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
             final Identifier verified = verification.getVerifiedId();
             if (verified != null) {
                 final AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
-                logger.debug("authSuccess : {}", authSuccess);
+                logger.debug("authSuccess: {}", authSuccess);
 
                 final U profile = createProfile(authSuccess);
                 profile.setId(verified.getIdentifier());
-                logger.debug("profile : {}", profile);
+                logger.debug("profile: {}", profile);
                 return profile;
             }
         } catch (final OpenIDException e) {
@@ -185,10 +164,5 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
 
         final String message = "No verifiedId found";
         throw new TechnicalException(message);
-    }
-
-    @Override
-    public ClientType getClientType() {
-        return ClientType.OPENID_PROTOCOL;
     }
 }

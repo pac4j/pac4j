@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.util;
 
 /**
@@ -26,32 +11,19 @@ public interface TestsConstants {
     // simple objects
     String ID = "id";
     String VALUE = "value";
-    int MILLIS_BETWEEN_CLEANUPS = 30000;
     String TYPE = "type";
-    String SCOPE = "scope";
-    String FIELDS = "fields";
-    int LIMIT = 112;
-    String REALM_NAME = "realmName";
     String HEADER_NAME = "headerName";
     String PREFIX_HEADER = "prefixHeader";
     String USERNAME = "username";
     String PASSWORD = "password";
-    String STRING_ID = "id";
     String KEY = "key";
-    String PARAMETER_NAME = "parameterName";
     String FAKE_VALUE = "fakeValue";
     String SECRET = "secret";
     String TOKEN = "token";
     String VERIFIER = "verifier";
     String CODE = "code";
-    String ELEMENT = "element";
-    String ELEMENT2 = "element2";
     String NAME = "name";
-    String BAD_JSON = "{ }";
-    String TITLE = "title";
-    String NAMESPACE = "namespace";
-    int INT_ID = 1234;
-    String SALT = "sel";
+    String SALT = "salt";
     String GOOD_USERNAME = "jle";
     String GOOD_USERNAME2 = "jleleu";
     String BAD_USERNAME = "michael";
@@ -61,6 +33,18 @@ public interface TestsConstants {
     String CLIENT_NAME = "clientname";
     String ROLE = "role";
     String PATH = "/tmp/path";
+    String EMAIL = "test@example.com";
+
+    //Digest components
+    String DIGEST_RESPONSE = "0353b452a373c2bf9dbff4e0abaf3be7";
+    String REALM = "testRealm";
+    String NONCE = "a19574258e80cb0833c58819e009303e";
+    String URI = "/api/users/list?accountid=testaccount";
+    String NC = "00000001";
+    String QOP = "auth";
+    String CNONCE = "ICAgICAgICAgICAgICAgICAgICAgICAgICA1NzI2NzA=";
+    String DIGEST_AUTHORIZATION_HEADER_VALUE = "Digest username=\"" + USERNAME + ",realm=\"" + REALM + "\",nonce=\"" + NONCE + "\"," +
+            "uri=\"" + URI + "\",response=\"" + DIGEST_RESPONSE + "\",qop=\"" + QOP + "\",nc=\"" + NC + "\",cnonce=\"" + CNONCE + "\"";
 
     // urls
     String CALLBACK_URL = "http://myserver/callback";

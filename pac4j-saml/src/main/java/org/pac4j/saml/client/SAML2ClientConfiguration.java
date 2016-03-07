@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.client;
 
 import java.security.KeyStore;
@@ -30,8 +15,8 @@ import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 
 /**
- * The {@link SAML2ClientConfiguration} is responsible for... capturing client
- * settings and passing them around.
+ * The {@link SAML2ClientConfiguration} is responsible for...
+ * capturing client settings and passing them around.
  *
  * @author Misagh Moayyed
  * @since 1.7
@@ -75,13 +60,13 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
 	private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
-	public SAML2ClientConfiguration() {
-	}
+    public SAML2ClientConfiguration() {}
 
 	private Collection<String> blackListedSignatureSigningAlgorithms;
 	private List<String> signatureAlgorithms;
 	private List<String> signatureReferenceDigestMethods;
 	private String signatureCanonicalizationAlgorithm;
+    private boolean wantsAssertionsSigned = true;
 
 	private String keyStoreAlias;
 
@@ -102,7 +87,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
 	public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
 			final String privateKeyPassword, final String identityProviderMetadataPath) {
-		this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null,
+        this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null,
 				identityProviderMetadataPath, null, null);
 	}
 
@@ -131,8 +116,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 				this.identityProviderMetadataResource != null || CommonHelper.isNotBlank(identityProviderMetadataPath),
 				"Either identityProviderMetadataResource or identityProviderMetadataPath must be provided");
 
-		final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap
-				.buildDefaultSignatureSigningConfiguration();
+        final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 		this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
 		this.signatureAlgorithms = new ArrayList<>(config.getSignatureAlgorithms());
 		this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
@@ -197,8 +181,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
 	/**
-	 * @param forceAuth
-	 *            the forceAuth to set
+     * @param forceAuth the forceAuth to set
 	 */
 	public void setForceAuth(final boolean forceAuth) {
 		this.forceAuth = forceAuth;
@@ -212,8 +195,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
 	/**
-	 * @param comparisonType
-	 *            the comparisonType to set
+     * @param comparisonType the comparisonType to set
 	 */
 	public void setComparisonType(final String comparisonType) {
 		this.comparisonType = comparisonType;
@@ -227,8 +209,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
 	/**
-	 * @param destinationBindingType
-	 *            the destinationBindingType to set
+     * @param destinationBindingType the destinationBindingType to set
 	 */
 	public void setDestinationBindingType(final String destinationBindingType) {
 		this.destinationBindingType = destinationBindingType;
@@ -242,8 +223,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
 	/**
-	 * @param authnContextClassRef
-	 *            the authnContextClassRef to set
+     * @param authnContextClassRef the authnContextClassRef to set
 	 */
 	public void setAuthnContextClassRef(final String authnContextClassRef) {
 		this.authnContextClassRef = authnContextClassRef;
@@ -257,8 +237,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
 	/**
-	 * @param nameIdPolicyFormat
-	 *            the nameIdPolicyFormat to set
+     * @param nameIdPolicyFormat the nameIdPolicyFormat to set
 	 */
 	public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
 		this.nameIdPolicyFormat = nameIdPolicyFormat;
@@ -348,8 +327,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 		return blackListedSignatureSigningAlgorithms;
 	}
 
-	public void setBlackListedSignatureSigningAlgorithms(
-			final Collection<String> blackListedSignatureSigningAlgorithms) {
+    public void setBlackListedSignatureSigningAlgorithms(final Collection<String> blackListedSignatureSigningAlgorithms) {
 		this.blackListedSignatureSigningAlgorithms = blackListedSignatureSigningAlgorithms;
 	}
 
@@ -376,6 +354,14 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
 		this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
 	}
+
+    public boolean getWantsAssertionsSigned() {
+        return this.wantsAssertionsSigned;
+    }
+
+    public void setWantsAssertionsSigned(boolean wantsAssertionsSigned) {
+        this.wantsAssertionsSigned = wantsAssertionsSigned;
+    }
 
 	@Override
 	public SAML2ClientConfiguration clone() {

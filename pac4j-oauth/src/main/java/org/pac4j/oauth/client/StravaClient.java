@@ -1,30 +1,11 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
-import org.scribe.builder.api.StravaApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+import org.pac4j.scribe.builder.api.StravaApi20;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -57,6 +38,34 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         setSecret(secret);
     }
 
+    @Override
+    protected Api getApi() {
+        return new StravaApi20(approvalPrompt);
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
+    @Override
+    protected String getProfileUrl(Token accessToken) {
+        return "https://www.strava.com/api/v3/athlete";
+    }
+
+    @Override
+    protected StravaProfile extractUserProfile(String body) {
+        final StravaProfile profile = new StravaProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json != null) {
+            profile.setId(JsonHelper.getElement(json, StravaAttributesDefinition.ID));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            }
+        }
+        return profile;
+    }
+
     public String getApprovalPrompt() {
         return approvalPrompt;
     }
@@ -71,52 +80,5 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
 
     public void setScope(String scope) {
         this.scope = scope;
-    }
-
-    @Override
-    protected StravaClient newClient() {
-        StravaClient client = new StravaClient();
-        client.setScope(scope);
-        return client;
-    }
-
-    @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        service = new ProxyOAuth20ServiceImpl(new StravaApi(approvalPrompt), new OAuthConfig(key, secret, computeFinalCallbackUrl(context),
-                SignatureType.Header, scope, null), connectTimeout, readTimeout, proxyHost, proxyPort, false, false);
-    }
-
-    @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-
-    @Override
-    protected boolean hasBeenCancelled(WebContext context) {
-        return false;
-    }
-
-    @Override
-    protected String getProfileUrl(Token accessToken) {
-        return "https://www.strava.com/api/v3/athlete";
-    }
-
-    @Override
-    protected StravaProfile extractUserProfile(String body) {
-        final StravaProfile profile = new StravaProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.get(json, StravaAttributesDefinition.ID));
-            for (final String attribute : OAuthAttributesDefinitions.stravaDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
-            }
-        }
-        return profile;
-    }
-
-    @Override
-    protected boolean isDirectRedirection() {
-        return false;
     }
 }

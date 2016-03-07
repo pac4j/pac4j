@@ -1,28 +1,13 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.sql.credentials.authenticator;
 
-import org.pac4j.core.exception.AccountNotFoundException;
-import org.pac4j.core.exception.BadCredentialsException;
-import org.pac4j.core.exception.MultipleAccountsFoundException;
-import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.*;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
-import org.pac4j.http.credentials.password.PasswordEncoder;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -35,7 +20,7 @@ import java.util.Map;
 
 /**
  * Authenticator for users stored in relational database, based on the JDBI library.
- * It creates the user profile and stores it in the credentials for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * It creates the user profile and stores it in the credentials for the {@link AuthenticatorProfileCreator}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -56,8 +41,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     protected String startQuery = "select username, password";
     protected String endQuery = " from users where username = :username";
 
-    public DbAuthenticator() {
-    }
+    public DbAuthenticator() {}
 
     public DbAuthenticator(final DataSource dataSource) {
         this.dataSource = dataSource;
@@ -71,25 +55,20 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     public DbAuthenticator(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         this.attributes = attributes;
-        this.passwordEncoder = passwordEncoder;
+        setPasswordEncoder(passwordEncoder);
     }
 
-    protected void initDbi() {
-        if (this.dbi == null) {
-            synchronized (this) {
-                if (this.dbi == null) {
-                    this.dbi = new DBI(this.dataSource);
-                }
-            }
-        }
-    }
-
-    public void validate(UsernamePasswordCredentials credentials) {
+    @Override
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);
-        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
+        this.dbi = new DBI(this.dataSource);
 
-        initDbi();
+        super.internalInit(context);
+    }
+
+    @Override
+    public void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction {
 
         Handle h = null;
         try {
@@ -102,16 +81,16 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
             } else {
                 query = startQuery + endQuery;
             }
-            final List<Map<String, Object>> results = h.createQuery(query).bind("username", username).list(2);
+            final List<Map<String, Object>> results = h.createQuery(query).bind(Pac4jConstants.USERNAME, username).list(2);
 
-            if (results == null || results.size() == 0) {
+            if (results == null || results.isEmpty()) {
                 throw new AccountNotFoundException("No account found for: " + username);
             } else if (results.size() > 1) {
                 throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
             } else {
                 final Map<String, Object> result = results.get(0);
-                final String expectedPassword = passwordEncoder.encode(credentials.getPassword());
-                final String returnedPassword = (String) result.get("password");
+                final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
+                final String returnedPassword = (String) result.get(Pac4jConstants.PASSWORD);
                 if (CommonHelper.areNotEquals(returnedPassword, expectedPassword)) {
                     throw new BadCredentialsException("Bad credentials for: " + username);
                 } else {

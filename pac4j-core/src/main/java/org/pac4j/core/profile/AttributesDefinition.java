@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.profile;
 
 import java.util.ArrayList;
@@ -30,87 +15,65 @@ import org.pac4j.core.profile.converter.AttributeConverter;
  */
 public class AttributesDefinition {
     
-    protected List<String> allAttributesNames = new ArrayList<>();
+    protected List<String> primaries = new ArrayList<>();
     
-    protected List<String> principalAttributesNames = new ArrayList<>();
+    protected List<String> secondaries = new ArrayList<>();
     
-    protected List<String> otherAttributesNames = new ArrayList<>();
-    
-    protected Map<String, AttributeConverter<? extends Object>> attributesConverters = new HashMap<>();
+    protected Map<String, AttributeConverter<? extends Object>> converters = new HashMap<>();
     
     /**
-     * Return all the attributes names.
+     * Return the primary attributes names.
      * 
-     * @return all the attributes names
+     * @return the primary attributes names
      */
-    public List<String> getAllAttributes() {
-        return this.allAttributesNames;
+    public List<String> getPrimaryAttributes() {
+        return this.primaries;
     }
     
     /**
-     * Return the principal attributes names.
+     * Return the secondary attributes names.
      * 
-     * @return the principal attributes names
+     * @return the secondary attributes names
      */
-    public List<String> getPrincipalAttributes() {
-        return this.principalAttributesNames;
+    public List<String> getSecondaryAttributes() {
+        return this.secondaries;
     }
-    
+
     /**
-     * Return the other attributes names.
-     * 
-     * @return the other attributes names
-     */
-    public List<String> getOtherAttributes() {
-        return this.otherAttributesNames;
-    }
-    
-    /**
-     * Add an attribute as a primary one and its converter to this attributes definition.
+     * Add an attribute as a primary one and its converter.
      * 
      * @param name name of the attribute
      * @param converter converter
      */
-    protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter) {
-        addAttribute(name, converter, true);
+    protected void primary(final String name, final AttributeConverter<? extends Object> converter) {
+        primaries.add(name);
+        converters.put(name, converter);
     }
-    
+
     /**
-     * Add an attribute, its primary aspect and its converter to this attributes definition.
-     * 
+     * Add an attribute as a secondary one and its converter.
+     *
      * @param name name of the attribute
      * @param converter converter
-     * @param principal whether the attribute is principal
      */
-    protected void addAttribute(final String name, final AttributeConverter<? extends Object> converter,
-                                final boolean principal) {
-        this.allAttributesNames.add(name);
-        this.attributesConverters.put(name, converter);
-        if (principal) {
-            this.principalAttributesNames.add(name);
-        } else {
-            this.otherAttributesNames.add(name);
-        }
+    protected void secondary(final String name, final AttributeConverter<? extends Object> converter) {
+        secondaries.add(name);
+        converters.put(name, converter);
     }
-    
+
     /**
-     * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is returned or <code>null</code>,
-     * depending on the {@link ProfileHelper#enforceProfileDefinition} setting.
+     * Convert an attribute into the right type. If no converter exists for this attribute name, the attribute is returned.
      * 
      * @param name name of the attribute
      * @param value value of the attribute
-     * @return the converted attribute or null if no converter exists for this attribute name
+     * @return the converted attribute or the attribute if no converter exists for this attribute name
      */
     public Object convert(final String name, final Object value) {
-        AttributeConverter<? extends Object> converter = this.attributesConverters.get(name);
+        AttributeConverter<? extends Object> converter = this.converters.get(name);
         if (converter != null && value != null) {
             return converter.convert(value);
         } else {
-            if (ProfileHelper.isEnforceProfileDefinition()) {
-                return null;
-            } else {
-                return value;
-            }
+            return value;
         }
     }
 }

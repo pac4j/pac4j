@@ -1,25 +1,10 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.config;
 
 import org.junit.Test;
-import org.pac4j.core.authorization.Authorizer;
-import org.pac4j.core.authorization.RequireAnyRoleAuthorizer;
+import org.pac4j.core.authorization.authorizer.Authorizer;
+import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.FakeClient;
+import org.pac4j.core.client.MockBaseClient;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
@@ -56,7 +41,7 @@ public final class ConfigTests implements TestsConstants {
 
     @Test
     public void testConstructor() {
-        final Client client = new FakeClient();
+        final Client client = new MockBaseClient(NAME);
         final Config config = new Config(CALLBACK_URL, client);
         assertEquals(CALLBACK_URL, config.getClients().getCallbackUrl());
         assertEquals(client, config.getClients().findAllClients().get(0));

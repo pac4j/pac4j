@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.context;
 
 import java.util.Collection;
@@ -42,17 +27,19 @@ public abstract class BaseResponseContext implements WebContext {
 
     protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
 
-
+    @Override
     public void writeResponseContent(final String content) {
         if (content != null) {
             this.responseContent += content;
         }
     }
 
+    @Override
     public void setResponseStatus(final int code) {
         this.responseStatus = code;
     }
 
+    @Override
     public void setResponseHeader(final String name, final String value) {
         this.responseHeaders.put(name, value);
     }
@@ -71,11 +58,6 @@ public abstract class BaseResponseContext implements WebContext {
 
     public Map<String, String> getResponseHeaders() {
         return this.responseHeaders;
-    }
-
-    @Override
-    public void setResponseCharacterEncoding(final String encoding) {
-        this.responseEncoding = encoding;
     }
 
     @Override
