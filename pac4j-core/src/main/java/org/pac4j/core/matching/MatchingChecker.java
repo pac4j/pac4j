@@ -12,5 +12,5 @@ import java.util.Map;
  */
 public interface MatchingChecker {
 
-    boolean matches(WebContext context, String matcherName, Map<String, Matcher> matchersMap);
+    boolean matches(WebContext context, String matcherNames, Map<String, Matcher> matchersMap);
 }
