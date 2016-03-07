@@ -1,19 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
-
 package org.pac4j.saml.credentials;
 
 import java.util.List;
@@ -60,15 +44,28 @@ public class SAML2Credentials extends Credentials {
     }
 
     @Override
-    public final String toString() {
-        return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final SAML2Credentials that = (SAML2Credentials) o;
+
+        if (nameId != null ? !nameId.equals(that.nameId) : that.nameId != null) return false;
+        if (attributes != null ? !attributes.equals(that.attributes) : that.attributes != null) return false;
+        return !(conditions != null ? !conditions.equals(that.conditions) : that.conditions != null);
+
     }
 
     @Override
-    public void clear() {
-        this.conditions = null;
-        this.nameId = null;
-        this.attributes = null;
-        this.setClientName(null);
+    public int hashCode() {
+        int result = nameId != null ? nameId.hashCode() : 0;
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        result = 31 * result + (conditions != null ? conditions.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public final String toString() {
+        return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
     }
 }

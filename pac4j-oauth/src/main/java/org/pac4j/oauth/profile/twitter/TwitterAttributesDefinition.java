@@ -1,22 +1,11 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.twitter;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+import org.pac4j.core.profile.converter.FormattedDateConverter;
+
+import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * This class defines the attributes of the Twitter profile.
@@ -24,7 +13,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterAttributesDefinition extends OAuthAttributesDefinition {
+public class TwitterAttributesDefinition extends AttributesDefinition {
     
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";
@@ -64,41 +53,19 @@ public class TwitterAttributesDefinition extends OAuthAttributesDefinition {
     public static final String VERIFIED = "verified";
     
     public TwitterAttributesDefinition() {
-        addAttribute(CONTRIBUTORS_ENABLED, Converters.booleanConverter);
-        addAttribute(CREATED_AT, TwitterConverters.dateConverter);
-        addAttribute(DEFAULT_PROFILE, Converters.booleanConverter);
-        addAttribute(DEFAULT_PROFILE_IMAGE, Converters.booleanConverter);
-        addAttribute(DESCRIPTION, Converters.stringConverter);
-        addAttribute(FAVOURITES_COUNT, Converters.integerConverter);
-        addAttribute(FOLLOW_REQUEST_SENT, Converters.booleanConverter);
-        addAttribute(FOLLOWERS_COUNT, Converters.integerConverter);
-        addAttribute(FOLLOWING, Converters.booleanConverter);
-        addAttribute(FRIENDS_COUNT, Converters.integerConverter);
-        addAttribute(GEO_ENABLED, Converters.booleanConverter);
-        addAttribute(IS_TRANSLATOR, Converters.booleanConverter);
-        addAttribute(LANG, Converters.localeConverter);
-        addAttribute(LISTED_COUNT, Converters.integerConverter);
-        addAttribute(LOCATION, Converters.stringConverter);
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(NOTIFICATIONS, Converters.booleanConverter);
-        addAttribute(PROFILE_BACKGROUND_COLOR, Converters.colorConverter);
-        addAttribute(PROFILE_BACKGROUND_IMAGE_URL, Converters.urlConverter);
-        addAttribute(PROFILE_BACKGROUND_IMAGE_URL_HTTPS, Converters.urlConverter);
-        addAttribute(PROFILE_BACKGROUND_TILE, Converters.booleanConverter);
-        addAttribute(PROFILE_IMAGE_URL, Converters.urlConverter);
-        addAttribute(PROFILE_IMAGE_URL_HTTPS, Converters.urlConverter);
-        addAttribute(PROFILE_LINK_COLOR, Converters.colorConverter);
-        addAttribute(PROFILE_SIDEBAR_BORDER_COLOR, Converters.colorConverter);
-        addAttribute(PROFILE_SIDEBAR_FILL_COLOR, Converters.colorConverter);
-        addAttribute(PROFILE_TEXT_COLOR, Converters.colorConverter);
-        addAttribute(PROFILE_USE_BACKGROUND_IMAGE, Converters.booleanConverter);
-        addAttribute(PROTECTED, Converters.booleanConverter);
-        addAttribute(SCREEN_NAME, Converters.stringConverter);
-        addAttribute(SHOW_ALL_INLINE_MEDIA, Converters.booleanConverter);
-        addAttribute(STATUSES_COUNT, Converters.integerConverter);
-        addAttribute(TIME_ZONE, Converters.stringConverter);
-        addAttribute(URL, Converters.stringConverter);
-        addAttribute(UTC_OFFSET, Converters.integerConverter);
-        addAttribute(VERIFIED, Converters.booleanConverter);
+        Arrays.stream(new String[] {DESCRIPTION, LOCATION, NAME, SCREEN_NAME, TIME_ZONE, URL})
+                .forEach(a -> primary(a, Converters.STRING));
+        Arrays.stream(new String[] {CONTRIBUTORS_ENABLED, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FOLLOW_REQUEST_SENT, FOLLOWING,
+                GEO_ENABLED, IS_TRANSLATOR, NOTIFICATIONS, PROFILE_USE_BACKGROUND_IMAGE, PROTECTED, SHOW_ALL_INLINE_MEDIA,
+                PROFILE_BACKGROUND_TILE, VERIFIED})
+                .forEach(a -> primary(a, Converters.BOOLEAN));
+        Arrays.stream(new String[] {FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, LISTED_COUNT, STATUSES_COUNT, UTC_OFFSET})
+                .forEach(a -> primary(a, Converters.INTEGER));
+        Arrays.stream(new String[] {PROFILE_BACKGROUND_IMAGE_URL, PROFILE_BACKGROUND_IMAGE_URL_HTTPS,
+                PROFILE_IMAGE_URL, PROFILE_IMAGE_URL_HTTPS}).forEach(a -> primary(a, Converters.URL));
+        Arrays.stream(new String[] {PROFILE_BACKGROUND_COLOR, PROFILE_LINK_COLOR, PROFILE_SIDEBAR_BORDER_COLOR,
+                PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.COLOR));
+        primary(LANG, Converters.LOCALE);
+        primary(CREATED_AT, new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
     }
 }

@@ -1,21 +1,7 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 
 package org.pac4j.saml.metadata;
 
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -35,7 +21,6 @@ import org.opensaml.saml.saml2.metadata.NameIDFormat;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.security.credential.UsageType;
-import org.opensaml.xml.util.XMLHelper;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.util.Configuration;
@@ -93,7 +78,7 @@ public class SAML2MetadataGenerator implements SAMLMetadataGenerator {
     public final String getMetadata() throws Exception {
         final EntityDescriptor md = buildEntityDescriptor();
         final Element entityDescriptorElement = this.marshallerFactory.getMarshaller(md).marshall(md);
-        return XMLHelper.nodeToString(entityDescriptorElement);
+        return SerializeSupport.nodeToString(entityDescriptorElement);
     }
 
     @Override

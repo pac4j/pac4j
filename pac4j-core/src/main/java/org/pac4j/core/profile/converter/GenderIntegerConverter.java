@@ -20,15 +20,20 @@ public final class GenderIntegerConverter implements AttributeConverter<Gender> 
 		this.femaleValue = femaleText;
 	}
 
+	@Override
 	public Gender convert(final Object attribute) {
-		if (attribute != null && attribute instanceof Integer) {
-			Integer value = (Integer) attribute;
-			if (value.equals(this.maleValue)) {
-				return Gender.MALE;
-			} else if (value.equals(this.femaleValue)) {
-				return Gender.FEMALE;
-			} else {
-				return Gender.UNSPECIFIED;
+		if (attribute != null) {
+			if (attribute instanceof Integer) {
+				Integer value = (Integer) attribute;
+				if (value.equals(this.maleValue)) {
+					return Gender.MALE;
+				} else if (value.equals(this.femaleValue)) {
+					return Gender.FEMALE;
+				} else {
+					return Gender.UNSPECIFIED;
+				}
+			} else if (attribute instanceof Gender) {
+				return (Gender) attribute;
 			}
 		}
 		return null;

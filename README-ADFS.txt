@@ -1,8 +1,7 @@
-Using pac4j against Microsoft ADFS 2.0
---------------------------------------
+Using pac4j against Microsoft ADFS 2.0 / 3.0
+--------------------------------------------
 
-Follow these rules to successfully authenticate using Microsoft ADFS 2.0.
-
+Follow these rules to successfully authenticate using Microsoft ADFS 2.0 / 3.0.
 
 1. Entity ID
 ------------
@@ -41,3 +40,9 @@ ERROR [org.opensaml.xml.encryption.Decrypter] - <Failed to decrypt EncryptedData
 ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter encountered an error decrypting element content>
 
 Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle's Java Download site.
+
+
+4. Error "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations."
+----------------------------------------------------------------------------------------------------------------------------
+Make sure your SP declaration in ADFS Server has been configured to return "Name ID" attribute in its SAML responses.
+This attribute is required by SAML pac4j but not included by default by ADFS.

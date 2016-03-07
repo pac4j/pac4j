@@ -1,21 +1,7 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.config.client;
 
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
@@ -64,6 +50,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public final static String OIDC_USE_NONCE = "oidc.useNonce";
     public final static String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
     public final static String OIDC_MAX_CLOCK_SKEW = "oidc.maxClockSkew";
+    public final static String OIDC_CLIENT_AUTHENTICATION_METHOD = "oidc.clientAuthenticationMethod";
     public final static String OIDC_CUSTOM_PARAM_KEY1 = "oidc.customParamKey1";
     public final static String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
     public final static String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
@@ -177,6 +164,10 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW);
             if (CommonHelper.isNotBlank(maxClockSkew)) {
                 oidcClient.setMaxClockSkew(Integer.parseInt(maxClockSkew));
+            }
+            final String clientAuthenticationMethod = getProperty(OIDC_CLIENT_AUTHENTICATION_METHOD);
+            if (CommonHelper.isNotBlank(clientAuthenticationMethod)) {
+                oidcClient.setClientAuthenticationMethod(ClientAuthenticationMethod.parse(clientAuthenticationMethod));
             }
             final String key1 = getProperty(OIDC_CUSTOM_PARAM_KEY1);
             final String value1 = getProperty(OIDC_CUSTOM_PARAM_VALUE1);

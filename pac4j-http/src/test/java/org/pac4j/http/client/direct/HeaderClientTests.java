@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.http.client.direct;
 
 import org.junit.Test;
@@ -21,11 +6,9 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.TokenCredentials;
-import org.pac4j.http.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.profile.HttpProfile;
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import static org.junit.Assert.*;
 
@@ -38,51 +21,39 @@ import static org.junit.Assert.*;
 public final class HeaderClientTests implements TestsConstants {
 
     @Test
-    public void testClone() {
-        final HeaderClient oldClient = new HeaderClient();
-        oldClient.setName(TYPE);
-        oldClient.setProfileCreator(new AuthenticatorProfileCreator<TokenCredentials, HttpProfile>());
-        final TokenAuthenticator authenticator = new SimpleTestTokenAuthenticator();
-        oldClient.setAuthenticator(authenticator);
-        oldClient.setHeaderName(HEADER_NAME);
-        oldClient.setPrefixHeader(PREFIX_HEADER);
-        final HeaderClient client = (HeaderClient) oldClient.clone();
-        assertEquals(oldClient.getName(), client.getName());
-        assertEquals(oldClient.getProfileCreator(), client.getProfileCreator());
-        assertEquals(oldClient.getAuthenticator(), client.getAuthenticator());
-        assertEquals(oldClient.getHeaderName(), client.getHeaderName());
-    }
-
-    @Test
     public void testMissingTokendAuthenticator() {
-        final HeaderClient client = new HeaderClient(null);
+        final HeaderClient client = new HeaderClient(VALUE, null);
         TestsHelper.initShouldFail(client, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator(), null);
+        final HeaderClient client = new HeaderClient(NAME, new SimpleTestTokenAuthenticator());
+        client.setProfileCreator(null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
     }
 
     @Test
+    public void testBadAuthenticatorType() {
+        final HeaderClient client = new HeaderClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
+        TestsHelper.initShouldFail(client, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator");
+    }
+
+    @Test
     public void testHasDefaultProfileCreator() {
-        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator());
-        client.setHeaderName(HEADER_NAME);
+        final HeaderClient client = new HeaderClient(HEADER_NAME, new SimpleTestTokenAuthenticator());
         client.init(null);
     }
 
     @Test
     public void testMissingHeaderName() {
-        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator());
+        final HeaderClient client = new HeaderClient(null, new SimpleTestTokenAuthenticator());
         TestsHelper.initShouldFail(client, "headerName cannot be blank");
     }
 
     @Test
     public void testAuthentication() throws RequiresHttpAction {
-        final HeaderClient client = new HeaderClient(new SimpleTestTokenAuthenticator());
-        client.setHeaderName(HEADER_NAME);
-        client.setPrefixHeader(PREFIX_HEADER);
+        final HeaderClient client = new HeaderClient(HEADER_NAME, PREFIX_HEADER, new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HEADER_NAME, PREFIX_HEADER + VALUE);
         final TokenCredentials credentials = client.getCredentials(context);

@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.profile;
 
 import org.pac4j.core.context.Pac4jConstants;
@@ -40,9 +25,16 @@ public class ProfileManager<U extends UserProfile> {
      * @return the user profile
      */
     public U get(final boolean readFromSession) {
-        U profile = (U) this.context.getRequestAttribute(Pac4jConstants.USER_PROFILE);
+        U profile = null;
+        final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILE);
+        if (objSession != null && objSession instanceof UserProfile) {
+            profile = (U) objSession;
+        }
         if (profile == null && readFromSession) {
-            profile = (U) this.context.getSessionAttribute(Pac4jConstants.USER_PROFILE);
+            final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILE);
+            if (objRequest != null && objRequest instanceof UserProfile) {
+                profile = (U) objRequest;
+            }
         }
         return profile;
     }
@@ -54,9 +46,9 @@ public class ProfileManager<U extends UserProfile> {
      */
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
-            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILE, null);
+            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILE, "");
         }
-        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILE, null);
+        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILE, "");
     }
 
     /**

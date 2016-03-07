@@ -1,31 +1,12 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
-import org.scribe.builder.api.PayPalApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.PayPalOAuth20ServiceImpl;
+import org.pac4j.scribe.builder.api.PayPalApi20;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -37,7 +18,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.paypal.PayPalProfile}.</p>
  * <p>More information at https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/</p>
  * 
- * @see org.pac4j.oauth.profile.paypal.PayPalProfile
  * @author Jerome Leleu
  * @since 1.4.2
  */
@@ -58,24 +38,26 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
     
     @Override
-    protected PayPalClient newClient() {
-        final PayPalClient newClient = new PayPalClient();
-        newClient.setScope(this.scope);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("scope", this.scope);
-        this.service = new PayPalOAuth20ServiceImpl(new PayPalApi20(), new OAuthConfig(this.key, this.secret,
-                                                                                       computeFinalCallbackUrl(context),
-                                                                                       SignatureType.Header,
-                                                                                       this.scope, null),
-                                                    this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                    this.proxyPort);
+        super.internalInit(context);
     }
-    
+
+    @Override
+    protected Api getApi() {
+        return new PayPalApi20();
+    }
+
+    @Override
+    protected String getOAuthScope() {
+        return this.scope;
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
+    }
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return "https://api.paypal.com/v1/identity/openidconnect/userinfo?schema=openid";
@@ -86,10 +68,10 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
         final PayPalProfile profile = new PayPalProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            final String userId = (String) JsonHelper.get(json, "user_id");
-            profile.setId(StringUtils.substringAfter(userId, "/user/"));
-            for (final String attribute : OAuthAttributesDefinitions.payPalDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            final String userId = (String) JsonHelper.getElement(json, "user_id");
+            profile.setId(CommonHelper.substringAfter(userId, "/user/"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
@@ -101,15 +83,5 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     
     public void setScope(final String scope) {
         this.scope = scope;
-    }
-    
-    @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }
