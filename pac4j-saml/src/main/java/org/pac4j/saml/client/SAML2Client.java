@@ -10,8 +10,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -72,7 +70,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
 	protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
-	protected SAML2ProfileHandler profileHandler;
+	protected SAML2ProfileHandler<AuthnRequest> profileHandler;
 
 	protected SAML2ResponseValidator responseValidator;
 

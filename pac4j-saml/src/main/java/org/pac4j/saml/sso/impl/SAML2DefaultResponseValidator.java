@@ -60,6 +60,8 @@ import org.pac4j.saml.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import net.shibboleth.utilities.java.support.net.BasicURLComparator;
 import net.shibboleth.utilities.java.support.net.URIComparator;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -397,7 +399,6 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      *            Decrypter used to decrypt some encrypted IDs, if they are present. May be {@code null}, no decryption will be possible
 	 *            then.
 	 */
-    @SuppressWarnings("unchecked")
 	protected final void validateSubject(final Subject subject, final SAML2MessageContext context,
 			final Decrypter decrypter) {
 		boolean samlIDFound = false;
