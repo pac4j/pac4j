@@ -121,23 +121,27 @@ public final class CommonHelperTests {
     }
 
     @Test
-    public void testAreEqualsBothNull() {
+    public void testAreEqualsOk() {
         assertTrue(CommonHelper.areEquals(null, null));
+        assertTrue(CommonHelper.areEquals(VALUE, VALUE));
     }
 
     @Test
-    public void testAreEqualsOneIsNull() {
+    public void testAreEqualsIgnoreCaseAndTrimOk() {
+        assertTrue(CommonHelper.areEqualsIgnoreCaseAndTrim(null, null));
+        assertTrue(CommonHelper.areEqualsIgnoreCaseAndTrim(" " + VALUE.toUpperCase(), VALUE + "                "));
+    }
+
+    @Test
+    public void testAreEqualsFails() {
         assertFalse(CommonHelper.areEquals(VALUE, null));
-    }
-
-    @Test
-    public void testAreEqualsDifferentValue() {
         assertFalse(CommonHelper.areEquals(NAME, VALUE));
     }
 
     @Test
-    public void testAreEqualsSameValue() {
-        assertTrue(CommonHelper.areEquals(VALUE, VALUE));
+    public void testAreEqualsIgnoreCaseAndTrimFails() {
+        assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(VALUE, null));
+        assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(NAME, VALUE));
     }
     
     @Test

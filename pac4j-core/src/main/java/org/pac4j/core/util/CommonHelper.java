@@ -72,6 +72,23 @@ public final class CommonHelper {
 	}
 
 	/**
+     * Compare two String to see if they are equals ignoring the case and the blank spaces (both null is ok).
+     *
+     * @param s1 string
+     * @param s2 string
+     * @return if two String are equals ignoring the case and the blank spaces
+     */
+    public static boolean areEqualsIgnoreCaseAndTrim(final String s1, final String s2) {
+        if (s1 == null && s2 == null) {
+            return true;
+        } else if (s1 != null && s2 !=  null) {
+            return s1.trim().equalsIgnoreCase(s2.trim());
+        } else {
+            return false;
+        }
+    }
+
+    /**
 	 * Compare two String to see if they are not equals.
 	 * 
      * @param s1 string

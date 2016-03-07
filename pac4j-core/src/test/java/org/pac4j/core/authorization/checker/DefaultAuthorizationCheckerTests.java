@@ -53,10 +53,19 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testOneExistingAuthorizerProfileDoesNotMatch() {
+        internalTestOneExistingAuthorizerProfileDoesNotMatch(NAME);
+    }
+
+    @Test
+    public void testOneExistingAuthorizerProfileDoesNotMatchCasTrim() {
+        internalTestOneExistingAuthorizerProfileDoesNotMatch("   NaME       ");
+    }
+
+    private void internalTestOneExistingAuthorizerProfileDoesNotMatch(final String name) {
         final UserProfile profile = new UserProfile();
         final Map<String, Authorizer> authorizers = new HashMap<>();
         authorizers.put(NAME, new IdAuthorizer());
-        assertFalse(checker.isAuthorized(null, profile, NAME, authorizers));
+        assertFalse(checker.isAuthorized(null, profile, name, authorizers));
     }
 
     @Test(expected = TechnicalException.class)
@@ -156,6 +165,14 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         context.setScheme("HTTPS");
         checker.isAuthorized(context, new UserProfile(), "hsts", null);
+        assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
+    }
+
+    @Test
+    public void testHstsCaseTrim() {
+        final MockWebContext context = MockWebContext.create();
+        context.setScheme("HTTPS");
+        checker.isAuthorized(context, new UserProfile(), "  HSTS ", null);
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
     }
 

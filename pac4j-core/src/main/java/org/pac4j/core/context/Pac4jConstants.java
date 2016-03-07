@@ -20,14 +20,20 @@ public interface Pac4jConstants {
     /* Session ID */
     String SESSION_ID = "pac4jSessionId";
 
-    /* Client name configuration parameter */
+    @Deprecated
     String CLIENT_NAME = "clientName";
+
+    /* Client names configuration parameter */
+    String CLIENTS = "clients";
 
     /* An AJAX parameter name to dynamically set a HTTP request as an AJAX one. */
     String IS_AJAX_REQUEST = "is_ajax_request";
 
-    /* The name of an authorizer */
+    @Deprecated
     String AUTHORIZER_NAME = "authorizerName";
+
+    /* Authorizers names configuration parameter */
+    String AUTHORIZERS = "authorizers";
 
     /* The default url parameter */
     String DEFAULT_URL = "defaultUrl";
@@ -50,8 +56,11 @@ public interface Pac4jConstants {
     /* The config factory parameter */
     String CONFIG_FACTORY = "configFactory";
 
-    /* Matcher name configuration parameter */
+    @Deprecated
     String MATCHER_NAME = "matcherName";
+
+    /* Matcher names configuration parameter */
+    String MATCHERS = "matchers";
 
     String USERNAME = "username";
 
