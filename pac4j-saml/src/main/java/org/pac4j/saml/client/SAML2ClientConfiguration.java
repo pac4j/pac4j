@@ -1,15 +1,18 @@
 package org.pac4j.saml.client;
 
-import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
-import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.saml.storage.EmptyStorageFactory;
-import org.pac4j.saml.storage.SAMLMessageStorageFactory;
-
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
+import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.pac4j.core.io.Resource;
+import org.pac4j.core.io.WritableResource;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.storage.EmptyStorageFactory;
+import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 
 /**
  * The {@link SAML2ClientConfiguration} is responsible for...
@@ -19,257 +22,338 @@ import java.util.List;
  * @since 1.7
  */
 public final class SAML2ClientConfiguration implements Cloneable {
+	private KeyStore keyStore;
 
-    private String keystorePath;
+	private Resource keystoreResource;
 
-    private String keystorePassword;
+	private String keystorePath;
 
-    private String privateKeyPassword;
+	private String keystorePassword;
 
-    private String identityProviderMetadataPath;
+	private String privateKeyPassword;
 
-    private String identityProviderEntityId;
+	private Resource identityProviderMetadataResource;
 
-    private String serviceProviderEntityId;
+	private String identityProviderMetadataPath;
 
-    private int maximumAuthenticationLifetime;
+	private String identityProviderEntityId;
 
-    private boolean forceAuth = false;
+	private String serviceProviderEntityId;
 
-    private String comparisonType = null;
+	private int maximumAuthenticationLifetime;
 
-    private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
+	private boolean forceAuth = false;
 
-    private String authnContextClassRef = null;
+	private String comparisonType = null;
 
-    private String nameIdPolicyFormat = null;
+	private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
 
-    private String serviceProviderMetadataPath;
+	private String authnContextClassRef = null;
 
-    private boolean forceServiceProviderMetadataGeneration;
+	private String nameIdPolicyFormat = null;
 
-    private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
+	private String serviceProviderMetadataPath;
+
+	private WritableResource serviceProviderMetadataResource;
+
+	private boolean forceServiceProviderMetadataGeneration;
+
+	private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
 
     public SAML2ClientConfiguration() {}
 
-
-    private Collection<String> blackListedSignatureSigningAlgorithms;
-    private List<String> signatureAlgorithms;
-    private List<String> signatureReferenceDigestMethods;
-    private String signatureCanonicalizationAlgorithm;
+	private Collection<String> blackListedSignatureSigningAlgorithms;
+	private List<String> signatureAlgorithms;
+	private List<String> signatureReferenceDigestMethods;
+	private String signatureCanonicalizationAlgorithm;
     private boolean wantsAssertionsSigned = true;
 
-    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-                                    final String privateKeyPassword, final String identityProviderMetadataPath) {
-        this(keystorePath, keystorePassword, privateKeyPassword, identityProviderMetadataPath, null, null);
-    }
+	private String keyStoreAlias;
 
-    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-                                    final String privateKeyPassword, final String identityProviderMetadataPath,
-                                    final String identityProviderEntityId, final String serviceProviderEntityId) {
-        this.keystorePath = keystorePath;
-        this.keystorePassword = keystorePassword;
-        this.privateKeyPassword = privateKeyPassword;
-        this.identityProviderMetadataPath = identityProviderMetadataPath;
-        this.identityProviderEntityId = identityProviderEntityId;
-        this.serviceProviderEntityId = serviceProviderEntityId;
+	private String keyStoreType;
 
-        CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
-        CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
-        CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
-        CommonHelper.assertNotBlank("identityProviderMetadataPath", this.identityProviderMetadataPath);
+	public SAML2ClientConfiguration(final KeyStore keystore, final String keyStoreAlias, final String keyStoreType,
+			final String privateKeyPassword, final Resource identityProviderMetadataResource) {
+		this(keystore, keyStoreAlias, keyStoreType, null, null, null, privateKeyPassword,
+				identityProviderMetadataResource, null, null, null);
+	}
+
+	public SAML2ClientConfiguration(final Resource keystoreResource, final String keyStoreAlias,
+			final String keyStoreType, final String keystorePassword, final String privateKeyPassword,
+			final Resource identityProviderMetadataResource) {
+		this(null, keyStoreAlias, keyStoreType, keystoreResource, null, keystorePassword, privateKeyPassword,
+				identityProviderMetadataResource, null, null, null);
+	}
+
+	public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
+			final String privateKeyPassword, final String identityProviderMetadataPath) {
+        this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null,
+				identityProviderMetadataPath, null, null);
+	}
+
+	private SAML2ClientConfiguration(final KeyStore keyStore, final String keyStoreAlias, final String keyStoreType,
+			final Resource keystoreResource, final String keystorePath, final String keystorePassword,
+			final String privateKeyPassword, final Resource identityProviderMetadataResource,
+			final String identityProviderMetadataPath, final String identityProviderEntityId,
+			final String serviceProviderEntityId) {
+		this.keyStore = keyStore;
+		this.keyStoreAlias = keyStoreAlias;
+		this.keyStoreType = keyStoreType;
+		this.keystoreResource = keystoreResource;
+		this.keystorePath = keystorePath;
+
+		this.keystorePassword = keystorePassword;
+		this.privateKeyPassword = privateKeyPassword;
+		this.identityProviderMetadataResource = identityProviderMetadataResource;
+		this.identityProviderMetadataPath = identityProviderMetadataPath;
+		this.identityProviderEntityId = identityProviderEntityId;
+		this.serviceProviderEntityId = serviceProviderEntityId;
+
+		CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
+		CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
+		CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
+		CommonHelper.assertTrue(
+				this.identityProviderMetadataResource != null || CommonHelper.isNotBlank(identityProviderMetadataPath),
+				"Either identityProviderMetadataResource or identityProviderMetadataPath must be provided");
 
         final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
-        this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
-        this.signatureAlgorithms = new ArrayList<>(config.getSignatureAlgorithms());
-        this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
-        this.signatureReferenceDigestMethods.remove("http://www.w3.org/2001/04/xmlenc#sha512");
-        this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
+		this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
+		this.signatureAlgorithms = new ArrayList<>(config.getSignatureAlgorithms());
+		this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
+		this.signatureReferenceDigestMethods.remove("http://www.w3.org/2001/04/xmlenc#sha512");
+		this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
 
-    }
+	}
 
-    public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
-        this.identityProviderMetadataPath = identityProviderMetadataPath;
-    }
+	public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
+		this.identityProviderMetadataPath = identityProviderMetadataPath;
+	}
 
-    public void setIdentityProviderEntityId(final String identityProviderEntityId) {
-        this.identityProviderEntityId = identityProviderEntityId;
-    }
+	public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
+		this.identityProviderMetadataResource = identityProviderMetadataResource;
+	}
 
-    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
-        this.serviceProviderEntityId = serviceProviderEntityId;
-    }
+	public void setIdentityProviderEntityId(final String identityProviderEntityId) {
+		this.identityProviderEntityId = identityProviderEntityId;
+	}
 
-    public void setKeystorePath(final String keystorePath) {
-        this.keystorePath = keystorePath;
-    }
+	public void setServiceProviderEntityId(final String serviceProviderEntityId) {
+		this.serviceProviderEntityId = serviceProviderEntityId;
+	}
 
-    public void setKeystorePassword(final String keystorePassword) {
-        this.keystorePassword = keystorePassword;
-    }
+	public void setKeystore(final KeyStore keyStore) {
+		this.keyStore = keyStore;
+	}
 
-    public void setPrivateKeyPassword(final String privateKeyPassword) {
-        this.privateKeyPassword = privateKeyPassword;
-    }
+	public void setKeystoreAlias(final String keyStoreAlias) {
+		this.keyStoreAlias = keyStoreAlias;
+	}
 
-    public void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
-        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
-    }
+	public void setKeystoreType(final String keyStoreType) {
+		this.keyStoreType = keyStoreType;
+	}
 
-    /**
-     * @return the forceAuth
-     */
-    public boolean isForceAuth() {
-        return forceAuth;
-    }
+	public void setKeystoreResource(final Resource keystoreResource) {
+		this.keystoreResource = keystoreResource;
+	}
 
-    /**
+	public void setKeystorePath(final String keystorePath) {
+		this.keystorePath = keystorePath;
+	}
+
+	public void setKeystorePassword(final String keystorePassword) {
+		this.keystorePassword = keystorePassword;
+	}
+
+	public void setPrivateKeyPassword(final String privateKeyPassword) {
+		this.privateKeyPassword = privateKeyPassword;
+	}
+
+	public void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
+		this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
+	}
+
+	/**
+	 * @return the forceAuth
+	 */
+	public boolean isForceAuth() {
+		return forceAuth;
+	}
+
+	/**
      * @param forceAuth the forceAuth to set
-     */
-    public void setForceAuth(final boolean forceAuth) {
-        this.forceAuth = forceAuth;
-    }
+	 */
+	public void setForceAuth(final boolean forceAuth) {
+		this.forceAuth = forceAuth;
+	}
 
-    /**
-     * @return the comparisonType
-     */
-    public String getComparisonType() {
-        return comparisonType;
-    }
+	/**
+	 * @return the comparisonType
+	 */
+	public String getComparisonType() {
+		return comparisonType;
+	}
 
-    /**
+	/**
      * @param comparisonType the comparisonType to set
-     */
-    public void setComparisonType(final String comparisonType) {
-        this.comparisonType = comparisonType;
-    }
+	 */
+	public void setComparisonType(final String comparisonType) {
+		this.comparisonType = comparisonType;
+	}
 
-    /**
-     * @return the destinationBindingType
-     */
-    public String getDestinationBindingType() {
-        return destinationBindingType;
-    }
+	/**
+	 * @return the destinationBindingType
+	 */
+	public String getDestinationBindingType() {
+		return destinationBindingType;
+	}
 
-    /**
+	/**
      * @param destinationBindingType the destinationBindingType to set
-     */
-    public void setDestinationBindingType(final String destinationBindingType) {
-        this.destinationBindingType = destinationBindingType;
-    }
+	 */
+	public void setDestinationBindingType(final String destinationBindingType) {
+		this.destinationBindingType = destinationBindingType;
+	}
 
-    /**
-     * @return the authnContextClassRef
-     */
-    public String getAuthnContextClassRef() {
-        return authnContextClassRef;
-    }
+	/**
+	 * @return the authnContextClassRef
+	 */
+	public String getAuthnContextClassRef() {
+		return authnContextClassRef;
+	}
 
-    /**
+	/**
      * @param authnContextClassRef the authnContextClassRef to set
-     */
-    public void setAuthnContextClassRef(final String authnContextClassRef) {
-        this.authnContextClassRef = authnContextClassRef;
-    }
+	 */
+	public void setAuthnContextClassRef(final String authnContextClassRef) {
+		this.authnContextClassRef = authnContextClassRef;
+	}
 
-    /**
-     * @return the nameIdPolicyFormat
-     */
-    public String getNameIdPolicyFormat() {
-        return nameIdPolicyFormat;
-    }
+	/**
+	 * @return the nameIdPolicyFormat
+	 */
+	public String getNameIdPolicyFormat() {
+		return nameIdPolicyFormat;
+	}
 
-    /**
+	/**
      * @param nameIdPolicyFormat the nameIdPolicyFormat to set
-     */
-    public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
-        this.nameIdPolicyFormat = nameIdPolicyFormat;
-    }
+	 */
+	public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
+		this.nameIdPolicyFormat = nameIdPolicyFormat;
+	}
 
-    public void setServiceProviderMetadataPath(final String serviceProviderMetadataPath) {
-        this.serviceProviderMetadataPath = serviceProviderMetadataPath;
-    }
+	public void setServiceProviderMetadataPath(final String serviceProviderMetadataPath) {
+		this.serviceProviderMetadataPath = serviceProviderMetadataPath;
+	}
 
-    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
-        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
-    }
+	public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
+		this.serviceProviderMetadataResource = serviceProviderMetadataResource;
+	}
 
-    public String getIdentityProviderMetadataPath() {
-        return identityProviderMetadataPath;
-    }
+	public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
+		this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
+	}
 
-    public String getKeystorePath() {
-        return keystorePath;
-    }
+	public String getIdentityProviderMetadataPath() {
+		return identityProviderMetadataPath;
+	}
 
-    public String getKeystorePassword() {
-        return keystorePassword;
-    }
+	public Resource getIdentityProviderMetadataResource() {
+		return this.identityProviderMetadataResource;
+	}
 
-    public String getPrivateKeyPassword() {
-        return privateKeyPassword;
-    }
+	public KeyStore getKeyStore() {
+		return keyStore;
+	}
 
-    public String getIdentityProviderEntityId() {
-        return identityProviderEntityId;
-    }
+	public String getKeyStoreAlias() {
+		return keyStoreAlias;
+	}
 
-    public String getServiceProviderEntityId() {
-        return serviceProviderEntityId;
-    }
+	public String getKeyStoreType() {
+		return this.keyStoreType;
+	}
 
-    public int getMaximumAuthenticationLifetime() {
-        return maximumAuthenticationLifetime;
-    }
+	public Resource getKeystoreResource() {
+		return keystoreResource;
+	}
 
-    public String getServiceProviderMetadataPath() {
-        return serviceProviderMetadataPath;
-    }
+	public String getKeystorePath() {
+		return keystorePath;
+	}
 
-    public boolean isForceServiceProviderMetadataGeneration() {
-        return forceServiceProviderMetadataGeneration;
-    }
+	public String getKeystorePassword() {
+		return keystorePassword;
+	}
 
-    public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
-        return samlMessageStorageFactory;
-    }
+	public String getPrivateKeyPassword() {
+		return privateKeyPassword;
+	}
 
-    public void setSamlMessageStorageFactory(final SAMLMessageStorageFactory samlMessageStorageFactory) {
-        this.samlMessageStorageFactory = samlMessageStorageFactory;
-    }
+	public String getIdentityProviderEntityId() {
+		return identityProviderEntityId;
+	}
 
+	public String getServiceProviderEntityId() {
+		return serviceProviderEntityId;
+	}
 
-    public Collection<String> getBlackListedSignatureSigningAlgorithms() {
-        return blackListedSignatureSigningAlgorithms;
-    }
+	public int getMaximumAuthenticationLifetime() {
+		return maximumAuthenticationLifetime;
+	}
+
+	public String getServiceProviderMetadataPath() {
+		return serviceProviderMetadataPath;
+	}
+
+	public WritableResource getServiceProviderMetadataResource() {
+		return serviceProviderMetadataResource;
+	}
+
+	public boolean isForceServiceProviderMetadataGeneration() {
+		return forceServiceProviderMetadataGeneration;
+	}
+
+	public SAMLMessageStorageFactory getSamlMessageStorageFactory() {
+		return samlMessageStorageFactory;
+	}
+
+	public void setSamlMessageStorageFactory(final SAMLMessageStorageFactory samlMessageStorageFactory) {
+		this.samlMessageStorageFactory = samlMessageStorageFactory;
+	}
+
+	public Collection<String> getBlackListedSignatureSigningAlgorithms() {
+		return blackListedSignatureSigningAlgorithms;
+	}
 
     public void setBlackListedSignatureSigningAlgorithms(final Collection<String> blackListedSignatureSigningAlgorithms) {
-        this.blackListedSignatureSigningAlgorithms = blackListedSignatureSigningAlgorithms;
-    }
+		this.blackListedSignatureSigningAlgorithms = blackListedSignatureSigningAlgorithms;
+	}
 
-    public List<String> getSignatureAlgorithms() {
-        return signatureAlgorithms;
-    }
+	public List<String> getSignatureAlgorithms() {
+		return signatureAlgorithms;
+	}
 
-    public void setSignatureAlgorithms(final List<String> signatureAlgorithms) {
-        this.signatureAlgorithms = signatureAlgorithms;
-    }
+	public void setSignatureAlgorithms(final List<String> signatureAlgorithms) {
+		this.signatureAlgorithms = signatureAlgorithms;
+	}
 
-    public List<String> getSignatureReferenceDigestMethods() {
-        return signatureReferenceDigestMethods;
-    }
+	public List<String> getSignatureReferenceDigestMethods() {
+		return signatureReferenceDigestMethods;
+	}
 
-    public void setSignatureReferenceDigestMethods(final List<String> signatureReferenceDigestMethods) {
-        this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
-    }
+	public void setSignatureReferenceDigestMethods(final List<String> signatureReferenceDigestMethods) {
+		this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
+	}
 
-    public String getSignatureCanonicalizationAlgorithm() {
-        return signatureCanonicalizationAlgorithm;
-    }
+	public String getSignatureCanonicalizationAlgorithm() {
+		return signatureCanonicalizationAlgorithm;
+	}
 
-    public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
-        this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
-    }
+	public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
+		this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
+	}
 
     public boolean getWantsAssertionsSigned() {
         return this.wantsAssertionsSigned;
@@ -279,12 +363,13 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
-    @Override
-    public SAML2ClientConfiguration clone() {
-        try {
-            return (SAML2ClientConfiguration) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public SAML2ClientConfiguration clone() {
+		try {
+			return (SAML2ClientConfiguration) super.clone();
+		} catch (final CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

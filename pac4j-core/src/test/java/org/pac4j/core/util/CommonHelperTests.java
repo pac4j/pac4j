@@ -143,6 +143,11 @@ public final class CommonHelperTests {
         assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(VALUE, null));
         assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(NAME, VALUE));
     }
+    
+    @Test
+    public void testClassPathPrefix() {
+    	assertNotNull(CommonHelper.getInputStreamFromName("classpath:testFile.txt"));
+    }
 
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_null() {
