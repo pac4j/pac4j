@@ -1,6 +1,7 @@
 package org.pac4j.cas.client.rest;
 
 import org.apache.commons.codec.binary.Base64;
+import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.HttpTGTProfile;
@@ -58,7 +59,9 @@ public final class CasClientRestIT implements TestsConstants {
 
     @Test
     public void testRestBasic() throws RequiresHttpAction {
-        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(new CasRestAuthenticator(CAS_REST_URL), VALUE, NAME);
+        final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_REST_URL);
+        authenticator.setTicketValidator(new Cas30ServiceTicketValidator(CAS_REST_URL));
+        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(authenticator, VALUE, NAME);
 
         final MockWebContext context = MockWebContext.create();
         final String token = USERNAME + ":" + USERNAME;

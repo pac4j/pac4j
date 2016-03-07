@@ -41,6 +41,8 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
     private final String casServerPrefixUrl;
     private final String casRestUrl;
 
+    private TicketValidator ticketValidator;
+
     public CasRestAuthenticator(final String casServerPrefixUrl) {
         this(casServerPrefixUrl, buildCasRestUrlFromCasServerPrefixUrl(casServerPrefixUrl));
     }
@@ -57,6 +59,9 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
     public CasRestAuthenticator(final String casServerPrefixUrl, final String casRestUrl) {
         this.casServerPrefixUrl = casServerPrefixUrl;
         this.casRestUrl = casRestUrl;
+        if (this.ticketValidator == null) {
+            this.ticketValidator = new Cas20ServiceTicketValidator(getCasServerPrefixUrl());
+        }
     }
 
     @Override
@@ -104,6 +109,10 @@ public class CasRestAuthenticator implements Authenticator<UsernamePasswordCrede
     }
 
     public TicketValidator getTicketValidator() {
-        return new Cas20ServiceTicketValidator(getCasServerPrefixUrl());
+        return ticketValidator;
+    }
+
+    public void setTicketValidator(final TicketValidator ticketValidator) {
+        this.ticketValidator = ticketValidator;
     }
 }
