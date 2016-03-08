@@ -3,6 +3,7 @@ package org.pac4j.core.profile.creator;
 import org.junit.Test;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
@@ -26,7 +27,7 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnProfile() {
-        final UserProfile profile = new UserProfile();
+        final UserProfile profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN, CLIENT_NAME);
         credentials.setUserProfile(profile);
         final UserProfile profile2 = creator.create(credentials);

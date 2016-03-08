@@ -6,7 +6,7 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.cas.profile.HttpTGTProfile;
+import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.util.HttpUtils;
 import org.pac4j.core.client.DirectClient2;
 import org.pac4j.core.context.HttpConstants;
@@ -31,9 +31,9 @@ import java.net.URL;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswordCredentials, HttpTGTProfile> {
+public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswordCredentials, CasRestProfile> {
 
-    public void destroyTicketGrantingTicket(final HttpTGTProfile profile) {
+    public void destroyTicketGrantingTicket(final CasRestProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
@@ -51,7 +51,7 @@ public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswo
         }
     }
 
-    public CasCredentials requestServiceTicket(final String serviceURL, final HttpTGTProfile profile) {
+    public CasCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());

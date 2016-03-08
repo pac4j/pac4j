@@ -1,6 +1,5 @@
 package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.authorizer.AbstractRequireAllAuthorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
@@ -32,7 +31,7 @@ public class RequireAllPermissionsAuthorizer<U extends UserProfile> extends Abst
 
     @Override
     protected boolean check(final WebContext context, final U profile, final String element) {
-        final List<String> profilePermissions = profile.getPermissions();
+        final Set<String> profilePermissions = profile.getPermissions();
         return profilePermissions.contains(element);
     }
 }

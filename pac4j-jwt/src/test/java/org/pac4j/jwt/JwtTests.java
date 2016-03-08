@@ -13,7 +13,8 @@ import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -28,8 +29,8 @@ public final class JwtTests implements TestsConstants {
     private final static String JWT_KEY = "12345678901234567890123456789012";
     private final static String JWT_KEY2 = "02345678901234567890123456789010";
 
-    private final static List<String> ROLES = Arrays.asList(new String[] { "role1", "role2"});
-    private final static List<String> PERMISSIONS = Arrays.asList(new String[] { "perm1"});
+    private final static Set<String> ROLES = new HashSet<>(Arrays.asList(new String[] { "role1", "role2"}));
+    private final static Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[] { "perm1"}));
 
     @Test
     public void testGenericJwt() throws RequiresHttpAction {

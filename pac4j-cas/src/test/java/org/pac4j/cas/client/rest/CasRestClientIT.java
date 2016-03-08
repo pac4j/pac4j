@@ -2,7 +2,7 @@ package org.pac4j.cas.client.rest;
 
 import org.junit.Test;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
-import org.pac4j.cas.profile.HttpTGTProfile;
+import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.MockWebContext;
@@ -12,6 +12,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
+import org.pac4j.core.util.TestsHelper;
 
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,7 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestParameter(client.getPasswordParameter(), USERNAME);
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final HttpTGTProfile profile = client.getUserProfile(credentials, context);
+        final CasRestProfile profile = client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -66,7 +67,7 @@ public final class CasRestClientIT implements TestsConstants {
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes()));
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final HttpTGTProfile profile = client.getUserProfile(credentials, context);
+        final CasRestProfile profile = client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
@@ -76,11 +77,7 @@ public final class CasRestClientIT implements TestsConstants {
         assertEquals(USERNAME, casProfile.getId());
         client.destroyTicketGrantingTicket(profile);
 
-        try {
-            client.requestServiceTicket(PAC4J_BASE_URL, profile);
-            fail("shoud fail");
-        } catch (final TechnicalException e) {
-            assertEquals("Service ticket request for `<HttpTGTProfile> | id: username | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found", e.getMessage());
-        }
+        TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile), TechnicalException.class,
+                "Service ticket request for `<HttpTGTProfile> | id: username | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found");
     }
 }

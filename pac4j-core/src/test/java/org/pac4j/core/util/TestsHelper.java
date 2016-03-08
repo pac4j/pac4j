@@ -59,19 +59,19 @@ public final class TestsHelper {
     }
 
     public static void initShouldFail(final InitializableObject obj, final String message) {
-        try {
-            obj.init();
-            Assert.fail("init should fail");
-        } catch (final TechnicalException e) {
-            Assert.assertEquals(message, e.getMessage());
-        }
+        expectException(() -> obj.init(), TechnicalException.class, message);
     }
 
     public static void initShouldFail(final InitializableWebObject obj, final String message) {
+        expectException(() -> obj.init(MockWebContext.create()), TechnicalException.class, message);
+    }
+
+    public static void expectException(final Procedure procedure, final Class<? extends Exception> clazz, final String message) {
         try {
-            obj.init(MockWebContext.create());
-            Assert.fail("init should fail");
-        } catch (final TechnicalException e) {
+            procedure.execute();
+            Assert.fail("should fail");
+        } catch (final Exception e) {
+            Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
             Assert.assertEquals(message, e.getMessage());
         }
     }

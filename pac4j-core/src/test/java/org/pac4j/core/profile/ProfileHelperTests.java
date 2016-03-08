@@ -26,7 +26,7 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testBuildProfile() {
-        final UserProfile profile = new UserProfile();
+        final UserProfile profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
         final UserProfile profile2 = ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
