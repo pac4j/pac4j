@@ -1,5 +1,6 @@
 package org.pac4j.cas.client.rest;
 
+import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.HttpTGTProfile;
@@ -55,12 +56,22 @@ public final class CasRestClientIT implements TestsConstants {
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
         assertEquals(USERNAME, casProfile.getId());
+        assertTrue(casProfile.getAttributes().size() > 0);
     }
 
     @Test
     public void testRestBasic() throws RequiresHttpAction {
-        final CasRestBasicAuthClient client = new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME);
+        internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 3);
+    }
 
+    @Test
+    public void testRestBasicWithCas20TicketValidator() throws RequiresHttpAction {
+        final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_PREFIX_URL);
+        authenticator.setTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
+        internalTestRestBasic(new CasRestBasicAuthClient(authenticator, VALUE, NAME), 0);
+    }
+
+    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws RequiresHttpAction {
         final MockWebContext context = MockWebContext.create();
         final String token = USERNAME + ":" + USERNAME;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes()));
@@ -74,6 +85,7 @@ public final class CasRestClientIT implements TestsConstants {
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
         assertEquals(USERNAME, casProfile.getId());
+        assertEquals(nbAttributes, casProfile.getAttributes().size());
         client.destroyTicketGrantingTicket(profile);
 
         try {
