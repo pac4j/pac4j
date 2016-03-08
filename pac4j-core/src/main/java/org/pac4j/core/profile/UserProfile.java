@@ -130,7 +130,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         } else if (sId.startsWith(oldType)) {
             sId = sId.substring(oldType.length());
         }
-        logger.debug("identifier : {}", sId);
+        logger.debug("identifier: {}", sId);
         this.id = sId;
     }
 
