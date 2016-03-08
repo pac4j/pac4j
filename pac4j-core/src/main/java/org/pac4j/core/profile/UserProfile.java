@@ -12,14 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the user profile retrieved from a provider after successful authentication : it's an identifier (string) and attributes
- * (objects). The attributes definition is null (generic profile), it must be defined in subclasses. Additional concepts are the
- * "remember me" nature of the user profile and the roles and permissions associated.
+ * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
+ * (objects). The attributes definition is <code>null</code> (generic profile), it must be defined in subclasses. Additional concepts are the
+ * "remember me" nature of the user profile and the associated roles, permissions and client name.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile implements Serializable, Externalizable {
+public abstract class UserProfile implements Serializable, Externalizable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
@@ -33,9 +33,11 @@ public class UserProfile implements Serializable, Externalizable {
 
     private boolean isRemembered = false;
 
-    private List<String> roles = new ArrayList<>();
+    private Set<String> roles = new HashSet<>();
 
-    private List<String> permissions = new ArrayList<>();
+    private Set<String> permissions = new HashSet<>();
+
+    private String clientName;
 
     /**
      * Build a profile from user identifier and attributes.
@@ -95,8 +97,10 @@ public class UserProfile implements Serializable, Externalizable {
      * @param attributes use attributes
      */
     public void addAttributes(final Map<String, Object> attributes) {
-        for (final String key : attributes.keySet()) {
-            addAttribute(key, attributes.get(key));
+        if (attributes != null) {
+            for (final String key : attributes.keySet()) {
+                addAttribute(key, attributes.get(key));
+            }
         }
     }
 
@@ -106,6 +110,7 @@ public class UserProfile implements Serializable, Externalizable {
      * @param key the key
      */
     public void removeAttribute(final String key) {
+        CommonHelper.assertNotNull("key", key);
         attributes.remove(key);
     }
 
@@ -115,18 +120,18 @@ public class UserProfile implements Serializable, Externalizable {
      * @param id user identifier
      */
     public void setId(final Object id) {
-        if (id != null) {
-            String sId = id.toString();
-            final String oldType = this.getClass().getSimpleName() + SEPARATOR;
-            final String type = this.getClass().getName() + SEPARATOR;
-            if (sId.startsWith(type)) {
-                sId = sId.substring(type.length());
-            } else if (sId.startsWith(oldType)) {
-                sId = sId.substring(oldType.length());
-            }
-            logger.debug("identifier : {}", sId);
-            this.id = sId;
+        CommonHelper.assertNotNull("id", id);
+
+        String sId = id.toString();
+        final String oldType = this.getClass().getSimpleName() + SEPARATOR;
+        final String type = this.getClass().getName() + SEPARATOR;
+        if (sId.startsWith(type)) {
+            sId = sId.substring(type.length());
+        } else if (sId.startsWith(oldType)) {
+            sId = sId.substring(oldType.length());
         }
+        logger.debug("identifier : {}", sId);
+        this.id = sId;
     }
 
     /**
@@ -209,6 +214,7 @@ public class UserProfile implements Serializable, Externalizable {
      * @param role the role to add.
      */
     public void addRole(final String role) {
+        CommonHelper.assertNotBlank("role", role);
         this.roles.add(role);
     }
 
@@ -218,6 +224,17 @@ public class UserProfile implements Serializable, Externalizable {
      * @param roles the roles to add.
      */
     public void addRoles(final List<String> roles) {
+        CommonHelper.assertNotNull("roles", roles);
+        this.roles.addAll(roles);
+    }
+
+    /**
+     * Add roles.
+     *
+     * @param roles the roles to add.
+     */
+    public void addRoles(final Set<String> roles) {
+        CommonHelper.assertNotNull("roles", roles);
         this.roles.addAll(roles);
     }
 
@@ -227,6 +244,7 @@ public class UserProfile implements Serializable, Externalizable {
      * @param permission the permission to add.
      */
     public void addPermission(final String permission) {
+        CommonHelper.assertNotBlank("permission", permission);
         this.permissions.add(permission);
     }
 
@@ -236,6 +254,17 @@ public class UserProfile implements Serializable, Externalizable {
      * @param permissions the permissions to add.
      */
     public void addPermissions(final List<String> permissions) {
+        CommonHelper.assertNotNull("permissions", permissions);
+        this.permissions.addAll(permissions);
+    }
+
+    /**
+     * Add permissions.
+     *
+     * @param permissions the permissions to add.
+     */
+    public void addPermissions(final Set<String> permissions) {
+        CommonHelper.assertNotNull("permissions", permissions);
         this.permissions.addAll(permissions);
     }
 
@@ -253,8 +282,8 @@ public class UserProfile implements Serializable, Externalizable {
      * 
      * @return the user roles.
      */
-    public List<String> getRoles() {
-        return Collections.unmodifiableList(this.roles);
+    public Set<String> getRoles() {
+        return Collections.unmodifiableSet(this.roles);
     }
 
     /**
@@ -262,8 +291,8 @@ public class UserProfile implements Serializable, Externalizable {
      * 
      * @return the user permissions.
      */
-    public List<String> getPermissions() {
-        return Collections.unmodifiableList(this.permissions);
+    public Set<String> getPermissions() {
+        return Collections.unmodifiableSet(this.permissions);
     }
 
     /**
@@ -295,11 +324,20 @@ public class UserProfile implements Serializable, Externalizable {
         this.id = (String) in.readObject();
         this.attributes = (Map) in.readObject();
         this.isRemembered = (boolean) in.readBoolean();
-        this.roles = (List) in.readObject();
-        this.permissions = (List) in.readObject();
+        this.roles = (Set) in.readObject();
+        this.permissions = (Set) in.readObject();
     }
 
     public void clearSensitiveData() {
         // No-op. Allow subtypes to specify which state should be cleared out.
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        CommonHelper.assertNotNull("clientName", clientName);
+        this.clientName = clientName;
     }
 }

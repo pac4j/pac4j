@@ -78,7 +78,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
         assertEquals(GaeUserServiceProfile.class.getName() + UserProfile.SEPARATOR + EMAIL, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GaeUserServiceProfile.class));
         assertEquals("test", profile.getDisplayName());
-        assertEquals("GLOBAL_ADMIN", profile.getRoles().get(0));
+        assertTrue(profile.getRoles().contains("GLOBAL_ADMIN"));
         assertEquals(2, profile.getAttributes().size());
     }
 }

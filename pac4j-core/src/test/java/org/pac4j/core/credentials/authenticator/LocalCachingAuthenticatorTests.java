@@ -5,7 +5,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 import java.util.concurrent.TimeUnit;
@@ -30,7 +29,7 @@ public class LocalCachingAuthenticatorTests {
             if (n > 0) {
                 throw new IllegalArgumentException("Cannot call validate twice");
             }
-            credentials.setUserProfile(new UserProfile());
+            credentials.setUserProfile(new CommonProfile());
             n++;
         }
     }
