@@ -1,6 +1,6 @@
 package org.pac4j.cas.credentials.authenticator;
 
-import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
+import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.util.HttpUtils;
 import org.pac4j.cas.profile.HttpTGTProfile;
@@ -44,6 +44,12 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
         this.casRestUrl = casRestUrl;
     }
 
+    public CasRestAuthenticator(final String casServerPrefixUrl, final String casRestUrl, final TicketValidator ticketValidator) {
+        this.casServerPrefixUrl = casServerPrefixUrl;
+        this.casRestUrl = casRestUrl;
+        this.ticketValidator = ticketValidator;
+    }
+
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("casServerPrefixUrl", this.casServerPrefixUrl);
@@ -55,7 +61,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             casRestUrl += "v1/tickets";
         }
         if (this.ticketValidator == null) {
-            this.ticketValidator =  new Cas20ServiceTicketValidator(this.casServerPrefixUrl);
+            this.ticketValidator =  new Cas30ServiceTicketValidator(this.casServerPrefixUrl);
         }
     }
 
