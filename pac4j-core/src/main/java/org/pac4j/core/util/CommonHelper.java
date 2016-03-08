@@ -26,52 +26,52 @@ import org.slf4j.LoggerFactory;
  */
 public final class CommonHelper {
 
-	private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
 
 	public static final String RESOURCE_PREFIX = "resource";
 	public static final String CLASSPATH_PREFIX = "classpath";
 	public static final String HTTP_PREFIX = "http";
 	public static final String HTTPS_PREFIX = "https";
 
-	public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
+    public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
 			+ ":', '" + HTTP_PREFIX + ":' or it must be a physical readable non-empty local file "
 			+ "at the path specified.";
 
-	/**
-	 * Return if the String is not blank.
-	 * 
+    /**
+     * Return if the String is not blank.
+     * 
      * @param s string
-	 * @return if the String is not blank
-	 */
-	public static boolean isNotBlank(final String s) {
-		if (s == null) {
-			return false;
-		}
-		return s.trim().length() > 0;
-	}
+     * @return if the String is not blank
+     */
+    public static boolean isNotBlank(final String s) {
+        if (s == null) {
+            return false;
+        }
+        return s.trim().length() > 0;
+    }
 
-	/**
-	 * Return if the String is blank.
-	 * 
+    /**
+     * Return if the String is blank.
+     * 
      * @param s string
-	 * @return if the String is blank
-	 */
-	public static boolean isBlank(final String s) {
-		return !isNotBlank(s);
-	}
+     * @return if the String is blank
+     */
+    public static boolean isBlank(final String s) {
+        return !isNotBlank(s);
+    }
 
-	/**
-	 * Compare two String to see if they are equals (both null is ok).
-	 * 
+    /**
+     * Compare two String to see if they are equals (both null is ok).
+     * 
      * @param s1 string
      * @param s2 string
-	 * @return if two String are equals
-	 */
-	public static boolean areEquals(final String s1, final String s2) {
-		return s1 == null ? s2 == null : s1.equals(s2);
-	}
+     * @return if two String are equals
+     */
+    public static boolean areEquals(final String s1, final String s2) {
+        return s1 == null ? s2 == null : s1.equals(s2);
+    }
 
-	/**
+    /**
      * Compare two String to see if they are equals ignoring the case and the blank spaces (both null is ok).
      *
      * @param s1 string
@@ -89,49 +89,49 @@ public final class CommonHelper {
     }
 
     /**
-	 * Compare two String to see if they are not equals.
-	 * 
+     * Compare two String to see if they are not equals.
+     * 
      * @param s1 string
      * @param s2 string
-	 * @return if two String are not equals
-	 */
-	public static boolean areNotEquals(final String s1, final String s2) {
-		return !areEquals(s1, s2);
-	}
+     * @return if two String are not equals
+     */
+    public static boolean areNotEquals(final String s1, final String s2) {
+        return !areEquals(s1, s2);
+    }
 
-	/**
+    /**
      * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
-	 * 
+     * 
      * @param value the value to be checked for truth
      * @param message the message to include in the exception if the value is false
-	 */
-	public static void assertTrue(final boolean value, final String message) {
-		if (!value) {
-			throw new TechnicalException(message);
-		}
-	}
+     */
+    public static void assertTrue(final boolean value, final String message) {
+        if (!value) {
+            throw new TechnicalException(message);
+        }
+    }
 
-	/**
+    /**
      * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
-	 * 
+     * 
      * @param name name if the string
      * @param value value of the string
-	 */
-	public static void assertNotBlank(final String name, final String value) {
-		assertTrue(!isBlank(value), name + " cannot be blank");
-	}
+     */
+    public static void assertNotBlank(final String name, final String value) {
+        assertTrue(!isBlank(value), name + " cannot be blank");
+    }
 
-	/**
+    /**
      * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
-	 * 
+     * 
      * @param name name of the object
      * @param obj object
-	 */
-	public static void assertNotNull(final String name, final Object obj) {
-		assertTrue(obj != null, name + " cannot be null");
-	}
+     */
+    public static void assertNotNull(final String name, final Object obj) {
+        assertTrue(obj != null, name + " cannot be null");
+    }
 
-	/**
+    /**
      * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
      *
      * @param name name of the object
@@ -142,86 +142,86 @@ public final class CommonHelper {
     }
 
     /**
-	 * Add a new parameter to an url.
-	 * 
+     * Add a new parameter to an url.
+     * 
      * @param url url
      * @param name name of the parameter
      * @param value value of the parameter
-	 * @return the new url with the parameter appended
-	 */
-	public static String addParameter(final String url, final String name, final String value) {
-		if (url != null) {
-			final StringBuilder sb = new StringBuilder();
-			sb.append(url);
-			if (name != null) {
-				if (url.indexOf("?") >= 0) {
-					sb.append("&");
-				} else {
-					sb.append("?");
-				}
-				sb.append(name);
-				sb.append("=");
-				if (value != null) {
+     * @return the new url with the parameter appended
+     */
+    public static String addParameter(final String url, final String name, final String value) {
+        if (url != null) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append(url);
+            if (name != null) {
+                if (url.indexOf("?") >= 0) {
+                    sb.append("&");
+                } else {
+                    sb.append("?");
+                }
+                sb.append(name);
+                sb.append("=");
+                if (value != null) {
                     sb.append(urlEncode(value));
-				}
-			}
-			return sb.toString();
-		}
-		return null;
-	}
+                }
+            }
+            return sb.toString();
+        }
+        return null;
+    }
 
-	/**
+    /**
      * URL encode a text using UTF-8.
-	 * 
+     * 
      * @param text text to encode
-	 * @return the encoded text
-	 */
+     * @return the encoded text
+     */
     public static String urlEncode(final String text) {
-		try {
+        try {
             return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
-		} catch (final UnsupportedEncodingException e) {
-			String message = "Unable to encode text : " + text;
-			throw new TechnicalException(message, e);
-		}
-	}
+        } catch (final UnsupportedEncodingException e) {
+            String message = "Unable to encode text : " + text;
+            throw new TechnicalException(message, e);
+        }
+    }
 
-	/**
-	 * Build a normalized "toString" text for an object.
-	 * 
+    /**
+     * Build a normalized "toString" text for an object.
+     * 
      * @param clazz class
      * @param args arguments
-	 * @return a normalized "toString" text
-	 */
-	public static String toString(final Class<?> clazz, final Object... args) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("<");
-		sb.append(clazz.getSimpleName());
-		sb.append("> |");
-		boolean b = true;
-		for (final Object arg : args) {
-			if (b) {
-				sb.append(" ");
-				sb.append(arg);
-				sb.append(":");
-			} else {
-				sb.append(" ");
-				sb.append(arg);
-				sb.append(" |");
-			}
-			b = !b;
-		}
-		return sb.toString();
-	}
+     * @return a normalized "toString" text
+     */
+    public static String toString(final Class<?> clazz, final Object... args) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<");
+        sb.append(clazz.getSimpleName());
+        sb.append("> |");
+        boolean b = true;
+        for (final Object arg : args) {
+            if (b) {
+                sb.append(" ");
+                sb.append(arg);
+                sb.append(":");
+            } else {
+                sb.append(" ");
+                sb.append(arg);
+                sb.append(" |");
+            }
+            b = !b;
+        }
+        return sb.toString();
+    }
 
-	/**
+    /**
      * Returns an {@link InputStream} from given name depending on its format:
      * - loads from the classloader if name starts with "resource:"
      * - loads as {@link FileInputStream} otherwise
-	 * 
+     * 
      * @param name name of the resource
-	 * @return the input stream
-	 */
-	public static InputStream getInputStreamFromName(String name) {
+     * @return the input stream
+     */
+    public static InputStream getInputStreamFromName(String name) {
 		int prefixEnd = name.indexOf(":");
 		String prefix = null;
 		String path = name;
@@ -271,7 +271,7 @@ public final class CommonHelper {
 	}
 
 	public static Resource getResource(final String idpMetadataPath) {
-		return new org.pac4j.core.io.Resource() {
+		return new Resource() {
 
 			@Override
 			public InputStream getInputStream() throws IOException {

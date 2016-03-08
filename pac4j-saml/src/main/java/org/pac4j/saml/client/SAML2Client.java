@@ -1,8 +1,7 @@
 package org.pac4j.saml.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
@@ -45,8 +44,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
@@ -58,99 +57,99 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
 
-	protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
+    protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
 
-	public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
+    public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
-	protected CredentialProvider credentialProvider;
+    protected CredentialProvider credentialProvider;
 
-	protected SAMLContextProvider contextProvider;
+    protected SAMLContextProvider contextProvider;
 
-	protected SAML2ObjectBuilder<AuthnRequest> saml2ObjectBuilder;
+    protected SAML2ObjectBuilder<AuthnRequest> saml2ObjectBuilder;
 
-	protected SignatureSigningParametersProvider signatureSigningParametersProvider;
+    protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
-	protected SAML2ProfileHandler<AuthnRequest> profileHandler;
+    protected SAML2ProfileHandler<AuthnRequest> profileHandler;
 
-	protected SAML2ResponseValidator responseValidator;
+    protected SAML2ResponseValidator responseValidator;
 
-	protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
+    protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
-	protected SAML2MetadataResolver idpMetadataResolver;
+    protected SAML2MetadataResolver idpMetadataResolver;
 
-	protected SAML2MetadataResolver spMetadataResolver;
+    protected SAML2MetadataResolver spMetadataResolver;
 
-	protected Decrypter decrypter;
+    protected Decrypter decrypter;
 
-	protected SAML2ClientConfiguration configuration;
+    protected SAML2ClientConfiguration configuration;
 
-	static {
-		CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
-		CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
-		CommonHelper.assertNotNull("unmarshallerFactory", Configuration.getUnmarshallerFactory());
-		CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
-	}
+    static {
+        CommonHelper.assertNotNull("parserPool", Configuration.getParserPool());
+        CommonHelper.assertNotNull("marshallerFactory", Configuration.getMarshallerFactory());
+        CommonHelper.assertNotNull("unmarshallerFactory", Configuration.getUnmarshallerFactory());
+        CommonHelper.assertNotNull("builderFactory", Configuration.getBuilderFactory());
+    }
 
     public SAML2Client() { }
 
-	public SAML2Client(final SAML2ClientConfiguration configuration) {
-		this.configuration = configuration;
-	}
+    public SAML2Client(final SAML2ClientConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-	@Override
-	protected void internalInit(final WebContext context) {
-		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
 
-		initCredentialProvider();
-		initDecrypter();
-		initSignatureSigningParametersProvider();
+        initCredentialProvider();
+        initDecrypter();
+        initSignatureSigningParametersProvider();
         final MetadataResolver metadataManager = initChainingMetadataResolver(
                 initIdentityProviderMetadataResolver(),
-				initServiceProviderMetadataResolver(context));
-		initSAMLContextProvider(metadataManager);
-		initSAMLObjectBuilder();
-		initSignatureTrustEngineProvider(metadataManager);
-		initSAMLResponseValidator();
-		initSAMLProfileHandler();
-	}
+                initServiceProviderMetadataResolver(context));
+        initSAMLContextProvider(metadataManager);
+        initSAMLObjectBuilder();
+        initSignatureTrustEngineProvider(metadataManager);
+        initSAMLResponseValidator();
+        initSAMLProfileHandler();
+    }
 
-	protected void initSAMLProfileHandler() {
-		this.profileHandler = new SAML2WebSSOProfileHandler(
-				new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
-						this.configuration.getDestinationBindingType(), false),
-				new SAML2WebSSOMessageReceiver(this.responseValidator, this.credentialProvider));
-	}
+    protected void initSAMLProfileHandler() {
+        this.profileHandler = new SAML2WebSSOProfileHandler(
+                new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
+                        this.configuration.getDestinationBindingType(), false),
+                new SAML2WebSSOMessageReceiver(this.responseValidator, this.credentialProvider));
+    }
 
-	protected void initSAMLResponseValidator() {
-		// Build the SAML response validator
+    protected void initSAMLResponseValidator() {
+        // Build the SAML response validator
         this.responseValidator = new SAML2DefaultResponseValidator(
                 this.signatureTrustEngineProvider,
                 this.decrypter,
-				this.configuration.getMaximumAuthenticationLifetime(),
+                this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.getWantsAssertionsSigned());
-	}
+    }
 
-	protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
-		// Build provider for digital signature validation and encryption
-		this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
-	}
+    protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
+        // Build provider for digital signature validation and encryption
+        this.signatureTrustEngineProvider = new ExplicitSignatureTrustEngineProvider(metadataManager);
+    }
 
-	protected void initSAMLObjectBuilder() {
-		this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(this.configuration.isForceAuth(),
+    protected void initSAMLObjectBuilder() {
+        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(this.configuration.isForceAuth(),
                 this.configuration.getComparisonType(),
                 this.configuration.getDestinationBindingType(),
                 this.configuration.getAuthnContextClassRef(),
                 this.configuration.getNameIdPolicyFormat());
-	}
+    }
 
-	protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
-		// Build the contextProvider
+    protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
+        // Build the contextProvider
         this.contextProvider = new SAML2ContextProvider(metadataManager,
                 this.idpMetadataResolver, this.spMetadataResolver,
                 this.configuration.getSamlMessageStorageFactory());
-	}
+    }
 
-	protected MetadataResolver initServiceProviderMetadataResolver(final WebContext context) {
+    protected MetadataResolver initServiceProviderMetadataResolver(final WebContext context) {
 		String finalCallbackUrl = computeFinalCallbackUrl(context);
 		this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration.getServiceProviderMetadataPath(),
 				this.configuration.getServiceProviderMetadataResource(), finalCallbackUrl,
@@ -158,137 +157,136 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 						: this.configuration.getServiceProviderEntityId()),
                 this.configuration.isForceServiceProviderMetadataGeneration(),
                 this.credentialProvider);
-		return this.spMetadataResolver.resolve();
-	}
+        return this.spMetadataResolver.resolve();
+    }
 
-	protected MetadataResolver initIdentityProviderMetadataResolver() {
+    protected MetadataResolver initIdentityProviderMetadataResolver() {
         this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration,
-				this.configuration.getIdentityProviderEntityId());
-		return this.idpMetadataResolver.resolve();
-	}
+                this.configuration.getIdentityProviderEntityId());
+        return this.idpMetadataResolver.resolve();
+    }
 
-	protected void initCredentialProvider() {
+    protected void initCredentialProvider() {
         this.credentialProvider = new KeyStoreCredentialProvider(this.configuration);
-	}
+    }
 
-	protected void initDecrypter() {
-		this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();
-	}
+    protected void initDecrypter() {
+        this.decrypter = new KeyStoreDecryptionProvider(this.credentialProvider).build();
+    }
 
-	protected void initSignatureSigningParametersProvider() {
+    protected void initSignatureSigningParametersProvider() {
         this.signatureSigningParametersProvider = new DefaultSignatureSigningParametersProvider(
                 this.credentialProvider, this.configuration);
-	}
+    }
 
-	protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
-			final MetadataResolver spMetadataProvider) {
-		final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
-		metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
-		try {
-			final List<MetadataResolver> list = new ArrayList<MetadataResolver>();
-			list.add(idpMetadataProvider);
-			list.add(spMetadataProvider);
-			metadataManager.setResolvers(list);
-			metadataManager.initialize();
-		} catch (final ResolverException e) {
-			throw new TechnicalException("Error adding idp or sp metadatas to manager", e);
-		} catch (final ComponentInitializationException e) {
-			throw new TechnicalException("Error initializing manager", e);
-		}
-		return metadataManager;
-	}
+    protected ChainingMetadataResolver initChainingMetadataResolver(final MetadataResolver idpMetadataProvider,
+                                                                          final MetadataResolver spMetadataProvider) {
+        final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
+        metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
+        try {
+            final List<MetadataResolver> list = new ArrayList<MetadataResolver>();
+            list.add(idpMetadataProvider);
+            list.add(spMetadataProvider);
+            metadataManager.setResolvers(list);
+            metadataManager.initialize();
+        } catch (final ResolverException e) {
+            throw new TechnicalException("Error adding idp or sp metadatas to manager", e);
+        } catch (final ComponentInitializationException e) {
+            throw new TechnicalException("Error initializing manager", e);
+        }
+        return metadataManager;
+    }
 
+    @Override
+    protected RedirectAction retrieveRedirectAction(final WebContext wc) {
+        final SAML2MessageContext context = this.contextProvider.buildContext(wc);
+        final String relayState = getStateParameter(wc);
 
-	@Override
-	protected RedirectAction retrieveRedirectAction(final WebContext wc) {
-		final SAML2MessageContext context = this.contextProvider.buildContext(wc);
-		final String relayState = getStateParameter(wc);
+        final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
+        this.profileHandler.send(context, authnRequest, relayState);
 
-		final AuthnRequest authnRequest = this.saml2ObjectBuilder.build(context);
-		this.profileHandler.send(context, authnRequest, relayState);
+        final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
+        if (this.configuration.getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+            final String content = adapter.getOutgoingContent();
+            return RedirectAction.success(content);
+        }
+        final String location = adapter.getRedirectUrl();
+        return RedirectAction.redirect(location);
 
-		final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
-		if (this.configuration.getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-			final String content = adapter.getOutgoingContent();
-			return RedirectAction.success(content);
-		}
-		final String location = adapter.getRedirectUrl();
-		return RedirectAction.redirect(location);
+    }
 
-	}
-
-	@Override
-	protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
-		final SAML2MessageContext context = this.contextProvider.buildContext(wc);
-		final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
+    @Override
+    protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
+        final SAML2MessageContext context = this.contextProvider.buildContext(wc);
+        final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
         // The profile handler sets a hard-coded client name, we need the real one.
-		credentials.setClientName(getName());
-		return credentials;
-	}
+        credentials.setClientName(getName());
+        return credentials;
+    }
 
-	@Override
-	protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
-		final SAML2Profile profile = new SAML2Profile();
-		profile.setId(credentials.getNameId().getValue());
-		for (final Attribute attribute : credentials.getAttributes()) {
-			logger.debug("Processing profile attribute {}", attribute);
+    @Override
+    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
+        final SAML2Profile profile = new SAML2Profile();
+        profile.setId(credentials.getNameId().getValue());
+        for (final Attribute attribute : credentials.getAttributes()) {
+            logger.debug("Processing profile attribute {}", attribute);
 
-			final List<String> values = new ArrayList<String>();
-			for (final XMLObject attributeValue : attribute.getAttributeValues()) {
-				final Element attributeValueElement = attributeValue.getDOM();
-				if (attributeValueElement != null) {
-					final String value = attributeValueElement.getTextContent();
+            final List<String> values = new ArrayList<String>();
+            for (final XMLObject attributeValue : attribute.getAttributeValues()) {
+                final Element attributeValueElement = attributeValue.getDOM();
+                if (attributeValueElement != null) {
+                    final String value = attributeValueElement.getTextContent();
                     logger.debug("Adding attribute value {} for attribute {}", value,
                             attribute.getFriendlyName());
-					values.add(value);
-				} else {
-					logger.warn("Attribute value DOM element is null for {}", attribute);
-				}
-			}
+                    values.add(value);
+                } else {
+                    logger.warn("Attribute value DOM element is null for {}", attribute);
+                }
+            }
 
-			if (!values.isEmpty()) {
-				profile.addAttribute(attribute.getName(), values);
-			} else {
-				logger.debug("No attribute values found for {}", attribute.getName());
-			}
-		}
+            if (!values.isEmpty()) {
+                profile.addAttribute(attribute.getName(), values);
+            } else {
+                logger.debug("No attribute values found for {}", attribute.getName());
+            }
+        }
 
-		return profile;
-	}
+        return profile;
+    }
 
-	@Override
-	protected String getStateParameter(final WebContext webContext) {
-		final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
-		// clean from session after retrieving it
+    @Override
+    protected String getStateParameter(final WebContext webContext) {
+        final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
+        // clean from session after retrieving it
         webContext.setSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE, "");
-		return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
-	}
+        return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
+    }
 
-	public final SAML2ResponseValidator getResponseValidator() {
-		return this.responseValidator;
-	}
+    public final SAML2ResponseValidator getResponseValidator() {
+        return this.responseValidator;
+    }
 
-	public final SAML2MetadataResolver getServiceProviderMetadataResolver() {
-		return this.spMetadataResolver;
-	}
+    public final SAML2MetadataResolver getServiceProviderMetadataResolver() {
+        return this.spMetadataResolver;
+    }
 
-	public final SAML2MetadataResolver getIdentityProviderMetadataResolver() {
-		return this.idpMetadataResolver;
-	}
+    public final SAML2MetadataResolver getIdentityProviderMetadataResolver() {
+        return this.idpMetadataResolver;
+    }
 
-	public final String getIdentityProviderResolvedEntityId() {
-		return this.idpMetadataResolver.getEntityId();
-	}
+    public final String getIdentityProviderResolvedEntityId() {
+        return this.idpMetadataResolver.getEntityId();
+    }
 
-	public final String getServiceProviderResolvedEntityId() {
-		return this.spMetadataResolver.getEntityId();
-	}
+    public final String getServiceProviderResolvedEntityId() {
+        return this.spMetadataResolver.getEntityId();
+    }
 
-	public void setConfiguration(SAML2ClientConfiguration configuration) {
-		this.configuration = configuration;
-	}
+    public void setConfiguration(SAML2ClientConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-	public final SAML2ClientConfiguration getConfiguration() {
-		return this.configuration;
-	}
+    public final SAML2ClientConfiguration getConfiguration() {
+        return this.configuration;
+    }
 }
