@@ -1,10 +1,8 @@
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.ext.spring.resource.ResourceHelper;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
-import net.shibboleth.utilities.java.support.resource.Resource;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import org.opensaml.core.criterion.EntityIdCriterion;
@@ -14,14 +12,13 @@ import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -42,15 +39,31 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     protected final static String HTTP_PREFIX = "http";
     protected final static String FILE_PREFIX = "file:";
 
-    private final String idpMetadataPath;
+    private final Resource idpMetadataResource;
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
 
     public SAML2IdentityProviderMetadataResolver(final String idpMetadataPath,
                                                  @Nullable final String idpEntityId) {
-        this.idpMetadataPath = idpMetadataPath;
-        this.idpEntityId = idpEntityId;
+        this(null, idpMetadataPath, idpEntityId);
     }
+
+	public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration,
+			final String idpEntityId) {
+		this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderMetadataPath(),
+				idpEntityId);
+	}
+
+	public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, final String idpMetadataPath,
+			@Nullable final String idpEntityId) {
+		CommonHelper.assertTrue(idpMetadataResource != null || CommonHelper.isNotBlank(idpMetadataPath),
+				"Either IdpMetadataResource or idpMetadataPath must be provided");
+		if (idpMetadataResource != null) {
+			this.idpMetadataResource = idpMetadataResource;
+		} else {
+			this.idpMetadataResource = CommonHelper.getResource(idpMetadataPath);
+		}
+	}
 
     @Override
     public  final MetadataResolver resolve() {
@@ -63,32 +76,12 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     	}
     	
         try {
-            Resource resource = null;
-            if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
-                String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-                resource = ResourceHelper.of(new ClassPathResource(path));
-            }  else if (this.idpMetadataPath.startsWith(HTTP_PREFIX)) {
-                final UrlResource urlResource = new UrlResource(this.idpMetadataPath);
-                if (urlResource.getURL().getProtocol().equalsIgnoreCase(HTTP_PREFIX)) {
-                    logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]",
-                            urlResource.getURL());
-                }
-                resource = ResourceHelper.of(urlResource);
-            // for backward compatibility
-            } else if (this.idpMetadataPath.startsWith(FILE_PREFIX)) {
-                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath.substring(FILE_PREFIX.length())));
-            } else {
-                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
-            }
 
-            if (resource == null) {
-                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataPath);
-            }
+            if (this.idpMetadataResource == null) {
+                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
+			}
 
-            try (final InputStream in = resource.getInputStream()) {
+            try (final InputStream in = this.idpMetadataResource.getInputStream()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
                 final Element metadataRoot = inCommonMDDoc.getDocumentElement();
                 idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
@@ -98,10 +91,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
                 idpMetadataProvider.initialize();
             } catch (final FileNotFoundException e) {
-                throw new TechnicalException("Error loading idp Metadata. The path must be a "
-                        + "valid https url, begin with '" + CommonHelper.RESOURCE_PREFIX
-                        + "' or it must be a physical readable non-empty local file "
-                        + "at the path specified.", e);
+                throw new TechnicalException("Error loading idp Metadata. The path must be a " + "valid https url, "
+                        + CommonHelper.INVALID_PATH_MESSAGE, e);
             }
 
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
@@ -145,7 +136,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
     @Override
     public String getMetadataPath() {
-        return idpMetadataPath;
+        return idpMetadataResource.getFilename();
     }
 
     @Override

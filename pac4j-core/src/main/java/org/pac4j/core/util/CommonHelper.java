@@ -1,13 +1,20 @@
 package org.pac4j.core.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +28,14 @@ public final class CommonHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
 
-    public static final String RESOURCE_PREFIX = "resource:";
+	public static final String RESOURCE_PREFIX = "resource";
+	public static final String CLASSPATH_PREFIX = "classpath";
+	public static final String HTTP_PREFIX = "http";
+	public static final String HTTPS_PREFIX = "https";
+
+    public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
+			+ ":', '" + HTTP_PREFIX + ":' or it must be a physical readable non-empty local file "
+			+ "at the path specified.";
 
     /**
      * Return if the String is not blank.
@@ -208,20 +222,118 @@ public final class CommonHelper {
      * @return the input stream
      */
     public static InputStream getInputStreamFromName(String name) {
-        if (name.startsWith(RESOURCE_PREFIX)) {
-            String path = name.substring(RESOURCE_PREFIX.length());
-            if (!path.startsWith("/")) {
-                path = "/" + path;
-            }
-            return CommonHelper.class.getResourceAsStream(path);
-        } else {
-            try {
-                return new FileInputStream(name);
-            } catch (FileNotFoundException e) {
-                throw new TechnicalException(e);
-            }
-        }
-    }
+		int prefixEnd = name.indexOf(":");
+		String prefix = null;
+		String path = name;
+		if (prefixEnd != -1) {
+			prefix = name.substring(0, prefixEnd);
+			path = name.substring(prefixEnd + 1);
+		}
+
+		switch (prefix) {
+		case RESOURCE_PREFIX:
+			if (!path.startsWith("/")) {
+				path = "/" + path;
+			}
+			// The choice here was to keep legacy behavior and remove / prior to
+			// calling classloader.getResourceAsStream.. or make it work exactly
+			// as it did before but have different behavior for resource: and
+			// classpath:
+			// My decision was to keep legacy working the same.
+			return CommonHelper.class.getResourceAsStream(path);
+		case CLASSPATH_PREFIX:
+			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+		case HTTP_PREFIX:
+			logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]", path);
+		case HTTPS_PREFIX:
+			URLConnection con = null;
+			try {
+				URL url = new URL(name);
+
+				con = url.openConnection();
+
+				return con.getInputStream();
+			} catch (IOException ex) {
+				// Close the HTTP connection (if applicable).
+				if (con instanceof HttpURLConnection) {
+					((HttpURLConnection) con).disconnect();
+				}
+				throw new TechnicalException(ex);
+			}
+		default:
+			try {
+				return new FileInputStream(path);
+			} catch (FileNotFoundException e) {
+				throw new TechnicalException(e);
+			}
+		}
+
+	}
+
+	public static Resource getResource(final String idpMetadataPath) {
+		return new Resource() {
+
+			@Override
+			public InputStream getInputStream() throws IOException {
+				return getInputStreamFromName(idpMetadataPath);
+			}
+
+			@Override
+			public long lastModified() throws IOException {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public boolean isReadable() {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public boolean isOpen() {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public URL getURL() throws IOException {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public URI getURI() throws IOException {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public String getFilename() {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public File getFile() throws IOException {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public String getDescription() {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public boolean exists() {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public Resource createRelative(String relativePath) throws IOException {
+				throw new UnsupportedOperationException("not implemented");
+			}
+
+			@Override
+			public long contentLength() throws IOException {
+				throw new UnsupportedOperationException("not implemented");
+			}
+		};
+	}
 
     /**
      * Return a random string of a certain size.
