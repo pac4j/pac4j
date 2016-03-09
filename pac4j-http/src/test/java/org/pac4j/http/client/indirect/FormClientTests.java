@@ -78,48 +78,36 @@ public final class FormClientTests implements TestsConstants {
     public void testGetCredentialsMissingUsername() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        try {
-            formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME));
-            fail("should fail");
-        } catch (final RequiresHttpAction e) {
-            assertEquals("Username and password cannot be blank -> return to the form with error", e.getMessage());
-            assertEquals(302, context.getResponseStatus());
-            assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                    + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
-                    .get(HttpConstants.LOCATION_HEADER));
-        }
+        TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)),
+                RequiresHttpAction.class, "Username and password cannot be blank -> return to the form with error");
+        assertEquals(302, context.getResponseStatus());
+        assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
+                + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
+                .get(HttpConstants.LOCATION_HEADER));
     }
 
     @Test
     public void testGetCredentialsMissingPassword() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        try {
-            formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
-            fail("should fail");
-        } catch (final RequiresHttpAction e) {
-            assertEquals("Username and password cannot be blank -> return to the form with error", e.getMessage());
-            assertEquals(302, context.getResponseStatus());
-            assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
-                    + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
-        }
+        TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
+                RequiresHttpAction.class, "Username and password cannot be blank -> return to the form with error");
+        assertEquals(302, context.getResponseStatus());
+        assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
+               + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
     }
 
     @Test
     public void testGetCredentials() {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
-        try {
-            formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                    .addRequestParameter(formClient.getPasswordParameter(), PASSWORD));
-            fail("should fail");
-        } catch (final RequiresHttpAction e) {
-            assertEquals("Credentials validation fails -> return to the form with error", e.getMessage());
-            assertEquals(302, context.getResponseStatus());
-            assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
-                    + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
-                    .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
-        }
+        TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
+                RequiresHttpAction.class, "Credentials validation fails -> return to the form with error");
+        assertEquals(302, context.getResponseStatus());
+        assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
+                + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
+                .getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
     }
 
     @Test
