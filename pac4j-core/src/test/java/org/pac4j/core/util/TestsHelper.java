@@ -66,13 +66,18 @@ public final class TestsHelper {
         expectException(() -> obj.init(MockWebContext.create()), TechnicalException.class, message);
     }
 
-    public static void expectException(final Procedure procedure, final Class<? extends Exception> clazz, final String message) {
+    public static Exception expectException(final Procedure procedure) {
         try {
             procedure.execute();
-            Assert.fail("should fail");
         } catch (final Exception e) {
-            Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
-            Assert.assertEquals(message, e.getMessage());
+            return e;
         }
+        return null;
+    }
+
+    public static void expectException(final Procedure procedure, final Class<? extends Exception> clazz, final String message) {
+        final Exception e = expectException(procedure);
+        Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
+        Assert.assertEquals(message, e.getMessage());
     }
 }
