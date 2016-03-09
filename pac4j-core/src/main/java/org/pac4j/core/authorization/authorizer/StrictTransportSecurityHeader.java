@@ -4,6 +4,8 @@ import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 
+import java.util.List;
+
 /**
  * Strict transport security header.
  *
@@ -26,7 +28,7 @@ public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final UserProfile profile) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
         if (ContextHelper.isHttpsOrSecure(context)) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }

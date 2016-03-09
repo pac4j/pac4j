@@ -60,7 +60,7 @@ public class ProfileManager {
         if (objSession != null && objSession instanceof LinkedHashMap) {
             profiles = (LinkedHashMap<String, UserProfile>) objSession;
         }
-        if (profiles == null && readFromSession) {
+        if ((profiles == null || profiles.size() == 0) && readFromSession) {
             final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
             if (objRequest != null && objRequest instanceof LinkedHashMap) {
                 profiles = (LinkedHashMap<String, UserProfile>) objRequest;
@@ -86,16 +86,19 @@ public class ProfileManager {
     }
 
     /**
-     * Save the given user profile (replace the current one if multi profile is not supported, add it otherwise).
+     * Save the given user profile (replace the current one if multi profiles are not supported, add it otherwise).
      *
      * @param saveInSession if the user profile must be saved in session
      * @param profile a given user profile
-     * @param multiProfile whether multi profile is supported
+     * @param multiProfile whether multiple profiles are supported
      */
     public void save(final boolean saveInSession, final UserProfile profile, final boolean multiProfile) {
         final LinkedHashMap<String, UserProfile> profiles;
 
-        final String clientName = profile.getClientName();
+        String clientName = profile.getClientName();
+        if (clientName == null) {
+            clientName = "DEFAULT";
+        }
         if (multiProfile) {
             profiles = retrieveAll(saveInSession);
             profiles.remove(clientName);
