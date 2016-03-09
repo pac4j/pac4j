@@ -1,0 +1,27 @@
+package org.pac4j.core.authorization.authorizer;
+
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.UserProfile;
+
+import java.util.List;
+
+/**
+ * Authorizer which is valid if one of the profile is authorized.
+ *
+ * @author Jerome Leleu
+ * @since 1.9.0
+ */
+public abstract class SingleProfileAuthorizer<U extends UserProfile> implements Authorizer<U> {
+
+    @Override
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
+        for (final U profile : profiles) {
+            if (isProfileAuthorized(context, profile)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected abstract boolean isProfileAuthorized(final WebContext context, final U profile);
+}

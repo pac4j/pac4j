@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public interface AuthorizationChecker {
 
-    boolean isAuthorized(WebContext context, UserProfile profile, String authorizerNames, Map<String, Authorizer> authorizersMap);
+    boolean isAuthorized(WebContext context, List<UserProfile> profiles, String authorizerNames, Map<String, Authorizer> authorizersMap);
 
-    boolean isAuthorized(WebContext context, UserProfile profile, List<Authorizer> authorizers);
+    boolean isAuthorized(WebContext context, List<UserProfile> profiles, List<Authorizer> authorizers);
 }

@@ -31,7 +31,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
 
     @Override
-    public boolean isAuthorized(final WebContext context, final UserProfile profile, final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (CommonHelper.isNotBlank(authorizerNames)) {
@@ -78,17 +78,17 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 }
             }
         }
-        return isAuthorized(context, profile, authorizers);
+        return isAuthorized(context, profiles, authorizers);
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final UserProfile profile, final List<Authorizer> authorizers) {
-        // authorizations check comes after authentication and profile must not be null
-        CommonHelper.assertNotNull("profile", profile);
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) {
+        // authorizations check comes after authentication and profile must not be null nor empty
+        CommonHelper.assertTrue(profiles != null && profiles.size() > 0, "profiles must not be null or empty");
         if (authorizers != null && !authorizers.isEmpty()) {
             // check authorizations using authorizers: all must be satisfied
             for (Authorizer authorizer : authorizers) {
-                if (!authorizer.isAuthorized(context, profile)) {
+                if (!authorizer.isAuthorized(context, profiles)) {
                     return false;
                 }
             }
