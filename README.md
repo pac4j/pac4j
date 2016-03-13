@@ -37,9 +37,9 @@ You can even implement `pac4j` for a new framework / tool by following these [gu
 
 *In a pac4j implementation:*
 
-3) The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) protects an url by checking that the user is authenticated and that the authorizations are checked, according to the clients and authorizers configuration. If the user is not authenticated, it starts / performs the login process
+3) The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) protects an url by checking that the user is authenticated and that the authorizations are checked, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients
 
-4) The "**callback controller**" finishes the authentication process for an indirect client
+4) The "**callback controller**" finishes the login process for an indirect client
 
 
 ## Versions
