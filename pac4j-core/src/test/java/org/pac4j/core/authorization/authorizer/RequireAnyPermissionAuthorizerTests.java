@@ -1,10 +1,12 @@
 package org.pac4j.core.authorization.authorizer;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.authorization.authorizer.RequireAnyPermissionAuthorizer;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,79 +28,91 @@ public final class RequireAnyPermissionAuthorizerTests {
 
     private final J2EContext context = new J2EContext(null, null);
 
+    private List<UserProfile> profiles;
+
+    private UserProfile profile;
+
+    @Before
+    public void setUp() {
+        profile = new CommonProfile();
+        profiles = new ArrayList<>();
+        profiles.add(profile);
+    }
+
     @Test
     public void testHasAnyPermissionOnePermission() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(PERMISSION1);
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionOnePermission2() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
         authorizer.setElements(PERMISSION1);
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionOnePermission3() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
         authorizer.setElements(Arrays.asList(PERMISSION1));
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionOnePermission4() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer();
-        authorizer.setElements(new HashSet<String>(Arrays.asList(PERMISSION1)));
-        final CommonProfile profile = new CommonProfile();
+        authorizer.setElements(new HashSet<>(Arrays.asList(PERMISSION1)));
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionOnePermissionFail() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION1});
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION2);
-        assertFalse(authorizer.isAuthorized(context, profile));
+        assertFalse(authorizer.isAuthorized(context, profiles));
+    }
+
+    @Test
+    public void testHasAnyPermissionOnePermissionTwoProfiles() {
+        final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION1});
+        profile.addPermission(PERMISSION2);
+        final UserProfile profile2 = new CommonProfile();
+        profile2.addPermission(PERMISSION1);
+        profiles.add(profile2);
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionNull() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer((List<String>) null);
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionEmpty() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {});
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionOkTwoPermissions() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(PERMISSION2, PERMISSION1);
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
     public void testHasAnyPermissionProfileTwoPermissionsFail() {
         final RequireAnyPermissionAuthorizer authorizer = new RequireAnyPermissionAuthorizer(new String[] {PERMISSION2});
-        final CommonProfile profile = new CommonProfile();
         profile.addPermission(PERMISSION1);
         profile.addPermission(PERMISSION3);
-        assertFalse(authorizer.isAuthorized(context, profile));
+        assertFalse(authorizer.isAuthorized(context, profiles));
     }
 }

@@ -6,6 +6,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.util.TestsHelper;
 
 import static org.junit.Assert.*;
 
@@ -38,24 +39,14 @@ public final class ParameterExtractorTests implements TestsConstants {
 
     @Test
     public void testRetrievePostParameterNotSupported() throws RequiresHttpAction {
-        try {
-            final MockWebContext context = MockWebContext.create().setRequestMethod("POST").addRequestParameter(GOOD_PARAMETER, VALUE);
-            final TokenCredentials credentials = getExtractor.extract(context);
-            fail("Should fail");
-        } catch (final CredentialsException e) {
-            assertEquals("POST requests not supported", e.getMessage());
-        }
+        final MockWebContext context = MockWebContext.create().setRequestMethod("POST").addRequestParameter(GOOD_PARAMETER, VALUE);
+        TestsHelper.expectException(() -> getExtractor.extract(context), CredentialsException.class, "POST requests not supported");
     }
 
     @Test
     public void testRetrieveGetParameterNotSupported() throws RequiresHttpAction {
-        try {
-            final MockWebContext context = MockWebContext.create().setRequestMethod("GET").addRequestParameter(GOOD_PARAMETER, VALUE);
-            final TokenCredentials credentials = postExtractor.extract(context);
-            fail("Should fail");
-        } catch (final CredentialsException e) {
-            assertEquals("GET requests not supported", e.getMessage());
-        }
+        final MockWebContext context = MockWebContext.create().setRequestMethod("GET").addRequestParameter(GOOD_PARAMETER, VALUE);
+        TestsHelper.expectException(() -> postExtractor.extract(context), CredentialsException.class, "GET requests not supported");
     }
 
     @Test

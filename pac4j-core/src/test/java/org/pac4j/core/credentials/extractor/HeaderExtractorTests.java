@@ -6,6 +6,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.util.TestsHelper;
 
 import static org.junit.Assert.*;
 
@@ -41,12 +42,7 @@ public final class HeaderExtractorTests implements TestsConstants {
 
     @Test
     public void testBadPrefix() throws RequiresHttpAction {
-        try {
-            final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
-            extractor.extract(context);
-            fail("Should fail");
-        } catch (final CredentialsException e) {
-            assertEquals("Wrong prefix for header: " + GOOD_HEADER, e.getMessage());
-        }
+        final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
+        TestsHelper.expectException(() -> extractor.extract(context), CredentialsException.class, "Wrong prefix for header: " + GOOD_HEADER);
     }
 }

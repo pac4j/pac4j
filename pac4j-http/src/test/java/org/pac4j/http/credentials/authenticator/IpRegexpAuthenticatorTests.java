@@ -6,6 +6,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.profile.IpProfile;
 
 import static org.junit.Assert.*;
@@ -39,12 +40,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
 
     @Test
     public void testValidateBadIP() throws RequiresHttpAction {
-        try {
-            final TokenCredentials credentials = new TokenCredentials(BAD_IP, CLIENT_NAME);
-            authenticator.validate(credentials);
-            fail("Should fail");
-        } catch (final CredentialsException e) {
-            assertEquals("Unauthorized IP address: " + BAD_IP, e.getMessage());
-        }
+        final TokenCredentials credentials = new TokenCredentials(BAD_IP, CLIENT_NAME);
+        TestsHelper.expectException(() -> authenticator.validate(credentials), CredentialsException.class, "Unauthorized IP address: " + BAD_IP);
     }
 }

@@ -7,6 +7,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.List;
+
 /**
  * Authorizer that checks CSRF tokens.
  *
@@ -35,7 +37,7 @@ public class CsrfAuthorizer<U extends UserProfile> implements Authorizer<U> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final U profile) {
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) {
         final boolean checkRequest = !onlyCheckPostRequest || (onlyCheckPostRequest && ContextHelper.isPost(context));
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName);

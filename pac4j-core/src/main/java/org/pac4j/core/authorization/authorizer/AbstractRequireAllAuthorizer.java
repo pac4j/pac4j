@@ -12,7 +12,7 @@ import org.pac4j.core.profile.UserProfile;
 public abstract class AbstractRequireAllAuthorizer<E extends Object, U extends UserProfile> extends AbstractRequireElementAuthorizer<E, U> {
 
     @Override
-    public boolean isAuthorized(final WebContext context, final U profile) {
+    protected boolean isProfileAuthorized(final WebContext context, final U profile) {
         if (elements == null || elements.isEmpty()) {
             return true;
         }
