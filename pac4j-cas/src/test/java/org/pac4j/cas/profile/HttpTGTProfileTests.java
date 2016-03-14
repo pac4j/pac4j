@@ -15,7 +15,7 @@ public final class HttpTGTProfileTests implements TestsConstants {
 
     @Test
     public void testClearProfile() {
-        final HttpTGTProfile profile = new HttpTGTProfile(ID, USERNAME);
+        final CasRestProfile profile = new CasRestProfile(ID, USERNAME);
         profile.clearSensitiveData();
         assertNull(profile.getTicketGrantingTicketId());
     }

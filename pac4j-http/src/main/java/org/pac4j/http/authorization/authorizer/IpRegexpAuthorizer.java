@@ -7,6 +7,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -30,7 +31,7 @@ public class IpRegexpAuthorizer implements Authorizer<UserProfile> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final UserProfile profile) {
+    public boolean isAuthorized(final WebContext context, final List<UserProfile> profile) {
         CommonHelper.assertNotNull("pattern", pattern);
 
         final String ip = context.getRemoteAddr();

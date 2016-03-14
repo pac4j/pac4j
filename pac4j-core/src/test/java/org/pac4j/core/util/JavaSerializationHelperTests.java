@@ -1,6 +1,7 @@
 package org.pac4j.core.util;
 
 import org.junit.Test;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
 import static org.junit.Assert.*;
@@ -16,7 +17,7 @@ public final class JavaSerializationHelperTests implements TestsConstants {
     private JavaSerializationHelper helper = new JavaSerializationHelper();
 
     private UserProfile getUserProfile() {
-        final UserProfile profile = new UserProfile();
+        final UserProfile profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
         return profile;
