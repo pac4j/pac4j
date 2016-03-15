@@ -2,7 +2,7 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
-`pac4j` is an [**easy**](#main-concepts) and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It's available under the Apache 2 license.
+`pac4j` is an **easy** and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It provides a very comprehensive [security model](#main-concepts) and [implementation guidelines](https://github.com/pac4j/pac4j/wiki/Implement-pac4j-for-a-new-framework---tool). It is based on Java 8 and available under the Apache 2 license.
 
 It is currently **available for most [frameworks / tools](#frameworks--tools-implementing-pac4j)** and **supports most [authentication](https://github.com/pac4j/pac4j/wiki/Clients) / [authorization](https://github.com/pac4j/pac4j/wiki/Authorizers) mechanisms**.
 
