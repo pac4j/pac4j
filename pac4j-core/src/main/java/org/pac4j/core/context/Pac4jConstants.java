@@ -65,4 +65,7 @@ public interface Pac4jConstants {
     String USERNAME = "username";
 
     String PASSWORD = "password";
+
+    /* Whether multiple profiles are accepted */
+    String MULTI_PROFILE = "multiProfile";
 }
