@@ -103,7 +103,7 @@ public final class CommonHelper {
      * @return whether it is not empty
      */
     public static boolean isNotEmpty(final Collection coll) {
-        return coll != null && !coll.isEmpty();
+        return !isEmpty(coll);
     }
 
     /**
