@@ -60,7 +60,7 @@ public class ProfileManager {
         if (objSession != null && objSession instanceof LinkedHashMap) {
             profiles = (LinkedHashMap<String, UserProfile>) objSession;
         }
-        if ((profiles == null || profiles.size() == 0) && readFromSession) {
+        if ((profiles == null || profiles.isEmpty()) && readFromSession) {
             final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
             if (objRequest != null && objRequest instanceof LinkedHashMap) {
                 profiles = (LinkedHashMap<String, UserProfile>) objRequest;

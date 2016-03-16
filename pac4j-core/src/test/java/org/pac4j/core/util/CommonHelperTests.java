@@ -3,6 +3,9 @@ package org.pac4j.core.util;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 /**
@@ -197,5 +200,19 @@ public final class CommonHelperTests {
     @Test
     public void testSubstringBetween() {
         assertEquals("bet", CommonHelper.substringBetween("123startbet##456", "start", "##"));
+    }
+
+    @Test
+    public void testIsEmpty() {
+        assertTrue(CommonHelper.isEmpty(null));
+        assertTrue(CommonHelper.isEmpty(new ArrayList<>()));
+        assertFalse(CommonHelper.isEmpty(Arrays.asList(new String[] { VALUE })));
+    }
+
+    @Test
+    public void testIsNotEmpty() {
+        assertFalse(CommonHelper.isNotEmpty(null));
+        assertFalse(CommonHelper.isNotEmpty(new ArrayList<>()));
+        assertTrue(CommonHelper.isNotEmpty(Arrays.asList(new String[] { VALUE })));
     }
 }
