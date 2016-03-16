@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
@@ -83,6 +84,26 @@ public final class CommonHelper {
      */
     public static boolean areNotEquals(final String s1, final String s2) {
         return !areEquals(s1, s2);
+    }
+
+    /**
+     * Return if a collection is empty.
+     *
+     * @param coll a collection
+     * @return whether it is empty
+     */
+    public static boolean isEmpty(final Collection coll) {
+        return coll == null || coll.isEmpty();
+    }
+
+    /**
+     * Return if a collection is not empty.
+     *
+     * @param coll a collection
+     * @return whether it is not empty
+     */
+    public static boolean isNotEmpty(final Collection coll) {
+        return coll != null && !coll.isEmpty();
     }
 
     /**
