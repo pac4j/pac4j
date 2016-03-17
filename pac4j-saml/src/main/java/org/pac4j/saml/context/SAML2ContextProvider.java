@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.context;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -53,12 +52,6 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     public SAML2ContextProvider(final MetadataResolver metadata,
                                 final SAML2MetadataResolver idpEntityId,
-                                final SAML2MetadataResolver spEntityId) {
-        this(metadata, idpEntityId, spEntityId, null);
-    }
-
-    public SAML2ContextProvider(final MetadataResolver metadata,
-                                final SAML2MetadataResolver idpEntityId,
                                 final SAML2MetadataResolver spEntityId,
                                 @Nullable final SAMLMessageStorageFactory samlMessageStorageFactory) {
         this.metadata = metadata;
@@ -70,7 +63,6 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     @Override
     public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext) {
         final SAML2MessageContext context = new SAML2MessageContext();
-        context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
         return context;

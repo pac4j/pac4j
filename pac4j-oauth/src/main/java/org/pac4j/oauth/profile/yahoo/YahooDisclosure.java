@@ -5,6 +5,8 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.pac4j.oauth.profile.JsonObject;
 
+import static org.pac4j.core.util.CommonHelper.newDate;
+
 /**
  * This class represents a Yahoo disclosure.
  * 
@@ -41,11 +43,11 @@ public final class YahooDisclosure extends JsonObject {
     }
 
     public Date getSeen() {
-        return seen;
+        return newDate(seen);
     }
 
     public void setSeen(Date seen) {
-        this.seen = seen;
+        this.seen = newDate(seen);
     }
 
     public String getVersion() {

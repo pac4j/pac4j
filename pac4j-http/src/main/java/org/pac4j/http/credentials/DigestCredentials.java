@@ -109,6 +109,11 @@ public class DigestCredentials extends TokenCredentials {
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
                 "clientName", getClientName());

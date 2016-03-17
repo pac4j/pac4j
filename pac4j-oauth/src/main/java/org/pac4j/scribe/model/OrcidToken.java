@@ -12,9 +12,27 @@ public class OrcidToken extends Token {
 
     private String orcid;
 
-    public OrcidToken(String token, String secret, String orcid, String rawResponse) {
+    public OrcidToken(final String token, final String secret, final String orcid, final String rawResponse) {
         super(token, secret, rawResponse);
         setOrcid(orcid);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        OrcidToken that = (OrcidToken) o;
+
+        return !(orcid != null ? !orcid.equals(that.orcid) : that.orcid != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (orcid != null ? orcid.hashCode() : 0);
+        return result;
     }
 
     public String getOrcid() {

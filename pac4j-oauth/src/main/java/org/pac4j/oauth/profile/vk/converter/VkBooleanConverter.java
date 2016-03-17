@@ -17,7 +17,7 @@ public final class VkBooleanConverter implements AttributeConverter<Boolean> {
 			} else if (attribute instanceof String) {
 				return "1".equals(attribute);
 			} else if (attribute instanceof Number) {
-				return new Integer(1).equals(attribute);
+				return Integer.valueOf(1).equals(attribute);
 			}
 		}
 		return null;
