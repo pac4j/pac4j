@@ -101,9 +101,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     final StreamResult result = new StreamResult(new StringWriter());
                     final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
                     transformer.transform(source, result);
-                    final FileWriter writer = new FileWriter(this.spMetadataPath);
-                    writer.write(result.getWriter().toString());
-                    writer.close();
+                    try (FileWriter writer = new FileWriter(this.spMetadataPath)) {
+                        writer.write(result.getWriter().toString());
+                    }
                 }
             }
             return spMetadataProvider;

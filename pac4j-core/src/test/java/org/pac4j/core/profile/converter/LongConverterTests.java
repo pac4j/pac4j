@@ -13,8 +13,9 @@ import static org.junit.Assert.*;
 public final class LongConverterTests {
     
     private final LongConverter converter = new LongConverter();
-    
-    private static final long VALUE = 1234567890123L;
+
+    private static final int INT_VALUE = 5;
+    private static final long LONG_VALUE = 1234567890123L;
 
     @Test
     public void testNull() {
@@ -28,11 +29,16 @@ public final class LongConverterTests {
 
     @Test
     public void testLong() {
-        assertEquals(VALUE, (long) this.converter.convert(VALUE));
+        assertEquals(LONG_VALUE, (long) this.converter.convert(LONG_VALUE));
     }
 
     @Test
     public void testLongString() {
-        assertEquals(VALUE, (long) this.converter.convert("" + VALUE));
+        assertEquals(LONG_VALUE, (long) this.converter.convert("" + LONG_VALUE));
+    }
+
+    @Test
+    public void testInteger() {
+        assertEquals((long) INT_VALUE, (long) this.converter.convert(new Integer(INT_VALUE)));
     }
 }

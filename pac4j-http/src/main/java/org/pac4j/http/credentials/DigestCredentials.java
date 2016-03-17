@@ -104,6 +104,11 @@ public class DigestCredentials extends TokenCredentials {
     }
 
     @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "username", this.username, "response", "[PROTECTED]",
                 "clientName", getClientName());

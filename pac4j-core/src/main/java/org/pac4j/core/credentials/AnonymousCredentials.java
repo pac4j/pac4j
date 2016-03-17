@@ -12,7 +12,10 @@ public final class AnonymousCredentials extends Credentials {
 
     @Override
     public boolean equals(Object o) {
-        return true;
+        if (o instanceof AnonymousCredentials) {
+            return true;
+        }
+        return false;
     }
 
     @Override

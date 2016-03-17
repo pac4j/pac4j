@@ -48,18 +48,16 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
             final SignatureSigningParameters params = resolver.resolveSingle(criteria);
             augmentSignatureSigningParameters(params);
 
+            if (params == null) {
+                throw new SAMLException("Could not determine the signature parameters");
+            }
+
             logger.info("Created signature signing parameters." +
                     "\nSignature algorithm: {}" +
                     "\nSignature canonicalization algorithm: {}" +
                     "\nSignature reference digest methods: {}",
                     params.getSignatureAlgorithm(), params.getSignatureCanonicalizationAlgorithm(),
                     params.getSignatureReferenceDigestMethod());
-
-
-            if (params == null) {
-                throw new SAMLException("Could not determine the signature parameters");
-            }
-
 
             return params;
         } catch (final Exception e) {
