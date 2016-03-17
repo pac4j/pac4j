@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Date;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
@@ -252,6 +253,16 @@ public final class CommonHelper {
      */
     public static String randomString(final int size) {
         return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+    }
+
+    /**
+     * Copy a date.
+     *
+     * @param original original date
+     * @return date copy
+     */
+    public static Date newDate(final Date original) {
+        return original != null ? new Date(original.getTime()) : null;
     }
 
     /**

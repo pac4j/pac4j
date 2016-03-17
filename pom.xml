@@ -236,7 +236,8 @@
 				<configuration>
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->
-					<failOnError>false</failOnError>
+					<failOnError>true</failOnError>
+					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
 				</configuration>
 				<executions>
 					<execution>

@@ -28,15 +28,13 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
         EMAIL_AND_PROFILE
     }
 
-    protected final String PROFILE_SCOPE = "profile";
+    protected final static String PROFILE_SCOPE = "profile";
 
-    protected final String EMAIL_SCOPE = "email";
+    protected final static String EMAIL_SCOPE = "email";
 
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
 
     protected String scopeValue;
-
-    private boolean requiresStateParameter = true;
 
     public Google2Client() {
     }
@@ -87,14 +85,6 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
         return profile;
     }
 
-    public Google2Scope getScope() {
-        return this.scope;
-    }
-
-    public void setScope(final Google2Scope scope) {
-        this.scope = scope;
-    }
-
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
@@ -103,5 +93,14 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
             return true;
         }
         return false;
+    }
+
+
+    public Google2Scope getScope() {
+        return this.scope;
+    }
+
+    public void setScope(final Google2Scope scope) {
+        this.scope = scope;
     }
 }

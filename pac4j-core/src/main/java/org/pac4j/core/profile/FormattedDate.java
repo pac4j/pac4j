@@ -49,6 +49,11 @@ public final class FormattedDate extends Date {
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public String toString() {
         SimpleDateFormat simpleDateFormat;
         if (this.locale == null) {

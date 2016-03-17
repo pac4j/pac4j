@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.context;
 
 import org.opensaml.messaging.context.MessageContext;
@@ -11,7 +10,6 @@ import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
 import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLSubjectNameIdentifierContext;
-import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.BaseID;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
@@ -42,16 +40,11 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     /* valid subject assertion */
     private Assertion subjectAssertion;
 
-    /* id of the authn request */
-    private String requestId;
-
     /** BaseID retrieved either from the Subject or from a SubjectConfirmation */
     private BaseID baseID;
 
     /** SubjectConfirmations used during assertion evaluation. */
     private List<SubjectConfirmation> subjectConfirmations = new ArrayList<SubjectConfirmation>();
-
-    private MetadataResolver metadataProvider;
 
     private SAMLMessageStorage samlMessageStorage;
 
@@ -111,7 +104,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         // Get by index
         if (acsIndex != null) {
             for (final AssertionConsumerService service : services) {
-                if (acsIndex.equals(service.getIndex())) {
+                if (Integer.valueOf(acsIndex).equals(service.getIndex())) {
                     return service;
                 }
             }
@@ -148,10 +141,6 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         return getSAMLPeerEntityContext().getSubcontext(SAMLMetadataContext.class, true);
     }
 
-    public SAMLMetadataContext getSAMLMetadataContext() {
-        return this.getSubcontext(SAMLMetadataContext.class, true);
-    }
-
     public final SAMLPeerEntityContext getSAMLPeerEntityContext() {
         return this.getSubcontext(SAMLPeerEntityContext.class, true);
     }
@@ -162,14 +151,6 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
 
     public final void setSubjectAssertion(final Assertion subjectAssertion) {
         this.subjectAssertion = subjectAssertion;
-    }
-
-    public String getRequestId() {
-        return this.requestId;
-    }
-
-    public void setRequestId(final String requestId) {
-        this.requestId = requestId;
     }
 
     public final BaseID getBaseID() {
@@ -184,18 +165,9 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         return subjectConfirmations;
     }
     
-    public void setSubjectConfirmations(final List<SubjectConfirmation> subjectConfirmations) {
-        this.subjectConfirmations = subjectConfirmations;
-    }
-
-    public final void setMetadataProvider(final MetadataResolver metadataProvider) {
-        this.metadataProvider = metadataProvider;
-    }
-
     public final SAMLEndpointContext getSAMLPeerEndpointContext() {
         return getSAMLPeerEntityContext().getSubcontext(SAMLEndpointContext.class, true);
     }
-
 
     public final SAMLEndpointContext getSAMLSelfEndpointContext() {
         return getSAMLSelfEntityContext().getSubcontext(SAMLEndpointContext.class, true);
