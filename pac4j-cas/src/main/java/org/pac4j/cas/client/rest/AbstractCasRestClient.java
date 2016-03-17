@@ -60,14 +60,15 @@ public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswo
             connection = HttpUtils.openPostConnection(ticketURL);
             final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), HttpConstants.UTF8_ENCODING));
             out.write(payload);
             out.close();
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
-                final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                return new CasCredentials(in.readLine(), getClass().getSimpleName());
+                try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), HttpConstants.UTF8_ENCODING))) {
+                    return new CasCredentials(in.readLine(), getClass().getSimpleName());
+                }
             }
             throw new TechnicalException("Service ticket request for `" + profile + "` failed: " +
                     HttpUtils.buildHttpErrorMessage(connection));

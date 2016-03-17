@@ -23,9 +23,9 @@ public class FormattedDateConverter extends DateConverter {
     
     @Override
     public FormattedDate convert(final Object attribute) {
-        final Object result = super.convert(attribute);
-        if (result != null && result instanceof Date) {
-            return new FormattedDate((Date) result, this.format, this.locale);
+        final Date result = super.convert(attribute);
+        if (result != null) {
+            return new FormattedDate(result, this.format, this.locale);
         }
         return null;
     }

@@ -33,9 +33,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfig() {
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
-                                                                                                                                      null,
-                                                                                                                                      null);
+        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<>(null, null);
         generator.generate(this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());

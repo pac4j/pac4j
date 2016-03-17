@@ -42,7 +42,12 @@ public final class FormattedDate extends Date {
     public Locale getLocale() {
         return this.locale;
     }
-    
+
+    @Override
+    public boolean equals(final Object obj) {
+        return super.equals(obj);
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat simpleDateFormat;

@@ -43,15 +43,11 @@ public class ProfileManager {
      */
     public List<UserProfile> getAll(final boolean readFromSession) {
         final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
-        if (profiles == null) {
-            return Collections.unmodifiableList(new ArrayList<>());
-        } else {
-            final List<UserProfile> listProfiles = new ArrayList<>();
-            for (final String key : profiles.keySet()) {
-                listProfiles.add(profiles.get(key));
-            }
-            return Collections.unmodifiableList(listProfiles);
+        final List<UserProfile> listProfiles = new ArrayList<>();
+        for (final Map.Entry<String, UserProfile> entry : profiles.entrySet()) {
+            listProfiles.add(entry.getValue());
         }
+        return Collections.unmodifiableList(listProfiles);
     }
 
     private LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {

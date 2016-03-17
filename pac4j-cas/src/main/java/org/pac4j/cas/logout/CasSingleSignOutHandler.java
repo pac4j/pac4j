@@ -134,7 +134,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
         void logout(HttpServletRequest request);
     }
 
-    private class Servlet25LogoutStrategy implements LogoutStrategy {
+    private static class Servlet25LogoutStrategy implements LogoutStrategy {
 
         @Override
         public void logout(final HttpServletRequest request) {
@@ -142,7 +142,7 @@ public class CasSingleSignOutHandler implements LogoutHandler {
         }
     }
 
-    private class Servlet30LogoutStrategy implements LogoutStrategy {
+    private static class Servlet30LogoutStrategy implements LogoutStrategy {
 
         public void logout(final HttpServletRequest request) {
             try {

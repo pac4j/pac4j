@@ -8,7 +8,7 @@ package org.pac4j.core.util;
  */
 public abstract class InitializableObject {
     
-    private boolean initialized = false;
+    private volatile boolean initialized = false;
     
     /**
      * Initialize the object.

@@ -10,7 +10,7 @@ import org.pac4j.core.context.WebContext;
  */
 public abstract class InitializableWebObject {
     
-    private boolean initialized = false;
+    private volatile boolean initialized = false;
     
     /**
      * Initialize the object.
