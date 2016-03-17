@@ -8,11 +8,12 @@ import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * Default way to check the authorizations (with default authorizers).
@@ -34,7 +35,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
-        if (CommonHelper.isNotBlank(authorizerNames)) {
+        if (isNotBlank(authorizerNames)) {
             final String[] names = authorizerNames.split(Pac4jConstants.ELEMENT_SEPRATOR);
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
@@ -64,16 +65,16 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                     authorizers.add(CSRF_AUTHORIZER);
                 } else {
                     // we must have authorizers
-                    CommonHelper.assertNotNull("authorizersMap", authorizersMap);
+                    assertNotNull("authorizersMap", authorizersMap);
                     Authorizer result = null;
                     for (final String key : authorizersMap.keySet()) {
-                        if (CommonHelper.areEqualsIgnoreCaseAndTrim(key, name)) {
+                        if (areEqualsIgnoreCaseAndTrim(key, name)) {
                             result = authorizersMap.get(key);
                             break;
                         }
                     }
                     // we must have an authorizer defined for this name
-                    CommonHelper.assertNotNull("authorizersMap['" + name + "']", result);
+                    assertNotNull("authorizersMap['" + name + "']", result);
                     authorizers.add(result);
                 }
             }
@@ -84,8 +85,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     @Override
     public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) {
         // authorizations check comes after authentication and profile must not be null nor empty
-        CommonHelper.assertTrue(profiles != null && profiles.size() > 0, "profiles must not be null or empty");
-        if (authorizers != null && !authorizers.isEmpty()) {
+        assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
+        if (isNotEmpty(authorizers)) {
             // check authorizations using authorizers: all must be satisfied
             for (Authorizer authorizer : authorizers) {
                 if (!authorizer.isAuthorized(context, profiles)) {

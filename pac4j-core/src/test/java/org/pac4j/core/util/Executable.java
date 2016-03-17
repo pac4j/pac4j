@@ -1,13 +1,13 @@
 package org.pac4j.core.util;
 
 /**
- * A procedure (no input, no result).
+ * Something executable (no input, no result, maybe an exception).
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
 @FunctionalInterface
-public interface Procedure {
+public interface Executable {
 
     void execute() throws Exception;
 }
