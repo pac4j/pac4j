@@ -484,10 +484,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
         return map;
     }
 
-    private void setAuthParams(final Map<String, String> authParams) {
-        this.authParams = authParams;
-    }
-
     public JWSAlgorithm getPreferredJwsAlgorithm() {
         return this.preferredJwsAlgorithm;
     }

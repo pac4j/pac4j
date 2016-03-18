@@ -16,6 +16,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
@@ -125,7 +126,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
             }
             final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
-            roleDescriptor = (list != null && !list.isEmpty()) ? list.get(0) : null;
+            roleDescriptor = CommonHelper.isNotEmpty(list) ? list.get(0) : null;
 
             if (roleDescriptor == null) {
                 throw new SAMLException("Cannot find entity " + entityId + " or role "

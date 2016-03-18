@@ -117,7 +117,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getDestinationBindingType(), false),
-                new SAML2WebSSOMessageReceiver(this.responseValidator, this.credentialProvider));
+                new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
 
     protected void initSAMLResponseValidator() {

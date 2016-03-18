@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.sso.impl;
 
 import org.opensaml.saml.saml2.core.AuthnRequest;
@@ -7,8 +6,6 @@ import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2MessageReceiver;
 import org.pac4j.saml.sso.SAML2MessageSender;
 import org.pac4j.saml.sso.SAML2ProfileHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handler capable of sending and receiving SAML messages according to the SAML2 SSO Browser profile.
@@ -17,8 +14,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.5.0
  */
 public class SAML2WebSSOProfileHandler implements SAML2ProfileHandler<AuthnRequest> {
-
-    private final static Logger logger = LoggerFactory.getLogger(SAML2WebSSOProfileHandler.class);
 
     private final SAML2MessageSender<AuthnRequest> messageSender;
 
@@ -39,5 +34,4 @@ public class SAML2WebSSOProfileHandler implements SAML2ProfileHandler<AuthnReque
     public Credentials receive(final SAML2MessageContext context) {
         return this.messageReceiver.receiveMessage(context);
     }
-
 }

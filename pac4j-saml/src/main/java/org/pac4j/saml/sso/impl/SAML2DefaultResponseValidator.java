@@ -245,27 +245,20 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                             responseLocation, requestedResponseURL);
                 }
             }
-            if (requestedBinding != null) {
-                if (!requestedBinding.equals(context.getSAMLBindingContext().getBindingUri())) {
-                    logger.warn("Response was received using a different binding {} than was requested {}",
-                            context.getSAMLBindingContext().getBindingUri(), requestedBinding);
-                }
+            if (requestedBinding != null && !requestedBinding.equals(context.getSAMLBindingContext().getBindingUri())) {
+                logger.warn("Response was received using a different binding {} than was requested {}",
+                        context.getSAMLBindingContext().getBindingUri(), requestedBinding);
             }
         }
     }
 
     protected final void verifyEndpoint(final Endpoint endpoint, final String destination) {
         try {
-            if (destination != null) {
-                if (uriComparator.compare(destination, endpoint.getLocation())) {
-                    // Expected
-                } else if (uriComparator.compare(destination, endpoint.getResponseLocation())) {
-                    // Expected
-                } else {
-                    throw new SAMLException("Intended destination " + destination
-                            + " doesn't match any of the endpoint URLs on endpoint "
-                            + endpoint.getLocation());
-                }
+            if (destination != null && !uriComparator.compare(destination, endpoint.getLocation())
+                    && !uriComparator.compare(destination, endpoint.getResponseLocation())) {
+                throw new SAMLException("Intended destination " + destination
+                        + " doesn't match any of the endpoint URLs on endpoint "
+                        + endpoint.getLocation());
             }
         } catch (final Exception e) {
             throw new SAMLException(e);
@@ -304,8 +297,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         // We do not check EncryptedID here because it has been already decrypted and stored into NameID
         final List<SubjectConfirmation> subjectConfirmations = context.getSubjectConfirmations();
         final NameID nameIdentifier = (NameID) context.getSAMLSubjectNameIdentifierContext().getSubjectNameIdentifier();
-        if ((nameIdentifier == null || nameIdentifier.getValue() == null) && (context.getBaseID() == null)
-                && ((subjectConfirmations == null) || (subjectConfirmations.isEmpty()))) {
+        if ((nameIdentifier == null || nameIdentifier.getValue() == null) && context.getBaseID() == null
+                && (subjectConfirmations == null || subjectConfirmations.isEmpty())) {
             throw new SAMLException(
                     "Subject NameID, BaseID and EncryptedID cannot be all null at the same time if there are no Subject Confirmations.");
         }
@@ -424,30 +417,28 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         }
 
         for (final SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
-            if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod())) {
-                if (isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
-                    NameID nameIDFromConfirmation = confirmation.getNameID();
-                    final BaseID baseIDFromConfirmation = confirmation.getBaseID();
-                    final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
+            if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod()) && isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
+                NameID nameIDFromConfirmation = confirmation.getNameID();
+                final BaseID baseIDFromConfirmation = confirmation.getBaseID();
+                final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
 
-                    // Encrypted ID can overwrite the non-encrypted one, if present
-                    final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation,
-                            decrypter);
-                    if (decryptedNameIdFromConfirmation != null) {
-                        nameIDFromConfirmation = decryptedNameIdFromConfirmation;
-                    }
-
-                    if (!samlIDFound && (nameIDFromConfirmation != null || baseIDFromConfirmation != null)) {
-                        context.getSAMLSubjectNameIdentifierContext().setSubjectNameIdentifier(nameIDFromConfirmation);
-                        context.setBaseID(baseIDFromConfirmation);
-                        context.getSubjectConfirmations().add(confirmation);
-                        samlIDFound = true;
-                    }
-                    if (!samlIDFound) {
-                        logger.warn("Could not find any Subject NameID/BaseID/EncryptedID, neither directly in the Subject nor in any Subject Confirmation.");
-                    }
-                    return;
+                // Encrypted ID can overwrite the non-encrypted one, if present
+                final NameID decryptedNameIdFromConfirmation = decryptEncryptedId(encryptedIDFromConfirmation,
+                        decrypter);
+                if (decryptedNameIdFromConfirmation != null) {
+                    nameIDFromConfirmation = decryptedNameIdFromConfirmation;
                 }
+
+                if (!samlIDFound && (nameIDFromConfirmation != null || baseIDFromConfirmation != null)) {
+                    context.getSAMLSubjectNameIdentifierContext().setSubjectNameIdentifier(nameIDFromConfirmation);
+                    context.setBaseID(baseIDFromConfirmation);
+                    context.getSubjectConfirmations().add(confirmation);
+                    samlIDFound = true;
+                }
+                if (!samlIDFound) {
+                    logger.warn("Could not find any Subject NameID/BaseID/EncryptedID, neither directly in the Subject nor in any Subject Confirmation.");
+                }
+                return;
             }
         }
 
@@ -555,21 +546,16 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
             throw new SAMLException("Assertion conditions cannot be null");
         }
 
-        if (conditions.getNotBefore() != null) {
-            if (conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {
-                throw new SAMLException("Assertion condition notBefore is not valid");
-            }
+        if (conditions.getNotBefore() != null && conditions.getNotBefore().minusSeconds(acceptedSkew).isAfterNow()) {
+            throw new SAMLException("Assertion condition notBefore is not valid");
         }
 
-        if (conditions.getNotOnOrAfter() != null) {
-            if (conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
-                throw new SAMLException("Assertion condition notOnOrAfter is not valid");
-            }
+        if (conditions.getNotOnOrAfter() != null && conditions.getNotOnOrAfter().plusSeconds(acceptedSkew).isBeforeNow()) {
+            throw new SAMLException("Assertion condition notOnOrAfter is not valid");
         }
 
         final String entityId = context.getSAMLSelfEntityContext().getEntityId();
         validateAudienceRestrictions(conditions.getAudienceRestrictions(), entityId);
-
     }
 
     /**
@@ -708,5 +694,4 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
     public final void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
         this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
-
 }
