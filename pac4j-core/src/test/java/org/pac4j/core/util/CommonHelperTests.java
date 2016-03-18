@@ -109,17 +109,17 @@ public final class CommonHelperTests {
 
     @Test
     public void testToStringNoParameter() {
-        assertEquals("<" + CLASS_NAME + "> |", CommonHelper.toString(CLAZZ));
+        assertEquals("#" + CLASS_NAME + "# |", CommonHelper.toString(CLAZZ));
     }
 
     @Test
     public void testToStringWithParameter() {
-        assertEquals("<" + CLASS_NAME + "> | " + NAME + ": " + VALUE + " |", CommonHelper.toString(CLAZZ, NAME, VALUE));
+        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " |", CommonHelper.toString(CLAZZ, NAME, VALUE));
     }
 
     @Test
     public void testToStringWithParameters() {
-        assertEquals("<" + CLASS_NAME + "> | " + NAME + ": " + VALUE + " | " + NAME + ": " + VALUE + " |",
+        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " | " + NAME + ": " + VALUE + " |",
                 CommonHelper.toString(CLAZZ, NAME, VALUE, NAME, VALUE));
     }
 

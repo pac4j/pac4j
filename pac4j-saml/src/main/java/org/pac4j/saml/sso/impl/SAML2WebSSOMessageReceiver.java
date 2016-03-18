@@ -8,7 +8,6 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.saml.context.SAML2MessageContext;
-import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.sso.SAML2MessageReceiver;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
@@ -22,15 +21,10 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
 
     private static final String SAML2_WEBSSO_PROFILE_URI = "urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser";
 
-
     private final SAML2ResponseValidator validator;
 
-    private final CredentialProvider credentialProvider;
-
-    public SAML2WebSSOMessageReceiver(final SAML2ResponseValidator validator,
-                                      final CredentialProvider credentialProvider) {
+    public SAML2WebSSOMessageReceiver(final SAML2ResponseValidator validator) {
         this.validator = validator;
-        this.credentialProvider = credentialProvider;
     }
 
     @Override

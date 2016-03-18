@@ -105,12 +105,34 @@ public class DigestCredentials extends TokenCredentials {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        final DigestCredentials that = (DigestCredentials) o;
+
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (realm != null ? !realm.equals(that.realm) : that.realm != null) return false;
+        if (nonce != null ? !nonce.equals(that.nonce) : that.nonce != null) return false;
+        if (uri != null ? !uri.equals(that.uri) : that.uri != null) return false;
+        if (cnonce != null ? !cnonce.equals(that.cnonce) : that.cnonce != null) return false;
+        if (nc != null ? !nc.equals(that.nc) : that.nc != null) return false;
+        if (qop != null ? !qop.equals(that.qop) : that.qop != null) return false;
+        return !(httpMethod != null ? !httpMethod.equals(that.httpMethod) : that.httpMethod != null);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (realm != null ? realm.hashCode() : 0);
+        result = 31 * result + (nonce != null ? nonce.hashCode() : 0);
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + (cnonce != null ? cnonce.hashCode() : 0);
+        result = 31 * result + (nc != null ? nc.hashCode() : 0);
+        result = 31 * result + (qop != null ? qop.hashCode() : 0);
+        result = 31 * result + (httpMethod != null ? httpMethod.hashCode() : 0);
+        return result;
     }
 
     @Override

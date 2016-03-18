@@ -44,13 +44,23 @@ public final class FormattedDate extends Date {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return super.equals(obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        final FormattedDate that = (FormattedDate) o;
+
+        if (format != null ? !format.equals(that.format) : that.format != null) return false;
+        return !(locale != null ? !locale.equals(that.locale) : that.locale != null);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (format != null ? format.hashCode() : 0);
+        result = 31 * result + (locale != null ? locale.hashCode() : 0);
+        return result;
     }
 
     @Override

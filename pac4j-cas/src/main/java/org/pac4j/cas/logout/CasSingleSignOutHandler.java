@@ -80,9 +80,11 @@ public class CasSingleSignOutHandler implements LogoutHandler {
         final String token = CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters);
         logger.debug("Recording session for token {}", token);
 
+        final String sessionId = session.getId();
         try {
-            this.sessionMappingStorage.removeBySessionById(session.getId());
+            this.sessionMappingStorage.removeBySessionById(sessionId);
         } catch (final Exception e) {
+            logger.warn("failed to remove session by id: ", sessionId);
             // ignore if the session is already marked as invalid.  Nothing we can do!
         }
         sessionMappingStorage.addSessionById(token, session);

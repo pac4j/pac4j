@@ -19,8 +19,9 @@ public class RelativeCallbackUrlResolver implements CallbackUrlResolver {
 
             sb.append(context.getScheme()).append("://").append(context.getServerName());
 
-            if((ContextHelper.isHttp(context) && context.getServerPort() != HttpConstants.DEFAULT_PORT) || 
-              (ContextHelper.isHttps(context) && context.getServerPort() != HttpConstants.DEFAULT_HTTPS_PORT)) {
+            final boolean notDefaultHttpPort = ContextHelper.isHttp(context) && context.getServerPort() != HttpConstants.DEFAULT_HTTP_PORT;
+            final boolean notDefaultHttpsPort = ContextHelper.isHttps(context) && context.getServerPort() != HttpConstants.DEFAULT_HTTPS_PORT;
+            if (notDefaultHttpPort || notDefaultHttpsPort) {
                 sb.append(":").append(context.getServerPort());
             }
 

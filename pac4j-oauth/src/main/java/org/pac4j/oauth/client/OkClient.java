@@ -88,7 +88,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         StringBuilder result = new StringBuilder();
         for (byte aByte : md.digest(strForEncoding.getBytes("UTF-8"))) {
             if ((0xff & aByte) < 0x10) {
-                result.append("0").append(Integer.toHexString((0xFF & aByte)));
+                result.append("0").append(Integer.toHexString(0xFF & aByte));
             } else {
                 result.append(Integer.toHexString(0xFF & aByte));
             }
