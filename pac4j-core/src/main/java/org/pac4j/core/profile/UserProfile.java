@@ -98,8 +98,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
      */
     public void addAttributes(final Map<String, Object> attributes) {
         if (attributes != null) {
-            for (final String key : attributes.keySet()) {
-                addAttribute(key, attributes.get(key));
+            for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+                addAttribute(entry.getKey(), entry.getValue());
             }
         }
     }

@@ -19,7 +19,6 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -47,11 +46,9 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
     /** ID of the Velocity template used when performing POST encoding. */
     private String velocityTemplateId;
 
-    private final WebContext context;
     private final Pac4jSAMLResponse responseAdapter;
 
-    public Pac4jHTTPPostEncoder(final WebContext context, final Pac4jSAMLResponse responseAdapter) {
-        this.context = context;
+    public Pac4jHTTPPostEncoder(final Pac4jSAMLResponse responseAdapter) {
         this.responseAdapter = responseAdapter;
         setVelocityTemplateId(DEFAULT_TEMPLATE_ID);
     }

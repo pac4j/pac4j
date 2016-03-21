@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.context;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -17,6 +16,7 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.metadata.SAML2MetadataResolver;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
@@ -53,12 +53,6 @@ public class SAML2ContextProvider implements SAMLContextProvider {
 
     public SAML2ContextProvider(final MetadataResolver metadata,
                                 final SAML2MetadataResolver idpEntityId,
-                                final SAML2MetadataResolver spEntityId) {
-        this(metadata, idpEntityId, spEntityId, null);
-    }
-
-    public SAML2ContextProvider(final MetadataResolver metadata,
-                                final SAML2MetadataResolver idpEntityId,
                                 final SAML2MetadataResolver spEntityId,
                                 @Nullable final SAMLMessageStorageFactory samlMessageStorageFactory) {
         this.metadata = metadata;
@@ -70,7 +64,6 @@ public class SAML2ContextProvider implements SAMLContextProvider {
     @Override
     public final SAML2MessageContext buildServiceProviderContext(final WebContext webContext) {
         final SAML2MessageContext context = new SAML2MessageContext();
-        context.setMetadataProvider(this.metadata);
         addTransportContext(webContext, context);
         addSPContext(context);
         return context;
@@ -133,7 +126,7 @@ public class SAML2ContextProvider implements SAMLContextProvider {
             }
             final List<RoleDescriptor> list = entityDescriptor.getRoleDescriptors(elementName,
                     SAMLConstants.SAML20P_NS);
-            roleDescriptor = (list != null && !list.isEmpty()) ? list.get(0) : null;
+            roleDescriptor = CommonHelper.isNotEmpty(list) ? list.get(0) : null;
 
             if (roleDescriptor == null) {
                 throw new SAMLException("Cannot find entity " + entityId + " or role "

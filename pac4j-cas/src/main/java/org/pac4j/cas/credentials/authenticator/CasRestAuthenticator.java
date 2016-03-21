@@ -82,7 +82,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), HttpConstants.UTF8_ENCODING));
             out.write(payload);
             out.close();
 

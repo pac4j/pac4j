@@ -1,7 +1,6 @@
 package org.pac4j.oauth.exception;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.pac4j.core.exception.CredentialsException;
 
@@ -23,11 +22,11 @@ public class OAuthCredentialsException extends CredentialsException {
     
     private static final String ERROR_URI = "error_uri";
     
-    public static final String[] ERROR_NAMES = {
-        ERROR, ERROR_REASON, ERROR_DESCRIPTION, ERROR_URI
-    };
-    
-    private final Map<String, String> errorMessages = new HashMap<String, String>();
+    public static final List<String> ERROR_NAMES = Collections.unmodifiableList(Arrays.asList(
+            new String[] {ERROR, ERROR_REASON, ERROR_DESCRIPTION, ERROR_URI}
+    ));
+
+    private final Map<String, String> errorMessages = new HashMap<>();
     
     public OAuthCredentialsException(final String message) {
         super(message);

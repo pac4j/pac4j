@@ -1,10 +1,7 @@
 package org.pac4j.core.authorization.checker;
 
-import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.*;
-import org.pac4j.core.authorization.authorizer.csrf.CsrfAuthorizer;
-import org.pac4j.core.authorization.authorizer.csrf.CsrfTokenGeneratorAuthorizer;
-import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
+import org.pac4j.core.authorization.authorizer.csrf.*;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
@@ -67,9 +64,9 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                     // we must have authorizers
                     assertNotNull("authorizersMap", authorizersMap);
                     Authorizer result = null;
-                    for (final String key : authorizersMap.keySet()) {
-                        if (areEqualsIgnoreCaseAndTrim(key, name)) {
-                            result = authorizersMap.get(key);
+                    for (final Map.Entry<String, Authorizer> entry : authorizersMap.entrySet()) {
+                        if (areEqualsIgnoreCaseAndTrim(entry.getKey(), name)) {
+                            result = entry.getValue();
                             break;
                         }
                     }

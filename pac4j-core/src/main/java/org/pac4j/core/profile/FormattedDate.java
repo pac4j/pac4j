@@ -42,7 +42,27 @@ public final class FormattedDate extends Date {
     public Locale getLocale() {
         return this.locale;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        final FormattedDate that = (FormattedDate) o;
+
+        if (format != null ? !format.equals(that.format) : that.format != null) return false;
+        return !(locale != null ? !locale.equals(that.locale) : that.locale != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (format != null ? format.hashCode() : 0);
+        result = 31 * result + (locale != null ? locale.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat simpleDateFormat;

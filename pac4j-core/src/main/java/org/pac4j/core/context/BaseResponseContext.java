@@ -17,11 +17,7 @@ public abstract class BaseResponseContext implements WebContext {
 
     protected int responseStatus = -1;
 
-    protected String responseLocation;
-
     protected String responseContentType;
-
-    protected String responseEncoding;
 
     protected final Map<String, String> responseHeaders = new HashMap<>();
 
@@ -67,10 +63,6 @@ public abstract class BaseResponseContext implements WebContext {
 
     public String getResponseContentType() {
         return responseContentType;
-    }
-
-    public String getResponseEncoding() {
-        return responseEncoding;
     }
 
     @Override
