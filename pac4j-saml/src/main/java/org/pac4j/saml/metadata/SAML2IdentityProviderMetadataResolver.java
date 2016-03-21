@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-
 /**
  * @author Misagh Moayyed
  * @since 1.7
@@ -134,9 +133,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     public String getEntityId() {
         final XMLObject md = getEntityDescriptorElement();
         if (md instanceof EntitiesDescriptor) {
-            for (final EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
-                return entity.getEntityID();
-            }
+            return ((EntitiesDescriptor) md).getEntityDescriptors().get(0).getEntityID();
         } else if (md instanceof EntityDescriptor) {
             return ((EntityDescriptor) md).getEntityID();
         }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
 
+import static org.pac4j.core.util.CommonHelper.newDate;
+
 /**
  * This class represents a Facebook photo.
  * 
@@ -107,19 +109,19 @@ public final class FacebookPhoto extends JsonObject {
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return newDate(createdTime);
     }
 
     public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
+        this.createdTime = newDate(createdTime);
     }
 
     public Date getUpdatedTime() {
-        return updatedTime;
+        return newDate(updatedTime);
     }
 
     public void setUpdatedTime(Date updatedTime) {
-        this.updatedTime = updatedTime;
+        this.updatedTime = newDate(updatedTime);
     }
 
     public Boolean getCanUpload() {

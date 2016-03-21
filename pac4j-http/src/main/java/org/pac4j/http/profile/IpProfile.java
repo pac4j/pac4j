@@ -12,6 +12,8 @@ public class IpProfile extends CommonProfile {
 
     private static final long serialVersionUID = -4017369503998168023L;
 
+    public IpProfile() {}
+
     public IpProfile(final String ip) {
         setId(ip);
     }

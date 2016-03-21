@@ -10,7 +10,7 @@ import java.util.Collection;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class ContextHelper {
+public final class ContextHelper implements HttpConstants {
 
     /**
      * Get a specific cookie by its name.
@@ -58,7 +58,7 @@ public final class ContextHelper {
      * @return whether the request is HTTPS or secure
      */
     public static boolean isHttpsOrSecure(final WebContext context) {
-        return "HTTPS".equalsIgnoreCase(context.getScheme()) || context.isSecure();
+        return SCHEME_HTTPS.equalsIgnoreCase(context.getScheme()) || context.isSecure();
     }
 
     /**
@@ -68,7 +68,7 @@ public final class ContextHelper {
      * @return whether the request is HTTP
      */
     public static boolean isHttp(final WebContext context) {
-        return "HTTP".equalsIgnoreCase(context.getScheme());
+        return SCHEME_HTTP.equalsIgnoreCase(context.getScheme());
     }
 
     /**
@@ -78,6 +78,6 @@ public final class ContextHelper {
      * @return whether the request is HTTPS
      */
     public static boolean isHttps(final WebContext context) {
-        return "HTTPS".equalsIgnoreCase(context.getScheme());
+        return SCHEME_HTTPS.equalsIgnoreCase(context.getScheme());
     }
 }

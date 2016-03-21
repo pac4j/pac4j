@@ -91,8 +91,8 @@ public class JwtGenerator<U extends UserProfile> {
 
             // add attributes
             final Map<String, Object> attributes = profile.getAttributes();
-            for (final String key : attributes.keySet()) {
-                builder.claim(key, attributes.get(key));
+            for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+                builder.claim(entry.getKey(), entry.getValue());
             }
             builder.claim(INTERNAL_ROLES, profile.getRoles());
             builder.claim(INTERNAL_PERMISSIONS, profile.getPermissions());

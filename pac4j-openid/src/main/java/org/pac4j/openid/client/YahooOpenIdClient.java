@@ -23,11 +23,6 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
     public static final String YAHOO_GENERIC_USER_IDENTIFIER = "https://me.yahoo.com";
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-    }
-
-    @Override
     protected String getUser(final WebContext context) {
         return YAHOO_GENERIC_USER_IDENTIFIER;
     }

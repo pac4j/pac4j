@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.proc.BadJOSEException;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -442,7 +444,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
 
             return profile;
 
-        } catch (Exception e) {
+        } catch (final RuntimeException | JOSEException | BadJOSEException | IOException | ParseException e) {
             throw new TechnicalException(e);
         }
 
@@ -480,10 +482,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             map.put(entry.getKey(), entry.getValue()[0]);
         }
         return map;
-    }
-
-    private void setAuthParams(final Map<String, String> authParams) {
-        this.authParams = authParams;
     }
 
     public JWSAlgorithm getPreferredJwsAlgorithm() {

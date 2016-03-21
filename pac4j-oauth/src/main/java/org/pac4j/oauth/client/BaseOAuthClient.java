@@ -115,12 +115,10 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         try {
             boolean errorFound = false;
             final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
-            String errorMessage = "";
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
                 final String value = context.getRequestParameter(key);
                 if (value != null) {
                     errorFound = true;
-                    errorMessage += key + " : '" + value + "'; ";
                     oauthCredentialsException.setErrorMessage(key, value);
                 }
             }

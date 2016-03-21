@@ -47,7 +47,7 @@ public final class CasRestProfile extends CommonProfile {
             return false;
         }
 
-        return (obj == this) ||
+        return obj == this ||
                 this.ticketGrantingTicketId.equals(((CasRestProfile)obj).ticketGrantingTicketId);
     }
 }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
 
+import static org.pac4j.core.util.CommonHelper.newDate;
+
 /**
  * This class represents a Facebook event.
  * 
@@ -50,19 +52,19 @@ public final class FacebookEvent extends JsonObject {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return newDate(startTime);
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = newDate(startTime);
     }
 
     public Date getEndTime() {
-        return endTime;
+        return newDate(endTime);
     }
 
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = newDate(endTime);
     }
 
     public String getLocation() {

@@ -3,8 +3,6 @@ package org.pac4j.core.util;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -16,8 +14,6 @@ import java.io.*;
  * @since 1.8.1
  */
 public class KryoSerializationHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(KryoSerializationHelper.class);
 
     private final Kryo kryo;
 

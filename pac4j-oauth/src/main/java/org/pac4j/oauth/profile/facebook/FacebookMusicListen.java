@@ -4,6 +4,8 @@ import org.pac4j.oauth.profile.JsonObject;
 
 import java.util.Date;
 
+import static org.pac4j.core.util.CommonHelper.newDate;
+
 /**
  * This class represents a Facebook music listened.
  * 
@@ -53,27 +55,27 @@ public final class FacebookMusicListen extends JsonObject {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return newDate(startTime);
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = newDate(startTime);
     }
 
     public Date getEndTime() {
-        return endTime;
+        return newDate(endTime);
     }
 
     public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = newDate(endTime);
     }
 
     public Date getPublishTime() {
-        return publishTime;
+        return newDate(publishTime);
     }
 
     public void setPublishTime(Date publishTime) {
-        this.publishTime = publishTime;
+        this.publishTime = newDate(publishTime);
     }
 
     public FacebookApplication getApplication() {

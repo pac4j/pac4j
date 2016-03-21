@@ -6,11 +6,10 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Date;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class gathers all the utilities methods.
@@ -19,8 +18,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public final class CommonHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
 
     public static final String RESOURCE_PREFIX = "resource:";
 
@@ -201,9 +198,9 @@ public final class CommonHelper {
      */
     public static String toString(final Class<?> clazz, final Object... args) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("<");
+        sb.append("#");
         sb.append(clazz.getSimpleName());
-        sb.append("> |");
+        sb.append("# |");
         boolean b = true;
         for (final Object arg : args) {
             if (b) {
@@ -252,6 +249,16 @@ public final class CommonHelper {
      */
     public static String randomString(final int size) {
         return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+    }
+
+    /**
+     * Copy a date.
+     *
+     * @param original original date
+     * @return date copy
+     */
+    public static Date newDate(final Date original) {
+        return original != null ? new Date(original.getTime()) : null;
     }
 
     /**
