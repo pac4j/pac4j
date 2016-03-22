@@ -406,6 +406,11 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             final U profile = createProfile();
             profile.setAccessToken(accessToken);
             profile.setIdTokenString(oidcTokens.getIDTokenString());
+            // Check if there is refresh token
+            if (oidcTokens.getRefreshToken() != null && !oidcTokens.getRefreshToken().getValue().isEmpty()) {
+            	profile.setRefreshTokenString(oidcTokens.getRefreshToken().getValue());
+            	logger.debug("Refresh Token successful retrieved");
+            }
 
             // User Info request
             if (getProviderMetadata().getUserInfoEndpointURI() != null) {
