@@ -28,6 +28,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
 
     private transient static final String ACCESS_TOKEN = "access_token";
     private transient static final String ID_TOKEN = "id_token";
+    private transient static final String REFRESH_TOKEN = "refresh_token";
 
     public OidcProfile() {
     }
@@ -55,6 +56,14 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         return null;
     }
 
+    public String getRefreshTokenString() {
+        return (String) getAttribute(REFRESH_TOKEN);
+    }
+
+    public void setRefreshTokenString(String refreshTokenString) {
+        addAttribute(REFRESH_TOKEN, refreshTokenString);
+    }
+
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         super.writeExternal(out);
@@ -64,6 +73,7 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         }
         out.writeObject(bean);
         out.writeObject(getIdTokenString());
+        out.writeObject(getRefreshTokenString());
     }
 
     @Override
@@ -74,12 +84,14 @@ public class OidcProfile extends CommonProfile implements Externalizable {
             setAccessToken(BearerAccessTokenBean.fromBean(bean));
         }
         setIdTokenString((String) in.readObject());
+        setRefreshTokenString((String) in.readObject());
     }
 
     @Override
     public void clearSensitiveData() {
         removeAttribute(ACCESS_TOKEN);
         removeAttribute(ID_TOKEN);
+        removeAttribute(REFRESH_TOKEN);
     }
 
     private static class BearerAccessTokenBean implements Serializable {
