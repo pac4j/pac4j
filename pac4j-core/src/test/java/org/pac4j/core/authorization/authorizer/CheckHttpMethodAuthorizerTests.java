@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
 
@@ -30,13 +31,13 @@ public final class CheckHttpMethodAuthorizerTests {
     }
 
     @Test
-    public void testGoodHttpMethod() {
+    public void testGoodHttpMethod() throws RequiresHttpAction {
         final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HTTP_METHOD.GET, HTTP_METHOD.POST);
         assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod("GET"), profiles));
     }
 
     @Test
-    public void testBadHttpMethod() {
+    public void testBadHttpMethod() throws RequiresHttpAction {
         final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HTTP_METHOD.PUT);
         assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod("DELETE"), profiles));
     }

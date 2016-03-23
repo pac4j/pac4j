@@ -1,6 +1,7 @@
 package org.pac4j.core.profile.creator;
 
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 
 /**
@@ -17,6 +18,7 @@ public interface ProfileCreator<C extends Credentials, U extends UserProfile> {
      *
      * @param credentials the given credentials.
      * @return the created profile
+     * @throws RequiresHttpAction whether an additional HTTP action is required
      */
-    U create(C credentials);
+    U create(C credentials) throws RequiresHttpAction;
 }

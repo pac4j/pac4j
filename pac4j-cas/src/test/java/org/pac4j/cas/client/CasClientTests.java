@@ -113,7 +113,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.init(null);
         final MockWebContext context = MockWebContext.create().addRequestParameter("logoutRequest", logoutRequest)
             .setRequestMethod("POST");
-        TestsHelper.expectException(() -> casClient.getCredentials(context), RequiresHttpAction.class, "logout request : no credential returned");
+        TestsHelper.expectException(() -> casClient.getCredentials(context), RequiresHttpAction.class, "logout request: no credential returned");
         assertEquals(200, context.getResponseStatus());
     }
 

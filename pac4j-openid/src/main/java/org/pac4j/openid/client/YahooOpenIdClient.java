@@ -6,6 +6,7 @@ import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
@@ -44,7 +45,7 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
     }
 
     @Override
-    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException {
+    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException, RequiresHttpAction {
         final YahooOpenIdProfile profile = new YahooOpenIdProfile();
 
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
