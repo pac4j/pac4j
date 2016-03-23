@@ -3,6 +3,7 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.apis.GitHubApi;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 
@@ -48,7 +49,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
     
     @Override
-    protected GitHubProfile extractUserProfile(final String body) {
+    protected GitHubProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final GitHubProfile profile = new GitHubProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

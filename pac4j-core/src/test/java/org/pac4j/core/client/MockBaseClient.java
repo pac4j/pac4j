@@ -32,12 +32,12 @@ public final class MockBaseClient<C extends Credentials> extends IndirectClient<
     }
     
     @Override
-    protected CommonProfile retrieveUserProfile(final C credentials, final WebContext context) {
+    protected CommonProfile retrieveUserProfile(final C credentials, final WebContext context) throws RequiresHttpAction {
         return new CommonProfile();
     }
     
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
         return RedirectAction.redirect(LOGIN_URL);
     }
     

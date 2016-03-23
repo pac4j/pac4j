@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
@@ -58,7 +59,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
     
     @Override
-    protected CasOAuthWrapperProfile extractUserProfile(final String body) {
+    protected CasOAuthWrapperProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final CasOAuthWrapperProfile userProfile = new CasOAuthWrapperProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

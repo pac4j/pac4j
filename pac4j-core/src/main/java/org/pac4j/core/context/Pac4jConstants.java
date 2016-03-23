@@ -68,4 +68,7 @@ public interface Pac4jConstants {
 
     /* Whether multiple profiles are accepted */
     String MULTI_PROFILE = "multiProfile";
+
+    /** Whether the session must be renewed after login. */
+    String RENEW_SESSION = "renewSession";
 }

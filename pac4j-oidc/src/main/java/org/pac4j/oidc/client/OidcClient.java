@@ -319,7 +319,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
 
         Map<String, String> params = new HashMap<>(getAuthParams());
 
@@ -380,7 +380,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
+    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) throws RequiresHttpAction {
 
         final TokenRequest request = buildTokenRequest(credentials);
         HTTPResponse httpResponse;

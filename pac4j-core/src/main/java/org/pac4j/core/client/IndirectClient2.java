@@ -65,7 +65,7 @@ public abstract class IndirectClient2<C extends Credentials, U extends CommonPro
     }
 
     @Override
-    protected U retrieveUserProfile(final C credentials, final WebContext context) {
+    protected U retrieveUserProfile(final C credentials, final WebContext context) throws RequiresHttpAction {
         final U profile = this.profileCreator.create(credentials);
         logger.debug("profile: {}", profile);
         return profile;

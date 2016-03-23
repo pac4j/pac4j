@@ -22,6 +22,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
@@ -80,7 +81,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     protected TicketValidator ticketValidator;
 
-    protected String encoding = "UTF-8";
+    protected String encoding = HttpConstants.UTF8_ENCODING;
 
     protected String casLoginUrl;
 
@@ -116,12 +117,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         this.casPrefixUrl = casPrefixUrl;
     }
 
-    /**
-     * Get the redirection url.
-     *
-     * @param context the web context
-     * @return the redirection url
-     */
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) {
         final String redirectionUrl = CommonUtils.constructRedirectUrl(this.casLoginUrl, SERVICE_PARAMETER,
@@ -241,13 +236,6 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
         cas10TicketValidator.setEncoding(this.encoding);
     }
 
-    /**
-     * Get the credentials from the web context.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws RequiresHttpAction requires an extra HTTP action
-     */
     @Override
     protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
 
@@ -256,13 +244,13 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             final String ticket = context.getRequestParameter(SERVICE_TICKET_PARAMETER);
             this.logoutHandler.recordSession(context, ticket);
             final CasCredentials casCredentials = new CasCredentials(ticket, getName());
-            logger.debug("casCredentials : {}", casCredentials);
+            logger.debug("casCredentials: {}", casCredentials);
             return casCredentials;
         }
 
         if (this.logoutHandler.isLogoutRequest(context)) {
             this.logoutHandler.destroySession(context);
-            final String message = "logout request : no credential returned";
+            final String message = "logout request: no credential returned";
             logger.debug(message);
             throw RequiresHttpAction.ok(message, context);
         }
@@ -276,19 +264,13 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
 
     }
 
-    /**
-     * Get the user profile from the credentials.
-     *
-     * @param credentials the CAS credentials
-     * @return the user profile
-     */
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws RequiresHttpAction {
         final String ticket = credentials.getServiceTicket();
         try {
             final Assertion assertion = this.ticketValidator.validate(ticket, computeFinalCallbackUrl(context));
             final AttributePrincipal principal = assertion.getPrincipal();
-            logger.debug("principal : {}", principal);
+            logger.debug("principal: {}", principal);
             final CasProfile casProfile;
             if (this.casProxyReceptor != null) {
                 casProfile = new CasProxyProfile();
@@ -300,10 +282,10 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             if (this.casProxyReceptor != null) {
                 ((CasProxyProfile) casProfile).setPrincipal(principal);
             }
-            logger.debug("casProfile : {}", casProfile);
+            logger.debug("casProfile: {}", casProfile);
             return casProfile;
         } catch (final TicketValidationException e) {
-            String message = "cannot validate CAS ticket : " + ticket;
+            String message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);
         }
     }

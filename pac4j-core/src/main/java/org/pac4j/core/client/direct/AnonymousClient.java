@@ -37,7 +37,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials, An
     }
 
     @Override
-    protected AnonymousProfile retrieveUserProfile(final AnonymousCredentials credentials, final WebContext context) {
+    protected AnonymousProfile retrieveUserProfile(final AnonymousCredentials credentials, final WebContext context) throws RequiresHttpAction {
         return PROFILE;
     }
 }

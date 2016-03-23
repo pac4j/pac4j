@@ -4,6 +4,7 @@ import com.github.scribejava.apis.DropBoxApi;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -40,7 +41,7 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     }
     
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
         // get tokenRequest from session
         final Token tokenRequest = (Token) context.getSessionAttribute(getRequestTokenSessionAttributeName());
         logger.debug("tokenRequest: {}", tokenRequest);
@@ -52,7 +53,7 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     }
     
     @Override
-    protected DropBoxProfile extractUserProfile(final String body) {
+    protected DropBoxProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final DropBoxProfile profile = new DropBoxProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         final AttributesDefinition definition = profile.getAttributesDefinition();
