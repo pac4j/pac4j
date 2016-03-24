@@ -20,7 +20,20 @@ public class RequiresHttpAction extends Exception {
         super(message);
         this.code = code;
     }
-    
+
+    /**
+     * Build a response with message and status.
+     *
+     * @param context context
+     * @param message message
+     * @param status the HTTP status
+     * @return an HTTP response
+     */
+    public static RequiresHttpAction status(final WebContext context, final String message, final int status) {
+        context.setResponseStatus(status);
+        return new RequiresHttpAction(message, status);
+    }
+
     /**
      * Build a redirection.
      * 
