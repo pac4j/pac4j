@@ -198,7 +198,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext wc) {
+    protected RedirectAction retrieveRedirectAction(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
@@ -225,7 +225,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
+    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) throws RequiresHttpAction {
         final SAML2Profile profile = new SAML2Profile();
         profile.setId(credentials.getNameId().getValue());
         for (final Attribute attribute : credentials.getAttributes()) {

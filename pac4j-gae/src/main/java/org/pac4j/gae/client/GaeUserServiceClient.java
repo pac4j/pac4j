@@ -47,7 +47,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	}
 
 	@Override
-	protected GaeUserServiceProfile retrieveUserProfile(GaeUserCredentials credentials, WebContext context) {
+	protected GaeUserServiceProfile retrieveUserProfile(GaeUserCredentials credentials, WebContext context) throws RequiresHttpAction {
 		User user = credentials.getUser();
 		if (user != null) {
 			GaeUserServiceProfile gaeUserProfile = new GaeUserServiceProfile();

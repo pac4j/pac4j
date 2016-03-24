@@ -5,6 +5,7 @@ import com.github.scribejava.apis.GoogleApi20;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -73,7 +74,7 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
     }
 
     @Override
-    protected Google2Profile extractUserProfile(final String body) {
+    protected Google2Profile extractUserProfile(final String body) throws RequiresHttpAction {
         final Google2Profile profile = new Google2Profile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

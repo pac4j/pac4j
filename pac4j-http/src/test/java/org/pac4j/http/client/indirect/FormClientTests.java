@@ -121,7 +121,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetUserProfile() {
+    public void testGetUserProfile() throws RequiresHttpAction {
         final FormClient formClient = getFormClient();
         formClient.setProfileCreator(credentials -> {
             String username = credentials.getUsername();

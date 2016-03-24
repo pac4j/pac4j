@@ -197,7 +197,7 @@ public final class ClientsTests implements TestsConstants {
         }
 
         @Override
-        protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) {
+        protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws RequiresHttpAction {
             throw new UnsupportedOperationException("Not implemneted yet");
         }
 

@@ -63,16 +63,20 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
             this.timer.schedule(this.timerTask, this.millisBetweenCleanUps, this.millisBetweenCleanUps);
         }
     }
-    
+
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws
-        RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+        throw new TechnicalException("Not supported by the CAS proxy receptor");
+    }
+
+    @Override
+    protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
         
         // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
         final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
-        logger.debug("proxyGrantingTicketIou : {}", proxyGrantingTicketIou);
+        logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
         final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
-        logger.debug("proxyGrantingTicket : {}", proxyGrantingTicket);
+        logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
         
         if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
             context.writeResponseContent("");
@@ -89,7 +93,12 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
         logger.debug(message);
         throw RequiresHttpAction.ok(message, context);
     }
-    
+
+    @Override
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws RequiresHttpAction {
+        throw new TechnicalException("Not supported by the CAS proxy receptor");
+    }
+
     public ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
         return this.proxyGrantingTicketStorage;
     }
@@ -105,21 +114,10 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     public void setMillisBetweenCleanUps(final int millisBetweenCleanUps) {
         this.millisBetweenCleanUps = millisBetweenCleanUps;
     }
-    
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "proxyGrantingTicketStorage",
-                                     this.proxyGrantingTicketStorage, "millisBetweenCleanUps",
-                                     this.millisBetweenCleanUps);
-    }
-    
-    @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        throw new TechnicalException("Not supported by the CAS proxy receptor");
-    }
-    
-    @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) {
-        throw new TechnicalException("Not supported by the CAS proxy receptor");
+                this.proxyGrantingTicketStorage, "millisBetweenCleanUps", this.millisBetweenCleanUps);
     }
 }
