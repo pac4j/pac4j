@@ -3,6 +3,7 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -32,7 +33,7 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
     }
 
     @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) {
+    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
         // create a specific configuration with state
         final OAuthConfig config = buildOAuthConfig(context);
         final String state = getStateParameter(context);
@@ -47,7 +48,7 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
     }
 
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
         // check state parameter if required
         final String stateParameter = context.getRequestParameter("state");
 

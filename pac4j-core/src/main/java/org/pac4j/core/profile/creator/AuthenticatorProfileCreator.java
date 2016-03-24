@@ -1,6 +1,7 @@
 package org.pac4j.core.profile.creator;
 
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 
 /**
@@ -15,7 +16,7 @@ public class AuthenticatorProfileCreator<C extends Credentials, P extends UserPr
     public final static AuthenticatorProfileCreator INSTANCE = new AuthenticatorProfileCreator<>();
 
     @Override
-    public UserProfile create(final Credentials credentials) {
+    public UserProfile create(final Credentials credentials) throws RequiresHttpAction {
         return credentials.getUserProfile();
     }
 }
