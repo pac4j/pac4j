@@ -6,7 +6,7 @@ import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * Mock an indirect client.
+ * Mock a direct client.
  *
  * @author Jerome Leleu
  * @since 1.9.0
