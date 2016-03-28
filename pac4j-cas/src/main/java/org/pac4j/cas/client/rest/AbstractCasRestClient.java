@@ -6,9 +6,9 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.cas.profile.HttpTGTProfile;
+import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.util.HttpUtils;
-import org.pac4j.core.client.DirectClient2;
+import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -31,9 +31,9 @@ import java.net.URL;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswordCredentials, HttpTGTProfile> {
+public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePasswordCredentials, CasRestProfile> {
 
-    public void destroyTicketGrantingTicket(final HttpTGTProfile profile) {
+    public void destroyTicketGrantingTicket(final CasRestProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
@@ -51,7 +51,7 @@ public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswo
         }
     }
 
-    public CasCredentials requestServiceTicket(final String serviceURL, final HttpTGTProfile profile) {
+    public CasCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
@@ -60,14 +60,15 @@ public abstract class AbstractCasRestClient extends DirectClient2<UsernamePasswo
             connection = HttpUtils.openPostConnection(ticketURL);
             final String payload = HttpUtils.encodeQueryParam("service", serviceURL);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), HttpConstants.UTF8_ENCODING));
             out.write(payload);
             out.close();
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
-                final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                return new CasCredentials(in.readLine(), getClass().getSimpleName());
+                try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), HttpConstants.UTF8_ENCODING))) {
+                    return new CasCredentials(in.readLine(), getClass().getSimpleName());
+                }
             }
             throw new TechnicalException("Service ticket request for `" + profile + "` failed: " +
                     HttpUtils.buildHttpErrorMessage(connection));

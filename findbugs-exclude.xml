@@ -1,0 +1,14 @@
+<FindBugsFilter>
+    <Match>
+        <Class name="~.*BooleanConverter$"/>
+        <Bug code="NP" />
+    </Match>
+    <Match>
+        <Class name="~.*CasSingleSignOutHandler"/>
+        <Bug code="RCN" />
+    </Match>
+    <Match>
+        <Class name="~.*SAML2Credentials"/>
+        <Bug code="Se" />
+    </Match>
+</FindBugsFilter>

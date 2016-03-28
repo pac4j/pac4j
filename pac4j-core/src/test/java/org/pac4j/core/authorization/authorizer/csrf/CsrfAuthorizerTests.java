@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.TestsConstants;
 
 /**
@@ -25,46 +26,46 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     }
 
     @Test
-    public void testParameterOk() {
+    public void testParameterOk() throws RequiresHttpAction {
         final WebContext context = MockWebContext.create().addRequestParameter(Pac4jConstants.CSRF_TOKEN, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testParameterOkNewName() {
+    public void testParameterOkNewName() throws RequiresHttpAction {
         final WebContext context = MockWebContext.create().addRequestParameter(NAME, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         authorizer.setParameterName(NAME);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testHeaderOk() {
+    public void testHeaderOk() throws RequiresHttpAction {
         final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testHeaderOkNewName() {
+    public void testHeaderOkNewName() throws RequiresHttpAction {
         final WebContext context = MockWebContext.create().addRequestHeader(NAME, VALUE).addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         authorizer.setHeaderName(NAME);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testNoToken() {
+    public void testNoToken() throws RequiresHttpAction {
         final WebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testNoTokenCheckAll() {
+    public void testNoTokenCheckAll() throws RequiresHttpAction {
         final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         authorizer.setOnlyCheckPostRequest(true);
         Assert.assertTrue(authorizer.isAuthorized(context, null));
     }
 
     @Test
-    public void testNoTokenPostRequest() {
+    public void testNoTokenPostRequest() throws RequiresHttpAction {
         final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
         context.setRequestMethod("post");
         Assert.assertFalse(authorizer.isAuthorized(context, null));

@@ -26,11 +26,6 @@ public class OkProfile extends OAuth20Profile {
     }
 
     @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-    @Override
     public String getFirstName() {
         return (String) getAttribute(OkAttributesDefinition.FIRST_NAME);
     }

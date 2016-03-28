@@ -5,7 +5,9 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +21,7 @@ public final class BaseClientTests implements TestsConstants {
 
     @Test
     public void testDirectClient() throws RequiresHttpAction {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.redirect(context);
@@ -31,7 +33,7 @@ public final class BaseClientTests implements TestsConstants {
 
     @Test
     public void testIndirectClientWithImmediate() throws RequiresHttpAction {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.redirect(context);
@@ -41,7 +43,7 @@ public final class BaseClientTests implements TestsConstants {
 
     @Test
     public void testNullCredentials() throws RequiresHttpAction {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE, false);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockWebContext context = MockWebContext.create();
         client.setCallbackUrl(CALLBACK_URL);
         assertNull(client.getUserProfile(null, context));
@@ -49,36 +51,28 @@ public final class BaseClientTests implements TestsConstants {
 
     @Test
     public void testAjaxRequest() {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create().addRequestHeader(HttpConstants.AJAX_HEADER_NAME, HttpConstants.AJAX_HEADER_VALUE);
-        try {
-            client.redirect(context);
-            fail("should fail");
-        } catch (RequiresHttpAction e) {
-            assertEquals(401, e.getCode());
-            assertEquals(401, context.getResponseStatus());
-        }
+        final RequiresHttpAction e = (RequiresHttpAction) TestsHelper.expectException(() -> client.redirect(context));
+        assertEquals(401, e.getCode());
+        assertEquals(401, context.getResponseStatus());
     }
 
     @Test
     public void testAlreadyTried() {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         context.setSessionAttribute(client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
-        try {
-            client.redirect(context);
-            fail("should fail");
-        } catch (RequiresHttpAction e) {
-            assertEquals(401, e.getCode());
-            assertEquals(401, context.getResponseStatus());
-        }
+        final RequiresHttpAction e = (RequiresHttpAction) TestsHelper.expectException(() -> client.redirect(context));
+        assertEquals(401, e.getCode());
+        assertEquals(401, context.getResponseStatus());
     }
 
     @Test
     public void testSaveAlreadyTried() throws RequiresHttpAction {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
@@ -88,13 +82,8 @@ public final class BaseClientTests implements TestsConstants {
 
     @Test
     public void testStateParameter() {
-        final MockBaseClient<Credentials> client = new MockBaseClient<Credentials>(TYPE);
+        final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final MockWebContext context = MockWebContext.create();
-        try {
-            client.getStateParameter(context);
-            fail("should fail");
-        } catch (UnsupportedOperationException e) {
-
-        }
+        TestsHelper.expectException(() -> client.redirect(context));
     }
 }

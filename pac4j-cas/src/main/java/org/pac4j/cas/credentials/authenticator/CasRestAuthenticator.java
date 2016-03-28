@@ -3,7 +3,7 @@ package org.pac4j.cas.credentials.authenticator;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.pac4j.cas.util.HttpUtils;
-import org.pac4j.cas.profile.HttpTGTProfile;
+import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -71,7 +71,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             throw new TechnicalException("Credentials are required");
         }
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword());
-        final HttpTGTProfile profile = new HttpTGTProfile(ticketGrantingTicketId, credentials.getUsername());
+        final CasRestProfile profile = new CasRestProfile(ticketGrantingTicketId, credentials.getUsername());
         credentials.setUserProfile(profile);
     }
 
@@ -82,7 +82,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), HttpConstants.UTF8_ENCODING));
             out.write(payload);
             out.close();
 

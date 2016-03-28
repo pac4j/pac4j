@@ -4,8 +4,11 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
+
+import java.util.List;
 
 /**
  * Authorizer that checks CSRF tokens.
@@ -35,8 +38,8 @@ public class CsrfAuthorizer<U extends UserProfile> implements Authorizer<U> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final U profile) {
-        final boolean checkRequest = !onlyCheckPostRequest || (onlyCheckPostRequest && ContextHelper.isPost(context));
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
+        final boolean checkRequest = !onlyCheckPostRequest || ContextHelper.isPost(context);
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName);
             final String headerToken = context.getRequestHeader(headerName);

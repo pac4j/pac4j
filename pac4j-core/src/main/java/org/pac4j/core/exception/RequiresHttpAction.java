@@ -5,7 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * This exception is thrown when an additionnal HTTP action (redirect, basic auth...) is required.
+ * This exception is thrown when an additional HTTP action (redirect, basic auth...) is required.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -20,7 +20,20 @@ public class RequiresHttpAction extends Exception {
         super(message);
         this.code = code;
     }
-    
+
+    /**
+     * Build a response with message and status.
+     *
+     * @param message message
+     * @param status the HTTP status
+     * @param context context
+     * @return an HTTP response
+     */
+    public static RequiresHttpAction status(final String message, final int status, final WebContext context) {
+        context.setResponseStatus(status);
+        return new RequiresHttpAction(message, status);
+    }
+
     /**
      * Build a redirection.
      * 

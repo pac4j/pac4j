@@ -1,10 +1,13 @@
 package org.pac4j.core.authorization.authorizer;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.context.J2EContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.UserProfile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,79 +29,90 @@ public final class RequireAnyRoleAuthorizerTests {
 
     private final J2EContext context = new J2EContext(null, null);
 
-    @Test
-    public void testHasAnyRoleOneRole() {
-        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(ROLE1);
-        final CommonProfile profile = new CommonProfile();
-        profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+    private List<UserProfile> profiles;
+
+    private UserProfile profile;
+
+    @Before
+    public void setUp() {
+        profile = new CommonProfile();
+        profiles = new ArrayList<>();
+        profiles.add(profile);
     }
 
     @Test
-    public void testHasAnyRoleOneRole2() {
+    public void testHasAnyRoleOneRole() throws RequiresHttpAction {
+        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(ROLE1);
+        profile.addRole(ROLE1);
+        assertTrue(authorizer.isAuthorized(context, profiles));
+    }
+
+    @Test
+    public void testHasAnyRoleOneRole2() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
         authorizer.setElements(ROLE1);
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleOneRole3() {
+    public void testHasAnyRoleOneRoleTwoProfiles() throws RequiresHttpAction {
+        final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
+        authorizer.setElements(ROLE1);
+        profile.addRole(ROLE1);
+        profiles.add(new CommonProfile());
+        assertTrue(authorizer.isAuthorized(context, profiles));
+    }
+
+    @Test
+    public void testHasAnyRoleOneRole3() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
         authorizer.setElements(Arrays.asList(ROLE1));
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleOneRole4() {
+    public void testHasAnyRoleOneRole4() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer();
         authorizer.setElements(new HashSet<String>(Arrays.asList(ROLE1)));
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleOneRoleFail() {
+    public void testHasAnyRoleOneRoleFail() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] { ROLE1 });
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE2);
-        assertFalse(authorizer.isAuthorized(context, profile));
+        assertFalse(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleNull() {
+    public void testHasAnyRoleNull() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer((List<String>) null);
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleEmpty() {
+    public void testHasAnyRoleEmpty() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] {});
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleOkTwoRoles() {
+    public void testHasAnyRoleOkTwoRoles() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(ROLE2, ROLE1);
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
-        assertTrue(authorizer.isAuthorized(context, profile));
+        assertTrue(authorizer.isAuthorized(context, profiles));
     }
 
     @Test
-    public void testHasAnyRoleProfileTwoRolesFail() {
+    public void testHasAnyRoleProfileTwoRolesFail() throws RequiresHttpAction {
         final RequireAnyRoleAuthorizer authorizer = new RequireAnyRoleAuthorizer(new String[] { ROLE2 });
-        final CommonProfile profile = new CommonProfile();
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
-        assertFalse(authorizer.isAuthorized(context, profile));
+        assertFalse(authorizer.isAuthorized(context, profiles));
     }
 }

@@ -31,7 +31,7 @@ public class YahooProfile extends OAuth10Profile {
         final List<YahooEmail> emails = getEmails();
         if (emails != null) {
             for (final YahooEmail email : emails) {
-                if (email != null && ((email.getPrimary() != null && email.getPrimary()) || emails.size() == 1)) {
+                if (email != null && (Boolean.TRUE.equals(email.getPrimary()) || emails.size() == 1)) {
                     return email.getHandle();
                 }
             }

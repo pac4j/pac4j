@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.proc.BadJOSEException;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -17,7 +19,6 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
@@ -57,6 +58,8 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
+
+import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * This class is the client to authenticate users with an OpenID Connect 1.0 provider.
@@ -179,7 +182,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     public void setCustomParams(Map<String, String> customParams) {
-        CommonHelper.assertNotNull("customParams", customParams);
+        assertNotNull("customParams", customParams);
         this.customParams = customParams;
     }
 
@@ -222,9 +225,9 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     @Override
     protected void internalInit(final WebContext context) {
 
-        CommonHelper.assertNotBlank(getClientID(), "clientId cannot be blank");
-        CommonHelper.assertNotBlank(getSecret(), "secret cannot be blank");
-        CommonHelper.assertNotBlank(getDiscoveryURI(), "discoveryURI cannot be blank");
+        assertNotBlank(getClientID(), "clientId cannot be blank");
+        assertNotBlank(getSecret(), "secret cannot be blank");
+        assertNotBlank(getDiscoveryURI(), "discoveryURI cannot be blank");
 
         this.authParams = new HashMap<>();
 
@@ -256,7 +259,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             this.redirectURI = new URI(computedCallbackUrl);
             // check algorithms
             final List<JWSAlgorithm> algorithms = getProviderMetadata().getIDTokenJWSAlgs();
-            CommonHelper.assertTrue(algorithms != null && algorithms.size() > 0, "There must at least one JWS algorithm supported on the OpenID Connect provider side");
+            assertTrue(isNotEmpty(algorithms), "There must at least one JWS algorithm supported on the OpenID Connect provider side");
             final JWSAlgorithm jwsAlgorithm;
             if (algorithms.contains(getPreferredJwsAlgorithm())) {
                 jwsAlgorithm = getPreferredJwsAlgorithm();
@@ -265,7 +268,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
                 logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", getPreferredJwsAlgorithm(), jwsAlgorithm);
             }
             // Init IDTokenVerifier
-            if (CommonHelper.isNotBlank(getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
+            if (isNotBlank(getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
                 this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
             } else {
                 this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
@@ -316,7 +319,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
 
         Map<String, String> params = new HashMap<>(getAuthParams());
 
@@ -377,7 +380,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) {
+    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) throws RequiresHttpAction {
 
         final TokenRequest request = buildTokenRequest(credentials);
         HTTPResponse httpResponse;
@@ -403,6 +406,11 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             final U profile = createProfile();
             profile.setAccessToken(accessToken);
             profile.setIdTokenString(oidcTokens.getIDTokenString());
+            // Check if there is refresh token
+            if (oidcTokens.getRefreshToken() != null && !oidcTokens.getRefreshToken().getValue().isEmpty()) {
+            	profile.setRefreshTokenString(oidcTokens.getRefreshToken().getValue());
+            	logger.debug("Refresh Token successful retrieved");
+            }
 
             // User Info request
             if (getProviderMetadata().getUserInfoEndpointURI() != null) {
@@ -436,12 +444,12 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             }
             // Check ID Token
             final IDTokenClaimsSet claimsSet = getIdTokenValidator().validate(oidcTokens.getIDToken(), nonce);
-            CommonHelper.assertNotNull("claimsSet", claimsSet);
+            assertNotNull("claimsSet", claimsSet);
             profile.setId(claimsSet.getSubject());
 
             return profile;
 
-        } catch (Exception e) {
+        } catch (final RuntimeException | JOSEException | BadJOSEException | IOException | ParseException e) {
             throw new TechnicalException(e);
         }
 
@@ -479,10 +487,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
             map.put(entry.getKey(), entry.getValue()[0]);
         }
         return map;
-    }
-
-    private void setAuthParams(final Map<String, String> authParams) {
-        this.authParams = authParams;
     }
 
     public JWSAlgorithm getPreferredJwsAlgorithm() {

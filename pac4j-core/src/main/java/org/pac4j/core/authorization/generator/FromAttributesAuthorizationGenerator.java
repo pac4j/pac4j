@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import org.pac4j.core.profile.CommonProfile;
@@ -21,10 +22,18 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
     private String splitChar = ",";
     
     public FromAttributesAuthorizationGenerator(final String[] roleAttributes, final String[] permissionAttributes) {
-        this.roleAttributes = roleAttributes;
-        this.permissionAttributes = permissionAttributes;
+        this.roleAttributes = copyArray(roleAttributes);
+        this.permissionAttributes = copyArray(permissionAttributes);
     }
-    
+
+    private String[] copyArray(final String[] original) {
+        if (original != null) {
+            return Arrays.copyOf(original, original.length);
+        } else {
+            return null;
+        }
+    }
+
     public void generate(final U profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);

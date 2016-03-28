@@ -4,6 +4,7 @@ import com.github.scribejava.apis.YahooApi;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.exception.HttpCommunicationException;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
@@ -39,7 +40,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
     
     @Override
-    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) {
+    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) throws RequiresHttpAction {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
@@ -55,7 +56,7 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
     
     @Override
-    protected YahooProfile extractUserProfile(final String body) {
+    protected YahooProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final YahooProfile profile = new YahooProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

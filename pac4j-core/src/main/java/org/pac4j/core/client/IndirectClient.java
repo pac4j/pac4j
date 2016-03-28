@@ -41,8 +41,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final void redirect(final WebContext context)
-            throws RequiresHttpAction {
+    public final void redirect(final WebContext context) throws RequiresHttpAction {
         final RedirectAction action = getRedirectAction(context);
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);

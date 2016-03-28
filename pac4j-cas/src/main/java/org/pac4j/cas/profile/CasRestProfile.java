@@ -1,23 +1,23 @@
- package org.pac4j.cas.profile;
+package org.pac4j.cas.profile;
 
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * This is {@link HttpTGTProfile} that represents
+ * This is {@link CasRestProfile} that represents
  * the CAS TGT when it's obtained via the rest api.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public final class HttpTGTProfile extends CommonProfile {
+public final class CasRestProfile extends CommonProfile {
 
     private static final long serialVersionUID = -1688563185891330018L;
 
     private String ticketGrantingTicketId;
 
-    public HttpTGTProfile() { }
+    public CasRestProfile() { }
 
-    public HttpTGTProfile(final String ticketGrantingTicketId, final String userName) {
+    public CasRestProfile(final String ticketGrantingTicketId, final String userName) {
         super();
         this.ticketGrantingTicketId = ticketGrantingTicketId;
         setId(userName);
@@ -43,11 +43,11 @@ public final class HttpTGTProfile extends CommonProfile {
             return false;
         }
 
-        if (!(obj instanceof HttpTGTProfile)) {
+        if (!(obj instanceof CasRestProfile)) {
             return false;
         }
 
-        return (obj == this) ||
-                this.ticketGrantingTicketId.equals(((HttpTGTProfile)obj).ticketGrantingTicketId);
+        return obj == this ||
+                this.ticketGrantingTicketId.equals(((CasRestProfile)obj).ticketGrantingTicketId);
     }
 }

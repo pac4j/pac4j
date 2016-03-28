@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 
@@ -42,7 +43,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected WindowsLiveProfile extractUserProfile(final String body) {
+    protected WindowsLiveProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final WindowsLiveProfile profile = new WindowsLiveProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

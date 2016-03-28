@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
 
+import static org.pac4j.core.util.CommonHelper.newDate;
+
 /**
  * This class represents a Facebook work.
  * 
@@ -65,18 +67,18 @@ public final class FacebookWork extends JsonObject {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return newDate(startDate);
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = newDate(startDate);
     }
 
     public Date getEndDate() {
-        return endDate;
+        return newDate(endDate);
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = newDate(endDate);
     }
 }

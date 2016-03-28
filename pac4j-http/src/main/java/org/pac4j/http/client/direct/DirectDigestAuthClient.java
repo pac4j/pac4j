@@ -1,6 +1,6 @@
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.DirectClient2;
+import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class DirectDigestAuthClient extends DirectClient2<DigestCredentials, CommonProfile> {
+public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, CommonProfile> {
 
     private String realm = "pac4jRealm";
 

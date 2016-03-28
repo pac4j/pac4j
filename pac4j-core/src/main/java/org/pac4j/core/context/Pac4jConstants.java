@@ -11,8 +11,8 @@ public interface Pac4jConstants {
     /* Original requested url to save before redirect to Identity Provider */
     String REQUESTED_URL = "pac4jRequestedUrl";
 
-    /* User Profile object saved in session */
-    String USER_PROFILE = "pac4jUserProfile";
+    /* User profiles object saved in session */
+    String USER_PROFILES = "pac4jUserProfiles";
 
     /* CSRF token name saved in session */
     String CSRF_TOKEN = "pac4jCsrfToken";
@@ -65,4 +65,10 @@ public interface Pac4jConstants {
     String USERNAME = "username";
 
     String PASSWORD = "password";
+
+    /* Whether multiple profiles are accepted */
+    String MULTI_PROFILE = "multiProfile";
+
+    /** Whether the session must be renewed after login. */
+    String RENEW_SESSION = "renewSession";
 }

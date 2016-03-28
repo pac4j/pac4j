@@ -119,13 +119,8 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     final StreamResult result = new StreamResult(new StringWriter());
                     final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
                     transformer.transform(source, result);
-                    OutputStream spMetadataOutputStream = this.spMetadataResource.getOutputStream();
-                    try {
+                    try (final OutputStream spMetadataOutputStream = this.spMetadataResource.getOutputStream()) {
                         spMetadataOutputStream.write(result.getWriter().toString().getBytes());
-					} finally {
-						if (spMetadataOutputStream != null) {
-							spMetadataOutputStream.close();
-						}
 					}
                 }
             }
