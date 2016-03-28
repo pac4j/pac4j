@@ -5,10 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -24,12 +21,12 @@ import static org.junit.Assert.*;
 @SuppressWarnings("rawtypes")
 public final class ClientsTests implements TestsConstants {
 
-    private MockBaseClient newFacebookClient() {
-        return new MockBaseClient("FacebookClient");
+    private MockIndirectClient newFacebookClient() {
+        return new MockIndirectClient("FacebookClient", RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
     }
 
-    private MockBaseClient newYahooClient() {
-        return new MockBaseClient("YahooClient");
+    private MockIndirectClient newYahooClient() {
+        return new MockIndirectClient("YahooClient", RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
     }
 
     @Test
@@ -41,7 +38,7 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testNoCallbackUrl() {
-        MockBaseClient facebookClient = newFacebookClient();
+        MockIndirectClient facebookClient = newFacebookClient();
         final Clients clientsGroup = new Clients(facebookClient);
         clientsGroup.init();
         assertNull(facebookClient.getCallbackUrl());
@@ -49,8 +46,8 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testTwoClients() {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<>();
         clients.add(facebookClient);
         clients.add(yahooClient);
@@ -70,7 +67,7 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testDoubleInit() {
-        final MockBaseClient facebookClient = newFacebookClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
         final Clients clientsGroup = new Clients();
         clientsGroup.setCallbackUrl(CALLBACK_URL);
         clientsGroup.setClients(facebookClient);
@@ -85,8 +82,8 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testAllClients() {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         final List<Client> clients = new ArrayList<>();
         clients.add(facebookClient);
         clients.add(yahooClient);
@@ -100,9 +97,9 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testClientWithCallbackUrl() {
-        final MockBaseClient facebookClient = newFacebookClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
         facebookClient.setCallbackUrl(LOGIN_URL);
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         final Clients group = new Clients(CALLBACK_URL, facebookClient, yahooClient);
         group.setClientNameParameter(KEY);
         group.init();
@@ -114,10 +111,10 @@ public final class ClientsTests implements TestsConstants {
 
     @Test
     public void testClientWithCallbackUrlWithoutIncludingClientName() {
-        final MockBaseClient facebookClient = newFacebookClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
         facebookClient.setCallbackUrl(LOGIN_URL);
         facebookClient.setIncludeClientNameInCallbackUrl(false);
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         yahooClient.setIncludeClientNameInCallbackUrl(false);
         final Clients group = new Clients(CALLBACK_URL, facebookClient, yahooClient);
         group.setClientNameParameter(KEY);
@@ -137,72 +134,55 @@ public final class ClientsTests implements TestsConstants {
     }
 
     private void internalTestByClass(final boolean fakeFirst) {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final FakeClient fakeClient = new FakeClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
+        final MockDirectClient fakeClient = new MockDirectClient(NAME, (Credentials) null, null);
         final Clients clients;
         if (fakeFirst) {
             clients = new Clients(CALLBACK_URL, fakeClient, facebookClient);
         } else {
             clients = new Clients(CALLBACK_URL, facebookClient, fakeClient);
         }
-        assertEquals(facebookClient, clients.findClient(MockBaseClient.class));
-        assertEquals(fakeClient, clients.findClient(FakeClient.class));
+        assertEquals(facebookClient, clients.findClient(MockIndirectClient.class));
+        assertEquals(fakeClient, clients.findClient(MockDirectClient.class));
     }
 
     @Test
     public void rejectSameName() {
-        final MockBaseClient client1 = new MockBaseClient(NAME);
-        final MockBaseClient client2 = new MockBaseClient(NAME);
+        final MockIndirectClient client1 = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client2 = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: name");
     }
 
     @Test
     public void rejectSameNameDifferentCase() {
-        final MockBaseClient client1 = new MockBaseClient(NAME);
-        final MockBaseClient client2 = new MockBaseClient(NAME.toUpperCase());
+        final MockIndirectClient client1 = new MockIndirectClient(NAME, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
+        final MockIndirectClient client2 = new MockIndirectClient(NAME.toUpperCase(), RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         final Clients clients = new Clients(CALLBACK_URL, client1, client2);
         TestsHelper.initShouldFail(clients, "Duplicate name in clients: NAME");
     }
 
     @Test
     public void testFindByName() {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         final Clients clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient("FacebookClient"));
     }
 
     @Test
     public void testFindByNameCase() {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         final Clients clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient("FACEBOOKclient"));
     }
 
     @Test
     public void testFindByNameBlankSpaces() {
-        final MockBaseClient facebookClient = newFacebookClient();
-        final MockBaseClient yahooClient = newYahooClient();
+        final MockIndirectClient facebookClient = newFacebookClient();
+        final MockIndirectClient yahooClient = newYahooClient();
         final Clients clients = new Clients(facebookClient, yahooClient);
         assertNotNull(clients.findClient(" FacebookClient          "));
-    }
-
-    private static class FakeClient extends DirectClient<Credentials, CommonProfile> {
-
-        @Override
-        public Credentials getCredentials(final WebContext context) throws RequiresHttpAction {
-            throw new UnsupportedOperationException("Not implemneted yet");
-        }
-
-        @Override
-        protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws RequiresHttpAction {
-            throw new UnsupportedOperationException("Not implemneted yet");
-        }
-
-        @Override
-        protected void internalInit(final WebContext context) {
-        }
     }
 }
