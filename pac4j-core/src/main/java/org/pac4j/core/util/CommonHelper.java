@@ -1,13 +1,11 @@
 package org.pac4j.core.util;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -309,42 +307,7 @@ public final class CommonHelper {
 			}
 
 			@Override
-			public long lastModified() throws IOException {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
-			public boolean isReadable() {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
-			public boolean isOpen() {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
-			public URL getURL() throws IOException {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
-			public URI getURI() throws IOException {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
 			public String getFilename() {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
-			public File getFile() throws IOException {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-			@Override
-			public String getDescription() {
 				throw new UnsupportedOperationException("not implemented");
 			}
 
@@ -353,15 +316,7 @@ public final class CommonHelper {
 				throw new UnsupportedOperationException("not implemented");
 			}
 
-			@Override
-			public Resource createRelative(String relativePath) throws IOException {
-				throw new UnsupportedOperationException("not implemented");
-			}
 
-			@Override
-			public long contentLength() throws IOException {
-				throw new UnsupportedOperationException("not implemented");
-			}
 		};
 	}
 
