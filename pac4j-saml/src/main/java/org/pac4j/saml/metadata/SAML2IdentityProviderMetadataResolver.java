@@ -62,6 +62,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 		} else {
 			this.idpMetadataResource = CommonHelper.getResource(idpMetadataPath);
 		}
+		this.idpEntityId = idpEntityId;
 	}
 
     @Override
