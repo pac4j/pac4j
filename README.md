@@ -2,7 +2,7 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
-`pac4j` is an [**easy**](#main-concepts) and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It's available under the Apache 2 license.
+`pac4j` is an **easy** and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It provides a very comprehensive [security model](#main-concepts) and [implementation guidelines](https://github.com/pac4j/pac4j/wiki/Implement-pac4j-for-a-new-framework---tool). It is based on Java 8 and available under the Apache 2 license.
 
 It is currently **available for most [frameworks / tools](#frameworks--tools-implementing-pac4j)** and **supports most [authentication](https://github.com/pac4j/pac4j/wiki/Clients) / [authorization](https://github.com/pac4j/pac4j/wiki/Authorizers) mechanisms**.
 
@@ -33,13 +33,13 @@ You can even implement `pac4j` for a new framework / tool by following these [gu
 
 1) A [**client**](https://github.com/pac4j/pac4j/wiki/Clients) represents an authentication mechanism. It performs the login process and returns a user profile. An indirect client is for UI authentication while a direct client is for web services authentication
 
-2) An [**authorizer**](https://github.com/pac4j/pac4j/wiki/Authorizers) is meant to check authorizations on the authenticated user profile or on the current web context
+2) An [**authorizer**](https://github.com/pac4j/pac4j/wiki/Authorizers) is meant to check authorizations on the authenticated user profile(s) or on the current web context
 
 *In a pac4j implementation:*
 
-3) The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) protects an url by checking that the user is authenticated and that the authorizations are checked, according to the clients and authorizers configuration. If the user is not authenticated, it starts / performs the login process
+3) The "**security filter**" (or whatever the mechanism used to intercept HTTP requests) protects an url by checking that the user is authenticated and that the authorizations are checked, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients
 
-4) The "**callback controller**" finishes the authentication process for an indirect client
+4) The "**callback controller**" finishes the login process for an indirect client
 
 
 ## Versions
@@ -56,7 +56,7 @@ mvn clean install
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.6/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) documentation for more information.
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.8.7/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) documentation for more information.
 
 
 ## Need help?

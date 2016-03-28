@@ -98,7 +98,6 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         } catch (final ComponentInitializationException e) {
             throw new SAMLException("Error initializing saml encoder", e);
         }
-
     }
 
     protected final void invokeOutboundMessageHandlers(final SPSSODescriptor spDescriptor,
@@ -143,19 +142,18 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         if (SAMLConstants.SAML2_POST_BINDING_URI.equals(destinationBindingType)) {
 
             final VelocityEngine velocityEngine = VelocityEngineFactory.getEngine();
-            final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(ctx.getWebContext(), adapter);
+            final Pac4jHTTPPostEncoder encoder = new Pac4jHTTPPostEncoder(adapter);
             encoder.setVelocityEngine(velocityEngine);
             return encoder;
         }
 
         if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
             final Pac4jHTTPRedirectDeflateEncoder encoder =
-                    new Pac4jHTTPRedirectDeflateEncoder(ctx.getWebContext(), adapter);
+                    new Pac4jHTTPRedirectDeflateEncoder(adapter);
             return encoder;
         }
 
         throw new UnsupportedOperationException("Binding type - "
                 + destinationBindingType + " is not supported");
-
     }
 }

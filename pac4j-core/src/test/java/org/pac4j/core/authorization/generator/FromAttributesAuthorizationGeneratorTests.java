@@ -1,10 +1,9 @@
 package org.pac4j.core.authorization.generator;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.authorization.generator.FromAttributesAuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
 
 import static org.junit.Assert.*;
@@ -34,9 +33,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
 
     @Test
     public void testNoConfig() {
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
-                                                                                                                                      null,
-                                                                                                                                      null);
+        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<>(null, null);
         generator.generate(this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
@@ -54,11 +51,11 @@ public final class FromAttributesAuthorizationGeneratorTests {
                                                                                                                                       roleAttributes,
                                                                                                                                       permissionAttributes);
         generator.generate(this.profile);
-        final List<String> roles = this.profile.getRoles();
+        final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
         assertTrue(roles.contains("info12"));
-        final List<String> permissions = this.profile.getPermissions();
+        final Set<String> permissions = this.profile.getPermissions();
         assertEquals(2, permissions.size());
         assertTrue(permissions.contains("info21"));
         assertTrue(permissions.contains("info22"));
@@ -77,7 +74,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                                                                                                                                       permissionAttributes);
         generator.generate(this.profile);
         assertEquals(0, this.profile.getRoles().size());
-        final List<String> permissions = this.profile.getPermissions();
+        final Set<String> permissions = this.profile.getPermissions();
         assertEquals(2, permissions.size());
         assertTrue(permissions.contains("info21"));
         assertTrue(permissions.contains("info22"));
@@ -95,7 +92,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                                                                                                                                       roleAttributes,
                                                                                                                                       permissionAttributes);
         generator.generate(this.profile);
-        final List<String> roles = this.profile.getRoles();
+        final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
         assertTrue(roles.contains("info12"));
@@ -115,11 +112,11 @@ public final class FromAttributesAuthorizationGeneratorTests {
                                                                                                                                       permissionAttributes);
         generator.setSplitChar("|");
         generator.generate(this.profile);
-        final List<String> roles = this.profile.getRoles();
+        final Set<String> roles = this.profile.getRoles();
         assertEquals(1, roles.size());
-        assertEquals(VALUE1, roles.get(0));
-        final List<String> permissions = this.profile.getPermissions();
+        assertTrue(roles.contains(VALUE1));
+        final Set<String> permissions = this.profile.getPermissions();
         assertEquals(1, permissions.size());
-        assertEquals(VALUE2, permissions.get(0));
+        assertTrue(permissions.contains(VALUE2));
     }
 }

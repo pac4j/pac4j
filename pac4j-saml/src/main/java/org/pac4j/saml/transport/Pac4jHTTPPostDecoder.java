@@ -16,6 +16,7 @@ import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Pac4j implementation extending directly the {@link AbstractMessageDecoder} as intermediate classes use the J2E HTTP request.
@@ -82,7 +84,11 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
             if(decodedBytes == null) {
                 throw new MessageDecodingException("Unable to Base64 decode SAML message");
             } else {
-                logger.trace("Decoded SAML message:\n{}", new String(decodedBytes));
+                try {
+                    logger.trace("Decoded SAML message:\n{}", new String(decodedBytes, HttpConstants.UTF8_ENCODING));
+                } catch(final UnsupportedEncodingException e) {
+                    throw new TechnicalException(e);
+                }
                 return new ByteArrayInputStream(decodedBytes);
             }
         }

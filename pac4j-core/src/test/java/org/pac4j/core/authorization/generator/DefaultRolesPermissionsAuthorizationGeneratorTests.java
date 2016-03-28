@@ -1,11 +1,11 @@
 package org.pac4j.core.authorization.generator;
 
 import org.junit.Test;
-import org.pac4j.core.authorization.generator.DefaultRolesPermissionsAuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,10 +51,10 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
     private void checkProfile(final DefaultRolesPermissionsAuthorizationGenerator generator) {
         final CommonProfile profile = new CommonProfile();
         generator.generate(profile);
-        final List<String> roles = profile.getRoles();
+        final Set<String> roles = profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.containsAll(DEFAULT_ROLES_LIST));
-        final List<String> permissions = profile.getPermissions();
+        final Set<String> permissions = profile.getPermissions();
         assertEquals(2, permissions.size());
         assertTrue(permissions.containsAll(DEFAULT_PERMISSIONS_LIST));
     }

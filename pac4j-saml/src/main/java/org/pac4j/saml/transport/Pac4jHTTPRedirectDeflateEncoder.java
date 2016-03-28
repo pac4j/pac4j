@@ -22,7 +22,7 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -47,11 +47,9 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
 
     private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
-    private final WebContext context;
     private final Pac4jSAMLResponse responseAdapter;
 
-    public Pac4jHTTPRedirectDeflateEncoder(final WebContext context, final Pac4jSAMLResponse responseAdapter) {
-        this.context = context;
+    public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter) {
         this.responseAdapter = responseAdapter;
     }
 
@@ -254,7 +252,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         } catch (final org.opensaml.security.SecurityException e) {
             throw new MessageEncodingException("Unable to sign URL query string", e);
         } catch (final UnsupportedEncodingException e) {
-            // UTF-8 encoding is required to be supported by all JVMs
+            throw new TechnicalException(e);
         }
 
         return b64Signature;

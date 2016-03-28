@@ -3,6 +3,9 @@ package org.pac4j.core.util;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 /**
@@ -106,17 +109,17 @@ public final class CommonHelperTests {
 
     @Test
     public void testToStringNoParameter() {
-        assertEquals("<" + CLASS_NAME + "> |", CommonHelper.toString(CLAZZ));
+        assertEquals("#" + CLASS_NAME + "# |", CommonHelper.toString(CLAZZ));
     }
 
     @Test
     public void testToStringWithParameter() {
-        assertEquals("<" + CLASS_NAME + "> | " + NAME + ": " + VALUE + " |", CommonHelper.toString(CLAZZ, NAME, VALUE));
+        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " |", CommonHelper.toString(CLAZZ, NAME, VALUE));
     }
 
     @Test
     public void testToStringWithParameters() {
-        assertEquals("<" + CLASS_NAME + "> | " + NAME + ": " + VALUE + " | " + NAME + ": " + VALUE + " |",
+        assertEquals("#" + CLASS_NAME + "# | " + NAME + ": " + VALUE + " | " + NAME + ": " + VALUE + " |",
                 CommonHelper.toString(CLAZZ, NAME, VALUE, NAME, VALUE));
     }
 
@@ -202,5 +205,19 @@ public final class CommonHelperTests {
     @Test
     public void testSubstringBetween() {
         assertEquals("bet", CommonHelper.substringBetween("123startbet##456", "start", "##"));
+    }
+
+    @Test
+    public void testIsEmpty() {
+        assertTrue(CommonHelper.isEmpty(null));
+        assertTrue(CommonHelper.isEmpty(new ArrayList<>()));
+        assertFalse(CommonHelper.isEmpty(Arrays.asList(new String[] { VALUE })));
+    }
+
+    @Test
+    public void testIsNotEmpty() {
+        assertFalse(CommonHelper.isNotEmpty(null));
+        assertFalse(CommonHelper.isNotEmpty(new ArrayList<>()));
+        assertTrue(CommonHelper.isNotEmpty(Arrays.asList(new String[] { VALUE })));
     }
 }

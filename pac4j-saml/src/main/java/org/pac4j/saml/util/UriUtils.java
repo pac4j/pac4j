@@ -3,6 +3,7 @@ package org.pac4j.saml.util;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.pac4j.core.context.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,25 +13,11 @@ import org.slf4j.LoggerFactory;
  * @author jkacer
  * @since 1.8.0
  */
-public class UriUtils {
+public final class UriUtils implements HttpConstants {
 
-    /** HTTP scheme. */
-    private static final String SCHEME_HTTP = "http";
-    /** HTTPS scheme. */
-    private static final String SCHEME_HTTPS = "https";
-    
-    /** Default HTTP port. */
-    private static final int DEFAULT_PORT_HTTP = 80;
-    /** Default HTTPS port. */
-    private static final int DEFAULT_PORT_HTTPS = 443;
-    
     /** SLF4J logger. */
     private static final Logger logger = LoggerFactory.getLogger(UriUtils.class);
-    
-    
-    // ------------------------------------------------------------------------------------------------------------------------------------
 
-    
     /**
      * Private constructor, to prevent instantiation of this utility class.
      */
@@ -38,8 +25,6 @@ public class UriUtils {
         super();
     }
 
-
-    
     /**
      * Compares two URIs for equality, ignoring default port numbers for selected protocols.
      * 
@@ -57,10 +42,10 @@ public class UriUtils {
      * @return True if both URIs are equal.
      */
     public static boolean urisEqualAfterPortNormalization(final URI uri1, final URI uri2) {
-        if ((uri1 == null) && (uri2 == null)) {
+        if (uri1 == null && uri2 == null) {
             return true;
         }
-        if (((uri1 == null) && (uri2 != null)) || ((uri1 != null) && (uri2 == null))) {
+        if (uri1 == null || uri2 == null) {
             return false;
         }
         
@@ -74,7 +59,6 @@ public class UriUtils {
             return false;    
         }
     }
-
     
     /**
      * Normalizes a URI. If it contains the default port for the used scheme, the method replaces the port with "default".
@@ -90,16 +74,15 @@ public class UriUtils {
     private static URI normalizePortNumbersInUri(final URI uri) throws URISyntaxException {
         int port = uri.getPort();
         final String scheme = uri.getScheme();
-        
-        if (SCHEME_HTTP.equals(scheme) && (port == DEFAULT_PORT_HTTP)) {
+
+        if (SCHEME_HTTP.equals(scheme) && port == DEFAULT_HTTP_PORT) {
             port = -1;
         }
-        if (SCHEME_HTTPS.equals(scheme) && (port == DEFAULT_PORT_HTTPS)) {
+        if (SCHEME_HTTPS.equals(scheme) && port == DEFAULT_HTTPS_PORT) {
             port = -1;
         }
         
         final URI result = new URI(scheme, uri.getUserInfo(), uri.getHost(), port, uri.getPath(), uri.getQuery(), uri.getFragment());
         return result;
     }
-    
 }

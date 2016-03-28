@@ -49,13 +49,10 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        try {
-            client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE));
-        } catch (final RequiresHttpAction e) {
-            assertEquals(200, context.getResponseStatus());
-            assertEquals("", context.getResponseContent());
-            assertEquals("Missing proxyGrantingTicket or proxyGrantingTicketIou", e.getMessage());
-        }
+        TestsHelper.expectException(() -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)), RequiresHttpAction.class,
+                "Missing proxyGrantingTicket or proxyGrantingTicketIou");
+        assertEquals(200, context.getResponseStatus());
+        assertEquals("", context.getResponseContent());
     }
 
     @Test
@@ -65,13 +62,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        try {
-            client.getCredentials(context);
-            fail("should throw RequiresHttpAction");
-        } catch (final RequiresHttpAction e) {
-            assertEquals(200, context.getResponseStatus());
-            assertTrue(context.getResponseContent().length() > 0);
-            assertEquals("No credential for CAS proxy receptor -> returns ok", e.getMessage());
-        }
+        TestsHelper.expectException(() -> client.getCredentials(context), RequiresHttpAction.class, "No credential for CAS proxy receptor -> returns ok");
+        assertEquals(200, context.getResponseStatus());
+        assertTrue(context.getResponseContent().length() > 0);
     }
 }

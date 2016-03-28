@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
-import org.pac4j.core.authorization.authorizer.AbstractRequireAnyAuthorizer;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.List;
@@ -31,8 +31,8 @@ public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends Abstr
     }
 
     @Override
-    protected boolean check(final WebContext context, final U profile, final String element) {
-        final List<String> profilePermissions = profile.getPermissions();
+    protected boolean check(final WebContext context, final U profile, final String element) throws RequiresHttpAction {
+        final Set<String> profilePermissions = profile.getPermissions();
         return profilePermissions.contains(element);
     }
 }

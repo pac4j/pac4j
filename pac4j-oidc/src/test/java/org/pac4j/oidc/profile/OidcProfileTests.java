@@ -23,6 +23,10 @@ public final class OidcProfileTests implements TestsConstants {
     private static final String ID_TOKEN = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwczovL2p3dC1pZHAuZXhhbX"
             + "BsZS5jb20iLCJzdWIiOiJtYWlsdG86cGVyc29uQGV4YW1wbGUuY29tIiwibmJmIjoxNDQwMTEyMDE1LCJleHAiOjE0NDAxMTU2"
             + "MTUsImlhdCI6MTQ0MDExMjAxNSwianRpIjoiaWQxMjM0NTYiLCJ0eXAiOiJodHRwczovL2V4YW1wbGUuY29tL3JlZ2lzdGVyIn0.";
+
+	private static final String REFRESH_TOKEN = "13/FuJRLB-4xn_4rd9iJPAUL0-gApRRtpDYuXH5ub5uW5Ne0-"
+			+ "oSohI6jUTnlb1cYPMIHq0Ne63h8HdZjAidLFlgNg==";
+
     private BearerAccessToken populatedAccessToken;
 
     @Before
@@ -35,6 +39,7 @@ public final class OidcProfileTests implements TestsConstants {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(new BearerAccessToken());
         profile.setIdTokenString(ID);
+        profile.setRefreshTokenString(REFRESH_TOKEN);
         profile.clearSensitiveData();
         assertNull(profile.getAccessToken());
         assertNull(profile.getIdTokenString());
@@ -45,6 +50,7 @@ public final class OidcProfileTests implements TestsConstants {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
         profile.setIdTokenString(ID_TOKEN);
+        profile.setRefreshTokenString(REFRESH_TOKEN);
 
         byte[] result = SerializationUtils.serialize(profile);
 
@@ -54,6 +60,7 @@ public final class OidcProfileTests implements TestsConstants {
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
         assertEquals(profile.getAccessToken().getScope(), populatedAccessToken.getScope());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);
+        assertEquals(profile.getRefreshTokenString(), REFRESH_TOKEN);
     }
     
     /**
@@ -63,10 +70,12 @@ public final class OidcProfileTests implements TestsConstants {
     public void testReadWriteObjectNullAccessToken() {
         OidcProfile profile = new OidcProfile();
         profile.setIdTokenString(ID_TOKEN);
+        profile.setRefreshTokenString(REFRESH_TOKEN);
         byte[] result = SerializationUtils.serialize(profile);
         profile = (OidcProfile) SerializationUtils.deserialize(result);
         assertNull(profile.getAccessToken());
         assertEquals(profile.getIdTokenString(), ID_TOKEN);
+        assertEquals(profile.getRefreshTokenString(), REFRESH_TOKEN);
     }
     
     /**
@@ -76,17 +85,37 @@ public final class OidcProfileTests implements TestsConstants {
     public void testReadWriteObjectNullIdToken() {
         OidcProfile profile = new OidcProfile();
         profile.setAccessToken(populatedAccessToken);
+        profile.setRefreshTokenString(REFRESH_TOKEN);
         byte[] result = SerializationUtils.serialize(profile);
         profile = (OidcProfile) SerializationUtils.deserialize(result);
         assertNotNull("accessToken", profile.getAccessToken());
         assertNotNull("value", profile.getAccessToken().getValue());
         assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
         assertEquals(profile.getAccessToken().getScope(), populatedAccessToken.getScope());
+        assertEquals(profile.getRefreshTokenString(), REFRESH_TOKEN);
         assertNull(profile.getIdTokenString());
     }
     
     /**
-     * Test that serialization and deserialization of the OidcProfile work when both tokens are null, after a call
+     * Test that serialization and deserialization of the OidcProfile work when the Refresh token is null.
+     */
+    @Test
+    public void testReadWriteObjectNullRefreshToken() {
+        OidcProfile profile = new OidcProfile();
+        profile.setAccessToken(populatedAccessToken);
+        profile.setIdTokenString(ID_TOKEN);
+        byte[] result = SerializationUtils.serialize(profile);
+        profile = (OidcProfile) SerializationUtils.deserialize(result);
+        assertNotNull("accessToken", profile.getAccessToken());
+        assertNotNull("value", profile.getAccessToken().getValue());
+        assertEquals(profile.getAccessToken().getLifetime(), populatedAccessToken.getLifetime());
+        assertEquals(profile.getAccessToken().getScope(), populatedAccessToken.getScope());
+        assertEquals(profile.getIdTokenString(), ID_TOKEN);
+        assertNull(profile.getRefreshTokenString());
+    }
+
+    /**
+     * Test that serialization and deserialization of the OidcProfile work when tokens are null, after a call
      * to clearSensitiveData().
      */
     @Test
@@ -99,5 +128,6 @@ public final class OidcProfileTests implements TestsConstants {
         profile = (OidcProfile) SerializationUtils.deserialize(result);
         assertNull(profile.getAccessToken());
         assertNull(profile.getIdTokenString());
+        assertNull(profile.getRefreshTokenString());
     }
 }

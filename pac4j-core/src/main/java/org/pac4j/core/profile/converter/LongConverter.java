@@ -1,6 +1,5 @@
 package org.pac4j.core.profile.converter;
 
-
 /**
  * This class converts a String into a Long or returns the Long (or Integer) in input.
  * 
@@ -13,7 +12,7 @@ public final class LongConverter implements AttributeConverter<Long> {
     public Long convert(final Object attribute) {
         if (attribute != null) {
             if (attribute instanceof Integer) {
-                return new Long((Integer) attribute);
+                return Long.valueOf((Integer) attribute);
             } else if (attribute instanceof Long) {
                 return (Long) attribute;
             } else if (attribute instanceof String) {

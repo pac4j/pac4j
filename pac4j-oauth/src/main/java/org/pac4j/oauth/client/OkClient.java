@@ -5,6 +5,7 @@ import com.github.scribejava.apis.OdnoklassnikiApi;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
@@ -71,7 +72,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected OkProfile extractUserProfile(String body) {
+    protected OkProfile extractUserProfile(String body) throws RequiresHttpAction {
         final OkProfile profile = new OkProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
@@ -88,7 +89,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
         StringBuilder result = new StringBuilder();
         for (byte aByte : md.digest(strForEncoding.getBytes("UTF-8"))) {
             if ((0xff & aByte) < 0x10) {
-                result.append("0").append(Integer.toHexString((0xFF & aByte)));
+                result.append("0").append(Integer.toHexString(0xFF & aByte));
             } else {
                 result.append(Integer.toHexString(0xFF & aByte));
             }

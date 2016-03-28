@@ -55,6 +55,7 @@ public interface Client<C extends Credentials, U extends UserProfile> {
      * @param credentials credentials
      * @param context web context 
      * @return the user profile
+     * @throws RequiresHttpAction whether an additional HTTP action is required
      */
-    U getUserProfile(C credentials, WebContext context);
+    U getUserProfile(C credentials, WebContext context) throws RequiresHttpAction;
 }

@@ -28,9 +28,9 @@ public class DefaultMatchingChecker implements MatchingChecker {
             for (int i = 0; i < nb; i++) {
                 final String name = names[i];
                 Matcher result = null;
-                for (final String key : matchersMap.keySet()) {
-                    if (CommonHelper.areEqualsIgnoreCaseAndTrim(key, name)) {
-                        result = matchersMap.get(key);
+                for (final Map.Entry<String, Matcher> entry : matchersMap.entrySet()) {
+                    if (CommonHelper.areEqualsIgnoreCaseAndTrim(entry.getKey(), name)) {
+                        result = entry.getValue();
                         break;
                     }
                 }
