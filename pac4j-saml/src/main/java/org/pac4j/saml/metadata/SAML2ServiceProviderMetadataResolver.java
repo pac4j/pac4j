@@ -7,6 +7,7 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
@@ -120,7 +121,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
                     transformer.transform(source, result);
                     try (final OutputStream spMetadataOutputStream = this.spMetadataResource.getOutputStream()) {
-                        spMetadataOutputStream.write(result.getWriter().toString().getBytes());
+                        spMetadataOutputStream.write(result.getWriter().toString().getBytes(HttpConstants.UTF8_ENCODING));
 					}
                 }
             }
