@@ -22,7 +22,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -65,7 +68,29 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 		if (spMetadataResource != null) {
 			this.spMetadataResource = spMetadataResource;
 		} else {
-			this.spMetadataResource = new org.pac4j.core.io.FileSystemResource(spMetadataPath);
+			this.spMetadataResource = new WritableResource() {
+				
+				@Override
+				public InputStream getInputStream() throws IOException {
+					throw new UnsupportedOperationException();
+				}
+				
+
+				@Override
+				public String getFilename() {
+					return spMetadataPath;
+				}
+				
+				@Override
+				public boolean exists() {
+					return true;
+				}
+				
+				@Override
+				public OutputStream getOutputStream() throws IOException {
+					return new FileOutputStream(spMetadataPath);
+				}
+			};
 		}
         this.spEntityId = spEntityId;
         this.credentialProvider = credentialProvider;
