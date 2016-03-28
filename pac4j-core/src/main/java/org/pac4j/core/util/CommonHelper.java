@@ -107,7 +107,7 @@ public final class CommonHelper {
      * @param coll a collection
      * @return whether it is empty
      */
-    public static boolean isEmpty(final Collection coll) {
+    public static boolean isEmpty(final Collection<?> coll) {
         return coll == null || coll.isEmpty();
     }
 
@@ -117,7 +117,7 @@ public final class CommonHelper {
      * @param coll a collection
      * @return whether it is not empty
      */
-    public static boolean isNotEmpty(final Collection coll) {
+    public static boolean isNotEmpty(final Collection<?> coll) {
         return !isEmpty(coll);
     }
 
@@ -251,6 +251,9 @@ public final class CommonHelper {
 			prefix = name.substring(0, prefixEnd);
 			path = name.substring(prefixEnd + 1);
 		}
+		if (prefix == null) {
+			throw new TechnicalException("prefix is not defined");
+		}
 
 		switch (prefix) {
 		case RESOURCE_PREFIX:
@@ -267,21 +270,9 @@ public final class CommonHelper {
 			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		case HTTP_PREFIX:
 			logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]", path);
+			return getInputStreamViaHttp(name);
 		case HTTPS_PREFIX:
-			URLConnection con = null;
-			try {
-				URL url = new URL(name);
-
-				con = url.openConnection();
-
-				return con.getInputStream();
-			} catch (IOException ex) {
-				// Close the HTTP connection (if applicable).
-				if (con instanceof HttpURLConnection) {
-					((HttpURLConnection) con).disconnect();
-				}
-				throw new TechnicalException(ex);
-			}
+			return getInputStreamViaHttp(name);
 		default:
 			try {
 				return new FileInputStream(path);
@@ -290,6 +281,23 @@ public final class CommonHelper {
 			}
 		}
 
+	}
+
+	private static InputStream getInputStreamViaHttp(String name) {
+		URLConnection con = null;
+		try {
+			URL url = new URL(name);
+
+			con = url.openConnection();
+
+			return con.getInputStream();
+		} catch (IOException ex) {
+			// Close the HTTP connection (if applicable).
+			if (con instanceof HttpURLConnection) {
+				((HttpURLConnection) con).disconnect();
+			}
+			throw new TechnicalException(ex);
+		}
 	}
 
 	public static Resource getResource(final String idpMetadataPath) {
