@@ -1,9 +1,15 @@
 /*
   Copyright 2012 - 2015 pac4j organization
 
+<<<<<<< HEAD:pac4j-core/src/test/java/org/pac4j/core/authorization/TestFromAttributesAuthorizationGenerator.java
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
+=======
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+>>>>>>> 8ad8946... Ability to load roles from a list value as well as strings.:pac4j-core/src/test/java/org/pac4j/core/authorization/generator/FromAttributesAuthorizationGeneratorTests.java
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -15,10 +21,12 @@
  */
 package org.pac4j.core.authorization;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -34,6 +42,16 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
     private final static String ATTRIB2 = "attrib2";
     private final static String VALUE2 = "info21,info22";
     private final static String ATTRIB3 = "attrib3";
+    private final static String ATTRIB4 = "attrib4";
+    private final static String ATTRIB5 = "attrib5";
+    private final static String[] ATTRIB_ARRAY = new String[]{"infoA1", "infoA2", "infoA3"};
+    private final static List<String> ATTRIB_LIST = new ArrayList<>();
+
+    static {
+        ATTRIB_LIST.add("infoL1");
+        ATTRIB_LIST.add("infoL2");
+        ATTRIB_LIST.add("infoL3");
+    }
     
     private CommonProfile profile;
     
@@ -42,6 +60,8 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
         this.profile = new CommonProfile();
         this.profile.addAttribute(ATTRIB1, VALUE1);
         this.profile.addAttribute(ATTRIB2, VALUE2);
+        this.profile.addAttribute(ATTRIB3, ATTRIB_ARRAY);
+        this.profile.addAttribute(ATTRIB4, ATTRIB_LIST);
     }
     
     public void testNoConfig() {
@@ -76,7 +96,7 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
     
     public void testNoRolePermission() {
         final String[] roleAttributes = new String[] {
-            ATTRIB3
+            ATTRIB5
         };
         final String[] permissionAttributes = new String[] {
             ATTRIB2
@@ -97,7 +117,7 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
             ATTRIB1
         };
         final String[] permissionAttributes = new String[] {
-            ATTRIB3
+            ATTRIB5
         };
         final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
                                                                                                                                       roleAttributes,
@@ -128,5 +148,36 @@ public class TestFromAttributesAuthorizationGenerator extends TestCase {
         final List<String> permissions = this.profile.getPermissions();
         assertEquals(1, permissions.size());
         assertEquals(VALUE2, permissions.get(0));
+    }
+
+    public void testListRolesPermissions() {
+        final String[] roleAttributes = new String[] {
+                ATTRIB3, ATTRIB4
+        };
+        final String[] permissionAttributes = new String[] {
+                ATTRIB3, ATTRIB4
+        };
+
+        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
+                roleAttributes,
+                permissionAttributes);
+
+        generator.generate(this.profile);
+        final List<String> roles = this.profile.getRoles();
+        assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
+        for(String value : ATTRIB_ARRAY) {
+            assertTrue(roles.contains(value));
+        }
+        for(String value : ATTRIB_LIST) {
+            assertTrue(roles.contains(value));
+        }
+        final List<String> permissions = this.profile.getPermissions();
+        assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
+        for(String value : ATTRIB_ARRAY) {
+            assertTrue(permissions.contains(value));
+        }
+        for(String value : ATTRIB_LIST) {
+            assertTrue(permissions.contains(value));
+        }
     }
 }
