@@ -238,6 +238,8 @@ public final class CommonHelper {
      * - loads from the classloader if name starts with "resource:"
      * - loads as {@link FileInputStream} otherwise
      * 
+     * Caller is responsible for closing inputstream
+     * 
      * @param name name of the resource
      * @return the input stream
      */
@@ -248,9 +250,6 @@ public final class CommonHelper {
 		if (prefixEnd != -1) {
 			prefix = name.substring(0, prefixEnd);
 			path = name.substring(prefixEnd + 1);
-		}
-		if (prefix == null) {
-			throw new TechnicalException("prefix is not defined");
 		}
 
 		switch (prefix) {
@@ -267,7 +266,7 @@ public final class CommonHelper {
 		case CLASSPATH_PREFIX:
 			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		case HTTP_PREFIX:
-			logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]", path);
+			logger.warn("file is retrieved from an insecure http endpoint [{}]", path);
 			return getInputStreamViaHttp(name);
 		case HTTPS_PREFIX:
 			return getInputStreamViaHttp(name);
@@ -298,12 +297,12 @@ public final class CommonHelper {
 		}
 	}
 
-	public static Resource getResource(final String idpMetadataPath) {
+	public static Resource getResource(final String filePath) {
 		return new Resource() {
 
 			@Override
 			public InputStream getInputStream() throws IOException {
-				return getInputStreamFromName(idpMetadataPath);
+				return getInputStreamFromName(filePath);
 			}
 
 			@Override
