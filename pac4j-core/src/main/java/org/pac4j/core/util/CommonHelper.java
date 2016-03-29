@@ -251,6 +251,13 @@ public final class CommonHelper {
 			prefix = name.substring(0, prefixEnd);
 			path = name.substring(prefixEnd + 1);
 		}
+		if (prefix == null) {
+			try {
+				return new FileInputStream(path);
+			} catch (FileNotFoundException e) {
+				throw new TechnicalException(e);
+			}
+		}
 
 		switch (prefix) {
 		case RESOURCE_PREFIX:
@@ -271,11 +278,7 @@ public final class CommonHelper {
 		case HTTPS_PREFIX:
 			return getInputStreamViaHttp(name);
 		default:
-			try {
-				return new FileInputStream(path);
-			} catch (FileNotFoundException e) {
-				throw new TechnicalException(e);
-			}
+			throw new TechnicalException("prefix is handled:" + prefix);
 		}
 
 	}
