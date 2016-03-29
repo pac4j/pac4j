@@ -6,6 +6,8 @@ package org.pac4j.core.io;
  * <p>An InputStream can be opened for every resource if it exists in
  * physical form, but a URL or File handle can just be returned for
  * certain resources. The actual behavior is implementation-specific.
+ * 
+ *  @since 1.9.0
  *
  */
 public interface Resource extends InputStreamSource {

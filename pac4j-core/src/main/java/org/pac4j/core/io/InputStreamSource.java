@@ -10,6 +10,7 @@ import java.io.InputStream;
  *
  * @see java.io.InputStream
  * @see Resource
+ *  @since 1.9.0
  */
 public interface InputStreamSource {
 
