@@ -1,15 +1,9 @@
 /*
   Copyright 2012 - 2015 pac4j organization
 
-<<<<<<< HEAD:pac4j-core/src/test/java/org/pac4j/core/authorization/TestFromAttributesAuthorizationGenerator.java
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
-=======
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
->>>>>>> 8ad8946... Ability to load roles from a list value as well as strings.:pac4j-core/src/test/java/org/pac4j/core/authorization/generator/FromAttributesAuthorizationGeneratorTests.java
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -26,7 +20,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
