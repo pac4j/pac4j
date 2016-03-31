@@ -23,6 +23,7 @@ import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -35,9 +36,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileWriter;
+
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -51,22 +54,57 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     private final CredentialProvider credentialProvider;
     private String spEntityId;
-    private final String spMetadataPath;
+	private final WritableResource spMetadataResource;
     private String spMetadata;
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
 
-    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath,
-                                                final String callbackUrl) {
-        this(spMetadataPath, callbackUrl, null, false, credentialProvider);
-    }
+    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath, 
+			                                    final String callbackUrl) {
+		this(spMetadataPath, callbackUrl, null, false, credentialProvider);
+	}
 
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
+            final String callbackUrl,
+            @Nullable final String spEntityId,
+            final boolean forceSpMetadataGeneration,
+            final CredentialProvider credentialProvider) {
+		this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider);
+	}
+
+    public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
+                                                final WritableResource spMetadataResource,
                                                 final String callbackUrl,
                                                 @Nullable final String spEntityId,
                                                 final boolean forceSpMetadataGeneration,
                                                 final CredentialProvider credentialProvider) {
-        this.spMetadataPath = spMetadataPath;
+		if (spMetadataResource != null) {
+			this.spMetadataResource = spMetadataResource;
+		} else {
+			this.spMetadataResource = new WritableResource() {
+				
+				@Override
+				public InputStream getInputStream() throws IOException {
+					throw new UnsupportedOperationException();
+				}
+				
+
+				@Override
+				public String getFilename() {
+					return spMetadataPath;
+				}
+				
+				@Override
+				public boolean exists() {
+					return true;
+				}
+				
+				@Override
+				public OutputStream getOutputStream() throws IOException {
+					return new FileOutputStream(spMetadataPath);
+				}
+			};
+		}
         this.spEntityId = spEntityId;
         this.credentialProvider = credentialProvider;
         this.callbackUrl = callbackUrl;
@@ -107,13 +145,12 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
             // Initialize metadata provider for our SP and get the XML as a String
             this.spMetadata = metadataGenerator.getMetadata();
-            if (this.spMetadataPath != null) {
+            if (this.spMetadataResource != null) {
 
-                final File file = new File(this.spMetadataPath);
-                if (file.exists() && !this.forceSpMetadataGeneration) {
-                    logger.info("Metadata file already exists at {}.", this.spMetadataPath);
-                } else {
-                    logger.info("Writing sp metadata to {}", this.spMetadataPath);
+                if (spMetadataResource.exists() && !this.forceSpMetadataGeneration) {
+                    logger.info("Metadata file already exists at {}.", this.spMetadataResource.getFilename());
+				} else {
+                    logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
 
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -121,9 +158,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     final StreamResult result = new StreamResult(new StringWriter());
                     final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
                     transformer.transform(source, result);
-                    final FileWriter writer = new FileWriter(this.spMetadataPath);
-                    writer.write(result.getWriter().toString());
-                    writer.close();
+                    try (final OutputStream spMetadataOutputStream = this.spMetadataResource.getOutputStream()) {
+                        spMetadataOutputStream.write(result.getWriter().toString().getBytes("UTF-8"));
+					}
                 }
             }
             return spMetadataProvider;
@@ -146,7 +183,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     @Override
     public String getMetadataPath() {
-        return this.spMetadataPath;
+        return this.spMetadataResource.getFilename();
     }
 
     @Override

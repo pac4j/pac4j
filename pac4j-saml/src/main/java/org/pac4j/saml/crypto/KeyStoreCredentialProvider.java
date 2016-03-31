@@ -37,7 +37,10 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +54,8 @@ import org.slf4j.LoggerFactory;
  */
 public class KeyStoreCredentialProvider implements CredentialProvider {
 
+	private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
+
     private final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
 
     private final CredentialResolver credentialResolver;
@@ -58,13 +63,42 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
     private final String privateKey;
 
     public KeyStoreCredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-        final InputStream inputStream = CommonHelper.getInputStreamFromName(name);
-        final KeyStore keyStore = loadKeyStore(inputStream, storePasswd);
-        this.privateKey = getPrivateKeyAlias(keyStore);
-        final Map<String, String> passwords = new HashMap<String, String>();
-        passwords.put(this.privateKey, privateKeyPasswd);
-        this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
+		this(null, null, DEFAULT_KEYSTORE_TYPE, null, name, storePasswd, privateKeyPasswd);
     }
+
+	public KeyStoreCredentialProvider(final KeyStore keyStore, final String keyStoreAlias, String keyStoreType,
+			final Resource keyStoreResource, final String keyStorePath, final String storePasswd,
+			final String privateKeyPasswd) {
+		CommonHelper.assertTrue(keyStore != null || keyStoreResource != null || CommonHelper.isNotBlank(keyStorePath),
+				"Either keyStore, keyStoreResource or keyStorePath must be provided");
+
+		final KeyStore keyStoreToUse;
+		if (keyStore != null) {
+			keyStoreToUse = keyStore;
+		} else {
+			final InputStream inputStream;
+			if (keyStoreResource != null) {
+				try {
+					inputStream = keyStoreResource.getInputStream();
+				} catch (IOException e) {
+					throw new TechnicalException(e);
+				}
+			} else {
+				inputStream = CommonHelper.getInputStreamFromName(keyStorePath);
+			}
+			keyStoreToUse = loadKeyStore(inputStream, storePasswd, keyStoreType);
+		}
+		this.privateKey = getPrivateKeyAlias(keyStoreToUse, keyStoreAlias);
+		final Map<String, String> passwords = new HashMap<String, String>();
+		passwords.put(this.privateKey, privateKeyPasswd);
+		this.credentialResolver = new KeyStoreCredentialResolver(keyStoreToUse, passwords);
+	}
+
+	public KeyStoreCredentialProvider(SAML2ClientConfiguration configuration) {
+		this(configuration.getKeyStore(), configuration.getKeyStoreAlias(), (configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType()),
+				configuration.getKeystoreResource(), configuration.getKeystorePath(),
+				configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
+	}
 
     @Override
     public KeyInfo getKeyInfo() {
@@ -111,9 +145,9 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
-    private KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd) {
+    private KeyStore loadKeyStore(final InputStream inputStream, final String storePasswd, final String keyStoreType) {
         try {
-            final KeyStore ks = KeyStore.getInstance("JKS");
+            final KeyStore ks = KeyStore.getInstance(keyStoreType);
             ks.load(inputStream, storePasswd == null ? null : storePasswd.toCharArray());
             return ks;
         } catch (final Exception e) {
@@ -129,12 +163,17 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
-    private String getPrivateKeyAlias(final KeyStore keyStore) {
+    private String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
             final Enumeration<String> aliases = keyStore.aliases();
-            if (aliases.hasMoreElements()) {
-                return aliases.nextElement();
-            }
+			while (aliases.hasMoreElements()) {
+	            String currentAlias = aliases.nextElement();
+				if (keyStoreAlias == null) {
+					return currentAlias;
+				} else if (currentAlias.equals(keyStoreAlias)) {
+					return currentAlias;
+				}
+			}
 
             throw new SAMLException("Keystore has no private keys");
 
