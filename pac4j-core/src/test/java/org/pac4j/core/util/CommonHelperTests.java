@@ -148,8 +148,28 @@ public final class CommonHelperTests {
     }
     
     @Test
+    public void testNoPrefix() {
+    	assertNotNull(CommonHelper.getInputStreamFromName("src/test/resources/testFile.txt"));
+    }
+    
+    @Test
+    public void testResourcePrefix() {
+    	assertNotNull(CommonHelper.getInputStreamFromName("resource:/testFile.txt"));
+    }
+    
+    @Test
     public void testClassPathPrefix() {
     	assertNotNull(CommonHelper.getInputStreamFromName("classpath:testFile.txt"));
+    }
+    
+    @Test
+    public void testHttpPrefix() {
+    	assertNotNull(CommonHelper.getInputStreamFromName("http://cnn.com"));
+    }
+    
+    @Test
+    public void testHttpsPrefix() {
+    	assertNotNull(CommonHelper.getInputStreamFromName("https://facebook.com"));
     }
 
     @Test(expected = TechnicalException.class)

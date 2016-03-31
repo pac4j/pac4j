@@ -32,7 +32,6 @@ public class Clients extends InitializableObject {
     private List<Client> clients;
 
     private String callbackUrl = null;
-	private Client defaultClient;
 
     public Clients() {
     }
@@ -105,10 +104,7 @@ public class Clients extends InitializableObject {
      */
     public Client findClient(final WebContext context) {
         final String name = context.getRequestParameter(this.clientNameParameter);
-		if (name == null && defaultClient != null) {
-			return defaultClient;
-		}
-		CommonHelper.assertNotBlank("name", name);
+        CommonHelper.assertNotBlank("name", name);
         return findClient(name);
     }
 
@@ -192,9 +188,5 @@ public class Clients extends InitializableObject {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
                 this.clientNameParameter, "clients", getClients());
-	}
-
-	public void setDefaultClient(Client defaultClient) {
-		this.defaultClient = defaultClient;
-	}
+    }
 }

@@ -27,7 +27,7 @@ public class FileSystemResource implements WritableResource {
 
 	@Override
 	public String getFilename() {
-		throw new UnsupportedOperationException("not implemented");
+		return this.path;
 	}
 
 
