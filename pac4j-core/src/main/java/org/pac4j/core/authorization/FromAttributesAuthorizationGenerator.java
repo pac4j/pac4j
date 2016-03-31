@@ -15,6 +15,7 @@
  */
 package org.pac4j.core.authorization;
 
+import java.util.Collection;
 import java.util.StringTokenizer;
 
 import org.pac4j.core.profile.CommonProfile;
@@ -49,20 +50,36 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
         if (attributes != null) {
             for (final String attribute : attributes) {
                 final Object value = profile.getAttribute(attribute);
-                if (value != null && value instanceof String) {
-                    final StringTokenizer st = new StringTokenizer((String) value, this.splitChar);
-                    while (st.hasMoreTokens()) {
-                        if (isRole) {
-                            profile.addRole(st.nextToken());
-                        } else {
-                            profile.addPermission(st.nextToken());
+                if (value != null) {
+                    if(value instanceof String) {
+                        final StringTokenizer st = new StringTokenizer((String) value, this.splitChar);
+                        while (st.hasMoreTokens()) {
+                            setAuth(profile, st.nextToken(), isRole);
+                        }
+                    } else if(value.getClass().isArray() && value.getClass().getComponentType().isAssignableFrom(String.class)) {
+                        for(Object item : (Object[])value) {
+                            setAuth(profile, item.toString(), isRole);
+                        }
+                    } else if(Collection.class.isAssignableFrom(value.getClass())) {
+                        for(Object item : (Collection<?>)value) {
+                            if(item.getClass().isAssignableFrom(String.class)) {
+                                setAuth(profile, item.toString(), isRole);
+                            }
                         }
                     }
                 }
             }
         }
     }
-    
+
+    private void setAuth(final U profile, final String value, final boolean isRole) {
+        if (isRole) {
+            profile.addRole(value);
+        } else {
+            profile.addPermission(value);
+        }
+    }
+
     public String getSplitChar() {
         return this.splitChar;
     }
