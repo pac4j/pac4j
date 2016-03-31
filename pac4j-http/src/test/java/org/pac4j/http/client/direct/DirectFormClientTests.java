@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -71,9 +72,14 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testGetBadCredentials() throws RequiresHttpAction {
         final DirectFormClient formClient = getFormClient();
-        final MockWebContext context = MockWebContext.create();
-        assertNull(formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
-                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)));
+        final MockWebContext context = MockWebContext.create().addRequestParameter(formClient.getUsernameParameter(), USERNAME)
+                .addRequestParameter(formClient.getPasswordParameter(), PASSWORD);
+        try {
+            formClient.getCredentials(context);
+            fail();
+        } catch (CredentialsException e) {
+            assertEquals("Username : '" + USERNAME + "' does not match password", e.getMessage());
+        }
     }
 
     @Test
