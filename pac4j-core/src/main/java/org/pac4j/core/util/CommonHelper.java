@@ -310,7 +310,7 @@ public final class CommonHelper {
 
 			@Override
 			public String getFilename() {
-				throw new UnsupportedOperationException("not implemented");
+				return filePath;
 			}
 
 			@Override

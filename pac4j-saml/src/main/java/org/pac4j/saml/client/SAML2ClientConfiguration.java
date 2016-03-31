@@ -104,7 +104,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.keyStoreType = keyStoreType;
         this.keystoreResource = keystoreResource;
         if (this.keystoreResource == null) {
-        	this.keystoreResource = new FileSystemResource(keystorePath);
+        	this.keystoreResource = CommonHelper.getResource(keystorePath);
         }
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
