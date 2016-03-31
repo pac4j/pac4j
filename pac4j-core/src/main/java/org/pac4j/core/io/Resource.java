@@ -1,4 +1,8 @@
 package org.pac4j.core.io;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Interface for a resource descriptor that abstracts from the actual
  * type of underlying resource, such as a file or class path resource.
@@ -10,7 +14,7 @@ package org.pac4j.core.io;
  *  @since 1.9.0
  *
  */
-public interface Resource extends InputStreamSource {
+public interface Resource {
 
 	/**
 	 * Return whether this resource actually exists in physical form.
@@ -29,6 +33,14 @@ public interface Resource extends InputStreamSource {
 	 * @return a filename for this resource, i.e. typically the last
 	 */
 	String getFilename();
+	
+	/**
+	 * Return an {@link InputStream}.
+	 * 
+	 * @return the input stream for the underlying resource (must not be {@code null})
+	 * @throws IOException if the stream could not be opened
+	 */
+	InputStream getInputStream() throws IOException;
 
 
 }

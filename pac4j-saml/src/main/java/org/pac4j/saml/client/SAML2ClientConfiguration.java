@@ -3,7 +3,6 @@ package org.pac4j.saml.client;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
-import org.pac4j.core.io.FileSystemResource;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
@@ -161,7 +160,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
     public void setKeystorePath(final String keystorePath) {
-        this.keystoreResource = new FileSystemResource(keystorePath);
+        this.keystoreResource = CommonHelper.getResource(keystorePath);
     }
 
     public void setKeystorePassword(final String keystorePassword) {
