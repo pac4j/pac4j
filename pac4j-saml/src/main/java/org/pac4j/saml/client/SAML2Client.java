@@ -150,11 +150,9 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     protected MetadataResolver initServiceProviderMetadataResolver(final WebContext context) {
-		String finalCallbackUrl = computeFinalCallbackUrl(context);
 		this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration.getServiceProviderMetadataPath(),
-				this.configuration.getServiceProviderMetadataResource(), finalCallbackUrl,
-				(this.configuration.getServiceProviderEntityId().equals("CALLBACK_URL") ? finalCallbackUrl
-						: this.configuration.getServiceProviderEntityId()),
+                computeFinalCallbackUrl(context),
+                this.configuration.getServiceProviderEntityId(),
                 this.configuration.isForceServiceProviderMetadataGeneration(),
                 this.credentialProvider);
         return this.spMetadataResolver.resolve();

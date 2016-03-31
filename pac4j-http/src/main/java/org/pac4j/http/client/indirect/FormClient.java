@@ -79,36 +79,23 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (credentials == null) {
-				// it's an AJAX request -> unauthorized (instead of a
-				// redirection)
-				if (getAjaxRequestResolver().isAjax(context)) {
-					logger.info("AJAX request detected -> returning 401");
-					throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
-				} else {
-					String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-					redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
-					logger.debug("redirectionUrl: {}", redirectionUrl);
-					final String message = "Username and password cannot be blank -> return to the form with error";
-					logger.debug(message);
-					throw RequiresHttpAction.redirect(message, context, redirectionUrl);
-				}
+                String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+                redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, MISSING_FIELD_ERROR);
+                logger.debug("redirectionUrl: {}", redirectionUrl);
+                final String message = "Username and password cannot be blank -> return to the form with error";
+                logger.debug(message);
+                throw RequiresHttpAction.redirect(message, context, redirectionUrl);
             }
             // validate credentials
             getAuthenticator().validate(credentials);
         } catch (final CredentialsException e) {
-			// it's an AJAX request -> forbidden (instead of a redirection)
-			if (getAjaxRequestResolver().isAjax(context)) {
-				logger.info("AJAX request detected -> returning 403");
-				throw RequiresHttpAction.forbidden("AJAX request -> 403", context);
-			} else {
-				String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-				String errorMessage = computeErrorMessage(e);
-				redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
-				logger.debug("redirectionUrl: {}", redirectionUrl);
-				final String message = "Credentials validation fails -> return to the form with error";
-				logger.debug(message);
-				throw RequiresHttpAction.redirect(message, context, redirectionUrl);
-			}
+            String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+            String errorMessage = computeErrorMessage(e);
+            redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
+            logger.debug("redirectionUrl: {}", redirectionUrl);
+            final String message = "Credentials validation fails -> return to the form with error";
+            logger.debug(message);
+            throw RequiresHttpAction.redirect(message, context, redirectionUrl);
         }
 
         return credentials;

@@ -3,6 +3,7 @@ package org.pac4j.saml.client;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.pac4j.core.io.FileSystemResource;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
@@ -25,8 +26,6 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	private KeyStore keyStore;
 
 	private Resource keystoreResource;
-
-    private String keystorePath;
 
     private String keystorePassword;
 
@@ -104,7 +103,9 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.keyStoreAlias = keyStoreAlias;
         this.keyStoreType = keyStoreType;
         this.keystoreResource = keystoreResource;
-        this.keystorePath = keystorePath;
+        if (this.keystoreResource == null) {
+        	this.keystoreResource = new FileSystemResource(keystorePath);
+        }
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
 		this.identityProviderMetadataResource = identityProviderMetadataResource;
@@ -112,7 +113,6 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.identityProviderEntityId = identityProviderEntityId;
         this.serviceProviderEntityId = serviceProviderEntityId;
 
-        CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
         CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
 		CommonHelper.assertTrue(
@@ -161,7 +161,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
     public void setKeystorePath(final String keystorePath) {
-        this.keystorePath = keystorePath;
+        this.keystoreResource = new FileSystemResource(keystorePath);
     }
 
     public void setKeystorePassword(final String keystorePassword) {
@@ -283,7 +283,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
     public String getKeystorePath() {
-        return keystorePath;
+        return keystoreResource.getFilename();
     }
 
     public String getKeystorePassword() {
