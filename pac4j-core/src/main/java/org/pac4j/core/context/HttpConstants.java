@@ -40,6 +40,10 @@ public interface HttpConstants {
     
     int DEFAULT_HTTPS_PORT = 443;
 
+    String SCHEME_HTTP = "http";
+
+    String SCHEME_HTTPS = "https";
+
     int DEFAULT_CONNECT_TIMEOUT = 500;
     
     int DEFAULT_READ_TIMEOUT = 5000;

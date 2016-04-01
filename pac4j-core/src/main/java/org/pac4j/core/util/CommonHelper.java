@@ -17,15 +17,20 @@ package org.pac4j.core.util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
+import org.pac4j.core.io.WritableResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +46,9 @@ public final class CommonHelper {
 
 	public static final String RESOURCE_PREFIX = "resource";
 	public static final String CLASSPATH_PREFIX = "classpath";
-	public static final String HTTP_PREFIX = "http";
-	public static final String HTTPS_PREFIX = "https";
 
     public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
-			+ ":', '" + HTTP_PREFIX + ":' or it must be a physical readable non-empty local file "
+			+ ":', '" + HttpConstants.SCHEME_HTTP + ":', '"+ HttpConstants.SCHEME_HTTPS + ":' or it must be a physical readable non-empty local file "
 			+ "at the path specified.";
 
     /**
@@ -246,10 +249,10 @@ public final class CommonHelper {
 			return CommonHelper.class.getResourceAsStream(path);
 		case CLASSPATH_PREFIX:
 			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-		case HTTP_PREFIX:
+		case HttpConstants.SCHEME_HTTP:
 			logger.warn("file is retrieved from an insecure http endpoint [{}]", path);
 			return getInputStreamViaHttp(name);
-		case HTTPS_PREFIX:
+		case HttpConstants.SCHEME_HTTPS:
 			return getInputStreamViaHttp(name);
 		default:
 			throw new TechnicalException("prefix is not handled:" + prefix);
@@ -275,7 +278,7 @@ public final class CommonHelper {
 	}
 
 	public static Resource getResource(final String filePath) {
-		return new Resource() {
+		return new WritableResource() {
 
 			@Override
 			public InputStream getInputStream() throws IOException {
@@ -289,9 +292,13 @@ public final class CommonHelper {
 
 			@Override
 			public boolean exists() {
-				throw new UnsupportedOperationException("not implemented");
+				return true;
 			}
-
+			
+			@Override
+			public OutputStream getOutputStream() throws IOException {
+				return new FileOutputStream(filePath);
+			}
 
 		};
 	}

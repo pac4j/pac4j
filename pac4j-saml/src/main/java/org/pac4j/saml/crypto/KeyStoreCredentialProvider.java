@@ -37,7 +37,6 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
@@ -76,17 +75,25 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 		if (keyStore != null) {
 			keyStoreToUse = keyStore;
 		} else {
-			final InputStream inputStream;
-			if (keyStoreResource != null) {
-				try {
+			InputStream inputStream = null;
+			try {
+				if (keyStoreResource != null) {
 					inputStream = keyStoreResource.getInputStream();
-				} catch (IOException e) {
-					throw new TechnicalException(e);
+				} else {
+					inputStream = CommonHelper.getInputStreamFromName(keyStorePath);
 				}
-			} else {
-				inputStream = CommonHelper.getInputStreamFromName(keyStorePath);
-			}
-			keyStoreToUse = loadKeyStore(inputStream, storePasswd, keyStoreType);
+				keyStoreToUse = loadKeyStore(inputStream, storePasswd, keyStoreType);
+	        } catch (IOException e) {
+	        	throw new SAMLException("Error loading keystore", e);
+			} finally {
+	            if (inputStream != null) {
+	                try {
+	                    inputStream.close();
+	                } catch (final IOException e) {
+	                    this.logger.debug("Error closing input stream of keystore", e);
+	                }
+	            }
+	        }
 		}
 		this.privateKey = getPrivateKeyAlias(keyStoreToUse, keyStoreAlias);
 		final Map<String, String> passwords = new HashMap<String, String>();
@@ -152,14 +159,6 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
             return ks;
         } catch (final Exception e) {
             throw new SAMLException("Error loading keystore", e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (final IOException e) {
-                    this.logger.debug("Error closing input stream of keystore", e);
-                }
-            }
         }
     }
 
