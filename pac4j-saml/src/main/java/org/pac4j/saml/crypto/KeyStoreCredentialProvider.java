@@ -22,7 +22,6 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
