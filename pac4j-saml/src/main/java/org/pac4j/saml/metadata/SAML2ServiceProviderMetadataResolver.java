@@ -68,29 +68,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 		if (spMetadataResource != null) {
 			this.spMetadataResource = spMetadataResource;
 		} else {
-			this.spMetadataResource = new WritableResource() {
-				
-				@Override
-				public InputStream getInputStream() throws IOException {
-					throw new UnsupportedOperationException();
-				}
-				
-
-				@Override
-				public String getFilename() {
-					return spMetadataPath;
-				}
-				
-				@Override
-				public boolean exists() {
-					return true;
-				}
-				
-				@Override
-				public OutputStream getOutputStream() throws IOException {
-					return new FileOutputStream(spMetadataPath);
-				}
-			};
+			this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
 		}
         this.spEntityId = spEntityId;
         this.credentialProvider = credentialProvider;

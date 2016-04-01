@@ -37,6 +37,8 @@ public interface Resource {
 	/**
 	 * Return an {@link InputStream}.
 	 * 
+	 * Caller is responsible for closing the stream
+	 * 
 	 * @return the input stream for the underlying resource (must not be {@code null})
 	 * @throws IOException if the stream could not be opened
 	 */
