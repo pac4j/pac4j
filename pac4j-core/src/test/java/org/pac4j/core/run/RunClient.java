@@ -44,7 +44,7 @@ public abstract class RunClient implements TestsConstants {
         final Map<String, String> parameters = TestsHelper.getParametersFromUrl(returnedUrl);
         context.addRequestParameters(parameters);
         final Credentials credentials = client.getCredentials(context);
-        final UserProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = client.getUserProfile(credentials, context);
         logger.debug("userProfile: {}", profile);
         if (profile != null || !canCancel()) {
             verifyProfile(profile);
@@ -53,7 +53,7 @@ public abstract class RunClient implements TestsConstants {
             // Java serialization
             final JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
             byte[] bytes = javaSerializationHelper.serializeToBytes(profile);
-            final UserProfile profile2 = (UserProfile) javaSerializationHelper.unserializeFromBytes(bytes);
+            final CommonProfile profile2 = (CommonProfile) javaSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile2);
 
             logger.warn("## Kryo serialization");
@@ -69,7 +69,7 @@ public abstract class RunClient implements TestsConstants {
             registerForKryo(kryo);
             final KryoSerializationHelper kryoSerializationHelper = new KryoSerializationHelper(kryo);
             bytes = kryoSerializationHelper.serializeToBytes(profile);
-            final UserProfile profile3 = (UserProfile) kryoSerializationHelper.unserializeFromBytes(bytes);
+            final CommonProfile profile3 = (CommonProfile) kryoSerializationHelper.unserializeFromBytes(bytes);
             verifyProfile(profile3);
 
             logger.warn("## CAS serialization");
@@ -88,12 +88,12 @@ public abstract class RunClient implements TestsConstants {
                     newAttributes.put(key, value.toString());
                 }
             }
-            final UserProfile profile4 = ProfileHelper.buildProfile(profile3.getTypedId(), newAttributes);
+            final CommonProfile profile4 = ProfileHelper.buildProfile(profile3.getTypedId(), newAttributes);
             verifyProfile(profile4);
 
             logger.warn("## Auto-rebuild");
             // auto-rebuild
-            final UserProfile profile5 = ProfileHelper.buildProfile(profile3.getTypedId(), attributes);
+            final CommonProfile profile5 = ProfileHelper.buildProfile(profile3.getTypedId(), attributes);
             verifyProfile(profile5);
         }
         logger.warn("################");
@@ -112,12 +112,11 @@ public abstract class RunClient implements TestsConstants {
 
     protected abstract void registerForKryo(final Kryo kryo);
 
-    protected abstract void verifyProfile(final UserProfile userProfile);
+    protected abstract void verifyProfile(final CommonProfile userProfile);
 
-    protected void assertCommonProfile(final UserProfile userProfile, final String email, final String firstName,
+    protected void assertCommonProfile(final CommonProfile profile, final String email, final String firstName,
                                        final String familyName, final String displayName, final String username, final Gender gender,
                                        final Locale locale, final String pictureUrl, final String profileUrl, final String location) {
-        final CommonProfile profile = (CommonProfile) userProfile;
         assertEquals(email, profile.getEmail());
         assertEquals(firstName, profile.getFirstName());
         assertEquals(familyName, profile.getFamilyName());

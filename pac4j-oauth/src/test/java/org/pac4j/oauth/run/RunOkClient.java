@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.OkClient;
 import org.pac4j.oauth.profile.ok.OkProfile;
@@ -77,10 +77,10 @@ public final class RunOkClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final OkProfile profile = (OkProfile) userProfile;
         assertEquals(TEST_PROFILE_ID, profile.getId());
-        assertEquals(OkProfile.class.getName() + UserProfile.SEPARATOR + TEST_PROFILE_ID,
+        assertEquals(OkProfile.class.getName() + CommonProfile.SEPARATOR + TEST_PROFILE_ID,
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), OkProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

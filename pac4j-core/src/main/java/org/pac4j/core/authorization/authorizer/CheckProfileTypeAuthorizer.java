@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CheckProfileTypeAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<Class<U>, U> {
+public class CheckProfileTypeAuthorizer<U extends CommonProfile> extends AbstractRequireAnyAuthorizer<Class<U>, U> {
 
     public CheckProfileTypeAuthorizer() { }
 

@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.LinkedIn2Client;
 import org.pac4j.oauth.profile.linkedin2.*;
@@ -59,10 +59,10 @@ public final class RunLinkedIn2Client extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final LinkedIn2Profile profile = (LinkedIn2Profile) userProfile;
         assertEquals("JJjS_5BOzW", profile.getId());
-        assertEquals(LinkedIn2Profile.class.getName() + UserProfile.SEPARATOR + "JJjS_5BOzW",
+        assertEquals(LinkedIn2Profile.class.getName() + CommonProfile.SEPARATOR + "JJjS_5BOzW",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), LinkedIn2Profile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

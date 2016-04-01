@@ -3,10 +3,10 @@ package org.pac4j.oidc.run;
 import com.esotericsoftware.kryo.Kryo;
 import com.nimbusds.oauth2.sdk.token.AccessTokenType;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
 import org.pac4j.oidc.profile.GoogleOidcProfile;
@@ -53,10 +53,10 @@ public class RunGoogleOidcClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final GoogleOidcProfile profile = (GoogleOidcProfile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(GoogleOidcProfile.class.getName() + UserProfile.SEPARATOR + "113675986756217860428",
+        assertEquals(GoogleOidcProfile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
         assertNotNull(profile.getIdTokenString());

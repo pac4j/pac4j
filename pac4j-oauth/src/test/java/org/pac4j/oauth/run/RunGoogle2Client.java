@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.Google2Client;
 import org.pac4j.oauth.profile.google2.Google2Email;
@@ -59,10 +59,10 @@ public final class RunGoogle2Client extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final Google2Profile profile = (Google2Profile) userProfile;
         assertEquals("113675986756217860428", profile.getId());
-        assertEquals(Google2Profile.class.getName() + UserProfile.SEPARATOR + "113675986756217860428",
+        assertEquals(Google2Profile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), Google2Profile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

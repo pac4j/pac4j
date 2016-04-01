@@ -12,7 +12,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.ArrayList;
@@ -32,9 +31,9 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     private final AuthorizationChecker checker = new DefaultAuthorizationChecker();
 
-    private List<UserProfile> profiles;
+    private List<CommonProfile> profiles;
 
-    private UserProfile profile;
+    private CommonProfile profile;
 
     @Before
     public void setUp() {
@@ -43,8 +42,8 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         profiles.add(profile);
     }
 
-    private static class IdAuthorizer implements Authorizer<UserProfile> {
-        public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
+    private static class IdAuthorizer implements Authorizer<CommonProfile> {
+        public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) {
             return VALUE.equals(profiles.get(0).getId());
         }
     }

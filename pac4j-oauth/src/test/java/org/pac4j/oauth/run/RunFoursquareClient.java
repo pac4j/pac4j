@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.client.FoursquareClient;
 import org.pac4j.oauth.profile.foursquare.*;
 
@@ -56,10 +56,10 @@ public final class RunFoursquareClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final FoursquareProfile profile = (FoursquareProfile) userProfile;
         assertEquals("81827700", profile.getId());
-        assertEquals(FoursquareProfile.class.getName() + UserProfile.SEPARATOR + "81827700", profile.getTypedId());
+        assertEquals(FoursquareProfile.class.getName() + CommonProfile.SEPARATOR + "81827700", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FoursquareProfile.class));
         assertCommonProfile(userProfile,
                 "pac4j@mailinator.com",

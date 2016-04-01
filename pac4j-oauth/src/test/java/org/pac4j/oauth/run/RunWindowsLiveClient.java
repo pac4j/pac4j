@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.WindowsLiveClient;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
@@ -51,10 +51,10 @@ public final class RunWindowsLiveClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final WindowsLiveProfile profile = (WindowsLiveProfile) userProfile;
         assertEquals("416c383b220392d8", profile.getId());
-        assertEquals(WindowsLiveProfile.class.getName() + UserProfile.SEPARATOR + "416c383b220392d8",
+        assertEquals(WindowsLiveProfile.class.getName() + CommonProfile.SEPARATOR + "416c383b220392d8",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), WindowsLiveProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
