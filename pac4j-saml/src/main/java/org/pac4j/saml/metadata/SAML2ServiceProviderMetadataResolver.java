@@ -36,7 +36,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,15 +53,15 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     private final CredentialProvider credentialProvider;
     private String spEntityId;
-	private final WritableResource spMetadataResource;
+    private final WritableResource spMetadataResource;
     private String spMetadata;
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
 
-    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath, 
-			                                    final String callbackUrl) {
-		this(spMetadataPath, callbackUrl, null, false, credentialProvider);
-	}
+    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath,
+                                                final String callbackUrl) {
+        this(spMetadataPath, callbackUrl, null, false, credentialProvider);
+    }
 
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
             final String callbackUrl,
