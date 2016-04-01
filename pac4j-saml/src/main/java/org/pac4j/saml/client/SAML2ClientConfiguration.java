@@ -24,15 +24,13 @@ import java.util.List;
 public final class SAML2ClientConfiguration implements Cloneable {
 	private KeyStore keyStore;
 
-	private Resource keystoreResource;
+    private Resource keystoreResource;
 
     private String keystorePassword;
 
     private String privateKeyPassword;
 
 	private Resource identityProviderMetadataResource;
-
-    private String identityProviderMetadataPath;
 
     private String identityProviderEntityId;
 
@@ -49,8 +47,6 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private String authnContextClassRef = null;
 
     private String nameIdPolicyFormat = null;
-
-    private String serviceProviderMetadataPath;
 
 	private WritableResource serviceProviderMetadataResource;
 
@@ -108,7 +104,9 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
 		this.identityProviderMetadataResource = identityProviderMetadataResource;
-        this.identityProviderMetadataPath = identityProviderMetadataPath;
+        if (this.identityProviderMetadataResource == null) {
+        	this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
+        }
         this.identityProviderEntityId = identityProviderEntityId;
         this.serviceProviderEntityId = serviceProviderEntityId;
 
@@ -128,7 +126,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
     }
 
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
-        this.identityProviderMetadataPath = identityProviderMetadataPath;
+        this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
     }
 
 	public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
@@ -246,7 +244,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
     }
 
     public void setServiceProviderMetadataPath(final String serviceProviderMetadataPath) {
-        this.serviceProviderMetadataPath = serviceProviderMetadataPath;
+        this.serviceProviderMetadataResource = (WritableResource) CommonHelper.getResource(serviceProviderMetadataPath);
     }
 
 	public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
@@ -258,7 +256,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
     }
 
     public String getIdentityProviderMetadataPath() {
-        return identityProviderMetadataPath;
+        return identityProviderMetadataResource.getFilename();
     }
 
 	public Resource getIdentityProviderMetadataResource() {
@@ -306,7 +304,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
     }
 
     public String getServiceProviderMetadataPath() {
-        return serviceProviderMetadataPath;
+        return serviceProviderMetadataResource.getFilename();
     }
 
 	public WritableResource getServiceProviderMetadataResource() {

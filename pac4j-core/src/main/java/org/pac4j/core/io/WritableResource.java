@@ -17,8 +17,11 @@ public interface WritableResource extends Resource {
 	 * Return an {@link OutputStream} for the underlying resource, allowing to
 	 * (over-)write its content.
 	 * 
+	 * Caller is responsible for closing the stream
+	 * 
 	 * @throws IOException
 	 *             if the stream could not be opened
+	 * @return the output stream for the underlying resource (must not be {@code null})
 	 * @see #getInputStream()
 	 */
 	OutputStream getOutputStream() throws IOException;
