@@ -13,7 +13,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtConstants;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtGenerator<U extends UserProfile> {
+public class JwtGenerator<U extends CommonProfile> {
 
     public final static String INTERNAL_ROLES = "$int_roles";
     public final static String INTERNAL_PERMISSIONS = "$int_perms";

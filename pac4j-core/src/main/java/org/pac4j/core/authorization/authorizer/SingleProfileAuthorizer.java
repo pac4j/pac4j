@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class SingleProfileAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public abstract class SingleProfileAuthorizer<U extends CommonProfile> implements Authorizer<U> {
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {

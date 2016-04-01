@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.profile.github.GitHubPlan;
@@ -52,10 +52,10 @@ public final class RunGithubClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final GitHubProfile profile = (GitHubProfile) userProfile;
         assertEquals("1412558", profile.getId());
-        assertEquals(GitHubProfile.class.getName() + UserProfile.SEPARATOR + "1412558", profile.getTypedId());
+        assertEquals(GitHubProfile.class.getName() + CommonProfile.SEPARATOR + "1412558", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GitHubProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, "testscribeup@gmail.com", null, null, "Test", "testscribeup",

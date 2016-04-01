@@ -2,8 +2,8 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.CasOAuthWrapperClient;
@@ -49,10 +49,10 @@ public final class RunCasOAuthWrapperClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) userProfile;
         assertEquals(USERNAME, profile.getId());
-        assertEquals(CasOAuthWrapperProfile.class.getName() + UserProfile.SEPARATOR + USERNAME,
+        assertEquals(CasOAuthWrapperProfile.class.getName() + CommonProfile.SEPARATOR + USERNAME,
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CasOAuthWrapperProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

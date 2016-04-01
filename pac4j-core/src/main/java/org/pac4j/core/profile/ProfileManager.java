@@ -12,7 +12,7 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ProfileManager {
+public class ProfileManager<U extends CommonProfile> {
 
     protected final WebContext context;
 
@@ -26,8 +26,8 @@ public class ProfileManager {
      * @param readFromSession if the user profile must be read from session
      * @return the user profile
      */
-    public Optional<UserProfile> get(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
+    public Optional<U> get(final boolean readFromSession) {
+        final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
         if (profiles.size() == 0) {
             return Optional.empty();
         } else {
@@ -41,25 +41,25 @@ public class ProfileManager {
      * @param readFromSession if the user profiles must be read from session
      * @return the user profiles.
      */
-    public List<UserProfile> getAll(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
-        final List<UserProfile> listProfiles = new ArrayList<>();
-        for (final Map.Entry<String, UserProfile> entry : profiles.entrySet()) {
+    public List<U> getAll(final boolean readFromSession) {
+        final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
+        final List<U> listProfiles = new ArrayList<>();
+        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
             listProfiles.add(entry.getValue());
         }
         return Collections.unmodifiableList(listProfiles);
     }
 
-    private LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {
-        LinkedHashMap<String, UserProfile> profiles = null;
+    private LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
+        LinkedHashMap<String, U> profiles = null;
         final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         if (objSession != null && objSession instanceof LinkedHashMap) {
-            profiles = (LinkedHashMap<String, UserProfile>) objSession;
+            profiles = (LinkedHashMap<String, U>) objSession;
         }
         if ((profiles == null || profiles.isEmpty()) && readFromSession) {
             final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
             if (objRequest != null && objRequest instanceof LinkedHashMap) {
-                profiles = (LinkedHashMap<String, UserProfile>) objRequest;
+                profiles = (LinkedHashMap<String, U>) objRequest;
             }
         }
         if (profiles == null) {
@@ -76,9 +76,9 @@ public class ProfileManager {
      */
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
-            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
+            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
         }
-        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
+        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
     }
 
     /**
@@ -88,8 +88,8 @@ public class ProfileManager {
      * @param profile a given user profile
      * @param multiProfile whether multiple profiles are supported
      */
-    public void save(final boolean saveInSession, final UserProfile profile, final boolean multiProfile) {
-        final LinkedHashMap<String, UserProfile> profiles;
+    public void save(final boolean saveInSession, final U profile, final boolean multiProfile) {
+        final LinkedHashMap<String, U> profiles;
 
         String clientName = profile.getClientName();
         if (clientName == null) {

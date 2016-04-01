@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.CredentialUtil;
@@ -51,7 +51,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
 
         final DigestCredentials credentials = client.getCredentials(context);
 
-        final UserProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = client.getUserProfile(credentials, context);
 
         String ha1 = CredentialUtil.encryptMD5(USERNAME + ":" + REALM + ":" +PASSWORD);
         String serverDigest1 = credentials.calculateServerDigest(true, ha1);

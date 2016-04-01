@@ -5,7 +5,7 @@ import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class CsrfAuthorizer<U extends UserProfile> implements Authorizer<U> {
+public class CsrfAuthorizer<U extends CommonProfile> implements Authorizer<U> {
 
     private String parameterName = Pac4jConstants.CSRF_TOKEN;
 

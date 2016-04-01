@@ -5,7 +5,7 @@ import org.pac4j.core.authorization.authorizer.csrf.*;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws RequiresHttpAction {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (isNotBlank(authorizerNames)) {
@@ -81,7 +81,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) throws RequiresHttpAction {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {

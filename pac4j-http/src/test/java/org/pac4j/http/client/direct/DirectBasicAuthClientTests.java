@@ -5,7 +5,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -57,7 +57,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
                 "Basic " + Base64.getEncoder().encodeToString(header.getBytes()));
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
-        final UserProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());
     }
 }
