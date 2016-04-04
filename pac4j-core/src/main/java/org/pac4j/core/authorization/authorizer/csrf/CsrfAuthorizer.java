@@ -16,7 +16,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class CsrfAuthorizer<U extends CommonProfile> implements Authorizer<U> {
+public class CsrfAuthorizer implements Authorizer<CommonProfile> {
 
     private String parameterName = Pac4jConstants.CSRF_TOKEN;
 
@@ -38,7 +38,7 @@ public class CsrfAuthorizer<U extends CommonProfile> implements Authorizer<U> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws RequiresHttpAction {
         final boolean checkRequest = !onlyCheckPostRequest || ContextHelper.isPost(context);
         if (checkRequest) {
             final String parameterToken = context.getRequestParameter(parameterName);
