@@ -6,7 +6,9 @@ import java.io.OutputStream;
 /**
  * Extended interface for a resource that supports writing to it. Provides an
  * {@link #getOutputStream() OutputStream accessor}.
+ * This is based originally off spring abstraction.
  * 
+ *  @author Keith Garry Boyce
  *  @since 1.9.0
  *
  */
