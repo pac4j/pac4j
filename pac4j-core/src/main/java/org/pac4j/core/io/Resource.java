@@ -11,6 +11,9 @@ import java.io.InputStream;
  * physical form, but a URL or File handle can just be returned for
  * certain resources. The actual behavior is implementation-specific.
  * 
+ * This is based originally off spring abstraction.
+ * 
+ *  @author Keith Garry Boyce
  *  @since 1.9.0
  *
  */
