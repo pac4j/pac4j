@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oauth.profile.yahoo.*;
@@ -59,10 +59,10 @@ public final class RunYahooClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
-        assertEquals(YahooProfile.class.getName() + UserProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
+        assertEquals(YahooProfile.class.getName() + CommonProfile.SEPARATOR + "PCSXZCYSWC6XUJNMZKRGWVPHNU",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));

@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
@@ -93,7 +93,7 @@ public final class JwtTests implements TestsConstants {
         profile.addRoles(ROLES);
         profile.addPermissions(PERMISSIONS);
         final String token = generator.generate(profile);
-        final UserProfile profile2 = assertToken(profile, token);
+        final CommonProfile profile2 = assertToken(profile, token);
         assertEquals(ROLES, profile2.getRoles());
         assertEquals(PERMISSIONS, profile2.getPermissions());
     }
@@ -106,15 +106,15 @@ public final class JwtTests implements TestsConstants {
         assertToken(profile, token, new JwtAuthenticator(JWT_KEY, JWT_KEY2));
     }
 
-    private UserProfile assertToken(FacebookProfile profile, String token) throws RequiresHttpAction {
+    private CommonProfile assertToken(FacebookProfile profile, String token) throws RequiresHttpAction {
         return assertToken(profile, token, new JwtAuthenticator(JWT_KEY));
     }
 
-    private UserProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) throws RequiresHttpAction {
+    private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) throws RequiresHttpAction {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
         authenticator.init(null);
         authenticator.validate(credentials);
-        final UserProfile profile2 = credentials.getUserProfile();
+        final CommonProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
         final FacebookProfile fbProfile = (FacebookProfile) profile2;
         assertEquals(profile.getTypedId(), fbProfile.getTypedId());

@@ -3,7 +3,7 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -64,7 +64,7 @@ public final class ParameterClientTests implements TestsConstants {
         context.addRequestParameter(PARAMETER_NAME, VALUE);
         context.setRequestMethod("GET");
         final TokenCredentials credentials = client.getCredentials(context);
-        final UserProfile profile = client.getUserProfile(credentials, context);
+        final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals(VALUE, profile.getId());
     }
 }

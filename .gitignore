@@ -25,3 +25,4 @@ perfStats.log
 .idea
 overlays
 pac4j-test-cas/overlays/
+.DS_Store

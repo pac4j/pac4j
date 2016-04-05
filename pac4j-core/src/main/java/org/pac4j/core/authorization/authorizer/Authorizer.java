@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public interface Authorizer<U extends UserProfile> {
+public interface Authorizer<U extends CommonProfile> {
 
     /**
      * Checks if the user profiles and / or the current web context are authorized.

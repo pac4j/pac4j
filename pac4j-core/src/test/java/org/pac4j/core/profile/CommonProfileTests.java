@@ -26,7 +26,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testSetId() {
-        final UserProfile userProfile = new CommonProfile();
+        final CommonProfile userProfile = new CommonProfile();
         assertNull(userProfile.getId());
         userProfile.setId(ID);
         assertEquals(ID, userProfile.getId());
@@ -34,7 +34,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttribute() {
-        final UserProfile userProfile = new CommonProfile();
+        final CommonProfile userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttribute(KEY, VALUE);
         assertEquals(1, userProfile.getAttributes().size());
@@ -45,7 +45,7 @@ public final class CommonProfileTests implements TestsConstants {
     public void testAddAttributes() {
         final Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(KEY, VALUE);
-        final UserProfile userProfile = new CommonProfile();
+        final CommonProfile userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
         userProfile.addAttributes(attributes);
         assertEquals(1, userProfile.getAttributes().size());
@@ -54,7 +54,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testUnsafeAddAttribute() {
-        final UserProfile userProfile = new CommonProfile();
+        final CommonProfile userProfile = new CommonProfile();
         try {
             userProfile.getAttributes().put(KEY, VALUE);
             fail();
@@ -64,7 +64,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testRoles() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         assertEquals(0, profile.getRoles().size());
         profile.addRole(ROLE1);
         assertEquals(1, profile.getRoles().size());
@@ -73,7 +73,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testPermissions() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         assertEquals(0, profile.getPermissions().size());
         profile.addPermission(PERMISSION);
         assertEquals(1, profile.getPermissions().size());
@@ -82,7 +82,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testRme() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         assertFalse(profile.isRemembered());
         profile.setRemembered(true);
         assertTrue(profile.isRemembered());
@@ -90,51 +90,51 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testTypeId() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         profile.setId(ID);
-        assertEquals("org.pac4j.core.profile.CommonProfile" + UserProfile.SEPARATOR + ID, profile.getTypedId());
+        assertEquals("org.pac4j.core.profile.CommonProfile" + CommonProfile.SEPARATOR + ID, profile.getTypedId());
     }
 
     @Test
     public void testOldTypeId() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         profile.setId(ID);
-        assertEquals("CommonProfile" + UserProfile.SEPARATOR + ID, profile.getOldTypedId());
+        assertEquals("CommonProfile" + CommonProfile.SEPARATOR + ID, profile.getOldTypedId());
     }
 
     @Test
     public void testNullId() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.setId(null), TechnicalException.class, "id cannot be null");
     }
 
     @Test
     public void testNullClientName() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.setClientName(null), TechnicalException.class, "clientName cannot be null");
     }
 
     @Test
     public void testBlankRole() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRole(""), TechnicalException.class, "role cannot be blank");
     }
 
     @Test
     public void testNullRoles() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addRoles((Set<String>) null), TechnicalException.class, "roles cannot be null");
     }
 
     @Test
     public void testBlankPermission() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addPermission(""), TechnicalException.class, "permission cannot be blank");
     }
 
     @Test
     public void testNullPermissions() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addPermissions((Set<String>) null), TechnicalException.class, "permissions cannot be null");
     }
 }

@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ import static org.pac4j.core.context.HttpConstants.*;
  */
 public final class CheckHttpMethodAuthorizerTests {
 
-    private List<UserProfile> profiles;
+    private List<CommonProfile> profiles;
 
     @Before
     public void setUp() {

@@ -12,8 +12,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -78,7 +78,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
      * @param token the JWT
      * @return the corresponding user profile
      */
-    public UserProfile validateToken(final String token) {
+    public CommonProfile validateToken(final String token) {
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
         try {
             validate(credentials);
@@ -133,8 +133,8 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         final JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
         String subject = claimSet.getSubject();
 
-        if (!subject.contains(UserProfile.SEPARATOR)) {
-            subject = JwtProfile.class.getName() + UserProfile.SEPARATOR + subject;
+        if (!subject.contains(CommonProfile.SEPARATOR)) {
+            subject = JwtProfile.class.getName() + CommonProfile.SEPARATOR + subject;
         }
 
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
@@ -143,7 +143,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
         final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
-        final UserProfile profile = ProfileHelper.buildProfile(subject, attributes);
+        final CommonProfile profile = ProfileHelper.buildProfile(subject, attributes);
         if (roles != null) {
             profile.addRoles(roles);
         }

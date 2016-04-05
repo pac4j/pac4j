@@ -2,10 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.PayPalClient;
 import org.pac4j.oauth.profile.paypal.PayPalAddress;
@@ -53,10 +53,10 @@ public final class RunPaypalClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final PayPalProfile profile = (PayPalProfile) userProfile;
         assertEquals("YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getId());
-        assertEquals(PayPalProfile.class.getName() + UserProfile.SEPARATOR
+        assertEquals(PayPalProfile.class.getName() + CommonProfile.SEPARATOR
                 + "YAxf5WKSFn4BG_l3wqcBJUSObQTG1Aww5FY0EDf_ccw", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), PayPalProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
