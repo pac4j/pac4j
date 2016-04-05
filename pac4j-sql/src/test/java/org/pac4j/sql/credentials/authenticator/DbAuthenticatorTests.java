@@ -84,16 +84,16 @@ public final class DbAuthenticatorTests implements TestsConstants {
 
     @Test(expected = MultipleAccountsFoundException.class)
     public void testMultipleUsername() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(MULTIPLE_USERNAME, PASSWORD, "");
+        login(MULTIPLE_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = AccountNotFoundException.class)
     public void testBadUsername() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(BAD_USERNAME, PASSWORD, "");
+        login(BAD_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = BadCredentialsException.class)
     public void testBadPassword() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD + "bad", "");
+        login(GOOD_USERNAME, PASSWORD + "bad", "");
     }
 }

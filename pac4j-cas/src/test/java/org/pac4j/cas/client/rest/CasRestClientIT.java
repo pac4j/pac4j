@@ -6,6 +6,7 @@ import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -15,6 +16,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.util.TestsHelper;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -61,21 +63,21 @@ public final class CasRestClientIT implements TestsConstants {
     }
 
     @Test
-    public void testRestBasic() throws RequiresHttpAction {
+    public void testRestBasic() throws RequiresHttpAction, UnsupportedEncodingException {
         internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 3);
     }
 
     @Test
-    public void testRestBasicWithCas20TicketValidator() throws RequiresHttpAction {
+    public void testRestBasicWithCas20TicketValidator() throws RequiresHttpAction, UnsupportedEncodingException {
         final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_PREFIX_URL);
         authenticator.setTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
         internalTestRestBasic(new CasRestBasicAuthClient(authenticator, VALUE, NAME), 0);
     }
 
-    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws RequiresHttpAction {
+    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws RequiresHttpAction, UnsupportedEncodingException {
         final MockWebContext context = MockWebContext.create();
         final String token = USERNAME + ":" + USERNAME;
-        context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes()));
+        context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(HttpConstants.UTF8_ENCODING)));
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final CasRestProfile profile = client.getUserProfile(credentials, context);

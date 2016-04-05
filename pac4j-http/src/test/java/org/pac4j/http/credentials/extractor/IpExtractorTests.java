@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public final class IpExtractorTests implements TestsConstants {
 
-    private final static String GOOD_IP = "1.2.3.4";
+    private final static String GOOD_IP = "goodIp";
 
     private final static IpExtractor extractor = new IpExtractor(CLIENT_NAME);
 

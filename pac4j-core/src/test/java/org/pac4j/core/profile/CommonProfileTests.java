@@ -59,6 +59,7 @@ public final class CommonProfileTests implements TestsConstants {
             userProfile.getAttributes().put(KEY, VALUE);
             fail();
         } catch (final UnsupportedOperationException e) {
+            assertNull(e.getMessage());
         }
     }
 
