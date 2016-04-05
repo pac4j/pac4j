@@ -27,17 +27,17 @@ public final class ExcludedPathMatcherTests {
 
     @Test(expected = TechnicalException.class)
     public void testMissingStartCharacterInRegexp() {
-        final ExcludedPathMatcher pathMatcher = new ExcludedPathMatcher("/img/.*$");
+        new ExcludedPathMatcher("/img/.*$");
     }
 
     @Test(expected = TechnicalException.class)
     public void testMissingEndCharacterInRegexp() {
-        final ExcludedPathMatcher pathMatcher = new ExcludedPathMatcher("^/img/.*");
+        new ExcludedPathMatcher("^/img/.*");
     }
 
     @Test(expected = PatternSyntaxException.class)
     public void testBadRegexp() {
-        final ExcludedPathMatcher pathMatcher = new ExcludedPathMatcher("^/img/**$");
+        new ExcludedPathMatcher("^/img/**$");
     }
 
     @Test

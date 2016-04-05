@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -19,8 +17,6 @@ import java.util.*;
  * @since 1.0.0
  */
 public final class TestsHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(TestsHelper.class);
 
     public static Map<String, String> getParametersFromUrl(String url) {
         int pos = url.indexOf("?");

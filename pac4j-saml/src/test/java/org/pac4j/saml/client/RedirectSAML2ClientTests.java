@@ -14,7 +14,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.Base64;
 import java.util.List;
 import java.util.zip.Inflater;

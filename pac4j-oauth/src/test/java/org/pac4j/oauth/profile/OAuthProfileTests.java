@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -25,8 +24,8 @@ public final class OAuthProfileTests implements TestsConstants {
         profile.setAccessToken(VALUE);
         profile.setAccessSecret(VALUE);
         profile.clearSensitiveData();
-        Assert.assertNull(profile.getAccessToken());
-        Assert.assertNull(profile.getAccessSecret());
+        assertNull(profile.getAccessToken());
+        assertNull(profile.getAccessSecret());
     }
 
     @Test
