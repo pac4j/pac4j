@@ -3,7 +3,7 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 /**
  * <p>This interface is the core class of the library. It represents an authentication mechanism to validate user's credentials and
@@ -22,7 +22,7 @@ import org.pac4j.core.profile.UserProfile;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public interface Client<C extends Credentials, U extends UserProfile> {
+public interface Client<C extends Credentials, U extends CommonProfile> {
 
     /**
      * Get the name of the client.

@@ -5,7 +5,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.assertEquals;
@@ -28,10 +27,10 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnProfile() throws RequiresHttpAction {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN, CLIENT_NAME);
         credentials.setUserProfile(profile);
-        final UserProfile profile2 = creator.create(credentials);
+        final CommonProfile profile2 = creator.create(credentials);
         assertEquals(profile, profile2);
     }
 }

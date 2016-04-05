@@ -23,7 +23,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
-    protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
+    protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String id;
 

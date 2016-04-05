@@ -2,8 +2,8 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.client.OrcidClient;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
 
@@ -44,6 +44,6 @@ public final class RunOrcidClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
     }
 }

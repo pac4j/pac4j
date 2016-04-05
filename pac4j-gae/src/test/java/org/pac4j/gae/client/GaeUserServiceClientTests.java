@@ -10,8 +10,8 @@ import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.gae.credentials.GaeUserCredentials;
@@ -75,7 +75,7 @@ public final class GaeUserServiceClientTests implements TestsConstants {
         final GaeUserServiceProfile profile = client.getUserProfile(credentials, context);
         logger.debug("userProfile: {}", profile);
         assertEquals(EMAIL, profile.getId());
-        assertEquals(GaeUserServiceProfile.class.getName() + UserProfile.SEPARATOR + EMAIL, profile.getTypedId());
+        assertEquals(GaeUserServiceProfile.class.getName() + CommonProfile.SEPARATOR + EMAIL, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GaeUserServiceProfile.class));
         assertEquals("test", profile.getDisplayName());
         assertTrue(profile.getRoles().contains("GLOBAL_ADMIN"));
