@@ -295,6 +295,11 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     }
 
     @Test
+    public void testIsFullyAuthenticated() throws RequiresHttpAction {
+        assertTrue(checker.isAuthorized(null, profiles, "isFullyAuthenticated", null));
+    }
+
+    @Test
     public void testIsRemembered() throws RequiresHttpAction {
         profile.setRemembered(true);
         assertTrue(checker.isAuthorized(null, profiles, "isRemembered", null));
