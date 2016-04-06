@@ -20,6 +20,7 @@ public final class IsFullyAuthenticatedAuthorizerTests extends IsAuthenticatedAu
         return new IsFullyAuthenticatedAuthorizer();
     }
 
+    @Override
     @Test
     public void testAnonymousProfileRedirectionUrl() {
         profiles.add(new AnonymousProfile());

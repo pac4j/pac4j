@@ -25,6 +25,7 @@ public final class IsRememberedAuthorizerTests extends IsAuthenticatedAuthorizer
         return true;
     }
 
+    @Override
     @Test
     public void testAnonymousProfileRedirectionUrl() {
         profiles.add(new AnonymousProfile());
