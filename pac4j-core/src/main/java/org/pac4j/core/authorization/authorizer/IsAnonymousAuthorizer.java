@@ -9,7 +9,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.List;
 
 /**
- * The user must be anonymous. This authorizer should never be necessary unless using the {@link org.pac4j.core.client.direct.AnonymousClient}.
+ * The user must be anonymous. To protect resources like a login page.
  *
  * @author Jerome Leleu
  * @since 1.9.0
