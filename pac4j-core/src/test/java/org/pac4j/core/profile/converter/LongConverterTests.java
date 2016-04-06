@@ -39,6 +39,6 @@ public final class LongConverterTests {
 
     @Test
     public void testInteger() {
-        assertEquals((long) INT_VALUE, (long) this.converter.convert(new Integer(INT_VALUE)));
+        assertEquals((long) INT_VALUE, (long) this.converter.convert(Integer.valueOf(INT_VALUE)));
     }
 }

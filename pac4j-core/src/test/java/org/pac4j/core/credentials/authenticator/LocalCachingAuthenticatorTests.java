@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public class LocalCachingAuthenticatorTests {
 
-    private class OnlyOneCallAuthenticator implements UsernamePasswordAuthenticator {
+    private static class OnlyOneCallAuthenticator implements UsernamePasswordAuthenticator {
 
         private int n = 0;
 
@@ -34,7 +34,7 @@ public class LocalCachingAuthenticatorTests {
         }
     }
 
-    private class SimpleUPAuthenticator implements UsernamePasswordAuthenticator {
+    private static class SimpleUPAuthenticator implements UsernamePasswordAuthenticator {
 
         @Override
         public void validate(final UsernamePasswordCredentials credentials) {
