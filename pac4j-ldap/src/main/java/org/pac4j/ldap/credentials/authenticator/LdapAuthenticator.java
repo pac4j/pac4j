@@ -54,7 +54,7 @@ public class LdapAuthenticator extends InitializableWebObject implements Usernam
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction {
+    public void validate(final UsernamePasswordCredentials credentials) throws RequiresHttpAction {
 
         final String username = credentials.getUsername();
         final String[] ldapAttributes = attributes.split(",");
