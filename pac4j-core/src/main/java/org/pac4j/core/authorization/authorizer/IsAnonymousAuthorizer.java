@@ -4,9 +4,12 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.CommonHelper;
+
+import java.util.List;
 
 /**
- * The user must be anonymous.
+ * The user must be anonymous. This authorizer should never be necessary unless using the {@link org.pac4j.core.client.direct.AnonymousClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -14,6 +17,20 @@ import org.pac4j.core.profile.CommonProfile;
 public class IsAnonymousAuthorizer<U extends CommonProfile> extends SingleProfileAuthorizer<U> {
 
     private String redirectionUrl;
+
+    public IsAnonymousAuthorizer() {}
+
+    public IsAnonymousAuthorizer(final String redirectionUrl) {
+        this.redirectionUrl = redirectionUrl;
+    }
+
+    @Override
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
+        if (CommonHelper.isEmpty(profiles)) {
+            return true;
+        }
+        return super.isAuthorized(context, profiles);
+    }
 
     @Override
     public boolean isProfileAuthorized(final WebContext context, final U profile) throws RequiresHttpAction {
