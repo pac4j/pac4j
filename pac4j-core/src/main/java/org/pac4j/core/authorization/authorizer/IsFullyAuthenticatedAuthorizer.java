@@ -15,6 +15,12 @@ public class IsFullyAuthenticatedAuthorizer<U extends CommonProfile> extends Sin
 
     private String redirectionUrl;
 
+    public IsFullyAuthenticatedAuthorizer() {}
+
+    public IsFullyAuthenticatedAuthorizer(final String redirectionUrl) {
+        this.redirectionUrl = redirectionUrl;
+    }
+
     @Override
     public boolean isProfileAuthorized(final WebContext context, final U profile) throws RequiresHttpAction {
 
