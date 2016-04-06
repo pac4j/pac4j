@@ -117,7 +117,6 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("Paris, France", work.getLocation().getName());
         assertEquals("Architecte Web", work.getPosition().getName());
         assertEquals("Description", work.getDescription());
-        assertTrue(work.getStartDate() instanceof Date);
         assertNull(work.getEndDate());
         final List<FacebookObject> friends = profile.getFriends();
         assertEquals(1, friends.size());

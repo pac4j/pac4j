@@ -2,7 +2,6 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.profile.Color;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -82,16 +81,11 @@ public final class RunTwitterClient extends RunClient {
         assertFalse(profile.getIsTranslator());
         assertEquals(0, profile.getListedCount().intValue());
         assertFalse(profile.getNotifications());
-        assertTrue(profile.getProfileBackgroundColor() instanceof Color);
         assertTrue(profile.getProfileBackgroundImageUrl().contains(".twimg.com/images/themes/theme1/bg.png"));
         assertTrue(profile.getProfileBackgroundImageUrlHttps().endsWith("/images/themes/theme1/bg.png"));
         assertFalse(profile.getProfileBackgroundTile());
         assertTrue(profile.getProfileImageUrlHttps().endsWith(
                 "/sticky/default_profile_images/default_profile_5_normal.png"));
-        assertTrue(profile.getProfileLinkColor() instanceof Color);
-        assertTrue(profile.getProfileSidebarBorderColor() instanceof Color);
-        assertTrue(profile.getProfileSidebarFillColor() instanceof Color);
-        assertTrue(profile.getProfileTextColor() instanceof Color);
         assertTrue(profile.getProfileUseBackgroundImage());
         assertTrue(profile.getProtected());
         assertNull(profile.getShowAllInlineMedia());
