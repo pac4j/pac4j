@@ -14,14 +14,12 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class IsAnonymousAuthorizer<U extends CommonProfile> extends SingleProfileAuthorizer<U> {
-
-    private String redirectionUrl;
+public class IsAnonymousAuthorizer<U extends CommonProfile> extends AbstractCheckAuthenticationAuthorizer<U> {
 
     public IsAnonymousAuthorizer() {}
 
     public IsAnonymousAuthorizer(final String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
+        super(redirectionUrl);
     }
 
     @Override
@@ -38,19 +36,7 @@ public class IsAnonymousAuthorizer<U extends CommonProfile> extends SingleProfil
         if (profile == null || profile instanceof AnonymousProfile) {
             return true;
         } else {
-            if (this.redirectionUrl != null) {
-                throw RequiresHttpAction.redirect("user should be anonymous", context, this.redirectionUrl);
-            } else {
-                return false;
-            }
+            return handleError(context, "user should be anonymous");
         }
-    }
-
-    public String getRedirectionUrl() {
-        return redirectionUrl;
-    }
-
-    public void setRedirectionUrl(String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
     }
 }
