@@ -11,14 +11,12 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class IsAuthenticatedAuthorizer<U extends CommonProfile> extends SingleProfileAuthorizer<U> {
-
-    private String redirectionUrl;
+public class IsAuthenticatedAuthorizer<U extends CommonProfile> extends AbstractCheckAuthenticationAuthorizer<U> {
 
     public IsAuthenticatedAuthorizer() {}
 
     public IsAuthenticatedAuthorizer(final String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
+        super(redirectionUrl);
     }
 
     @Override
@@ -27,19 +25,7 @@ public class IsAuthenticatedAuthorizer<U extends CommonProfile> extends SinglePr
         if (profile != null && !(profile instanceof AnonymousProfile)) {
             return true;
         } else {
-            if (this.redirectionUrl != null) {
-                throw RequiresHttpAction.redirect("user should be authenticated", context, this.redirectionUrl);
-            } else {
-                return false;
-            }
+            return handleError(context, "user should be authenticated");
         }
-    }
-
-    public String getRedirectionUrl() {
-        return redirectionUrl;
-    }
-
-    public void setRedirectionUrl(String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
     }
 }

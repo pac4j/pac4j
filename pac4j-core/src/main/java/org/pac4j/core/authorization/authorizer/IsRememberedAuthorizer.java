@@ -11,14 +11,12 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class IsRememberedAuthorizer<U extends CommonProfile> extends SingleProfileAuthorizer<U> {
-
-    private String redirectionUrl;
+public class IsRememberedAuthorizer<U extends CommonProfile> extends AbstractCheckAuthenticationAuthorizer<U> {
 
     public IsRememberedAuthorizer() {}
 
     public IsRememberedAuthorizer(final String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
+        super(redirectionUrl);
     }
 
     @Override
@@ -27,19 +25,7 @@ public class IsRememberedAuthorizer<U extends CommonProfile> extends SingleProfi
         if (profile != null && !(profile instanceof AnonymousProfile) && profile.isRemembered()) {
             return true;
         } else {
-            if (this.redirectionUrl != null) {
-                throw RequiresHttpAction.redirect("user should be remembered", context, this.redirectionUrl);
-            } else {
-                return false;
-            }
+            return handleError(context, "user should be remembered");
         }
-    }
-
-    public String getRedirectionUrl() {
-        return redirectionUrl;
-    }
-
-    public void setRedirectionUrl(String redirectionUrl) {
-        this.redirectionUrl = redirectionUrl;
     }
 }
