@@ -4,7 +4,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
 
@@ -24,10 +23,12 @@ public class IsAnonymousAuthorizer<U extends CommonProfile> extends AbstractChec
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
-        if (CommonHelper.isEmpty(profiles)) {
-            return true;
+        for (final U profile : profiles) {
+            if (!isProfileAuthorized(context, profile)) {
+                return false;
+            }
         }
-        return super.isAuthorized(context, profiles);
+        return true;
     }
 
     @Override

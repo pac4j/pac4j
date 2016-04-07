@@ -10,7 +10,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProfile> extends SingleProfileAuthorizer<U> {
+public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProfile> extends IfAnyProfileOrContextMatchAuthorizer<U> {
 
     private String redirectionUrl;
 
