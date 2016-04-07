@@ -7,7 +7,7 @@ import org.pac4j.core.profile.CommonProfile;
 import java.util.List;
 
 /**
- * Authorizer which is valid if one of the profile or context is authorized.
+ * Authorizer which is valid if one of the profile is authorized.
  *
  * @author Jerome Leleu
  * @since 1.9.0
