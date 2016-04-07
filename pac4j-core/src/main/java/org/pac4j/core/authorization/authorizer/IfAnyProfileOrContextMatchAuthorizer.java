@@ -7,12 +7,12 @@ import org.pac4j.core.profile.CommonProfile;
 import java.util.List;
 
 /**
- * Authorizer which is valid if one of the profile is authorized.
+ * Authorizer which is valid if one of the profile or context is authorized.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class SingleProfileAuthorizer<U extends CommonProfile> implements Authorizer<U> {
+public abstract class IfAnyProfileOrContextMatchAuthorizer<U extends CommonProfile> implements Authorizer<U> {
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {

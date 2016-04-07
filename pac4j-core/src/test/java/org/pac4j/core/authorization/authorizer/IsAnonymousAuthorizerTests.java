@@ -47,6 +47,13 @@ public final class IsAnonymousAuthorizerTests implements TestsConstants {
     public void testAnonProfileTwoProfiles() throws RequiresHttpAction {
         profiles.add(new AnonymousProfile());
         profiles.add(new CommonProfile());
+        assertFalse(authorizer.isAuthorized(null, profiles));
+    }
+
+    @Test
+    public void testTwoAnonProfiles() throws RequiresHttpAction {
+        profiles.add(new AnonymousProfile());
+        profiles.add(new AnonymousProfile());
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
