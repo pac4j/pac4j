@@ -10,7 +10,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProfile> extends IfAnyProfileOrContextMatchAuthorizer<U> {
+public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProfile> extends ProfileAuthorizer<U> {
 
     private String redirectionUrl;
 
@@ -20,13 +20,21 @@ public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProf
         this.redirectionUrl = redirectionUrl;
     }
 
-    protected boolean handleError(final WebContext context, final String msg) throws RequiresHttpAction {
+    @Override
+    protected boolean handleError(final WebContext context) throws RequiresHttpAction {
         if (this.redirectionUrl != null) {
-            throw RequiresHttpAction.redirect(msg, context, this.redirectionUrl);
+            throw RequiresHttpAction.redirect(getErrorMessage(), context, this.redirectionUrl);
         } else {
             return false;
         }
     }
+
+    /**
+     * Return the error message.
+     *
+     * @return the error message.
+     */
+    protected abstract String getErrorMessage();
 
     public String getRedirectionUrl() {
         return redirectionUrl;

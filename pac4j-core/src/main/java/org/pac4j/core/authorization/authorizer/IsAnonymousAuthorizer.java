@@ -23,21 +23,16 @@ public class IsAnonymousAuthorizer<U extends CommonProfile> extends AbstractChec
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
-        for (final U profile : profiles) {
-            if (!isProfileAuthorized(context, profile)) {
-                return false;
-            }
-        }
-        return true;
+        return isAllAuthorized(context, profiles);
     }
 
     @Override
     public boolean isProfileAuthorized(final WebContext context, final U profile) throws RequiresHttpAction {
+        return profile == null || profile instanceof AnonymousProfile;
+    }
 
-        if (profile == null || profile instanceof AnonymousProfile) {
-            return true;
-        } else {
-            return handleError(context, "user should be anonymous");
-        }
+    @Override
+    protected String getErrorMessage() {
+        return "user should be anonymous";
     }
 }
