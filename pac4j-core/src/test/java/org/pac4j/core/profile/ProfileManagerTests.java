@@ -62,16 +62,24 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, PROFILE1);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
-        assertTrue(profileManager.isAuthenticated());
+        assertTrue(profileManager.hasProfile());
     }
 
     @Test
-    public void testGetTwoProfilesFromSession() {
+    public void testGetOneProfilesFromSessionFirstOneAnonymous() {
+        profiles.put("first", new AnonymousProfile());
+        profiles.put(CLIENT1, PROFILE1);
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        assertEquals(PROFILE1, profileManager.get(true).get());
+    }
+
+    @Test
+    public void testGetOneTwoProfilesFromSession() {
         profiles.put(CLIENT1, PROFILE1);
         profiles.put(CLIENT2, PROFILE2);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
-        assertTrue(profileManager.isAuthenticated());
+        assertTrue(profileManager.hasProfile());
     }
 
     @Test
@@ -104,6 +112,17 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, PROFILE1);
         profiles.put(CLIENT2, PROFILE2);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        assertEquals(PROFILE1, profileManager.getAll(true).get(0));
+        assertEquals(PROFILE2, profileManager.getAll(true).get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesFromSessionAndRequest() {
+        profiles.put(CLIENT1, PROFILE1);
+        context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        final LinkedHashMap<String, CommonProfile> profiles2 = new LinkedHashMap<>();
+        profiles2.put(CLIENT2, PROFILE2);
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles2);
         assertEquals(PROFILE1, profileManager.getAll(true).get(0));
         assertEquals(PROFILE2, profileManager.getAll(true).get(1));
     }
