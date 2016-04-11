@@ -1,27 +1,12 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.facebook;
 
 import java.util.Date;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import static org.pac4j.core.util.CommonHelper.newDate;
 
 /**
  * This class represents a Facebook work.
@@ -30,7 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 1.0.0
  */
 public final class FacebookWork extends JsonObject {
-    
+
     private static final long serialVersionUID = -5698634125512204910L;
     
     private FacebookObject employer;
@@ -40,42 +25,60 @@ public final class FacebookWork extends JsonObject {
     private FacebookObject position;
     
     private String description;
-    
+
+    @JsonProperty("start_date")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM")
     private Date startDate;
-    
+
+    @JsonProperty("end_date")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM")
     private Date endDate;
-    
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.employer = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "employer");
-        this.location = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "location");
-        this.position = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "position");
-        this.description = (String) JsonHelper.convert(Converters.stringConverter, json, "description");
-        this.startDate = (Date) JsonHelper.convert(FacebookConverters.workDateConverter, json, "start_date");
-        this.endDate = (Date) JsonHelper.convert(FacebookConverters.workDateConverter, json, "end_date");
-    }
-    
+
     public FacebookObject getEmployer() {
-        return this.employer;
+        return employer;
     }
-    
+
+    public void setEmployer(FacebookObject employer) {
+        this.employer = employer;
+    }
+
     public FacebookObject getLocation() {
-        return this.location;
+        return location;
     }
-    
+
+    public void setLocation(FacebookObject location) {
+        this.location = location;
+    }
+
     public FacebookObject getPosition() {
-        return this.position;
+        return position;
     }
-    
+
+    public void setPosition(FacebookObject position) {
+        this.position = position;
+    }
+
     public String getDescription() {
-        return this.description;
+        return description;
     }
-    
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Date getStartDate() {
-        return this.startDate;
+        return newDate(startDate);
     }
-    
+
+    public void setStartDate(Date startDate) {
+        this.startDate = newDate(startDate);
+    }
+
     public Date getEndDate() {
-        return this.endDate;
+        return newDate(endDate);
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = newDate(endDate);
     }
 }

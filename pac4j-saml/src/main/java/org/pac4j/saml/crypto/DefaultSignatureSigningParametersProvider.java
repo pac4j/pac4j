@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.crypto;
 
 import java.util.ArrayList;
@@ -64,18 +49,16 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
             final SignatureSigningParameters params = resolver.resolveSingle(criteria);
             augmentSignatureSigningParameters(params);
 
+            if (params == null) {
+                throw new SAMLException("Could not determine the signature parameters");
+            }
+
             logger.info("Created signature signing parameters." +
                     "\nSignature algorithm: {}" +
                     "\nSignature canonicalization algorithm: {}" +
                     "\nSignature reference digest methods: {}",
                     params.getSignatureAlgorithm(), params.getSignatureCanonicalizationAlgorithm(),
                     params.getSignatureReferenceDigestMethod());
-
-
-            if (params == null) {
-                throw new SAMLException("Could not determine the signature parameters");
-            }
-
 
             return params;
         } catch (final Exception e) {
@@ -87,10 +70,18 @@ public class DefaultSignatureSigningParametersProvider implements SignatureSigni
         final BasicSignatureSigningConfiguration config =
                 DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
 
-        config.setBlacklistedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
-        config.setSignatureAlgorithms(this.configuration.getSignatureAlgorithms());
-        config.setSignatureCanonicalizationAlgorithm(this.configuration.getSignatureCanonicalizationAlgorithm());
-        config.setSignatureReferenceDigestMethods(this.configuration.getSignatureReferenceDigestMethods());
+        if (this.configuration.getBlackListedSignatureSigningAlgorithms() != null) {
+            config.setBlacklistedAlgorithms(this.configuration.getBlackListedSignatureSigningAlgorithms());
+        }
+        if (this.configuration.getSignatureAlgorithms() != null){
+            config.setSignatureAlgorithms(this.configuration.getSignatureAlgorithms());
+        }
+        if (this.configuration.getSignatureCanonicalizationAlgorithm() != null) {
+            config.setSignatureCanonicalizationAlgorithm(this.configuration.getSignatureCanonicalizationAlgorithm());
+        }
+        if (this.configuration.getSignatureReferenceDigestMethods() != null) {
+            config.setSignatureReferenceDigestMethods(this.configuration.getSignatureReferenceDigestMethods());
+        }
 
         final List<Credential> creds = new ArrayList<>();
         creds.add(this.credentialProvider.getCredential());

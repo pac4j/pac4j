@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.profile;
 
 import java.io.Externalizable;
@@ -20,42 +5,39 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.pac4j.core.Clearable;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is the user profile retrieved from a provider after successful authentication : it's an identifier (string) and attributes
- * (objects). The attributes definition is null (generic profile), it must be defined in subclasses. Additional concepts are the
- * "remember me" nature of the user profile and the roles and permissions associated.
+ * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
+ * (objects). The attributes definition is <code>null</code> (generic profile), it must be defined in subclasses. Additional concepts are the
+ * "remember me" nature of the user profile and the associated roles, permissions and client name.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class UserProfile implements Serializable, Externalizable, Clearable {
+public abstract class UserProfile implements Serializable, Externalizable {
 
     private static final long serialVersionUID = 9020114478664816338L;
 
-    protected transient static final Logger logger = LoggerFactory.getLogger(UserProfile.class);
+    protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String id;
 
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<>();
 
     public transient static final String SEPARATOR = "#";
 
     private boolean isRemembered = false;
 
-    private List<String> roles = new ArrayList<String>();
+    private Set<String> roles = new HashSet<>();
 
-    private List<String> permissions = new ArrayList<String>();
+    private Set<String> permissions = new HashSet<>();
+
+    private String clientName;
 
     /**
      * Build a profile from user identifier and attributes.
@@ -69,11 +51,11 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
-     * Return the attributes definition for this user profile. Null for this (generic) user profile.
+     * Return the attributes definition for this user profile. <code>null</code> for a (generic) user profile.
      * 
      * @return the attributes definition
      */
-    protected AttributesDefinition getAttributesDefinition() {
+    public AttributesDefinition getAttributesDefinition() {
         return null;
     }
 
@@ -88,15 +70,22 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
             final AttributesDefinition definition = getAttributesDefinition();
             // no attributes definition -> no conversion
             if (definition == null) {
-                logger.debug("no conversion => key : {} / value : {} / {}",
+                logger.debug("no conversion => key: {} / value: {} / {}",
                         new Object[] { key, value, value.getClass() });
                 this.attributes.put(key, value);
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
-                    logger.debug("converted to => key : {} / value : {} / {}",
-                            new Object[] { key, value, value.getClass() });
-                    this.attributes.put(key, value);
+                    // for OAuth: convert array as list
+                    Object value2;
+                    if (value instanceof Object[]) {
+                        value2 = new ArrayList(Arrays.asList((Object[]) value));
+                    } else {
+                        value2 = value;
+                    }
+                    logger.debug("converted to => key: {} / value: {} / {}",
+                            new Object[] { key, value2, value2.getClass() });
+                    this.attributes.put(key, value2);
                 }
             }
         }
@@ -108,9 +97,21 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * @param attributes use attributes
      */
     public void addAttributes(final Map<String, Object> attributes) {
-        for (final String key : attributes.keySet()) {
-            addAttribute(key, attributes.get(key));
+        if (attributes != null) {
+            for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+                addAttribute(entry.getKey(), entry.getValue());
+            }
         }
+    }
+
+    /**
+     * Remove an attribute byt its key.
+     *
+     * @param key the key
+     */
+    public void removeAttribute(final String key) {
+        CommonHelper.assertNotNull("key", key);
+        attributes.remove(key);
     }
 
     /**
@@ -119,15 +120,18 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * @param id user identifier
      */
     public void setId(final Object id) {
-        if (id != null) {
-            String sId = id.toString();
-            final String type = this.getClass().getSimpleName();
-            if (sId.startsWith(type + SEPARATOR)) {
-                sId = sId.substring(type.length() + SEPARATOR.length());
-            }
-            logger.debug("identifier : {}", sId);
-            this.id = sId;
+        CommonHelper.assertNotNull("id", id);
+
+        String sId = id.toString();
+        final String oldType = this.getClass().getSimpleName() + SEPARATOR;
+        final String type = this.getClass().getName() + SEPARATOR;
+        if (sId.startsWith(type)) {
+            sId = sId.substring(type.length());
+        } else if (sId.startsWith(oldType)) {
+            sId = sId.substring(oldType.length());
         }
+        logger.debug("identifier: {}", sId);
+        this.id = sId;
     }
 
     /**
@@ -140,11 +144,23 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
     }
 
     /**
-     * Get the user identifier with a prefix which is the profile type. This identifier is unique through all providers.
+     * Get the user identifier with a prefix which is the profile type (full class name with package).
+     * This identifier is unique through all providers.
      * 
      * @return the typed user identifier
      */
     public String getTypedId() {
+        return this.getClass().getName() + SEPARATOR + this.id;
+    }
+
+    /**
+     * Get the old typed id with a class name without package. Use {@link #getTypedId()} instead.
+     *
+     * @return the old typed id.
+     * @deprecated
+     */
+    @Deprecated
+    public String getOldTypedId() {
         return this.getClass().getSimpleName() + SEPARATOR + this.id;
     }
 
@@ -198,6 +214,7 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * @param role the role to add.
      */
     public void addRole(final String role) {
+        CommonHelper.assertNotBlank("role", role);
         this.roles.add(role);
     }
 
@@ -207,6 +224,17 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * @param roles the roles to add.
      */
     public void addRoles(final List<String> roles) {
+        CommonHelper.assertNotNull("roles", roles);
+        this.roles.addAll(roles);
+    }
+
+    /**
+     * Add roles.
+     *
+     * @param roles the roles to add.
+     */
+    public void addRoles(final Set<String> roles) {
+        CommonHelper.assertNotNull("roles", roles);
         this.roles.addAll(roles);
     }
 
@@ -216,6 +244,7 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * @param permission the permission to add.
      */
     public void addPermission(final String permission) {
+        CommonHelper.assertNotBlank("permission", permission);
         this.permissions.add(permission);
     }
 
@@ -225,6 +254,17 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * @param permissions the permissions to add.
      */
     public void addPermissions(final List<String> permissions) {
+        CommonHelper.assertNotNull("permissions", permissions);
+        this.permissions.addAll(permissions);
+    }
+
+    /**
+     * Add permissions.
+     *
+     * @param permissions the permissions to add.
+     */
+    public void addPermissions(final Set<String> permissions) {
+        CommonHelper.assertNotNull("permissions", permissions);
         this.permissions.addAll(permissions);
     }
 
@@ -242,8 +282,8 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * 
      * @return the user roles.
      */
-    public List<String> getRoles() {
-        return Collections.unmodifiableList(this.roles);
+    public Set<String> getRoles() {
+        return Collections.unmodifiableSet(this.roles);
     }
 
     /**
@@ -251,8 +291,8 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
      * 
      * @return the user permissions.
      */
-    public List<String> getPermissions() {
-        return Collections.unmodifiableList(this.permissions);
+    public Set<String> getPermissions() {
+        return Collections.unmodifiableSet(this.permissions);
     }
 
     /**
@@ -284,12 +324,20 @@ public class UserProfile implements Serializable, Externalizable, Clearable {
         this.id = (String) in.readObject();
         this.attributes = (Map) in.readObject();
         this.isRemembered = (boolean) in.readBoolean();
-        this.roles = (List) in.readObject();
-        this.permissions = (List) in.readObject();
+        this.roles = (Set) in.readObject();
+        this.permissions = (Set) in.readObject();
     }
 
-    @Override
-    public void clear() {
+    public void clearSensitiveData() {
         // No-op. Allow subtypes to specify which state should be cleared out.
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        CommonHelper.assertNotNull("clientName", clientName);
+        this.clientName = clientName;
     }
 }

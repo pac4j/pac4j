@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.metadata;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
@@ -22,6 +7,7 @@ import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.CredentialProvider;
@@ -35,11 +21,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URL;
 
 /**
@@ -55,11 +37,6 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private String spMetadata;
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
-
-    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider, final String spMetadataPath,
-                                                final String callbackUrl) {
-        this(spMetadataPath, callbackUrl, null, false, credentialProvider);
-    }
 
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
                                                 final String callbackUrl,
@@ -121,9 +98,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     final StreamResult result = new StreamResult(new StringWriter());
                     final StreamSource source = new StreamSource(new StringReader(this.spMetadata));
                     transformer.transform(source, result);
-                    final FileWriter writer = new FileWriter(this.spMetadataPath);
-                    writer.write(result.getWriter().toString());
-                    writer.close();
+                    try (final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(this.spMetadataPath), HttpConstants.UTF8_ENCODING)) {
+                        writer.write(result.getWriter().toString());
+                    }
                 }
             }
             return spMetadataProvider;

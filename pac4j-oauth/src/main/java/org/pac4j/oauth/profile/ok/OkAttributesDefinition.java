@@ -1,22 +1,9 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.ok;
 
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.OAuthAttributesDefinition;
+
+import java.util.Arrays;
 
 /**
  * Represents attributes definitions of user profile on Ok.ru (Odnoklassniki.ru)
@@ -24,7 +11,7 @@ import org.pac4j.oauth.profile.OAuthAttributesDefinition;
  * @author imayka (imayka[at]ymail[dot]com)
  * @since 1.8
  */
-public class OkAttributesDefinition extends OAuthAttributesDefinition {
+public class OkAttributesDefinition extends AttributesDefinition {
 
     public static final String UID = "uid";
     public static final String BIRTHDAY = "birthday";
@@ -48,25 +35,8 @@ public class OkAttributesDefinition extends OAuthAttributesDefinition {
 
 
     public OkAttributesDefinition() {
-        addAttribute(UID, Converters.stringConverter);
-        addAttribute(BIRTHDAY, Converters.stringConverter);
-        addAttribute(AGE, Converters.stringConverter);
-        addAttribute(NAME, Converters.stringConverter);
-        addAttribute(LOCALE, Converters.stringConverter);
-        addAttribute(GENDER, Converters.stringConverter);
-        addAttribute(LOCATION_CITY, Converters.stringConverter);
-        addAttribute(LOCATION_COUNTRY, Converters.stringConverter);
-        addAttribute(LOCATION_COUNTRY_CODE, Converters.stringConverter);
-        addAttribute(LOCATION_COUNTRY_NAME, Converters.stringConverter);
-        addAttribute(ONLINE, Converters.stringConverter);
-        addAttribute(FIRST_NAME, Converters.stringConverter);
-        addAttribute(LAST_NAME, Converters.stringConverter);
-        addAttribute(HAS_EMAIL, Converters.stringConverter);
-        addAttribute(CURRENT_STATUS, Converters.stringConverter);
-        addAttribute(CURRENT_STATUS_ID, Converters.stringConverter);
-        addAttribute(CURRENT_STATUS_DATE, Converters.stringConverter);
-        addAttribute(PIC_1, Converters.stringConverter);
-        addAttribute(PIC_2, Converters.stringConverter);
-
+        Arrays.stream(new String[] {UID, BIRTHDAY, AGE, NAME, LOCALE, GENDER, LOCATION_CITY, LOCATION_COUNTRY, LOCATION_COUNTRY_CODE,
+                LOCATION_COUNTRY_NAME, ONLINE, FIRST_NAME, LAST_NAME, HAS_EMAIL, CURRENT_STATUS, CURRENT_STATUS_ID, CURRENT_STATUS_DATE,
+                PIC_1, PIC_2}).forEach(a -> primary(a, Converters.STRING));
     }
 }

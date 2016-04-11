@@ -1,29 +1,11 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.apis.VkontakteApi;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.vk.VkProfile;
-import org.scribe.builder.api.VkApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -36,7 +18,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.vk.VkProfile}.</p>
  * <p>More information at https://vk.com/dev/users.get</p>
  * 
- * @see org.pac4j.oauth.profile.vk.VkProfile
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  * 
@@ -62,18 +43,13 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected VkClient newClient() {
-		VkClient client = new VkClient();
-		client.setScope(this.scope);
-		return client;
+	protected Api getApi() {
+		return VkontakteApi.instance();
 	}
 
 	@Override
-	protected void internalInit(final WebContext context) {
-		super.internalInit(context);
-		this.service = new ProxyOAuth20ServiceImpl(new VkApi(),
-				new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context), SignatureType.Header, this.scope, null), this.connectTimeout, this.readTimeout,
-				this.proxyHost, this.proxyPort);
+	protected String getOAuthScope() {
+		return this.scope;
 	}
 
 	@Override
@@ -83,28 +59,18 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected VkProfile extractUserProfile(final String body) {
+	protected VkProfile extractUserProfile(final String body) throws RequiresHttpAction {
 		final VkProfile profile = new VkProfile();
 		JsonNode json = JsonHelper.getFirstNode(body);
 		if (json != null) {
 			ArrayNode array = (ArrayNode) json.get("response");
 			JsonNode userNode = array.get(0);
-			profile.setId(JsonHelper.get(userNode, "uid"));
-			for (final String attribute : OAuthAttributesDefinitions.vkDefinition.getAllAttributes()) {
-				profile.addAttribute(attribute, JsonHelper.get(userNode, attribute));
+			profile.setId(JsonHelper.getElement(userNode, "uid"));
+			for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+				profile.addAttribute(attribute, JsonHelper.getElement(userNode, attribute));
 			}
 		}
 		return profile;
-	}
-
-	@Override
-	protected boolean requiresStateParameter() {
-		return false;
-	}
-
-	@Override
-	protected boolean hasBeenCancelled(final WebContext context) {
-		return false;
 	}
 
 	public String getScope() {

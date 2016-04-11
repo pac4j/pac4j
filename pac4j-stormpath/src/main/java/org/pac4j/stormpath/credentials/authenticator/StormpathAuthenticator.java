@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.stormpath.credentials.authenticator;
 
 import com.stormpath.sdk.account.Account;
@@ -21,9 +6,12 @@ import com.stormpath.sdk.authc.UsernamePasswordRequest;
 import com.stormpath.sdk.client.Client;
 import com.stormpath.sdk.client.DefaultApiKey;
 import com.stormpath.sdk.resource.ResourceException;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.BadCredentialsException;
-import org.pac4j.http.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.stormpath.profile.StormpathProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,36 +25,55 @@ import java.util.Map;
  * <a href="https://github.com/stormpath/stormpath-sdk-java/wiki">Java SDK</a>
  *
  * @author Misagh Moayyed
- * @since 1.8
+ * @since 1.8.0
  */
 public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticator {
+
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Application application;
+    private Application application;
+
+    private String accessId;
+
+    private String secretKey;
+
+    private String applicationId;
+
+    public StormpathAuthenticator() {}
 
     /**
-     * Receives the Stormpath admin credentials and applicationId and sets up and instance of a Stormpath's Application resource
-     * which will be used to authenticate users.
-     *
-     * @param stormpathAccessId  accessId provided by Stormpath, for the admin user with the created API key.
-     * @param stormpathSecretKey secret key provided by Stormpath, for the admin user with the created API key.
-     * @param applicationId      This is application id configured on Stormpath whose login source will be used to authenticate users.
+     * @param accessId accessId provided by Stormpath, for the admin user with the created API key.
+     * @param secretKey secret key provided by Stormpath, for the admin user with the created API key.
+     * @param applicationId This is application id configured on Stormpath whose login source will be used to authenticate users.
      */
-    public StormpathAuthenticator(final String stormpathAccessId, final String stormpathSecretKey,
+    public StormpathAuthenticator(final String accessId, final String secretKey,
                                   final String applicationId) {
+        this.accessId = accessId;
+        this.secretKey = secretKey;
+        this.applicationId = applicationId;
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotBlank("accessId", accessId);
+        CommonHelper.assertNotBlank("secretKey", secretKey);
+        CommonHelper.assertNotBlank("applicationId", applicationId);
+
         try {
-            final Client client = new Client(new DefaultApiKey(stormpathAccessId, stormpathSecretKey));
+            final Client client = new Client(new DefaultApiKey(accessId, secretKey));
             this.application = client.getDataStore().getResource(
                     String.format("/applications/%s", applicationId), Application.class);
-        } catch (Throwable e) {
+        } catch (final Exception e) {
             throw new BadCredentialsException("An exception is caught trying to access Stormpath cloud. " +
                     "Please verify that your provided Stormpath <accessId>, " +
                     "<secretKey>, and <applicationId> are correct. Original Stormpath error: " + e.getMessage());
         }
+
+        super.internalInit(context);
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials) {
+    public void validate(final UsernamePasswordCredentials credentials) throws RequiresHttpAction {
         try {
             logger.debug("Attempting to authenticate user [{}] against application [{}] in Stormpath cloud...",
                     credentials.getUsername(), this.application.getName());
@@ -81,7 +88,7 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
     }
 
     protected Account authenticateAccount(final UsernamePasswordCredentials credentials) throws ResourceException {
-        final String expectedPassword = passwordEncoder.encode(credentials.getPassword());
+        final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
 
         return this.application.authenticateAccount(
                 new UsernamePasswordRequest(credentials.getUsername(), expectedPassword)).getAccount();
@@ -105,5 +112,29 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
         attributes.put("groupMemberships", account.getGroupMemberships());
         attributes.put("status", account.getStatus());
         return attributes;
+    }
+
+    public String getAccessId() {
+        return accessId;
+    }
+
+    public void setAccessId(String accessId) {
+        this.accessId = accessId;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
     }
 }

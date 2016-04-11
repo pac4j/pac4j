@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.context;
 
 import java.util.Collection;
@@ -111,7 +96,7 @@ public interface WebContext {
     /**
      * Set the response status.
      *
-     * @param code status code to set for the response 
+     * @param code status code to set for the response
      */
     void setResponseStatus(int code);
 
@@ -122,12 +107,6 @@ public interface WebContext {
      * @param value value of the header
      */
     void setResponseHeader(String name, String value);
-
-    /**
-     * Sets the response encoding type.
-     * @param encoding the character encoding
-     */
-    void setResponseCharacterEncoding(String encoding);
 
     /**
      * Sets the response content type.
@@ -155,6 +134,13 @@ public interface WebContext {
      * @return the scheme
      */
     String getScheme();
+
+    /**
+     * Return whether the request is secure.
+     *
+     * @return whether the request is secure
+     */
+    boolean isSecure();
 
     /**
      * Return the full URL (with query string) the client used to request the server.

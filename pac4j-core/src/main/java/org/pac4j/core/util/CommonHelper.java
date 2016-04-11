@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.util;
 
 import java.io.FileInputStream;
@@ -20,10 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Date;
 
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class gathers all the utilities methods.
@@ -32,8 +18,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public final class CommonHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
 
     public static final String RESOURCE_PREFIX = "resource:";
 
@@ -72,6 +56,23 @@ public final class CommonHelper {
     }
 
     /**
+     * Compare two String to see if they are equals ignoring the case and the blank spaces (both null is ok).
+     *
+     * @param s1 string
+     * @param s2 string
+     * @return if two String are equals ignoring the case and the blank spaces
+     */
+    public static boolean areEqualsIgnoreCaseAndTrim(final String s1, final String s2) {
+        if (s1 == null && s2 == null) {
+            return true;
+        } else if (s1 != null && s2 !=  null) {
+            return s1.trim().equalsIgnoreCase(s2.trim());
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Compare two String to see if they are not equals.
      * 
      * @param s1 string
@@ -83,7 +84,27 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a boolean is true otherwise throw an {@link TechnicalException}.
+     * Return if a collection is empty.
+     *
+     * @param coll a collection
+     * @return whether it is empty
+     */
+    public static boolean isEmpty(final Collection coll) {
+        return coll == null || coll.isEmpty();
+    }
+
+    /**
+     * Return if a collection is not empty.
+     *
+     * @param coll a collection
+     * @return whether it is not empty
+     */
+    public static boolean isNotEmpty(final Collection coll) {
+        return !isEmpty(coll);
+    }
+
+    /**
+     * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
      * 
      * @param value the value to be checked for truth
      * @param message the message to include in the exception if the value is false
@@ -95,7 +116,7 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that a String is not blank otherwise throw an {@link TechnicalException}.
+     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
      * 
      * @param name name if the string
      * @param value value of the string
@@ -105,13 +126,23 @@ public final class CommonHelper {
     }
 
     /**
-     * Verify that an Object is not <code>null</code> otherwise throw an {@link TechnicalException}.
+     * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
      * 
      * @param name name of the object
      * @param obj object
      */
     public static void assertNotNull(final String name, final Object obj) {
         assertTrue(obj != null, name + " cannot be null");
+    }
+
+    /**
+     * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
+     *
+     * @param name name of the object
+     * @param obj object
+     */
+    public static void assertNull(final String name, final Object obj) {
+        assertTrue(obj == null, name + " must be null");
     }
 
     /**
@@ -135,7 +166,7 @@ public final class CommonHelper {
                 sb.append(name);
                 sb.append("=");
                 if (value != null) {
-                    sb.append(encodeText(value));
+                    sb.append(urlEncode(value));
                 }
             }
             return sb.toString();
@@ -144,14 +175,14 @@ public final class CommonHelper {
     }
 
     /**
-     * Encode a text using UTF-8.
+     * URL encode a text using UTF-8.
      * 
      * @param text text to encode
      * @return the encoded text
      */
-    private static String encodeText(final String text) {
+    public static String urlEncode(final String text) {
         try {
-            return URLEncoder.encode(text, "UTF-8");
+            return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
         } catch (final UnsupportedEncodingException e) {
             String message = "Unable to encode text : " + text;
             throw new TechnicalException(message, e);
@@ -167,9 +198,9 @@ public final class CommonHelper {
      */
     public static String toString(final Class<?> clazz, final Object... args) {
         final StringBuilder sb = new StringBuilder();
-        sb.append("<");
+        sb.append("#");
         sb.append(clazz.getSimpleName());
-        sb.append("> |");
+        sb.append("# |");
         boolean b = true;
         for (final Object arg : args) {
             if (b) {
@@ -208,5 +239,64 @@ public final class CommonHelper {
                 throw new TechnicalException(e);
             }
         }
+    }
+
+    /**
+     * Return a random string of a certain size.
+     *
+     * @param size the size
+     * @return the random size
+     */
+    public static String randomString(final int size) {
+        return java.util.UUID.randomUUID().toString().replace("-", "").substring(0, size);
+    }
+
+    /**
+     * Copy a date.
+     *
+     * @param original original date
+     * @return date copy
+     */
+    public static Date newDate(final Date original) {
+        return original != null ? new Date(original.getTime()) : null;
+    }
+
+    /**
+     * Taken from commons-lang3
+     */
+
+    private static final String EMPTY = "";
+    private static final int INDEX_NOT_FOUND = -1;
+
+    public static String substringBetween(String str, String open, String close) {
+        if (str == null || open == null || close == null) {
+            return null;
+        }
+        int start = str.indexOf(open);
+        if (start != INDEX_NOT_FOUND) {
+            int end = str.indexOf(close, start + open.length());
+            if (end != INDEX_NOT_FOUND) {
+                return str.substring(start + open.length(), end);
+            }
+        }
+        return null;
+    }
+
+    public static String substringAfter(String str, String separator) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (separator == null) {
+            return EMPTY;
+        }
+        int pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+            return EMPTY;
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    private static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
     }
 }

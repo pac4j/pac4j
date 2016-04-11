@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.transport;
 
 import net.shibboleth.utilities.java.support.codec.Base64Support;
@@ -37,7 +22,7 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -62,11 +47,9 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
 
     private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
-    private final WebContext context;
     private final Pac4jSAMLResponse responseAdapter;
 
-    public Pac4jHTTPRedirectDeflateEncoder(final WebContext context, final Pac4jSAMLResponse responseAdapter) {
-        this.context = context;
+    public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter) {
         this.responseAdapter = responseAdapter;
     }
 
@@ -269,7 +252,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         } catch (final org.opensaml.security.SecurityException e) {
             throw new MessageEncodingException("Unable to sign URL query string", e);
         } catch (final UnsupportedEncodingException e) {
-            // UTF-8 encoding is required to be supported by all JVMs
+            throw new TechnicalException(e);
         }
 
         return b64Signature;

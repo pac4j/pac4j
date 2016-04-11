@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.exception;
 
 import org.pac4j.core.context.HttpConstants;
@@ -20,7 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * This exception is thrown when an additionnal HTTP action (redirect, basic auth...) is required.
+ * This exception is thrown when an additional HTTP action (redirect, basic auth...) is required.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -35,7 +20,20 @@ public class RequiresHttpAction extends Exception {
         super(message);
         this.code = code;
     }
-    
+
+    /**
+     * Build a response with message and status.
+     *
+     * @param message message
+     * @param status the HTTP status
+     * @param context context
+     * @return an HTTP response
+     */
+    public static RequiresHttpAction status(final String message, final int status, final WebContext context) {
+        context.setResponseStatus(status);
+        return new RequiresHttpAction(message, status);
+    }
+
     /**
      * Build a redirection.
      * 
@@ -86,6 +84,24 @@ public class RequiresHttpAction extends Exception {
     public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
         if (CommonHelper.isNotBlank(realmName)) {
             context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
+        }
+        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
+        return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
+    }
+
+    /**
+     * Build a digest auth popup credentials.
+     *
+     * @param message message
+     * @param context context
+     * @param realmName realm name
+     * @param qop qop
+     * @param nonce nonce
+     * @return a digest auth popup credentials
+     */
+    public static RequiresHttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, final String nonce) {
+        if (CommonHelper.isNotBlank(realmName)) {
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\"" + qop + "\", nonce=\"" + nonce + "\"");
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);

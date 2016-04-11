@@ -9,6 +9,7 @@ import org.pac4j.core.profile.converter.AttributeConverter;
  */
 public final class VkBooleanConverter implements AttributeConverter<Boolean> {
 
+	@Override
 	public Boolean convert(final Object attribute) {
 		if (attribute != null) {
 			if (attribute instanceof Boolean) {
@@ -16,7 +17,7 @@ public final class VkBooleanConverter implements AttributeConverter<Boolean> {
 			} else if (attribute instanceof String) {
 				return "1".equals(attribute);
 			} else if (attribute instanceof Number) {
-				return new Integer(1).equals(attribute);
+				return Integer.valueOf(1).equals(attribute);
 			}
 		}
 		return null;

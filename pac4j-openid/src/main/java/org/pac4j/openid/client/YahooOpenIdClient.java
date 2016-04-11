@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.openid.client;
 
 import org.openid4java.message.AuthSuccess;
@@ -20,12 +5,9 @@ import org.openid4java.message.MessageException;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
-import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.openid.client.BaseOpenIdClient;
-import org.pac4j.openid.credentials.OpenIdCredentials;
-import org.pac4j.openid.profile.OpenIdAttributesDefinitions;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdAttributesDefinition;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
 
@@ -40,20 +22,6 @@ import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
 public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
 
     public static final String YAHOO_GENERIC_USER_IDENTIFIER = "https://me.yahoo.com";
-
-    public YahooOpenIdClient() {
-    	setName("YahooOpenIdClient");
-	}
-    
-    @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-    }
-
-    @Override
-    protected BaseClient<OpenIdCredentials, YahooOpenIdProfile> newClient() {
-        return new YahooOpenIdClient();
-    }
 
     @Override
     protected String getUser(final WebContext context) {
@@ -77,12 +45,12 @@ public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
     }
 
     @Override
-    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException {
+    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException, RequiresHttpAction {
         final YahooOpenIdProfile profile = new YahooOpenIdProfile();
 
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
-            for (final String name : OpenIdAttributesDefinitions.yahooOpenIdDefinition.getAllAttributes()) {
+            for (final String name : profile.getAttributesDefinition().getPrimaryAttributes()) {
                 profile.addAttribute(name, fetchResp.getAttributeValue(name));
             }
         }

@@ -1,27 +1,21 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.jwt.profile;
 
-import com.nimbusds.jose.*;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.jwt.JwtConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,31 +28,41 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtGenerator<U extends UserProfile> {
+public class JwtGenerator<U extends CommonProfile> {
+
+    public final static String INTERNAL_ROLES = "$int_roles";
+    public final static String INTERNAL_PERMISSIONS = "$int_perms";
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final String secret;
-    private boolean encrypted = true;
+    private String signingSecret;
+    private String encryptionSecret;
 
-    /**
-     * Initializes the generator that will create JWT tokens that are both signed and encrypted.
-     *
-     * @param secret The secret. Must be at least 256 bits long and not {@code null}
-     */
-    public JwtGenerator(String secret) {
-        this.secret = secret;
+    private JWSAlgorithm jwsAlgorithm = JWSAlgorithm.HS256;
+    private JWEAlgorithm jweAlgorithm = JWEAlgorithm.DIR;
+    private EncryptionMethod encryptionMethod = EncryptionMethod.A256GCM;
+
+    public JwtGenerator(final String secret) {
+        this(secret, true);
+    }
+
+    public JwtGenerator(final String secret, final boolean encrypted) {
+        this.signingSecret = secret;
+        if (encrypted) {
+            this.encryptionSecret = secret;
+        }
     }
 
     /**
      * Initializes the generator that will create JWT tokens that is signed and optionally encrypted.
      *
-     * @param secret    The secret. Must be at least 256 bits long and not {@code null}
-     * @param encrypted whether the JWT will be encrypted or not
+     * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
+     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null} if you want encryption
+     * @since 1.8.2
      */
-    public JwtGenerator(final String secret, final boolean encrypted) {
-        this.secret = secret;
-        this.encrypted = encrypted;
+    public JwtGenerator(final String signingSecret, final String encryptionSecret) {
+        this.signingSecret = signingSecret;
+        this.encryptionSecret = encryptionSecret;
     }
 
     /**
@@ -68,47 +72,104 @@ public class JwtGenerator<U extends UserProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
+        CommonHelper.assertNotNull("profile", profile);
+        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
+        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
+        CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
+        CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
+        CommonHelper.assertNotBlank("signingSecret", signingSecret);
+        CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
+
         try {
             // Create HMAC signer
-            final JWSSigner signer = new MACSigner(this.secret);
+            final JWSSigner signer = new MACSigner(this.signingSecret);
 
             // Build claims
             final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                     .subject(profile.getTypedId())
-                    .issueTime(new Date())
-                    .issuer(this.getClass().getSimpleName());
+                    .issueTime(new Date());
 
             // add attributes
             final Map<String, Object> attributes = profile.getAttributes();
-            for (final String key : attributes.keySet()) {
-                builder.claim(key, attributes.get(key));
+            for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+                builder.claim(entry.getKey(), entry.getValue());
             }
+            builder.claim(INTERNAL_ROLES, profile.getRoles());
+            builder.claim(INTERNAL_PERMISSIONS, profile.getPermissions());
 
             // claims
             final JWTClaimsSet claims = builder.build();
 
             // signed
-            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
+            final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
 
             // Apply the HMAC
             signedJWT.sign(signer);
 
-            if (encrypted) {
+            if (CommonHelper.isNotBlank(this.encryptionSecret)) {
+                CommonHelper.assertNotNull("jweAlgorithm", jweAlgorithm);
+                CommonHelper.assertNotNull("encryptionMethod", encryptionMethod);
+
                 // Create JWE object with signed JWT as payload
                 final JWEObject jweObject = new JWEObject(
-                        new JWEHeader.Builder(JWEAlgorithm.DIR, EncryptionMethod.A256GCM).contentType("JWT").build(),
+                        new JWEHeader.Builder(jweAlgorithm, encryptionMethod).contentType("JWT").build(),
                         new Payload(signedJWT));
 
                 // Perform encryption
-                jweObject.encrypt(new DirectEncrypter(this.secret.getBytes("UTF-8")));
+                jweObject.encrypt(new DirectEncrypter(this.encryptionSecret.getBytes("UTF-8")));
 
                 // Serialise to JWE compact form
                 return jweObject.serialize();
-            } else {
-                return signedJWT.serialize();
             }
+            return signedJWT.serialize();
+
         } catch (final Exception e) {
             throw new TechnicalException("Cannot generate JWT", e);
         }
+    }
+
+    public String getSigningSecret() {
+        return signingSecret;
+    }
+
+    public void setSigningSecret(String signingSecret) {
+        this.signingSecret = signingSecret;
+    }
+
+    public String getEncryptionSecret() {
+        return encryptionSecret;
+    }
+
+    public void setEncryptionSecret(String encryptionSecret) {
+        this.encryptionSecret = encryptionSecret;
+    }
+
+    public JWSAlgorithm getJwsAlgorithm() {
+        return jwsAlgorithm;
+    }
+
+    /**
+     * Only the HS256, HS384 and HS512 are currently supported.
+     *
+     * @param jwsAlgorithm the signing algorithm
+     */
+    public void setJwsAlgorithm(JWSAlgorithm jwsAlgorithm) {
+        this.jwsAlgorithm = jwsAlgorithm;
+    }
+
+    public JWEAlgorithm getJweAlgorithm() {
+        return jweAlgorithm;
+    }
+
+    public void setJweAlgorithm(JWEAlgorithm jweAlgorithm) {
+        this.jweAlgorithm = jweAlgorithm;
+    }
+
+    public EncryptionMethod getEncryptionMethod() {
+        return encryptionMethod;
+    }
+
+    public void setEncryptionMethod(EncryptionMethod encryptionMethod) {
+        this.encryptionMethod = encryptionMethod;
     }
 }

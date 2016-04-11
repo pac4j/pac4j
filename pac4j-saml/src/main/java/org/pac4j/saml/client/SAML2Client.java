@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.saml.client;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
@@ -24,8 +9,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.pac4j.core.client.BaseClient;
-import org.pac4j.core.client.ClientType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -69,7 +52,7 @@ import java.util.List;
 /**
  * This class is the client to authenticate users with a SAML2 Identity Provider. This implementation relies on the Web
  * Browser SSO profile with HTTP-POST binding. (http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf).
- * 
+ *
  * @author Michael Remond
  * @author Misagh Moayyed
  * @since 1.5.0
@@ -142,7 +125,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getDestinationBindingType(), false),
-                new SAML2WebSSOMessageReceiver(this.responseValidator, this.credentialProvider));
+                new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
 
     protected void initSAMLResponseValidator() {
@@ -150,7 +133,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         this.responseValidator = new SAML2DefaultResponseValidator(
                 this.signatureTrustEngineProvider,
                 this.decrypter,
-                this.configuration.getMaximumAuthenticationLifetime());
+                this.configuration.getMaximumAuthenticationLifetime(),
+                this.configuration.getWantsAssertionsSigned());
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
@@ -236,12 +220,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected boolean isDirectRedirection() {
-        return false;
-    }
-
-    @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext wc) {
+    protected RedirectAction retrieveRedirectAction(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
@@ -268,7 +247,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) {
+    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) throws RequiresHttpAction {
         final SAML2Profile profile = new SAML2Profile();
         profile.setId(credentials.getNameId().getValue());
         for (final Attribute attribute : credentials.getAttributes()) {
@@ -301,7 +280,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected String getStateParameter(final WebContext webContext) {
         final String relayState = (String) webContext.getSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE);
         // clean from session after retrieving it
-        webContext.setSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE, null);
+        webContext.setSessionAttribute(SAML_RELAY_STATE_ATTRIBUTE, "");
         return (relayState == null) ? computeFinalCallbackUrl(webContext) : relayState;
     }
 
@@ -315,11 +294,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     public final SAML2MetadataResolver getIdentityProviderMetadataResolver() {
         return this.idpMetadataResolver;
-    }
-
-    @Override
-    public final ClientType getClientType() {
-        return ClientType.SAML_PROTOCOL;
     }
 
     public final String getIdentityProviderResolvedEntityId() {

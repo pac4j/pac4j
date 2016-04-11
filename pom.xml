@@ -1,33 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-   Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<version>9</version>
 	</parent>
 
 	<groupId>org.pac4j</groupId>
 	<artifactId>pac4j</artifactId>
 	<packaging>pom</packaging>
 	<name>pac4j</name>
-	<version>1.8.1-SNAPSHOT</version>
+	<version>1.9.0-SNAPSHOT</version>
 	<description>Profile &amp; Authentication Client for Java</description>
 	<url>https://github.com/pac4j/pac4j</url>
 
@@ -53,24 +38,12 @@
 		</developer>
 	</developers>
 
-	<repositories>
-		<repository>
-			<id>scribe-java-mvn-repo</id>
-			<url>https://raw.github.com/fernandezpablo85/scribe-java/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<modules>
 		<module>pac4j-core</module>
 		<module>pac4j-config</module>
 		<module>pac4j-oauth</module>
 		<module>pac4j-cas</module>
 		<module>pac4j-openid</module>
-		<module>pac4j-test-cas</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
 		<module>pac4j-saml-config-db</module>
@@ -82,6 +55,21 @@
 		<module>pac4j-mongo</module>
 		<module>pac4j-stormpath</module>
 	</modules>
+
+	<properties>
+		<junit.version>4.12</junit.version>
+		<servlet-api.version>3.0.1</servlet-api.version>
+		<logback.version>1.1.3</logback.version>
+		<kryo.version>3.0.3</kryo.version>
+		<commons-codec.version>1.10</commons-codec.version>
+		<guava.version>19.0</guava.version>
+		<spring.version>4.2.4.RELEASE</spring.version>
+		<mockito.version>1.10.19</mockito.version>
+		<slf4j.version>1.7.14</slf4j.version>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -107,11 +95,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-http</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-saml</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -121,128 +104,29 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.jasig.cas</groupId>
-				<artifactId>cas-server-webapp</artifactId>
-				<version>${cas.version}</version>
-				<type>war</type>
-			</dependency>
-			<dependency>
-				<groupId>org.jasig.cas</groupId>
-				<artifactId>cas-server-support-oauth</artifactId>
-				<version>${cas.version}</version>
-			</dependency>
-            <dependency>
-                <groupId>org.jasig.cas</groupId>
-                <artifactId>cas-server-integration-restlet</artifactId>
-                <version>${cas.version}</version>
-            </dependency>
-			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.scribe</groupId>
-				<artifactId>scribe</artifactId>
-				<version>1.3.6</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>2.5.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jasig.cas.client</groupId>
-				<artifactId>cas-client-core</artifactId>
-				<version>3.4.1</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.jasig.cas.client</groupId>
-				<artifactId>cas-client-support-saml</artifactId>
-				<version>3.4.1</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.10</version>
-			</dependency>
-			<dependency>
-				<groupId>org.openid4java</groupId>
-				<artifactId>openid4java</artifactId>
-				<version>0.9.8</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
+				<version>${commons-codec.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>javax.servlet-api</artifactId>
-				<version>3.0.1</version>
-				<scope>provided</scope>
+				<version>${servlet-api.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.esotericsoftware</groupId>
 				<artifactId>kryo-shaded</artifactId>
-				<version>3.0.3</version>
-			</dependency>
-            <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xml-apis</artifactId>
-                <version>1.4.01</version>
-            </dependency>
-			<dependency>
-				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-jwt</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.nimbusds</groupId>
-				<artifactId>oauth2-oidc-sdk</artifactId>
-				<version>5.0-alpha5</version>
-			</dependency>
-			<dependency>
-				<groupId>com.nimbusds</groupId>
-				<artifactId>nimbus-jose-jwt</artifactId>
-				<version>4.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk15on</artifactId>
-				<version>1.51</version>
-			</dependency>
-			<dependency>
-				<groupId>org.ldaptive</groupId>
-				<artifactId>ldaptive</artifactId>
-				<version>1.0.6</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jdbi</groupId>
-				<artifactId>jdbi</artifactId>
-				<version>2.63</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mongodb</groupId>
-				<artifactId>mongo-java-driver</artifactId>
-				<version>3.0.3</version>
+				<version>${kryo.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>18.0</version>
+				<version>${guava.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -258,59 +142,20 @@
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
-				<groupId>org.pac4j</groupId>
-				<artifactId>pac4j-cas</artifactId>
-				<version>${project.version}</version>
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.httpcomponents</groupId>
-				<artifactId>httpclient</artifactId>
-				<version>4.3.5</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.sourceforge.nekohtml</groupId>
-				<artifactId>nekohtml</artifactId>
-				<version>1.9.21</version>
+				<version>${junit.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
-				<scope>test</scope>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.sourceforge.htmlunit</groupId>
-				<artifactId>htmlunit</artifactId>
-				<version>2.15</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>1.1.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -318,27 +163,14 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
-				<version>1.9.5</version>
-			</dependency>
-			<dependency>
-				<groupId>com.unboundid</groupId>
-				<artifactId>unboundid-ldapsdk</artifactId>
-				<version>2.3.8</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.4.187</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>de.flapdoodle.embed</groupId>
-				<artifactId>de.flapdoodle.embed.mongo</artifactId>
-				<version>1.48.2</version>
-				<scope>test</scope>
+				<version>${mockito.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>xerces</groupId>
@@ -354,11 +186,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.4</version>
+				<version>2.19.1</version>
 				<configuration>
 					<includes>
-						<include>**/Test*.java</include>
-						<include>**/*Test.java</include>
 						<include>**/*Tests.java</include>
 					</includes>
 				</configuration>
@@ -385,10 +215,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.5</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -416,13 +246,47 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.3</version>
+				<configuration>
+					<effort>Low</effort> <!-- Max -->
+					<threshold>Max</threshold> <!-- Medium Low -->
+					<failOnError>true</failOnError>
+					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+				</configuration>
+				<executions>
+					<execution>
+						<id>run-findbugs</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.6</version>
+				<executions>
+					<execution>
+						<id>run-pmd</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.6</version>
 					<configuration>
 						<archive>
 							<!-- configure plugin to use MANIFEST.MF
@@ -436,17 +300,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.9.1</version>
+					<version>2.10.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.5.0</version>
+					<version>3.0.1</version>
 					<extensions>true</extensions>
 					<executions>
 						<execution>
@@ -482,7 +346,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.1</version>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>

@@ -1,31 +1,15 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
 import java.util.Iterator;
 
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
-import org.scribe.builder.api.CasOAuthWrapperApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
+import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -35,7 +19,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * <p>It returns a {@link org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile}.</p>
  * <p>More information at https://wiki.jasig.org/display/CASUM/OAuth+server+support</p>
  * 
- * @see org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile
  * @author Jerome Leleu
  * @since 1.3.0
  */
@@ -55,43 +38,39 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
     
     @Override
-    protected CasOAuthWrapperClient newClient() {
-        final CasOAuthWrapperClient newClient = new CasOAuthWrapperClient();
-        newClient.setCasOAuthUrl(this.casOAuthUrl);
-        newClient.setSpringSecurityCompliant(this.springSecurityCompliant);
-        return newClient;
-    }
-    
-    @Override
     protected void internalInit(final WebContext context) {
-        super.internalInit(context);
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        this.service = new ProxyOAuth20ServiceImpl(new CasOAuthWrapperApi20(this.casOAuthUrl,
-                                                                            this.springSecurityCompliant),
-                                                   new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                                                                   SignatureType.Header, null, null),
-                                                   this.connectTimeout, this.readTimeout, this.proxyHost,
-                                                   this.proxyPort, false, true);
+        super.internalInit(context);
     }
-    
+
+    @Override
+    protected Api getApi() {
+        return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant);
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
+    }
+
     @Override
     protected String getProfileUrl(final Token accessToken) {
         return this.casOAuthUrl + "/profile";
     }
     
     @Override
-    protected CasOAuthWrapperProfile extractUserProfile(final String body) {
+    protected CasOAuthWrapperProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final CasOAuthWrapperProfile userProfile = new CasOAuthWrapperProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            userProfile.setId(JsonHelper.get(json, "id"));
+            userProfile.setId(JsonHelper.getElement(json, "id"));
             json = json.get("attributes");
             if (json != null) {
                 final Iterator<JsonNode> nodes = json.iterator();
                 while (nodes.hasNext()) {
                     json = nodes.next();
                     final String attribute = json.fieldNames().next();
-                    userProfile.addAttribute(attribute, JsonHelper.get(json, attribute));
+                    userProfile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }
@@ -112,15 +91,5 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
         this.springSecurityCompliant = springSecurityCompliant;
-    }
-    
-    @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

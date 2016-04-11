@@ -1,27 +1,12 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.profile.facebook;
 
 import java.util.Date;
 
-import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.oauth.profile.JsonHelper;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pac4j.oauth.profile.JsonObject;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import static org.pac4j.core.util.CommonHelper.newDate;
 
 /**
  * This class represents a Facebook photo.
@@ -48,69 +33,102 @@ public final class FacebookPhoto extends JsonObject {
     private Integer count;
     
     private String type;
-    
+
+    @JsonProperty("created_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssz")
     private Date createdTime;
-    
+
+    @JsonProperty("updated_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssz")
     private Date updatedTime;
     
     private Boolean canUpload;
     
-    @Override
-    protected void buildFromJson(final JsonNode json) {
-        this.id = (String) JsonHelper.convert(Converters.stringConverter, json, "id");
-        this.from = (FacebookObject) JsonHelper.convert(FacebookConverters.objectConverter, json, "from");
-        this.name = (String) JsonHelper.convert(Converters.stringConverter, json, "name");
-        this.link = (String) JsonHelper.convert(Converters.stringConverter, json, "link");
-        this.coverPhoto = (String) JsonHelper.convert(Converters.stringConverter, json, "cover_photo");
-        this.privacy = (String) JsonHelper.convert(Converters.stringConverter, json, "privacy");
-        this.count = (Integer) JsonHelper.convert(Converters.integerConverter, json, "count");
-        this.type = (String) JsonHelper.convert(Converters.stringConverter, json, "type");
-        this.createdTime = (Date) JsonHelper.convert(Converters.dateConverter, json, "created_time");
-        this.updatedTime = (Date) JsonHelper.convert(Converters.dateConverter, json, "updated_time");
-        this.canUpload = (Boolean) JsonHelper.convert(Converters.booleanConverter, json, "can_upload");
-    }
-    
     public String getId() {
-        return this.id;
+        return id;
     }
-    
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public FacebookObject getFrom() {
-        return this.from;
+        return from;
     }
-    
+
+    public void setFrom(FacebookObject from) {
+        this.from = from;
+    }
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getLink() {
-        return this.link;
+        return link;
     }
-    
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     public String getCoverPhoto() {
-        return this.coverPhoto;
+        return coverPhoto;
     }
-    
+
+    public void setCoverPhoto(String coverPhoto) {
+        this.coverPhoto = coverPhoto;
+    }
+
     public String getPrivacy() {
-        return this.privacy;
+        return privacy;
     }
-    
+
+    public void setPrivacy(String privacy) {
+        this.privacy = privacy;
+    }
+
     public Integer getCount() {
-        return this.count;
+        return count;
     }
-    
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public String getType() {
-        return this.type;
+        return type;
     }
-    
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Date getCreatedTime() {
-        return this.createdTime;
+        return newDate(createdTime);
     }
-    
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = newDate(createdTime);
+    }
+
     public Date getUpdatedTime() {
-        return this.updatedTime;
+        return newDate(updatedTime);
     }
-    
+
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = newDate(updatedTime);
+    }
+
     public Boolean getCanUpload() {
-        return this.canUpload;
+        return canUpload;
+    }
+
+    public void setCanUpload(Boolean canUpload) {
+        this.canUpload = canUpload;
     }
 }

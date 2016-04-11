@@ -1,38 +1,19 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.oauth.client;
 
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.model.Token;
+import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.OAuthAttributesDefinitions;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
-import org.scribe.builder.api.WindowsLiveApi;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.SignatureType;
-import org.scribe.model.Token;
-import org.scribe.oauth.ProxyOAuth20ServiceImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.pac4j.scribe.builder.api.WindowsLiveApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Windows Live (SkyDrive, Hotmail and Messenger).</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.windowslive.WindowsLiveProfile}.</p>
  * <p>More information at http://msdn.microsoft.com/en-us/library/live/hh243641.aspx</p>
  * 
- * @see org.pac4j.oauth.profile.windowslive.WindowsLiveProfile
  * @author Jerome Leleu
  * @since 1.1.0
  */
@@ -45,20 +26,15 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
-    protected WindowsLiveClient newClient() {
-        return new WindowsLiveClient();
+    protected Api getApi() {
+        return new WindowsLiveApi20();
     }
-    
+
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        this.service = new ProxyOAuth20ServiceImpl(new WindowsLiveApi(), new OAuthConfig(this.key, this.secret,
-                                                                                  computeFinalCallbackUrl(context),
-                                                                                  SignatureType.Header, "wl.basic",
-                                                                                  null), this.connectTimeout,
-                                                   this.readTimeout, this.proxyHost, this.proxyPort);
+    protected String getOAuthScope() {
+        return "wl.basic";
     }
     
     @Override
@@ -67,25 +43,15 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected WindowsLiveProfile extractUserProfile(final String body) {
+    protected WindowsLiveProfile extractUserProfile(final String body) throws RequiresHttpAction {
         final WindowsLiveProfile profile = new WindowsLiveProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.get(json, "id"));
-            for (final String attribute : OAuthAttributesDefinitions.windowsLiveDefinition.getAllAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.get(json, attribute));
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
+                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
-    }
-    
-    @Override
-    protected boolean requiresStateParameter() {
-        return false;
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        return false;
     }
 }

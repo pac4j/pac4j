@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.context;
 
 import java.util.Collection;
@@ -26,7 +11,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class MockWebContext extends BaseResponseContext {
+public final class MockWebContext extends BaseResponseContext {
 
     protected final Map<String, String> parameters = new HashMap<String, String>();
 
@@ -41,6 +26,8 @@ public class MockWebContext extends BaseResponseContext {
     protected String serverName = "localhost";
 
     protected String scheme = "http";
+
+    protected boolean secure = false;
 
     protected int serverPort = 80;
 
@@ -122,16 +109,13 @@ public class MockWebContext extends BaseResponseContext {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Object getRequestAttribute(final String name) { return this.attributes.get(name); }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setRequestAttribute(final String name, final Object value) { this.attributes.put(name, value); }
 
+    @Override
     public String getRequestParameter(final String name) {
         return this.parameters.get(name);
     }
@@ -141,31 +125,35 @@ public class MockWebContext extends BaseResponseContext {
         return this;
     }
 
+    @Override
     public String getRequestHeader(final String name) {
         return this.headers.get(name);
     }
 
+    @Override
     public void setSessionAttribute(final String name, final Object value) {
         this.session.put(name, value);
     }
 
+    @Override
     public Object getSessionAttribute(final String name) {
         return this.session.get(name);
     }
-
-    public void invalidateSession() { this.session.clear(); }
 
     @Override
     public Object getSessionIdentifier() {
         return hashCode();
     }
 
+    @Override
     public String getRequestMethod() {
         return this.method;
     }
 
+    @Override
     public String getRemoteAddr() { return this.ip; }
 
+    @Override
     public Map<String, String[]> getRequestParameters() {
         final Map<String, String[]> map = new HashMap<String, String[]>();
         for (final String key : this.parameters.keySet()) {
@@ -176,11 +164,12 @@ public class MockWebContext extends BaseResponseContext {
         return map;
     }
 
-
+    @Override
     public String getServerName() {
         return serverName;
     }
 
+    @Override
     public int getServerPort() {
         return serverPort;
     }
@@ -193,14 +182,25 @@ public class MockWebContext extends BaseResponseContext {
         this.serverPort = serverPort;
     }
 
+    @Override
     public String getScheme() {
         return scheme;
     }
 
-    public void setScheme(String scheme) {
+    public MockWebContext setScheme(final String scheme) {
         this.scheme = scheme;
+        return this;
     }
 
+    @Override
+    public boolean isSecure() { return this.secure; }
+
+    public MockWebContext setSecure(final boolean secure) {
+        this.secure = secure;
+        return this;
+    }
+
+    @Override
     public String getFullRequestURL() {
         if (fullRequestURL != null) {
             return fullRequestURL;
@@ -219,9 +219,9 @@ public class MockWebContext extends BaseResponseContext {
         return this.requestCookies;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public Collection<Cookie> getResponseCookies() { return this.responseCookies; }
+
+    @Override
     public String getPath() {
         return path;
     }

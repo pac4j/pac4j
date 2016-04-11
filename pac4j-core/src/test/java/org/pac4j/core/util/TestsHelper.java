@@ -1,23 +1,7 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.util;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
 import org.junit.Assert;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
@@ -38,18 +22,6 @@ public final class TestsHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(TestsHelper.class);
 
-    public static WebClient newWebClient(final boolean isJavascriptEnabled) {
-        final WebClient webClient = new WebClient();
-        webClient.getOptions().setRedirectEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setJavaScriptEnabled(isJavascriptEnabled);
-        if (isJavascriptEnabled) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        }
-        return webClient;
-    }
-
     public static Map<String, String> getParametersFromUrl(String url) {
         int pos = url.indexOf("?");
         if (pos >= 0) {
@@ -66,7 +38,7 @@ public final class TestsHelper {
             final String[] parts = keyValue.split("=");
             if (parts != null && parts.length >= 2) {
                 try {
-                    parameters.put(parts[0], URLDecoder.decode(parts[1], "UTF-8"));
+                    parameters.put(parts[0], URLDecoder.decode(parts[1], HttpConstants.UTF8_ENCODING));
                 } catch (final UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
@@ -87,20 +59,25 @@ public final class TestsHelper {
     }
 
     public static void initShouldFail(final InitializableObject obj, final String message) {
-        try {
-            obj.init();
-            Assert.fail("init should fail");
-        } catch (final TechnicalException e) {
-            Assert.assertEquals(message, e.getMessage());
-        }
+        expectException(() -> obj.init(), TechnicalException.class, message);
     }
 
     public static void initShouldFail(final InitializableWebObject obj, final String message) {
+        expectException(() -> obj.init(MockWebContext.create()), TechnicalException.class, message);
+    }
+
+    public static Exception expectException(final Executable executable) {
         try {
-            obj.init(MockWebContext.create());
-            Assert.fail("init should fail");
-        } catch (final TechnicalException e) {
-            Assert.assertEquals(message, e.getMessage());
+            executable.execute();
+        } catch (final Exception e) {
+            return e;
         }
+        return null;
+    }
+
+    public static void expectException(final Executable executable, final Class<? extends Exception> clazz, final String message) {
+        final Exception e = expectException(executable);
+        Assert.assertTrue(clazz.isAssignableFrom(e.getClass()));
+        Assert.assertEquals(message, e.getMessage());
     }
 }

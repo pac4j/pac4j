@@ -1,18 +1,3 @@
-/*
-  Copyright 2012 - 2015 pac4j organization
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
 package org.pac4j.core.context;
 
 /**
@@ -36,16 +21,32 @@ public interface HttpConstants {
 
     int TEMP_REDIRECT = 302;
 
-    int DEFAULT_PORT = 80;
+    int DEFAULT_HTTP_PORT = 80;
+
+    int DEFAULT_HTTPS_PORT = 443;
+
+    String SCHEME_HTTP = "http";
+
+    String SCHEME_HTTPS = "https";
+
+    int DEFAULT_CONNECT_TIMEOUT = 500;
+    
+    int DEFAULT_READ_TIMEOUT = 5000;
 
     String LOCATION_HEADER = "Location";
 
     String AUTHORIZATION_HEADER = "Authorization";
 
+    String BASIC_HEADER_PREFIX = "Basic ";
+
+    String DIGEST_HEADER_PREFIX = "Digest ";
+
     String AUTHENTICATE_HEADER = "WWW-Authenticate";
 
     String CONTENT_TYPE_HEADER = "Content-Type";
-    
+
+    String UTF8_ENCODING = "UTF-8";
+
     String HTML_CONTENT_TYPE = "text/html; charset=utf-8";
 
     String AJAX_HEADER_VALUE = "XMLHttpRequest";
