@@ -82,7 +82,7 @@ public class Clients extends InitializableObject {
 	            if (names.contains(lowerName)) {
 	                throw new TechnicalException("Duplicate name in clients: " + name);
 	            }
-	            names.add(name);
+	            names.add(lowerName);
 	            updateCallbackUrlOfIndirectClient(client);
 	        }
         }
