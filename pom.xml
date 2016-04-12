@@ -250,6 +250,7 @@
 					<threshold>Max</threshold> <!-- Medium Low -->
 					<failOnError>true</failOnError>
 					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+					<includeTests>true</includeTests>
 				</configuration>
 				<executions>
 					<execution>
@@ -265,6 +266,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.6</version>
+				<configuration>
+					<includeTests>true</includeTests>
+				</configuration>
 				<executions>
 					<execution>
 						<id>run-pmd</id>

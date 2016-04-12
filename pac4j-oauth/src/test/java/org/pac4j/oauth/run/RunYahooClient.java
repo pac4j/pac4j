@@ -10,7 +10,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oauth.profile.yahoo.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -91,7 +90,6 @@ public final class RunYahooClient extends RunClient {
         final YahooDisclosure disclosure = disclosures.get(0);
         assertEquals("1", disclosure.getAcceptance());
         assertEquals("bd", disclosure.getName());
-        assertTrue(disclosure.getSeen() instanceof Date);
         assertEquals("1", disclosure.getVersion());
         final List<YahooEmail> emails = profile.getEmails();
         assertEquals(2, emails.size());

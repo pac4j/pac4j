@@ -1,8 +1,6 @@
 package org.pac4j.core.credentials.password;
 
 import org.junit.Test;
-import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
-import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 

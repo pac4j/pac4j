@@ -98,9 +98,9 @@ public final class RunFacebookClient extends RunClient {
         education = educations.get(1);
         assertEquals("Ingénieur", education.getDegree().getName());
         assertNull(profile.getEmail());
-        assertEquals("San Francisco, California", (profile.getHometown()).getName());
-        assertEquals("female", (profile.getInterestedIn()).get(0));
-        assertEquals("New York, New York", (profile.getLocationObject()).getName());
+        assertEquals("San Francisco, California", profile.getHometown().getName());
+        assertEquals("female", profile.getInterestedIn().get(0));
+        assertEquals("New York, New York", profile.getLocationObject().getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
         final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
         assertEquals("Surfing", favoriteAthletes.get(0).getName());
@@ -117,7 +117,6 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("Paris, France", work.getLocation().getName());
         assertEquals("Architecte Web", work.getPosition().getName());
         assertEquals("Description", work.getDescription());
-        assertTrue(work.getStartDate() instanceof Date);
         assertNull(work.getEndDate());
         final List<FacebookObject> friends = profile.getFriends();
         assertEquals(1, friends.size());

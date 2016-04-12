@@ -10,7 +10,7 @@ public final class MockCredentials extends Credentials {
 
     @Override
     public boolean equals(final Object o) {
-        return (o instanceof MockCredentials);
+        return o instanceof MockCredentials;
     }
 
     @Override

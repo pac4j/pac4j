@@ -8,5 +8,11 @@ package org.pac4j.core.profile;
  */
 public final class AnonymousProfile extends CommonProfile {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7377022639833719511L;
+
+    public static final AnonymousProfile INSTANCE = new AnonymousProfile();
+
+    public AnonymousProfile() {
+        setId("anonymous");
+    }
 }

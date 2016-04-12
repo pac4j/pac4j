@@ -2,6 +2,7 @@ package org.pac4j.core.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.kryo.ColorSerializer;
@@ -39,7 +40,7 @@ public abstract class RunClient implements TestsConstants {
             logger.warn("You can CANCEL the authentication.");
         }
         logger.warn("Returned url:");
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
         final String returnedUrl = scanner.nextLine();
         final Map<String, String> parameters = TestsHelper.getParametersFromUrl(returnedUrl);
         context.addRequestParameters(parameters);
@@ -76,8 +77,9 @@ public abstract class RunClient implements TestsConstants {
             // CAS serialization
             final Map<String, Object> attributes = profile3.getAttributes();
             final Map<String, Object> newAttributes = new HashMap<>();
-            for (final String key : attributes.keySet()) {
-                Object value = attributes.get(key);
+            for (final Map.Entry<String, Object> entry: attributes.entrySet()) {
+                final String key = entry.getKey();
+                final Object value = entry.getValue();
                 if (value instanceof List) {
                     final List<String> newList = new ArrayList<>();
                     for (Object o : (List) value) {
