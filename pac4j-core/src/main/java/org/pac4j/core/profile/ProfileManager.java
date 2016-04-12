@@ -120,11 +120,12 @@ public class ProfileManager<U extends CommonProfile> {
     }
 
     /**
-     * Tests if the current user has a profile (meaning he is authenticated, except if the profile is an {@link AnonymousProfile}).
+     * Tests if the current user is authenticated (meaning a user profile exists which is not an {@link AnonymousProfile}).
      *
-     * @return whether the current user has a profile
+     * @return whether the current user is authenticated
      */
-    public boolean hasProfile() {
-        return get(true).isPresent();
+    public boolean isAuthenticated() {
+        final Optional<U> profile = get(true);
+        return profile.isPresent() && !(profile.get() instanceof AnonymousProfile);
     }
 }
