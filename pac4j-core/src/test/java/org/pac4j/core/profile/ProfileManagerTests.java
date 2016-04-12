@@ -62,7 +62,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, PROFILE1);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
-        assertTrue(profileManager.hasProfile());
+        assertTrue(profileManager.isAuthenticated());
     }
 
     @Test
@@ -79,7 +79,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT2, PROFILE2);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(PROFILE1, profileManager.get(true).get());
-        assertTrue(profileManager.hasProfile());
+        assertTrue(profileManager.isAuthenticated());
     }
 
     @Test
@@ -98,6 +98,7 @@ public final class ProfileManagerTests {
     public void testGetAllNoProfile() {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(0, profileManager.getAll(true).size());
+        assertFalse(profileManager.isAuthenticated());
     }
 
     @Test
@@ -216,5 +217,14 @@ public final class ProfileManagerTests {
         assertEquals(2, profiles.size());
         assertEquals(PROFILE2, profiles.get(0));
         assertEquals(PROFILE3, profiles.get(1));
+    }
+
+
+    @Test
+    public void testIsAuthenticatedAnonymousProfile() {
+        profiles.put(CLIENT1, AnonymousProfile.INSTANCE);
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        assertEquals(AnonymousProfile.INSTANCE, profileManager.getAll(true).get(0));
+        assertFalse(profileManager.isAuthenticated());
     }
 }
