@@ -3,7 +3,6 @@ package org.pac4j.http.authorization.authorizer;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.http.authorization.authorizer.IpRegexpAuthorizer;
 
 import static org.junit.Assert.*;
 
@@ -15,8 +14,8 @@ import static org.junit.Assert.*;
  */
 public final class IpRegexpAuthorizerTests {
 
-    private final static String GOOD_IP = "127.0.0.1";
-    private final static String BAD_IP = "192.168.0.1";
+    private final static String GOOD_IP = "goodIp";
+    private final static String BAD_IP = "badIp";
 
     private final static IpRegexpAuthorizer authorizer = new IpRegexpAuthorizer(GOOD_IP);
 

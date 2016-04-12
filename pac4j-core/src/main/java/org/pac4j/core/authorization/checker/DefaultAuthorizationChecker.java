@@ -28,6 +28,10 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static CacheControlHeader CACHE_CONTROL_HEADER = new CacheControlHeader();
     final static CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
     final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
+    final static IsAnonymousAuthorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();
+    final static IsAuthenticatedAuthorizer IS_AUTHENTICATED_AUTHORIZER =new IsAuthenticatedAuthorizer();
+    final static IsFullyAuthenticatedAuthorizer IS_FULLY_AUTHENTICATED_AUTHORIZER = new IsFullyAuthenticatedAuthorizer();
+    final static IsRememberedAuthorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws RequiresHttpAction {
@@ -61,6 +65,14 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 } else if ("csrf".equalsIgnoreCase(name)) {
                     authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
                     authorizers.add(CSRF_AUTHORIZER);
+                } else if ("isAnonymous".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_ANONYMOUS_AUTHORIZER);
+                } else if ("isAuthenticated".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_AUTHENTICATED_AUTHORIZER);
+                } else if ("isFullyAuthenticated".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_FULLY_AUTHENTICATED_AUTHORIZER);
+                } else if ("isRemembered".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_REMEMBERED_AUTHORIZER);
                 } else {
                     // we must have authorizers
                     assertNotNull("authorizersMap", authorizersMap);

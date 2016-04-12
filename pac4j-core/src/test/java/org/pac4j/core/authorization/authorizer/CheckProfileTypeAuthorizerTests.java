@@ -18,9 +18,11 @@ import static org.junit.Assert.assertTrue;
  */
 public final class CheckProfileTypeAuthorizerTests {
 
-    class FakeProfile1 extends CommonProfile {
+    private static class FakeProfile1 extends CommonProfile {
+        public FakeProfile1() {}
     }
-    class FakeProfile2 extends CommonProfile {
+    private static class FakeProfile2 extends CommonProfile {
+        public FakeProfile2() {}
     }
 
     @Test

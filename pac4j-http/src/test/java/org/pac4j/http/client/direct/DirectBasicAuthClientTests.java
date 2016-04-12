@@ -12,6 +12,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -50,12 +51,12 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws RequiresHttpAction {
+    public void testAuthentication() throws RequiresHttpAction, UnsupportedEncodingException {
         final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         final MockWebContext context = MockWebContext.create();
         final String header = USERNAME + ":" + USERNAME;
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
-                "Basic " + Base64.getEncoder().encodeToString(header.getBytes()));
+                "Basic " + Base64.getEncoder().encodeToString(header.getBytes(HttpConstants.UTF8_ENCODING)));
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals(USERNAME, profile.getId());

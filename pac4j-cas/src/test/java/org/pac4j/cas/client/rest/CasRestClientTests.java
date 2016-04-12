@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class CasRestClientTests implements TestsConstants {
 
-    private class FakeAuthenticator implements Authenticator<CasCredentials> {
+    private static class FakeAuthenticator implements Authenticator<CasCredentials> {
 
         public void validate(final CasCredentials credentials) {}
     }

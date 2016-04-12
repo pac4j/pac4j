@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
  */
 public final class IpRegexpAuthenticatorTests implements TestsConstants {
 
-    private final static String GOOD_IP = "127.0.0.1";
-    private final static String BAD_IP = "192.168.0.1";
+    private final static String GOOD_IP = "goodIp";
+    private final static String BAD_IP = "badIp";
 
     private final static IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator(GOOD_IP);
 

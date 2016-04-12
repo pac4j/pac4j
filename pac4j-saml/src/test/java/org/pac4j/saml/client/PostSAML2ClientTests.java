@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -76,6 +77,6 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
         assertTrue(content.contains("<form"));
         final String samlRequestField = StringUtils.substringBetween(content, "SAMLRequest", "</div");
         final String value = StringUtils.substringBetween(samlRequestField, "value=\"", "\"");
-        return new String(Base64.getDecoder().decode(value));
+        return new String(Base64.getDecoder().decode(value), HttpConstants.UTF8_ENCODING);
     }
 }
