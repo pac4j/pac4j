@@ -1,6 +1,7 @@
 package org.pac4j.saml.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 
 
 /**
@@ -18,22 +19,31 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
 
     private String identityProviderMetadataPath;
 
-    // ------------------------------------------------------------------------------------------------------------------------------------
-    
     
     public SAML2ClientConfiguration() {
     	super();
     }
 
-
+	public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
+			                        final String identityProviderMetadataPath) {
+		this(keystorePath, keystorePassword, privateKeyPassword, identityProviderMetadataPath, null, null);
+	}
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-    		final String privateKeyPassword, final String identityProviderMetadataPath) {
+    		final String privateKeyPassword, final String identityProviderMetadataPath,
+    		final String identityProviderEntityId, final String serviceProviderEntityId) {
     	super();
     	this.keystorePath = keystorePath;
     	setKeystorePassword(keystorePassword);
     	setPrivateKeyPassword(privateKeyPassword);
     	this.identityProviderMetadataPath = identityProviderMetadataPath;
+    	setIdentityProviderEntityId(identityProviderEntityId);
+    	setServiceProviderEntityId(serviceProviderEntityId);
+
+    	CommonHelper.assertNotBlank("keystorePath", this.keystorePath);
+        CommonHelper.assertNotBlank("keystorePassword", this.getKeystorePassword());
+        CommonHelper.assertNotBlank("privateKeyPassword", this.getPrivateKeyPassword());
+        CommonHelper.assertNotBlank("identityProviderMetadataPath", this.identityProviderMetadataPath);
     }
 
 

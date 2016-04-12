@@ -30,12 +30,10 @@ public class Clients extends InitializableObject {
 
     private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
 
-    /** Clients known in advance - set by the constructor or setter. */
     private List<Client> clients;
     
     private String callbackUrl = null;
 
-    // ------------------------------------------------------------------------------------------------------------------------------------
 
     public Clients() {
     }

@@ -17,6 +17,7 @@ package org.pac4j.saml.dbclient;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.AbstractSAML2ClientConfiguration;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
@@ -57,9 +58,7 @@ public class DatabaseSAML2ClientConfiguration extends AbstractSAML2ClientConfigu
 	 */
     public DatabaseSAML2ClientConfiguration(final SamlClientDao dao) {
     	super();
-    	if (dao == null) {
-    		throw new IllegalArgumentException("DAO must not be null.");
-    	}
+    	CommonHelper.assertNotNull("dao", dao);
     	this.dao = dao;
     }
     

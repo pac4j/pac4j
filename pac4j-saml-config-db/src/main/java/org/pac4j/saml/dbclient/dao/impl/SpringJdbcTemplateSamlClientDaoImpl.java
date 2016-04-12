@@ -23,6 +23,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.dbclient.dao.api.DbLoadedSamlClientConfigurationDto;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -148,19 +149,11 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 	 */
 	public SpringJdbcTemplateSamlClientDaoImpl(final DataSource dataSource, final LobHandler lobHandler, final String tableName, final String environment) {
 		super();
-		
-		if (dataSource == null) {
-			throw new IllegalArgumentException("Data source must not be null.");
-		}
-		if (lobHandler == null) {
-			throw new IllegalArgumentException("LOB handler must not be null.");
-		}
-		if (StringUtils.isBlank(tableName)) {
-			throw new IllegalArgumentException("Table name must not be null or empty.");
-		}
-		if (StringUtils.isBlank(environment)) {
-			throw new IllegalArgumentException("Environment must not be null or empty.");
-		}
+	
+		CommonHelper.assertNotNull("dataSource", dataSource);
+		CommonHelper.assertNotNull("lobHandler", lobHandler);
+		CommonHelper.assertNotBlank("tableName", tableName);
+		CommonHelper.assertNotBlank("environment", environment);
 
 		this.onlyNamesRowMapper = new OnlyNamesRowMapper();
 		this.fullRowMapper = new SamlClientConfigurationRowMapper(lobHandler);
