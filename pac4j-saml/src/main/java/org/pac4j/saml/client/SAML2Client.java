@@ -211,15 +211,6 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected BaseClient<SAML2Credentials, SAML2Profile> newClient() {
-        try {
-			return new SAML2Client(this.configuration.clone());
-		} catch (CloneNotSupportedException cnse) {
-			throw new RuntimeException("Cannot clone a SAML Client Configuration.", cnse);
-		}
-    }
-
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext wc) throws RequiresHttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);

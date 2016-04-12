@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.pac4j.core.client.Client;
-import org.pac4j.core.client.FakeClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -149,12 +148,6 @@ public class DatabaseSAML2ClientsTest implements TestsConstants {
         assertNotNull(clients.findClient(SAML2Client.class));
     }
     
-    @Test(expected = TechnicalException.class)
-    public void testByClassDoesNotFindFake() {
-        final DatabaseSAML2Clients clients = new DatabaseSAML2Clients(createSamlClientDaoMock());
-        assertNull(clients.findClient(FakeClient.class));
-    }
-
     @Test(expected = TechnicalException.class)
     public void rejectSameName() {
         final DatabaseSAML2Clients clients = new DatabaseSAML2Clients(createSamlClientDaoMockWithDuplicateNames());

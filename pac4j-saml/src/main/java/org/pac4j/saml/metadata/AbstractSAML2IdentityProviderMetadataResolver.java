@@ -13,7 +13,6 @@ import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-import org.opensaml.xml.util.XMLHelper;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -24,6 +23,7 @@ import org.w3c.dom.Element;
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 
 
@@ -112,9 +112,7 @@ public abstract class AbstractSAML2IdentityProviderMetadataResolver implements S
     public String getEntityId() {
         final XMLObject md = getEntityDescriptorElement();
         if (md instanceof EntitiesDescriptor) {
-            for (final EntityDescriptor entity : ((EntitiesDescriptor) md).getEntityDescriptors()) {
-                return entity.getEntityID();
-            }
+            return ((EntitiesDescriptor) md).getEntityDescriptors().get(0).getEntityID();
         } else if (md instanceof EntityDescriptor) {
             return ((EntityDescriptor) md).getEntityID();
         }
@@ -125,7 +123,7 @@ public abstract class AbstractSAML2IdentityProviderMetadataResolver implements S
     public String getMetadata() {
         if (getEntityDescriptorElement() != null
                 && getEntityDescriptorElement().getDOM() != null) {
-            return XMLHelper.nodeToString(getEntityDescriptorElement().getDOM());
+            return SerializeSupport.nodeToString(getEntityDescriptorElement().getDOM());
         }
         throw new TechnicalException("Metadata cannot be retrieved because entity descriptor is null");
     }

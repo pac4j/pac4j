@@ -172,11 +172,6 @@
 				<artifactId>mockito-core</artifactId>
 				<version>${mockito.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>${xerces.version}</version>
-			</dependency>			
  	 	 	<!-- for testing -->
 		</dependencies>
 	</dependencyManagement>
@@ -362,12 +357,4 @@
 		</profile>
 	</profiles>
 
-	<properties>
-		<spring.version>4.1.5.RELEASE</spring.version>
-		<cas.version>3.6.0</cas.version>
-		<slf4j.version>1.7.12</slf4j.version>
-		<xerces.version>2.8.1</xerces.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
 </project>

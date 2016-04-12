@@ -23,7 +23,6 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 
@@ -76,6 +75,7 @@ public abstract class AbstractSAML2ClientConfiguration implements Cloneable {
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
+    private boolean wantsAssertionsSigned = true;
 
     
     // ------------------------------------------------------------------------------------------------------------------------------------
@@ -231,6 +231,14 @@ public abstract class AbstractSAML2ClientConfiguration implements Cloneable {
 
     public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
         this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
+    }
+
+    public boolean getWantsAssertionsSigned() {
+        return this.wantsAssertionsSigned;
+    }
+
+    public void setWantsAssertionsSigned(boolean wantsAssertionsSigned) {
+        this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
     

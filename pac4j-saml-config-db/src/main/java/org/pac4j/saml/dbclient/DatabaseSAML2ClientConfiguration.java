@@ -65,11 +65,11 @@ public class DatabaseSAML2ClientConfiguration extends AbstractSAML2ClientConfigu
     
 
 	public byte[] getKeystoreBinaryData() {
-		return keystoreBinaryData;
+		return (keystoreBinaryData == null) ? null : keystoreBinaryData.clone();
 	}
 
 	public void setKeystoreBinaryData(byte[] keystoreBinaryData) {
-		this.keystoreBinaryData = keystoreBinaryData;
+		this.keystoreBinaryData = (keystoreBinaryData == null) ? null : keystoreBinaryData.clone();
 	}
 
 	public String getIdentityProviderMetadata() {
@@ -123,7 +123,7 @@ public class DatabaseSAML2ClientConfiguration extends AbstractSAML2ClientConfigu
 
 		// Subsequently, the configuration for the name must be loaded using a DAO.
 		DbLoadedSamlClientConfigurationDto loaded = dao.loadClient(clientName);
-		if ((loaded == null) || (!clientName.equals(loaded.getClientName()))) {
+		if (loaded == null || !clientName.equals(loaded.getClientName())) {
 			throw new IllegalStateException("SAML Client Configuration for name '" + clientName + "' could not be loaded.");
 		}
 		
@@ -184,7 +184,7 @@ public class DatabaseSAML2ClientConfiguration extends AbstractSAML2ClientConfigu
 	 */
 	@Override
 	public byte[] getResolvedKeystoreData() {
-		return keystoreBinaryData;
+		return (keystoreBinaryData == null) ? null : keystoreBinaryData.clone();
 	}
 
 

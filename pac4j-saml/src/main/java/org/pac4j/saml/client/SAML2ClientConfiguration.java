@@ -18,7 +18,6 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
 
     private String identityProviderMetadataPath;
 
-
     // ------------------------------------------------------------------------------------------------------------------------------------
     
     
@@ -27,12 +26,6 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
     }
 
 
-
-    private Collection<String> blackListedSignatureSigningAlgorithms;
-    private List<String> signatureAlgorithms;
-    private List<String> signatureReferenceDigestMethods;
-    private String signatureCanonicalizationAlgorithm;
-    private boolean wantsAssertionsSigned = true;
 
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
     		final String privateKeyPassword, final String identityProviderMetadataPath) {
@@ -63,12 +56,6 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
     }
 
 
-    @Override
-    public SAML2ClientConfiguration clone() throws CloneNotSupportedException {
-    	return (SAML2ClientConfiguration) super.clone();
-    }
-
-    
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -159,31 +146,8 @@ public final class SAML2ClientConfiguration extends AbstractSAML2ClientConfigura
 		throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not implement getClientName()");
 	}
 
-    public List<String> getSignatureReferenceDigestMethods() {
-        return signatureReferenceDigestMethods;
-    }
 
-    public void setSignatureReferenceDigestMethods(final List<String> signatureReferenceDigestMethods) {
-        this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
-    }
-
-    public String getSignatureCanonicalizationAlgorithm() {
-        return signatureCanonicalizationAlgorithm;
-    }
-
-    public void setSignatureCanonicalizationAlgorithm(final String signatureCanonicalizationAlgorithm) {
-        this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
-    }
-
-    public boolean getWantsAssertionsSigned() {
-        return this.wantsAssertionsSigned;
-    }
-
-    public void setWantsAssertionsSigned(boolean wantsAssertionsSigned) {
-        this.wantsAssertionsSigned = wantsAssertionsSigned;
-    }
-
-    @Override
+	@Override
     public SAML2ClientConfiguration clone() {
         try {
             return (SAML2ClientConfiguration) super.clone();

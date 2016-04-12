@@ -31,7 +31,7 @@ public interface SamlClientDao {
 	 * 
 	 * @return A list of names.
 	 */
-	public List<String> loadClientNames();
+	List<String> loadClientNames();
 	
 	
 	/**
@@ -39,7 +39,7 @@ public interface SamlClientDao {
 	 * 
 	 * @return A list of configurations.
 	 */
-	public List<DbLoadedSamlClientConfigurationDto> loadAllClients();
+	List<DbLoadedSamlClientConfigurationDto> loadAllClients();
 	
 	
 	/**
@@ -50,6 +50,6 @@ public interface SamlClientDao {
 	 * 
 	 * @return A single configuration for the desired client or {@code null} of no such configuration exists.
 	 */
-	public DbLoadedSamlClientConfigurationDto loadClient(String clientName);
+	DbLoadedSamlClientConfigurationDto loadClient(String clientName);
 	
 }

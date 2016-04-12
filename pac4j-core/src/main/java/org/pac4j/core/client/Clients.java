@@ -73,15 +73,15 @@ public class Clients extends InitializableObject {
      */
     @Override
     protected void internalInit() {
-
-        CommonHelper.assertNotNull("clients", getClients());
         final HashSet<String> names = new HashSet<>();
-
         final List<Client> loadedClients = loadClientsInternal();
+        CommonHelper.assertNotNull("clients", loadedClients); // Check postponed after loading
+        
         if (loadedClients != null) {
 	        for (final Client client : loadedClients) {
 	            final String name = client.getName();
-	            if (names.contains(name)) {
+	            final String lowerName = name.toLowerCase();
+	            if (names.contains(lowerName)) {
 	                throw new TechnicalException("Duplicate name in clients: " + name);
 	            }
 	            names.add(name);
@@ -97,40 +97,19 @@ public class Clients extends InitializableObject {
      * @param client A client.
      */
     protected void updateCallbackUrlOfIndirectClient(final Client client) {
-        if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
+    	if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
             final IndirectClient indirectClient = (IndirectClient) client;
             String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
             // no callback url defined for the client -> set it with the group callback url
             if (indirectClientCallbackUrl == null) {
                 indirectClient.setCallbackUrl(this.callbackUrl);
                 indirectClientCallbackUrl = this.callbackUrl;
-        for (final Client client : getClients()) {
-            final String name = client.getName();
-            final String lowerName = name.toLowerCase();
-            if (names.contains(lowerName)) {
-                throw new TechnicalException("Duplicate name in clients: " + name);
             }
             // if the "client_name" parameter is not already part of the callback url, add it unless the client
             // has indicated to not include it.
             if (indirectClient.isIncludeClientNameInCallbackUrl() &&
                     indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
                 indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, client.getName()));
-            names.add(lowerName);
-            if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
-                final IndirectClient indirectClient = (IndirectClient) client;
-                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                // no callback url defined for the client -> set it with the group callback url
-                if (indirectClientCallbackUrl == null) {
-                    indirectClient.setCallbackUrl(this.callbackUrl);
-                    indirectClientCallbackUrl = this.callbackUrl;
-                }
-                // if the "client_name" parameter is not already part of the callback url, add it unless the client
-                // has indicated to not include it.
-                if (indirectClient.isIncludeClientNameInCallbackUrl() &&
-                        indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
-                            name));
-                }
             }
         }
     }
@@ -154,9 +133,6 @@ public class Clients extends InitializableObject {
      * @return the right client
      */
     public Client findClient(final String name) {
-        for (final Client client : getClients()) {
-            if (CommonHelper.areEquals(name, client.getName())) {
-        init();
         for (final Client client : getClients()) {
             if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
                 return client;
@@ -192,8 +168,6 @@ public class Clients extends InitializableObject {
      * @return all the clients
      */
     public List<Client> findAllClients() {
-        return getClients();
-        init();
         return getClients();
     }
 
@@ -233,7 +207,6 @@ public class Clients extends InitializableObject {
     	} else {
     		return this.clients;
     	}
-        return this.clients;
     }
 
     @Override

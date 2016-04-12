@@ -94,11 +94,6 @@ public class DatabaseSAML2Clients extends Clients {
 
 
 	@Override
-	public void setClientsList(List<Client> clients) {
-		throw new UnsupportedOperationException("Method setClientsList(List<Client> clients) is not implemented.");
-	}
-
-	@Override
 	public void setClients(List<Client> clients) {
 		throw new UnsupportedOperationException("Method setClients(List<Client> clients) is not implemented.");
 	}

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 import javax.annotation.Nullable;
 
@@ -44,9 +45,9 @@ import net.shibboleth.utilities.java.support.resource.Resource;
  */
 public class PathBasedSAML2IdentityProviderMetadataResolver extends AbstractSAML2IdentityProviderMetadataResolver {
 
-	protected final static String HTTP_PREFIX = "http";
-    protected final static String FILE_PREFIX = "file:";
-    protected final static String RESOURCE_PREFIX = CommonHelper.RESOURCE_PREFIX;
+	protected static final String HTTP_PREFIX = "http";
+    protected static final String FILE_PREFIX = "file:";
+    protected static final String RESOURCE_PREFIX = CommonHelper.RESOURCE_PREFIX;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -114,10 +115,9 @@ public class PathBasedSAML2IdentityProviderMetadataResolver extends AbstractSAML
       if (resource == null) {
           throw new IOException("idp metadata cannot be resolved from " + this.idpMetadataPath);
       }
-      
+
       final InputStream is = resource.getInputStream();
-      final Reader r = new InputStreamReader(is);
-      return r;
+      return new InputStreamReader(is, Charset.forName("UTF-8"));
 	}
 
 }

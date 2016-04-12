@@ -49,10 +49,10 @@ public class DbLoadedSamlClientConfigurationDto {
 		this.environment = environment;
 	}
 	public byte[] getKeystoreBinaryData() {
-		return keystoreBinaryData;
+		return (keystoreBinaryData == null) ? null : keystoreBinaryData.clone();
 	}
 	public void setKeystoreBinaryData(byte[] keystoreBinaryData) {
-		this.keystoreBinaryData = keystoreBinaryData;
+		this.keystoreBinaryData = (keystoreBinaryData == null) ? null : keystoreBinaryData.clone();
 	}
 	public String getKeystorePassword() {
 		return keystorePassword;

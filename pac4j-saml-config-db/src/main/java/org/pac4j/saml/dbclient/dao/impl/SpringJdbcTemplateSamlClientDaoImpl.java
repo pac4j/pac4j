@@ -214,7 +214,7 @@ public class SpringJdbcTemplateSamlClientDaoImpl implements SamlClientDao {
 		
 		final Object[] selectSingleClientParameters = new Object[] {environment, clientName};
 		final List<DbLoadedSamlClientConfigurationDto> configurations = template.query(selectSingleClientSqlText, selectSingleClientParameters, selectSingleClientParameterTypes, fullRowMapper);
-		if ((configurations != null) && (!configurations.isEmpty())) {
+		if (configurations != null && !configurations.isEmpty()) {
 			return configurations.get(0);
 		} else {
 			return null;
