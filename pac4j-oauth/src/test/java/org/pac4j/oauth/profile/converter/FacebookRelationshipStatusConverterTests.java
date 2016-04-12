@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.converter;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.pac4j.oauth.profile.facebook.FacebookRelationshipStatus;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
@@ -29,7 +28,7 @@ public final class FacebookRelationshipStatusConverterTests {
 
     @Test
     public void testSingle() {
-        Assert.assertEquals(FacebookRelationshipStatus.SINGLE, this.converter.convert("Single"));
+        assertEquals(FacebookRelationshipStatus.SINGLE, this.converter.convert("Single"));
     }
 
     @Test

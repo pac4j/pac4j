@@ -155,11 +155,11 @@ public final class MockWebContext extends BaseResponseContext {
 
     @Override
     public Map<String, String[]> getRequestParameters() {
-        final Map<String, String[]> map = new HashMap<String, String[]>();
-        for (final String key : this.parameters.keySet()) {
-            final String value = this.parameters.get(key);
+        final Map<String, String[]> map = new HashMap<>();
+        for (final Map.Entry<String, String> entry : this.parameters.entrySet()) {
+            final String value = entry.getValue();
             final String[] values = new String[] { value };
-            map.put(key, values);
+            map.put(entry.getKey(), values);
         }
         return map;
     }

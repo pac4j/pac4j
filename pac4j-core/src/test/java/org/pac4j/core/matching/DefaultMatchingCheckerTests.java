@@ -22,7 +22,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
 
     private final static MatchingChecker checker = new DefaultMatchingChecker();
 
-    class NullContextMatcher implements Matcher {
+    private static class NullContextMatcher implements Matcher {
 
         @Override
         public boolean matches(final WebContext context) {
@@ -30,7 +30,7 @@ public final class DefaultMatchingCheckerTests implements TestsConstants {
         }
     }
 
-    class AlwaysFalseMatcher implements Matcher {
+    private static class AlwaysFalseMatcher implements Matcher {
 
         @Override
         public boolean matches(final WebContext context) {

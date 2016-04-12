@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public final class IpClientTests implements TestsConstants {
 
-    private final static String IP = "127.0.0.2";
+    private final static String IP = "goodIp";
 
     @Test
     public void testMissingTokendAuthenticator() {

@@ -8,6 +8,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.NopPasswordEncoder;
 import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.pac4j.mongo.test.tools.MongoServer;
 
@@ -36,57 +37,51 @@ public class MongoAuthenticatorIT implements TestsConstants {
     }
 
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullPasswordEncoder() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME);
-        authenticator.init(null);
-        authenticator.validate(null);
+        authenticator.setPasswordEncoder(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "passwordEncoder cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAttribute() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), null, new NopPasswordEncoder());
-        authenticator.init(null);
-        authenticator.validate(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "attributes cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullMongoClient() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(null, FIRSTNAME, new NopPasswordEncoder());
-        authenticator.init(null);
-        authenticator.validate(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "mongoClient cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullDatabase() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setUsersDatabase(null);
-        authenticator.init(null);
-        authenticator.validate(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usersDatabase cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullCollection() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setUsersCollection(null);
-        authenticator.init(null);
-        authenticator.validate(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usersCollection cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullUsername() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setUsernameAttribute(null);
-        authenticator.init(null);
-        authenticator.validate(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usernameAttribute cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullPassword() throws RequiresHttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setPasswordAttribute(null);
-        authenticator.init(null);
-        authenticator.validate(null);
+        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "passwordAttribute cannot be null");
     }
 
     private MongoClient getClient() {
@@ -130,16 +125,16 @@ public class MongoAuthenticatorIT implements TestsConstants {
 
     @Test(expected = MultipleAccountsFoundException.class)
     public void testMultipleUsername() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(MULTIPLE_USERNAME, PASSWORD, "");
+        login(MULTIPLE_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = AccountNotFoundException.class)
     public void testBadUsername() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(BAD_USERNAME, PASSWORD, "");
+        login(BAD_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = BadCredentialsException.class)
     public void testBadPassword() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD + "bad", "");
+        login(GOOD_USERNAME, PASSWORD + "bad", "");
     }
 }
