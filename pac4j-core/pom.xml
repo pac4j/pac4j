@@ -47,6 +47,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <scope>compile</scope>
+            <optional>true</optional> 
             <version>${spring.version}</version>
         </dependency>
         <dependency>
