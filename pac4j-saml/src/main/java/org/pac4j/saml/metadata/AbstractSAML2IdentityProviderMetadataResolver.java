@@ -1,13 +1,12 @@
-
 package org.pac4j.saml.metadata;
 
-import net.shibboleth.ext.spring.resource.ResourceHelper;
-import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
-import net.shibboleth.utilities.java.support.resource.Resource;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-import net.shibboleth.utilities.java.support.xml.XMLParserException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Iterator;
+
+import javax.annotation.Nullable;
+
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
@@ -18,43 +17,47 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.UrlResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
+
 
 /**
+ * Abstract base for IdP metadata resolvers.
+ * 
+ * Provides common implementations of methods from {@link SAML2MetadataResolver}. Subclasses should only implement
+ * {@link #getIdpMetadataResourceReader()} and {@link #getMetadataPath()}.
+ * 
  * @author Misagh Moayyed
  * @since 1.7
  */
-public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+public abstract class AbstractSAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
 
-    protected final static String HTTP_PREFIX = "http";
-    protected final static String FILE_PREFIX = "file:";
-
-    private final String idpMetadataPath;
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
 
-    public SAML2IdentityProviderMetadataResolver(final String idpMetadataPath,
-                                                 @Nullable final String idpEntityId) {
-        this.idpMetadataPath = idpMetadataPath;
+    
+    // ------------------------------------------------------------------------------------------------------------------------------------
+
+    
+	/**
+	 * Constructor to be used by concrete subclasses.
+	 * 
+	 * @param idpEntityId
+	 *            Entity ID of the identity provider.
+	 */
+    public AbstractSAML2IdentityProviderMetadataResolver(@Nullable final String idpEntityId) {
         this.idpEntityId = idpEntityId;
     }
 
+    
     @Override
-    public  final MetadataResolver resolve() {
-    	
+    public final MetadataResolver resolve() {
     	// No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
     	// idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
     	// Usage of locks will adversly impact performance.
@@ -63,32 +66,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     	}
     	
         try {
-            Resource resource = null;
-            if (this.idpMetadataPath.startsWith(CommonHelper.RESOURCE_PREFIX)) {
-                String path = this.idpMetadataPath.substring(CommonHelper.RESOURCE_PREFIX.length());
-                if (!path.startsWith("/")) {
-                    path = "/" + path;
-                }
-                resource = ResourceHelper.of(new ClassPathResource(path));
-            }  else if (this.idpMetadataPath.startsWith(HTTP_PREFIX)) {
-                final UrlResource urlResource = new UrlResource(this.idpMetadataPath);
-                if (urlResource.getURL().getProtocol().equalsIgnoreCase(HTTP_PREFIX)) {
-                    logger.warn("IdP metadata is retrieved from an insecure http endpoint [{}]",
-                            urlResource.getURL());
-                }
-                resource = ResourceHelper.of(urlResource);
-            // for backward compatibility
-            } else if (this.idpMetadataPath.startsWith(FILE_PREFIX)) {
-                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath.substring(FILE_PREFIX.length())));
-            } else {
-                resource = ResourceHelper.of(new FileSystemResource(this.idpMetadataPath));
-            }
-
-            if (resource == null) {
-                throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataPath);
-            }
-
-            try (final InputStream in = resource.getInputStream()) {
+            try (final Reader in = getIdpMetadataResourceReader()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);
                 final Element metadataRoot = inCommonMDDoc.getDocumentElement();
                 idpMetadataProvider = new DOMMetadataResolver(metadataRoot);
@@ -110,8 +88,8 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
 
                 while (it.hasNext()) {
                     final EntityDescriptor entityDescriptor = it.next();
-                    if (SAML2IdentityProviderMetadataResolver.this.idpEntityId == null) {
-                        SAML2IdentityProviderMetadataResolver.this.idpEntityId = entityDescriptor.getEntityID();
+                    if (AbstractSAML2IdentityProviderMetadataResolver.this.idpEntityId == null) {
+                    	AbstractSAML2IdentityProviderMetadataResolver.this.idpEntityId = entityDescriptor.getEntityID();
                     }
                 }
             }
@@ -142,11 +120,6 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     }
 
     @Override
-    public String getMetadataPath() {
-        return idpMetadataPath;
-    }
-
-    @Override
     public String getMetadata() {
         if (getEntityDescriptorElement() != null
                 && getEntityDescriptorElement().getDOM() != null) {
@@ -164,4 +137,16 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         }
     }
 
+    
+	/**
+	 * Provides a reader supplying IdP metadata as text. It is the caller's responsibility to properly close the reader after use.
+	 * 
+	 * @return An open reader with IdP metadata.
+	 * 
+	 * @throws IOException
+	 *             If the reader could not be created because the source of IdP metadata (whatever it is) does not exist or could not be
+	 *             read.
+	 */
+    protected abstract Reader getIdpMetadataResourceReader() throws IOException;
+    
 }

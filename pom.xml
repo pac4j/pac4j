@@ -46,6 +46,7 @@
 		<module>pac4j-openid</module>
 		<module>pac4j-http</module>
 		<module>pac4j-saml</module>
+		<module>pac4j-saml-config-db</module>
 		<module>pac4j-gae</module>
 		<module>pac4j-oidc</module>
 		<module>pac4j-jwt</module>
@@ -94,6 +95,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.pac4j</groupId>
+				<artifactId>pac4j-saml</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-oidc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -122,7 +128,13 @@
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
 			</dependency>
-			<!-- for testing -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+ 	 	 	
+ 	 	 	<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-core</artifactId>
@@ -160,7 +172,7 @@
 				<artifactId>mockito-core</artifactId>
 				<version>${mockito.version}</version>
 			</dependency>
-			<!-- for testing -->
+ 	 	 	<!-- for testing -->
 		</dependencies>
 	</dependencyManagement>
 

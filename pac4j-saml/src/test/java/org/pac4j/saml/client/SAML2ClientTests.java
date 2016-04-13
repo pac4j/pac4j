@@ -1,3 +1,4 @@
+
 package org.pac4j.saml.client;
 
 import org.junit.Test;
@@ -31,7 +32,11 @@ public final class SAML2ClientTests {
 
     private void internalTestIdpMetadataParsing(final String metadata) {
         final SAML2Client client = getClient();
-        client.getConfiguration().setIdentityProviderMetadataPath(metadata);
+        AbstractSAML2ClientConfiguration cfg = client.getConfiguration();
+        if (cfg.identityProviderMetadataNeedResolution()) {
+        	SAML2ClientConfiguration saml2cfg = (SAML2ClientConfiguration) cfg;
+        	saml2cfg.setIdentityProviderMetadataPath(metadata);
+        }
         client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();

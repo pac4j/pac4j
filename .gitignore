@@ -26,3 +26,5 @@ perfStats.log
 overlays
 pac4j-test-cas/overlays/
 .DS_Store
+.pmd
+.pmdruleset.xml

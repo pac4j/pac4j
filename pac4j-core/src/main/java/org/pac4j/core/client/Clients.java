@@ -30,8 +30,9 @@ public class Clients extends InitializableObject {
     private String clientNameParameter = DEFAULT_CLIENT_NAME_PARAMETER;
 
     private List<Client> clients;
-
+    
     private String callbackUrl = null;
+
 
     public Clients() {
     }
@@ -63,6 +64,7 @@ public class Clients extends InitializableObject {
         setClients(Arrays.asList(client));
     }
 
+    
     /**
      * Initialize all clients by computing callback urls if necessary.
      */
@@ -77,21 +79,30 @@ public class Clients extends InitializableObject {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
             names.add(lowerName);
-            if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
-                final IndirectClient indirectClient = (IndirectClient) client;
-                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                // no callback url defined for the client -> set it with the group callback url
-                if (indirectClientCallbackUrl == null) {
-                    indirectClient.setCallbackUrl(this.callbackUrl);
-                    indirectClientCallbackUrl = this.callbackUrl;
-                }
-                // if the "client_name" parameter is not already part of the callback url, add it unless the client
-                // has indicated to not include it.
-                if (indirectClient.isIncludeClientNameInCallbackUrl() &&
-                        indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
-                            name));
-                }
+            updateCallbackUrlOfIndirectClient(client);
+        }
+    }
+
+    
+    /**
+     * Sets a client's Callback URL, if not already set. If requested, the "client_name" parameter will also be a part of the URL.
+     * 
+     * @param client A client.
+     */
+    protected void updateCallbackUrlOfIndirectClient(final Client client) {
+    	if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
+            final IndirectClient indirectClient = (IndirectClient) client;
+            String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+            // no callback url defined for the client -> set it with the group callback url
+            if (indirectClientCallbackUrl == null) {
+                indirectClient.setCallbackUrl(this.callbackUrl);
+                indirectClientCallbackUrl = this.callbackUrl;
+            }
+            // if the "client_name" parameter is not already part of the callback url, add it unless the client
+            // has indicated to not include it.
+            if (indirectClient.isIncludeClientNameInCallbackUrl() &&
+                    indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
+                indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, client.getName()));
             }
         }
     }
@@ -179,9 +190,14 @@ public class Clients extends InitializableObject {
     public void setClients(final Client... clients) {
         this.clients = Arrays.asList(clients);
     }
-
+    
+    /**
+     * Returns initialized clients.
+     * 
+     * @return A list of clients ready to be used.
+     */
     public List<Client> getClients() {
-        return this.clients;
+   		return this.clients;
     }
 
     @Override
@@ -189,4 +205,5 @@ public class Clients extends InitializableObject {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
                 this.clientNameParameter, "clients", getClients());
     }
+
 }
