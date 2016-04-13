@@ -54,7 +54,7 @@ public class DatabaseSAML2ClientsTest implements TestsConstants {
 
     @Test
     public void testNoCallbackUrl() {
-        final DatabaseSAML2Clients clientsGroup = new DatabaseSAML2Clients(createSamlClientDaoMock());//(facebookClient);
+        final DatabaseSAML2Clients clientsGroup = new DatabaseSAML2Clients(createSamlClientDaoMock());
         clientsGroup.init();
         Client c = clientsGroup.findClient("SamlOne");
         assertNotNull(c);

@@ -16,10 +16,14 @@
 package org.pac4j.saml.dbclient;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.AbstractSAML2ClientConfiguration;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.dbclient.dao.api.SamlClientDao;
@@ -58,9 +62,32 @@ public class DatabaseSAML2Clients extends Clients {
 	public DatabaseSAML2Clients(SamlClientDao samlClientDao) {
 		super();
 		this.samlClientDao = samlClientDao;
-		this.dynamicallyLoadedClients = new ArrayList<>();
 	}
 
+	
+    /**
+     * {@inheritDoc}
+     * 
+     * The clients are first loaded from the database, then set up as usual.
+     */
+    @Override
+    protected void internalInit() {
+    	final Set<String> names = new HashSet<>();
+        final List<Client> loadedClients = loadClientsInternal();
+        CommonHelper.assertNotNull("loadedClients", loadedClients);
+    	
+        for (final Client client : loadedClients) {
+            final String name = client.getName();
+            final String lowerName = name.toLowerCase();
+            if (names.contains(lowerName)) {
+                throw new TechnicalException("Duplicate name in clients: " + name);
+            }
+            names.add(lowerName);
+            updateCallbackUrlOfIndirectClient(client);
+        }
+        
+        this.dynamicallyLoadedClients = loadedClients;
+    }
 	
 	
 	/* (non-Javadoc)
@@ -68,28 +95,28 @@ public class DatabaseSAML2Clients extends Clients {
 	 */
 	@Override
 	public List<Client> getClients() {
-		init();
+		init(); // We must assure the clients are loaded from DB first.
 		return this.dynamicallyLoadedClients; // Never null, can be an empty list
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see org.pac4j.core.client.Clients#loadClientsInternal()
+	/**
+	 * An internal method that loads client definitions.
+	 * 
+	 * @return A list of loaded clients. Never {@code null} but an empty list is possible.
 	 */
-	@Override
 	protected List<Client> loadClientsInternal() {
-		this.dynamicallyLoadedClients = new ArrayList<>();
-		
+		final List<Client> loaded = new ArrayList<>();
 		final List<String> clientNames = samlClientDao.loadClientNames();
 		for (final String name: clientNames) {
 			final AbstractSAML2ClientConfiguration configuration = new DatabaseSAML2ClientConfiguration(samlClientDao);
 			final SAML2Client client = new SAML2Client(configuration);
 			client.setName(name);
-			this.dynamicallyLoadedClients.add(client);
+			loaded.add(client);
 		}
 		
-		logger.info("Dynamically loaded {} SAML clients.", this.dynamicallyLoadedClients.size());
-		return this.dynamicallyLoadedClients;
+		logger.info("Dynamically loaded {} SAML clients: {}", loaded.size(), clientNames);
+		return loaded;
 	}
 
 

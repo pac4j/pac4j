@@ -1,7 +1,6 @@
 package org.pac4j.core.client;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -71,20 +70,16 @@ public class Clients extends InitializableObject {
      */
     @Override
     protected void internalInit() {
+        CommonHelper.assertNotNull("clients", getClients());
         final HashSet<String> names = new HashSet<>();
-        final List<Client> loadedClients = loadClientsInternal();
-        CommonHelper.assertNotNull("clients", loadedClients); // Check postponed after loading
-        
-        if (loadedClients != null) {
-	        for (final Client client : loadedClients) {
-	            final String name = client.getName();
-	            final String lowerName = name.toLowerCase();
-	            if (names.contains(lowerName)) {
-	                throw new TechnicalException("Duplicate name in clients: " + name);
-	            }
-	            names.add(lowerName);
-	            updateCallbackUrlOfIndirectClient(client);
-	        }
+        for (final Client client : getClients()) {
+            final String name = client.getName();
+            final String lowerName = name.toLowerCase();
+            if (names.contains(lowerName)) {
+                throw new TechnicalException("Duplicate name in clients: " + name);
+            }
+            names.add(lowerName);
+            updateCallbackUrlOfIndirectClient(client);
         }
     }
 
@@ -131,6 +126,7 @@ public class Clients extends InitializableObject {
      * @return the right client
      */
     public Client findClient(final String name) {
+        init();
         for (final Client client : getClients()) {
             if (CommonHelper.areEqualsIgnoreCaseAndTrim(name, client.getName())) {
                 return client;
@@ -149,6 +145,7 @@ public class Clients extends InitializableObject {
      */
     @SuppressWarnings("unchecked")
     public <C extends Client> C findClient(final Class<C> clazz) {
+        init();
         if (clazz != null) {
           for (final Client client : getClients()) {
             if (clazz.isAssignableFrom(client.getClass())) {
@@ -166,6 +163,7 @@ public class Clients extends InitializableObject {
      * @return all the clients
      */
     public List<Client> findAllClients() {
+        init();
         return getClients();
     }
 
@@ -199,12 +197,7 @@ public class Clients extends InitializableObject {
      * @return A list of clients ready to be used.
      */
     public List<Client> getClients() {
-    	init();
-    	if (this.clients == null) {
-    		return Collections.emptyList();
-    	} else {
-    		return this.clients;
-    	}
+   		return this.clients;
     }
 
     @Override
@@ -213,19 +206,4 @@ public class Clients extends InitializableObject {
                 this.clientNameParameter, "clients", getClients());
     }
 
-    
-	/**
-	 * An internal method that loads client definitions, if needed. The loaded clients should be returned as the result of this method and
-	 * also set into an internal variable that is later returned by {@link #getClients()}. These two methods should always be consistent
-	 * with each other.
-	 * 
-	 * @return A list of clients ready to be used.
-	 * 
-	 * @see #getClients()
-	 */
-    protected List<Client> loadClientsInternal() {
-    	// Nothing is needed to be done with this.clients. They are statically defined.
-    	return this.clients;
-    }
-    
 }
