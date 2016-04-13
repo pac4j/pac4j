@@ -23,7 +23,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -44,43 +43,36 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
 
-    public SAML2ServiceProviderMetadataResolver(final CredentialProvider credentialProvider,
-			                                    final String spMetadataPath, 
-			                                    final String callbackUrl) {
-		this(spMetadataPath, callbackUrl, null, false, credentialProvider);
-	}
-
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-            final String callbackUrl,
-            @Nullable final String spEntityId,
-            final boolean forceSpMetadataGeneration,
-            final CredentialProvider credentialProvider) {
-		this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider);
+                                                final String callbackUrl,
+                                                @Nullable final String spEntityId,
+                                                final boolean forceSpMetadataGeneration,
+                                                final CredentialProvider credentialProvider) {
+        this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider);
 	}
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration,
                                                 final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
-		this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl, configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider);
+        this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl, configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider);
     }
 
     private SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-                final WritableResource spMetadataResource,
-                final String callbackUrl,
-                @Nullable final String spEntityId,
-                final boolean forceSpMetadataGeneration,
-                final CredentialProvider credentialProvider) {
+                                                 final WritableResource spMetadataResource,
+                                                 final String callbackUrl,
+                                                 @Nullable final String spEntityId,
+                                                 final boolean forceSpMetadataGeneration,
+                                                 final CredentialProvider credentialProvider) {
 
-    		if (spMetadataResource != null) {
-    			this.spMetadataResource = spMetadataResource;
-    		} else {
-    			this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
-    		}
-            this.spEntityId = spEntityId;
-            this.credentialProvider = credentialProvider;
-            this.callbackUrl = callbackUrl;
-            this.forceSpMetadataGeneration = forceSpMetadataGeneration;
-
+        if (spMetadataResource != null) {
+            this.spMetadataResource = spMetadataResource;
+        } else {
+            this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
+        }
+        this.spEntityId = spEntityId;
+        this.credentialProvider = credentialProvider;
+        this.callbackUrl = callbackUrl;
+        this.forceSpMetadataGeneration = forceSpMetadataGeneration;
 
         // If the spEntityId is blank, use the callback url
         try {
