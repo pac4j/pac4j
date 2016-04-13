@@ -3,7 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
+public class StrictTransportSecurityHeader implements Authorizer<CommonProfile> {
 
     /**
      * 6 months in seconds.
@@ -29,7 +29,7 @@ public class StrictTransportSecurityHeader implements Authorizer<UserProfile> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws RequiresHttpAction {
         if (ContextHelper.isHttpsOrSecure(context)) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }

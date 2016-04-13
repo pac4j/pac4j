@@ -30,7 +30,7 @@ public final class ConfigTests implements TestsConstants {
 
     @Test(expected = TechnicalException.class)
     public void testNullAuthorizersConstructor() {
-        final Config config = new Config((Map<String, Authorizer >) null);
+        new Config((Map<String, Authorizer >) null);
     }
 
     @Test

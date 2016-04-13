@@ -2,8 +2,10 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.core.profile.*;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.profile.facebook.*;
@@ -70,10 +72,10 @@ public final class RunFacebookClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final FacebookProfile profile = (FacebookProfile) userProfile;
         assertEquals("771361542992890", profile.getId());
-        assertEquals(FacebookProfile.class.getName() + UserProfile.SEPARATOR + "771361542992890",
+        assertEquals(FacebookProfile.class.getName() + CommonProfile.SEPARATOR + "771361542992890",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
@@ -96,9 +98,9 @@ public final class RunFacebookClient extends RunClient {
         education = educations.get(1);
         assertEquals("Ingénieur", education.getDegree().getName());
         assertNull(profile.getEmail());
-        assertEquals("San Francisco, California", (profile.getHometown()).getName());
-        assertEquals("female", (profile.getInterestedIn()).get(0));
-        assertEquals("New York, New York", (profile.getLocationObject()).getName());
+        assertEquals("San Francisco, California", profile.getHometown().getName());
+        assertEquals("female", profile.getInterestedIn().get(0));
+        assertEquals("New York, New York", profile.getLocationObject().getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
         final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
         assertEquals("Surfing", favoriteAthletes.get(0).getName());
@@ -115,7 +117,6 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("Paris, France", work.getLocation().getName());
         assertEquals("Architecte Web", work.getPosition().getName());
         assertEquals("Description", work.getDescription());
-        assertTrue(work.getStartDate() instanceof Date);
         assertNull(work.getEndDate());
         final List<FacebookObject> friends = profile.getFriends();
         assertEquals(1, friends.size());

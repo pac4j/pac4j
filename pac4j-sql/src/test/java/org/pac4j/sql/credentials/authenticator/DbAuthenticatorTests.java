@@ -2,7 +2,7 @@ package org.pac4j.sql.credentials.authenticator;
 
 import org.junit.*;
 import org.pac4j.core.exception.*;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.NopPasswordEncoder;
@@ -62,7 +62,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
     public void testGoodUsernameAttribute() throws RequiresHttpAction {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
         final DbProfile dbProfile = (DbProfile) profile;
@@ -74,7 +74,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
     public void testGoodUsernameNoAttribute() throws RequiresHttpAction {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, "");
 
-        final UserProfile profile = credentials.getUserProfile();
+        final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof DbProfile);
         final DbProfile dbProfile = (DbProfile) profile;
@@ -84,16 +84,16 @@ public final class DbAuthenticatorTests implements TestsConstants {
 
     @Test(expected = MultipleAccountsFoundException.class)
     public void testMultipleUsername() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(MULTIPLE_USERNAME, PASSWORD, "");
+        login(MULTIPLE_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = AccountNotFoundException.class)
     public void testBadUsername() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(BAD_USERNAME, PASSWORD, "");
+        login(BAD_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = BadCredentialsException.class)
     public void testBadPassword() throws RequiresHttpAction {
-        final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD + "bad", "");
+        login(GOOD_USERNAME, PASSWORD + "bad", "");
     }
 }

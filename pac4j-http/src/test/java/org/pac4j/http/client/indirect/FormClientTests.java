@@ -8,7 +8,6 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
@@ -134,7 +133,7 @@ public final class FormClientTests implements TestsConstants {
         final CommonProfile profile = formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, USERNAME,
                 formClient.getName()), context);
         assertEquals(USERNAME, profile.getId());
-        assertEquals(CommonProfile.class.getName() + UserProfile.SEPARATOR + USERNAME, profile.getTypedId());
+        assertEquals(CommonProfile.class.getName() + CommonProfile.SEPARATOR + USERNAME, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CommonProfile.class));
         assertEquals(USERNAME, profile.getUsername());
         assertEquals(1, profile.getAttributes().size());

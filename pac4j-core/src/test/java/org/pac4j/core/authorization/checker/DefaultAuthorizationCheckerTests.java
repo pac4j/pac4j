@@ -11,8 +11,8 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.util.TestsConstants;
 
 import java.util.ArrayList;
@@ -32,9 +32,9 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     private final AuthorizationChecker checker = new DefaultAuthorizationChecker();
 
-    private List<UserProfile> profiles;
+    private List<CommonProfile> profiles;
 
-    private UserProfile profile;
+    private CommonProfile profile;
 
     @Before
     public void setUp() {
@@ -43,8 +43,8 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         profiles.add(profile);
     }
 
-    private static class IdAuthorizer implements Authorizer<UserProfile> {
-        public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) {
+    private static class IdAuthorizer implements Authorizer<CommonProfile> {
+        public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) {
             return VALUE.equals(profiles.get(0).getId());
         }
     }
@@ -280,5 +280,28 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
         assertTrue(checker.isAuthorized(context, profiles, "csrfCheck", null));
+    }
+
+    @Test
+    public void testIsAnonymous() throws RequiresHttpAction {
+        profiles.clear();
+        profiles.add(new AnonymousProfile());
+        assertTrue(checker.isAuthorized(null, profiles, "isAnonymous", null));
+    }
+
+    @Test
+    public void testIsAuthenticated() throws RequiresHttpAction {
+        assertTrue(checker.isAuthorized(null, profiles, "isAuthenticated", null));
+    }
+
+    @Test
+    public void testIsFullyAuthenticated() throws RequiresHttpAction {
+        assertTrue(checker.isAuthorized(null, profiles, "isFullyAuthenticated", null));
+    }
+
+    @Test
+    public void testIsRemembered() throws RequiresHttpAction {
+        profile.setRemembered(true);
+        assertTrue(checker.isAuthorized(null, profiles, "isRemembered", null));
     }
 }

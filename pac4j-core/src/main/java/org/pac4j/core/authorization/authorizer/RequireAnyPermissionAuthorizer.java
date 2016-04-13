@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
 import java.util.Set;
@@ -14,7 +14,7 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class RequireAnyPermissionAuthorizer<U extends UserProfile> extends AbstractRequireAnyAuthorizer<String, U> {
+public class RequireAnyPermissionAuthorizer<U extends CommonProfile> extends AbstractRequireAnyAuthorizer<String, U> {
 
     public RequireAnyPermissionAuthorizer() { }
 

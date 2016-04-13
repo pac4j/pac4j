@@ -3,10 +3,10 @@ package org.pac4j.oidc.run;
 import com.esotericsoftware.kryo.Kryo;
 import com.nimbusds.oauth2.sdk.token.AccessTokenType;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.client.AzureAdClient;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
 import org.pac4j.oidc.profile.AzureAdProfile;
@@ -52,10 +52,10 @@ public class RunAzureAdClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(final UserProfile userProfile) {
+    protected void verifyProfile(final CommonProfile userProfile) {
         final AzureAdProfile profile = (AzureAdProfile) userProfile;
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
-        assertEquals(AzureAdProfile.class.getName() + UserProfile.SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
+        assertEquals(AzureAdProfile.class.getName() + CommonProfile.SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), AzureAdProfile.class));
         assertNotNull(profile.getIdTokenString());

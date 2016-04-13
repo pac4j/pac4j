@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +28,9 @@ public final class RequireAnyRoleAuthorizerTests {
 
     private final J2EContext context = new J2EContext(null, null);
 
-    private List<UserProfile> profiles;
+    private List<CommonProfile> profiles;
 
-    private UserProfile profile;
+    private CommonProfile profile;
 
     @Before
     public void setUp() {

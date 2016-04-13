@@ -3,7 +3,6 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Test;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +18,17 @@ import static org.junit.Assert.assertTrue;
  */
 public final class CheckProfileTypeAuthorizerTests {
 
-    class FakeProfile1 extends CommonProfile {
+    private static class FakeProfile1 extends CommonProfile {
+        public FakeProfile1() {}
     }
-    class FakeProfile2 extends CommonProfile {
+    private static class FakeProfile2 extends CommonProfile {
+        public FakeProfile2() {}
     }
 
     @Test
     public void testGoodProfile() throws RequiresHttpAction {
         final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class, FakeProfile2.class);
-        final List<UserProfile> profiles = new ArrayList<>();
+        final List<CommonProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile1());
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
@@ -35,7 +36,7 @@ public final class CheckProfileTypeAuthorizerTests {
     @Test
     public void testBadProfileType() throws RequiresHttpAction {
         final CheckProfileTypeAuthorizer authorizer = new CheckProfileTypeAuthorizer(FakeProfile1.class);
-        final List<UserProfile> profiles = new ArrayList<>();
+        final List<CommonProfile> profiles = new ArrayList<>();
         profiles.add(new FakeProfile2());
         assertFalse(authorizer.isAuthorized(null, profiles));
     }

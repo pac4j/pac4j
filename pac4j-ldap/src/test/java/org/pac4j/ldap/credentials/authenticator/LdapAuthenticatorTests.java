@@ -5,9 +5,10 @@ import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.pac4j.ldap.test.tools.AuthenticatorGenerator;
 import org.pac4j.ldap.test.tools.LdapServer;
@@ -40,18 +41,16 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         ldapServer.stop();
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAuthenticator() throws RequiresHttpAction {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator();
-        ldapAuthenticator.init(null);
-        ldapAuthenticator.validate(null);
+        TestsHelper.expectException(() -> ldapAuthenticator.init(null), TechnicalException.class, "ldapAuthenticator cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAttributes() throws RequiresHttpAction {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, null);
-        ldapAuthenticator.init(null);
-        ldapAuthenticator.validate(null);
+        TestsHelper.expectException(() -> ldapAuthenticator.init(null), TechnicalException.class, "attributes cannot be null");
     }
 
     @Test(expected = BadCredentialsException.class)
@@ -69,7 +68,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
@@ -84,7 +83,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;
@@ -101,7 +100,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials);
 
-        final UserProfile profile = credentials.getUserProfile();
+        final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
         assertTrue(profile instanceof LdapProfile);
         final LdapProfile ldapProfile = (LdapProfile) profile;

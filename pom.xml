@@ -238,6 +238,7 @@
 					<threshold>Max</threshold> <!-- Medium Low -->
 					<failOnError>true</failOnError>
 					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+					<includeTests>true</includeTests>
 				</configuration>
 				<executions>
 					<execution>
@@ -253,6 +254,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.6</version>
+				<configuration>
+					<includeTests>true</includeTests>
+				</configuration>
 				<executions>
 					<execution>
 						<id>run-pmd</id>
@@ -329,7 +333,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.1</version>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
