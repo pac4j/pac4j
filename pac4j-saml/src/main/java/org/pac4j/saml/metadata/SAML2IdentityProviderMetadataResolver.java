@@ -59,10 +59,9 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
         this(null, idpMetadataPath, idpEntityId);
     }
 
-	public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration,
-			final String idpEntityId) {
+	public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration) {
 		this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderMetadataPath(),
-				idpEntityId);
+				configuration.getIdentityProviderEntityId());
 	}
 
 	public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, final String idpMetadataPath,
