@@ -7,7 +7,7 @@ import java.io.InputStream;
  * A wrapper that adapts a spring {@link org.springframework.core.io.Resource} to a pac4j {@link Resource}.
  * 
  * @author Keith Garry Boyce
- * @since 1.4.3
+ * @since 1.9.0
  */
 public class SpringResourceWrapper implements Resource {
 	protected org.springframework.core.io.Resource springResource;

@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
  * A wrapper that adapts a spring {@link org.springframework.core.io.WritableResource} to a pac4j {@link WritableResource}.
  * 
  * @author Keith Garry Boyce
- * @since 1.4.3
+ * @since 1.9.0
  */
 public class SpringWritableResourceWrapper extends SpringResourceWrapper implements WritableResource {
 
