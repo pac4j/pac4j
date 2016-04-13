@@ -50,9 +50,6 @@ import java.util.Iterator;
 public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResolver {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final static String HTTP_PREFIX = "http";
-    protected final static String FILE_PREFIX = "file:";
-
     private final Resource idpMetadataResource;
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
