@@ -66,6 +66,11 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	private String keyStoreAlias;
 
 	private String keyStoreType;
+	
+    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
+                                    final String privateKeyPassword, final String identityProviderMetadataPath) {
+        this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null, identityProviderMetadataPath, null, null);
+    }
 
 	public SAML2ClientConfiguration(final KeyStore keystore, 
 			                        final String keyStoreAlias, 
@@ -82,12 +87,6 @@ public final class SAML2ClientConfiguration implements Cloneable {
 		this(null, keyStoreAlias, keyStoreType, keystoreResource, null, keystorePassword, privateKeyPassword,
 				identityProviderMetadataResource, null, null, null);
 	}
-
-    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-                                    final String privateKeyPassword, final String identityProviderMetadataPath) {
-        this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null,
-                identityProviderMetadataPath, null, null);
-    }
 
 	private SAML2ClientConfiguration(final KeyStore keyStore, final String keyStoreAlias, final String keyStoreType,
 			                         final Resource keystoreResource, final String keystorePath, final String keystorePassword,
@@ -307,9 +306,9 @@ public final class SAML2ClientConfiguration implements Cloneable {
         return serviceProviderMetadataResource.getFilename();
     }
 
-	public WritableResource getServiceProviderMetadataResource() {
-		return serviceProviderMetadataResource;
-	}
+    public WritableResource getServiceProviderMetadataResource() {
+        return serviceProviderMetadataResource;
+    }
 
     public boolean isForceServiceProviderMetadataGeneration() {
         return forceServiceProviderMetadataGeneration;
