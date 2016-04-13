@@ -1,6 +1,6 @@
 package org.pac4j.core.credentials;
 
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ public abstract class Credentials implements Serializable {
 
     private String clientName;
 
-    private UserProfile userProfile = null;
+    private CommonProfile userProfile = null;
 
     public String getClientName() {
         return this.clientName;
@@ -26,11 +26,11 @@ public abstract class Credentials implements Serializable {
         this.clientName = clientName;
     }
 
-    public UserProfile getUserProfile() {
+    public CommonProfile getUserProfile() {
         return userProfile;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
+    public void setUserProfile(CommonProfile userProfile) {
         this.userProfile = userProfile;
     }
 

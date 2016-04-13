@@ -10,6 +10,7 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticato
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 import static org.junit.Assert.*;
@@ -100,29 +101,29 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialsMissingSemiColon() throws RequiresHttpAction {
+    public void testGetCredentialsMissingSemiColon() throws RequiresHttpAction, UnsupportedEncodingException {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final MockWebContext context = getContextWithAuthorizationHeader(
-                "Basic " + Base64.getEncoder().encodeToString("fake".getBytes()));
+                "Basic " + Base64.getEncoder().encodeToString("fake".getBytes(HttpConstants.UTF8_ENCODING)));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
-    public void testGetCredentialsBadCredentials() {
+    public void testGetCredentialsBadCredentials() throws UnsupportedEncodingException {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + PASSWORD;
         final MockWebContext context = getContextWithAuthorizationHeader("Basic "
-                + Base64.getEncoder().encodeToString(header.getBytes()));
+                + Base64.getEncoder().encodeToString(header.getBytes(HttpConstants.UTF8_ENCODING)));
         verifyGetCredentialsFailsWithAuthenticationRequired(basicAuthClient, context);
     }
 
     @Test
-    public void testGetCredentialsGoodCredentials() throws RequiresHttpAction {
+    public void testGetCredentialsGoodCredentials() throws RequiresHttpAction, UnsupportedEncodingException {
         final IndirectBasicAuthClient basicAuthClient = getBasicAuthClient();
         final String header = USERNAME + ":" + USERNAME;
         final UsernamePasswordCredentials credentials = basicAuthClient.getCredentials(
                 getContextWithAuthorizationHeader(
-                        "Basic " + Base64.getEncoder().encodeToString(header.getBytes())));
+                        "Basic " + Base64.getEncoder().encodeToString(header.getBytes(HttpConstants.UTF8_ENCODING))));
         assertEquals(USERNAME, credentials.getUsername());
         assertEquals(USERNAME, credentials.getPassword());
     }

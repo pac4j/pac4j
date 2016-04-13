@@ -6,13 +6,12 @@ import org.pac4j.core.context.WebContext;
 import java.util.*;
 
 /**
- * <p>This class is a generic way to manage the current user profile(s), i.e. the one(s) of the current authenticated user.</p>
- * <p>It may be partially re-implemented for specific needs / frameworks.</p>
+ * This class is a generic way to manage the current user profile(s), i.e. the one(s) of the current authenticated user.
  *
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ProfileManager {
+public class ProfileManager<U extends CommonProfile> {
 
     protected final WebContext context;
 
@@ -21,17 +20,25 @@ public class ProfileManager {
     }
 
     /**
-     * Retrieve the first user profile if it exists.
+     * Retrieve the first user profile if it exists, ignoring any {@link AnonymousProfile} if possible.
      *
      * @param readFromSession if the user profile must be read from session
      * @return the user profile
      */
-    public Optional<UserProfile> get(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
-        if (profiles.size() == 0) {
+    public Optional<U> get(final boolean readFromSession) {
+        final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
+        if (allProfiles.size() == 0) {
             return Optional.empty();
         } else {
-            return Optional.of(profiles.values().iterator().next());
+            U profile = null;
+            final Iterator<U> profiles = allProfiles.values().iterator();
+            while (profiles.hasNext()) {
+                final U nextProfile = profiles.next();
+                if (profile == null || profile instanceof AnonymousProfile) {
+                    profile = nextProfile;
+                }
+            }
+            return Optional.of(profile);
         }
     }
 
@@ -41,32 +48,28 @@ public class ProfileManager {
      * @param readFromSession if the user profiles must be read from session
      * @return the user profiles.
      */
-    public List<UserProfile> getAll(final boolean readFromSession) {
-        final LinkedHashMap<String, UserProfile> profiles = retrieveAll(readFromSession);
-        final List<UserProfile> listProfiles = new ArrayList<>();
-        for (final Map.Entry<String, UserProfile> entry : profiles.entrySet()) {
+    public List<U> getAll(final boolean readFromSession) {
+        final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
+        final List<U> listProfiles = new ArrayList<>();
+        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
             listProfiles.add(entry.getValue());
         }
         return Collections.unmodifiableList(listProfiles);
     }
 
-    private LinkedHashMap<String, UserProfile> retrieveAll(final boolean readFromSession) {
-        LinkedHashMap<String, UserProfile> profiles = null;
+    private LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
+        LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
         final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         if (objSession != null && objSession instanceof LinkedHashMap) {
-            profiles = (LinkedHashMap<String, UserProfile>) objSession;
+            profiles = (LinkedHashMap<String, U>) objSession;
         }
-        if ((profiles == null || profiles.isEmpty()) && readFromSession) {
+        if (readFromSession) {
             final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
             if (objRequest != null && objRequest instanceof LinkedHashMap) {
-                profiles = (LinkedHashMap<String, UserProfile>) objRequest;
+                profiles.putAll((LinkedHashMap<String, U>) objRequest);
             }
         }
-        if (profiles == null) {
-            return new LinkedHashMap<>();
-        } else {
-            return profiles;
-        }
+        return profiles;
     }
 
     /**
@@ -76,9 +79,9 @@ public class ProfileManager {
      */
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
-            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
+            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
         }
-        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, UserProfile>());
+        this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
     }
 
     /**
@@ -88,8 +91,8 @@ public class ProfileManager {
      * @param profile a given user profile
      * @param multiProfile whether multiple profiles are supported
      */
-    public void save(final boolean saveInSession, final UserProfile profile, final boolean multiProfile) {
-        final LinkedHashMap<String, UserProfile> profiles;
+    public void save(final boolean saveInSession, final U profile, final boolean multiProfile) {
+        final LinkedHashMap<String, U> profiles;
 
         String clientName = profile.getClientName();
         if (clientName == null) {
@@ -117,11 +120,12 @@ public class ProfileManager {
     }
 
     /**
-     * Tests if the current user is authenticated (meaning a user profile exists).
+     * Tests if the current user is authenticated (meaning a user profile exists which is not an {@link AnonymousProfile}).
      *
      * @return whether the current user is authenticated
      */
     public boolean isAuthenticated() {
-        return get(true).isPresent();
+        final Optional<U> profile = get(true);
+        return profile.isPresent() && !(profile.get() instanceof AnonymousProfile);
     }
 }

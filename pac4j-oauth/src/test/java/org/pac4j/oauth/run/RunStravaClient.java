@@ -2,9 +2,9 @@ package org.pac4j.oauth.run;
 
 import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.client.StravaClient;
 import org.pac4j.oauth.profile.strava.StravaClub;
 import org.pac4j.oauth.profile.strava.StravaGear;
@@ -53,7 +53,7 @@ public final class RunStravaClient extends RunClient {
     }
 
     @Override
-    protected void verifyProfile(UserProfile userProfile) {
+    protected void verifyProfile(CommonProfile userProfile) {
         final StravaProfile profile = (StravaProfile) userProfile;
         assertEquals("7319316", profile.getId());
         assertEquals(Gender.MALE, profile.getGender());

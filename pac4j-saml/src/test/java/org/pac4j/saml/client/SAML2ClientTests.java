@@ -39,7 +39,7 @@ public final class SAML2ClientTests {
         assertEquals("https://idp.testshib.org/idp/shibboleth", id);
     }
 
-    protected final SAML2Client getClient() {
+    protected SAML2Client getClient() {
         final SAML2ClientConfiguration cfg =
                 new SAML2ClientConfiguration("resource:samlKeystore.jks",
                         "pac4j-demo-passwd",

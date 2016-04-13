@@ -7,7 +7,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     private long timeout;
     private TimeUnit timeUnit;
 
-    private LoadingCache<T, UserProfile> cache;
+    private LoadingCache<T, CommonProfile> cache;
     private UserProfileCacheLoader<T> cacheLoader;
 
     public LocalCachingAuthenticator() {}
@@ -49,7 +49,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     @Override
     public void validate(final T credentials) throws RequiresHttpAction {
         try {
-            final UserProfile profile = this.cache.get(credentials);
+            final CommonProfile profile = this.cache.get(credentials);
             credentials.setUserProfile(profile);
             logger.debug("Found cached credential. Using cached profile {}...", profile);
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
                 "timeout", this.timeout, "timeUnit", this.timeUnit);
     }
 
-    private static class UserProfileCacheLoader<T extends Credentials> extends CacheLoader<T, UserProfile> {
+    private static class UserProfileCacheLoader<T extends Credentials> extends CacheLoader<T, CommonProfile> {
         private final Logger logger = LoggerFactory.getLogger(getClass());
 
         private Authenticator<T> delegate;
@@ -139,10 +139,10 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
         }
 
         @Override
-        public UserProfile load(final T credentials) throws Exception {
+        public CommonProfile load(final T credentials) throws Exception {
             logger.debug("Delegating authentication to {}...", delegate);
             delegate.validate(credentials);
-            final UserProfile profile = credentials.getUserProfile();
+            final CommonProfile profile = credentials.getUserProfile();
             logger.debug("Cached authentication result");
             return profile;
         }

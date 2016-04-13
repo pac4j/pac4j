@@ -18,7 +18,7 @@ public final class ProfileHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileHelper.class);
 
-    private static final Map<String, Constructor<? extends UserProfile>> constructorsCache = new ConcurrentHashMap<>();
+    private static final Map<String, Constructor<? extends CommonProfile>> constructorsCache = new ConcurrentHashMap<>();
 
     /**
      * Indicate if the user identifier matches this kind of profile.
@@ -27,10 +27,10 @@ public final class ProfileHelper {
      * @param clazz profile class
      * @return if the user identifier matches this kind of profile
      */
-    public static boolean isTypedIdOf(final String id, final Class<? extends UserProfile> clazz) {
+    public static boolean isTypedIdOf(final String id, final Class<? extends CommonProfile> clazz) {
         if (id != null && clazz != null) {
-            boolean typedId = id.startsWith(clazz.getName() + UserProfile.SEPARATOR);
-            boolean oldTypedId = id.startsWith(clazz.getSimpleName() + UserProfile.SEPARATOR);
+            boolean typedId = id.startsWith(clazz.getName() + CommonProfile.SEPARATOR);
+            boolean oldTypedId = id.startsWith(clazz.getSimpleName() + CommonProfile.SEPARATOR);
             return typedId || oldTypedId;
         }
         return false;
@@ -43,14 +43,14 @@ public final class ProfileHelper {
      * @param attributes user attributes
      * @return the user profile built
      */
-    public static UserProfile buildProfile(final String typedId, final Map<String, Object> attributes) {
+    public static CommonProfile buildProfile(final String typedId, final Map<String, Object> attributes) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
         }
 
         logger.info("Building user profile based on typedId {}", typedId);
         try {
-            final String[] values = typedId.split(UserProfile.SEPARATOR);
+            final String[] values = typedId.split(CommonProfile.SEPARATOR);
             if (values != null && values.length >= 1) {
                 final String className = values[0];
                 if (CommonHelper.isNotBlank(className)) {
@@ -104,23 +104,23 @@ public final class ProfileHelper {
         return completeName;
     }
 
-    private static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
+    private static CommonProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
                                                                    final String completeName) throws Exception {
-        final Constructor<? extends UserProfile> constructor = getConstructor(completeName);
-        final UserProfile userProfile = constructor.newInstance();
+        final Constructor<? extends CommonProfile> constructor = getConstructor(completeName);
+        final CommonProfile userProfile = constructor.newInstance();
         userProfile.build(typedId, attributes);
         logger.debug("userProfile built: {}", userProfile);
         return userProfile;
     }
 
     @SuppressWarnings("unchecked")
-    private static Constructor<? extends UserProfile> getConstructor(final String name) throws Exception{
-        Constructor<? extends UserProfile> constructor = constructorsCache.get(name);
+    private static Constructor<? extends CommonProfile> getConstructor(final String name) throws Exception{
+        Constructor<? extends CommonProfile> constructor = constructorsCache.get(name);
         if (constructor == null) {
             synchronized (constructorsCache) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
-                    constructor = (Constructor<? extends UserProfile>) Class.forName(name).getDeclaredConstructor();
+                    constructor = (Constructor<? extends CommonProfile>) Class.forName(name).getDeclaredConstructor();
                     constructorsCache.put(name, constructor);
                 }
             }

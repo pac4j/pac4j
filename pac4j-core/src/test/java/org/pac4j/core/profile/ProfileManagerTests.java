@@ -20,15 +20,15 @@ public final class ProfileManagerTests {
 
     private final static String CLIENT1 = "client1";
     private final static String CLIENT2 = "client2";
-    private final static UserProfile PROFILE1 = new CommonProfile();
-    private final static UserProfile PROFILE2 = new CommonProfile();
-    private final static UserProfile PROFILE3 = new CommonProfile();
+    private final static CommonProfile PROFILE1 = new CommonProfile();
+    private final static CommonProfile PROFILE2 = new CommonProfile();
+    private final static CommonProfile PROFILE3 = new CommonProfile();
 
     private MockWebContext context;
 
     private ProfileManager profileManager;
 
-    private LinkedHashMap<String, UserProfile> profiles;
+    private LinkedHashMap<String, CommonProfile> profiles;
 
     static {
         PROFILE1.setId("ID1");
@@ -66,7 +66,15 @@ public final class ProfileManagerTests {
     }
 
     @Test
-    public void testGetTwoProfilesFromSession() {
+    public void testGetOneProfilesFromSessionFirstOneAnonymous() {
+        profiles.put("first", new AnonymousProfile());
+        profiles.put(CLIENT1, PROFILE1);
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        assertEquals(PROFILE1, profileManager.get(true).get());
+    }
+
+    @Test
+    public void testGetOneTwoProfilesFromSession() {
         profiles.put(CLIENT1, PROFILE1);
         profiles.put(CLIENT2, PROFILE2);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
@@ -90,6 +98,7 @@ public final class ProfileManagerTests {
     public void testGetAllNoProfile() {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         assertEquals(0, profileManager.getAll(true).size());
+        assertFalse(profileManager.isAuthenticated());
     }
 
     @Test
@@ -104,6 +113,17 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, PROFILE1);
         profiles.put(CLIENT2, PROFILE2);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        assertEquals(PROFILE1, profileManager.getAll(true).get(0));
+        assertEquals(PROFILE2, profileManager.getAll(true).get(1));
+    }
+
+    @Test
+    public void testGetAllTwoProfilesFromSessionAndRequest() {
+        profiles.put(CLIENT1, PROFILE1);
+        context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        final LinkedHashMap<String, CommonProfile> profiles2 = new LinkedHashMap<>();
+        profiles2.put(CLIENT2, PROFILE2);
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles2);
         assertEquals(PROFILE1, profileManager.getAll(true).get(0));
         assertEquals(PROFILE2, profileManager.getAll(true).get(1));
     }
@@ -160,7 +180,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, PROFILE1);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, PROFILE2, false);
-        final List<UserProfile> profiles = profileManager.getAll(true);
+        final List<CommonProfile> profiles = profileManager.getAll(true);
         assertEquals(1, profiles.size());
         assertEquals(PROFILE2, profiles.get(0));
     }
@@ -171,7 +191,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT2, PROFILE2);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, PROFILE3, false);
-        final List<UserProfile> profiles = profileManager.getAll(true);
+        final List<CommonProfile> profiles = profileManager.getAll(true);
         assertEquals(1, profiles.size());
         assertEquals(PROFILE3, profiles.get(0));
     }
@@ -181,7 +201,7 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT1, PROFILE1);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, PROFILE2, true);
-        final List<UserProfile> profiles = profileManager.getAll(true);
+        final List<CommonProfile> profiles = profileManager.getAll(true);
         assertEquals(2, profiles.size());
         assertEquals(PROFILE1, profiles.get(0));
         assertEquals(PROFILE2, profiles.get(1));
@@ -193,9 +213,18 @@ public final class ProfileManagerTests {
         profiles.put(CLIENT2, PROFILE2);
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         profileManager.save(true, PROFILE3, true);
-        final List<UserProfile> profiles = profileManager.getAll(true);
+        final List<CommonProfile> profiles = profileManager.getAll(true);
         assertEquals(2, profiles.size());
         assertEquals(PROFILE2, profiles.get(0));
         assertEquals(PROFILE3, profiles.get(1));
+    }
+
+
+    @Test
+    public void testIsAuthenticatedAnonymousProfile() {
+        profiles.put(CLIENT1, AnonymousProfile.INSTANCE);
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+        assertEquals(AnonymousProfile.INSTANCE, profileManager.getAll(true).get(0));
+        assertFalse(profileManager.isAuthenticated());
     }
 }

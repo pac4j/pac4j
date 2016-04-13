@@ -5,7 +5,7 @@ import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
+public class CsrfTokenGeneratorAuthorizer implements Authorizer<CommonProfile> {
 
     private final CsrfTokenGenerator csrfTokenGenerator;
 
@@ -25,7 +25,7 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<UserProfile> {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws RequiresHttpAction {
         CommonHelper.assertNotNull("csrfTokenGenerator", csrfTokenGenerator);
         final String token = csrfTokenGenerator.get(context);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);

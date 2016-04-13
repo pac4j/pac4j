@@ -10,6 +10,8 @@ public final class AnonymousCredentials extends Credentials {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
+    public final static AnonymousCredentials INSTANCE = new AnonymousCredentials();
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof AnonymousCredentials) {

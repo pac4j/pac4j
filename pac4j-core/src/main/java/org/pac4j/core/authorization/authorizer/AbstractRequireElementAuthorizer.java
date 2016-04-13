@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,9 +15,14 @@ import java.util.Set;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public abstract class AbstractRequireElementAuthorizer<E extends Object, U extends UserProfile> extends SingleProfileAuthorizer<U> {
+public abstract class AbstractRequireElementAuthorizer<E extends Object, U extends CommonProfile> extends ProfileAuthorizer<U> {
 
     protected Set<E> elements;
+
+    @Override
+    public boolean isAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
+        return isAnyAuthorized(context, profiles);
+    }
 
     /**
      * Check a specific element.

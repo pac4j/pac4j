@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -14,7 +15,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.Base64;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -116,7 +116,7 @@ public final class RedirectSAML2ClientTests extends AbstractSAML2ClientTests {
         final byte[] decodedRequest = Base64.getDecoder().decode(pairs.get(0).getValue());
         final ByteArrayInputStream is = new ByteArrayInputStream(decodedRequest);
         final InflaterInputStream inputStream = new InflaterInputStream(is, inflater);
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, HttpConstants.UTF8_ENCODING));
         String line;
         final StringBuilder bldr = new StringBuilder();
         while ((line = reader.readLine()) != null) {

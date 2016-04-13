@@ -1,8 +1,6 @@
 package org.pac4j.core.credentials.password;
 
 import org.junit.Test;
-import org.pac4j.core.credentials.password.NopPasswordEncoder;
-import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;

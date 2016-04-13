@@ -5,7 +5,7 @@ import org.pac4j.core.authorization.authorizer.csrf.*;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
-import org.pac4j.core.profile.UserProfile;
+import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +28,13 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static CacheControlHeader CACHE_CONTROL_HEADER = new CacheControlHeader();
     final static CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
     final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
+    final static IsAnonymousAuthorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();
+    final static IsAuthenticatedAuthorizer IS_AUTHENTICATED_AUTHORIZER =new IsAuthenticatedAuthorizer();
+    final static IsFullyAuthenticatedAuthorizer IS_FULLY_AUTHENTICATED_AUTHORIZER = new IsFullyAuthenticatedAuthorizer();
+    final static IsRememberedAuthorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws RequiresHttpAction {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (isNotBlank(authorizerNames)) {
@@ -61,6 +65,14 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 } else if ("csrf".equalsIgnoreCase(name)) {
                     authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
                     authorizers.add(CSRF_AUTHORIZER);
+                } else if ("isAnonymous".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_ANONYMOUS_AUTHORIZER);
+                } else if ("isAuthenticated".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_AUTHENTICATED_AUTHORIZER);
+                } else if ("isFullyAuthenticated".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_FULLY_AUTHENTICATED_AUTHORIZER);
+                } else if ("isRemembered".equalsIgnoreCase(name)) {
+                    authorizers.add(IS_REMEMBERED_AUTHORIZER);
                 } else {
                     // we must have authorizers
                     assertNotNull("authorizersMap", authorizersMap);
@@ -81,7 +93,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<UserProfile> profiles, final List<Authorizer> authorizers) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) throws RequiresHttpAction {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {

@@ -17,24 +17,24 @@ public final class ProfileHelperTests implements TestsConstants {
 
     @Test
     public void testIsTypedIdOf() {
-        assertFalse(ProfileHelper.isTypedIdOf(VALUE, UserProfile.class));
-        assertFalse(ProfileHelper.isTypedIdOf(null, UserProfile.class));
+        assertFalse(ProfileHelper.isTypedIdOf(VALUE, CommonProfile.class));
+        assertFalse(ProfileHelper.isTypedIdOf(null, CommonProfile.class));
         assertFalse(ProfileHelper.isTypedIdOf(VALUE, null));
-        assertTrue(ProfileHelper.isTypedIdOf("UserProfile" + UserProfile.SEPARATOR, UserProfile.class));
-        assertTrue(ProfileHelper.isTypedIdOf("org.pac4j.core.profile.UserProfile" + UserProfile.SEPARATOR, UserProfile.class));
+        assertTrue(ProfileHelper.isTypedIdOf("CommonProfile" + CommonProfile.SEPARATOR, CommonProfile.class));
+        assertTrue(ProfileHelper.isTypedIdOf("org.pac4j.core.profile.CommonProfile" + CommonProfile.SEPARATOR, CommonProfile.class));
     }
 
     @Test
     public void testBuildProfile() {
-        final UserProfile profile = new CommonProfile();
+        final CommonProfile profile = new CommonProfile();
         profile.setId(ID);
         profile.addAttribute(NAME, VALUE);
-        final UserProfile profile2 = ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
+        final CommonProfile profile2 = ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
         assertEquals(ID, profile2.getId());
         final Map<String, Object> attributes = profile2.getAttributes();
         assertEquals(1, attributes.size());
         assertEquals(VALUE, attributes.get(NAME));
-        final UserProfile profile3 = ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
+        final CommonProfile profile3 = ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
         assertEquals(ID, profile3.getId());
     }
 }
