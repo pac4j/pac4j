@@ -63,36 +63,34 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     }
 
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-            final String callbackUrl,
-            @Nullable final String spEntityId,
-            final boolean forceSpMetadataGeneration,
-            final CredentialProvider credentialProvider) {
+                                                final String callbackUrl,
+                                                @Nullable final String spEntityId,
+                                                final boolean forceSpMetadataGeneration,
+                                                final CredentialProvider credentialProvider) {
 		this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider);
 	}
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration,
                                                 final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
-		this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl, configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider);
+        this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl, configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider);
     }
 
     private SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-                final WritableResource spMetadataResource,
-                final String callbackUrl,
-                @Nullable final String spEntityId,
-                final boolean forceSpMetadataGeneration,
-                final CredentialProvider credentialProvider) {
-
-    		if (spMetadataResource != null) {
-    			this.spMetadataResource = spMetadataResource;
-    		} else {
-    			this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
-    		}
-            this.spEntityId = spEntityId;
-            this.credentialProvider = credentialProvider;
-            this.callbackUrl = callbackUrl;
-            this.forceSpMetadataGeneration = forceSpMetadataGeneration;
-
+                                                 final WritableResource spMetadataResource,
+                                                 final String callbackUrl,
+                                                 @Nullable final String spEntityId,
+                                                 final boolean forceSpMetadataGeneration,
+                                                 final CredentialProvider credentialProvider) {
+        if (spMetadataResource != null) {
+            this.spMetadataResource = spMetadataResource;
+        } else {
+            this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
+        }
+        this.spEntityId = spEntityId;
+        this.credentialProvider = credentialProvider;
+        this.callbackUrl = callbackUrl;
+        this.forceSpMetadataGeneration = forceSpMetadataGeneration;
 
         // If the spEntityId is blank, use the callback url
         try {
