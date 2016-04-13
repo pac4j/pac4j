@@ -11,6 +11,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
@@ -57,21 +58,29 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 		this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider);
 	}
 
-    public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-                                                final WritableResource spMetadataResource,
+    public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration,
                                                 final String callbackUrl,
-                                                @Nullable final String spEntityId,
-                                                final boolean forceSpMetadataGeneration,
                                                 final CredentialProvider credentialProvider) {
-		if (spMetadataResource != null) {
-			this.spMetadataResource = spMetadataResource;
-		} else {
-			this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
-		}
-        this.spEntityId = spEntityId;
-        this.credentialProvider = credentialProvider;
-        this.callbackUrl = callbackUrl;
-        this.forceSpMetadataGeneration = forceSpMetadataGeneration;
+		this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl, configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider);
+    }
+
+    private SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
+                final WritableResource spMetadataResource,
+                final String callbackUrl,
+                @Nullable final String spEntityId,
+                final boolean forceSpMetadataGeneration,
+                final CredentialProvider credentialProvider) {
+
+    		if (spMetadataResource != null) {
+    			this.spMetadataResource = spMetadataResource;
+    		} else {
+    			this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
+    		}
+            this.spEntityId = spEntityId;
+            this.credentialProvider = credentialProvider;
+            this.callbackUrl = callbackUrl;
+            this.forceSpMetadataGeneration = forceSpMetadataGeneration;
+
 
         // If the spEntityId is blank, use the callback url
         try {
