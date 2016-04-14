@@ -86,7 +86,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
-    protected SAML2ProfileHandler profileHandler;
+    protected SAML2ProfileHandler<AuthnRequest> profileHandler;
 
     protected SAML2ResponseValidator responseValidator;
 
@@ -167,24 +167,19 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     protected MetadataResolver initServiceProviderMetadataResolver(final WebContext context) {
-        this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration.getServiceProviderMetadataPath(),
-                computeFinalCallbackUrl(context),
-                this.configuration.getServiceProviderEntityId(),
-                this.configuration.isForceServiceProviderMetadataGeneration(),
+		this.spMetadataResolver = new SAML2ServiceProviderMetadataResolver(this.configuration,
+				computeFinalCallbackUrl(context),
                 this.credentialProvider);
         return this.spMetadataResolver.resolve();
     }
 
     protected MetadataResolver initIdentityProviderMetadataResolver() {
-        this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration.getIdentityProviderMetadataPath(),
-                this.configuration.getIdentityProviderEntityId());
+        this.idpMetadataResolver = new SAML2IdentityProviderMetadataResolver(this.configuration);
         return this.idpMetadataResolver.resolve();
     }
 
     protected void initCredentialProvider() {
-        this.credentialProvider = new KeyStoreCredentialProvider(this.configuration.getKeystorePath(),
-                this.configuration.getKeystorePassword(),
-                this.configuration.getPrivateKeyPassword());
+        this.credentialProvider = new KeyStoreCredentialProvider(this.configuration);
     }
 
     protected void initDecrypter() {
