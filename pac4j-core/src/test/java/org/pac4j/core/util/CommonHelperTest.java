@@ -5,6 +5,31 @@ import org.pac4j.core.exception.TechnicalException;
 
 public class CommonHelperTest {
 
+    @Test
+    public void testNoPrefix() {
+    	CommonHelper.assertNotNull("var", CommonHelper.getInputStreamFromName("src/test/resources/testFile.txt"));
+    }
+    
+    @Test
+    public void testResourcePrefix() {
+    	CommonHelper.assertNotNull("var", CommonHelper.getInputStreamFromName("resource:/testFile.txt"));
+    }
+    
+    @Test
+    public void testClassPathPrefix() {
+    	CommonHelper.assertNotNull("var", CommonHelper.getInputStreamFromName("classpath:testFile.txt"));
+    }
+    
+    @Test
+    public void testHttpPrefix() {
+    	CommonHelper.assertNotNull("var", CommonHelper.getInputStreamFromName("http://cnn.com"));
+    }
+    
+    @Test
+    public void testHttpsPrefix() {
+    	CommonHelper.assertNotNull("var", CommonHelper.getInputStreamFromName("https://facebook.com"));
+    }
+    
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_null() {
         String var = null;
