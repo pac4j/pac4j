@@ -197,4 +197,9 @@ public class Clients extends InitializableObject {
 	public void setDefaultClient(Client defaultClient) {
 		this.defaultClient = defaultClient;
 	}
+
+	public Client getDefaultClient() {
+		return defaultClient;
+	}
+	
 }
