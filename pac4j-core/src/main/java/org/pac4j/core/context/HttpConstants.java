@@ -10,9 +10,6 @@ public interface HttpConstants {
 
     int OK = 200;
 
-    /**
-     * @since 1.8
-     */
     int CREATED = 201;
 
     int UNAUTHORIZED = 401;
@@ -20,6 +17,8 @@ public interface HttpConstants {
     int FORBIDDEN = 403;
 
     int TEMP_REDIRECT = 302;
+
+    int BAD_REQUEST = 400;
 
     int DEFAULT_HTTP_PORT = 80;
 
