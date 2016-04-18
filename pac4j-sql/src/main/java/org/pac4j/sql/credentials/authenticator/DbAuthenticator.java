@@ -82,14 +82,16 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
                 query = startQuery + endQuery;
             }
             final List<Map<String, Object>> results = h.createQuery(query).bind(Pac4jConstants.USERNAME, username).list(2);
-
+            
+            //encoded before error handling to prevent user not found based timing attack
+            final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
+            
             if (results == null || results.isEmpty()) {
                 throw new AccountNotFoundException("No account found for: " + username);
             } else if (results.size() > 1) {
                 throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
             } else {
                 final Map<String, Object> result = results.get(0);
-                final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
                 final String returnedPassword = (String) result.get(Pac4jConstants.PASSWORD);
                 if (CommonHelper.areNotEquals(returnedPassword, expectedPassword)) {
                     throw new BadCredentialsException("Bad credentials for: " + username);
