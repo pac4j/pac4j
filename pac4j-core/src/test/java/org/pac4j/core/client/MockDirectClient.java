@@ -2,7 +2,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -31,12 +31,12 @@ public final class MockDirectClient extends DirectClient<Credentials, CommonProf
     protected void internalInit(final WebContext context) {}
 
     @Override
-    public Credentials getCredentials(WebContext context) throws RequiresHttpAction {
+    public Credentials getCredentials(WebContext context) throws HttpAction {
         return returnCredentials.get();
     }
 
     @Override
-    protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws HttpAction {
         return profile;
     }
 }

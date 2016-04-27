@@ -9,8 +9,8 @@ import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.*;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -103,7 +103,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
     
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) throws RequiresHttpAction {
+    protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) throws HttpAction {
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
@@ -135,7 +135,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
 
     @Override
-    protected FacebookProfile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected FacebookProfile extractUserProfile(final String body) throws HttpAction {
         final FacebookProfile profile = new FacebookProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

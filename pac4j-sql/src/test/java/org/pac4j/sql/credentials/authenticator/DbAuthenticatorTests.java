@@ -25,14 +25,14 @@ public final class DbAuthenticatorTests implements TestsConstants {
     private DataSource ds = DbServer.getInstance();
 
     @Test(expected = TechnicalException.class)
-    public void testNullPasswordEncoder() throws RequiresHttpAction {
+    public void testNullPasswordEncoder() throws HttpAction {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, FIRSTNAME);
         authenticator.init(null);
         authenticator.validate(null);
     }
 
     @Test(expected = TechnicalException.class)
-    public void testNullAttribute() throws RequiresHttpAction {
+    public void testNullAttribute() throws HttpAction {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, null);
         authenticator.setPasswordEncoder(new NopPasswordEncoder());
         authenticator.init(null);
@@ -40,14 +40,14 @@ public final class DbAuthenticatorTests implements TestsConstants {
     }
 
     @Test(expected = TechnicalException.class)
-    public void testNullDataSource() throws RequiresHttpAction {
+    public void testNullDataSource() throws HttpAction {
         final DbAuthenticator authenticator = new DbAuthenticator(null, FIRSTNAME);
         authenticator.setPasswordEncoder(new NopPasswordEncoder());
         authenticator.init(null);
         authenticator.validate(null);
     }
 
-    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws RequiresHttpAction {
+    private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, attribute);
         authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
         authenticator.init(null);
@@ -59,7 +59,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void testGoodUsernameAttribute() throws RequiresHttpAction {
+    public void testGoodUsernameAttribute() throws HttpAction {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, FIRSTNAME);
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -71,7 +71,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void testGoodUsernameNoAttribute() throws RequiresHttpAction {
+    public void testGoodUsernameNoAttribute() throws HttpAction {
         final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, "");
 
         final CommonProfile profile = credentials.getUserProfile();
@@ -83,17 +83,17 @@ public final class DbAuthenticatorTests implements TestsConstants {
     }
 
     @Test(expected = MultipleAccountsFoundException.class)
-    public void testMultipleUsername() throws RequiresHttpAction {
+    public void testMultipleUsername() throws HttpAction {
         login(MULTIPLE_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = AccountNotFoundException.class)
-    public void testBadUsername() throws RequiresHttpAction {
+    public void testBadUsername() throws HttpAction {
         login(BAD_USERNAME, PASSWORD, "");
     }
 
     @Test(expected = BadCredentialsException.class)
-    public void testBadPassword() throws RequiresHttpAction {
+    public void testBadPassword() throws HttpAction {
         login(GOOD_USERNAME, PASSWORD + "bad", "");
     }
 }

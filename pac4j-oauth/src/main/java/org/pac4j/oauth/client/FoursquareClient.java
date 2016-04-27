@@ -6,7 +6,7 @@ import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
 import org.pac4j.scribe.oauth.Foursquare20Service;
@@ -50,7 +50,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     }
 
     @Override
-    protected FoursquareProfile extractUserProfile(String body) throws RequiresHttpAction {
+    protected FoursquareProfile extractUserProfile(String body) throws HttpAction {
         FoursquareProfile profile = new FoursquareProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {

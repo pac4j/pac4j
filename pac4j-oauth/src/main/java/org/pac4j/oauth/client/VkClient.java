@@ -3,7 +3,7 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.apis.VkontakteApi;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.vk.VkProfile;
 
@@ -59,7 +59,7 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected VkProfile extractUserProfile(final String body) throws RequiresHttpAction {
+	protected VkProfile extractUserProfile(final String body) throws HttpAction {
 		final VkProfile profile = new VkProfile();
 		JsonNode json = JsonHelper.getFirstNode(body);
 		if (json != null) {

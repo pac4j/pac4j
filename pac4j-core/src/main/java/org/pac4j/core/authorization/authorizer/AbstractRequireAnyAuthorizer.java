@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -13,7 +13,7 @@ import org.pac4j.core.profile.CommonProfile;
 public abstract class AbstractRequireAnyAuthorizer<E extends Object, U extends CommonProfile> extends AbstractRequireElementAuthorizer<E, U> {
 
     @Override
-    protected boolean isProfileAuthorized(final WebContext context, final U profile) throws RequiresHttpAction {
+    protected boolean isProfileAuthorized(final WebContext context, final U profile) throws HttpAction {
         if (elements == null || elements.isEmpty()) {
             return true;
         }

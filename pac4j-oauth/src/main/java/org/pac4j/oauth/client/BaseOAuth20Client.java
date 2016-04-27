@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.Verifier;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -25,7 +25,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     public static final String OAUTH_CODE = "code";
 
     @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
+    protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
         // no request token for OAuth 2.0 -> no need to save it in the context
         final String authorizationUrl = ((OAuth20Service) this.service).getAuthorizationUrl();
         logger.debug("authorizationUrl: {}", authorizationUrl);
@@ -33,7 +33,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     }
 
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
         final String verifierParameter = context.getRequestParameter(OAUTH_CODE);
         if (verifierParameter != null) {
             final String verifier = OAuthEncoder.decode(verifierParameter);
@@ -46,7 +46,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     }
 
     @Override
-    protected Token getAccessToken(final OAuthCredentials credentials) throws RequiresHttpAction {
+    protected Token getAccessToken(final OAuthCredentials credentials) throws HttpAction {
         // no request token saved in context and no token (OAuth v2.0)
         final String verifier = credentials.getVerifier();
         logger.debug("verifier: {}", verifier);

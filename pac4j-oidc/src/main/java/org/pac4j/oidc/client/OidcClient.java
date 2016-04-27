@@ -17,7 +17,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -319,7 +319,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
 
         Map<String, String> params = new HashMap<>(getAuthParams());
 
@@ -348,7 +348,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected OidcCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OidcCredentials retrieveCredentials(final WebContext context) throws HttpAction {
 
         // Parse authentication response parameters
         Map<String, String> parameters = toSingleParameter(context.getRequestParameters());
@@ -380,7 +380,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected U retrieveUserProfile(final OidcCredentials credentials, final WebContext context) throws HttpAction {
 
         final TokenRequest request = buildTokenRequest(credentials);
         HTTPResponse httpResponse;

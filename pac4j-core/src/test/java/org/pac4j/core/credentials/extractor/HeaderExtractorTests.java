@@ -3,7 +3,7 @@ package org.pac4j.core.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;
@@ -27,21 +27,21 @@ public final class HeaderExtractorTests implements TestsConstants {
     private final static HeaderExtractor extractor = new HeaderExtractor(GOOD_HEADER, GOOD_PREFIX, CLIENT_NAME);
 
     @Test
-    public void testRetrieveHeaderOk() throws RequiresHttpAction {
+    public void testRetrieveHeaderOk() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, GOOD_PREFIX + VALUE);
         final TokenCredentials credentials = extractor.extract(context);
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
-    public void testBadHeader() throws RequiresHttpAction {
+    public void testBadHeader() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addRequestHeader(BAD_HEADER, GOOD_PREFIX + VALUE);
         final TokenCredentials credentials = extractor.extract(context);
         assertNull(credentials);
     }
 
     @Test
-    public void testBadPrefix() throws RequiresHttpAction {
+    public void testBadPrefix() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addRequestHeader(GOOD_HEADER, BAD_PREFIX + VALUE);
         TestsHelper.expectException(() -> extractor.extract(context), CredentialsException.class, "Wrong prefix for header: " + GOOD_HEADER);
     }

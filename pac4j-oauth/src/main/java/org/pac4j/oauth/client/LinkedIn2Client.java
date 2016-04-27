@@ -5,7 +5,7 @@ import com.github.scribejava.apis.LinkedInApi20;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -75,7 +75,7 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     }
     
     @Override
-    protected LinkedIn2Profile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected LinkedIn2Profile extractUserProfile(final String body) throws HttpAction {
         LinkedIn2Profile profile = new LinkedIn2Profile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         profile.setId(JsonHelper.getElement(json, "id"));

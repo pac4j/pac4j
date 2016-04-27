@@ -2,7 +2,7 @@ package org.pac4j.oauth.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -29,7 +29,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoCode() throws RequiresHttpAction {
+    public void testNoCode() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
@@ -39,7 +39,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testOk() throws RequiresHttpAction {
+    public void testOk() throws HttpAction {
         final OAuthCredentials oauthCredential = (OAuthCredentials) getClient()
             .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);
@@ -47,7 +47,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testState() throws MalformedURLException, RequiresHttpAction {
+    public void testState() throws MalformedURLException, HttpAction {
         BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("OK");
@@ -56,7 +56,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetRedirectionGithub() throws RequiresHttpAction {
+    public void testGetRedirectionGithub() throws HttpAction {
         String url = getClient().getRedirectAction(MockWebContext.create()).getLocation();
         assertTrue(url != null && !url.isEmpty());
     }
