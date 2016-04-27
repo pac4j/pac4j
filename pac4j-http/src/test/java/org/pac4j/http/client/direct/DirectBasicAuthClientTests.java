@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -51,7 +51,7 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws RequiresHttpAction, UnsupportedEncodingException {
+    public void testAuthentication() throws HttpAction, UnsupportedEncodingException {
         final DirectBasicAuthClient client = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
         final MockWebContext context = MockWebContext.create();
         final String header = USERNAME + ":" + USERNAME;

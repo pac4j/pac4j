@@ -4,7 +4,7 @@ import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
@@ -73,7 +73,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected OrcidProfile extractUserProfile(String body) throws RequiresHttpAction {
+    protected OrcidProfile extractUserProfile(String body) throws HttpAction {
         OrcidProfile profile = new OrcidProfile();
         for(final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
             profile.addAttribute(attribute, CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));

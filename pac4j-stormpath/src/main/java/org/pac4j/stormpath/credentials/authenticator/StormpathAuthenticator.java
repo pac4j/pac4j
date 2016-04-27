@@ -10,7 +10,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.stormpath.profile.StormpathProfile;
 import org.slf4j.Logger;
@@ -73,7 +73,7 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials) throws RequiresHttpAction {
+    public void validate(final UsernamePasswordCredentials credentials) throws HttpAction {
         try {
             logger.debug("Attempting to authenticate user [{}] against application [{}] in Stormpath cloud...",
                     credentials.getUsername(), this.application.getName());

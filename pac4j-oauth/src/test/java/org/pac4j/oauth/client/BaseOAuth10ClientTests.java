@@ -3,7 +3,7 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.core.model.Token;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -27,7 +27,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoTokenNoVerifier() throws RequiresHttpAction {
+    public void testNoTokenNoVerifier() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
@@ -37,7 +37,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoToken() throws RequiresHttpAction {
+    public void testNoToken() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER,
                                                                                    VERIFIER));
@@ -48,7 +48,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoVerifier() throws RequiresHttpAction {
+    public void testNoVerifier() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create()
                                            .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN));
@@ -59,7 +59,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testOk() throws RequiresHttpAction {
+    public void testOk() throws HttpAction {
         final OAuthCredentials credentials = (OAuthCredentials) getClient()
             .getCredentials(MockWebContext
                                 .create()

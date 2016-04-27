@@ -12,7 +12,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2ContextProvider;
@@ -193,7 +193,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext wc) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext wc) throws HttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
 
@@ -211,7 +211,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected SAML2Credentials retrieveCredentials(final WebContext wc) throws RequiresHttpAction {
+    protected SAML2Credentials retrieveCredentials(final WebContext wc) throws HttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final SAML2Credentials credentials = (SAML2Credentials) this.profileHandler.receive(context);
         // The profile handler sets a hard-coded client name, we need the real one.
@@ -220,7 +220,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) throws HttpAction {
         final SAML2Profile profile = new SAML2Profile();
         profile.setId(credentials.getNameId().getValue());
         for (final Attribute attribute : credentials.getAttributes()) {

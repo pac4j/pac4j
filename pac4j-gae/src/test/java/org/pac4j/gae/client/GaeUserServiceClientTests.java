@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -54,20 +54,20 @@ public final class GaeUserServiceClientTests implements TestsConstants {
     }
 
     @Test(expected = TechnicalException.class)
-    public void testCallbackMandatory() throws RequiresHttpAction {
+    public void testCallbackMandatory() throws HttpAction {
         final GaeUserServiceClient localClient = new GaeUserServiceClient();
         localClient.redirect(context);
     }
 
     @Test
-    public void testRedirect() throws RequiresHttpAction {
+    public void testRedirect() throws HttpAction {
         final RedirectAction redirectAction = client.getRedirectAction(context);
         assertEquals(RedirectType.REDIRECT, redirectAction.getType());
         assertEquals("/_ah/login?continue=" + CommonHelper.urlEncode(CALLBACK_URL), redirectAction.getLocation());
     }
 
     @Test
-    public void testGetCredentialsUserProfile() throws RequiresHttpAction {
+    public void testGetCredentialsUserProfile() throws HttpAction {
         final GaeUserCredentials credentials = client.getCredentials(context);
         final User user = credentials.getUser();
         assertEquals(EMAIL, user.getEmail());

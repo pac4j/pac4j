@@ -5,7 +5,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.AjaxRequestResolver;
 import org.pac4j.core.http.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.DefaultCallbackUrlResolver;
@@ -41,7 +41,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final void redirect(final WebContext context) throws RequiresHttpAction {
+    public final void redirect(final WebContext context) throws HttpAction {
         final RedirectAction action = getRedirectAction(context);
         if (action.getType() == RedirectType.REDIRECT) {
             context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
@@ -60,21 +60,21 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context context
      * @return the redirection action
-     * @throws RequiresHttpAction requires an additional HTTP action
+     * @throws HttpAction requires an additional HTTP action
      */
-    public final RedirectAction getRedirectAction(final WebContext context) throws RequiresHttpAction {
+    public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
             cleanRequestedUrl(context);
-            throw RequiresHttpAction.unauthorized("AJAX request -> 401", context, null);
+            throw HttpAction.unauthorized("AJAX request -> 401", context, null);
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
             cleanAttemptedAuthentication(context);
             cleanRequestedUrl(context);
-            throw RequiresHttpAction.unauthorized("authentication already tried -> forbidden", context, null);
+            throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null);
         }
 
         init(context);
@@ -98,12 +98,12 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context the web context
      * @return the redirection action
-     * @throws RequiresHttpAction requires a specific HTTP action if necessary
+     * @throws HttpAction requires a specific HTTP action if necessary
      */
-    protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction;
+    protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction;
 
     /**
-     * <p>Get the credentials from the web context. In some cases, a {@link RequiresHttpAction} may be thrown:</p>
+     * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
      * <ul>
      * <li>if the <code>CasClient</code> receives a logout request, it returns a 200 HTTP status code</li>
      * <li>for the <code>IndirectBasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response (401 HTTP status
@@ -112,10 +112,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context the current web context
      * @return the credentials
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
     @Override
-    public final C getCredentials(final WebContext context) throws RequiresHttpAction {
+    public final C getCredentials(final WebContext context) throws HttpAction {
         init(context);
         final C credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
@@ -132,9 +132,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context the web context
      * @return the credentials
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract C retrieveCredentials(final WebContext context) throws RequiresHttpAction;
+    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
 
     /**
      * Return the state parameter required by some security protocols like SAML or OAuth.

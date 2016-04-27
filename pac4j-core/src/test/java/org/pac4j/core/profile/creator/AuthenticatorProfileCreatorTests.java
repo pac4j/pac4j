@@ -3,7 +3,7 @@ package org.pac4j.core.profile.creator;
 import org.junit.Test;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
@@ -21,12 +21,12 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
     private final static AuthenticatorProfileCreator creator = new AuthenticatorProfileCreator();
 
     @Test
-    public void testReturnNoProfile() throws RequiresHttpAction {
+    public void testReturnNoProfile() throws HttpAction {
         assertNull(creator.create(new TokenCredentials(TOKEN, CLIENT_NAME)));
     }
 
     @Test
-    public void testReturnProfile() throws RequiresHttpAction {
+    public void testReturnProfile() throws HttpAction {
         final CommonProfile profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN, CLIENT_NAME);
         credentials.setUserProfile(profile);

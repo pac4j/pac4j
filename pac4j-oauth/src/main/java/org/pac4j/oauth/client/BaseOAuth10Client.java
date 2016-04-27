@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.Verifier;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.OAuth10Profile;
@@ -38,7 +38,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
     }
 
     @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
+    protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
         final OAuth10aService service10 = (OAuth10aService) this.service;
         final Token requestToken = service10.getRequestToken();
         logger.debug("requestToken: {}", requestToken);
@@ -50,7 +50,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
     }
     
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
         final String tokenParameter = context.getRequestParameter(OAUTH_TOKEN);
         final String verifierParameter = context.getRequestParameter(OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {
@@ -68,7 +68,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
     }
     
     @Override
-    protected Token getAccessToken(final OAuthCredentials credentials) throws RequiresHttpAction {
+    protected Token getAccessToken(final OAuthCredentials credentials) throws HttpAction {
         final Token tokenRequest = credentials.getRequestToken();
         final String token = credentials.getToken();
         final String verifier = credentials.getVerifier();

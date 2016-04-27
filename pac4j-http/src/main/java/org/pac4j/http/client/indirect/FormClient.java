@@ -6,7 +6,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -71,7 +71,7 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         final String username = context.getRequestParameter(this.usernameParameter);
         UsernamePasswordCredentials credentials;
         try {
@@ -90,17 +90,17 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
         return credentials;
     }
 
-	private RequiresHttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage, int errorCode) throws RequiresHttpAction {
+	private HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage, int errorCode) throws HttpAction {
 		// it's an AJAX request -> unauthorized (instead of a redirection)
 		if (getAjaxRequestResolver().isAjax(context)) {
 			logger.info("AJAX request detected -> returning " + errorCode);
-			return RequiresHttpAction.unauthorized("AJAX request -> " + errorCode, context, null);
+			return HttpAction.unauthorized("AJAX request -> " + errorCode, context, null);
 		} else {
 			String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
 			redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
 			logger.debug("redirectionUrl: {}", redirectionUrl);
 			logger.debug(message);
-			return RequiresHttpAction.redirect(message, context, redirectionUrl);
+			return HttpAction.redirect(message, context, redirectionUrl);
 		}
 	}
 

@@ -8,7 +8,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.8.2
  */
-public interface HttpActionAdapter {
+public interface HttpActionAdapter<R extends Object> {
 
     /**
      * Adapt the HTTP action.
@@ -17,5 +17,5 @@ public interface HttpActionAdapter {
      * @param context the web context
      * @return the specific framework HTTP result
      */
-    Object adapt(int code, WebContext context);
+    R adapt(int code, WebContext context);
 }

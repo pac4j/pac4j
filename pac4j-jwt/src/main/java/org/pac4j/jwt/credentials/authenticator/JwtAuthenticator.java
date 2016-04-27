@@ -10,7 +10,7 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -82,14 +82,14 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
         try {
             validate(credentials);
-        } catch (final RequiresHttpAction e) {
+        } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }
         return credentials.getUserProfile();
     }
 
     @Override
-    public void validate(final TokenCredentials credentials) throws RequiresHttpAction {
+    public void validate(final TokenCredentials credentials) throws HttpAction {
         final String token = credentials.getToken();
         boolean verified = false;
         SignedJWT signedJWT = null;

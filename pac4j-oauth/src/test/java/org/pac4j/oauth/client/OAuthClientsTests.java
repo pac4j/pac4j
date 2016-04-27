@@ -2,7 +2,7 @@ package org.pac4j.oauth.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -36,7 +36,7 @@ public final class OAuthClientsTests implements TestsConstants {
     }
 
     @Test
-    public void testDefaultScopeGoogle() throws RequiresHttpAction {
+    public void testDefaultScopeGoogle() throws HttpAction {
         getGoogleClient().redirect(MockWebContext.create());
     }
 

@@ -3,6 +3,7 @@ package org.pac4j.core.matching;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.TestsHelper;
 
 import java.util.regex.PatternSyntaxException;
 
@@ -25,14 +26,14 @@ public final class ExcludedPathMatcherTests {
         assertTrue(pathMatcher.matches(MockWebContext.create()));
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testMissingStartCharacterInRegexp() {
-        new ExcludedPathMatcher("/img/.*$");
+        TestsHelper.expectException(() -> new ExcludedPathMatcher("/img/.*$"), TechnicalException.class, "Your regular expression: '/img/.*$' must start with a ^ and ends with a $ to define a full path matching");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testMissingEndCharacterInRegexp() {
-        new ExcludedPathMatcher("^/img/.*");
+        TestsHelper.expectException(() -> new ExcludedPathMatcher("^/img/.*"), TechnicalException.class, "Your regular expression: '^/img/.*' must start with a ^ and ends with a $ to define a full path matching");
     }
 
     @Test(expected = PatternSyntaxException.class)

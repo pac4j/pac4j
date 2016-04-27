@@ -2,7 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
@@ -46,7 +46,7 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     }
     
     @Override
-    protected WordPressProfile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected WordPressProfile extractUserProfile(final String body) throws HttpAction {
         final WordPressProfile profile = new WordPressProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

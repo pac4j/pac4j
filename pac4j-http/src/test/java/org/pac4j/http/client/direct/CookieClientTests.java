@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -57,7 +57,7 @@ public final class CookieClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws RequiresHttpAction, UnsupportedEncodingException {
+    public void testAuthentication() throws HttpAction, UnsupportedEncodingException {
         final CookieClient client = new CookieClient(USERNAME, new SimpleTestTokenAuthenticator());
         final MockWebContext context = MockWebContext.create();
 

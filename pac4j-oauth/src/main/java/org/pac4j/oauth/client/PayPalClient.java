@@ -3,7 +3,7 @@ package org.pac4j.oauth.client;
 import com.github.scribejava.core.builder.api.Api;
 import com.github.scribejava.core.model.Token;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
@@ -65,7 +65,7 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
     
     @Override
-    protected PayPalProfile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected PayPalProfile extractUserProfile(final String body) throws HttpAction {
         final PayPalProfile profile = new PayPalProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

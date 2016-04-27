@@ -9,7 +9,7 @@ import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -87,7 +87,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
         try {
             return RedirectAction.redirect(retrieveAuthorizationUrl(context));
         } catch (final OAuthException e) {
@@ -100,12 +100,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      *
      * @param context the web context
      * @return the authorization url
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction;
+    protected abstract String retrieveAuthorizationUrl(final WebContext context) throws HttpAction;
 
     @Override
-    protected OAuthCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OAuthCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         // check if the authentication has been cancelled
         if (hasBeenCancelled(context)) {
             logger.debug("authentication has been cancelled by user");
@@ -147,12 +147,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * 
      * @param context the web context
      * @return the OAuth credentials
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction;
+    protected abstract OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction;
 
     @Override
-    protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) throws HttpAction {
         try {
             final Token token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);
@@ -166,18 +166,18 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * 
      * @param credentials credentials
      * @return the access token
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract Token getAccessToken(OAuthCredentials credentials) throws RequiresHttpAction;
+    protected abstract Token getAccessToken(OAuthCredentials credentials) throws HttpAction;
 
     /**
      * Retrieve the user profile from the access token.
      * 
      * @param accessToken the access token
      * @return the user profile
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected U retrieveUserProfileFromToken(final Token accessToken) throws RequiresHttpAction {
+    protected U retrieveUserProfileFromToken(final Token accessToken) throws HttpAction {
         final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
@@ -238,9 +238,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * 
      * @param body the response body
      * @return the user profile object
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract U extractUserProfile(String body) throws RequiresHttpAction;
+    protected abstract U extractUserProfile(String body) throws HttpAction;
 
     /**
      * Add the access token to the profile (as an attribute).
