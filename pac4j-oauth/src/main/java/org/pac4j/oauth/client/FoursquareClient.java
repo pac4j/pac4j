@@ -2,9 +2,10 @@ package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.Foursquare2Api;
-import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -35,7 +36,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return Foursquare2Api.instance();
     }
 
@@ -45,7 +46,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return "https://api.foursquare.com/v2/users/self?v=20131118";
     }
 

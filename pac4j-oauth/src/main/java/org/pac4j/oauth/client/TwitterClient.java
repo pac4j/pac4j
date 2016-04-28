@@ -1,17 +1,16 @@
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.TwitterApi;
-import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Twitter.</p>
@@ -42,7 +41,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth10aService> getApi() {
         final DefaultApi10a api;
         if (this.alwaysConfirmAuthorization == false) {
             api = TwitterApi.Authenticate.instance();
@@ -53,7 +52,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth1Token accessToken) {
         return "https://api.twitter.com/1.1/account/verify_credentials.json";
     }
     

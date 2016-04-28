@@ -1,13 +1,14 @@
 package org.pac4j.oauth.client;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.FacebookApi;
-import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthConstants;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -17,6 +18,9 @@ import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Facebook.</p>
@@ -80,7 +84,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return FacebookApi.instance();
     }
 
@@ -90,7 +94,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         String url = BASE_URL + "?fields=" + this.fields;
         if (this.limit > DEFAULT_LIMIT) {
             url += "&limit=" + this.limit;
@@ -103,7 +107,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
     
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final Token accessToken) throws RequiresHttpAction {
+    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) throws RequiresHttpAction {
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
@@ -124,7 +128,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
             logger.debug("response code: {} / response body: {}", code, body);
             if (code == 200) {
                 logger.debug("Retrieve extended token from  {}", body);
-                final Token extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(body);
+                final OAuth2AccessToken extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(body);
                 logger.debug("Extended token: {}", extendedAccessToken);
                 addAccessTokenToProfile(profile, extendedAccessToken);
             } else {
@@ -192,12 +196,12 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
      * @param token the application token we pass back and forth
      * @return URL with the appsecret_proof parameter added
      */
-    protected String computeAppSecretProof(String url, Token token) {
+    protected String computeAppSecretProof(String url, OAuth2AccessToken token) {
         try {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secret_key = new SecretKeySpec(getSecret().getBytes("UTF-8"), "HmacSHA256");
             sha256_HMAC.init(secret_key);
-            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getToken().getBytes("UTF-8")));
+            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken().getBytes("UTF-8")));
             url = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return url;
         } catch (final Exception e) {
@@ -213,11 +217,11 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
      * @param accessToken the token we're passing back and forth
      * @return url with additional parameter(s)
      */
-    protected String addExchangeToken(String url, Token accessToken) {
+    protected String addExchangeToken(String url, OAuth2AccessToken accessToken) {
         if (this.useAppsecretProof) {
             url = computeAppSecretProof(url, accessToken);
         }
-        return CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getToken());
+        return CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getAccessToken());
     }
     
     public String getScope() {

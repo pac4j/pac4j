@@ -1,12 +1,10 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.model.OAuthConfig;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -19,11 +17,10 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
 
     private static final String STATE_PARAMETER = "#oauth20StateParameter";
 
-    private String stateData;
-
     @Override
     protected String getStateParameter(final WebContext context) {
         final String stateParameter;
+        final String stateData = getState();
         if (CommonHelper.isNotBlank(stateData)) {
             stateParameter = stateData;
         } else {
@@ -33,18 +30,13 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
     }
 
     @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
+    protected void internalInit(WebContext context) {
         // create a specific configuration with state
-        final OAuthConfig config = buildOAuthConfig(context);
-        final String state = getStateParameter(context);
-        config.setState(state);
+        this.setState(getStateParameter(context));
+        CommonHelper.assertNotNull("state", this.getState());
         // save state
-        context.setSessionAttribute(getName() + STATE_PARAMETER, state);
-        // create a specific service
-        final OAuth20Service newService = (OAuth20Service) getApi().createService(config);
-        final String authorizationUrl = newService.getAuthorizationUrl();
-        logger.debug("authorizationUrl: {}", authorizationUrl);
-        return authorizationUrl;
+        context.setSessionAttribute(getName() + STATE_PARAMETER, this.getState());
+        super.internalInit(context);
     }
 
     @Override
@@ -69,11 +61,4 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
         return super.getOAuthCredentials(context);
     }
 
-    public String getStateData() {
-        return stateData;
-    }
-
-    public void setStateData(String stateData) {
-        this.stateData = stateData;
-    }
 }

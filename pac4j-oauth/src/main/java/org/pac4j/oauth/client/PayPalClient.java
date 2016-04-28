@@ -1,15 +1,15 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
 import org.pac4j.scribe.builder.api.PayPalApi20;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in PayPal.</p>
@@ -45,7 +45,7 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return new PayPalApi20();
     }
 
@@ -60,7 +60,7 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return "https://api.paypal.com/v1/identity/openidconnect/userinfo?schema=openid";
     }
     
