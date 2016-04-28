@@ -2,8 +2,8 @@ package org.pac4j.scribe.oauth;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.AbstractRequest;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConfig;
-import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth20Service;
 
 /**
@@ -19,7 +19,7 @@ public final class Foursquare20Service extends OAuth20Service {
     }
 
     @Override
-    public void signRequest(final Token accessToken, final AbstractRequest request) {
-        request.addQuerystringParameter("oauth_token", accessToken.getToken());
+    public void signRequest(final OAuth2AccessToken accessToken, final AbstractRequest request) {
+        request.addQuerystringParameter("oauth_token", accessToken.getAccessToken());
     }
 }

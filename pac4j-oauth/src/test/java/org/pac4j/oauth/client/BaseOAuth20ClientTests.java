@@ -50,7 +50,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     public void testState() throws MalformedURLException, RequiresHttpAction {
         BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
-        client.setStateData("OK");
+        client.setState("OK");
         URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
     }

@@ -1,6 +1,6 @@
 package org.pac4j.scribe.model;
 
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 
 /**
  * This class represents a specific Token for ORCiD using OAuth protocol version 2. It could be part of the Scribe library.
@@ -8,12 +8,12 @@ import com.github.scribejava.core.model.Token;
  * @author Jens Tinglev
  * @since 1.6.0
  */
-public class OrcidToken extends Token {
+public class OrcidToken extends OAuth2AccessToken {
 
     private String orcid;
 
-    public OrcidToken(final String token, final String secret, final String orcid, final String rawResponse) {
-        super(token, secret, rawResponse);
+    public OrcidToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope, String orcid, String response) {
+        super(accessToken, tokenType, expiresIn, refreshToken, scope, response);
         setOrcid(orcid);
     }
 

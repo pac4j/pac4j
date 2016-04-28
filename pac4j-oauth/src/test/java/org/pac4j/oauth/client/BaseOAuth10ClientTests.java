@@ -1,6 +1,6 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.OAuth1RequestToken;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
@@ -66,12 +66,12 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
                                 .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)
                                 .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN)
                                 .addSessionAttribute(getClient().getName() + "#" + BaseOAuth10Client.REQUEST_TOKEN,
-                                                     new Token(TOKEN, SECRET)));
+                                                     new OAuth1RequestToken(TOKEN, SECRET)));
         assertNotNull(credentials);
         assertEquals(TOKEN, credentials.getToken());
         assertEquals(VERIFIER, credentials.getVerifier());
-        final Token tokenRequest = credentials.getRequestToken();
+        final OAuth1RequestToken tokenRequest = (OAuth1RequestToken) credentials.getRequestToken();
         assertEquals(TOKEN, tokenRequest.getToken());
-        assertEquals(SECRET, tokenRequest.getSecret());
+        assertEquals(SECRET, tokenRequest.getTokenSecret());
     }
 }
