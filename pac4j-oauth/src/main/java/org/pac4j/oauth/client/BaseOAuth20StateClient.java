@@ -1,5 +1,8 @@
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
@@ -17,10 +20,11 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
 
     private static final String STATE_PARAMETER = "#oauth20StateParameter";
 
+    private String stateData;
+
     @Override
     protected String getStateParameter(final WebContext context) {
         final String stateParameter;
-        final String stateData = getState();
         if (CommonHelper.isNotBlank(stateData)) {
             stateParameter = stateData;
         } else {
@@ -30,13 +34,24 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
     }
 
     @Override
-    protected void internalInit(WebContext context) {
+    protected OAuthConfig buildOAuthConfig(WebContext context) {
+        final String state = getStateParameter(context);
+        // the state is held in a specific context.
+        context.setSessionAttribute(getName() + STATE_PARAMETER, state);
+        return new OAuthConfig(this.getKey(), this.getSecret(), computeFinalCallbackUrl(context),
+                SignatureType.Header, getOAuthScope(), null, this.getConnectTimeout(), this.getReadTimeout(), hasOAuthGrantType() ? "authorization_code" : null, state, this.getResponseType());
+    }
+
+    @Override
+    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
         // create a specific configuration with state
-        this.setState(getStateParameter(context));
-        CommonHelper.assertNotNull("state", this.getState());
-        // save state
-        context.setSessionAttribute(getName() + STATE_PARAMETER, this.getState());
-        super.internalInit(context);
+        final OAuthConfig config = buildOAuthConfig(context);
+
+        // create a specific service
+        final OAuth20Service newService = getApi().createService(config);
+        final String authorizationUrl = newService.getAuthorizationUrl();
+        logger.debug("authorizationUrl: {}", authorizationUrl);
+        return authorizationUrl;
     }
 
     @Override
@@ -61,4 +76,11 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
         return super.getOAuthCredentials(context);
     }
 
+    public String getStateData() {
+        return stateData;
+    }
+
+    public void setStateData(String stateData) {
+        this.stateData = stateData;
+    }
 }

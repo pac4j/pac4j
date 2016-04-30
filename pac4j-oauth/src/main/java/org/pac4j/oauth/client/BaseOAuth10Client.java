@@ -87,7 +87,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
             final String message = "Token received: " + token + " is different from saved token: " + savedToken;
             throw new OAuthCredentialsException(message);
         }
-        final OAuth1Token accessToken = ((OAuth10aService) this.service).getAccessToken(tokenRequest, verifier);
+        final OAuth1Token accessToken = this.service.getAccessToken(tokenRequest, verifier);
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }
