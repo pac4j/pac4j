@@ -50,7 +50,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         // no request token saved in context and no token (OAuth v2.0)
         final String verifier = credentials.getVerifier();
         logger.debug("verifier: {}", verifier);
-        final OAuth2AccessToken accessToken = ((OAuth20Service) this.service).getAccessToken(verifier);
+        final OAuth2AccessToken accessToken = this.service.getAccessToken(verifier);
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }

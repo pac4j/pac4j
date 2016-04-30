@@ -46,8 +46,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
-    private String state = null;
-
     private String responseType = null;
 
     @Override
@@ -67,7 +65,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      */
     protected OAuthConfig buildOAuthConfig(final WebContext context) {
         return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null, this.state, this.responseType);
+                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null, null, this.responseType);
     }
 
     /**
@@ -296,14 +294,6 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
 
     public void setTokenAsHeader(boolean tokenAsHeader) {
         this.tokenAsHeader = tokenAsHeader;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public String getResponseType() {
