@@ -47,10 +47,14 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(OIDC_CLIENT_AUTHENTICATION_METHOD, "CLIENT_SECRET_POST");
         properties.put(OIDC_CUSTOM_PARAM_KEY1, KEY);
         properties.put(OIDC_CUSTOM_PARAM_VALUE1, VALUE);
+
+        properties.put(CAS_LOGIN_URL.concat(".1"), CALLBACK_URL);
+        properties.put(CAS_PROTOCOL.concat(".1"), CasClient.CasProtocol.CAS30.toString());
+        
         final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
         final Config config = factory.build();
         final Clients clients = config.getClients();
-        assertEquals(5, clients.getClients().size());
+        assertEquals(6, clients.getClients().size());
         final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient");
         assertEquals(ID, fbClient.getKey());
         assertEquals(SECRET, fbClient.getSecret());
@@ -65,5 +69,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
         assertNotNull(oidcClient);
         assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getClientAuthenticationMethod().toString().toLowerCase());
+
+        final CasClient casClient1 = (CasClient) clients.findClient("CasClient.1");
+        assertEquals(CasClient.CasProtocol.CAS30, casClient1.getCasProtocol());
     }
 }

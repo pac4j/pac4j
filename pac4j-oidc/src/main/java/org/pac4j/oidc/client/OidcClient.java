@@ -283,7 +283,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
         final List<ClientAuthenticationMethod> methods = getProviderMetadata().getTokenEndpointAuthMethods();
         final ClientAuthenticationMethod method;
 
-        if (!methods.isEmpty()) {
+        if (isNotEmpty(methods)) {
             if (methods.contains(getClientAuthenticationMethod())) {
                 method = getClientAuthenticationMethod();
             } else {
