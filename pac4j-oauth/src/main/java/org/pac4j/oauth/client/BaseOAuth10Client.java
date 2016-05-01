@@ -1,36 +1,39 @@
 package org.pac4j.oauth.client;
 
+import com.github.scribejava.core.model.OAuth1AccessToken;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuth1Token;
+import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Token;
-import com.github.scribejava.core.model.Verifier;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuth10Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class is the base implementation for client supporting OAuth protocol version 1.0.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOAuthClient<U> {
-    
+public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOAuthClient<U, OAuth10aService, OAuth1Token> {
+
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuth10Client.class);
-    
+
     public static final String OAUTH_TOKEN = "oauth_token";
-    
+
     public static final String OAUTH_VERIFIER = "oauth_verifier";
-    
+
     public static final String REQUEST_TOKEN = "requestToken";
-    
+
     /**
      * Return the name of the attribute storing in session the request token.
-     * 
+     *
      * @return the name of the attribute storing in session the request token
      */
     protected String getRequestTokenSessionAttributeName() {
@@ -39,16 +42,15 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
 
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
-        final OAuth10aService service10 = (OAuth10aService) this.service;
-        final Token requestToken = service10.getRequestToken();
+        final OAuth1RequestToken requestToken = this.service.getRequestToken();
         logger.debug("requestToken: {}", requestToken);
         // save requestToken in user session
         context.setSessionAttribute(getRequestTokenSessionAttributeName(), requestToken);
-        final String authorizationUrl = service10.getAuthorizationUrl(requestToken);
+        final String authorizationUrl = this.service.getAuthorizationUrl(requestToken);
         logger.debug("authorizationUrl: {}", authorizationUrl);
         return authorizationUrl;
     }
-    
+
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
         final String tokenParameter = context.getRequestParameter(OAUTH_TOKEN);
@@ -66,10 +68,10 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
             throw new OAuthCredentialsException(message);
         }
     }
-    
+
     @Override
-    protected Token getAccessToken(final OAuthCredentials credentials) throws HttpAction {
-        final Token tokenRequest = credentials.getRequestToken();
+    protected OAuth1Token getAccessToken(final OAuthCredentials credentials) throws HttpAction {
+        final OAuth1RequestToken tokenRequest = (OAuth1RequestToken) credentials.getRequestToken();
         final String token = credentials.getToken();
         final String verifier = credentials.getVerifier();
         logger.debug("tokenRequest: {}", tokenRequest);
@@ -85,15 +87,26 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
             final String message = "Token received: " + token + " is different from saved token: " + savedToken;
             throw new OAuthCredentialsException(message);
         }
-        final Verifier clientVerifier = new Verifier(verifier);
-        final Token accessToken = ((OAuth10aService) this.service).getAccessToken(tokenRequest, clientVerifier);
+        final OAuth1Token accessToken = this.service.getAccessToken(tokenRequest, verifier);
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }
-    
+
     @Override
-    protected void addAccessTokenToProfile(final U profile, final Token accessToken) {
-        super.addAccessTokenToProfile(profile, accessToken);
-        profile.setAccessSecret(accessToken.getSecret());
+    protected void addAccessTokenToProfile(final U profile, final OAuth1Token accessToken) {
+        if (profile != null) {
+            final String token = accessToken.getToken();
+            logger.debug("add access_token: {} to profile", token);
+            profile.setAccessToken(token);
+            profile.setAccessSecret(accessToken.getTokenSecret());
+        }
+    }
+
+    @Override
+    protected void signRequest(OAuth1Token token, OAuthRequest request) {
+        this.service.signRequest((OAuth1AccessToken) token, request);
+        if (this.isTokenAsHeader()) {
+            request.addHeader("Authorization", "Bearer " + token.getToken());
+        }
     }
 }

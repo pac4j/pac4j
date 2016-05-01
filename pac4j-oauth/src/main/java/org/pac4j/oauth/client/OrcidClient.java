@@ -1,8 +1,9 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
@@ -36,7 +37,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return new OrcidApi20();
     }
 
@@ -63,7 +64,7 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         if (accessToken instanceof OrcidToken) {
             return String.format("https://api.orcid.org/v1.1/%s/orcid-profile",
                     ((OrcidToken) accessToken).getOrcid());

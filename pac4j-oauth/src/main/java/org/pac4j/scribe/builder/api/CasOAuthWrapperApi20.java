@@ -1,9 +1,10 @@
 package org.pac4j.scribe.builder.api;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.extractors.AccessTokenExtractor;
-import com.github.scribejava.core.extractors.JsonTokenExtractor;
-import com.github.scribejava.core.extractors.TokenExtractor20Impl;
+import com.github.scribejava.core.extractors.OAuth2AccessTokenExtractor;
+import com.github.scribejava.core.extractors.OAuth2AccessTokenJsonExtractor;
+import com.github.scribejava.core.extractors.TokenExtractor;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
@@ -26,11 +27,11 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     }
     
     @Override
-    public AccessTokenExtractor getAccessTokenExtractor() {
+    public TokenExtractor<OAuth2AccessToken> getAccessTokenExtractor() {
         if (this.springSecurityCompliant) {
-            return new JsonTokenExtractor();
+            return OAuth2AccessTokenJsonExtractor.instance();
         } else {
-            return new TokenExtractor20Impl();
+            return OAuth2AccessTokenExtractor.instance();
         }
     }
     

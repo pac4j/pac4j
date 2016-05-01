@@ -1,13 +1,13 @@
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.GitHubApi;
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in GitHub.</p>
@@ -15,26 +15,26 @@ import com.fasterxml.jackson.databind.JsonNode;
  * the <i>scope</i> is: <code>user</code>.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.github.GitHubProfile}.</p>
  * <p>More information at http://developer.github.com/v3/users/</p>
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
-    
+
     public final static String DEFAULT_SCOPE = "user";
-    
+
     protected String scope = DEFAULT_SCOPE;
-    
+
     public GitHubClient() {
     }
-    
+
     public GitHubClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return GitHubApi.instance();
     }
 
@@ -44,10 +44,10 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return "https://api.github.com/user";
     }
-    
+
     @Override
     protected GitHubProfile extractUserProfile(final String body) throws HttpAction {
         final GitHubProfile profile = new GitHubProfile();
@@ -64,7 +64,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     public String getScope() {
         return this.scope;
     }
-    
+
     public void setScope(final String scope) {
         this.scope = scope;
     }

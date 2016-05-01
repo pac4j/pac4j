@@ -1,8 +1,13 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.Api;
+import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.*;
+import com.github.scribejava.core.model.OAuthConfig;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.SignatureType;
+import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -12,8 +17,8 @@ import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +26,15 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is a base implementation for an OAuth protocol client based on the Scribe library. It should work for all OAuth clients. In
  * subclasses, some methods are to be implemented / customized for specific needs depending on the client.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuthClient<U extends OAuth20Profile> extends IndirectClient<OAuthCredentials, U> {
+public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthService, T extends Token> extends IndirectClient<OAuthCredentials, U> {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthClient.class);
 
-    protected OAuthService service;
+    protected S service;
 
     private String key;
 
@@ -40,6 +45,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
+
+    private String responseType = null;
 
     @Override
     protected void internalInit(final WebContext context) {
@@ -58,7 +65,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      */
     protected OAuthConfig buildOAuthConfig(final WebContext context) {
         return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null);
+                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null, null, this.responseType);
     }
 
     /**
@@ -66,7 +73,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      *
      * @return the OAuth API
      */
-    protected abstract Api getApi();
+    protected abstract BaseApi<S> getApi();
 
     /**
      * Define the OAuth scope for this client.
@@ -134,7 +141,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     /**
      * Return if the authentication has been cancelled.
-     * 
+     *
      * @param context the web context.
      * @return if the authentication has been cancelled.
      */
@@ -144,7 +151,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     /**
      * Get the OAuth credentials from the web context.
-     * 
+     *
      * @param context the web context
      * @return the OAuth credentials
      * @throws HttpAction whether an additional HTTP action is required
@@ -154,7 +161,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
     @Override
     protected U retrieveUserProfile(final OAuthCredentials credentials, final WebContext context) throws HttpAction {
         try {
-            final Token token = getAccessToken(credentials);
+            final T token = getAccessToken(credentials);
             return retrieveUserProfileFromToken(token);
         } catch (final OAuthException e) {
             throw new TechnicalException(e);
@@ -163,21 +170,21 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     /**
      * Get the access token from OAuth credentials.
-     * 
+     *
      * @param credentials credentials
      * @return the access token
      * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract Token getAccessToken(OAuthCredentials credentials) throws HttpAction;
+    protected abstract T getAccessToken(OAuthCredentials credentials) throws HttpAction;
 
     /**
      * Retrieve the user profile from the access token.
-     * 
+     *
      * @param accessToken the access token
      * @return the user profile
      * @throws HttpAction whether an additional HTTP action is required
      */
-    protected U retrieveUserProfileFromToken(final Token accessToken) throws HttpAction {
+    protected U retrieveUserProfileFromToken(final T accessToken) throws HttpAction {
         final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
@@ -193,24 +200,20 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
      * @param accessToken only used when constructing dynamic urls from data in the token
      * @return the url of the user profile given by the provider
      */
-    protected abstract String getProfileUrl(final Token accessToken);
+    protected abstract String getProfileUrl(final T accessToken);
 
     /**
      * Make a request to get the data of the authenticated user for the provider.
-     * 
+     *
      * @param accessToken the access token
-     * @param dataUrl url of the data
+     * @param dataUrl     url of the data
      * @return the user data response
      */
-    protected String sendRequestForData(final Token accessToken, final String dataUrl) {
+    protected String sendRequestForData(final T accessToken, final String dataUrl) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
         final OAuthRequest request = createOAuthRequest(dataUrl);
-        this.service.signRequest(accessToken, request);
-        // Let the client to decide if the token should be in header
-        if (this.isTokenAsHeader()) {
-            request.addHeader("Authorization", "Bearer " + accessToken.getToken());
-        }
+        signRequest(accessToken, request);
         final Response response = request.send();
         final int code = response.getCode();
         final String body = response.getBody();
@@ -222,6 +225,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
         }
         return body;
     }
+
+    protected abstract void signRequest(T token, OAuthRequest request);
 
     /**
      * Create an OAuth request.
@@ -235,7 +240,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     /**
      * Extract the user profile from the response (JSON, XML...) of the profile url.
-     * 
+     *
      * @param body the response body
      * @return the user profile object
      * @throws HttpAction whether an additional HTTP action is required
@@ -244,17 +249,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     /**
      * Add the access token to the profile (as an attribute).
-     * 
-     * @param profile the user profile
+     *
+     * @param profile     the user profile
      * @param accessToken the access token
      */
-    protected void addAccessTokenToProfile(final U profile, final Token accessToken) {
-        if (profile != null) {
-            final String token = accessToken.getToken();
-            logger.debug("add access_token: {} to profile", token);
-            profile.setAccessToken(token);
-        }
-    }
+    protected abstract void addAccessTokenToProfile(final U profile, final T accessToken);
+
 
     public void setKey(final String key) {
         this.key = key;
@@ -294,5 +294,13 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile> extends Indirect
 
     public void setTokenAsHeader(boolean tokenAsHeader) {
         this.tokenAsHeader = tokenAsHeader;
+    }
+
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(String responseType) {
+        this.responseType = responseType;
     }
 }

@@ -7,19 +7,23 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
 /**
  * This class tests the OAuth credential retrieval in the {@link org.pac4j.oauth.client.BaseOAuth20Client} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class BaseOAuth20ClientTests implements TestsConstants {
-    
+
     private BaseOAuth20Client getClient() {
         final GitHubClient client = new GitHubClient();
         client.setKey(KEY);
@@ -41,7 +45,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     @Test
     public void testOk() throws HttpAction {
         final OAuthCredentials oauthCredential = (OAuthCredentials) getClient()
-            .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
+                .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);
         assertEquals(CODE, oauthCredential.getVerifier());
     }
@@ -53,6 +57,63 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
         client.setStateData("OK");
         URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
         assertTrue(url.getQuery().contains("state=OK"));
+    }
+
+    @Test
+    public void testStateMatch() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
+        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        final MockWebContext mockWebContext = MockWebContext.create();
+        URL url = new URL(client.getRedirectAction(mockWebContext).getLocation());
+        final Map<String, String> stringMap = splitQuery(url);
+        assertNotNull(stringMap.get("state"));
+        try {
+            client.getCredentials(MockWebContext.create());
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Missing state parameter"));
+        }
+        mockWebContext.addRequestParameter("state", stringMap.get("state"));
+        mockWebContext.addRequestParameter("code", "mockcode");
+        client.getCredentials(mockWebContext);
+    }
+
+    @Test
+    public void testSetState() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
+        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.setStateData("oldstate");
+        final MockWebContext mockWebContext = MockWebContext.create();
+        URL url = new URL(client.getRedirectAction(mockWebContext).getLocation());
+        final Map<String, String> stringMap = splitQuery(url);
+        assertEquals(stringMap.get("state"), "oldstate");
+        URL url2 = new URL(client.getRedirectAction(mockWebContext).getLocation());
+        final Map<String, String> stringMap2 = splitQuery(url2);
+        assertEquals(stringMap2.get("state"), "oldstate");
+    }
+
+    @Test
+    public void testStateRandom() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
+        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
+        client.setCallbackUrl(CALLBACK_URL);
+        URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
+        final Map<String, String> stringMap = splitQuery(url);
+        assertNotNull(stringMap.get("state"));
+
+        URL url2 = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
+        final Map<String, String> stringMap2 = splitQuery(url2);
+        assertNotNull(stringMap2.get("state"));
+        assertNotEquals(stringMap.get("state"), stringMap2.get("state"));
+    }
+
+    public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
+        Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+        String query = url.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+        }
+        return query_pairs;
     }
 
     @Test

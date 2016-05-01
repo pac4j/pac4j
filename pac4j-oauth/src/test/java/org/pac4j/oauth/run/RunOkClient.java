@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 
 /**
  * Run manually a test for the {@link OkClient}.
+ * https://www.ok.ru/
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -25,15 +26,15 @@ public final class RunOkClient extends RunClient {
     /**
      * Real profile id.
      */
-    private static final String TEST_PROFILE_ID = "";
+    private static final String TEST_PROFILE_ID = "570212941891";
     /**
      * Real profile location.
      */
-    private static final String TEST_LOCATION = "";
+    private static final String TEST_LOCATION = ", CHINA";
     /**
      * Real profile locale.
      */
-    private static final java.lang.String TEST_LOCALE = "ru";
+    private static final java.lang.String TEST_LOCALE = "en";
     /**
      * Real profile first name.
      */
@@ -53,12 +54,12 @@ public final class RunOkClient extends RunClient {
 
     @Override
     protected String getLogin() {
-        return "";
+        return "testscribeup";
     }
 
     @Override
     protected String getPassword() {
-        return "";
+        return "testpwdscribeup56";
     }
 
     @Override

@@ -2,8 +2,9 @@ package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.GoogleApi20;
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
@@ -23,6 +24,8 @@ import org.pac4j.oauth.profile.google2.Google2Profile;
  */
 public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
 
+    public static final String RESPONSE_TYPE_CODE = "code";
+
     public enum Google2Scope {
         EMAIL,
         PROFILE,
@@ -38,9 +41,11 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
     protected String scopeValue;
 
     public Google2Client() {
+        setResponseType(RESPONSE_TYPE_CODE);
     }
 
     public Google2Client(final String key, final String secret) {
+        this();
         setKey(key);
         setSecret(secret);
     }
@@ -59,7 +64,7 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return GoogleApi20.instance();
     }
 
@@ -69,7 +74,7 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return "https://www.googleapis.com/plus/v1/people/me";
     }
 
