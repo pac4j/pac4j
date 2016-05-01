@@ -1,12 +1,12 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import org.pac4j.scribe.builder.api.WindowsLiveApi20;
 
 /**
@@ -28,8 +28,13 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return new WindowsLiveApi20();
+    }
+
+    @Override
+    protected  boolean hasOAuthGrantType() {
+        return true;
     }
 
     @Override
@@ -38,7 +43,7 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     }
     
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return "https://apis.live.net/v5.0/me";
     }
     

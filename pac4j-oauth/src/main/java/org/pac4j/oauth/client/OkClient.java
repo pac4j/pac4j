@@ -2,8 +2,9 @@ package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.OdnoklassnikiApi;
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
@@ -45,7 +46,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return OdnoklassnikiApi.instance();
     }
 
@@ -55,20 +56,20 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected String getProfileUrl(Token accessToken) {
+    protected String getProfileUrl(OAuth2AccessToken accessToken) {
         String baseParams =
                 "application_key=" + publicKey +
                         "&format=json" +
                         "&method=users.getCurrentUser";
         String finalSign;
         try {
-            String preSign = getMD5SignAsHexString(accessToken.getToken() + getSecret());
+            String preSign = getMD5SignAsHexString(accessToken.getAccessToken() + getSecret());
             finalSign = getMD5SignAsHexString(baseParams.replaceAll("&", "") + preSign);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return null;
         }
-        return API_BASE_URL + baseParams + "&access_token=" + accessToken.getToken() + "&sig=" + finalSign;
+        return API_BASE_URL + baseParams + "&access_token=" + accessToken.getAccessToken() + "&sig=" + finalSign;
     }
 
     @Override

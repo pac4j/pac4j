@@ -1,9 +1,9 @@
 package org.pac4j.oauth.client;
 
-import java.util.Iterator;
-
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
@@ -11,7 +11,7 @@ import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Iterator;
 
 /**
  * <p>This class is the OAuth client to authenticate users on CAS servers using OAuth wrapper.</p>
@@ -44,7 +44,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant);
     }
 
@@ -54,7 +54,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return this.casOAuthUrl + "/profile";
     }
     

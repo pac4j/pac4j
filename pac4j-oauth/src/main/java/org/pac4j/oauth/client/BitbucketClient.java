@@ -1,8 +1,9 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth1Token;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
@@ -27,12 +28,12 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth10aService> getApi() {
         return new BitBucketApi();
     }
 
     @Override
-    protected String getProfileUrl(Token accessToken) {
+    protected String getProfileUrl(OAuth1Token token) {
         return "https://bitbucket.org/api/1.0/user/";
     }
 

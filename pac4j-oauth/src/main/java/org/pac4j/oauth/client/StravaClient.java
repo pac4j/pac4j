@@ -1,14 +1,14 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 import org.pac4j.scribe.builder.api.StravaApi20;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>OAuth20Client for Strava.</p>
@@ -40,7 +40,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return new StravaApi20(approvalPrompt);
     }
 
@@ -50,7 +50,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected String getProfileUrl(Token accessToken) {
+    protected String getProfileUrl(OAuth2AccessToken accessToken) {
         return "https://www.strava.com/api/v3/athlete";
     }
 

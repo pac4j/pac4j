@@ -1,15 +1,15 @@
 package org.pac4j.scribe.builder.api;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.extractors.AccessTokenExtractor;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
-import org.pac4j.scribe.extractors.StravaJsonExtractor;
 
 /**
  * This class represents the OAuth API implementation for Strava.
+ *
+ * <p>More information at http://strava.github.io/api/v3/oauth/#post-token</p>
  *
  * @author Adrian Papusoi
  */
@@ -23,11 +23,6 @@ public final class StravaApi20 extends DefaultApi20 {
     private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";
 
     private static final String ACCESS_TOKEN_URL = "https://www.strava.com/oauth/token";
-
-    /**
-     * Need to redefine the token extractor, because the token comes from Strava in json format.
-     */
-    private static AccessTokenExtractor ACCESS_TOKEN_EXTRACTOR = new StravaJsonExtractor();
 
 
     /**
@@ -47,11 +42,6 @@ public final class StravaApi20 extends DefaultApi20 {
     @Override
     public Verb getAccessTokenVerb() {
         return Verb.POST;
-    }
-
-    @Override
-    public AccessTokenExtractor getAccessTokenExtractor() {
-        return ACCESS_TOKEN_EXTRACTOR;
     }
 
     @Override
