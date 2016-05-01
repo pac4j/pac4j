@@ -1,15 +1,15 @@
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.YahooApi;
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth1Token;
+import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Yahoo.</p>
@@ -30,17 +30,17 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     }
 
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth10aService> getApi() {
         return YahooApi.instance();
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth1Token accessToken) {
         return "https://social.yahooapis.com/v1/me/guid?format=xml";
     }
     
     @Override
-    protected YahooProfile retrieveUserProfileFromToken(final Token accessToken) throws RequiresHttpAction {
+    protected YahooProfile retrieveUserProfileFromToken(final OAuth1Token accessToken) throws RequiresHttpAction {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");

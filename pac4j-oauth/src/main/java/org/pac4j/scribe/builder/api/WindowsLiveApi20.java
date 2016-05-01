@@ -1,8 +1,6 @@
 package org.pac4j.scribe.builder.api;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.extractors.AccessTokenExtractor;
-import com.github.scribejava.core.extractors.JsonTokenExtractor;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
@@ -20,7 +18,7 @@ public class WindowsLiveApi20 extends DefaultApi20 {
     
     @Override
     public String getAccessTokenEndpoint() {
-        return "https://login.live.com/oauth20_token.srf?grant_type=authorization_code";
+        return "https://login.live.com/oauth20_token.srf";
     }
     
     @Override
@@ -36,9 +34,5 @@ public class WindowsLiveApi20 extends DefaultApi20 {
             return String.format(AUTHORIZE_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
-    
-    @Override
-    public AccessTokenExtractor getAccessTokenExtractor() {
-        return new JsonTokenExtractor();
-    }
+
 }

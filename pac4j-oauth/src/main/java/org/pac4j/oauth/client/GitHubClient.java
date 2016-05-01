@@ -1,13 +1,13 @@
 package org.pac4j.oauth.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.GitHubApi;
-import com.github.scribejava.core.builder.api.Api;
-import com.github.scribejava.core.model.Token;
+import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * <p>This class is the OAuth client to authenticate users in GitHub.</p>
@@ -34,7 +34,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
     
     @Override
-    protected Api getApi() {
+    protected BaseApi<OAuth20Service> getApi() {
         return GitHubApi.instance();
     }
 
@@ -44,7 +44,7 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     }
 
     @Override
-    protected String getProfileUrl(final Token accessToken) {
+    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
         return "https://api.github.com/user";
     }
     
