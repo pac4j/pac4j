@@ -5,7 +5,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.credentials.OAuth20Credentials;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -44,10 +44,10 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testOk() throws RequiresHttpAction {
-        final OAuthCredentials oauthCredential = (OAuthCredentials) getClient()
+        final OAuth20Credentials oauthCredential = (OAuth20Credentials) getClient()
             .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);
-        assertEquals(CODE, oauthCredential.getVerifier());
+        assertEquals(CODE, oauthCredential.getCode());
     }
 
     @Test
