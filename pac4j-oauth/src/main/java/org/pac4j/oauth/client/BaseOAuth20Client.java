@@ -6,6 +6,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuth20Profile;
@@ -34,11 +35,11 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
 
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
-        final String verifierParameter = context.getRequestParameter(OAUTH_CODE);
-        if (verifierParameter != null) {
-            final String verifier = OAuthEncoder.decode(verifierParameter);
-            logger.debug("verifier: {}", verifier);
-            return new OAuthCredentials(verifier, getName());
+        final String codeParameter = context.getRequestParameter(OAUTH_CODE);
+        if (codeParameter != null) {
+            final String code = OAuthEncoder.decode(codeParameter);
+            logger.debug("code: {}", code);
+            return new OAuth20Credentials(code, getName());
         } else {
             final String message = "No credential found";
             throw new OAuthCredentialsException(message);
@@ -47,10 +48,11 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
 
     @Override
     protected OAuth2AccessToken getAccessToken(final OAuthCredentials credentials) throws RequiresHttpAction {
+        OAuth20Credentials oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
-        final String verifier = credentials.getVerifier();
-        logger.debug("verifier: {}", verifier);
-        final OAuth2AccessToken accessToken = this.service.getAccessToken(verifier);
+        final String code = oAuth20Credentials.getCode();
+        logger.debug("code: {}", code);
+        final OAuth2AccessToken accessToken = this.service.getAccessToken(code);
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }
