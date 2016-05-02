@@ -6,7 +6,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.credentials.OAuth10Credentials;
 
 import static org.junit.Assert.*;
 
@@ -60,7 +60,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
 
     @Test
     public void testOk() throws RequiresHttpAction {
-        final OAuthCredentials credentials = (OAuthCredentials) getClient()
+        final OAuth10Credentials credentials = (OAuth10Credentials) getClient()
             .getCredentials(MockWebContext
                                 .create()
                                 .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)
