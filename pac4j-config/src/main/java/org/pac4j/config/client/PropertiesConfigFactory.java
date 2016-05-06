@@ -7,8 +7,14 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.client.DropBoxClient;
 import org.pac4j.oauth.client.FacebookClient;
+import org.pac4j.oauth.client.FoursquareClient;
+import org.pac4j.oauth.client.GitHubClient;
+import org.pac4j.oauth.client.Google2Client;
 import org.pac4j.oauth.client.TwitterClient;
+import org.pac4j.oauth.client.WindowsLiveClient;
+import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
@@ -33,6 +39,25 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String TWITTER_ID = "twitter.id";
     public static final String TWITTER_SECRET = "twitter.secret";
 
+    public static final String GITHUB_ID = "github.id";
+    public static final String GITHUB_SECRET = "github.secret";
+
+    public static final String DROPBOX_ID = "dropbox.id";
+    public static final String DROPBOX_SECRET = "dropbox.secret";
+
+    public static final String WINDOWSLIVE_ID = "windowslive.id";
+    public static final String WINDOWSLIVE_SECRET = "windowslive.secret";
+    
+    public static final String YAHOO_ID = "yahoo.id";
+    public static final String YAHOO_SECRET = "yahoo.secret";
+
+    public static final String FOURSQUARE_ID = "foursquare.id";
+    public static final String FOURSQUARE_SECRET = "foursquare.secret";
+
+    public static final String GOOGLE_ID = "google.id";
+    public static final String GOOGLE_SECRET = "google.secret";
+    public static final String GOOGLE_SCOPE = "google.scope";
+
     public static final String SAML_KEYSTORE_PASSWORD = "saml.keystorePassword";
     public static final String SAML_PRIVATE_KEY_PASSWORD = "saml.privateKeyPassword";
     public static final String SAML_KEYSTORE_PATH = "saml.keystorePath";
@@ -55,7 +80,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
     public static final String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
     public static final String OIDC_CUSTOM_PARAM_VALUE2 = "oidc.customParamValue2";
-    
+
     private static final int MAX_NUM_CLIENTS = 10;
 
     private final String callbackUrl;
@@ -82,6 +107,12 @@ public class PropertiesConfigFactory implements ConfigFactory {
         tryCreateSaml2Client(clients);
         tryCreateCasClient(clients);
         tryCreateOidcClient(clients);
+        tryCreateDropboxClient(clients);
+        tryCreateGithubClient(clients);
+        tryCreateYahooClient(clients);
+        tryCreateGoogleClient(clients);
+        tryCreateFoursquareClient(clients);
+        tryCreateWindowsLiveClient(clients);
         return new Config(callbackUrl, clients);
     }
 
@@ -99,6 +130,64 @@ public class PropertiesConfigFactory implements ConfigFactory {
                 facebookClient.setFields(fields);
             }
             clients.add(facebookClient);
+        }
+    }
+
+    private void tryCreateWindowsLiveClient(final List<Client> clients) {
+        final String id = getProperty(WINDOWSLIVE_ID);
+        final String secret = getProperty(WINDOWSLIVE_SECRET);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final WindowsLiveClient client = new WindowsLiveClient(id, secret);
+            clients.add(client);
+        }
+    }
+
+    private void tryCreateFoursquareClient(final List<Client> clients) {
+        final String id = getProperty(FOURSQUARE_ID);
+        final String secret = getProperty(FOURSQUARE_SECRET);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final FoursquareClient client = new FoursquareClient(id, secret);
+            clients.add(client);
+        }
+    }
+
+    private void tryCreateGoogleClient(final List<Client> clients) {
+        final String id = getProperty(GOOGLE_ID);
+        final String secret = getProperty(GOOGLE_SECRET);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final Google2Client client = new Google2Client(id, secret);
+            final String scope = getProperty(GOOGLE_SCOPE);
+            if (CommonHelper.isNotBlank(scope)) {
+                client.setScope(Google2Client.Google2Scope.valueOf(scope.toUpperCase()));
+            }
+            clients.add(client);
+        }
+    }
+
+    private void tryCreateYahooClient(final List<Client> clients) {
+        final String id = getProperty(YAHOO_ID);
+        final String secret = getProperty(YAHOO_SECRET);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final YahooClient client = new YahooClient(id, secret);
+            clients.add(client);
+        }
+    }
+
+    private void tryCreateDropboxClient(final List<Client> clients) {
+        final String id = getProperty(DROPBOX_ID);
+        final String secret = getProperty(DROPBOX_SECRET);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final DropBoxClient client = new DropBoxClient(id, secret);
+            clients.add(client);
+        }
+    }
+
+    private void tryCreateGithubClient(final List<Client> clients) {
+        final String id = getProperty(GITHUB_ID);
+        final String secret = getProperty(GITHUB_SECRET);
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final GitHubClient client = new GitHubClient(id, secret);
+            clients.add(client);
         }
     }
 
@@ -120,7 +209,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME.concat(i == 0 ? "" : "." + i));
             final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID.concat(i == 0 ? "" : "." + i));
             final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
-            
+
             if (CommonHelper.isNotBlank(keystorePassword) && CommonHelper.isNotBlank(privateKeyPassword)
                     && CommonHelper.isNotBlank(keystorePath) && CommonHelper.isNotBlank(ientityProviderMetadataPath)) {
                 final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(keystorePath, keystorePassword,
@@ -139,7 +228,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
                 if (i != 0) {
                     saml2Client.setName(saml2Client.getName().concat("." + i));
                 }
-                
+
                 clients.add(saml2Client);
             }
         }
@@ -161,7 +250,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
             }
         }
     }
-        
+
     private void tryCreateOidcClient(final List<Client> clients) {
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
             final String id = getProperty(OIDC_ID.concat(i == 0 ? "" : "." + i));
