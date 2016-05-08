@@ -32,7 +32,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private Config config;
 
-    private SuccessAdapter<Object> successAdapter;
+    private SecurityGrantedAccessAdapter<Object> securityGrantedAccessAdapter;
 
     private HttpActionAdapter<Object> httpActionAdapter;
 
@@ -51,7 +51,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         logic = new DefaultSecurityLogic();
         context = MockWebContext.create();
         config = new Config();
-        successAdapter = (context, parameters) -> { nbCall++; return null; };
+        securityGrantedAccessAdapter = (context, parameters) -> { nbCall++; return null; };
         httpActionAdapter = (code, ctx) -> null;
         clients = null;
         authorizers = null;
@@ -61,7 +61,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, successAdapter, httpActionAdapter, clients, authorizers, matchers, multiProfile);
+        logic.perform(context, config, securityGrantedAccessAdapter, httpActionAdapter, clients, authorizers, matchers, multiProfile);
     }
 
     @Test

@@ -8,7 +8,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface SuccessAdapter<R extends Object> {
+public interface SecurityGrantedAccessAdapter<R extends Object> {
 
     /**
      * Adapt the current successful action as the expected result.
