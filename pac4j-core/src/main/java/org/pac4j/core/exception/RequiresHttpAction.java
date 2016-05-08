@@ -108,19 +108,6 @@ public class RequiresHttpAction extends Exception {
     }
     
     /**
-     * Build a configurable response..
-     * 
-     * @param message message
-     * @param errorCode status code of response
-     * @param context context
-     * @return a configurable response
-     */
-    public static RequiresHttpAction configurable(final String message, int errorCode, final WebContext context) {
-        context.setResponseStatus(errorCode);
-        return new RequiresHttpAction(message, errorCode);
-    }
-    
-    /**
      * Build a forbidden response.
      * 
      * @param message message
