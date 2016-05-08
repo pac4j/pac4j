@@ -35,7 +35,20 @@ public class RequiresHttpAction extends Exception {
         super(message);
         this.code = code;
     }
-    
+
+    /**
+     * Build a response with message and status.
+     *
+     * @param message message
+     * @param status the HTTP status
+     * @param context context
+     * @return an HTTP response
+     */
+    public static RequiresHttpAction status(final String message, final int status, final WebContext context) {
+        context.setResponseStatus(status);
+        return new RequiresHttpAction(message, status);
+    }
+
     /**
      * Build a redirection.
      * 
@@ -89,19 +102,6 @@ public class RequiresHttpAction extends Exception {
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
-    }
-    
-    /**
-     * Build a configurable response..
-     * 
-     * @param message message
-     * @param errorCode status code of response
-     * @param context context
-     * @return a configurable response
-     */
-    public static RequiresHttpAction configurable(final String message, int errorCode, final WebContext context) {
-        context.setResponseStatus(errorCode);
-        return new RequiresHttpAction(message, errorCode);
     }
     
     /**
