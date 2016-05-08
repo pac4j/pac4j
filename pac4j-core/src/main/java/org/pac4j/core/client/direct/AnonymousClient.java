@@ -14,6 +14,8 @@ import org.pac4j.core.profile.AnonymousProfile;
  */
 public final class AnonymousClient extends DirectClient<AnonymousCredentials, AnonymousProfile> {
 
+    public final static AnonymousClient INSTANCE = new AnonymousClient();
+
     public AnonymousClient() {
         logger.warn("AnonymousClient is an advanced feature: be careful when using it to avoid any security issue!");
     }

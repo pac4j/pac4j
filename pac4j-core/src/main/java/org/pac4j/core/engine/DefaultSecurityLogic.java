@@ -56,7 +56,7 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
     @Override
-    public R perform(final WebContext context, final Config config, final SuccessAdapter<R> successAdapter, final HttpActionAdapter<R> httpActionAdapter,
+    public R perform(final WebContext context, final Config config, final SecurityGrantedAccessAdapter<R> securityGrantedAccessAdapter, final HttpActionAdapter<R> httpActionAdapter,
                      final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, final Object... parameters) {
 
         logger.debug("Applying security");
@@ -131,7 +131,7 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
                     logger.debug("authorizers: {}", authorizers);
                     if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers())) {
                         logger.debug("authenticated and authorized -> grant access");
-                        return successAdapter.adapt(context, parameters);
+                        return securityGrantedAccessAdapter.adapt(context, parameters);
                     } else {
                         logger.debug("forbidden");
                         action = forbidden(context, currentClients, profiles, authorizers);
@@ -150,7 +150,7 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
             } else {
 
                 logger.debug("no matching for this request -> grant access");
-                return successAdapter.adapt(context, parameters);
+                return securityGrantedAccessAdapter.adapt(context, parameters);
             }
 
         } catch (final HttpAction e) {
@@ -169,6 +169,13 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
         }
     }
 
+    /**
+     * Load the profiles from the web context if no clients are defined or if the first client is an indirect one or the {@link AnonymousClient}.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @return whether the profiles must be loaded from the web session
+     */
     protected boolean loadProfilesFromSession(final WebContext context, final List<Client> currentClients) {
         return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient || currentClients.get(0) instanceof AnonymousClient;
     }
@@ -177,14 +184,37 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
         return false;
     }
 
-    protected HttpAction forbidden(final WebContext context, final List<Client> currentClients, final List<CommonProfile> profile, final String authorizers) {
+    /**
+     * Return a forbidden error.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @param profiles the current profiles
+     * @param authorizers the authorizers
+     * @return a forbidden error
+     */
+    protected HttpAction forbidden(final WebContext context, final List<Client> currentClients, final List<CommonProfile> profiles, final String authorizers) {
         return HttpAction.forbidden("forbidden", context);
     }
 
+    /**
+     * Return whether we must start a login process if the first client is an indirect one.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @return whether we must start a login process
+     */
     protected boolean startAuthentication(final WebContext context, final List<Client> currentClients) {
         return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClient;
     }
 
+    /**
+     * Save the requested url.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @throws HttpAction whether an additional HTTP action is required
+     */
     protected void saveRequestedUrl(final WebContext context, final List<Client> currentClients) throws HttpAction {
         final String requestedUrl = context.getFullRequestURL();
         logger.debug("requestedUrl: {}", requestedUrl);
@@ -196,6 +226,13 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
         currentClient.redirect(context);
     }
 
+    /**
+     * Return an unauthorized error.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @return an unauthorized error
+     */
     protected HttpAction unauthorized(final WebContext context, final List<Client> currentClients) {
         return HttpAction.unauthorized("unauthorized", context, null);
     }
