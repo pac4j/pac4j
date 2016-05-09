@@ -3,9 +3,9 @@ package org.pac4j.oidc.client.azuread;
 import java.io.IOException;
 import java.net.URL;
 
-import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
-import com.nimbusds.oauth2.sdk.http.Resource;
-import com.nimbusds.oauth2.sdk.http.ResourceRetriever;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
+import com.nimbusds.jose.util.Resource;
+import com.nimbusds.jose.util.ResourceRetriever;
 
 /**
  * Specialized ResourceRetriever which escapes a possibly invalid issuer URI.
