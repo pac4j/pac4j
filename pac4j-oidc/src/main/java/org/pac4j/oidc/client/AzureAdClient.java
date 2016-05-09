@@ -1,7 +1,7 @@
 package org.pac4j.oidc.client;
 
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.oauth2.sdk.http.ResourceRetriever;
+import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.oidc.client.azuread.AzureAdIdTokenValidator;
@@ -14,9 +14,9 @@ import org.pac4j.oidc.profile.AzureAdProfile;
  * authentication, the speciall common-tenant. For a specific tenant, the following discovery URI
  * must be used:
  * {@code https://login.microsoftonline.com/tenantid/.well-known/openid-configuration} or
- * {@code https://login.microsoftonline.com/tenantid/v2.0/.well-known/openid-configuration} for the
- * Azure AD v2.0 preview. Replace {@code tenantid} with the ID of the tenant to authenticate
- * against. To find this ID, fill in your tenant's domain name. Your tenant ID is the UUID in
+ * {@code https://login.microsoftonline.com/tenantid/v2.0/.well-known/openid-configuration} for
+ * Azure AD v2.0. Replace {@code tenantid} with the ID of the tenant to authenticate against. To
+ * find this ID, fill in your tenant's domain name. Your tenant ID is the UUID in
  * {@code authorization_endpoint}.
  * 
  * For authentication against an unknown (or dynamic tenant), use {@code common} as ID.

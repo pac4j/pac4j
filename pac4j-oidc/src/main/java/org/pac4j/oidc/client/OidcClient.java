@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.proc.BadJOSEException;
 import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -22,7 +20,11 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
+import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -34,10 +36,8 @@ import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
 import com.nimbusds.oauth2.sdk.auth.Secret;
-import com.nimbusds.oauth2.sdk.http.DefaultResourceRetriever;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.oauth2.sdk.http.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
@@ -306,7 +306,8 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
 
 	protected IDTokenValidator createRSATokenValidator(
 			final JWSAlgorithm jwsAlgorithm, ClientID clientID) throws MalformedURLException {
-		return new IDTokenValidator(getProviderMetadata().getIssuer(), clientID, jwsAlgorithm, getProviderMetadata().getJWKSetURI().toURL());
+		return new IDTokenValidator(getProviderMetadata().getIssuer(), clientID, jwsAlgorithm,
+				getProviderMetadata().getJWKSetURI().toURL(), createResourceRetriever());
 	}
 
 	protected IDTokenValidator createHMACTokenValidator(
