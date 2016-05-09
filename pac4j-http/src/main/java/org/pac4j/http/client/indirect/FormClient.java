@@ -94,7 +94,7 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
 		// it's an AJAX request -> unauthorized (instead of a redirection)
 		if (getAjaxRequestResolver().isAjax(context)) {
 			logger.info("AJAX request detected -> returning " + errorCode);
-			return RequiresHttpAction.unauthorized("AJAX request -> " + errorCode, context, null);
+			return RequiresHttpAction.status("AJAX request -> " + errorCode, errorCode, context);
 		} else {
 			String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
 			redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
