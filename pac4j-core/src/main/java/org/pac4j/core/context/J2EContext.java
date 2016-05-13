@@ -198,8 +198,7 @@ public class J2EContext implements WebContext {
 
     @Override
     public Collection<Cookie> getRequestCookies() {
-        final javax.servlet.http.Cookie[] cookies = this.request.getCookies();
-        final Collection<Cookie> pac4jCookies = new LinkedHashSet<>(cookies.length);
+        final Collection<Cookie> pac4jCookies = new LinkedHashSet<>();
         for (javax.servlet.http.Cookie c : this.request.getCookies()) {
             final Cookie cookie = new Cookie(c.getName(), c.getValue());
             cookie.setComment(c.getComment());
