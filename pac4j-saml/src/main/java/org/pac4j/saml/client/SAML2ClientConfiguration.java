@@ -295,7 +295,12 @@ public final class SAML2ClientConfiguration implements Cloneable {
 	}
 
     public String getKeystorePath() {
-        return keystoreResource.getFilename();
+    	// if keystore is specified you won't specify keystoreResource
+    	if (keystoreResource != null) {
+    		return keystoreResource.getFilename();
+    	} else {
+    		return null;
+    	}
     }
 
     public String getKeystorePassword() {
