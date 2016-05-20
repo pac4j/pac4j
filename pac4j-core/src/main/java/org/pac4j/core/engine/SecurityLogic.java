@@ -26,6 +26,6 @@ public interface SecurityLogic<R, C extends WebContext> {
      * @param parameters additional parameters
      * @return the resulting action of the security
      */
-    R perform(C context, Config config, SecurityGrantedAccessAdapter<R> securityGrantedAccessAdapter, HttpActionAdapter<R> httpActionAdapter,
+    R perform(C context, Config config, SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, HttpActionAdapter<R> httpActionAdapter,
               String clients, String authorizers, String matchers, Boolean multiProfile, Object... parameters);
 }

@@ -8,7 +8,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface SecurityGrantedAccessAdapter<R extends Object> {
+public interface SecurityGrantedAccessAdapter<R, C extends WebContext> {
 
     /**
      * Adapt the current successful action as the expected result.
@@ -18,5 +18,5 @@ public interface SecurityGrantedAccessAdapter<R extends Object> {
      * @return an adapted result
      * @throws Exception any exception
      */
-    R adapt(WebContext context, Object... parameters) throws Exception;
+    R adapt(C context, Object... parameters) throws Exception;
 }
