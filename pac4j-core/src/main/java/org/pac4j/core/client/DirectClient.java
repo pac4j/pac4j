@@ -16,7 +16,7 @@ import org.pac4j.core.profile.CommonProfile;
 public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
 
     @Override
-    public final void redirect(final WebContext context) throws HttpAction {
+    public final HttpAction redirect(final WebContext context) throws HttpAction {
         throw new TechnicalException("direct clients do not support redirections");
     }
 }

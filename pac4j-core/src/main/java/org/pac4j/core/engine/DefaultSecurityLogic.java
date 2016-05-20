@@ -80,7 +80,7 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
         assertNotNull("configClients", configClients);
 
         // logic
-        HttpAction action = null;
+        HttpAction action;
         try {
 
             logger.debug("url: {}", context.getFullRequestURL());
@@ -140,7 +140,7 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
                     if (startAuthentication(context, currentClients)) {
                         logger.debug("Starting authentication");
                         saveRequestedUrl(context, currentClients);
-                        redirectToIdentityProvider(context, currentClients);
+                        action = redirectToIdentityProvider(context, currentClients);
                     } else {
                         logger.debug("unauthorized");
                         action = unauthorized(context, currentClients);
@@ -162,11 +162,7 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
             throw new TechnicalException(e);
         }
 
-        if (action == null) {
-            return null;
-        } else {
-            return httpActionAdapter.adapt(action.getCode(), context);
-        }
+        return httpActionAdapter.adapt(action.getCode(), context);
     }
 
     /**
@@ -180,6 +176,16 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
         return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient || currentClients.get(0) instanceof AnonymousClient;
     }
 
+    /**
+     * Whether we need to save the profile in session after the authentication of direct client(s). <code>false</code> by default as direct clients profiles
+     * are not meant to be saved in the web session.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @param directClient the direct clients
+     * @param profile whether we need to save the profile in session
+     * @return
+     */
     protected boolean saveProfileInSession(final WebContext context, final List<Client> currentClients, final DirectClient directClient, final CommonProfile profile) {
         return false;
     }
@@ -221,9 +227,17 @@ public class DefaultSecurityLogic<R extends Object> implements SecurityLogic<R> 
         context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, requestedUrl);
     }
 
-    protected void redirectToIdentityProvider(final WebContext context, final List<Client> currentClients) throws HttpAction {
+    /**
+     * Perform a redirection to start the login process of the first indirect client.
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @return the performed redirection
+     * @throws HttpAction whether an additional HTTP action is required
+     */
+    protected HttpAction redirectToIdentityProvider(final WebContext context, final List<Client> currentClients) throws HttpAction {
         final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
-        currentClient.redirect(context);
+        return currentClient.redirect(context);
     }
 
     /**
