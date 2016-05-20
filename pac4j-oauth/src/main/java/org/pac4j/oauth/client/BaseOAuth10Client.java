@@ -4,11 +4,11 @@ import com.github.scribejava.core.model.OAuth1AccessToken;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.OAuth10Profile;
@@ -57,12 +57,12 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
         final String verifierParameter = context.getRequestParameter(OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {
             // get request token from session
-            final Token tokenSession = (Token) context.getSessionAttribute(getRequestTokenSessionAttributeName());
+            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) context.getSessionAttribute(getRequestTokenSessionAttributeName());
             logger.debug("tokenRequest: {}", tokenSession);
             final String token = OAuthEncoder.decode(tokenParameter);
             final String verifier = OAuthEncoder.decode(verifierParameter);
             logger.debug("token: {} / verifier: {}", token, verifier);
-            return new OAuthCredentials(tokenSession, token, verifier, getName());
+            return new OAuth10Credentials(tokenSession, token, verifier, getName());
         } else {
             final String message = "No credential found";
             throw new OAuthCredentialsException(message);
@@ -71,9 +71,10 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
 
     @Override
     protected OAuth1Token getAccessToken(final OAuthCredentials credentials) throws HttpAction {
-        final OAuth1RequestToken tokenRequest = (OAuth1RequestToken) credentials.getRequestToken();
-        final String token = credentials.getToken();
-        final String verifier = credentials.getVerifier();
+        OAuth10Credentials oAuth10Credentials = (OAuth10Credentials) credentials;
+        final OAuth1RequestToken tokenRequest = oAuth10Credentials.getRequestToken();
+        final String token = oAuth10Credentials.getToken();
+        final String verifier = oAuth10Credentials.getVerifier();
         logger.debug("tokenRequest: {}", tokenRequest);
         logger.debug("token: {}", token);
         logger.debug("verifier: {}", verifier);

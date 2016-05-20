@@ -6,18 +6,18 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.credentials.OAuth10Credentials;
 
 import static org.junit.Assert.*;
 
 /**
  * This class tests the OAuth credential retrieval in the {@link org.pac4j.oauth.client.BaseOAuth10Client} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class BaseOAuth10ClientTests implements TestsConstants {
-    
+
     private BaseOAuth10Client getClient() {
         final YahooClient client = new YahooClient();
         client.setKey(KEY);
@@ -40,7 +40,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
     public void testNoToken() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER,
-                                                                                   VERIFIER));
+                    VERIFIER));
             fail("should not get credentials");
         } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
@@ -51,7 +51,7 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
     public void testNoVerifier() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create()
-                                           .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN));
+                    .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN));
             fail("should not get credentials");
         } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
@@ -60,13 +60,13 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
 
     @Test
     public void testOk() throws HttpAction {
-        final OAuthCredentials credentials = (OAuthCredentials) getClient()
-            .getCredentials(MockWebContext
-                                .create()
-                                .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)
-                                .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN)
-                                .addSessionAttribute(getClient().getName() + "#" + BaseOAuth10Client.REQUEST_TOKEN,
-                                                     new OAuth1RequestToken(TOKEN, SECRET)));
+        final OAuth10Credentials credentials = (OAuth10Credentials) getClient()
+                .getCredentials(MockWebContext
+                        .create()
+                        .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)
+                        .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN)
+                        .addSessionAttribute(getClient().getName() + "#" + BaseOAuth10Client.REQUEST_TOKEN,
+                                new OAuth1RequestToken(TOKEN, SECRET)));
         assertNotNull(credentials);
         assertEquals(TOKEN, credentials.getToken());
         assertEquals(VERIFIER, credentials.getVerifier());

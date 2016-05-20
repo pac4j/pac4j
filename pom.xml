@@ -217,7 +217,7 @@
 					  </goals>
 					  <configuration>
 					    <name>module.suffix</name>
-					    <value>${artifactId}</value>
+					    <value>${project.artifactId}</value>
 					    <regex>^(pac4j\-)(.*)$</regex>
 					    <replacement>$2</replacement>
 					    <failIfNoMatch>false</failIfNoMatch>
@@ -248,11 +248,11 @@
 					<archive>
 						<manifestEntries>
 							<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-							<Bundle-Name>${name}</Bundle-Name>
-							<Bundle-SymbolicName>${groupId}.${module.suffix}.source</Bundle-SymbolicName>
+							<Bundle-Name>${project.name}</Bundle-Name>
+							<Bundle-SymbolicName>${project.groupId}.${module.suffix}.source</Bundle-SymbolicName>
 							<Bundle-Vendor>${organization.name}</Bundle-Vendor>
 							<Bundle-Version>${parsedVersion.osgiVersion}</Bundle-Version>
-							<Eclipse-SourceBundle>${groupId}.${module.suffix};version="${parsedVersion.osgiVersion}";roots:="."</Eclipse-SourceBundle>
+							<Eclipse-SourceBundle>${project.groupId}.${module.suffix};version="${parsedVersion.osgiVersion}";roots:="."</Eclipse-SourceBundle>
 						</manifestEntries>
 					</archive>
 				</configuration>
