@@ -1,7 +1,6 @@
 package org.pac4j.core.engine;
 
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.WebContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,11 +14,11 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class J2ERenewSessionCallbackLogic extends DefaultCallbackLogic<Object> {
+public class J2ERenewSessionCallbackLogic extends DefaultCallbackLogic<Object, J2EContext> {
 
-    protected void renewSession(final WebContext context) {
+    protected void renewSession(final J2EContext context) {
         logger.debug("Discard old session and replace by a new one...");
-        final HttpServletRequest request = ((J2EContext) context).getRequest();
+        final HttpServletRequest request = context.getRequest();
         final HttpSession session = request.getSession();
         final Map<String, java.lang.Object> attributes = new HashMap<>();
         Collections.list(session.getAttributeNames()).forEach(k -> attributes.put(k, session.getAttribute(k)));

@@ -21,12 +21,12 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultApplicationLogoutLogic<R extends Object> implements ApplicationLogoutLogic<R> {
+public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements ApplicationLogoutLogic<R, C> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public R perform(final WebContext context, final Config config, final HttpActionAdapter<R> httpActionAdapter,
+    public R perform(final C context, final Config config, final HttpActionAdapter<R> httpActionAdapter,
                        final String defaultUrl, final String inputLogoutUrlPattern) {
 
         logger.debug("Perfoming application logout");
@@ -71,6 +71,6 @@ public class DefaultApplicationLogoutLogic<R extends Object> implements Applicat
      *
      * @param context the web context
      */
-    protected void postLogout(final WebContext context) {
+    protected void postLogout(final C context) {
     }
 }

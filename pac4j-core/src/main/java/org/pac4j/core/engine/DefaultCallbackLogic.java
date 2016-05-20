@@ -24,12 +24,12 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultCallbackLogic<R extends Object> implements CallbackLogic<R> {
+public class DefaultCallbackLogic<R, C extends WebContext> implements CallbackLogic<R, C> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public R perform(final WebContext context, final Config config, final HttpActionAdapter<R> httpActionAdapter,
+    public R perform(final C context, final Config config, final HttpActionAdapter<R> httpActionAdapter,
                      final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
 
         logger.debug("Perfoming callback");
@@ -86,7 +86,7 @@ public class DefaultCallbackLogic<R extends Object> implements CallbackLogic<R> 
         return httpActionAdapter.adapt(action.getCode(), context);
     }
 
-    protected void saveUserProfile(final WebContext context, final CommonProfile profile,
+    protected void saveUserProfile(final C context, final CommonProfile profile,
                                    final boolean multiProfile, final boolean renewSession) {
         final ProfileManager manager = new ProfileManager(context);
         if (profile != null) {
@@ -97,9 +97,9 @@ public class DefaultCallbackLogic<R extends Object> implements CallbackLogic<R> 
         }
     }
 
-    protected void renewSession(final WebContext context) {}
+    protected void renewSession(final C context) {}
 
-    protected HttpAction redirectToOriginallyRequestedUrl(final WebContext context, final String defaultUrl) {
+    protected HttpAction redirectToOriginallyRequestedUrl(final C context, final String defaultUrl) {
         final String requestedUrl = (String) context.getSessionAttribute(Pac4jConstants.REQUESTED_URL);
         String redirectUrl = defaultUrl;
         if (isNotBlank(requestedUrl)) {
