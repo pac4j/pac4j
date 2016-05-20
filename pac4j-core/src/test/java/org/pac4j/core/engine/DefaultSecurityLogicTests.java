@@ -33,7 +33,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private Config config;
 
-    private SecurityGrantedAccessAdapter<Object> securityGrantedAccessAdapter;
+    private SecurityGrantedAccessAdapter<Object, WebContext> securityGrantedAccessAdapter;
 
     private HttpActionAdapter<Object> httpActionAdapter;
 
