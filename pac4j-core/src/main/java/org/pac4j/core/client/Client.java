@@ -35,9 +35,10 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * <p>Redirect to the authentication provider for an indirect client.</p>
      *
      * @param context the current web context
+     * @return the performed redirection
      * @throws HttpAction whether an additional HTTP action is required
      */
-    void redirect(WebContext context) throws HttpAction;
+    HttpAction redirect(WebContext context) throws HttpAction;
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at this step.</p>

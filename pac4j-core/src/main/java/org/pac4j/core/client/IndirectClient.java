@@ -1,7 +1,6 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.client.RedirectAction.RedirectType;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -41,14 +40,12 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final void redirect(final WebContext context) throws HttpAction {
+    public final HttpAction redirect(final WebContext context) throws HttpAction {
         final RedirectAction action = getRedirectAction(context);
         if (action.getType() == RedirectType.REDIRECT) {
-            context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
-            context.setResponseHeader(HttpConstants.LOCATION_HEADER, action.getLocation());
-        } else if (action.getType() == RedirectType.SUCCESS) {
-            context.setResponseStatus(HttpConstants.OK);
-            context.writeResponseContent(action.getContent());
+            return HttpAction.redirect("redirection via 302", context, action.getLocation());
+        } else {
+            return HttpAction.ok("redirection via 200", context, action.getContent());
         }
     }
 
