@@ -10,7 +10,7 @@ import org.pac4j.core.http.HttpActionAdapter;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface CallbackLogic<R extends Object> {
+public interface CallbackLogic<R, C extends WebContext> {
 
     /**
      * Perform the callback logic.
@@ -23,6 +23,6 @@ public interface CallbackLogic<R extends Object> {
      * @param renewSession whether the session must be renewed
      * @return the resulting action of the callback
      */
-    R perform(WebContext context, Config config, HttpActionAdapter<R> httpActionAdapter,
+    R perform(C context, Config config, HttpActionAdapter<R> httpActionAdapter,
                      String defaultUrl, Boolean multiProfile, Boolean renewSession);
 }

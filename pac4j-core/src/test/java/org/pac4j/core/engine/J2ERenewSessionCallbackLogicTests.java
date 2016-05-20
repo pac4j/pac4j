@@ -27,14 +27,14 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link DefaultCallbackLogic}.
+ * Tests {@link J2ERenewSessionCallbackLogic}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
 public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
 
-    private CallbackLogic<Object> logic;
+    private CallbackLogic<Object, J2EContext> logic;
 
     protected MockHttpServletRequest request;
 
