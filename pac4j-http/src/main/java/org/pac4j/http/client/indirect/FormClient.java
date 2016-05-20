@@ -62,6 +62,7 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
+        this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
         setRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
@@ -79,30 +80,30 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (credentials == null) {
-				throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR, 401);
+                throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR, 401);
             }
             // validate credentials
             getAuthenticator().validate(credentials);
         } catch (final CredentialsException e) {
-        	throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error", computeErrorMessage(e), 403);
+            throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error", computeErrorMessage(e), 403);
         }
 
         return credentials;
     }
 
-	private HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage, int errorCode) throws HttpAction {
-		// it's an AJAX request -> unauthorized (instead of a redirection)
-		if (getAjaxRequestResolver().isAjax(context)) {
-			logger.info("AJAX request detected -> returning " + errorCode);
-			return HttpAction.unauthorized("AJAX request -> " + errorCode, context, null);
-		} else {
-			String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
-			redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
-			logger.debug("redirectionUrl: {}", redirectionUrl);
-			logger.debug(message);
-			return HttpAction.redirect(message, context, redirectionUrl);
-		}
-	}
+    private HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage, int errorCode) throws HttpAction {
+        // it's an AJAX request -> unauthorized (instead of a redirection)
+        if (getAjaxRequestResolver().isAjax(context)) {
+            logger.info("AJAX request detected -> returning " + errorCode);
+            return HttpAction.status("AJAX request -> " + errorCode, errorCode, context);
+        } else {
+            String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
+            redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
+            logger.debug("redirectionUrl: {}", redirectionUrl);
+            logger.debug(message);
+            return HttpAction.redirect(message, context, redirectionUrl);
+        }
+    }
 
     /**
      * Return the error message depending on the thrown exception. Can be overriden for other message computation.

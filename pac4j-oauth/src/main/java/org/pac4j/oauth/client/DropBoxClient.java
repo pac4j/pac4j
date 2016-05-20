@@ -3,11 +3,13 @@ package org.pac4j.oauth.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.DropBoxApi;
 import com.github.scribejava.core.builder.api.BaseApi;
+import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
@@ -43,13 +45,13 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     @Override
     protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
         // get tokenRequest from session
-        final OAuth1Token tokenRequest = (OAuth1Token) context.getSessionAttribute(getRequestTokenSessionAttributeName());
+        final OAuth1RequestToken tokenRequest = (OAuth1RequestToken) context.getSessionAttribute(getRequestTokenSessionAttributeName());
         logger.debug("tokenRequest: {}", tokenRequest);
         // don't get parameters from url
         // token and verifier are equals and extracted from saved request token
         final String token = tokenRequest.getToken();
         logger.debug("token = verifier: {}", token);
-        return new OAuthCredentials(tokenRequest, token, token, getName());
+        return new OAuth10Credentials(tokenRequest, token, token, getName());
     }
     
     @Override
