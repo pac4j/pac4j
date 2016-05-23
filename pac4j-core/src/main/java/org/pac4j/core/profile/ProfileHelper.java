@@ -104,7 +104,7 @@ public final class ProfileHelper {
         return completeName;
     }
 
-    private static CommonProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
+    public static CommonProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
                                                                    final String completeName) throws Exception {
         final Constructor<? extends CommonProfile> constructor = getConstructor(completeName);
         final CommonProfile userProfile = constructor.newInstance();
