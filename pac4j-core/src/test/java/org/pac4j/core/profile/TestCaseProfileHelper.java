@@ -60,6 +60,10 @@ public abstract class TestCaseProfileHelper extends TestCase implements TestsCon
         assertNotNull(ProfileHelper.buildProfile(getProfileType() + "#" + STRING_ID, EMPTY_MAP));
     }
     
+    public void testBuildUserProfileByClassCompleteName() throws Exception {
+        assertNotNull(ProfileHelper.buildUserProfileByClassCompleteName(getProfileType() + "#" + STRING_ID, EMPTY_MAP, getProfileClass().getName()));
+    }
+    
     protected abstract String getAttributeName();
     
     public void testBuildProfileOK() {
