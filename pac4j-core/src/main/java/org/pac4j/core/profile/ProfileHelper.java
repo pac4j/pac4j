@@ -120,7 +120,15 @@ public final class ProfileHelper {
             synchronized (constructorsCache) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
-                    constructor = (Constructor<? extends CommonProfile>) Class.forName(name).getDeclaredConstructor();
+                	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+                	
+                	if (tccl == null) {    	
+                		constructor = (Constructor<? extends CommonProfile>) Class
+                            	.forName(name).getDeclaredConstructor();
+                	} else {
+                        constructor = (Constructor<? extends CommonProfile>) Class
+                                .forName(name, true, tccl).getDeclaredConstructor();
+                	}
                     constructorsCache.put(name, constructor);
                 }
             }
