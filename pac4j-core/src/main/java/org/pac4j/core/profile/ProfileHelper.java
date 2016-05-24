@@ -110,7 +110,7 @@ public final class ProfileHelper {
     }
 
     @SuppressWarnings("unchecked")
-	private static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
+	public static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
                                                                    final String completeName)
             throws Exception {
     	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
