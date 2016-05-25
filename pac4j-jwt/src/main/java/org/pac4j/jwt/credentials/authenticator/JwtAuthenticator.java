@@ -55,6 +55,9 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
  * for the {@link org.pac4j.http.profile.creator.AuthenticatorProfileCreator}.
+ * 
+ *  If the secret is a pem you need to specify the algorithm which will create the right Key object for underlying validator. 
+ *  In addition you can create the key object of the right type yourself and pass it in.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -206,7 +209,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
     /**
      * @throws NoSuchAlgorithmException 
      * @throws InvalidKeySpecException 
-     * @since 1.8.2
+     * @since 1.8.9
      */
     public void setSigningPem(final String publicKeyPEM, final String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
     	// from http://stackoverflow.com/questions/35739932/how-do-i-decode-a-jwt-token-using-an-rsa-public-key-in-pem-format
@@ -243,10 +246,16 @@ public class JwtAuthenticator implements TokenAuthenticator {
         warning();
     }
 
+    /**
+     * @since 1.8.9
+     */
 	public Key getKey() {
 		return key;
 	}
 
+    /**
+     * @since 1.8.9
+     */
 	public void setKey(Key key) {
 		this.key = key;
 	}
