@@ -24,10 +24,10 @@ import org.pac4j.core.profile.TestCaseProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 
 /**
- * This class tests the {@link ProfileHelper} class for the {@link HttpProfile}.
+ * This class tests the {@link ProfileHelper} class for a custom {@link CustomProfileClass}.
  * 
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 1.8.9
  */
 public final class TestCustomProfileHelper extends TestCaseProfileHelper {
     
