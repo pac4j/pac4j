@@ -26,7 +26,7 @@ import org.pac4j.core.profile.UserProfile;
 /**
  * This class tests the {@link ProfileHelper} class for a custom {@link CustomProfileClass}.
  * 
- * @author Jerome Leleu
+ * @author Garry Boyce
  * @since 1.8.9
  */
 public final class TestCustomProfileHelper extends TestCaseProfileHelper {
