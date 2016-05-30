@@ -246,7 +246,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
         this.authParams.putAll(getCustomParams());
         // Override with required values
         this.authParams.put("client_id", getClientID());
-        this.authParams.put("client_secret", getSecret());
 
         this._clientID = new ClientID(getClientID());
         this._secret = new Secret(getSecret());
