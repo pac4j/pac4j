@@ -223,6 +223,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) throws RequiresHttpAction {
         final SAML2Profile profile = new SAML2Profile();
         profile.setId(credentials.getNameId().getValue());
+        profile.addAttribute("sessionindex", credentials.getSessionIndex());
         for (final Attribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
