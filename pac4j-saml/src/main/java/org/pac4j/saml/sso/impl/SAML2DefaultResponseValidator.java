@@ -179,7 +179,9 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
         if(authnStatements != null && authnStatements.size() > 0) {
         	AuthnStatement statement = authnStatements.get(0);
-        	return statement.getSessionIndex();
+        	if(statement != null) {
+        		return statement.getSessionIndex();
+        	}
         }
         return null;
     }
