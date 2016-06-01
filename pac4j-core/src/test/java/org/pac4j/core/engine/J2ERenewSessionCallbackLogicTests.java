@@ -50,8 +50,6 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
 
     private String defaultUrl;
 
-    private Boolean multiProfile;
-
     private Boolean renewSession;
 
     @Before
@@ -64,13 +62,11 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
         config = new Config();
         httpActionAdapter = (code, ctx) -> null;
         defaultUrl = null;
-        multiProfile = null;
         renewSession = null;
-
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, multiProfile, renewSession);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, null, renewSession);
     }
 
     @Test
