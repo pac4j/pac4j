@@ -22,6 +22,6 @@ public interface ApplicationLogoutLogic<R, C extends WebContext> {
      * @param logoutUrlPattern the logout url pattern
      * @return the resulting action for logout
      */
-    R perform(C context, Config config, HttpActionAdapter<R> httpActionAdapter,
+    R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter,
                        String defaultUrl, String logoutUrlPattern);
 }

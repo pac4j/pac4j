@@ -35,7 +35,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
 
     private SecurityGrantedAccessAdapter<Object, WebContext> securityGrantedAccessAdapter;
 
-    private HttpActionAdapter<Object> httpActionAdapter;
+    private HttpActionAdapter<Object, WebContext> httpActionAdapter;
 
     private String clients;
 

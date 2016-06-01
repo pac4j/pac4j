@@ -56,7 +56,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
     @Override
-    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, final HttpActionAdapter<R> httpActionAdapter,
+    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, final Object... parameters) {
 
         logger.debug("Applying security");
@@ -158,7 +158,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
             action = e;
         } catch (final TechnicalException e) {
             throw e;
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             throw new TechnicalException(e);
         }
 
