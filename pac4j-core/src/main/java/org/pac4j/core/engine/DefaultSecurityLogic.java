@@ -59,7 +59,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, final Object... parameters) {
 
-        logger.debug("Applying security");
+        logger.debug("=== SECURITY ===");
 
         // default value
         final boolean multiProfile;
