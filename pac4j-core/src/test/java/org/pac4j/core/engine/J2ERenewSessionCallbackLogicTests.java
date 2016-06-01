@@ -15,7 +15,6 @@ import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -40,8 +39,6 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
 
     protected MockHttpServletResponse response;
 
-    protected MockFilterChain filterChain;
-
     private J2EContext context;
 
     private Config config;
@@ -57,7 +54,6 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
         logic = new J2ERenewSessionCallbackLogic();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        filterChain = new MockFilterChain();
         context = new J2EContext(request, response);
         config = new Config();
         httpActionAdapter = (code, ctx) -> null;
