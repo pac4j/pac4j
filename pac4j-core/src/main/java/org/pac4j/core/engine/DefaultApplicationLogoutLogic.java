@@ -26,7 +26,7 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public R perform(final C context, final Config config, final HttpActionAdapter<R> httpActionAdapter,
+    public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                        final String defaultUrl, final String inputLogoutUrlPattern) {
 
         logger.debug("Perfoming application logout");

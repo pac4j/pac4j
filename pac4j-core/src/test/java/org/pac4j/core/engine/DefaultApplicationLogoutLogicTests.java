@@ -30,7 +30,7 @@ public final class DefaultApplicationLogoutLogicTests implements TestsConstants 
 
     private Config config;
 
-    private HttpActionAdapter<Object> httpActionAdapter;
+    private HttpActionAdapter<Object, WebContext> httpActionAdapter;
 
     private String defaultUrl;
 

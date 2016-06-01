@@ -46,7 +46,7 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
 
     private Config config;
 
-    private HttpActionAdapter<Object> httpActionAdapter;
+    private HttpActionAdapter<Object, J2EContext> httpActionAdapter;
 
     private String defaultUrl;
 

@@ -29,7 +29,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> implements CallbackLo
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public R perform(final C context, final Config config, final HttpActionAdapter<R> httpActionAdapter,
+    public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
 
         logger.debug("Perfoming callback");
