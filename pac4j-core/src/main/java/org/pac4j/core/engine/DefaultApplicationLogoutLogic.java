@@ -29,7 +29,7 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                        final String defaultUrl, final String inputLogoutUrlPattern) {
 
-        logger.debug("Perfoming application logout");
+        logger.debug("=== APP LOGOUT ===");
 
         // default value
         final String logoutUrlPattern;

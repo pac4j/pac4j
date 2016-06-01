@@ -32,7 +32,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> implements CallbackLo
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String inputDefaultUrl, final Boolean inputMultiProfile, final Boolean inputRenewSession) {
 
-        logger.debug("Perfoming callback");
+        logger.debug("=== CALLBACK ===");
 
         // default values
         final String defaultUrl;
