@@ -116,6 +116,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
                     throw new TechnicalException("unsupported unsecured jwt");
                 }
 
+                CommonHelper.assertNotBlank("signingSecret", encryptionSecret);
                 verified = ((SignedJWT) jwt).verify(new MACVerifier(this.signingSecret));
             }
 
