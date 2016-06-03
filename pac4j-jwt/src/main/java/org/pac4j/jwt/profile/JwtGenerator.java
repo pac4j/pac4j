@@ -52,8 +52,8 @@ public class JwtGenerator<U extends CommonProfile> {
         this.signingSecret = secret;
         if (encrypted) {
             this.encryptionSecret = secret;
+            logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
         }
-        logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
     }
 
     /**
