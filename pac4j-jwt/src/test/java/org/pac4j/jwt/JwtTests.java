@@ -1,6 +1,5 @@
 package org.pac4j.jwt;
 
-import org.bouncycastle.jce.provider.PEMUtil;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.junit.Test;
@@ -17,7 +16,6 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.crypto.ECDSASigner;
-import com.nimbusds.jose.jwk.ECKey;
 
 import java.io.IOException;
 import java.io.StringWriter;
