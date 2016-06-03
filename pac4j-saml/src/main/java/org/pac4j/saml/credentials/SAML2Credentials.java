@@ -19,13 +19,16 @@ public class SAML2Credentials extends Credentials {
 
     private NameID nameId;
 
+    private String sessionIndex;
+
     private List<Attribute> attributes;
     
     private Conditions conditions;
 
     public SAML2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
-                            final String clientName) {
+                            final String clientName, final String sessionIndex) {
         this.nameId = nameId;
+        this.sessionIndex = sessionIndex;
         this.attributes = attributes;
         this.conditions = conditions;
         setClientName(clientName);
@@ -33,6 +36,10 @@ public class SAML2Credentials extends Credentials {
 
     public final NameID getNameId() {
         return this.nameId;
+    }
+
+    public final String getSessionIndex() {
+    	return this.sessionIndex;
     }
 
     public final List<Attribute> getAttributes() {
@@ -52,6 +59,7 @@ public class SAML2Credentials extends Credentials {
 
         if (nameId != null ? !nameId.equals(that.nameId) : that.nameId != null) return false;
         if (attributes != null ? !attributes.equals(that.attributes) : that.attributes != null) return false;
+        if (sessionIndex != null ? sessionIndex.equals(that.sessionIndex) : that.sessionIndex != null) return false;
         return !(conditions != null ? !conditions.equals(that.conditions) : that.conditions != null);
 
     }
@@ -60,12 +68,13 @@ public class SAML2Credentials extends Credentials {
     public int hashCode() {
         int result = nameId != null ? nameId.hashCode() : 0;
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        result = 31 * result + (sessionIndex != null ? sessionIndex.hashCode() : 0);
         result = 31 * result + (conditions != null ? conditions.hashCode() : 0);
         return result;
     }
 
     @Override
     public final String toString() {
-        return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + "]";
+        return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + ", sessionIndex=" + this.sessionIndex + "]";
     }
 }
