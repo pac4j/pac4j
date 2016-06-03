@@ -8,7 +8,7 @@ import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -55,7 +55,7 @@ public final class PostSAML2ClientTests extends AbstractSAML2ClientTests {
     }
 
     @Test
-    public void testRelayState() throws RequiresHttpAction {
+    public void testRelayState() throws HttpAction {
         final SAML2Client client = getClient();
         final WebContext context = new J2EContext(new MockHttpServletRequest(), new MockHttpServletResponse());
         context.setSessionAttribute(SAML2Client.SAML_RELAY_STATE_ATTRIBUTE, "relayState");

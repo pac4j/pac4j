@@ -8,7 +8,7 @@ import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -33,16 +33,16 @@ public final class CasRestClientIT implements TestsConstants {
     private final static String CAS_PREFIX_URL = "http://casserverpac4j.herokuapp.com/";
 
     @Test
-    public void testRestForm() throws RequiresHttpAction {
+    public void testRestForm() throws HttpAction {
         internalTestRestForm(new CasRestAuthenticator(CAS_PREFIX_URL));
     }
 
     @Test
-    public void testRestFormWithCaching() throws RequiresHttpAction {
+    public void testRestFormWithCaching() throws HttpAction {
         internalTestRestForm(new LocalCachingAuthenticator<>(new CasRestAuthenticator(CAS_PREFIX_URL), 100, 100, TimeUnit.SECONDS));
     }
 
-    private void internalTestRestForm(final Authenticator authenticator) throws RequiresHttpAction {
+    private void internalTestRestForm(final Authenticator authenticator) throws HttpAction {
         final CasRestFormClient client = new CasRestFormClient();
         client.setAuthenticator(authenticator);
 
@@ -63,18 +63,18 @@ public final class CasRestClientIT implements TestsConstants {
     }
 
     @Test
-    public void testRestBasic() throws RequiresHttpAction, UnsupportedEncodingException {
+    public void testRestBasic() throws HttpAction, UnsupportedEncodingException {
         internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 3);
     }
 
     @Test
-    public void testRestBasicWithCas20TicketValidator() throws RequiresHttpAction, UnsupportedEncodingException {
+    public void testRestBasicWithCas20TicketValidator() throws HttpAction, UnsupportedEncodingException {
         final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_PREFIX_URL);
         authenticator.setTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
         internalTestRestBasic(new CasRestBasicAuthClient(authenticator, VALUE, NAME), 0);
     }
 
-    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws RequiresHttpAction, UnsupportedEncodingException {
+    private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws HttpAction, UnsupportedEncodingException {
         final MockWebContext context = MockWebContext.create();
         final String token = USERNAME + ":" + USERNAME;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(HttpConstants.UTF8_ENCODING)));

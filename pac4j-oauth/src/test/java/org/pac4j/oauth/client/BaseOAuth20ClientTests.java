@@ -2,7 +2,7 @@ package org.pac4j.oauth.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -18,12 +18,12 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the OAuth credential retrieval in the {@link org.pac4j.oauth.client.BaseOAuth20Client} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
 public final class BaseOAuth20ClientTests implements TestsConstants {
-    
+
     private BaseOAuth20Client getClient() {
         final GitHubClient client = new GitHubClient();
         client.setKey(KEY);
@@ -33,7 +33,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testNoCode() throws RequiresHttpAction {
+    public void testNoCode() throws HttpAction {
         try {
             getClient().getCredentials(MockWebContext.create());
             fail("should not get credentials");
@@ -43,15 +43,15 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testOk() throws RequiresHttpAction {
+    public void testOk() throws HttpAction {
         final OAuth20Credentials oauthCredential = (OAuth20Credentials) getClient()
-            .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
+                .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
         assertNotNull(oauthCredential);
         assertEquals(CODE, oauthCredential.getCode());
     }
 
     @Test
-    public void testState() throws MalformedURLException, RequiresHttpAction {
+    public void testState() throws MalformedURLException, HttpAction {
         BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("OK");
@@ -60,7 +60,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testStateMatch() throws MalformedURLException, RequiresHttpAction, UnsupportedEncodingException {
+    public void testStateMatch() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
         BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext mockWebContext = MockWebContext.create();
@@ -78,7 +78,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testSetState() throws MalformedURLException, RequiresHttpAction, UnsupportedEncodingException {
+    public void testSetState() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
         BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("oldstate");
@@ -92,7 +92,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testStateRandom() throws MalformedURLException, RequiresHttpAction, UnsupportedEncodingException {
+    public void testStateRandom() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
         BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
@@ -117,7 +117,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetRedirectionGithub() throws RequiresHttpAction {
+    public void testGetRedirectionGithub() throws HttpAction {
         String url = getClient().getRedirectAction(MockWebContext.create()).getLocation();
         assertTrue(url != null && !url.isEmpty());
     }

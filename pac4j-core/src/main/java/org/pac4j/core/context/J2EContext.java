@@ -23,7 +23,7 @@ public class J2EContext implements WebContext {
 
     private final HttpServletResponse response;
 
-    private final SessionStore sessionStore;
+    private final SessionStore<J2EContext> sessionStore;
 
     /**
      * Build a J2E context from the current HTTP request and response.
@@ -42,7 +42,7 @@ public class J2EContext implements WebContext {
      * @param response the current response
      * @param sessionStore the session store to use
      */
-    public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore sessionStore) {
+    public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
         this.request = request;
         this.response = response;
         if (sessionStore == null) {
@@ -114,7 +114,7 @@ public class J2EContext implements WebContext {
         return this.response;
     }
 
-    public SessionStore getSessionStore() {
+    public SessionStore<J2EContext> getSessionStore() {
         return sessionStore;
     }
 
@@ -183,17 +183,20 @@ public class J2EContext implements WebContext {
 
     @Override
     public Collection<Cookie> getRequestCookies() {
+        final Collection<Cookie> pac4jCookies = new LinkedHashSet<>();
         final javax.servlet.http.Cookie[] cookies = this.request.getCookies();
-        final Collection<Cookie> pac4jCookies = new LinkedHashSet<>(cookies.length);
-        for (javax.servlet.http.Cookie c : this.request.getCookies()) {
-            final Cookie cookie = new Cookie(c.getName(), c.getValue());
-            cookie.setComment(c.getComment());
-            cookie.setDomain(c.getDomain());
-            cookie.setHttpOnly(c.isHttpOnly());
-            cookie.setMaxAge(c.getMaxAge());
-            cookie.setPath(c.getPath());
-            cookie.setSecure(c.getSecure());
-            pac4jCookies.add(cookie);
+
+        if (cookies != null) {
+	        for (javax.servlet.http.Cookie c : cookies) {
+	            final Cookie cookie = new Cookie(c.getName(), c.getValue());
+	            cookie.setComment(c.getComment());
+	            cookie.setDomain(c.getDomain());
+	            cookie.setHttpOnly(c.isHttpOnly());
+	            cookie.setMaxAge(c.getMaxAge());
+	            cookie.setPath(c.getPath());
+	            cookie.setSecure(c.getSecure());
+	            pac4jCookies.add(cookie);
+	        }
         }
         return pac4jCookies;
     }

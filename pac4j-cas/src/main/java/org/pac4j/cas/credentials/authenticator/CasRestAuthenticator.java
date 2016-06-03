@@ -7,7 +7,7 @@ import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -66,7 +66,7 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials) throws RequiresHttpAction {
+    public void validate(final UsernamePasswordCredentials credentials) throws HttpAction {
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");
         }

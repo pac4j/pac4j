@@ -6,7 +6,7 @@ import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
@@ -73,7 +73,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     }
 
     @Override
-    protected OkProfile extractUserProfile(String body) throws RequiresHttpAction {
+    protected OkProfile extractUserProfile(String body) throws HttpAction {
         final OkProfile profile = new OkProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {

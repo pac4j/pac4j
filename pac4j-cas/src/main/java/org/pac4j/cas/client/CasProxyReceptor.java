@@ -12,7 +12,7 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -65,12 +65,12 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
 
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected CasCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         
         // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
         final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
@@ -81,7 +81,7 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
         if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
             context.writeResponseContent("");
             final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
-            throw RequiresHttpAction.ok(message, context);
+            throw HttpAction.ok(message, context);
         }
         
         this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
@@ -91,11 +91,11 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
         
         final String message = "No credential for CAS proxy receptor -> returns ok";
         logger.debug(message);
-        throw RequiresHttpAction.ok(message, context);
+        throw HttpAction.ok(message, context);
     }
 
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws HttpAction {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
 

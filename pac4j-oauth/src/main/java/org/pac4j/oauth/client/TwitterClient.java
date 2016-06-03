@@ -7,7 +7,7 @@ import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
@@ -67,7 +67,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected TwitterProfile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected TwitterProfile extractUserProfile(final String body) throws HttpAction {
         final TwitterProfile profile = new TwitterProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

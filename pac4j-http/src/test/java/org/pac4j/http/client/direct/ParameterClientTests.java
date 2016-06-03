@@ -2,7 +2,7 @@ package org.pac4j.http.client.direct;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -56,7 +56,7 @@ public final class ParameterClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws RequiresHttpAction {
+    public void testAuthentication() throws HttpAction {
         final ParameterClient client = new ParameterClient(PARAMETER_NAME, new SimpleTestTokenAuthenticator());
         client.setSupportGetRequest(SUPPORT_GET);
         client.setSupportPostRequest(SUPPORT_POST);

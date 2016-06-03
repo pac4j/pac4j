@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class StrictTransportSecurityHeader implements Authorizer<CommonProfile> 
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws HttpAction {
         if (ContextHelper.isHttpsOrSecure(context)) {
             context.setResponseHeader("Strict-Transport-Security", "max-age=" + maxAge + " ; includeSubDomains");
         }
