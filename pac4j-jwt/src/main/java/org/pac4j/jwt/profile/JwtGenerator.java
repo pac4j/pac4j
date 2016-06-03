@@ -75,16 +75,7 @@ public class JwtGenerator<U extends CommonProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
-    	try {
-	    	// Create HMAC signer
-	        JWSSigner signer = null;
-	        if (CommonHelper.isNotBlank(this.signingSecret)) {
-	        	signer = new MACSigner(this.signingSecret);
-	        }
-	    	return generate(profile, signer, this.jwsAlgorithm);
-    	} catch (JOSEException e) {
-			throw new RuntimeException(e);
-		}
+    	return generate(profile, null, this.jwsAlgorithm);
     }
 
     /**
@@ -135,16 +126,15 @@ public class JwtGenerator<U extends CommonProfile> {
     }
 
     protected SignedJWT signJwt(final JWTClaimsSet claims) throws JOSEException {
-    	// Create HMAC signer
-        JWSSigner signer = null;
-        if (CommonHelper.isNotBlank(this.signingSecret)) {
-        	signer = new MACSigner(this.signingSecret);
-        }
-    	return signJwt(claims, signer, this.jwsAlgorithm);
+    	return signJwt(claims, null, this.jwsAlgorithm);
     }
 
     protected SignedJWT signJwt(final JWTClaimsSet claims, JWSSigner signer, JWSAlgorithm jwsAlgorithm) throws JOSEException {
-        final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
+        if (signer == null) {
+        	// Create HMAC signer
+        	signer = new MACSigner(this.signingSecret);
+        }
+    	final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
         // Apply the HMAC
         signedJWT.sign(signer);
         return signedJWT;
