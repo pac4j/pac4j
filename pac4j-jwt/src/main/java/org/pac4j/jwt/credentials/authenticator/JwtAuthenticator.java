@@ -13,7 +13,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -50,10 +50,6 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
 
     public JwtAuthenticator(final String signingSecret) {
         this(signingSecret, signingSecret);
-        warning();
-    }
-
-    private void warning() {
         logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
     }
 
@@ -84,14 +80,14 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
         try {
             validate(credentials);
-        } catch (final RequiresHttpAction e) {
+        } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }
         return credentials.getUserProfile();
     }
 
     @Override
-    public void validate(final TokenCredentials credentials) throws RequiresHttpAction {
+    public void validate(final TokenCredentials credentials) throws HttpAction {
         final String token = credentials.getToken();
         boolean verified = false;
 

@@ -3,7 +3,7 @@ package org.pac4j.gae.client;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceAttributesDefinition;
@@ -40,14 +40,14 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 
 	@Override
 	protected GaeUserCredentials retrieveCredentials(WebContext context)
-			throws RequiresHttpAction {
+			throws HttpAction {
 		GaeUserCredentials credentials = new GaeUserCredentials();
 		credentials.setUser(service.getCurrentUser());
 		return credentials;
 	}
 
 	@Override
-	protected GaeUserServiceProfile retrieveUserProfile(GaeUserCredentials credentials, WebContext context) throws RequiresHttpAction {
+	protected GaeUserServiceProfile retrieveUserProfile(GaeUserCredentials credentials, WebContext context) throws HttpAction {
 		User user = credentials.getUser();
 		if (user != null) {
 			GaeUserServiceProfile gaeUserProfile = new GaeUserServiceProfile();

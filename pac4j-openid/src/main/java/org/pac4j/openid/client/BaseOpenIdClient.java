@@ -15,7 +15,7 @@ import org.openid4java.message.ax.FetchRequest;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
@@ -72,7 +72,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
 
     @Override
     @SuppressWarnings("rawtypes")
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
         final String userIdentifier = getUser(context);
         CommonHelper.assertNotBlank("openIdUser", userIdentifier);
 
@@ -106,7 +106,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
     }
 
     @Override
-    protected OpenIdCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OpenIdCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         final String mode = context.getRequestParameter(OPENID_MODE);
         // cancelled authentication
         if (CommonHelper.areEquals(mode, CANCEL_MODE)) {
@@ -133,12 +133,12 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
      * @param authSuccess the authentication success message
      * @return the appropriate OpenID profile
      * @throws MessageException an OpenID exception
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract U createProfile(AuthSuccess authSuccess) throws RequiresHttpAction, MessageException;
+    protected abstract U createProfile(AuthSuccess authSuccess) throws HttpAction, MessageException;
 
     @Override
-    protected U retrieveUserProfile(final OpenIdCredentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected U retrieveUserProfile(final OpenIdCredentials credentials, final WebContext context) throws HttpAction {
         final ParameterList parameterList = credentials.getParameterList();
         final DiscoveryInformation discoveryInformation = credentials.getDiscoveryInformation();
         logger.debug("parameterList: {}", parameterList);

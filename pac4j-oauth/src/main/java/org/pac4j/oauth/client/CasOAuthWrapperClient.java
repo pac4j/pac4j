@@ -5,7 +5,7 @@ import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
@@ -59,7 +59,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     }
     
     @Override
-    protected CasOAuthWrapperProfile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected CasOAuthWrapperProfile extractUserProfile(final String body) throws HttpAction {
         final CasOAuthWrapperProfile userProfile = new CasOAuthWrapperProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

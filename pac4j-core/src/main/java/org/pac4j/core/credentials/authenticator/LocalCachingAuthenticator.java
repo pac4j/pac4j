@@ -6,7 +6,7 @@ import com.google.common.cache.LoadingCache;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -47,7 +47,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     @Override
-    public void validate(final T credentials) throws RequiresHttpAction {
+    public void validate(final T credentials) throws HttpAction {
         try {
             final CommonProfile profile = this.cache.get(credentials);
             credentials.setUserProfile(profile);

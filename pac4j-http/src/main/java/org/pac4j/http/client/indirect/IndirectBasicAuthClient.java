@@ -5,7 +5,7 @@ import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -16,7 +16,7 @@ import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 /**
  * <p>This class is the client to authenticate users through HTTP basic auth. It was previously named: <code>BasicAuthClient</code>.</p>
  * <p>For authentication, the user is redirected to the callback url. If the user is not authenticated by basic auth, a
- * specific exception : {@link RequiresHttpAction} is returned which must be handled by the application to force
+ * specific exception : {@link HttpAction} is returned which must be handled by the application to force
  * authentication.</p>
  *
  * @author Jerome Leleu
@@ -52,7 +52,7 @@ public class IndirectBasicAuthClient extends IndirectClientV2<UsernamePasswordCr
     }
 
     @Override
-    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         final UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials
@@ -60,13 +60,13 @@ public class IndirectBasicAuthClient extends IndirectClientV2<UsernamePasswordCr
             logger.debug("credentials : {}", credentials);
             
             if (credentials == null) {
-              throw RequiresHttpAction.unauthorized("Requires authentication", context, this.realmName);
+              throw HttpAction.unauthorized("Requires authentication", context, this.realmName);
             }
             
             // validate credentials
             getAuthenticator().validate(credentials);
         } catch (final CredentialsException e) {
-            throw RequiresHttpAction.unauthorized("Requires authentication", context, this.realmName);
+            throw HttpAction.unauthorized("Requires authentication", context, this.realmName);
         }
 
         return credentials;

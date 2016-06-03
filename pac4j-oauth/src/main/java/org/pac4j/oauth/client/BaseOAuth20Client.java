@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -26,7 +26,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     public static final String OAUTH_CODE = "code";
 
     @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
+    protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
         // no request token for OAuth 2.0 -> no need to save it in the context
         final String authorizationUrl = this.service.getAuthorizationUrl();
         logger.debug("authorizationUrl: {}", authorizationUrl);
@@ -34,7 +34,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     }
 
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
         final String codeParameter = context.getRequestParameter(OAUTH_CODE);
         if (codeParameter != null) {
             final String code = OAuthEncoder.decode(codeParameter);
@@ -47,7 +47,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     }
 
     @Override
-    protected OAuth2AccessToken getAccessToken(final OAuthCredentials credentials) throws RequiresHttpAction {
+    protected OAuth2AccessToken getAccessToken(final OAuthCredentials credentials) throws HttpAction {
         OAuth20Credentials oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
         final String code = oAuth20Credentials.getCode();

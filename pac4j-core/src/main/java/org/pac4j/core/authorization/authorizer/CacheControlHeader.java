@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class CacheControlHeader implements Authorizer<CommonProfile> {
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles) throws HttpAction {
         final String url = context.getFullRequestURL().toLowerCase();
         if (!url.endsWith(".css")
                 && !url.endsWith(".js")

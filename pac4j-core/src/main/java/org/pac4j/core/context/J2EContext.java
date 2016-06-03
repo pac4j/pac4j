@@ -23,7 +23,7 @@ public class J2EContext implements WebContext {
 
     private final HttpServletResponse response;
 
-    private final SessionStore sessionStore;
+    private final SessionStore<J2EContext> sessionStore;
 
     /**
      * Build a J2E context from the current HTTP request and response.
@@ -42,7 +42,7 @@ public class J2EContext implements WebContext {
      * @param response the current response
      * @param sessionStore the session store to use
      */
-    public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore sessionStore) {
+    public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
         this.request = request;
         this.response = response;
         if (sessionStore == null) {
@@ -114,7 +114,7 @@ public class J2EContext implements WebContext {
         return this.response;
     }
 
-    public SessionStore getSessionStore() {
+    public SessionStore<J2EContext> getSessionStore() {
         return sessionStore;
     }
 

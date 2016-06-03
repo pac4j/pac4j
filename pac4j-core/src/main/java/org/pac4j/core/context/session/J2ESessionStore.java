@@ -1,7 +1,6 @@
 package org.pac4j.core.context.session;
 
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.WebContext;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,25 +10,24 @@ import javax.servlet.http.HttpSession;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class J2ESessionStore implements SessionStore {
+public class J2ESessionStore implements SessionStore<J2EContext> {
 
-    private HttpSession getHttpSession(final WebContext context) {
-        final J2EContext j2EContext = (J2EContext) context;
-        return j2EContext.getRequest().getSession();
+    private HttpSession getHttpSession(final J2EContext context) {
+        return context.getRequest().getSession();
     }
 
     @Override
-    public String getOrCreateSessionId(WebContext context) {
+    public String getOrCreateSessionId(J2EContext context) {
         return getHttpSession(context).getId();
     }
 
     @Override
-    public Object get(WebContext context, String key) {
+    public Object get(J2EContext context, String key) {
         return getHttpSession(context).getAttribute(key);
     }
 
     @Override
-    public void set(WebContext context, String key, Object value) {
+    public void set(J2EContext context, String key, Object value) {
         getHttpSession(context).setAttribute(key, value);
     }
 }
