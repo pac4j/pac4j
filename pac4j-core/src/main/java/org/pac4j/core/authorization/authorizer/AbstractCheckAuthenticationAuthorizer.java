@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -21,9 +21,9 @@ public abstract class AbstractCheckAuthenticationAuthorizer<U extends CommonProf
     }
 
     @Override
-    protected boolean handleError(final WebContext context) throws RequiresHttpAction {
+    protected boolean handleError(final WebContext context) throws HttpAction {
         if (this.redirectionUrl != null) {
-            throw RequiresHttpAction.redirect(getErrorMessage(), context, this.redirectionUrl);
+            throw HttpAction.redirect(getErrorMessage(), context, this.redirectionUrl);
         } else {
             return false;
         }

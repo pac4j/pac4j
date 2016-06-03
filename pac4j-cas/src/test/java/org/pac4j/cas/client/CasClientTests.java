@@ -3,7 +3,7 @@ package org.pac4j.cas.client;
 import org.junit.Test;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -74,7 +74,7 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testRenew() throws RequiresHttpAction {
+    public void testRenew() throws HttpAction {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
@@ -89,7 +89,7 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGateway() throws RequiresHttpAction {
+    public void testGateway() throws HttpAction {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
@@ -113,7 +113,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.init(null);
         final MockWebContext context = MockWebContext.create().addRequestParameter("logoutRequest", logoutRequest)
             .setRequestMethod("POST");
-        TestsHelper.expectException(() -> casClient.getCredentials(context), RequiresHttpAction.class, "logout request: no credential returned");
+        TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class, "logout request: no credential returned");
         assertEquals(200, context.getResponseStatus());
     }
 

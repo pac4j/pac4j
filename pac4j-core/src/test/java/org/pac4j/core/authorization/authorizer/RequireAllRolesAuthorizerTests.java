@@ -3,7 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesOkDifferentOrder() throws RequiresHttpAction {
+    public void testHasAllRolesOkDifferentOrder() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(ROLE3, ROLE1);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -48,7 +48,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesOkDifferentOrder2() throws RequiresHttpAction {
+    public void testHasAllRolesOkDifferentOrder2() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(Arrays.asList(ROLE3, ROLE1));
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -56,7 +56,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesOkDifferentOrder3() throws RequiresHttpAction {
+    public void testHasAllRolesOkDifferentOrder3() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
         authorizer.setElements(ROLE3, ROLE1);
         profile.addRole(ROLE1);
@@ -65,7 +65,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesOkDifferentOrder4() throws RequiresHttpAction {
+    public void testHasAllRolesOkDifferentOrder4() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
         authorizer.setElements(new HashSet<>(Arrays.asList(ROLE3, ROLE1)));
         profile.addRole(ROLE1);
@@ -74,7 +74,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesOkDifferentOrder5() throws RequiresHttpAction {
+    public void testHasAllRolesOkDifferentOrder5() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer();
         authorizer.setElements(Arrays.asList(ROLE3, ROLE1));
         profile.addRole(ROLE1);
@@ -83,7 +83,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesNull() throws RequiresHttpAction {
+    public void testHasAllRolesNull() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer((List<String>) null);
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -91,7 +91,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesEmpty() throws RequiresHttpAction {
+    public void testHasAllRolesEmpty() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(new String[]{});
         profile.addRole(ROLE1);
         profile.addRole(ROLE3);
@@ -99,7 +99,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesTwoRolesFail() throws RequiresHttpAction {
+    public void testHasAllRolesTwoRolesFail() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
         profile.addRole(ROLE1);
         profile.addRole(ROLE2);
@@ -107,7 +107,7 @@ public final class RequireAllRolesAuthorizerTests {
     }
 
     @Test
-    public void testHasAllRolesTwoRolesFailTwoProfiles() throws RequiresHttpAction {
+    public void testHasAllRolesTwoRolesFailTwoProfiles() throws HttpAction {
         final RequireAllRolesAuthorizer authorizer = new RequireAllRolesAuthorizer(new String[]{ROLE3, ROLE1});
         profile.addRole(ROLE1);
         profile.addRole(ROLE2);

@@ -8,7 +8,7 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public interface SessionStore {
+public interface SessionStore<C extends WebContext> {
 
     /**
      * Get or create the session identifier and initialize the session with it if necessary.
@@ -16,7 +16,7 @@ public interface SessionStore {
      * @param context the web context
      * @return the session identifier
      */
-    String getOrCreateSessionId(WebContext context);
+    String getOrCreateSessionId(C context);
 
     /**
      * Get the object from its key in store.
@@ -25,7 +25,7 @@ public interface SessionStore {
      * @param key the key of the object
      * @return the object in store
      */
-    Object get(WebContext context, String key);
+    Object get(C context, String key);
 
     /**
      * Save an object in the store by its key.
@@ -34,5 +34,5 @@ public interface SessionStore {
      * @param key the key of the object
      * @param value the value to save in store
      */
-    void set(WebContext context, String key, Object value);
+    void set(C context, String key, Object value);
 }

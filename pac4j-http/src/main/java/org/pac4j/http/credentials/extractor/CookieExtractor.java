@@ -4,7 +4,7 @@ import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(final WebContext context) throws RequiresHttpAction {
+    public TokenCredentials extract(final WebContext context) throws HttpAction {
         final Collection<Cookie> col = context.getRequestCookies();
         for (final Cookie c : col) {
             if (c.getName().equals(this.cookieName)) {

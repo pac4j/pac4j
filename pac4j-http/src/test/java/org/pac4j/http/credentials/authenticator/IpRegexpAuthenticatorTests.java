@@ -2,7 +2,7 @@ package org.pac4j.http.credentials.authenticator;
 
 import org.junit.Test;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -25,13 +25,13 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     private final static IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator(GOOD_IP);
 
     @Test(expected = TechnicalException.class)
-    public void testNoPattern() throws RequiresHttpAction {
+    public void testNoPattern() throws HttpAction {
         IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
         authenticator.validate(null);
     }
 
     @Test
-    public void testValidateGoodIP() throws RequiresHttpAction {
+    public void testValidateGoodIP() throws HttpAction {
         final TokenCredentials credentials = new TokenCredentials(GOOD_IP, CLIENT_NAME);
         authenticator.validate(credentials);
         final IpProfile profile = (IpProfile) credentials.getUserProfile();
@@ -39,7 +39,7 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void testValidateBadIP() throws RequiresHttpAction {
+    public void testValidateBadIP() throws HttpAction {
         final TokenCredentials credentials = new TokenCredentials(BAD_IP, CLIENT_NAME);
         TestsHelper.expectException(() -> authenticator.validate(credentials), CredentialsException.class, "Unauthorized IP address: " + BAD_IP);
     }

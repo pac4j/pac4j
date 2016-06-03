@@ -2,7 +2,7 @@ package org.pac4j.cas.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -37,7 +37,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         try {
             client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE));
-        } catch (final RequiresHttpAction e) {
+        } catch (final HttpAction e) {
             assertEquals(200, context.getResponseStatus());
             assertEquals("", context.getResponseContent());
             assertEquals("Missing proxyGrantingTicket or proxyGrantingTicketIou", e.getMessage());
@@ -49,7 +49,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        TestsHelper.expectException(() -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)), RequiresHttpAction.class,
+        TestsHelper.expectException(() -> client.getCredentials(context.addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE)), HttpAction.class,
                 "Missing proxyGrantingTicket or proxyGrantingTicketIou");
         assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
@@ -62,7 +62,7 @@ public final class CasProxyReceptorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create()
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET, VALUE)
             .addRequestParameter(CasProxyReceptor.PARAM_PROXY_GRANTING_TICKET_IOU, VALUE);
-        TestsHelper.expectException(() -> client.getCredentials(context), RequiresHttpAction.class, "No credential for CAS proxy receptor -> returns ok");
+        TestsHelper.expectException(() -> client.getCredentials(context), HttpAction.class, "No credential for CAS proxy receptor -> returns ok");
         assertEquals(200, context.getResponseStatus());
         assertTrue(context.getResponseContent().length() > 0);
     }

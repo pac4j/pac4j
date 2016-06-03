@@ -2,7 +2,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -35,19 +35,20 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * <p>Redirect to the authentication provider for an indirect client.</p>
      *
      * @param context the current web context
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @return the performed redirection
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    void redirect(WebContext context) throws RequiresHttpAction;
+    HttpAction redirect(WebContext context) throws HttpAction;
 
     /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at this step.</p>
-     * <p>In some cases, a {@link RequiresHttpAction} may be thrown instead.</p>
+     * <p>In some cases, a {@link HttpAction} may be thrown instead.</p>
      *
      * @param context the current web context
      * @return the credentials
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    C getCredentials(WebContext context) throws RequiresHttpAction;
+    C getCredentials(WebContext context) throws HttpAction;
 
     /**
      * Get the user profile based on the provided credentials.
@@ -55,7 +56,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param credentials credentials
      * @param context web context 
      * @return the user profile
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    U getUserProfile(C credentials, WebContext context) throws RequiresHttpAction;
+    U getUserProfile(C credentials, WebContext context) throws HttpAction;
 }

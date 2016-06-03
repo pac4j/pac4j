@@ -6,7 +6,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
@@ -45,12 +45,12 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
         return redirectActionBuilder.redirect(context);
     }
 
     @Override
-    protected C retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected C retrieveCredentials(final WebContext context) throws HttpAction {
         try {
             final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
@@ -65,7 +65,7 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
     }
 
     @Override
-    protected U retrieveUserProfile(final C credentials, final WebContext context) throws RequiresHttpAction {
+    protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
         final U profile = this.profileCreator.create(credentials);
         logger.debug("profile: {}", profile);
         return profile;

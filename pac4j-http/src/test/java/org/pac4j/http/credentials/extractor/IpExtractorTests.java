@@ -2,7 +2,7 @@ package org.pac4j.http.credentials.extractor;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 
@@ -21,14 +21,14 @@ public final class IpExtractorTests implements TestsConstants {
     private final static IpExtractor extractor = new IpExtractor(CLIENT_NAME);
 
     @Test
-    public void testRetrieveIpOk() throws RequiresHttpAction {
+    public void testRetrieveIpOk() throws HttpAction {
         final MockWebContext context = MockWebContext.create().setRemoteAddress(GOOD_IP);
         final TokenCredentials credentials = extractor.extract(context);
         assertEquals(GOOD_IP, credentials.getToken());
     }
 
     @Test
-    public void testNoIp() throws RequiresHttpAction {
+    public void testNoIp() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         final TokenCredentials credentials = extractor.extract(context);
         assertNull(credentials);

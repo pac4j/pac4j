@@ -7,7 +7,7 @@ import java.util.List;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -50,7 +50,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     }
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) throws RequiresHttpAction {
+    public final U getUserProfile(final C credentials, final WebContext context) throws HttpAction {
         init(context);
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
@@ -75,9 +75,9 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      * @param credentials the credentials
      * @param context the web context
      * @return the user profile
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract U retrieveUserProfile(final C credentials, final WebContext context) throws RequiresHttpAction;
+    protected abstract U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction;
 
     @Override
     public String toString() {

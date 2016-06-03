@@ -2,7 +2,7 @@ package org.pac4j.oauth.client;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -39,7 +39,7 @@ public final class BaseOAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialOK() throws RequiresHttpAction {
+    public void testGetCredentialOK() throws HttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
@@ -49,7 +49,7 @@ public final class BaseOAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialError() throws RequiresHttpAction {
+    public void testGetCredentialError() throws HttpAction {
         final BaseOAuthClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);

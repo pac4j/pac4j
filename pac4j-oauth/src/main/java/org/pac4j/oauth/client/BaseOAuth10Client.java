@@ -7,7 +7,7 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -41,7 +41,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
     }
 
     @Override
-    protected String retrieveAuthorizationUrl(final WebContext context) throws RequiresHttpAction {
+    protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
         final OAuth1RequestToken requestToken = this.service.getRequestToken();
         logger.debug("requestToken: {}", requestToken);
         // save requestToken in user session
@@ -52,7 +52,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
     }
 
     @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws RequiresHttpAction {
+    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
         final String tokenParameter = context.getRequestParameter(OAUTH_TOKEN);
         final String verifierParameter = context.getRequestParameter(OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {
@@ -70,7 +70,7 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
     }
 
     @Override
-    protected OAuth1Token getAccessToken(final OAuthCredentials credentials) throws RequiresHttpAction {
+    protected OAuth1Token getAccessToken(final OAuthCredentials credentials) throws HttpAction {
         OAuth10Credentials oAuth10Credentials = (OAuth10Credentials) credentials;
         final OAuth1RequestToken tokenRequest = oAuth10Credentials.getRequestToken();
         final String token = oAuth10Credentials.getToken();

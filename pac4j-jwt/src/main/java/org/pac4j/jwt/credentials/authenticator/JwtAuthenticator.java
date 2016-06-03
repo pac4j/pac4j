@@ -10,10 +10,11 @@ import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -58,7 +59,8 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
 
 	private Key key;
 
-    public JwtAuthenticator() {}
+    public JwtAuthenticator() {
+    }
 
     public JwtAuthenticator(final String signingSecret) {
         this(signingSecret, signingSecret);
@@ -93,7 +95,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("key", key);
+
     }
 
     /**
@@ -106,57 +108,64 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
         try {
             validate(credentials);
-        } catch (final RequiresHttpAction e) {
+        } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }
         return credentials.getUserProfile();
     }
 
     @Override
-    public void validate(final TokenCredentials credentials) throws RequiresHttpAction {
+    public void validate(final TokenCredentials credentials) throws HttpAction {
         final String token = credentials.getToken();
         boolean verified = false;
-        SignedJWT signedJWT = null;
 
         try {
             // Parse the token
-            final JWT jwt = JWTParser.parse(token);
+            JWT jwt = JWTParser.parse(token);
 
-            if (jwt instanceof SignedJWT) {
-                signedJWT = (SignedJWT) jwt;
-            } else if (jwt instanceof EncryptedJWT) {
-                CommonHelper.assertNotBlank("encryptionSecret", encryptionSecret);
-
-                final JWEObject jweObject = (JWEObject) jwt;
-                jweObject.decrypt(new DirectDecrypter(this.encryptionSecret.getBytes("UTF-8")));
-
-                // Extract payload
-                signedJWT = jweObject.getPayload().toSignedJWT();
+			if (jwt instanceof PlainJWT) {
+                verified = true;
             } else {
-                throw new TechnicalException("unsupported unsecured jwt");
-            }
-            
-    		JWSVerifier verifier = factory.createJWSVerifier(signedJWT.getHeader(), key);
+            	SignedJWT signedJWT;
+            	if (jwt instanceof SignedJWT) {
+                    logger.debug("JWT is signed");
+                    signedJWT = (SignedJWT) jwt;
+            	} else if (jwt instanceof EncryptedJWT) {
+                	CommonHelper.assertNotBlank("encryptionSecret", encryptionSecret);
 
-            verified = signedJWT.verify(verifier);
+                	final JWEObject jweObject = (JWEObject) jwt;
+                	jweObject.decrypt(new DirectDecrypter(this.encryptionSecret.getBytes("UTF-8")));
+
+                	// Extract payload
+                	signedJWT = jweObject.getPayload().toSignedJWT();
+                	jwt = signedJWT;
+            	} else {
+                	throw new TechnicalException("unsupported unsecured jwt");
+            	}
+            	CommonHelper.assertNotNull("key", key);
+    			JWSVerifier verifier = factory.createJWSVerifier(signedJWT.getHeader(), key);
+
+            	verified = signedJWT.verify(verifier);
+            }
+        	if (!verified) {
+            	final String message = "JWT verification failed: " + token;
+            	throw new CredentialsException(message);
+        	}
+
+        	try {
+            	createJwtProfile(credentials, jwt);
+        	} catch (final Exception e) {
+            	throw new TechnicalException("Cannot get claimSet", e);
+        	}
         } catch (final Exception e) {
             throw new TechnicalException("Cannot decrypt / verify JWT", e);
         }
 
-        if (!verified) {
-            final String message = "JWT verification failed: " + token;
-            throw new CredentialsException(message);
-        }
 
-        try {
-            createJwtProfile(credentials, signedJWT);
-        } catch (final Exception e) {
-            throw new TechnicalException("Cannot get claimSet", e);
-        }
     }
 
-    private static void createJwtProfile(final TokenCredentials credentials, final SignedJWT signedJWT) throws ParseException {
-        final JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
+    private static void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
+        final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
         String subject = claimSet.getSubject();
 
         if (!subject.contains(CommonProfile.SEPARATOR)) {

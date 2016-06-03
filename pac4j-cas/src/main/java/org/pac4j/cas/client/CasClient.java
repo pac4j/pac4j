@@ -26,7 +26,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
@@ -237,7 +237,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected CasCredentials retrieveCredentials(final WebContext context) throws HttpAction {
 
         // like the SingleSignOutFilter from CAS client :
         if (this.logoutHandler.isTokenRequest(context)) {
@@ -252,7 +252,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
             this.logoutHandler.destroySession(context);
             final String message = "logout request: no credential returned";
             logger.debug(message);
-            throw RequiresHttpAction.ok(message, context);
+            throw HttpAction.ok(message, context);
         }
 
         if (this.gateway) {
@@ -265,7 +265,7 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws HttpAction {
         final String ticket = credentials.getServiceTicket();
         try {
             final Assertion assertion = this.ticketValidator.validate(ticket, computeFinalCallbackUrl(context));

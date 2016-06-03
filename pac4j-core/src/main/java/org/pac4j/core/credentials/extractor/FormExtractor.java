@@ -2,7 +2,7 @@ package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 
 /**
  * To extract a username and password posted from a form.
@@ -25,7 +25,7 @@ public class FormExtractor implements CredentialsExtractor<UsernamePasswordCrede
     }
 
     @Override
-    public UsernamePasswordCredentials extract(WebContext context) throws RequiresHttpAction {
+    public UsernamePasswordCredentials extract(WebContext context) throws HttpAction {
         final String username = context.getRequestParameter(this.usernameParameter);
         final String password = context.getRequestParameter(this.passwordParameter);
         if (username == null || password == null) {

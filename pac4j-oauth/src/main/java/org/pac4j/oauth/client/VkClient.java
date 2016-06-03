@@ -6,7 +6,7 @@ import com.github.scribejava.apis.VkontakteApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.vk.VkProfile;
 
@@ -17,10 +17,10 @@ import org.pac4j.oauth.profile.vk.VkProfile;
  * is : <code>PERMISSIONS</code>.</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.vk.VkProfile}.</p>
  * <p>More information at https://vk.com/dev/users.get</p>
- * 
+ *
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
- * 
+ *
  */
 public class VkClient extends BaseOAuth20Client<VkProfile> {
 
@@ -59,7 +59,7 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected VkProfile extractUserProfile(final String body) throws RequiresHttpAction {
+	protected VkProfile extractUserProfile(final String body) throws HttpAction {
 		final VkProfile profile = new VkProfile();
 		JsonNode json = JsonHelper.getFirstNode(body);
 		if (json != null) {
