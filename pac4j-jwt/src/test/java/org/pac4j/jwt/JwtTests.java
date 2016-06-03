@@ -121,7 +121,7 @@ public final class JwtTests implements TestsConstants {
 	private String getPem(String keyTitle, byte[] encodedKey) throws IOException {
 		StringWriter writer = new StringWriter();
 		PemWriter pemWriter = new PemWriter(writer);
-		pemWriter.writeObject(new PemObject("PUBLIC KEY", encodedKey));
+		pemWriter.writeObject(new PemObject(keyTitle, encodedKey));
 		pemWriter.flush();
 		pemWriter.close();
 		return writer.toString();
