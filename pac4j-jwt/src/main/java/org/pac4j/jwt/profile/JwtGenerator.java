@@ -77,7 +77,10 @@ public class JwtGenerator<U extends CommonProfile> {
     public String generate(final U profile) {
     	try {
 	    	// Create HMAC signer
-	        final JWSSigner signer = new MACSigner(this.signingSecret);
+	        JWSSigner signer = null;
+	        if (this.signingSecret != null) {
+	        	signer = new MACSigner(this.signingSecret);
+	        }
 	    	return generate(profile, signer, this.jwsAlgorithm);
     	} catch (JOSEException e) {
 			throw new RuntimeException(e);
@@ -95,7 +98,7 @@ public class JwtGenerator<U extends CommonProfile> {
 
         try {
             final JWTClaimsSet claims = buildJwtClaimsSet(profile);
-            if (CommonHelper.isNotBlank(this.signingSecret)) {
+            if (signer != null) {
                 CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
                 
                 final SignedJWT signedJWT = signJwt(claims, signer, jwsAlgorithm);
@@ -130,8 +133,11 @@ public class JwtGenerator<U extends CommonProfile> {
     }
 
     protected SignedJWT signJwt(final JWTClaimsSet claims) throws JOSEException {
-        // Create HMAC signer
-        final JWSSigner signer = new MACSigner(this.signingSecret);
+    	// Create HMAC signer
+        JWSSigner signer = null;
+        if (this.signingSecret != null) {
+        	signer = new MACSigner(this.signingSecret);
+        }
     	return signJwt(claims, signer, this.jwsAlgorithm);
     }
 
