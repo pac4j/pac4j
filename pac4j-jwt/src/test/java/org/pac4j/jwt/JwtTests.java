@@ -26,11 +26,11 @@ import static org.junit.Assert.*;
  */
 public final class JwtTests implements TestsConstants {
 
-    private final static String JWT_KEY = "12345678901234567890123456789012";
-    private final static String JWT_KEY2 = "02345678901234567890123456789010";
+    private static final String JWT_KEY = "12345678901234567890123456789012";
+    private static final String JWT_KEY2 = "02345678901234567890123456789010";
 
-    private final static Set<String> ROLES = new HashSet<>(Arrays.asList(new String[] { "role1", "role2"}));
-    private final static Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[] { "perm1"}));
+    private static final Set<String> ROLES = new HashSet<>(Arrays.asList(new String[] { "role1", "role2"}));
+    private static final Set<String> PERMISSIONS = new HashSet<>(Arrays.asList(new String[] { "perm1"}));
 
     @Test
     public void testGenericJwt() throws RequiresHttpAction {
@@ -63,6 +63,14 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testPlainJwt() throws RequiresHttpAction {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(null, null);
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        assertToken(profile, token);
+    }
+    
+    @Test
     public void testGenerateAuthenticate() throws RequiresHttpAction {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY);
         final FacebookProfile profile = createProfile();
@@ -83,7 +91,7 @@ public final class JwtTests implements TestsConstants {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(JWT_KEY, JWT_KEY);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
-        assertToken(profile, token);
+        assertToken(profile, token, new JwtAuthenticator(JWT_KEY, JWT_KEY));
     }
 
     @Test
