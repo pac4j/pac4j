@@ -5,7 +5,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -66,7 +66,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testRedirectionUrl() throws RequiresHttpAction {
+    public void testRedirectionUrl() throws HttpAction {
         final FormClient formClient = getFormClient();
         MockWebContext context = MockWebContext.create();
         formClient.redirect(context);
@@ -78,7 +78,7 @@ public final class FormClientTests implements TestsConstants {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)),
-                RequiresHttpAction.class, "Username and password cannot be blank -> return to the form with error");
+                HttpAction.class, "Username and password cannot be blank -> return to the form with error");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
                 + FormClient.ERROR_PARAMETER + "=" + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders()
@@ -90,7 +90,7 @@ public final class FormClientTests implements TestsConstants {
         final FormClient formClient = getFormClient();
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
-                RequiresHttpAction.class, "Username and password cannot be blank -> return to the form with error");
+                HttpAction.class, "Username and password cannot be blank -> return to the form with error");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=&" + FormClient.ERROR_PARAMETER + "="
                + FormClient.MISSING_FIELD_ERROR, context.getResponseHeaders().get(HttpConstants.LOCATION_HEADER));
@@ -102,7 +102,7 @@ public final class FormClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         TestsHelper.expectException(() -> formClient.getCredentials(context.addRequestParameter(formClient.getUsernameParameter(), USERNAME)
                 .addRequestParameter(formClient.getPasswordParameter(), PASSWORD)),
-                RequiresHttpAction.class, "Credentials validation fails -> return to the form with error");
+                HttpAction.class, "Credentials validation fails -> return to the form with error");
         assertEquals(302, context.getResponseStatus());
         assertEquals(LOGIN_URL + "?" + formClient.getUsernameParameter() + "=" + USERNAME + "&"
                 + FormClient.ERROR_PARAMETER + "=" + CredentialsException.class.getSimpleName(), context
@@ -110,7 +110,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetRightCredentials() throws RequiresHttpAction {
+    public void testGetRightCredentials() throws HttpAction {
         final FormClient formClient = getFormClient();
         final UsernamePasswordCredentials credentials = formClient.getCredentials(MockWebContext.create()
                 .addRequestParameter(formClient.getUsernameParameter(), USERNAME)
@@ -120,7 +120,7 @@ public final class FormClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetUserProfile() throws RequiresHttpAction {
+    public void testGetUserProfile() throws HttpAction {
         final FormClient formClient = getFormClient();
         formClient.setProfileCreator(credentials -> {
             String username = credentials.getUsername();

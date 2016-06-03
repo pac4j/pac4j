@@ -3,7 +3,7 @@ package org.pac4j.http.credentials.extractor;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.DigestCredentials;
 
@@ -20,7 +20,7 @@ public class DigestExtractorTests implements TestsConstants {
     private final static DigestAuthExtractor digestExtractor = new DigestAuthExtractor(CLIENT_NAME);
 
     @Test
-    public void testRetrieveDigestHeaderComponents() throws RequiresHttpAction {
+    public void testRetrieveDigestHeaderComponents() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, DIGEST_AUTHORIZATION_HEADER_VALUE);
         final DigestCredentials credentials = digestExtractor.extract(context);
@@ -29,7 +29,7 @@ public class DigestExtractorTests implements TestsConstants {
     }
 
     @Test
-    public void testNotDigest() throws RequiresHttpAction {
+    public void testNotDigest() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         final DigestCredentials credentials = digestExtractor.extract(context);
         assertNull(credentials);

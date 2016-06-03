@@ -10,13 +10,13 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class RequiresHttpAction extends Exception {
+public class HttpAction extends Exception {
     
     private static final long serialVersionUID = -3959659239684160075L;
     
     protected int code;
     
-    protected RequiresHttpAction(final String message, final int code) {
+    public HttpAction(final String message, final int code) {
         super(message);
         this.code = code;
     }
@@ -29,9 +29,9 @@ public class RequiresHttpAction extends Exception {
      * @param context context
      * @return an HTTP response
      */
-    public static RequiresHttpAction status(final String message, final int status, final WebContext context) {
+    public static HttpAction status(final String message, final int status, final WebContext context) {
         context.setResponseStatus(status);
-        return new RequiresHttpAction(message, status);
+        return new HttpAction(message, status);
     }
 
     /**
@@ -42,10 +42,10 @@ public class RequiresHttpAction extends Exception {
      * @param url url
      * @return an HTTP redirection
      */
-    public static RequiresHttpAction redirect(final String message, final WebContext context, final String url) {
+    public static HttpAction redirect(final String message, final WebContext context, final String url) {
         context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
         context.setResponseStatus(HttpConstants.TEMP_REDIRECT);
-        return new RequiresHttpAction(message, HttpConstants.TEMP_REDIRECT);
+        return new HttpAction(message, HttpConstants.TEMP_REDIRECT);
     }
     
     /**
@@ -55,7 +55,7 @@ public class RequiresHttpAction extends Exception {
      * @param context context
      * @return an HTTP ok
      */
-    public static RequiresHttpAction ok(final String message, final WebContext context) {
+    public static HttpAction ok(final String message, final WebContext context) {
         return ok(message, context, "");
     }
     
@@ -67,10 +67,10 @@ public class RequiresHttpAction extends Exception {
      * @param content content
      * @return an HTTP ok
      */
-    public static RequiresHttpAction ok(final String message, final WebContext context, String content) {
+    public static HttpAction ok(final String message, final WebContext context, String content) {
         context.setResponseStatus(HttpConstants.OK);
         context.writeResponseContent(content);
-        return new RequiresHttpAction(message, HttpConstants.OK);
+        return new HttpAction(message, HttpConstants.OK);
     }
     
     /**
@@ -81,12 +81,12 @@ public class RequiresHttpAction extends Exception {
      * @param realmName realm name
      * @return a basic auth popup credentials
      */
-    public static RequiresHttpAction unauthorized(final String message, final WebContext context, final String realmName) {
+    public static HttpAction unauthorized(final String message, final WebContext context, final String realmName) {
         if (CommonHelper.isNotBlank(realmName)) {
             context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-        return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
+        return new HttpAction(message, HttpConstants.UNAUTHORIZED);
     }
 
     /**
@@ -99,12 +99,12 @@ public class RequiresHttpAction extends Exception {
      * @param nonce nonce
      * @return a digest auth popup credentials
      */
-    public static RequiresHttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, final String nonce) {
+    public static HttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, final String nonce) {
         if (CommonHelper.isNotBlank(realmName)) {
             context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\"" + qop + "\", nonce=\"" + nonce + "\"");
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-        return new RequiresHttpAction(message, HttpConstants.UNAUTHORIZED);
+        return new HttpAction(message, HttpConstants.UNAUTHORIZED);
     }
     
     /**
@@ -114,9 +114,9 @@ public class RequiresHttpAction extends Exception {
      * @param context context
      * @return a forbidden response
      */
-    public static RequiresHttpAction forbidden(final String message, final WebContext context) {
+    public static HttpAction forbidden(final String message, final WebContext context) {
         context.setResponseStatus(HttpConstants.FORBIDDEN);
-        return new RequiresHttpAction(message, HttpConstants.FORBIDDEN);
+        return new HttpAction(message, HttpConstants.FORBIDDEN);
     }
     
     /**
@@ -130,6 +130,6 @@ public class RequiresHttpAction extends Exception {
     
     @Override
     public String toString() {
-        return CommonHelper.toString(RequiresHttpAction.class, "code", this.code);
+        return CommonHelper.toString(HttpAction.class, "code", this.code);
     }
 }

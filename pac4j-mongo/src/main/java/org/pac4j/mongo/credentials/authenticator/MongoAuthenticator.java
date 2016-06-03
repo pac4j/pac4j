@@ -9,8 +9,8 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
-import org.pac4j.core.exception.RequiresHttpAction;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
@@ -78,7 +78,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) throws RequiresHttpAction {
+    public void validate(UsernamePasswordCredentials credentials) throws HttpAction {
 
         final String username = credentials.getUsername();
 

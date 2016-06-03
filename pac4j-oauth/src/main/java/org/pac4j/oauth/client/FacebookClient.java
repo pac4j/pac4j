@@ -11,7 +11,7 @@ import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
@@ -38,45 +38,45 @@ import javax.crypto.spec.SecretKeySpec;
  * <p>It returns a {@link org.pac4j.oauth.profile.facebook.FacebookProfile}.</p>
  * <p>More information at http://developers.facebook.com/docs/reference/api/user/</p>
  * <p>More information at https://developers.facebook.com/docs/howtos/login/extending-tokens/</p>
- * 
+ *
  * @author Jerome Leleu
  * @author Mehdi BEN HAJ ABBES
  * @since 1.0.0
  */
 public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
-    
+
     private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
-    
+
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
 
     private static final String APPSECRET_PARAMETER = "appsecret_proof";
-    
+
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
-    
+
     protected String fields = DEFAULT_FIELDS;
-    
+
     protected final static String BASE_URL = "https://graph.facebook.com/v2.4/me";
-    
+
     public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
-    
+
     protected String scope = DEFAULT_SCOPE;
-    
+
     public final static int DEFAULT_LIMIT = 0;
-    
+
     protected int limit = DEFAULT_LIMIT;
-    
+
     protected boolean requiresExtendedToken = false;
-    
+
     protected boolean useAppsecretProof = false;
-    
+
     public FacebookClient() {
     }
-    
+
     public FacebookClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
     }
-    
+
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("fields", this.fields);
@@ -105,9 +105,9 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
         }
         return url;
     }
-    
+
     @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) throws RequiresHttpAction {
+    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) throws HttpAction {
         String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
@@ -139,7 +139,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     }
 
     @Override
-    protected FacebookProfile extractUserProfile(final String body) throws RequiresHttpAction {
+    protected FacebookProfile extractUserProfile(final String body) throws HttpAction {
         final FacebookProfile profile = new FacebookProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
@@ -160,14 +160,14 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
         }
         return profile;
     }
-    
+
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
         final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
             profile.addAttribute(name, JsonHelper.getElement(data, "data"));
         }
     }
-    
+
     @Override
     protected boolean hasBeenCancelled(final WebContext context) {
         final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
@@ -223,35 +223,35 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
         }
         return CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getAccessToken());
     }
-    
+
     public String getScope() {
         return this.scope;
     }
-    
+
     public void setScope(final String scope) {
         this.scope = scope;
     }
-    
+
     public String getFields() {
         return this.fields;
     }
-    
+
     public void setFields(final String fields) {
         this.fields = fields;
     }
-    
+
     public int getLimit() {
         return this.limit;
     }
-    
+
     public void setLimit(final int limit) {
         this.limit = limit;
     }
-    
+
     public boolean isRequiresExtendedToken() {
         return this.requiresExtendedToken;
     }
-    
+
     public void setRequiresExtendedToken(final boolean requiresExtendedToken) {
         this.requiresExtendedToken = requiresExtendedToken;
     }

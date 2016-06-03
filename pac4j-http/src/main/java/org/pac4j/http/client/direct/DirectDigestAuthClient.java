@@ -4,7 +4,7 @@ import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -52,11 +52,11 @@ public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, Co
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    public DigestCredentials getCredentials(final WebContext context) throws RequiresHttpAction {
+    public DigestCredentials getCredentials(final WebContext context) throws HttpAction {
         DigestCredentials credentials = super.getCredentials(context);
         if (credentials == null) {
             String nonce = calculateNonce();
-            RequiresHttpAction.unauthorizedDigest("Digest required", context, realm, "auth", nonce);
+            HttpAction.unauthorizedDigest("Digest required", context, realm, "auth", nonce);
         }
         return credentials;
     }

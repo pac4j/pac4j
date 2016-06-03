@@ -2,7 +2,7 @@ package org.pac4j.core.authorization.authorizer;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.util.TestsHelper;
 
@@ -30,11 +30,11 @@ public final class IsRememberedAuthorizerTests extends IsAuthenticatedAuthorizer
     public void testAnonymousProfileRedirectionUrl() {
         profiles.add(new AnonymousProfile());
         ((IsRememberedAuthorizer) authorizer).setRedirectionUrl(PAC4J_URL);
-        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), RequiresHttpAction.class, "user should be remembered");
+        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class, "user should be remembered");
     }
 
     @Test
-    public void testCommonRmeProfile() throws RequiresHttpAction {
+    public void testCommonRmeProfile() throws HttpAction {
         profile.setRemembered(false);
         profiles.add(profile);
         assertFalse(authorizer.isAuthorized(null, profiles));

@@ -3,7 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -33,32 +33,32 @@ public final class IsAnonymousAuthorizerTests implements TestsConstants {
     }
 
     @Test
-    public void testNoProfile() throws RequiresHttpAction {
+    public void testNoProfile() throws HttpAction {
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testAnonymousProfile() throws RequiresHttpAction {
+    public void testAnonymousProfile() throws HttpAction {
         profiles.add(new AnonymousProfile());
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testAnonProfileTwoProfiles() throws RequiresHttpAction {
+    public void testAnonProfileTwoProfiles() throws HttpAction {
         profiles.add(new AnonymousProfile());
         profiles.add(new CommonProfile());
         assertFalse(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testTwoAnonProfiles() throws RequiresHttpAction {
+    public void testTwoAnonProfiles() throws HttpAction {
         profiles.add(new AnonymousProfile());
         profiles.add(new AnonymousProfile());
         assertTrue(authorizer.isAuthorized(null, profiles));
     }
 
     @Test
-    public void testCommonProfile() throws RequiresHttpAction {
+    public void testCommonProfile() throws HttpAction {
         profiles.add(new CommonProfile());
         assertFalse(authorizer.isAuthorized(null, profiles));
     }
@@ -67,6 +67,6 @@ public final class IsAnonymousAuthorizerTests implements TestsConstants {
     public void testCommonProfileRedirectionUrl() {
         profiles.add(new CommonProfile());
         authorizer.setRedirectionUrl(PAC4J_URL);
-        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), RequiresHttpAction.class, "user should be anonymous");
+        TestsHelper.expectException(() -> authorizer.isAuthorized(MockWebContext.create(), profiles), HttpAction.class, "user should be anonymous");
     }
 }

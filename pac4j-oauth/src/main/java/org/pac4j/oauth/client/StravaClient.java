@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
@@ -55,7 +55,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
-    protected StravaProfile extractUserProfile(String body) throws RequiresHttpAction {
+    protected StravaProfile extractUserProfile(String body) throws HttpAction {
         final StravaProfile profile = new StravaProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

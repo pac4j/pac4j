@@ -2,7 +2,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -31,17 +31,17 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws RequiresHttpAction {
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
         return redirectAction;
     }
 
     @Override
-    protected Credentials retrieveCredentials(final WebContext context) throws RequiresHttpAction {
+    protected Credentials retrieveCredentials(final WebContext context) throws HttpAction {
         return returnCredentials.get();
     }
 
     @Override
-    protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws RequiresHttpAction {
+    protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws HttpAction {
         return profile;
     }
 }

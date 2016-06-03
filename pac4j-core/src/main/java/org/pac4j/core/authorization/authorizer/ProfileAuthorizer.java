@@ -1,7 +1,7 @@
 package org.pac4j.core.authorization.authorizer;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.List;
@@ -20,9 +20,9 @@ public abstract class ProfileAuthorizer<U extends CommonProfile> implements Auth
      * @param context the web context
      * @param profiles the user profiles
      * @return whether all profiles are authorized
-     * @throws RequiresHttpAction
+     * @throws HttpAction an extra HTTP action
      */
-    public boolean isAllAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
+    public boolean isAllAuthorized(final WebContext context, final List<U> profiles) throws HttpAction {
         for (final U profile : profiles) {
             if (!isProfileAuthorized(context, profile)) {
                 return handleError(context);
@@ -37,9 +37,9 @@ public abstract class ProfileAuthorizer<U extends CommonProfile> implements Auth
      * @param context the web context
      * @param profiles the user profiles
      * @return whether any of the profiles is authorized
-     * @throws RequiresHttpAction
+     * @throws HttpAction an extra HTTP action
      */
-    public boolean isAnyAuthorized(final WebContext context, final List<U> profiles) throws RequiresHttpAction {
+    public boolean isAnyAuthorized(final WebContext context, final List<U> profiles) throws HttpAction {
         for (final U profile : profiles) {
             if (isProfileAuthorized(context, profile)) {
                 return true;
@@ -54,18 +54,18 @@ public abstract class ProfileAuthorizer<U extends CommonProfile> implements Auth
      * @param context the web context
      * @param profile the user profile
      * @return whether a specific profile is authorized
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected abstract boolean isProfileAuthorized(WebContext context, U profile) throws RequiresHttpAction;
+    protected abstract boolean isProfileAuthorized(WebContext context, U profile) throws HttpAction;
 
     /**
      * Handle the error.
      *
      * @param context the web context
      * @return <code>false</code>
-     * @throws RequiresHttpAction whether an additional HTTP action is required
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected boolean handleError(final WebContext context) throws RequiresHttpAction {
+    protected boolean handleError(final WebContext context) throws HttpAction {
         return false;
     }
 }

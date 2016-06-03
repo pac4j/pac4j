@@ -4,8 +4,10 @@ import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.authorization.authorizer.csrf.*;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.RequiresHttpAction;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  */
 public class DefaultAuthorizationChecker implements AuthorizationChecker {
 
+    private final static Logger logger = LoggerFactory.getLogger(DefaultAuthorizationChecker.class);
+
     final static StrictTransportSecurityHeader STRICT_TRANSPORT_SECURITY_HEADER = new StrictTransportSecurityHeader();
     final static XContentTypeOptionsHeader X_CONTENT_TYPE_OPTIONS_HEADER = new XContentTypeOptionsHeader();
     final static XFrameOptionsHeader X_FRAME_OPTIONS_HEADER = new XFrameOptionsHeader();
@@ -34,7 +38,7 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static IsRememberedAuthorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws RequiresHttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws HttpAction {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (isNotBlank(authorizerNames)) {
@@ -92,14 +96,15 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return isAuthorized(context, profiles, authorizers);
     }
 
-    @Override
-    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) throws RequiresHttpAction {
+    protected boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) throws HttpAction {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {
             // check authorizations using authorizers: all must be satisfied
             for (Authorizer authorizer : authorizers) {
-                if (!authorizer.isAuthorized(context, profiles)) {
+                final boolean isAuthorized = authorizer.isAuthorized(context, profiles);
+                logger.debug("Checking authorizer: {} -> {}", authorizer, isAuthorized);
+                if (!isAuthorized) {
                     return false;
                 }
             }
