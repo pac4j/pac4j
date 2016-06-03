@@ -212,7 +212,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
     	// from http://stackoverflow.com/questions/35739932/how-do-i-decode-a-jwt-token-using-an-rsa-public-key-in-pem-format
     	// decode to its constituent bytes
     	String publicKeyPEMToUse = publicKeyPEM;
-    	publicKeyPEMToUse = publicKeyPEMToUse.replace("-----BEGIN PUBLIC KEY-----\n", "");
+    	publicKeyPEMToUse = publicKeyPEMToUse.replaceAll("-----BEGIN PUBLIC KEY-----[\\r\\n]+", "");
     	publicKeyPEMToUse = publicKeyPEMToUse.replace("-----END PUBLIC KEY-----", "");
     	byte[] publicKeyBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(publicKeyPEMToUse);
 

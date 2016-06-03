@@ -67,7 +67,7 @@ public class JwtGenerator<U extends CommonProfile> {
         this.signingSecret = signingSecret;
         this.encryptionSecret = encryptionSecret;
     }
-
+    
     /**
      * Generates a JWT from a user profile.
      *
@@ -75,14 +75,30 @@ public class JwtGenerator<U extends CommonProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
+    	try {
+	    	// Create HMAC signer
+	        final JWSSigner signer = new MACSigner(this.signingSecret);
+	    	return generate(profile, signer, this.jwsAlgorithm);
+    	} catch (JOSEException e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * Generates a JWT from a user profile.
+     *
+     * @param profile the given user profile
+     * @return the created JWT
+     */
+    public String generate(final U profile, JWSSigner signer, JWSAlgorithm jwsAlgorithm) {
          verifyProfile(profile);
 
         try {
             final JWTClaimsSet claims = buildJwtClaimsSet(profile);
             if (CommonHelper.isNotBlank(this.signingSecret)) {
-                CommonHelper.assertNotNull("jwsAlgorithm", this.jwsAlgorithm);
+                CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
                 
-                final SignedJWT signedJWT = signJwt(claims);
+                final SignedJWT signedJWT = signJwt(claims, signer, jwsAlgorithm);
                 
                 if (CommonHelper.isNotBlank(this.encryptionSecret)) {
                     CommonHelper.assertNotNull("jweAlgorithm", jweAlgorithm);
@@ -116,6 +132,10 @@ public class JwtGenerator<U extends CommonProfile> {
     protected SignedJWT signJwt(final JWTClaimsSet claims) throws JOSEException {
         // Create HMAC signer
         final JWSSigner signer = new MACSigner(this.signingSecret);
+    	return signJwt(claims, signer, this.jwsAlgorithm);
+    }
+
+    protected SignedJWT signJwt(final JWTClaimsSet claims, JWSSigner signer, JWSAlgorithm jwsAlgorithm) throws JOSEException {
         final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
         // Apply the HMAC
         signedJWT.sign(signer);
