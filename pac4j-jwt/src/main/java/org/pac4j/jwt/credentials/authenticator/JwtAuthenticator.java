@@ -50,10 +50,6 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
 
     public JwtAuthenticator(final String signingSecret) {
         this(signingSecret, signingSecret);
-        warning();
-    }
-
-    private void warning() {
         logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
     }
 
