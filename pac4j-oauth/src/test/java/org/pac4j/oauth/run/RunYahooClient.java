@@ -73,7 +73,7 @@ public final class RunYahooClient extends RunClient {
         final List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());
         final YahooAddress address = addresses.get(0);
-        assertEquals(3, address.getId().intValue());
+        assertEquals(1, address.getId().intValue());
         assertTrue(address.getCurrent());
         assertEquals(Locale.FRENCH, address.getCountry());
         assertEquals("", address.getState());
@@ -84,7 +84,7 @@ public final class RunYahooClient extends RunClient {
         assertEquals(1976, profile.getBirthYear().intValue());
         assertEquals("03/10", profile.getBirthdate().toString());
         assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
-        assertEquals(39, profile.getDisplayAge().intValue());
+        assertEquals(40, profile.getDisplayAge().intValue());
         final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
         final YahooDisclosure disclosure = disclosures.get(0);
@@ -94,7 +94,7 @@ public final class RunYahooClient extends RunClient {
         final List<YahooEmail> emails = profile.getEmails();
         assertEquals(2, emails.size());
         final YahooEmail email = emails.get(1);
-        assertEquals(2, email.getId().intValue());
+        assertEquals(1, email.getId().intValue());
         assertTrue(email.getPrimary());
         assertEquals("testscribeup@yahoo.fr", email.getHandle());
         assertEquals("HOME", email.getType());

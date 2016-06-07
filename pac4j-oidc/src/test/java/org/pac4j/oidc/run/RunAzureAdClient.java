@@ -62,6 +62,6 @@ public class RunAzureAdClient extends RunClient {
         assertCommonProfile(userProfile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
                 Gender.UNSPECIFIED, null, null, null, null);
         assertEquals("live.com", profile.getIdp());
-        assertEquals(10, profile.getAttributes().size());
+        assertEquals(11, profile.getAttributes().size());
     }
 }
