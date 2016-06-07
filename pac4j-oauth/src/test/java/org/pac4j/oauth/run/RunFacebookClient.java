@@ -80,7 +80,7 @@ public final class RunFacebookClient extends RunClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), FacebookProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, "Jerome", "Testscribeup", "Jerome Testscribeup", null, Gender.MALE,
-                Locale.FRANCE, "https://scontent.xx.fbcdn.net/hprofile-xaf1/v/t1.0-1/c170.50.621.621/s50x50/550165_168023156660068_12755354_n.jpg?oh=",
+                Locale.FRANCE, "https://scontent.xx.fbcdn.net/v/t1.0-1/c170.50.621.621/s50x50/550165_168023156660068_12755354_n.jpg?oh=",
                 "https://www.facebook.com/app_scoped_user_id/771361542992890/", "New York, New York");
         assertNull(profile.getMiddleName());
         final List<FacebookObject> languages = profile.getLanguages();
@@ -103,7 +103,7 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("New York, New York", profile.getLocationObject().getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
         final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
-        assertEquals("Surfing", favoriteAthletes.get(0).getName());
+        assertEquals("Women's surfing", favoriteAthletes.get(0).getName());
         final List<FacebookObject> favoriteTeams = profile.getFavoriteTeams();
         assertEquals("Handball Féminin de France", favoriteTeams.get(0).getName());
         assertEquals("citation", profile.getQuotes());

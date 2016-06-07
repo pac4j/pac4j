@@ -58,7 +58,7 @@ public final class RunDropboxClient extends RunClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
-                null, "https://db.tt/RvmZyvJa", null);
+                null, "https://db.tt/T0YkdWpF", null);
         assertEquals(0L, profile.getShared().longValue());
         assertEquals(1410412L, profile.getNormal().longValue());
         assertEquals(2147483648L, profile.getQuota().longValue());

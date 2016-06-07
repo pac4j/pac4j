@@ -91,7 +91,7 @@ public final class RunTwitterClient extends RunClient {
         assertNull(profile.getShowAllInlineMedia());
         assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(3600, profile.getUtcOffset().intValue());
+        assertEquals(7200, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertNotNull(profile.getAccessSecret());
         assertEquals(37, profile.getAttributes().size());

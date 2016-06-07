@@ -92,6 +92,6 @@ public final class CasRestClientIT implements TestsConstants {
         client.destroyTicketGrantingTicket(profile);
 
         TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile), TechnicalException.class,
-                "Service ticket request for `<HttpTGTProfile> | id: username | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found");
+                "Service ticket request for `#CasRestProfile# | id: username | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found");
     }
 }
