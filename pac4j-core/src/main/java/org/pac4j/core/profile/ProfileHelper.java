@@ -109,12 +109,20 @@ public final class ProfileHelper {
         return completeName;
     }
 
-    private static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
+    @SuppressWarnings("unchecked")
+	public static UserProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
                                                                    final String completeName)
             throws Exception {
-        @SuppressWarnings("unchecked")
-        final Constructor<? extends UserProfile> constructor = (Constructor<? extends UserProfile>) Class
-                .forName(completeName).getDeclaredConstructor();
+    	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+    	
+    	final Constructor<? extends UserProfile> constructor; 
+    	if (tccl == null) {    	
+    		constructor = (Constructor<? extends UserProfile>) Class
+                	.forName(completeName).getDeclaredConstructor();
+    	} else {
+            constructor = (Constructor<? extends UserProfile>) Class
+                    .forName(completeName, true, tccl).getDeclaredConstructor();
+    	}
         final UserProfile userProfile = constructor.newInstance();
         userProfile.build(typedId, attributes);
         logger.debug("userProfile built : {}", userProfile);
