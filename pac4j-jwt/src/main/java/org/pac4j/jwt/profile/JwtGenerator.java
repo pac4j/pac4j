@@ -87,17 +87,25 @@ public class JwtGenerator<U extends UserProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
+    	return generate(profile, null, this.jwsAlgorithm);
+    }
+    /**
+     * Generates a JWT from a user profile.
+     *
+     * @param profile the given user profile
+     * @param signer the given user profile
+     * @param jwsAlgorithm the signing algorithm
+     * @return the created JWT
+     */
+    public String generate(final U profile, final JWSSigner signer, final JWSAlgorithm jwsAlgorithm) {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
         CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
-        CommonHelper.assertNotBlank("signingSecret", signingSecret);
         CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
 
         try {
-            // Create HMAC signer
-            final JWSSigner signer = new MACSigner(this.signingSecret);
 
             // Build claims
             final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
@@ -115,11 +123,18 @@ public class JwtGenerator<U extends UserProfile> {
             // claims
             final JWTClaimsSet claims = builder.build();
 
+            JWSSigner signerToUse;
+            if (signer == null) {
+            	// Create HMAC signer
+            	signerToUse = new MACSigner(this.signingSecret);
+            } else {
+            	signerToUse = signer;
+            }
             // signed
             final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
 
             // Apply the HMAC
-            signedJWT.sign(signer);
+            signedJWT.sign(signerToUse);
 
             if (CommonHelper.isNotBlank(this.encryptionSecret)) {
                 CommonHelper.assertNotNull("jweAlgorithm", jweAlgorithm);
