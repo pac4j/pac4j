@@ -137,14 +137,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
                         action = forbidden(context, currentClients, profiles, authorizers);
                     }
                 } else {
-                    if (startAuthentication(context, currentClients)) {
-                        logger.debug("Starting authentication");
-                        saveRequestedUrl(context, currentClients);
-                        action = redirectToIdentityProvider(context, currentClients);
-                    } else {
-                        logger.debug("unauthorized");
-                        action = unauthorized(context, currentClients);
-                    }
+                    action = handleNoProfile(context, currentClients);
                 }
 
             } else {
@@ -183,8 +176,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
      * @param context the web context
      * @param currentClients the current clients
      * @param directClient the direct clients
-     * @param profile whether we need to save the profile in session
-     * @return
+     * @param profile the retrieved profile after login
+     * @return whether we need to save the profile in session
      */
     protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, final CommonProfile profile) {
         return false;
@@ -201,6 +194,26 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
      */
     protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, final String authorizers) {
         return HttpAction.forbidden("forbidden", context);
+    }
+
+    /**
+     * Handle the use case where no profile exists for the user: 401 error page (direct client) or
+     * redirection to the identity provider for login (indirect client).
+     *
+     * @param context the web context
+     * @param currentClients the current clients
+     * @return a 401 error page (direct client) or a redirection (indirect client)
+     * @throws HttpAction whether an additional HTTP action is required
+     */
+    protected HttpAction handleNoProfile(final C context, final List<Client> currentClients) throws HttpAction {
+        if (startAuthentication(context, currentClients)) {
+            logger.debug("Starting authentication");
+            saveRequestedUrl(context, currentClients);
+            return redirectToIdentityProvider(context, currentClients);
+        } else {
+            logger.debug("unauthorized");
+            return unauthorized(context, currentClients);
+        }
     }
 
     /**
@@ -255,7 +268,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         return clientFinder;
     }
 
-    public void setClientFinder(ClientFinder clientFinder) {
+    public void setClientFinder(final ClientFinder clientFinder) {
         this.clientFinder = clientFinder;
     }
 
@@ -263,7 +276,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         return authorizationChecker;
     }
 
-    public void setAuthorizationChecker(AuthorizationChecker authorizationChecker) {
+    public void setAuthorizationChecker(final AuthorizationChecker authorizationChecker) {
         this.authorizationChecker = authorizationChecker;
     }
 
@@ -271,7 +284,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         return matchingChecker;
     }
 
-    public void setMatchingChecker(MatchingChecker matchingChecker) {
+    public void setMatchingChecker(final MatchingChecker matchingChecker) {
         this.matchingChecker = matchingChecker;
     }
 }
