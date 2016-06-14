@@ -125,10 +125,6 @@ public class JwtGenerator<U extends CommonProfile> {
         return jweObject.serialize();
     }
 
-    protected SignedJWT signJwt(final JWTClaimsSet claims) throws JOSEException {
-    	return signJwt(claims, null, this.jwsAlgorithm);
-    }
-
     protected SignedJWT signJwt(final JWTClaimsSet claims, JWSSigner signer, JWSAlgorithm jwsAlgorithm) throws JOSEException {
         if (signer == null) {
         	// Create HMAC signer
