@@ -1,0 +1,51 @@
+package org.pac4j.kerberos.credentials;
+
+import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.util.CommonHelper;
+
+/**
+ * Credentials containing the kerberos ticket.
+ * 
+ * @author Garry Boyce
+ * @since 1.9.1
+ */
+public class KerberosCredentials extends Credentials {
+    private byte[]            kerberosTicket;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4264156105410684508L;
+
+    public KerberosCredentials(byte[] kerberosTicket, String clientName) {
+        this.kerberosTicket = kerberosTicket;
+        this.setClientName(clientName);
+    }
+
+    public byte[] getKerberosTicket() {
+        return kerberosTicket;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "token", this.kerberosTicket, "clientName", getClientName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        KerberosCredentials that = (KerberosCredentials) o;
+
+        return !(kerberosTicket != null ? !kerberosTicket.equals(that.kerberosTicket) : that.kerberosTicket != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return kerberosTicket != null ? kerberosTicket.hashCode() : 0;
+    }
+
+}
