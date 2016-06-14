@@ -11,12 +11,10 @@ import java.util.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ProfileManager<U extends CommonProfile> {
-
-    protected final WebContext context;
+public class ProfileManager<U extends CommonProfile> extends AbstractProfileManager<U> {
 
     public ProfileManager(final WebContext context) {
-        this.context = context;
+        super(context);
     }
 
     /**
@@ -26,20 +24,7 @@ public class ProfileManager<U extends CommonProfile> {
      * @return the user profile
      */
     public Optional<U> get(final boolean readFromSession) {
-        final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
-        if (allProfiles.size() == 0) {
-            return Optional.empty();
-        } else {
-            U profile = null;
-            final Iterator<U> profiles = allProfiles.values().iterator();
-            while (profiles.hasNext()) {
-                final U nextProfile = profiles.next();
-                if (profile == null || profile instanceof AnonymousProfile) {
-                    profile = nextProfile;
-                }
-            }
-            return Optional.of(profile);
-        }
+        return retrieve(readFromSession);
     }
 
     /**
@@ -49,27 +34,7 @@ public class ProfileManager<U extends CommonProfile> {
      * @return the user profiles.
      */
     public List<U> getAll(final boolean readFromSession) {
-        final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
-        final List<U> listProfiles = new ArrayList<>();
-        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
-            listProfiles.add(entry.getValue());
-        }
-        return Collections.unmodifiableList(listProfiles);
-    }
-
-    private LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
-        LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
-        final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
-        if (objSession != null && objSession instanceof LinkedHashMap) {
-            profiles = (LinkedHashMap<String, U>) objSession;
-        }
-        if (readFromSession) {
-            final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
-            if (objRequest != null && objRequest instanceof LinkedHashMap) {
-                profiles.putAll((LinkedHashMap<String, U>) objRequest);
-            }
-        }
-        return profiles;
+        return retrieveAll(readFromSession);
     }
 
     /**
@@ -99,7 +64,7 @@ public class ProfileManager<U extends CommonProfile> {
             clientName = "DEFAULT";
         }
         if (multiProfile) {
-            profiles = retrieveAll(saveInSession);
+            profiles = retrieveAllAsLinkedMap(saveInSession);
             profiles.remove(clientName);
         } else {
             profiles = new LinkedHashMap<>();
@@ -125,7 +90,7 @@ public class ProfileManager<U extends CommonProfile> {
      * @return whether the current user is authenticated
      */
     public boolean isAuthenticated() {
-        final Optional<U> profile = get(true);
+        final Optional<U> profile = retrieve(true);
         return profile.isPresent() && !(profile.get() instanceof AnonymousProfile);
     }
 }
