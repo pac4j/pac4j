@@ -91,7 +91,7 @@ public class JwtGenerator<U extends CommonProfile> {
 
         try {
             final JWTClaimsSet claims = buildJwtClaimsSet(profile);
-            if (signer != null) {
+            if (CommonHelper.isNotBlank(this.signingSecret)) {
                 CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
                 
                 final SignedJWT signedJWT = signJwt(claims, signer, jwsAlgorithm);
