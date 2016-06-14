@@ -1,5 +1,7 @@
 package org.pac4j.jwt;
 
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.junit.Test;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -12,6 +14,21 @@ import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.crypto.ECDSASigner;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.ECFieldFp;
+import java.security.spec.ECParameterSpec;
+import java.security.spec.ECPoint;
+import java.security.spec.EllipticCurve;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -69,6 +86,46 @@ public final class JwtTests implements TestsConstants {
         final String token = generator.generate(profile);
         assertToken(profile, token);
     }
+    
+    @Test
+    public void testPemJwt() throws Exception {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(null, null);
+        final FacebookProfile profile = createProfile();
+        KeyPair keyPair = createECKeyPair(EC256SPEC);
+        
+        ECPublicKey publicKey = (ECPublicKey) keyPair.getPublic();
+		ECPrivateKey privateKey = (ECPrivateKey) keyPair.getPrivate();
+        final String token = generator.generate(profile, new ECDSASigner(privateKey), JWSAlgorithm.ES256);
+        assertToken(profile, token, new JwtAuthenticator(getPem("PUBLIC KEY", publicKey.getEncoded()), "EC", null));
+    }
+    private static final int COFACTOR = 1;
+	private static final ECParameterSpec EC256SPEC = new ECParameterSpec(
+			new EllipticCurve(
+				new ECFieldFp(new BigInteger("115792089210356248762697446949407573530086143415290314195533631308867097853951")),
+				new BigInteger("115792089210356248762697446949407573530086143415290314195533631308867097853948"),
+				new BigInteger("41058363725152142129326129780047268409114441015993725554835256314039467401291")),
+			new ECPoint(
+				new BigInteger("48439561293906451759052585252797914202762949526041747995844080717082404635286"),
+				new BigInteger("36134250956749795798585127919587881956611106672985015071877198253568414405109")),
+			new BigInteger("115792089210356248762697446949407573529996955224135760342422259061068512044369"),
+			COFACTOR);
+    
+	private static KeyPair createECKeyPair(final AlgorithmParameterSpec spec)
+			throws Exception {
+
+			// Create the public and private keys
+			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("EC");
+			keyGenerator.initialize(spec);
+			return keyGenerator.generateKeyPair();
+	}
+	private String getPem(String keyTitle, byte[] encodedKey) throws IOException {
+		StringWriter writer = new StringWriter();
+		PemWriter pemWriter = new PemWriter(writer);
+		pemWriter.writeObject(new PemObject(keyTitle, encodedKey));
+		pemWriter.flush();
+		pemWriter.close();
+		return writer.toString();
+	}
 
     @Test
     public void testGenerateAuthenticate() throws HttpAction {
