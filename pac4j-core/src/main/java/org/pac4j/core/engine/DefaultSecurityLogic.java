@@ -55,6 +55,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
 
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
+    private boolean saveProfileInSession;
+
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, final Object... parameters) {
@@ -180,7 +182,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
      * @return whether we need to save the profile in session
      */
     protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, final CommonProfile profile) {
-        return false;
+        return this.saveProfileInSession;
     }
 
     /**
@@ -286,5 +288,13 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
 
     public void setMatchingChecker(final MatchingChecker matchingChecker) {
         this.matchingChecker = matchingChecker;
+    }
+
+    public boolean isSaveProfileInSession() {
+        return saveProfileInSession;
+    }
+
+    public void setSaveProfileInSession(final boolean saveProfileInSession) {
+        this.saveProfileInSession = saveProfileInSession;
     }
 }

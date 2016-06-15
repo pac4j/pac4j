@@ -83,14 +83,4 @@ public class ProfileManager<U extends CommonProfile> extends AbstractProfileMana
     public void logout() {
         remove(true);
     }
-
-    /**
-     * Tests if the current user is authenticated (meaning a user profile exists which is not an {@link AnonymousProfile}).
-     *
-     * @return whether the current user is authenticated
-     */
-    public boolean isAuthenticated() {
-        final Optional<U> profile = retrieve(true);
-        return profile.isPresent() && !(profile.get() instanceof AnonymousProfile);
-    }
 }

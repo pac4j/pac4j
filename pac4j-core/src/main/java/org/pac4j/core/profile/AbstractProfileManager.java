@@ -77,4 +77,15 @@ public abstract class AbstractProfileManager<U extends CommonProfile> {
         }
         return profiles;
     }
+
+
+    /**
+     * Tests if the current user is authenticated (meaning a user profile exists which is not an {@link AnonymousProfile}).
+     *
+     * @return whether the current user is authenticated
+     */
+    public boolean isAuthenticated() {
+        final Optional<U> profile = retrieve(true);
+        return profile.isPresent() && !(profile.get() instanceof AnonymousProfile);
+    }
 }
