@@ -1,6 +1,7 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -13,6 +14,7 @@ import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 
 import org.ietf.jgss.GSSContext;
 import org.ietf.jgss.GSSCredential;
@@ -20,8 +22,10 @@ import org.ietf.jgss.GSSException;
 import org.ietf.jgss.GSSManager;
 import org.ietf.jgss.GSSName;
 import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * 
  *  originally from spring-kerberos project
  */
-public class SunJaasKerberosTicketValidator implements KerberosTicketValidator {
+public class SunJaasKerberosTicketValidator extends InitializableObject implements KerberosTicketValidator {
 
     private String servicePrincipal;
     private Resource keyTabLocation;
@@ -54,8 +58,9 @@ public class SunJaasKerberosTicketValidator implements KerberosTicketValidator {
         }
     }
 
-
-    public void afterPropertiesSet() throws Exception {
+	@Override
+	protected void internalInit() {
+		try {
     	CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
     	CommonHelper.assertNotNull("keyTab must be specified",this.keyTabLocation);
 
@@ -74,6 +79,11 @@ public class SunJaasKerberosTicketValidator implements KerberosTicketValidator {
         LoginContext lc = new LoginContext("", sub, null, loginConfig);
         lc.login();
         this.serviceSubject = lc.getSubject();
+		} catch (LoginException e) {
+			throw new TechnicalException(e);
+		} catch (MalformedURLException e) {
+			throw new TechnicalException(e);
+		}
     }
 
     /**

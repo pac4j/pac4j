@@ -8,6 +8,8 @@ import org.pac4j.kerberos.profile.KerberosProfile;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.profile.creator.ProfileCreator;
 
@@ -22,12 +24,12 @@ public class KerberosClient extends DirectClientV2<KerberosCredentials, Kerberos
     public KerberosClient() {
     }
 
-    public KerberosClient(final KerberosAuthenticator kerberosAuthenticator) {
-        setAuthenticator(kerberosAuthenticator);
+    public KerberosClient(final Authenticator authenticator) {
+        setAuthenticator(authenticator);
     }
 
-    public KerberosClient(final KerberosAuthenticator kerberosAuthenticator, final ProfileCreator<KerberosCredentials, KerberosProfile> profileCreator) {
-        setAuthenticator(kerberosAuthenticator);
+    public KerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials, KerberosProfile> profileCreator) {
+        setAuthenticator(authenticator);
         setProfileCreator(profileCreator);
     }
 
@@ -35,20 +37,7 @@ public class KerberosClient extends DirectClientV2<KerberosCredentials, Kerberos
     protected void internalInit(final WebContext context) {
     	setCredentialsExtractor(new KerberosExtractor(getName()));
         super.internalInit(context);
-    }
-
-	/**
-	 * This method provides a way for a direct client to request additional
-	 * information from browser
-	 * 
-	 * @param context the web context
-	 * 
-	 * TODO: This method should be exposed via a common direct interface
-	 * for direct clients that support it
-	 */
-    public void handleForbidden(WebContext context) {
-        context.setResponseHeader("WWW-Authenticate", "Negotiate");
-        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
+        assertAuthenticatorTypes(KerberosAuthenticator.class);
     }
 
 }

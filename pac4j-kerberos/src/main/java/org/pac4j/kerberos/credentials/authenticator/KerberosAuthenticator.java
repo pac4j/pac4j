@@ -8,6 +8,10 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
+import org.pac4j.core.util.InitializableWebObject;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +23,16 @@ import org.slf4j.LoggerFactory;
  * @author Garry Boyce
  * @since 1.9.1
  */
-public class KerberosAuthenticator implements Authenticator<KerberosCredentials> {
+public class KerberosAuthenticator extends InitializableWebObject implements Authenticator<KerberosCredentials> {
 
     protected final Logger                logger = LoggerFactory.getLogger(getClass());
 
-    private final KerberosTicketValidator ticketValidator;
+    private KerberosTicketValidator ticketValidator;
 
-    /**
+    public KerberosAuthenticator() {
+	}
+
+	/**
      * Initializes the authenticator that will validate Kerberos tickets.
      *
      * @param ticketValidator    The ticket validator used to validate the Kerberos ticket.
@@ -57,5 +64,21 @@ public class KerberosAuthenticator implements Authenticator<KerberosCredentials>
 
         credentials.setUserProfile(profile);
     }
+
+	@Override
+	protected void internalInit(WebContext context) {
+		CommonHelper.assertNotNull("ticketValidator", this.ticketValidator);
+        if (this.ticketValidator instanceof InitializableObject) {
+            ((InitializableObject) this.ticketValidator).init();
+        }
+	}
+
+	public KerberosTicketValidator getTicketValidator() {
+		return ticketValidator;
+	}
+
+	public void setTicketValidator(KerberosTicketValidator ticketValidator) {
+		this.ticketValidator = ticketValidator;
+	}
 
 }

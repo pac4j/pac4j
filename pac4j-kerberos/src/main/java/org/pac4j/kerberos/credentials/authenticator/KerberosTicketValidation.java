@@ -1,6 +1,7 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosPrincipal;
@@ -11,7 +12,7 @@ import org.ietf.jgss.GSSContext;
 /**
  * 
  * Result of ticket validation
-
+ * 
  * @author Garry Boyce
  * @since 1.9.1
  */
@@ -42,7 +43,7 @@ public class KerberosTicketValidation {
 	}
 
 	public Subject subject() {
-		final HashSet<KerberosPrincipal> princs = new HashSet<KerberosPrincipal>();
+		final Set<KerberosPrincipal> princs = new HashSet<KerberosPrincipal>();
 		princs.add(new KerberosPrincipal(servicePrincipal));
 		return new Subject(false, princs, new HashSet<Object>(), new HashSet<Object>());
 	}
