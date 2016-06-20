@@ -31,8 +31,14 @@ public class KerberosClientTests implements TestsConstants {
     private KerberosAuthenticator kerberosAuthenticator;
     private KerberosTicketValidator krbValidator;
     
-    private final static byte[] KERBEROS_TICKET =  Base64.getEncoder().encode("Test Kerberos".getBytes());
-    
+    private final static byte[] KERBEROS_TICKET;
+    static {
+    	try {
+			KERBEROS_TICKET =  Base64.getEncoder().encode("Test Kerberos".getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+    }
     @Before
     public void before() {
         // mocking

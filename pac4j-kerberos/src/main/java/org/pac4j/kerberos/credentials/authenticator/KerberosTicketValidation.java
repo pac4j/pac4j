@@ -26,7 +26,11 @@ public class KerberosTicketValidation {
 	public KerberosTicketValidation(String username, String servicePrincipal, byte[] responseToken, GSSContext gssContext) {
 		this.username = username;
 		this.servicePrincipal = servicePrincipal;
-		this.responseToken = responseToken.clone();
+		if (responseToken != null) {
+			this.responseToken = responseToken.clone();
+		} else {
+			this.responseToken = null;
+		}
 		this.gssContext = gssContext;
 	}
 
