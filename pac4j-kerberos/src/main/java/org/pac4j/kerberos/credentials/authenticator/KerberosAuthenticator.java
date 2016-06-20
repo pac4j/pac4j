@@ -44,7 +44,7 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
 
     @Override
     public void validate(KerberosCredentials credentials) {
-        logger.debug("Try to validate Kerberos Token:" + credentials.getKerberosTicket());
+        logger.debug("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
 

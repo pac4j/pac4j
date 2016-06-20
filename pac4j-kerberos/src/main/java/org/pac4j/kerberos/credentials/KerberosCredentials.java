@@ -1,5 +1,8 @@
 package org.pac4j.kerberos.credentials;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
+
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
 
@@ -17,13 +20,17 @@ public class KerberosCredentials extends Credentials {
     private static final long serialVersionUID = -4264156105410684508L;
 
     public KerberosCredentials(byte[] kerberosTicket, String clientName) {
-        this.kerberosTicket = kerberosTicket;
+        this.kerberosTicket = kerberosTicket.clone();
         this.setClientName(clientName);
     }
 
     public byte[] getKerberosTicket() {
-        return kerberosTicket;
+        return kerberosTicket.clone();
     }
+    
+	public String getKerberosTicketAsString() {
+		return getTicketAsString(kerberosTicket);
+	}
 
     @Override
     public String toString() {
@@ -39,13 +46,23 @@ public class KerberosCredentials extends Credentials {
 
         KerberosCredentials that = (KerberosCredentials) o;
 
-        return !(kerberosTicket != null ? !kerberosTicket.equals(that.kerberosTicket) : that.kerberosTicket != null);
+        return !(kerberosTicket != null ? !getTicketAsString(kerberosTicket).equals(getTicketAsString(that.kerberosTicket)) : that.kerberosTicket != null);
 
     }
 
     @Override
     public int hashCode() {
-        return kerberosTicket != null ? kerberosTicket.hashCode() : 0;
+        return kerberosTicket != null ? getTicketAsString(kerberosTicket).hashCode() : 0;
     }
+
+	private String getTicketAsString(byte[] kerberosTicket) {
+        try {
+			return new String(Base64.getDecoder().decode(kerberosTicket), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+
 
 }
