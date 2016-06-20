@@ -85,7 +85,7 @@ public class KerberosClientTests implements TestsConstants {
         final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
         final MockWebContext context = MockWebContext.create();
 
-        byte[] kerberosTicket =  Base64.getEncoder().encode("Test Kerberos".getBytes());
+        byte[] kerberosTicket =  Base64.getEncoder().encode("Test Kerberos".getBytes("UTF-8"));
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(kerberosTicket, "UTF-8"));
         final KerberosCredentials credentials = client.getCredentials(context);
         assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), "UTF-8"), new String(credentials.getKerberosTicket(), "UTF-8"));
