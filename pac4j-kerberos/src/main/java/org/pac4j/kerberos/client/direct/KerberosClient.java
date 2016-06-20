@@ -6,10 +6,8 @@ import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
 import org.pac4j.kerberos.credentials.extractor.KerberosExtractor;
 import org.pac4j.kerberos.profile.KerberosProfile;
 
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.profile.creator.ProfileCreator;
 

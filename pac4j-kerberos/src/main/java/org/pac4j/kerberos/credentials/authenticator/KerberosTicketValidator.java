@@ -22,5 +22,5 @@ public interface KerberosTicketValidator {
      * @return authenticated kerberos principal
      * @throws BadCredentialsException if the ticket is not valid
      */
-    public KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException;
+    KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException;
 }
