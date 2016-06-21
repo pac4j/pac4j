@@ -1,6 +1,7 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
 import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.kerberos.client.direct.KerberosClient;
 
 /**
  * Implementations of this interface are used in
