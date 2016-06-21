@@ -1,7 +1,6 @@
 package org.pac4j.kerberos.credentials;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
