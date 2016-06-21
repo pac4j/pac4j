@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,14 +32,8 @@ public class KerberosClientTests implements TestsConstants {
     private KerberosAuthenticator kerberosAuthenticator;
     private KerberosTicketValidator krbValidator;
     
-    private final static byte[] KERBEROS_TICKET;
-    static {
-    	try {
-			KERBEROS_TICKET =  Base64.getEncoder().encode("Test Kerberos".getBytes("UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-    }
+    private final static byte[] KERBEROS_TICKET =  Base64.getEncoder().encode("Test Kerberos".getBytes(StandardCharsets.UTF_8));
+
     @Before
     public void before() {
         // mocking
@@ -85,10 +80,9 @@ public class KerberosClientTests implements TestsConstants {
         final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
         final MockWebContext context = MockWebContext.create();
 
-        byte[] kerberosTicket =  Base64.getEncoder().encode("Test Kerberos".getBytes("UTF-8"));
-        context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(kerberosTicket, "UTF-8"));
+        context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
         final KerberosCredentials credentials = client.getCredentials(context);
-        assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), "UTF-8"), new String(credentials.getKerberosTicket(), "UTF-8"));
+        assertEquals(new String(Base64.getDecoder().decode(KERBEROS_TICKET), StandardCharsets.UTF_8), new String(credentials.getKerberosTicket(), StandardCharsets.UTF_8));
 
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals("garry", profile.getId());

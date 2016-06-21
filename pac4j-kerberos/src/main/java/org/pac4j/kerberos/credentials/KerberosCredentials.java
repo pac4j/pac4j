@@ -1,6 +1,6 @@
 package org.pac4j.kerberos.credentials;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.pac4j.core.credentials.Credentials;
@@ -56,11 +56,7 @@ public class KerberosCredentials extends Credentials {
     }
 
 	private String getTicketAsString(byte[] kerberosTicket) {
-        try {
-			return new String(Base64.getDecoder().decode(kerberosTicket), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		return new String(kerberosTicket, StandardCharsets.UTF_8);
 	}
 	
 
