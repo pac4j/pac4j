@@ -95,7 +95,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
 
                 final boolean loadProfilesFromSession = loadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
-                final ProfileManager manager = new ProfileManager(context);
+                final ProfileManager manager = getProfileManager(context);
                 List<CommonProfile> profiles = manager.getAll(loadProfilesFromSession);
                 logger.debug("profiles: {}", profiles);
 
@@ -158,6 +158,16 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
+    }
+
+    /**
+     * Given a webcontext generate a profileManager for it.
+     * Can be overridden for custom profile manager implementations
+     * @param context the web context
+     * @return profile manager implementation built from the context
+     */
+    protected ProfileManager getProfileManager(final C context) {
+        return new ProfileManager(context);
     }
 
     /**
