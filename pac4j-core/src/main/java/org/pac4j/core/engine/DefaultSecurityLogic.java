@@ -55,8 +55,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
 
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
 
-    private boolean saveProfileInSession;
-
     @Override
     public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, final Object... parameters) {
@@ -139,7 +137,14 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
                         action = forbidden(context, currentClients, profiles, authorizers);
                     }
                 } else {
-                    action = handleNoProfile(context, currentClients);
+                    if (startAuthentication(context, currentClients)) {
+                        logger.debug("Starting authentication");
+                        saveRequestedUrl(context, currentClients);
+                        action = redirectToIdentityProvider(context, currentClients);
+                    } else {
+                        logger.debug("unauthorized");
+                        action = unauthorized(context, currentClients);
+                    }
                 }
 
             } else {
@@ -188,11 +193,11 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
      * @param context the web context
      * @param currentClients the current clients
      * @param directClient the direct clients
-     * @param profile the retrieved profile after login
-     * @return whether we need to save the profile in session
+     * @param profile whether we need to save the profile in session
+     * @return
      */
     protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, final CommonProfile profile) {
-        return this.saveProfileInSession;
+        return false;
     }
 
     /**
@@ -206,26 +211,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
      */
     protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, final String authorizers) {
         return HttpAction.forbidden("forbidden", context);
-    }
-
-    /**
-     * Handle the use case where no profile exists for the user: 401 error page (direct client) or
-     * redirection to the identity provider for login (indirect client).
-     *
-     * @param context the web context
-     * @param currentClients the current clients
-     * @return a 401 error page (direct client) or a redirection (indirect client)
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected HttpAction handleNoProfile(final C context, final List<Client> currentClients) throws HttpAction {
-        if (startAuthentication(context, currentClients)) {
-            logger.debug("Starting authentication");
-            saveRequestedUrl(context, currentClients);
-            return redirectToIdentityProvider(context, currentClients);
-        } else {
-            logger.debug("unauthorized");
-            return unauthorized(context, currentClients);
-        }
     }
 
     /**
@@ -280,7 +265,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         return clientFinder;
     }
 
-    public void setClientFinder(final ClientFinder clientFinder) {
+    public void setClientFinder(ClientFinder clientFinder) {
         this.clientFinder = clientFinder;
     }
 
@@ -288,7 +273,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         return authorizationChecker;
     }
 
-    public void setAuthorizationChecker(final AuthorizationChecker authorizationChecker) {
+    public void setAuthorizationChecker(AuthorizationChecker authorizationChecker) {
         this.authorizationChecker = authorizationChecker;
     }
 
@@ -296,15 +281,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         return matchingChecker;
     }
 
-    public void setMatchingChecker(final MatchingChecker matchingChecker) {
+    public void setMatchingChecker(MatchingChecker matchingChecker) {
         this.matchingChecker = matchingChecker;
-    }
-
-    public boolean isSaveProfileInSession() {
-        return saveProfileInSession;
-    }
-
-    public void setSaveProfileInSession(final boolean saveProfileInSession) {
-        this.saveProfileInSession = saveProfileInSession;
     }
 }
