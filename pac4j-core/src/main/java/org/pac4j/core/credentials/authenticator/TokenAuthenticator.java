@@ -1,5 +1,6 @@
 package org.pac4j.core.credentials.authenticator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 
@@ -12,5 +13,5 @@ import org.pac4j.core.exception.HttpAction;
 public interface TokenAuthenticator extends Authenticator<TokenCredentials> {
 
     @Override
-    void validate(TokenCredentials credentials) throws HttpAction;
+    void validate(TokenCredentials credentials, WebContext context) throws HttpAction;
 }

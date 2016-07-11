@@ -56,7 +56,7 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
             if (credentials == null) {
                 return null;
             }
-            this.authenticator.validate(credentials);
+            this.authenticator.validate(credentials, context);
             return credentials;
         } catch (CredentialsException e) {
             logger.error("Failed to retrieve or validate credentials", e);
@@ -66,7 +66,7 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
 
     @Override
     protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
-        final U profile = this.profileCreator.create(credentials);
+        final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }

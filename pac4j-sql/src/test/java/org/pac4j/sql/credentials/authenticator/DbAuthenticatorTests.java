@@ -28,7 +28,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
     public void testNullPasswordEncoder() throws HttpAction {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, FIRSTNAME);
         authenticator.init(null);
-        authenticator.validate(null);
+        authenticator.validate(null, null);
     }
 
     @Test(expected = TechnicalException.class)
@@ -36,7 +36,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, null);
         authenticator.setPasswordEncoder(new NopPasswordEncoder());
         authenticator.init(null);
-        authenticator.validate(null);
+        authenticator.validate(null, null);
     }
 
     @Test(expected = TechnicalException.class)
@@ -44,7 +44,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
         final DbAuthenticator authenticator = new DbAuthenticator(null, FIRSTNAME);
         authenticator.setPasswordEncoder(new NopPasswordEncoder());
         authenticator.init(null);
-        authenticator.validate(null);
+        authenticator.validate(null, null);
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction {
@@ -53,7 +53,7 @@ public final class DbAuthenticatorTests implements TestsConstants {
         authenticator.init(null);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
 
         return credentials;
     }

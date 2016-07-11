@@ -58,7 +58,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
         ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
-        ldapAuthenticator.validate(credentials);
+        ldapAuthenticator.validate(credentials, null);
     }
 
     @Test
@@ -66,7 +66,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
         ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
-        ldapAuthenticator.validate(credentials);
+        ldapAuthenticator.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -81,7 +81,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN);
         ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
-        ldapAuthenticator.validate(credentials);
+        ldapAuthenticator.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
@@ -98,7 +98,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN + "," + LdapServer.ROLE);
         ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
-        ldapAuthenticator.validate(credentials);
+        ldapAuthenticator.validate(credentials, null);
 
         final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
