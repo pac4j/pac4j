@@ -33,7 +33,7 @@ public final class StormpathAuthenticatorIT implements TestsConstants {
         authenticator.init(null);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("leleuj", "Pac4jtest", CLIENT_NAME);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
         final StormpathProfile profile = (StormpathProfile) credentials.getUserProfile();
         assertNotNull(profile);
 
