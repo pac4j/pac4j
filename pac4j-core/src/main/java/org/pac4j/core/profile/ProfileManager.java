@@ -1,7 +1,11 @@
 package org.pac4j.core.profile;
 
+import org.pac4j.core.authorization.authorizer.Authorizer;
+import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 
 import java.util.*;
 
@@ -12,6 +16,8 @@ import java.util.*;
  * @since 1.8.0
  */
 public class ProfileManager<U extends CommonProfile> {
+
+    private final Authorizer<U> IS_AUTHENTICATED_AUTHORIZER = new IsAuthenticatedAuthorizer<U>();
 
     protected final WebContext context;
 
@@ -27,36 +33,26 @@ public class ProfileManager<U extends CommonProfile> {
      */
     public Optional<U> get(final boolean readFromSession) {
         final LinkedHashMap<String, U> allProfiles = retrieveAll(readFromSession);
-        if (allProfiles.size() == 0) {
-            return Optional.empty();
-        } else {
-            U profile = null;
-            final Iterator<U> profiles = allProfiles.values().iterator();
-            while (profiles.hasNext()) {
-                final U nextProfile = profiles.next();
-                if (profile == null || profile instanceof AnonymousProfile) {
-                    profile = nextProfile;
-                }
-            }
-            return Optional.of(profile);
-        }
+        return ProfileHelper.flatIntoOneProfile(allProfiles);
     }
 
     /**
      * Retrieve all user profiles.
      *
      * @param readFromSession if the user profiles must be read from session
-     * @return the user profiles.
+     * @return the user profiles
      */
     public List<U> getAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = retrieveAll(readFromSession);
-        final List<U> listProfiles = new ArrayList<>();
-        for (final Map.Entry<String, U> entry : profiles.entrySet()) {
-            listProfiles.add(entry.getValue());
-        }
-        return Collections.unmodifiableList(listProfiles);
+        return ProfileHelper.flatIntoAProfileList(profiles);
     }
 
+    /**
+     * Retrieve the map of profiles from the session or the request.
+     *
+     * @param readFromSession if the user profiles must be read from session
+     * @return the map of profiles
+     */
     private LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
         LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
         final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
@@ -125,7 +121,10 @@ public class ProfileManager<U extends CommonProfile> {
      * @return whether the current user is authenticated
      */
     public boolean isAuthenticated() {
-        final Optional<U> profile = get(true);
-        return profile.isPresent() && !(profile.get() instanceof AnonymousProfile);
+        try {
+            return IS_AUTHENTICATED_AUTHORIZER.isAuthorized(null, getAll(true));
+        } catch (final HttpAction e) {
+            throw new TechnicalException(e);
+        }
     }
 }
