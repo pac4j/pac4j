@@ -94,7 +94,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
         authenticator.init(null);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
 
         return credentials;
     }

@@ -1,8 +1,7 @@
 package org.pac4j.core.credentials.authenticator;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
@@ -33,8 +32,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     private long timeout;
     private TimeUnit timeUnit;
 
-    private LoadingCache<T, CommonProfile> cache;
-    private UserProfileCacheLoader<T> cacheLoader;
+    private Cache<T, CommonProfile> cache;
 
     public LocalCachingAuthenticator() {}
 
@@ -47,9 +45,13 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     @Override
-    public void validate(final T credentials) throws HttpAction {
+    public void validate(final T credentials, final WebContext context) throws HttpAction {
         try {
-            final CommonProfile profile = this.cache.get(credentials);
+            final CommonProfile profile = this.cache.get(credentials, () -> {
+                logger.debug("Delegating authentication to {}...", delegate);
+                delegate.validate(credentials, context);
+                return credentials.getUserProfile();
+            });
             credentials.setUserProfile(profile);
             logger.debug("Found cached credential. Using cached profile {}...", profile);
         } catch (Exception e) {
@@ -69,9 +71,8 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
             ((InitializableWebObject) delegate).init(context);
         }
 
-        this.cacheLoader = new UserProfileCacheLoader<>(delegate);
         this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize)
-                .expireAfterWrite(timeout, timeUnit).build(this.cacheLoader);
+                .expireAfterWrite(timeout, timeUnit).build();
     }
 
 
@@ -94,9 +95,6 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     public void setDelegate(Authenticator<T> delegate) {
         this.delegate = delegate;
-        if (this.cacheLoader != null) {
-            this.cacheLoader.setDelegate(delegate);
-        }
     }
 
     public long getCacheSize() {
@@ -127,32 +125,5 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     public String toString() {
         return CommonHelper.toString(this.getClass(), "delegate", this.delegate, "cacheSize", this.cacheSize,
                 "timeout", this.timeout, "timeUnit", this.timeUnit);
-    }
-
-    private static class UserProfileCacheLoader<T extends Credentials> extends CacheLoader<T, CommonProfile> {
-        private final Logger logger = LoggerFactory.getLogger(getClass());
-
-        private Authenticator<T> delegate;
-
-        public UserProfileCacheLoader(final Authenticator<T> delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public CommonProfile load(final T credentials) throws Exception {
-            logger.debug("Delegating authentication to {}...", delegate);
-            delegate.validate(credentials);
-            final CommonProfile profile = credentials.getUserProfile();
-            logger.debug("Cached authentication result");
-            return profile;
-        }
-
-        public Authenticator<T> getDelegate() {
-            return delegate;
-        }
-
-        public void setDelegate(final Authenticator<T> delegate) {
-            this.delegate = delegate;
-        }
     }
 }

@@ -22,7 +22,7 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
 
     @Test
     public void testReturnNoProfile() throws HttpAction {
-        assertNull(creator.create(new TokenCredentials(TOKEN, CLIENT_NAME)));
+        assertNull(creator.create(new TokenCredentials(TOKEN, CLIENT_NAME), null));
     }
 
     @Test
@@ -30,7 +30,7 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
         final CommonProfile profile = new CommonProfile();
         final Credentials credentials = new TokenCredentials(TOKEN, CLIENT_NAME);
         credentials.setUserProfile(profile);
-        final CommonProfile profile2 = creator.create(credentials);
+        final CommonProfile profile2 = creator.create(credentials, null);
         assertEquals(profile, profile2);
     }
 }

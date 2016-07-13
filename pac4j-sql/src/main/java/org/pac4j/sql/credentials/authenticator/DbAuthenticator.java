@@ -68,7 +68,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) throws HttpAction {
+    public void validate(UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
 
         Handle h = null;
         try {

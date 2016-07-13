@@ -2,6 +2,7 @@ package org.pac4j.cas.client.rest;
 
 import org.junit.Test;
 import org.pac4j.cas.credentials.CasCredentials;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.util.TestsConstants;
@@ -19,7 +20,7 @@ public final class CasRestClientTests implements TestsConstants {
 
     private static class FakeAuthenticator implements Authenticator<CasCredentials> {
 
-        public void validate(final CasCredentials credentials) {}
+        public void validate(final CasCredentials credentials, final WebContext context) {}
     }
 
     @Test

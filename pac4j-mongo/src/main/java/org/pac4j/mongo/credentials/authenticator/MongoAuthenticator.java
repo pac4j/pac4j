@@ -78,7 +78,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
     }
 
     @Override
-    public void validate(UsernamePasswordCredentials credentials) throws HttpAction {
+    public void validate(UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
 
         final String username = credentials.getUsername();
 

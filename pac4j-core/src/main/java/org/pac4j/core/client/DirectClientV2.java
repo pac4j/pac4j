@@ -46,7 +46,7 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
             if (credentials == null) {
                 return null;
             }
-            this.authenticator.validate(credentials);
+            this.authenticator.validate(credentials, context);
             return credentials;
         } catch (CredentialsException e) {
             logger.error("Failed to retrieve or validate credentials", e);
@@ -56,7 +56,7 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
 
     @Override
     protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
-        final U profile = this.profileCreator.create(credentials);
+        final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
     }

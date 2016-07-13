@@ -57,7 +57,7 @@ public final class JwtTests implements TestsConstants {
         final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
         final JwtAuthenticator authenticator = new JwtAuthenticator(JWT_KEY);
         authenticator.init(null);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
         assertNotNull(credentials.getUserProfile());
     }
 
@@ -178,7 +178,7 @@ public final class JwtTests implements TestsConstants {
     private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) throws HttpAction {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
         authenticator.init(null);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
         final CommonProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
         final FacebookProfile fbProfile = (FacebookProfile) profile2;
@@ -203,6 +203,6 @@ public final class JwtTests implements TestsConstants {
         final JwtAuthenticator authenticator = new JwtAuthenticator(JWT_KEY);
         authenticator.init(null);
         final TokenCredentials credentials = new TokenCredentials("fakeToken", CLIENT_NAME);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
     }
 }
