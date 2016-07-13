@@ -27,13 +27,13 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testNoPattern() throws HttpAction {
         IpRegexpAuthenticator authenticator = new IpRegexpAuthenticator();
-        authenticator.validate(null);
+        authenticator.validate(null, null);
     }
 
     @Test
     public void testValidateGoodIP() throws HttpAction {
         final TokenCredentials credentials = new TokenCredentials(GOOD_IP, CLIENT_NAME);
-        authenticator.validate(credentials);
+        authenticator.validate(credentials, null);
         final IpProfile profile = (IpProfile) credentials.getUserProfile();
         assertEquals(GOOD_IP, profile.getId());
     }
@@ -41,6 +41,6 @@ public final class IpRegexpAuthenticatorTests implements TestsConstants {
     @Test
     public void testValidateBadIP() throws HttpAction {
         final TokenCredentials credentials = new TokenCredentials(BAD_IP, CLIENT_NAME);
-        TestsHelper.expectException(() -> authenticator.validate(credentials), CredentialsException.class, "Unauthorized IP address: " + BAD_IP);
+        TestsHelper.expectException(() -> authenticator.validate(credentials, null), CredentialsException.class, "Unauthorized IP address: " + BAD_IP);
     }
 }

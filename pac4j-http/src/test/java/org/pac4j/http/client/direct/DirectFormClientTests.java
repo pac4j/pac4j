@@ -88,7 +88,7 @@ public final class DirectFormClientTests implements TestsConstants {
     @Test
     public void testGetUserProfile() throws HttpAction {
         final DirectFormClient formClient = getFormClient();
-        formClient.setProfileCreator(credentials -> {
+        formClient.setProfileCreator((credentials, context) -> {
             String username = credentials.getUsername();
             final CommonProfile profile = new CommonProfile();
             profile.setId(username);

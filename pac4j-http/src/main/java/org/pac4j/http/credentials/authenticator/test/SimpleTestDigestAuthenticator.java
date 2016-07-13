@@ -1,5 +1,6 @@
 package org.pac4j.http.credentials.authenticator.test;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.core.exception.CredentialsException;
@@ -16,7 +17,7 @@ import org.pac4j.http.credentials.DigestCredentials;
  */
 public class SimpleTestDigestAuthenticator implements TokenAuthenticator {
     @Override
-    public void validate(TokenCredentials credentials) throws HttpAction {
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
         if (credentials == null) {
             throw new CredentialsException("No credential");
         }

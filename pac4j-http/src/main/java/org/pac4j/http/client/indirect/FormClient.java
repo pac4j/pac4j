@@ -83,7 +83,7 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
                 throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR, 401);
             }
             // validate credentials
-            getAuthenticator().validate(credentials);
+            getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
             throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error", computeErrorMessage(e), 403);
         }

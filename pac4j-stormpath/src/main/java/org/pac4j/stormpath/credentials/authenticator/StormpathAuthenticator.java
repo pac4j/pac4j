@@ -73,7 +73,7 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials) throws HttpAction {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
         try {
             logger.debug("Attempting to authenticate user [{}] against application [{}] in Stormpath cloud...",
                     credentials.getUsername(), this.application.getName());

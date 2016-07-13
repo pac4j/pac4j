@@ -107,7 +107,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
     public CommonProfile validateToken(final String token) {
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
         try {
-            validate(credentials);
+            validate(credentials, null);
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
         }
@@ -115,7 +115,7 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
     }
 
     @Override
-    public void validate(final TokenCredentials credentials) throws HttpAction {
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
         final String token = credentials.getToken();
         boolean verified = false;
 
