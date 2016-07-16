@@ -54,15 +54,23 @@ public class ProfileManager<U extends CommonProfile> {
      * @return the map of profiles
      */
     private LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
-        LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
-        final Object objSession = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
-        if (objSession != null && objSession instanceof LinkedHashMap) {
-            profiles = (LinkedHashMap<String, U>) objSession;
+        final LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
+        final Object request = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+        if (request != null) {
+            if  (request instanceof LinkedHashMap) {
+                profiles.putAll((LinkedHashMap<String, U>) request);
+            }
+            if (request instanceof CommonProfile) {
+                profiles.put(((CommonProfile) request).getClientName(), (U) request);
+            }
         }
         if (readFromSession) {
-            final Object objRequest = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
-            if (objRequest != null && objRequest instanceof LinkedHashMap) {
-                profiles.putAll((LinkedHashMap<String, U>) objRequest);
+            final Object sessionAttribute = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
+            if  (sessionAttribute instanceof LinkedHashMap) {
+                profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
+            }
+            if (sessionAttribute instanceof CommonProfile) {
+                profiles.put(((CommonProfile) request).getClientName(), (U) sessionAttribute);
             }
         }
         return profiles;
