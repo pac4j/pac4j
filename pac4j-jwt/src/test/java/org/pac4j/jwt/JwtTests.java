@@ -1,5 +1,6 @@
 package org.pac4j.jwt;
 
+import com.nimbusds.jose.EncryptionMethod;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.junit.Test;
@@ -204,5 +205,27 @@ public final class JwtTests implements TestsConstants {
         authenticator.init(null);
         final TokenCredentials credentials = new TokenCredentials("fakeToken", CLIENT_NAME);
         authenticator.validate(credentials, null);
+    }
+    
+    @Test
+    public void testJwtGenerationA256CBC() {
+        final JwtGenerator<CommonProfile> g = new JwtGenerator<CommonProfile>(
+                JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY , 
+                JWT_KEY2 + JWT_KEY2
+        );
+        g.setEncryptionMethod(EncryptionMethod.A256CBC_HS512);
+        final String g1 = g.generate(new CommonProfile());
+        assertNotNull(g1);
+    }
+
+    @Test
+    public void testJwtGenerationA256GCM() {
+        final JwtGenerator<CommonProfile> g = new JwtGenerator<CommonProfile>(
+                JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY ,
+                JWT_KEY 
+        );
+        g.setEncryptionMethod(EncryptionMethod.A256GCM);
+        final String g1 = g.generate(new CommonProfile());
+        assertNotNull(g1);
     }
 }
