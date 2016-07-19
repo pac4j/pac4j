@@ -61,7 +61,7 @@ public class ProfileManager<U extends CommonProfile> {
                 profiles.putAll((LinkedHashMap<String, U>) request);
             }
             if (request instanceof CommonProfile) {
-                profiles.put(((CommonProfile) request).getClientName(), (U) request);
+                profiles.put(retrieveClientName((U) request), (U) request);
             }
         }
         if (readFromSession) {
@@ -70,7 +70,7 @@ public class ProfileManager<U extends CommonProfile> {
                 profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
             }
             if (sessionAttribute instanceof CommonProfile) {
-                profiles.put(((CommonProfile) request).getClientName(), (U) sessionAttribute);
+                profiles.put(retrieveClientName((U) sessionAttribute), (U) sessionAttribute);
             }
         }
         return profiles;
@@ -98,10 +98,7 @@ public class ProfileManager<U extends CommonProfile> {
     public void save(final boolean saveInSession, final U profile, final boolean multiProfile) {
         final LinkedHashMap<String, U> profiles;
 
-        String clientName = profile.getClientName();
-        if (clientName == null) {
-            clientName = "DEFAULT";
-        }
+        final String clientName = retrieveClientName(profile);
         if (multiProfile) {
             profiles = retrieveAll(saveInSession);
             profiles.remove(clientName);
@@ -114,6 +111,14 @@ public class ProfileManager<U extends CommonProfile> {
             this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
         }
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
+    }
+
+    private String retrieveClientName(final U profile) {
+        String clientName = profile.getClientName();
+        if (clientName == null) {
+            clientName = "DEFAULT";
+        }
+        return clientName;
     }
 
     /**
