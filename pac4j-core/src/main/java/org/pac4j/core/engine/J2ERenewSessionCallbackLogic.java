@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Callback logic with web session renewal for J2E.
+ * Callback logic with web session renewal for J2E context.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class J2ERenewSessionCallbackLogic extends DefaultCallbackLogic<Object, J2EContext> {
+public class J2ERenewSessionCallbackLogic<C extends J2EContext> extends DefaultCallbackLogic<Object, C> {
 
     protected void renewSession(final J2EContext context) {
         logger.debug("Discard old session and replace by a new one...");
