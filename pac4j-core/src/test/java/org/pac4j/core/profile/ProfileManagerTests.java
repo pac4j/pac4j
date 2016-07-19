@@ -219,7 +219,24 @@ public final class ProfileManagerTests {
         assertEquals(PROFILE3, profiles.get(1));
     }
 
+    @Test
+    public void testSingleProfileFromSessionDirectly() {
+        final CommonProfile profile = new CommonProfile();
+        profile.setClientName(CLIENT1);
+        
+        context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profile);
+        assertEquals(profile, profileManager.getAll(true).get(0));
+    }
 
+    @Test
+    public void testSingleProfileFromRequestDirectly() {
+        final CommonProfile profile = new CommonProfile();
+        profile.setClientName(CLIENT1);
+
+        context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profile);
+        assertEquals(profile, profileManager.getAll(false).get(0));
+    }
+    
     @Test
     public void testIsAuthenticatedAnonymousProfile() {
         profiles.put(CLIENT1, AnonymousProfile.INSTANCE);
