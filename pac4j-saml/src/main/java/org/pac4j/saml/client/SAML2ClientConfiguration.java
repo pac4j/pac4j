@@ -53,10 +53,10 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private boolean forceServiceProviderMetadataGeneration;
 
     private SAMLMessageStorageFactory samlMessageStorageFactory = new EmptyStorageFactory();
-  private boolean authnRequestSigned = true;
 
-  public SAML2ClientConfiguration() {}
+    private boolean authnRequestSigned = true;
 
+    public SAML2ClientConfiguration() {}
 
     private Collection<String> blackListedSignatureSigningAlgorithms;
     private List<String> signatureAlgorithms;
@@ -378,11 +378,11 @@ public final class SAML2ClientConfiguration implements Cloneable {
         }
     }
 
-  public boolean isAuthnRequestSigned() {
-    return authnRequestSigned;
-  }
+    public boolean isAuthnRequestSigned() {
+        return authnRequestSigned;
+    }
 
-  public void setAuthnRequestSigned(boolean authnRequestSigned) {
-    this.authnRequestSigned = authnRequestSigned;
-  }
+    public void setAuthnRequestSigned(boolean authnRequestSigned) {
+        this.authnRequestSigned = authnRequestSigned;
+    }
 }
