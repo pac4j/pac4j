@@ -53,7 +53,7 @@ public class ProfileManager<U extends CommonProfile> {
      * @param readFromSession if the user profiles must be read from session
      * @return the map of profiles
      */
-    private LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
+    protected LinkedHashMap<String, U> retrieveAll(final boolean readFromSession) {
         final LinkedHashMap<String, U> profiles = new LinkedHashMap<>();
         final Object request = this.context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         if (request != null) {
@@ -113,7 +113,7 @@ public class ProfileManager<U extends CommonProfile> {
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
     }
 
-    private String retrieveClientName(final U profile) {
+    protected String retrieveClientName(final U profile) {
         String clientName = profile.getClientName();
         if (clientName == null) {
             clientName = "DEFAULT";
