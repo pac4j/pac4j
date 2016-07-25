@@ -84,8 +84,13 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
     }
     
     /**
-     * @throws InvalidKeySpecException 
-     * @throws NoSuchAlgorithmException 
+     * Define the signing certificate and the encryption secret.
+     *
+     * @param publicKeyPEM the public key certificate
+     * @param algorithm the key algorithm
+     * @param encryptionSecret the encryption secret
+     * @throws NoSuchAlgorithmException No such algorithm exception
+     * @throws InvalidKeySpecException  Invalid key exception
      * @since 1.8.2
      */
     public JwtAuthenticator(final String publicKeyPEM, final String algorithm, final String encryptionSecret) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -204,8 +209,12 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
     }
     
     /**
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeySpecException 
+     * Define the signing certificate.
+     *
+     * @param publicKeyPEM the public key certificate
+     * @param algorithm the key algorithm
+     * @throws NoSuchAlgorithmException No such algorithm exception
+     * @throws InvalidKeySpecException  Invalid key exception
      * @since 1.8.2
      */
     public void setSigningPem(final String publicKeyPEM, final String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
