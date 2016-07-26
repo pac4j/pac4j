@@ -19,4 +19,9 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     public final HttpAction redirect(final WebContext context) throws HttpAction {
         throw new TechnicalException("direct clients do not support redirections");
     }
+    
+    @Override
+    public final HttpAction logoutRedirect(final WebContext context) throws HttpAction {
+        throw new TechnicalException("direct clients do not support logout redirections");
+    }
 }

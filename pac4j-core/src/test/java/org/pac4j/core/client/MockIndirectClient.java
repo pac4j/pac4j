@@ -44,4 +44,9 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
     protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws HttpAction {
         return profile;
     }
+
+	@Override
+	protected RedirectAction retrieveLogoutRedirectAction(WebContext context) throws HttpAction {
+		return null;
+	}
 }

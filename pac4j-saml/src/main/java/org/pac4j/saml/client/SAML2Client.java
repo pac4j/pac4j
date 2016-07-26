@@ -239,6 +239,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     }
 
+    @Override
     public RedirectAction retrieveLogoutRedirectAction(final WebContext wc) throws HttpAction {
         final SAML2MessageContext context = this.contextProvider.buildContext(wc);
         final String relayState = getStateParameter(wc);
