@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>This class is the logout handler for the {@link CasClient} class based on the {@link SingleSignOutHandler} class of the Jasig CAS client.</p>
+ * <p>This class is the logout handler for the {@link CasClient} class based on the {@link SingleSignOutHandler} class of the Apereo CAS client.</p>
  * <p>It should only be used in J2E context.</p>
  * 
  * @author Jerome Leleu

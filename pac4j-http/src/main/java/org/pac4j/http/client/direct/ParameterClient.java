@@ -8,7 +8,7 @@ import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
-import org.pac4j.http.credentials.extractor.ParameterExtractor;
+import org.pac4j.core.credentials.extractor.ParameterExtractor;
 
 /**
  * <p>This class is the client to authenticate users directly based on a provided parameter (in a GET and/or POST request).</p>

@@ -1,6 +1,6 @@
 package org.pac4j.cas.logout;
 
-import org.pac4j.cas.client.CasClient;
+import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.WebContext;
 
 /**
@@ -15,7 +15,7 @@ public class NoLogoutHandler implements LogoutHandler {
     
     @Override
     public boolean isTokenRequest(final WebContext context) {
-        return context.getRequestParameter(CasClient.SERVICE_TICKET_PARAMETER) != null;
+        return context.getRequestParameter(CasConfiguration.SERVICE_TICKET_PARAMETER) != null;
     }
     
     @Override
