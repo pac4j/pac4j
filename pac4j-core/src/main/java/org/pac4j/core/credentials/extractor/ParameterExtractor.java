@@ -1,7 +1,6 @@
-package org.pac4j.http.credentials.extractor;
+package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
@@ -13,7 +12,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ParameterExtractor implements CredentialsExtractor<TokenCredentials> {
+public class ParameterExtractor<C extends TokenCredentials> implements CredentialsExtractor<C> {
 
     private final String parameterName;
 
@@ -36,7 +35,7 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) throws HttpAction {
+    public C extract(WebContext context) throws HttpAction {
         final String method = context.getRequestMethod();
         if ("GET".equals(method) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");
@@ -49,7 +48,7 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
             return null;
         }
 
-        return new TokenCredentials(value, clientName);
+        return (C) new TokenCredentials(value, clientName);
     }
 
     @Override

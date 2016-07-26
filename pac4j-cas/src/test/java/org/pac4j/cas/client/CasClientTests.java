@@ -1,6 +1,7 @@
 package org.pac4j.cas.client;
 
 import org.junit.Test;
+import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
@@ -28,7 +29,7 @@ public final class CasClientTests implements TestsConstants {
     public void testMissingCasUrls() {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(casClient, "casLoginUrl and casPrefixUrl cannot be both blank");
+        TestsHelper.initShouldFail(casClient, "loginUrl and prefixUrl cannot be both blank");
     }
 
     @Test
@@ -37,6 +38,17 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.setCasLoginUrl(LOGIN_URL);
         casClient.setCasPrefixUrl(PREFIX_URL_WITHOUT_SLASH);
+        casClient.init(null);
+        assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
+    }
+
+    @Test
+    public void testMissingSlashOnPrefixUrlByConfig() {
+        CasConfiguration config = new CasConfiguration();
+        config.setLoginUrl(LOGIN_URL);
+        config.setPrefixUrl(PREFIX_URL_WITHOUT_SLASH);
+        final CasClient casClient = new CasClient(config);
+        casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
         assertEquals(PREFIX_URL, casClient.getCasPrefixUrl());
     }
