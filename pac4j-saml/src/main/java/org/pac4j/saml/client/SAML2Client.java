@@ -2,12 +2,14 @@ package org.pac4j.saml.client;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
+
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -35,6 +37,10 @@ import org.pac4j.saml.sso.SAML2ProfileHandler;
 import org.pac4j.saml.sso.SAML2ResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
 import org.pac4j.saml.sso.impl.SAML2DefaultResponseValidator;
+import org.pac4j.saml.sso.impl.SAML2LogoutRequestBuilder;
+import org.pac4j.saml.sso.impl.SAML2LogoutMessageSender;
+import org.pac4j.saml.sso.impl.SAML2LogoutProfileHandler;
+import org.pac4j.saml.sso.impl.SAML2LogoutResponseValidator;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageReceiver;
 import org.pac4j.saml.sso.impl.SAML2WebSSOMessageSender;
 import org.pac4j.saml.sso.impl.SAML2WebSSOProfileHandler;
@@ -66,12 +72,18 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected SAMLContextProvider contextProvider;
 
     protected SAML2ObjectBuilder<AuthnRequest> saml2ObjectBuilder;
+    
+    protected SAML2ObjectBuilder<LogoutRequest> saml2LogoutObjectBuilder;
 
     protected SignatureSigningParametersProvider signatureSigningParametersProvider;
 
     protected SAML2ProfileHandler<AuthnRequest> profileHandler;
+    
+    protected SAML2ProfileHandler<LogoutRequest> logoutProfileHandler;
 
     protected SAML2ResponseValidator responseValidator;
+    
+    protected SAML2ResponseValidator logoutResponseValidator;
 
     protected SAML2SignatureTrustEngineProvider signatureTrustEngineProvider;
 
@@ -108,9 +120,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 initServiceProviderMetadataResolver(context));
         initSAMLContextProvider(metadataManager);
         initSAMLObjectBuilder();
+        initSAMLLogoutObjectBuilder();
         initSignatureTrustEngineProvider(metadataManager);
         initSAMLResponseValidator();
         initSAMLProfileHandler();
+        initSAMLLogoutProfileHandler();
     }
 
     protected void initSAMLProfileHandler() {
@@ -118,6 +132,13 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
                         this.configuration.getDestinationBindingType(), false),
                 new SAML2WebSSOMessageReceiver(this.responseValidator));
+    }
+    
+    protected void initSAMLLogoutProfileHandler() {
+    	this.logoutProfileHandler = new SAML2LogoutProfileHandler(
+    			new SAML2LogoutMessageSender(this.signatureSigningParametersProvider,
+                        null, false),
+    			new SAML2WebSSOMessageReceiver(this.logoutResponseValidator));
     }
 
     protected void initSAMLResponseValidator() {
@@ -127,6 +148,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.decrypter,
                 this.configuration.getMaximumAuthenticationLifetime(),
                 this.configuration.getWantsAssertionsSigned());
+    }
+    
+    protected void initSAMLLogoutResponseValidator() {
+    	this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.signatureTrustEngineProvider);
     }
 
     protected void initSignatureTrustEngineProvider(final MetadataResolver metadataManager) {
@@ -140,6 +165,10 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
                 this.configuration.getDestinationBindingType(),
                 this.configuration.getAuthnContextClassRef(),
                 this.configuration.getNameIdPolicyFormat());
+    }
+    
+    protected void initSAMLLogoutObjectBuilder() {
+    	this.saml2LogoutObjectBuilder = new SAML2LogoutRequestBuilder(this.configuration.getComparisonType());
     }
 
     protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
@@ -208,6 +237,22 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         final String location = adapter.getRedirectUrl();
         return RedirectAction.redirect(location);
 
+    }
+
+    public RedirectAction retrieveLogoutRedirectAction(final WebContext wc) throws HttpAction {
+        final SAML2MessageContext context = this.contextProvider.buildContext(wc);
+        final String relayState = getStateParameter(wc);
+
+        final LogoutRequest logoutRequest = this.saml2LogoutObjectBuilder.build(context);
+        this.logoutProfileHandler.send(context, logoutRequest, relayState);
+
+        final Pac4jSAMLResponse adapter = context.getProfileRequestContextOutboundMessageTransportResponse();
+        if (this.configuration.getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
+            final String content = adapter.getOutgoingContent();
+            return RedirectAction.success(content);
+        }
+        final String location = adapter.getRedirectUrl();
+        return RedirectAction.redirect(location);
     }
 
     @Override
