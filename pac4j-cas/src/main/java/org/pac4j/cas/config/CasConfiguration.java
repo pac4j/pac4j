@@ -71,6 +71,8 @@ public class CasConfiguration extends InitializableWebObject {
             throw new TechnicalException("loginUrl and prefixUrl cannot be both blank");
         }
 
+        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
+
         initializeClientConfiguration(context);
 
         initializeLogoutHandler(context);
@@ -277,7 +279,9 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
+        if (this.callbackUrlResolver == null) {
+            this.callbackUrlResolver = callbackUrlResolver;
+        }
     }
 
     @Override

@@ -1,26 +1,19 @@
 package org.pac4j.cas.client;
 
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.ProxyList;
-import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.CasCredentials;
+import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
+import org.pac4j.cas.credentials.extractor.TicketExtractor;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.cas.profile.CasProxyProfile;
-import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.cas.redirect.CasLoginRedirectActionBuilder;
+import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is the client to authenticate users on a CAS server for a web application in a stateful way: when trying to access a protected area,
@@ -36,11 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
-
-    protected static final Logger logger = LoggerFactory.getLogger(CasClient.class);
-
-    protected static final String SERVICE_PARAMETER = "service";
+public class CasClient extends IndirectClientV2<CasCredentials, CasProfile> {
 
     private CasConfiguration configuration = new CasConfiguration();
 
@@ -68,75 +57,18 @@ public class CasClient extends IndirectClient<CasCredentials, CasProfile> {
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) {
-        final String redirectionUrl = CommonUtils.constructRedirectUrl(configuration.getLoginUrl(), SERVICE_PARAMETER,
-                computeFinalCallbackUrl(context), configuration.isRenew(), configuration.isGateway());
-        logger.debug("redirectionUrl : {}", redirectionUrl);
-        return RedirectAction.redirect(redirectionUrl);
-    }
-
-    @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
 
-        if (configuration.getCallbackUrlResolver() == null) {
-            configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
-        }
+        configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);
 
+        setRedirectActionBuilder(new CasLoginRedirectActionBuilder(configuration, callbackUrl));
+        setCredentialsExtractor(new TicketExtractor(configuration, getName()));
+        setAuthenticator(new CasAuthenticator(configuration, callbackUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
-    }
 
-    @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws HttpAction {
-
-        // like the SingleSignOutFilter from the Apereo CAS client:
-        if (configuration.getLogoutHandler().isTokenRequest(context)) {
-            final String ticket = context.getRequestParameter(CasConfiguration.SERVICE_TICKET_PARAMETER);
-            configuration.getLogoutHandler().recordSession(context, ticket);
-            final CasCredentials casCredentials = new CasCredentials(ticket, getName());
-            logger.debug("casCredentials: {}", casCredentials);
-            return casCredentials;
-        }
-
-        if (configuration.getLogoutHandler().isLogoutRequest(context)) {
-            configuration.getLogoutHandler().destroySession(context);
-            final String message = "logout request: no credential returned";
-            logger.debug(message);
-            throw HttpAction.ok(message, context);
-        }
-
-        /*if (configuration.isGateway()) {
-            logger.info("No credential found in this gateway round-trip");
-            return null;
-        }
-        final String message = "No ticket or logout request";
-        throw new CredentialsException(message);*/
-        return null;
-    }
-
-    @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws HttpAction {
-        final String ticket = credentials.getServiceTicket();
-        try {
-            final Assertion assertion = configuration.getTicketValidator().validate(ticket, computeFinalCallbackUrl(context));
-            final AttributePrincipal principal = assertion.getPrincipal();
-            logger.debug("principal: {}", principal);
-            final CasProfile casProfile;
-            if (configuration.getProxyReceptor() != null) {
-                casProfile = new CasProxyProfile();
-                ((CasProxyProfile) casProfile).setPrincipal(principal);
-            } else {
-                casProfile = new CasProfile();
-            }
-            casProfile.setId(principal.getName());
-            casProfile.addAttributes(principal.getAttributes());
-            logger.debug("casProfile: {}", casProfile);
-            return casProfile;
-        } catch (final TicketValidationException e) {
-            String message = "cannot validate CAS ticket: " + ticket;
-            throw new TechnicalException(message, e);
-        }
+        super.internalInit(context);
     }
 
     public CasConfiguration getConfiguration() {
