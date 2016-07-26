@@ -101,12 +101,6 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         }
     }
 
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
-    }
-
     public RedirectActionBuilder getRedirectActionBuilder() {
         return redirectActionBuilder;
     }
@@ -145,5 +139,13 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
+                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
     }
 }

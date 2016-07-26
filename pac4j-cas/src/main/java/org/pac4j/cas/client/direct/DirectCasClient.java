@@ -28,7 +28,7 @@ public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> 
     }
 
     @Override
-    public CasCredentials getCredentials(final WebContext context) throws HttpAction {
+    public CasCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
             final CasCredentials credentials = getCredentialsExtractor().extract(context);

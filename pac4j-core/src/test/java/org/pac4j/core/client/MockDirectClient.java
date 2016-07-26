@@ -31,7 +31,7 @@ public final class MockDirectClient extends DirectClient<Credentials, CommonProf
     protected void internalInit(final WebContext context) {}
 
     @Override
-    public Credentials getCredentials(WebContext context) throws HttpAction {
+    public Credentials retrieveCredentials(WebContext context) throws HttpAction {
         return returnCredentials.get();
     }
 

@@ -45,7 +45,7 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public C getCredentials(final WebContext context) throws HttpAction {
+    protected C retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
             final C credentials = this.credentialsExtractor.extract(context);
@@ -88,12 +88,6 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
         }
     }
 
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
-    }
-
     public CredentialsExtractor<C> getCredentialsExtractor() {
         return credentialsExtractor;
     }
@@ -122,5 +116,11 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "credentialsExtractor", this.credentialsExtractor,
+                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
     }
 }
