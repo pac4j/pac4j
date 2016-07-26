@@ -69,6 +69,8 @@ public class CasClient extends IndirectClientV2<CasCredentials, CasProfile> {
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
 
         super.internalInit(context);
+        assertAuthenticatorTypes(CasAuthenticator.class);
+        assertCredentialsExtractorTypes(TicketExtractor.class);
     }
 
     public CasConfiguration getConfiguration() {
