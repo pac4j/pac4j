@@ -28,8 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableWebObject implements
-        Client<C, U> {
+public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableWebObject implements Client<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -37,17 +36,14 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        if (CommonHelper.isBlank(this.name)) {
-            return this.getClass().getSimpleName();
-        }
-        return this.name;
-    }
+    /**
+     * Retrieve the credentials.
+     *
+     * @param context the web context
+     * @return the credentials
+     * @throws HttpAction whether an additional HTTP action is required
+     */
+    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
 
     @Override
     public final U getUserProfile(final C credentials, final WebContext context) throws HttpAction {
@@ -79,9 +75,16 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction;
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
     @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName());
+    public String getName() {
+        if (CommonHelper.isBlank(this.name)) {
+            return this.getClass().getSimpleName();
+        }
+        return this.name;
     }
 
     public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
@@ -110,5 +113,10 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     public void addAuthorizationGenerator(final AuthorizationGenerator<U> authorizationGenerator) {
         CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
         this.authorizationGenerators.add(authorizationGenerator);
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName());
     }
 }
