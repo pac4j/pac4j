@@ -7,6 +7,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,19 +17,25 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasLoginRedirectActionBuilder implements RedirectActionBuilder {
+public class CasLoginRedirectActionBuilder extends InitializableWebObject implements RedirectActionBuilder {
 
     private final static Logger logger = LoggerFactory.getLogger(CasLoginRedirectActionBuilder.class);
 
     protected static final String SERVICE_PARAMETER = "service";
 
-    private final CasConfiguration configuration;
+    private CasConfiguration configuration;
 
-    private final String callbackUrl;
+    private String callbackUrl;
+
+    public CasLoginRedirectActionBuilder() {}
 
     public CasLoginRedirectActionBuilder(final CasConfiguration configuration, final String callbackUrl) {
         this.configuration = configuration;
         this.callbackUrl = callbackUrl;
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
     }
@@ -44,8 +51,16 @@ public class CasLoginRedirectActionBuilder implements RedirectActionBuilder {
         return configuration;
     }
 
+    public void setConfiguration(CasConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
     public String getCallbackUrl() {
         return callbackUrl;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 
     @Override

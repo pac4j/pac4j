@@ -12,6 +12,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,17 +22,23 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticator implements Authenticator<CasCredentials> {
+public class CasAuthenticator extends InitializableWebObject implements Authenticator<CasCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
-    private final CasConfiguration configuration;
+    private CasConfiguration configuration;
 
-    private final String callbackUrl;
+    private String callbackUrl;
+
+    public CasAuthenticator() {}
 
     public CasAuthenticator(final CasConfiguration configuration, final String callbackUrl) {
         this.configuration = configuration;
         this.callbackUrl = callbackUrl;
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
     }
@@ -60,12 +67,20 @@ public class CasAuthenticator implements Authenticator<CasCredentials> {
         }
     }
 
+    public CasConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(CasConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
     public String getCallbackUrl() {
         return callbackUrl;
     }
 
-    public CasConfiguration getConfiguration() {
-        return configuration;
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 
     @Override

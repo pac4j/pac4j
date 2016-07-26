@@ -33,8 +33,14 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
         CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
+        if (credentialsExtractor instanceof InitializableWebObject) {
+            ((InitializableWebObject) this.credentialsExtractor).init(context);
+        }
         if (authenticator instanceof InitializableWebObject) {
             ((InitializableWebObject) this.authenticator).init(context);
+        }
+        if (profileCreator instanceof InitializableWebObject) {
+            ((InitializableWebObject) this.profileCreator).init(context);
         }
     }
 
@@ -61,20 +67,26 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
         return profile;
     }
 
-    protected void assertAuthenticatorTypes(final Class<? extends Authenticator>... classes) {
-        if (this.authenticator != null && classes != null) {
-            for (final Class<? extends Authenticator> clazz : classes) {
-                Class<? extends Authenticator> authClazz = this.authenticator.getClass();
-                if (LocalCachingAuthenticator.class.isAssignableFrom(authClazz)) {
-                    authClazz = ((LocalCachingAuthenticator) this.authenticator).getDelegate().getClass();
-                }
-                if (!clazz.isAssignableFrom(authClazz)) {
-                    throw new TechnicalException("Unsupported authenticator type: " + authClazz);
-                }
+    protected void assertAuthenticatorTypes(final Class<? extends Authenticator> clazz) {
+        if (this.authenticator != null && clazz != null) {
+            Class<? extends Authenticator> authClazz = this.authenticator.getClass();
+            if (LocalCachingAuthenticator.class.isAssignableFrom(authClazz)) {
+                authClazz = ((LocalCachingAuthenticator) this.authenticator).getDelegate().getClass();
+            }
+            if (!clazz.isAssignableFrom(authClazz)) {
+                throw new TechnicalException("Unsupported authenticator type: " + authClazz);
             }
         }
     }
 
+    protected void assertCredentialsExtractorTypes(final Class<? extends CredentialsExtractor> clazz) {
+        if (this.authenticator != null && clazz != null) {
+            Class<? extends CredentialsExtractor> authClazz = this.credentialsExtractor.getClass();
+            if (!clazz.isAssignableFrom(authClazz)) {
+                throw new TechnicalException("Unsupported credentials extractor type: " + authClazz);
+            }
+        }
+    }
 
     @Override
     public String toString() {

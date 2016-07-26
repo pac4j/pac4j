@@ -6,6 +6,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,17 +16,23 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketExtractor implements CredentialsExtractor<CasCredentials> {
+public class TicketExtractor extends InitializableWebObject implements CredentialsExtractor<CasCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(TicketExtractor.class);
 
-    private final CasConfiguration configuration;
+    private CasConfiguration configuration;
 
-    private final String clientName;
+    private String clientName;
+
+    public TicketExtractor() {}
 
     public TicketExtractor(final CasConfiguration configuration, final String clientName) {
         this.configuration = configuration;
         this.clientName = clientName;
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
     }
@@ -49,6 +56,22 @@ public class TicketExtractor implements CredentialsExtractor<CasCredentials> {
         }
 
         return null;
+    }
+
+    public CasConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(CasConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     @Override
