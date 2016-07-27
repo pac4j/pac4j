@@ -5,9 +5,7 @@ import org.jasig.cas.client.validation.ProxyList;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.cas.credentials.extractor.CasCredentialsExtractor;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
@@ -15,6 +13,8 @@ import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -32,7 +32,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends IndirectClientV2<CasCredentials, CasProfile> {
+public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
 
     private CasConfiguration configuration = new CasConfiguration();
 
@@ -94,7 +94,7 @@ public class CasClient extends IndirectClientV2<CasCredentials, CasProfile> {
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
 
         super.internalInit(context);
-        assertCredentialsExtractorTypes(CasCredentialsExtractor.class);
+        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
         assertAuthenticatorTypes(CasAuthenticator.class);
     }
 

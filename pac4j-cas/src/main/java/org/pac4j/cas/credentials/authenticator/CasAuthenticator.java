@@ -4,13 +4,14 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProxyProfile;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticator extends InitializableWebObject implements Authenticator<CasCredentials> {
+public class CasAuthenticator extends InitializableWebObject implements Authenticator<TokenCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
@@ -44,10 +45,15 @@ public class CasAuthenticator extends InitializableWebObject implements Authenti
     }
 
     @Override
-    public void validate(final CasCredentials credentials, final WebContext context) throws HttpAction {
-        final String ticket = credentials.getServiceTicket();
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
+        final String ticket = credentials.getToken();
         try {
-            final Assertion assertion = configuration.getTicketValidator().validate(ticket, configuration.getCallbackUrlResolver().compute(callbackUrl, context));
+            String finalCallbackUrl = callbackUrl;
+            final CallbackUrlResolver callbackUrlResolver = configuration.getCallbackUrlResolver();
+            if (callbackUrlResolver != null) {
+                finalCallbackUrl = callbackUrlResolver.compute(finalCallbackUrl, context);
+            }
+            final Assertion assertion = configuration.getTicketValidator().validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);
             final CasProfile casProfile;

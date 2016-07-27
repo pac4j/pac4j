@@ -2,8 +2,8 @@ package org.pac4j.cas.client;
 
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -107,7 +107,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.reinit(null);
         casClient.redirect(context);
         assertTrue(context.getResponseLocation().indexOf("gateway=true") >= 0);
-        final CasCredentials credentials = casClient.getCredentials(context);
+        final TokenCredentials credentials = casClient.getCredentials(context);
         assertNull(credentials);
     }
 

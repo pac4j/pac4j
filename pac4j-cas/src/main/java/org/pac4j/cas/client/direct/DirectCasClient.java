@@ -4,15 +4,17 @@ import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.cas.credentials.extractor.CasCredentialsExtractor;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
+import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 
@@ -32,7 +34,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> {
+public class DirectCasClient extends DirectClientV2<TokenCredentials, CasProfile> {
 
     private CasConfiguration configuration;
 
@@ -43,7 +45,7 @@ public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> 
     }
 
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
             String currentUrl = context.getFullRequestURL();
@@ -54,7 +56,7 @@ public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> 
                 loginUrl = callbackUrlResolver.compute(loginUrl, context);
             }
 
-            final CasCredentials credentials = getCredentialsExtractor().extract(context);
+            final TokenCredentials credentials = getCredentialsExtractor().extract(context);
             if (credentials == null) {
                 // redirect to the login page
                 final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
@@ -63,6 +65,9 @@ public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> 
                 throw HttpAction.redirect("no ticket -> force redirect to login page", context, redirectionUrl);
             }
 
+            // clean url from ticket parameter
+            currentUrl = CommonHelper.substringBefore(currentUrl, "?ticket=");
+            currentUrl = CommonHelper.substringBefore(currentUrl, "&ticket=");
             final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, currentUrl);
             casAuthenticator.init(context);
             casAuthenticator.validate(credentials, context);
@@ -80,14 +85,13 @@ public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> 
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
 
         configuration.init(context);
-        setCredentialsExtractor(new ParameterExtractor<>(CasConfiguration.SERVICE_PARAMETER, true, false, getName()));
+        setCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        setAuthenticator(new CasAuthenticator(configuration, "fake"));
+        super.setAuthenticator(new CasAuthenticator(configuration, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
 
         super.internalInit(context);
-        assertCredentialsExtractorTypes(CasCredentialsExtractor.class);
-        assertAuthenticatorTypes(CasAuthenticator.class);
+        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
     }
 
     public CasConfiguration getConfiguration() {
@@ -96,5 +100,15 @@ public class DirectCasClient extends DirectClientV2<CasCredentials, CasProfile> 
 
     public void setConfiguration(CasConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public void setAuthenticator(final Authenticator<TokenCredentials> authenticator) {
+        throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is automatically created for each request");
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "configuration", this.configuration);
     }
 }

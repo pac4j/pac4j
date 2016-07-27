@@ -7,11 +7,11 @@ import org.jasig.cas.client.proxy.CleanUpTimerTask;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.util.CommonUtils;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasProfile> {
+public final class CasProxyReceptor extends IndirectClient<TokenCredentials, CasProfile> {
     
     private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
     
@@ -70,7 +70,7 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     }
 
     @Override
-    protected CasCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         
         // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
         final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
@@ -95,7 +95,7 @@ public final class CasProxyReceptor extends IndirectClient<CasCredentials, CasPr
     }
 
     @Override
-    protected CasProfile retrieveUserProfile(final CasCredentials credentials, final WebContext context) throws HttpAction {
+    protected CasProfile retrieveUserProfile(final TokenCredentials credentials, final WebContext context) throws HttpAction {
         throw new TechnicalException("Not supported by the CAS proxy receptor");
     }
 
