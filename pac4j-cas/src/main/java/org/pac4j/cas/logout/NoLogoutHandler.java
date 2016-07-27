@@ -1,6 +1,5 @@
 package org.pac4j.cas.logout;
 
-import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.WebContext;
 
 /**
@@ -9,26 +8,13 @@ import org.pac4j.core.context.WebContext;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class NoLogoutHandler implements LogoutHandler {
-    
-    private static final String LOGOUT_REQUEST_PARAMETER = "logoutRequest";
-    
+public class NoLogoutHandler<C extends WebContext> extends CasLogoutHandler<C> {
+
     @Override
-    public boolean isTokenRequest(final WebContext context) {
-        return context.getRequestParameter(CasConfiguration.TICKET_PARAMETER) != null;
+    public void recordSession(final C context, final String ticket) {
     }
-    
+
     @Override
-    public boolean isLogoutRequest(final WebContext context) {
-        return "POST".equals(context.getRequestMethod())
-               && context.getRequestParameter(LOGOUT_REQUEST_PARAMETER) != null;
-    }
-    
-    @Override
-    public void recordSession(final WebContext context, final String ticket) {
-    }
-    
-    @Override
-    public void destroySession(final WebContext context) {
+    public void destroySession(final C context, final String sessionId) {
     }
 }

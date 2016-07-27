@@ -42,6 +42,16 @@ public final class ContextHelper implements HttpConstants {
     }
 
     /**
+     * Whether it is a GET request.
+     *
+     * @param context the web context
+     * @return whether it is a GET request
+     */
+    public static boolean isGet(final WebContext context) {
+        return HttpConstants.HTTP_METHOD.GET.name().equalsIgnoreCase(context.getRequestMethod());
+    }
+
+    /**
      * Whether it is a POST request.
      *
      * @param context the web context

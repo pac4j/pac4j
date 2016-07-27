@@ -2,8 +2,8 @@ package org.pac4j.cas.config;
 
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
+import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
-import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.logout.NoLogoutHandler;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
@@ -25,6 +25,10 @@ public class CasConfiguration extends InitializableWebObject {
 
     public static final String SERVICE_PARAMETER = "service";
 
+    public final static String LOGOUT_REQUEST_PARAMETER = "logoutRequest";
+
+    public final static String SESSION_INDEX_TAG = "SessionIndex";
+
     private String encoding = HttpConstants.UTF8_ENCODING;
 
     private String loginUrl;
@@ -43,7 +47,7 @@ public class CasConfiguration extends InitializableWebObject {
 
     private ProxyList allowedProxyChains = new ProxyList();
 
-    private LogoutHandler logoutHandler;
+    private CasLogoutHandler logoutHandler;
 
     private TicketValidator ticketValidator;
 
@@ -250,11 +254,11 @@ public class CasConfiguration extends InitializableWebObject {
         this.allowedProxyChains = allowedProxyChains;
     }
 
-    public LogoutHandler getLogoutHandler() {
+    public CasLogoutHandler getLogoutHandler() {
         return logoutHandler;
     }
 
-    public void setLogoutHandler(final LogoutHandler logoutHandler) {
+    public void setLogoutHandler(final CasLogoutHandler logoutHandler) {
         this.logoutHandler = logoutHandler;
     }
 

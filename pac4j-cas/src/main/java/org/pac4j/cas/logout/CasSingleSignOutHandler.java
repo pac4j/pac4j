@@ -13,10 +13,8 @@ import org.jasig.cas.client.session.HashMapBackedSessionMappingStorage;
 import org.jasig.cas.client.session.SessionMappingStorage;
 import org.jasig.cas.client.session.SingleSignOutHandler;
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.XmlUtils;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.WebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasSingleSignOutHandler implements LogoutHandler {
+public class CasSingleSignOutHandler extends CasLogoutHandler<J2EContext> {
     
     protected static final Logger logger = LoggerFactory.getLogger(CasSingleSignOutHandler.class);
 
@@ -43,33 +41,11 @@ public class CasSingleSignOutHandler implements LogoutHandler {
 
     private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
     
-    /**
-     * Construct an instance.
-     */
-    public CasSingleSignOutHandler() {
-    }
+    public CasSingleSignOutHandler() { }
 
     @Override
-    public boolean isTokenRequest(final WebContext context) {
-        final J2EContext j2eContext = (J2EContext) context;
-        return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(j2eContext.getRequest(), this.artifactParameterName,
-                this.safeParameters));
-    }
-    
-    @Override
-    public boolean isLogoutRequest(final WebContext context) {
-        final J2EContext j2eContext = (J2EContext) context;
-        HttpServletRequest request = j2eContext.getRequest();
-        return "POST".equals(request.getMethod())
-                && !isMultipartRequest(request)
-                && CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName,
-                        this.safeParameters));
-    }
-    
-    @Override
-    public void recordSession(final WebContext context, final String ticket) {
-        final J2EContext j2eContext = (J2EContext) context;
-        HttpServletRequest request = j2eContext.getRequest();
+    public void recordSession(final J2EContext context, final String ticket) {
+        final HttpServletRequest request = context.getRequest();
         final HttpSession session = request.getSession(this.eagerlyCreateSessions);
 
         if (session == null) {
@@ -91,33 +67,21 @@ public class CasSingleSignOutHandler implements LogoutHandler {
     }
     
     @Override
-    public void destroySession(final WebContext context) {
-        final J2EContext j2eContext = (J2EContext) context;
-        HttpServletRequest request = j2eContext.getRequest();
-        final String logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
-        logger.trace("Logout request:\n{}", logoutMessage);
+    public void destroySession(final J2EContext context, final String sessionId) {
+    final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(sessionId);
+        final HttpServletRequest request = context.getRequest();
+        if (session != null) {
+            String sessionID = session.getId();
 
-        final String token = XmlUtils.getTextForElement(logoutMessage, "SessionIndex");
-        if (CommonUtils.isNotBlank(token)) {
-            final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(token);
+            logger.debug("Invalidating session [{}] for token [{}]", sessionID, sessionId);
 
-            if (session != null) {
-                String sessionID = session.getId();
-
-                logger.debug("Invalidating session [{}] for token [{}]", sessionID, token);
-
-                try {
-                    session.invalidate();
-                } catch (final IllegalStateException e) {
-                    logger.debug("Error invalidating session.", e);
-                }
-                this.logoutStrategy.logout(request);
+            try {
+                session.invalidate();
+            } catch (final IllegalStateException e) {
+                logger.debug("Error invalidating session.", e);
             }
+            this.logoutStrategy.logout(request);
         }
-    }
-
-    private boolean isMultipartRequest(final HttpServletRequest request) {
-        return request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart");
     }
 
     private static boolean isServlet30() {
