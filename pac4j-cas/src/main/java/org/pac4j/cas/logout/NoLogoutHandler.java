@@ -15,7 +15,7 @@ public class NoLogoutHandler implements LogoutHandler {
     
     @Override
     public boolean isTokenRequest(final WebContext context) {
-        return context.getRequestParameter(CasConfiguration.SERVICE_TICKET_PARAMETER) != null;
+        return context.getRequestParameter(CasConfiguration.TICKET_PARAMETER) != null;
     }
     
     @Override

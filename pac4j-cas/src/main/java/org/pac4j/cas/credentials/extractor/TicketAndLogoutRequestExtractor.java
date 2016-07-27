@@ -1,8 +1,9 @@
 package org.pac4j.cas.credentials.extractor;
 
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements CasCredentialsExtractor {
+public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements TokenCredentialsExtractor {
 
     private final static Logger logger = LoggerFactory.getLogger(TicketAndLogoutRequestExtractor.class);
 
@@ -37,12 +38,12 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     }
 
     @Override
-    public CasCredentials extract(WebContext context) throws HttpAction {
+    public TokenCredentials extract(WebContext context) throws HttpAction {
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (configuration.getLogoutHandler().isTokenRequest(context)) {
-            final String ticket = context.getRequestParameter(CasConfiguration.SERVICE_TICKET_PARAMETER);
+            final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
             configuration.getLogoutHandler().recordSession(context, ticket);
-            final CasCredentials casCredentials = new CasCredentials(ticket, clientName);
+            final TokenCredentials casCredentials = new TokenCredentials(ticket, clientName);
             logger.debug("casCredentials: {}", casCredentials);
             return casCredentials;
         }

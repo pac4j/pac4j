@@ -8,5 +8,5 @@ import org.pac4j.core.credentials.TokenCredentials;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public interface TokenCredentialsExtractor<C extends TokenCredentials> extends CredentialsExtractor<C> {
+public interface TokenCredentialsExtractor extends CredentialsExtractor<TokenCredentials> {
 }

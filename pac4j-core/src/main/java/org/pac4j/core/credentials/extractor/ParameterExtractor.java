@@ -12,7 +12,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ParameterExtractor<C extends TokenCredentials> implements TokenCredentialsExtractor<C> {
+public class ParameterExtractor implements TokenCredentialsExtractor {
 
     private final String parameterName;
 
@@ -35,7 +35,7 @@ public class ParameterExtractor<C extends TokenCredentials> implements TokenCred
     }
 
     @Override
-    public C extract(WebContext context) throws HttpAction {
+    public TokenCredentials extract(WebContext context) throws HttpAction {
         final String method = context.getRequestMethod();
         if ("GET".equals(method) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");
@@ -48,7 +48,7 @@ public class ParameterExtractor<C extends TokenCredentials> implements TokenCred
             return null;
         }
 
-        return (C) new TokenCredentials(value, clientName);
+        return new TokenCredentials(value, clientName);
     }
 
     @Override

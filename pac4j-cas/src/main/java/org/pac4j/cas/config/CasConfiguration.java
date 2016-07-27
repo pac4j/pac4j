@@ -21,7 +21,7 @@ import org.pac4j.core.util.InitializableWebObject;
  */
 public class CasConfiguration extends InitializableWebObject {
 
-    public static final String SERVICE_TICKET_PARAMETER = "ticket";
+    public static final String TICKET_PARAMETER = "ticket";
 
     public static final String SERVICE_PARAMETER = "service";
 
