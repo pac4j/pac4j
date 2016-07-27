@@ -1,17 +1,19 @@
 package org.pac4j.cas.client;
 
+import org.jasig.cas.client.util.CommonUtils;
 import org.jasig.cas.client.validation.ProxyList;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.cas.credentials.extractor.TicketExtractor;
+import org.pac4j.cas.credentials.extractor.CasCredentialsExtractor;
+import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.cas.redirect.CasLoginRedirectActionBuilder;
 import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
@@ -23,7 +25,8 @@ import org.pac4j.core.util.CommonHelper;
  *
  * <p>In a J2E context, the {@link LogoutHandler} will be a {@link CasSingleSignOutHandler}. For other environment, it must be explicitly defined to handle CAS logout requests.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined and set to the configuration. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
+ * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be enabled)
+ * and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
  *
  * @author Jerome Leleu
@@ -39,17 +42,34 @@ public class CasClient extends IndirectClientV2<CasCredentials, CasProfile> {
         setConfiguration(casConfiguration);
     }
 
+    /**
+     * Use {@link #CasClient(CasConfiguration)} instead.
+     *
+     * @param casLoginUrl the CAS login url
+     */
     @Deprecated
     public CasClient(final String casLoginUrl) {
         configuration.setLoginUrl(casLoginUrl);
     }
 
+    /**
+     * Use {@link #CasClient(CasConfiguration)} instead.
+     *
+     * @param casLoginUrl the CAS login url
+     * @param casProtocol the CAS protocol
+     */
     @Deprecated
     public CasClient(final String casLoginUrl, final CasProtocol casProtocol) {
         configuration.setLoginUrl(casLoginUrl);
         configuration.setProtocol(casProtocol);
     }
 
+    /**
+     * Use {@link #CasClient(CasConfiguration)} instead.
+     *
+     * @param casLoginUrl the CAS login url
+     * @param casPrefixUrl the CAS server prefix url
+     */
     @Deprecated
     public CasClient(final String casLoginUrl, final String casPrefixUrl) {
         configuration.setLoginUrl(casLoginUrl);
@@ -62,15 +82,20 @@ public class CasClient extends IndirectClientV2<CasCredentials, CasProfile> {
 
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);
-
-        setRedirectActionBuilder(new CasLoginRedirectActionBuilder(configuration, callbackUrl));
-        setCredentialsExtractor(new TicketExtractor(configuration, getName()));
+        final String loginUrl = configuration.getCallbackUrlResolver().compute(configuration.getLoginUrl(), context);
+        setRedirectActionBuilder(ctx -> {
+            final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
+                    computeFinalCallbackUrl(context), configuration.isRenew(), configuration.isGateway());
+            logger.debug("redirectionUrl: {}", redirectionUrl);
+            return RedirectAction.redirect(redirectionUrl);
+        });
+        setCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
         setAuthenticator(new CasAuthenticator(configuration, callbackUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
 
         super.internalInit(context);
+        assertCredentialsExtractorTypes(CasCredentialsExtractor.class);
         assertAuthenticatorTypes(CasAuthenticator.class);
-        assertCredentialsExtractorTypes(TicketExtractor.class);
     }
 
     public CasConfiguration getConfiguration() {

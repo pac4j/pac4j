@@ -23,6 +23,8 @@ public class CasConfiguration extends InitializableWebObject {
 
     public static final String SERVICE_TICKET_PARAMETER = "ticket";
 
+    public static final String SERVICE_PARAMETER = "service";
+
     private String encoding = HttpConstants.UTF8_ENCODING;
 
     private String loginUrl;
@@ -70,8 +72,6 @@ public class CasConfiguration extends InitializableWebObject {
         if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl)) {
             throw new TechnicalException("loginUrl and prefixUrl cannot be both blank");
         }
-
-        CommonHelper.assertNotNull("callbackUrlResolver", callbackUrlResolver);
 
         initializeClientConfiguration(context);
 

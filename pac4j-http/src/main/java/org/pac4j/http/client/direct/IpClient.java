@@ -5,6 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.http.credentials.extractor.IpExtractor;
@@ -30,8 +31,11 @@ public class IpClient extends DirectClientV2<TokenCredentials, CommonProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
+
         setCredentialsExtractor(new IpExtractor(getName()));
+
         super.internalInit(context);
+        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 }
