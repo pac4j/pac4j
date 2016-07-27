@@ -50,12 +50,13 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final HttpAction logoutRedirect(final WebContext context) throws HttpAction {
+    public final HttpAction logoutRedirect(final WebContext context) {
         final RedirectAction action = getLogoutRedirectAction(context);
         if (action.getType() == RedirectType.REDIRECT) {
-            return HttpAction.redirect("redirection via 302", context, action.getLocation());
+            return HttpAction.redirect("logout redirection via 302", context, action.getLocation());
         } else {
-            return HttpAction.ok("redirection via 200", context, action.getContent());
+        	// if it is not a redirection, we don't care
+        	return null;
         }
     }
 
@@ -96,19 +97,18 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      *
      * @param context context
      * @return the redirection action
-     * @throws HttpAction requires an additional HTTP action
      */
-    public final RedirectAction getLogoutRedirectAction(final WebContext context) throws HttpAction {
+    public final RedirectAction getLogoutRedirectAction(final WebContext context) {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
             cleanRequestedUrl(context);
-            throw HttpAction.unauthorized("AJAX request -> 401", context, null);
+            return null;
         }
         // authentication has already been tried -> unauthorized
         final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
         if (CommonHelper.isNotBlank(attemptedAuth)) {
-            throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null);
+        	return null;
         }
 
         init(context);
@@ -141,9 +141,10 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * 
      * @param context the web context
      * @return the redirection action
-     * @throws HttpAction requires a specific HTTP action if necessary
      */
-    protected abstract RedirectAction retrieveLogoutRedirectAction(final WebContext context) throws HttpAction;
+    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context) {
+    	return null;
+    };
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
