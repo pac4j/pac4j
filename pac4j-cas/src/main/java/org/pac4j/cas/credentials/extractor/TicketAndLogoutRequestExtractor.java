@@ -3,7 +3,6 @@ package org.pac4j.cas.credentials.extractor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
@@ -11,22 +10,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * CAS ticket extractor (or logout request handler).
+ * CAS ticket extractor or logout request handler.
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketExtractor extends InitializableWebObject implements CredentialsExtractor<CasCredentials> {
+public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements CasCredentialsExtractor {
 
-    private final static Logger logger = LoggerFactory.getLogger(TicketExtractor.class);
+    private final static Logger logger = LoggerFactory.getLogger(TicketAndLogoutRequestExtractor.class);
 
     private CasConfiguration configuration;
 
     private String clientName;
 
-    public TicketExtractor() {}
+    public TicketAndLogoutRequestExtractor() {}
 
-    public TicketExtractor(final CasConfiguration configuration, final String clientName) {
+    public TicketAndLogoutRequestExtractor(final CasConfiguration configuration, final String clientName) {
         this.configuration = configuration;
         this.clientName = clientName;
     }
