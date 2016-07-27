@@ -7,6 +7,7 @@ import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
+import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
@@ -158,12 +159,12 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
     }
 
     @Deprecated
-    public LogoutHandler getLogoutHandler() {
+    public CasLogoutHandler getLogoutHandler() {
         return configuration.getLogoutHandler();
     }
 
     @Deprecated
-    public void setLogoutHandler(final LogoutHandler logoutHandler) {
+    public void setLogoutHandler(final CasLogoutHandler logoutHandler) {
         configuration.setLogoutHandler(logoutHandler);
     }
 

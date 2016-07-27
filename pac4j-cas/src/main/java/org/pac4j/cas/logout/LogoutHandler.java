@@ -3,12 +3,14 @@ package org.pac4j.cas.logout;
 import org.pac4j.core.context.WebContext;
 
 /**
- * This interface defines how to handle CAS logout request on client side.
+ * Replaced by the {@link CasLogoutHandler}.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
+ * @deprecated
  */
-public interface LogoutHandler {
+@Deprecated
+public interface LogoutHandler<C extends WebContext> {
     
     /**
      * Defines if this request is a token one.
@@ -16,7 +18,7 @@ public interface LogoutHandler {
      * @param context the web context
      * @return if this request is a token one
      */
-    boolean isTokenRequest(WebContext context);
+    default boolean isTokenRequest(C context) { return false; }
     
     /**
      * Defines if this request is a logout one.
@@ -24,7 +26,7 @@ public interface LogoutHandler {
      * @param context the web context
      * @return if this request is a logout one
      */
-    boolean isLogoutRequest(WebContext context);
+    default boolean isLogoutRequest(C context) { return false; }
     
     /**
      * Associates a token request with the current web session.
@@ -32,12 +34,12 @@ public interface LogoutHandler {
      * @param context the web context
      * @param ticket the service ticket
      */
-    void recordSession(WebContext context, String ticket);
+    void recordSession(C context, String ticket);
     
     /**
      * Destroys the current web session for the given CAS logout request.
      * 
      * @param context the web context
      */
-    void destroySession(WebContext context);
+    void destroySession(C context);
 }
