@@ -125,12 +125,11 @@ public class CasConfiguration extends InitializableWebObject {
         final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(this.prefixUrl);
         saml11TicketValidator.setTolerance(getTimeTolerance());
         saml11TicketValidator.setEncoding(this.encoding);
-        this.ticketValidator = saml11TicketValidator;
+        setTicketValidator(saml11TicketValidator);
     }
 
     protected void initializeCas30ProxyProtocol(final WebContext context) {
-        this.ticketValidator = new Cas30ProxyTicketValidator(this.prefixUrl);
-        final Cas30ProxyTicketValidator cas30ProxyTicketValidator = (Cas30ProxyTicketValidator) this.ticketValidator;
+        final Cas30ProxyTicketValidator cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(this.prefixUrl);
         cas30ProxyTicketValidator.setEncoding(this.encoding);
         cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
         cas30ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
@@ -139,22 +138,22 @@ public class CasConfiguration extends InitializableWebObject {
             cas30ProxyTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
                     .getProxyGrantingTicketStorage());
         }
+        setTicketValidator(cas30ProxyTicketValidator);
     }
 
     protected void initializeCas30Protocol(final WebContext context) {
-        this.ticketValidator = new Cas30ServiceTicketValidator(this.prefixUrl);
-        final Cas30ServiceTicketValidator cas30ServiceTicketValidator = (Cas30ServiceTicketValidator) this.ticketValidator;
+        final Cas30ServiceTicketValidator cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(this.prefixUrl);
         cas30ServiceTicketValidator.setEncoding(this.encoding);
         if (this.proxyReceptor != null) {
             cas30ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas30ServiceTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
                     .getProxyGrantingTicketStorage());
         }
+        setTicketValidator(cas30ServiceTicketValidator);
     }
 
     protected void initializeCas20ProxyProtocol(final WebContext context) {
-        this.ticketValidator = new Cas20ProxyTicketValidator(this.prefixUrl);
-        final Cas20ProxyTicketValidator cas20ProxyTicketValidator = (Cas20ProxyTicketValidator) this.ticketValidator;
+        final Cas20ProxyTicketValidator cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(this.prefixUrl);
         cas20ProxyTicketValidator.setEncoding(this.encoding);
         cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
         cas20ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
@@ -163,23 +162,24 @@ public class CasConfiguration extends InitializableWebObject {
             cas20ProxyTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
                     .getProxyGrantingTicketStorage());
         }
+        setTicketValidator(cas20ProxyTicketValidator);
     }
 
     protected void initializeCas20Protocol(final WebContext context) {
-        this.ticketValidator = new Cas20ServiceTicketValidator(this.prefixUrl);
-        final Cas20ServiceTicketValidator cas20ServiceTicketValidator = (Cas20ServiceTicketValidator) this.ticketValidator;
+        final Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(this.prefixUrl);
         cas20ServiceTicketValidator.setEncoding(this.encoding);
         if (this.proxyReceptor != null) {
             cas20ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas20ServiceTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
                     .getProxyGrantingTicketStorage());
         }
+        setTicketValidator(cas20ServiceTicketValidator);
     }
 
     protected void initializeCas10Protocol() {
-        this.ticketValidator = new Cas10TicketValidator(this.prefixUrl);
-        final Cas10TicketValidator cas10TicketValidator = (Cas10TicketValidator) this.ticketValidator;
+        final Cas10TicketValidator cas10TicketValidator = new Cas10TicketValidator(this.prefixUrl);
         cas10TicketValidator.setEncoding(this.encoding);
+        setTicketValidator(cas10TicketValidator);
     }
 
     public String getEncoding() {
@@ -267,7 +267,9 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     public void setTicketValidator(final TicketValidator ticketValidator) {
-        this.ticketValidator = ticketValidator;
+        if (this.ticketValidator == null) {
+            this.ticketValidator = ticketValidator;
+        }
     }
 
     public CasProxyReceptor getProxyReceptor() {
