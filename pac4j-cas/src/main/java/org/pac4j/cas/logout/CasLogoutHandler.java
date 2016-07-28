@@ -1,11 +1,6 @@
 package org.pac4j.cas.logout;
 
-import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.XmlUtils;
-import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.WebContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This interface defines how to handle CAS logout request on client side.
@@ -13,26 +8,37 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public abstract class CasLogoutHandler<C extends WebContext> implements LogoutHandler<C> {
+public interface CasLogoutHandler<C extends WebContext> {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Override
-    public void destroySession(C context) {
-        final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER);
-        logger.trace("Logout request:\n{}", logoutMessage);
-
-        final String sessionId = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
-        if (CommonUtils.isNotBlank(sessionId)) {
-            destroySession(context, sessionId);
-        }
+    /**
+     * Associates a token request with the current web session.
+     *
+     * @param context the web context
+     * @param ticket the service ticket
+     */
+    default void recordSession(C context, String ticket) {
+        // do nothing by default
     }
 
     /**
-     * Destroys the current web session for the given session identifier.
+     * Destroys the current web session for the given ticket.
      * 
      * @param context the web context
-     * @param sessionId the session identifier
+     * @param ticket the ticket
      */
-    public abstract void destroySession(C context, String sessionId);
+    default void destroySession(C context, String ticket) {
+        // for backward compatibility
+        destroySession(context);
+    }
+
+    /**
+     * Destroys the current web session for the given CAS logout request.
+     *
+     * @param context the web context
+     * @deprecated to be removed, replaced by: {@link #destroySession(WebContext, String)}
+     */
+    @Deprecated
+    default void destroySession(C context) {
+        // do nothing by default
+    }
 }
