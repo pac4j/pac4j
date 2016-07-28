@@ -213,8 +213,25 @@ public class J2EContext implements WebContext {
         this.response.addCookie(c);
     }
 
+    /**
+     * This is not implemented using {@link HttpServletRequest#getServletPath()} or
+     * {@link HttpServletRequest#getPathInfo()} because they both have strange behaviours
+     * in different contexts (inside servlets, inside filters, various container implementation, etc)
+     */
     @Override
     public String getPath() {
-        return request.getServletPath();
+        String fullPath = request.getRequestURI();
+        // it shouldn't be null, but in case it is, it's better to return empty string
+        if (fullPath == null) {
+            return "";
+        } else {
+            String context = request.getContextPath();
+            // this one shouldn't be null either, but in case it is, then let's consider it is empty
+            if (context != null) {
+                return fullPath.substring(context.length());
+            } else {
+                return fullPath;
+            }
+        }
     }
 }
