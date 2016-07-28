@@ -7,14 +7,8 @@ import org.pac4j.core.context.WebContext;
  * 
  * @author Jerome Leleu
  * @since 1.4.0
+ * @deprecated
  */
-public class NoLogoutHandler<C extends WebContext> extends CasLogoutHandler<C> {
-
-    @Override
-    public void recordSession(final C context, final String ticket) {
-    }
-
-    @Override
-    public void destroySession(final C context, final String sessionId) {
-    }
+@Deprecated
+public class NoLogoutHandler<C extends WebContext> implements CasLogoutHandler<C> {
 }

@@ -9,7 +9,6 @@ import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
-import org.pac4j.cas.logout.LogoutHandler;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.client.RedirectAction;
@@ -24,7 +23,7 @@ import org.pac4j.core.util.CommonHelper;
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
- * <p>In a J2E context, the {@link LogoutHandler} will be a {@link CasSingleSignOutHandler}. For other environment, it must be explicitly defined to handle CAS logout requests.</p>
+ * <p>In a J2E context, the {@link CasLogoutHandler} will be a {@link CasSingleSignOutHandler}. For other environment, it must be explicitly defined to handle CAS logout requests.</p>
  *
  * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be enabled)
  * and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return

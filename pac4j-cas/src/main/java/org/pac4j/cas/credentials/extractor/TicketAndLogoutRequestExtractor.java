@@ -1,7 +1,6 @@
 package org.pac4j.cas.credentials.extractor;
 
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.util.XmlUtils;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
@@ -56,9 +55,9 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
             final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER);
             logger.trace("Logout request:\n{}", logoutMessage);
 
-            final String sessionId = XmlUtils.getTextForElement(logoutMessage, CasConfiguration.SESSION_INDEX_TAG);
-            if (CommonUtils.isNotBlank(sessionId)) {
-                configuration.getLogoutHandler().destroySession(context, sessionId);
+            final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
+            if (CommonUtils.isNotBlank(ticket)) {
+                configuration.getLogoutHandler().destroySession(context, ticket);
             }
             final String message = "logout request: no credential returned";
             logger.debug(message);
@@ -69,19 +68,19 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     }
 
     protected boolean isTokenRequest(final WebContext context) {
-        return ContextHelper.isGet(context) &&
-                isMultipartRequest(context) &&
-                context.getRequestParameter(CasConfiguration.TICKET_PARAMETER) != null;
+        return ContextHelper.isGet(context)
+                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.TICKET_PARAMETER));
+    }
+
+    protected boolean isLogoutRequest(final WebContext context) {
+        return ContextHelper.isPost(context)
+                && !isMultipartRequest(context)
+                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
     }
 
     private boolean isMultipartRequest(final WebContext context) {
         final String contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
         return contentType != null && contentType.toLowerCase().startsWith("multipart");
-    }
-
-    protected boolean isLogoutRequest(final WebContext context) {
-        return ContextHelper.isPost(context)
-                && context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER) != null;
     }
 
     public CasConfiguration getConfiguration() {
