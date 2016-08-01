@@ -29,6 +29,8 @@ public class CasConfiguration extends InitializableWebObject {
 
     public final static String SESSION_INDEX_TAG = "SessionIndex";
 
+    public final static String RELAY_STATE_PARAMETER = "RelayState";
+
     private String encoding = HttpConstants.UTF8_ENCODING;
 
     private String loginUrl;
