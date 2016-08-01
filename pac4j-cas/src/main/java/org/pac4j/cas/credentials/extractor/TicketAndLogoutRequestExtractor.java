@@ -8,6 +8,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
                 configuration.getLogoutHandler().destroySessionFront(context, ticket);
             }
             logger.debug("front logout request: no credential returned");
-            computeRedirectionToServer(context);
+            computeRedirectionToServerIfNecessary(context);
         }
 
         return null;
@@ -119,7 +120,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
             return new String(result, 0, resultLength, "UTF-8");
         } catch (final Exception e) {
             logger.error("Unable to decompress logout message", e);
-            throw new RuntimeException(e);
+            throw new TechnicalException(e);
         } finally {
             if (decompresser != null) {
                 decompresser.end();
@@ -127,7 +128,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
         }
     }
 
-    private void computeRedirectionToServer(final WebContext context) throws HttpAction {
+    private void computeRedirectionToServerIfNecessary(final WebContext context) throws HttpAction {
         final String relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
         // if we have a state value -> redirect to the CAS server to continue the logout process
         if (CommonUtils.isNotBlank(relayStateValue)) {
@@ -142,7 +143,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
             buffer.append(CommonUtils.urlEncode(relayStateValue));
             final String redirectUrl = buffer.toString();
             logger.debug("Redirection url to the CAS server: {}", redirectUrl);
-            throw HttpAction.redirect("Force redirect for CAS front channel logout", context, redirectUrl);
+            throw HttpAction.redirect("Force redirect to CAS server for front channel logout", context, redirectUrl);
         }
     }
 

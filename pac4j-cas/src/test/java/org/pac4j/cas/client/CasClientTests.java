@@ -130,7 +130,7 @@ public final class CasClientTests implements TestsConstants {
         assertEquals(200, context.getResponseStatus());
     }
 
-    private String compressDeflateAndBase64(final String data) {
+    private String deflateAndBase64(final String data) {
         try {
             final Deflater deflater = new Deflater();
             deflater.setInput(data.getBytes(HttpConstants.UTF8_ENCODING));
@@ -152,7 +152,7 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
-        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, compressDeflateAndBase64(LOGOUT_MESSAGE))
+        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .setRequestMethod("GET");
         assertNull(casClient.getCredentials(context));
     }
@@ -164,11 +164,11 @@ public final class CasClientTests implements TestsConstants {
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
-        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, compressDeflateAndBase64(LOGOUT_MESSAGE))
+        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
                 .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod("GET");
         final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
         assertEquals(HttpConstants.TEMP_REDIRECT, action.getCode());
-        assertEquals("Force redirect for CAS front channel logout", action.getMessage());
+        assertEquals("Force redirect to CAS server for front channel logout", action.getMessage());
     }
 
     @Test

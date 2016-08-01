@@ -82,8 +82,8 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
 
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);
-        final String loginUrl = configuration.getCallbackUrlResolver().compute(configuration.getLoginUrl(), context);
         setRedirectActionBuilder(ctx -> {
+            final String loginUrl = configuration.getCallbackUrlResolver().compute(configuration.getLoginUrl(), context);
             final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
                     computeFinalCallbackUrl(context), configuration.isRenew(), configuration.isGateway());
             logger.debug("redirectionUrl: {}", redirectionUrl);
