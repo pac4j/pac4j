@@ -67,8 +67,8 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CasProfile
             }
 
             // clean url from ticket parameter
-            currentUrl = CommonHelper.substringBefore(currentUrl, "?ticket=");
-            currentUrl = CommonHelper.substringBefore(currentUrl, "&ticket=");
+            currentUrl = CommonHelper.substringBefore(currentUrl, "?" + CasConfiguration.TICKET_PARAMETER + "=");
+            currentUrl = CommonHelper.substringBefore(currentUrl, "&" + CasConfiguration.TICKET_PARAMETER + "=");
             final CasAuthenticator casAuthenticator = new CasAuthenticator(configuration, currentUrl);
             casAuthenticator.init(context);
             casAuthenticator.validate(credentials, context);

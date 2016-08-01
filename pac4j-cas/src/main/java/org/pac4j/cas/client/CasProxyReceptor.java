@@ -8,8 +8,7 @@ import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends IndirectClient<TokenCredentials, CasProfile> {
+public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, CasProfile> {
     
     private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
     
@@ -62,41 +61,32 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Cas
             }
             this.timer.schedule(this.timerTask, this.millisBetweenCleanUps, this.millisBetweenCleanUps);
         }
-    }
 
-    @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
-        throw new TechnicalException("Not supported by the CAS proxy receptor");
-    }
+        setRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        setCredentialsExtractor(ctx -> {
+            // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
+            final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+            logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
+            final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+            logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
-    @Override
-    protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
-        
-        // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
-        final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
-        logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
-        final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
-        logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
-        
-        if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-            context.writeResponseContent("");
-            final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
+            if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
+                context.writeResponseContent("");
+                final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
+                throw HttpAction.ok(message, context);
+            }
+
+            this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
+
+            context.writeResponseContent("<?xml version=\"1.0\"?>");
+            context.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
+
+            final String message = "No credential for CAS proxy receptor -> returns ok";
+            logger.debug(message);
             throw HttpAction.ok(message, context);
-        }
-        
-        this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
-        
-        context.writeResponseContent("<?xml version=\"1.0\"?>");
-        context.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
-        
-        final String message = "No credential for CAS proxy receptor -> returns ok";
-        logger.debug(message);
-        throw HttpAction.ok(message, context);
-    }
-
-    @Override
-    protected CasProfile retrieveUserProfile(final TokenCredentials credentials, final WebContext context) throws HttpAction {
-        throw new TechnicalException("Not supported by the CAS proxy receptor");
+        });
+        setAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        super.internalInit(context);
     }
 
     public ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
