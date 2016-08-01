@@ -11,22 +11,33 @@ import org.pac4j.core.context.WebContext;
 public interface CasLogoutHandler<C extends WebContext> {
 
     /**
-     * Associates a token request with the current web session.
+     * Associates a ticket with the current web session.
      *
      * @param context the web context
-     * @param ticket the service ticket
+     * @param ticket the ticket
      */
     default void recordSession(C context, String ticket) {
         // do nothing by default
     }
 
     /**
-     * Destroys the current web session for the given ticket.
+     * Destroys the current web session for the given ticket for a front channel logout.
+     *
+     * @param context the web context
+     * @param ticket the ticket
+     */
+    default void destroySessionFront(C context, String ticket) {
+        // use the back channel way
+        destroySessionBack(context, ticket);
+    }
+
+    /**
+     * Destroys the current web session for the given ticket for a back channel logout.
      * 
      * @param context the web context
      * @param ticket the ticket
      */
-    default void destroySession(C context, String ticket) {
+    default void destroySessionBack(C context, String ticket) {
         // for backward compatibility
         destroySession(context);
     }
@@ -35,7 +46,7 @@ public interface CasLogoutHandler<C extends WebContext> {
      * Destroys the current web session for the given CAS logout request.
      *
      * @param context the web context
-     * @deprecated to be removed, replaced by: {@link #destroySession(WebContext, String)}
+     * @deprecated to be removed, replaced by: {@link #destroySessionBack(WebContext, String)} and {@link #destroySessionFront(WebContext, String)}
      */
     @Deprecated
     default void destroySession(C context) {

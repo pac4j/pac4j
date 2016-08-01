@@ -2,11 +2,16 @@ package org.pac4j.cas.client;
 
 import org.junit.Test;
 import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
 
@@ -24,6 +29,7 @@ public final class CasClientTests implements TestsConstants {
     private static final String LOGIN = "/login";
     private static final String PREFIX_URL = "http://myserver/";
     private static final String PREFIX_URL_WITHOUT_SLASH = "http://myserver";
+    private static final String LOGOUT_MESSAGE = "\"<samlp:LogoutRequest xmlns:samlp=\\\"urn:oasis:names:tc:SAML:2.0:protocol\\\" ID=\\\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\\\" Version=\\\"2.0\\\" IssueInstant=\\\"2012-12-19T15:30:55Z\\\"><saml:NameID xmlns:saml=\\\"urn:oasis:names:tc:SAML:2.0:assertion\\\">@NOT_USED@</saml:NameID><samlp:SessionIndex>\" + TICKET + \"</samlp:SessionIndex></samlp:LogoutRequest>\";";
 
     @Test
     public void testMissingCasUrls() {
@@ -112,17 +118,57 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testLogout() {
-        final String logoutRequest = "<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"LR-1-B2b0CVRW5eSvPBZPsAVXdNPj7jee4SWjr9y\" Version=\"2.0\" IssueInstant=\"2012-12-19T15:30:55Z\"><saml:NameID xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">@NOT_USED@</saml:NameID><samlp:SessionIndex>ST-1-FUUhL26EgrkcD6I2Mry9-cas01.example.org</samlp:SessionIndex></samlp:LogoutRequest>";
+    public void testBackLogout() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         final CasClient casClient = new CasClient(configuration);
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
-        final MockWebContext context = MockWebContext.create().addRequestParameter("logoutRequest", logoutRequest)
+        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod("POST");
-        TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class, "logout request: no credential returned");
+        TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class, "back logout request: no credential returned");
         assertEquals(200, context.getResponseStatus());
+    }
+
+    private String compressDeflateAndBase64(final String data) {
+        try {
+            final Deflater deflater = new Deflater();
+            deflater.setInput(data.getBytes(HttpConstants.UTF8_ENCODING));
+            deflater.finish();
+            final byte[] buffer = new byte[data.length()];
+            final int resultSize = deflater.deflate(buffer);
+            final byte[] output = new byte[resultSize];
+            System.arraycopy(buffer, 0, output, 0, resultSize);
+            return DatatypeConverter.printBase64Binary(output);
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException("Cannot find encoding:" + HttpConstants.UTF8_ENCODING, e);
+        }
+    }
+
+    @Test
+    public void testFrontLogout() throws HttpAction {
+        final CasConfiguration configuration = new CasConfiguration();
+        configuration.setLoginUrl(LOGIN_URL);
+        final CasClient casClient = new CasClient(configuration);
+        casClient.setCallbackUrl(CALLBACK_URL);
+        casClient.init(null);
+        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, compressDeflateAndBase64(LOGOUT_MESSAGE))
+                .setRequestMethod("GET");
+        assertNull(casClient.getCredentials(context));
+    }
+
+    @Test
+    public void testFrontLogoutWithRelayState() {
+        final CasConfiguration configuration = new CasConfiguration();
+        configuration.setLoginUrl(LOGIN_URL);
+        final CasClient casClient = new CasClient(configuration);
+        casClient.setCallbackUrl(CALLBACK_URL);
+        casClient.init(null);
+        final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, compressDeflateAndBase64(LOGOUT_MESSAGE))
+                .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod("GET");
+        final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
+        assertEquals(HttpConstants.TEMP_REDIRECT, action.getCode());
+        assertEquals("Force redirect for CAS front channel logout", action.getMessage());
     }
 
     @Test

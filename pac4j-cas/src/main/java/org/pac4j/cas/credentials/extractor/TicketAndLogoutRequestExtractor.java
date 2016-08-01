@@ -13,6 +13,9 @@ import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.DatatypeConverter;
+import java.util.zip.Inflater;
+
 /**
  * CAS ticket extractor or logout request handler.
  *
@@ -20,6 +23,8 @@ import org.slf4j.LoggerFactory;
  * @since 1.9.2
  */
 public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements TokenCredentialsExtractor {
+
+    private final static int DECOMPRESSION_FACTOR = 10;
 
     private final static Logger logger = LoggerFactory.getLogger(TicketAndLogoutRequestExtractor.class);
 
@@ -49,19 +54,29 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
             final TokenCredentials casCredentials = new TokenCredentials(ticket, clientName);
             logger.debug("casCredentials: {}", casCredentials);
             return casCredentials;
-        }
 
-        if (isLogoutRequest(context)) {
+        } else if (isBackLogoutRequest(context)) {
             final String logoutMessage = context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER);
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
             if (CommonUtils.isNotBlank(ticket)) {
-                configuration.getLogoutHandler().destroySession(context, ticket);
+                configuration.getLogoutHandler().destroySessionBack(context, ticket);
             }
-            final String message = "logout request: no credential returned";
+            final String message = "back logout request: no credential returned";
             logger.debug(message);
             throw HttpAction.ok(message, context);
+
+        } else if (isFrontLogoutRequest(context)) {
+            final String logoutMessage = uncompressLogoutMessage(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
+            logger.trace("Logout request:\n{}", logoutMessage);
+
+            final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
+            if (CommonUtils.isNotBlank(ticket)) {
+                configuration.getLogoutHandler().destroySessionFront(context, ticket);
+            }
+            logger.debug("front logout request: no credential returned");
+            computeRedirectionToServer(context);
         }
 
         return null;
@@ -72,7 +87,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
                 && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.TICKET_PARAMETER));
     }
 
-    protected boolean isLogoutRequest(final WebContext context) {
+    protected boolean isBackLogoutRequest(final WebContext context) {
         return ContextHelper.isPost(context)
                 && !isMultipartRequest(context)
                 && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
@@ -81,6 +96,54 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     private boolean isMultipartRequest(final WebContext context) {
         final String contentType = context.getRequestHeader(HttpConstants.CONTENT_TYPE_HEADER);
         return contentType != null && contentType.toLowerCase().startsWith("multipart");
+    }
+
+    private boolean isFrontLogoutRequest(final WebContext context) {
+        return ContextHelper.isGet(context)
+                && CommonHelper.isNotBlank(context.getRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER));
+    }
+
+    private String uncompressLogoutMessage(final String originalMessage) {
+        final byte[] binaryMessage = DatatypeConverter.parseBase64Binary(originalMessage);
+
+        Inflater decompresser = null;
+        try {
+            // decompress the bytes
+            decompresser = new Inflater();
+            decompresser.setInput(binaryMessage);
+            final byte[] result = new byte[binaryMessage.length * DECOMPRESSION_FACTOR];
+
+            final int resultLength = decompresser.inflate(result);
+
+            // decode the bytes into a String
+            return new String(result, 0, resultLength, "UTF-8");
+        } catch (final Exception e) {
+            logger.error("Unable to decompress logout message", e);
+            throw new RuntimeException(e);
+        } finally {
+            if (decompresser != null) {
+                decompresser.end();
+            }
+        }
+    }
+
+    private void computeRedirectionToServer(final WebContext context) throws HttpAction {
+        final String relayStateValue = context.getRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER);
+        // if we have a state value -> redirect to the CAS server to continue the logout process
+        if (CommonUtils.isNotBlank(relayStateValue)) {
+            final StringBuilder buffer = new StringBuilder();
+            buffer.append(configuration.getPrefixUrl());
+            if (!configuration.getPrefixUrl().endsWith("/")) {
+                buffer.append("/");
+            }
+            buffer.append("logout?_eventId=next&");
+            buffer.append(CasConfiguration.RELAY_STATE_PARAMETER);
+            buffer.append("=");
+            buffer.append(CommonUtils.urlEncode(relayStateValue));
+            final String redirectUrl = buffer.toString();
+            logger.debug("Redirection url to the CAS server: {}", redirectUrl);
+            throw HttpAction.redirect("Force redirect for CAS front channel logout", context, redirectUrl);
+        }
     }
 
     public CasConfiguration getConfiguration() {

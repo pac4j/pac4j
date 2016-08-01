@@ -14,8 +14,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>This class is the logout handler for the {@link CasClient}, inspired by the {@link SingleSignOutHandler} of the Apereo CAS client.</p>
- * <p>It should only be used in J2E context.</p>
- * 
+ *
+ * <p>It is automatically defined for the {@link J2EContext} by the {@link org.pac4j.cas.config.CasConfiguration} when no {@link CasLogoutHandler} is defined.</p>
+ *
+ * <p>As web sessions are saved in a specific storage, the {@link org.jasig.cas.client.session.SingleSignOutHttpSessionListener} must also be declared to clean this storage when sessions are destroyed (to avoid an out of memory).</p>
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -51,7 +54,7 @@ public class CasSingleSignOutHandler implements CasLogoutHandler<J2EContext> {
     }
     
     @Override
-    public void destroySession(final J2EContext context, final String ticket) {
+    public void destroySessionBack(final J2EContext context, final String ticket) {
         final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(ticket);
         if (session != null) {
             String sessionID = session.getId();

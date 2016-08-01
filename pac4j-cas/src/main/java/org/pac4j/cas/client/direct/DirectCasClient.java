@@ -21,7 +21,8 @@ import org.pac4j.core.util.CommonHelper;
 /**
  * <p>This class is the direct client to authenticate users on a CAS server for a web application in a stateless way: when trying to access a protected area,
  * the user will be redirected to the CAS server for login and then back directly to this originally requested url.</p>
- * <p>It's like the {@link org.pac4j.cas.client.CasClient} but without using the web session (no url saved and restored).</p>
+ *
+ * <p>You should generally use the {@link org.pac4j.cas.client.CasClient} instead (this one is very specific and was designed for OAuth / OpenID Connect implementations in the CAS server.</p>
  *
  * <p>The configuration can be defined via the {@link #configuration} object.</p>
  *
