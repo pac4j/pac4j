@@ -17,17 +17,22 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
     }
 
     @Override
-    public String getOrCreateSessionId(J2EContext context) {
+    public String getOrCreateSessionId(final J2EContext context) {
         return getHttpSession(context).getId();
     }
 
     @Override
-    public Object get(J2EContext context, String key) {
+    public Object get(final J2EContext context, final String key) {
         return getHttpSession(context).getAttribute(key);
     }
 
     @Override
-    public void set(J2EContext context, String key, Object value) {
+    public void set(final J2EContext context, final String key, final Object value) {
         getHttpSession(context).setAttribute(key, value);
+    }
+
+    @Override
+    public void invalidateSession(final J2EContext context) {
+        getHttpSession(context).invalidate();
     }
 }

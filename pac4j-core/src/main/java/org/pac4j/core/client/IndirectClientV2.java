@@ -39,8 +39,17 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
+        if (redirectActionBuilder instanceof InitializableWebObject) {
+            ((InitializableWebObject) this.redirectActionBuilder).init(context);
+        }
+        if (credentialsExtractor instanceof InitializableWebObject) {
+            ((InitializableWebObject) this.credentialsExtractor).init(context);
+        }
         if (authenticator instanceof InitializableWebObject) {
             ((InitializableWebObject) this.authenticator).init(context);
+        }
+        if (profileCreator instanceof InitializableWebObject) {
+            ((InitializableWebObject) this.profileCreator).init(context);
         }
     }
 
@@ -71,24 +80,25 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         return profile;
     }
 
-    protected void assertAuthenticatorTypes(final Class<? extends Authenticator>... classes) {
-        if (this.authenticator != null && classes != null) {
-            for (final Class<? extends Authenticator> clazz : classes) {
-                Class<? extends Authenticator> authClazz = this.authenticator.getClass();
-                if (LocalCachingAuthenticator.class.isAssignableFrom(authClazz)) {
-                    authClazz = ((LocalCachingAuthenticator) this.authenticator).getDelegate().getClass();
-                }
-                if (!clazz.isAssignableFrom(authClazz)) {
-                    throw new TechnicalException("Unsupported authenticator type: " + authClazz);
-                }
+    protected void assertAuthenticatorTypes(final Class<? extends Authenticator> clazz) {
+        if (this.authenticator != null && clazz != null) {
+            Class<? extends Authenticator> authClazz = this.authenticator.getClass();
+            if (LocalCachingAuthenticator.class.isAssignableFrom(authClazz)) {
+                authClazz = ((LocalCachingAuthenticator) this.authenticator).getDelegate().getClass();
+            }
+            if (!clazz.isAssignableFrom(authClazz)) {
+                throw new TechnicalException("Unsupported authenticator type: " + authClazz);
             }
         }
     }
 
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName(), "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
+    protected void assertCredentialsExtractorTypes(final Class<? extends CredentialsExtractor> clazz) {
+        if (this.authenticator != null && clazz != null) {
+            Class<? extends CredentialsExtractor> authClazz = this.credentialsExtractor.getClass();
+            if (!clazz.isAssignableFrom(authClazz)) {
+                throw new TechnicalException("Unsupported credentials extractor type: " + authClazz);
+            }
+        }
     }
 
     public RedirectActionBuilder getRedirectActionBuilder() {
@@ -129,5 +139,13 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
+                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
     }
 }

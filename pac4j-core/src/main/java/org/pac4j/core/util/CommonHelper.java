@@ -354,7 +354,7 @@ public final class CommonHelper {
     private static final String EMPTY = "";
     private static final int INDEX_NOT_FOUND = -1;
 
-    public static String substringBetween(String str, String open, String close) {
+    public static String substringBetween(final String str, final String open, final String close) {
         if (str == null || open == null || close == null) {
             return null;
         }
@@ -368,7 +368,7 @@ public final class CommonHelper {
         return null;
     }
 
-    public static String substringAfter(String str, String separator) {
+    public static String substringAfter(final String str, final String separator) {
         if (isEmpty(str)) {
             return str;
         }
@@ -382,7 +382,21 @@ public final class CommonHelper {
         return str.substring(pos + separator.length());
     }
 
-    private static boolean isEmpty(CharSequence cs) {
+    public static String substringBefore(final String str, final String separator) {
+        if (isEmpty(str) || separator == null) {
+            return str;
+        }
+        if (separator.length() == 0) {
+            return EMPTY;
+        }
+        int pos = str.indexOf(separator);
+        if (pos == INDEX_NOT_FOUND) {
+           return str;
+        }
+        return str.substring(0, pos);
+    }
+
+    private static boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;
     }
 }

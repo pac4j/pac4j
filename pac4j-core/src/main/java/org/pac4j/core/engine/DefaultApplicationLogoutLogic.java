@@ -25,6 +25,8 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
+    private boolean killSession;
+
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                        final String defaultUrl, final String inputLogoutUrlPattern) {
@@ -72,5 +74,16 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
      * @param context the web context
      */
     protected void postLogout(final C context) {
+        if (this.killSession) {
+            context.invalidationSession();
+        }
+    }
+
+    public boolean isKillSession() {
+        return killSession;
+    }
+
+    public void setKillSession(boolean killSession) {
+        this.killSession = killSession;
     }
 }

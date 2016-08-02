@@ -11,6 +11,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.http.credentials.CredentialUtil;
 import org.pac4j.http.credentials.DigestCredentials;
 import org.pac4j.http.credentials.extractor.DigestAuthExtractor;
+import org.pac4j.http.credentials.extractor.DigestCredentialsExtractor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,8 +42,11 @@ public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, Co
 
     @Override
     protected void internalInit(final WebContext context) {
+
         setCredentialsExtractor(new DigestAuthExtractor(getName()));
+
         super.internalInit(context);
+        assertCredentialsExtractorTypes(DigestCredentialsExtractor.class);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 
@@ -52,8 +56,8 @@ public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, Co
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    public DigestCredentials getCredentials(final WebContext context) throws HttpAction {
-        DigestCredentials credentials = super.getCredentials(context);
+    public DigestCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+        DigestCredentials credentials = super.retrieveCredentials(context);
         if (credentials == null) {
             String nonce = calculateNonce();
             HttpAction.unauthorizedDigest("Digest required", context, realm, "auth", nonce);

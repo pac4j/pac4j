@@ -3,6 +3,7 @@ package org.pac4j.http.client.direct;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -66,8 +67,11 @@ public class HeaderClient extends DirectClientV2<TokenCredentials, CommonProfile
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
+
         setCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
+
         super.internalInit(context);
+        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 

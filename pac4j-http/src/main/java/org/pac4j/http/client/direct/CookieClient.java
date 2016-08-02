@@ -4,6 +4,7 @@ import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -42,8 +43,11 @@ public class CookieClient extends DirectClientV2<TokenCredentials, CommonProfile
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
+
         setCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));
+
         super.internalInit(context);
+        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
         assertAuthenticatorTypes(TokenAuthenticator.class);
     }
 

@@ -89,6 +89,11 @@ public class J2EContext implements WebContext {
     }
 
     @Override
+    public void invalidationSession() {
+        sessionStore.invalidateSession(this);
+    }
+
+    @Override
     public String getRequestMethod() {
         return this.request.getMethod();
     }

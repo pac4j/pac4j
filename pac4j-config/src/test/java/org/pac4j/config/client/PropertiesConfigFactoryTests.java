@@ -3,6 +3,7 @@ package org.pac4j.config.client;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.junit.Test;
 import org.pac4j.cas.client.CasClient;
+import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.util.TestsConstants;
@@ -33,7 +34,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(TWITTER_ID, ID);
         properties.put(TWITTER_SECRET, SECRET);
         properties.put(CAS_LOGIN_URL, CALLBACK_URL);
-        properties.put(CAS_PROTOCOL, CasClient.CasProtocol.CAS20.toString());
+        properties.put(CAS_PROTOCOL, CasProtocol.CAS20.toString());
         properties.put(SAML_KEYSTORE_PASSWORD, PASSWORD);
         properties.put(SAML_PRIVATE_KEY_PASSWORD, PASSWORD);
         properties.put(SAML_KEYSTORE_PATH, PATH);
@@ -49,8 +50,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(OIDC_CUSTOM_PARAM_VALUE1, VALUE);
 
         properties.put(CAS_LOGIN_URL.concat(".1"), CALLBACK_URL);
-        properties.put(CAS_PROTOCOL.concat(".1"), CasClient.CasProtocol.CAS30.toString());
-        
+        properties.put(CAS_PROTOCOL.concat(".1"), CasProtocol.CAS30.toString());
+
         final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
         final Config config = factory.build();
         final Clients clients = config.getClients();
@@ -63,7 +64,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         assertEquals(SECRET, twClient.getSecret());
         final CasClient casClient = (CasClient) clients.findClient("CasClient");
         assertEquals(CALLBACK_URL, casClient.getCasLoginUrl());
-        assertEquals(CasClient.CasProtocol.CAS20, casClient.getCasProtocol());
+        assertEquals(CasProtocol.CAS20, casClient.getCasProtocol());
         final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
         assertNotNull(saml2client);
         final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
@@ -71,6 +72,6 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getClientAuthenticationMethod().toString().toLowerCase());
 
         final CasClient casClient1 = (CasClient) clients.findClient("CasClient.1");
-        assertEquals(CasClient.CasProtocol.CAS30, casClient1.getCasProtocol());
+        assertEquals(CasProtocol.CAS30, casClient1.getCasProtocol());
     }
 }
