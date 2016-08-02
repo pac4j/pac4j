@@ -73,6 +73,13 @@ public interface WebContext {
     Object getSessionIdentifier();
 
     /**
+     * Invalidate the whole session.
+     */
+    default void invalidationSession() {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
+    /**
      * Return the request method.
      *
      * @return the request method

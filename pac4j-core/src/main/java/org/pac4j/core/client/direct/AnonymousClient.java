@@ -24,7 +24,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials, An
     protected void internalInit(final WebContext context) { }
 
     @Override
-    public AnonymousCredentials getCredentials(WebContext context) throws HttpAction {
+    public AnonymousCredentials retrieveCredentials(WebContext context) throws HttpAction {
         return AnonymousCredentials.INSTANCE;
     }
 

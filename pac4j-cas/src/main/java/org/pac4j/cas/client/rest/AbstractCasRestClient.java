@@ -3,13 +3,13 @@ package org.pac4j.cas.client.rest;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.util.HttpUtils;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -51,7 +51,7 @@ public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePassw
         }
     }
 
-    public CasCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile) {
+    public TokenCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile) {
         HttpURLConnection connection = null;
         try {
             final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
@@ -67,7 +67,7 @@ public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePassw
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpConstants.OK) {
                 try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), HttpConstants.UTF8_ENCODING))) {
-                    return new CasCredentials(in.readLine(), getClass().getSimpleName());
+                    return new TokenCredentials(in.readLine(), getClass().getSimpleName());
                 }
             }
             throw new TechnicalException("Service ticket request for `" + profile + "` failed: " +
@@ -79,10 +79,10 @@ public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePassw
         }
     }
 
-    public CasProfile validateServiceTicket(final String serviceURL, final CasCredentials ticket) {
+    public CasProfile validateServiceTicket(final String serviceURL, final TokenCredentials ticket) {
         try {
             final Assertion assertion = getCasRestAuthenticator().getTicketValidator()
-                    .validate(ticket.getServiceTicket(), serviceURL);
+                    .validate(ticket.getToken(), serviceURL);
             final AttributePrincipal principal = assertion.getPrincipal();
             final CasProfile casProfile = new CasProfile();
             casProfile.setId(principal.getName());

@@ -35,4 +35,13 @@ public interface SessionStore<C extends WebContext> {
      * @param value the value to save in store
      */
     void set(C context, String key, Object value);
+
+    /**
+     * Invalidate the whole session.
+     *
+     * @param context the web context
+     */
+    default void invalidateSession(C context) {
+        throw new UnsupportedOperationException("To be implemented");
+    }
 }

@@ -1,7 +1,6 @@
-package org.pac4j.http.credentials.extractor;
+package org.pac4j.core.credentials.extractor;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
@@ -13,7 +12,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ParameterExtractor implements CredentialsExtractor<TokenCredentials> {
+public class ParameterExtractor implements TokenCredentialsExtractor {
 
     private final String parameterName;
 

@@ -223,6 +223,11 @@ public final class CommonHelperTests {
     }
 
     @Test
+    public void testSubstringBefore() {
+        assertEquals("before", CommonHelper.substringBefore("before###after", "###"));
+    }
+
+    @Test
     public void testSubstringBetween() {
         assertEquals("bet", CommonHelper.substringBetween("123startbet##456", "start", "##"));
     }

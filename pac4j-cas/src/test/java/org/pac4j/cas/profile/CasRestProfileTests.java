@@ -8,8 +8,8 @@ import static org.junit.Assert.*;
 /**
  * General test cases for {@link CasRestProfile}.
  *
- * @author  Jacob Severson
- * @since   1.8.0
+ * @author Jacob Severson
+ * @since 1.8.0
  */
 public final class CasRestProfileTests implements TestsConstants {
 

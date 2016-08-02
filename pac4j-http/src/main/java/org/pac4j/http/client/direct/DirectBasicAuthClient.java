@@ -5,6 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.extractor.UsernamePasswordCredentialsExtractor;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -31,8 +32,11 @@ public class DirectBasicAuthClient extends DirectClientV2<UsernamePasswordCreden
 
     @Override
     protected void internalInit(final WebContext context) {
+
         setCredentialsExtractor(new BasicAuthExtractor(getName()));
+
         super.internalInit(context);
+        assertCredentialsExtractorTypes(UsernamePasswordCredentialsExtractor.class);
         assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 }

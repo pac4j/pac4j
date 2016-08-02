@@ -78,18 +78,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return retrieveRedirectAction(context);
     }
 
-    private void cleanRequestedUrl(final WebContext context) {
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
-    }
-
-    private void cleanAttemptedAuthentication(final WebContext context) {
-        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
-    }
-
-    public String computeFinalCallbackUrl(final WebContext context) {
-        return callbackUrlResolver.compute(callbackUrl, context);
-    }
-
     /**
      * Retrieve the redirect action.
      *
@@ -124,14 +112,17 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return credentials;
     }
 
-    /**
-     * Retrieve the credentials.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
+    private void cleanRequestedUrl(final WebContext context) {
+        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
+    }
+
+    private void cleanAttemptedAuthentication(final WebContext context) {
+        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+    }
+
+    public String computeFinalCallbackUrl(final WebContext context) {
+        return callbackUrlResolver.compute(callbackUrl, context);
+    }
 
     /**
      * Return the state parameter required by some security protocols like SAML or OAuth.
@@ -171,5 +162,11 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     public void setCallbackUrlResolver(CallbackUrlResolver callbackUrlResolver) {
         this.callbackUrlResolver = callbackUrlResolver;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver);
     }
 }

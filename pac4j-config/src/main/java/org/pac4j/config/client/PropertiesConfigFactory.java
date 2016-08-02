@@ -3,6 +3,8 @@ package org.pac4j.config.client;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.pac4j.cas.client.CasClient;
+import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
@@ -47,7 +49,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
 
     public static final String WINDOWSLIVE_ID = "windowslive.id";
     public static final String WINDOWSLIVE_SECRET = "windowslive.secret";
-    
+
     public static final String YAHOO_ID = "yahoo.id";
     public static final String YAHOO_SECRET = "yahoo.secret";
 
@@ -239,9 +241,11 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String loginUrl = getProperty(CAS_LOGIN_URL.concat(i == 0 ? "" : "." + i));
             final String protocol = getProperty(CAS_PROTOCOL.concat(i == 0 ? "" : "." + i));
             if (CommonHelper.isNotBlank(loginUrl)) {
-                final CasClient casClient = new CasClient(loginUrl);
+                CasConfiguration configuration = new CasConfiguration();
+                final CasClient casClient = new CasClient(configuration);
+                configuration.setLoginUrl(loginUrl);
                 if (CommonHelper.isNotBlank(protocol)) {
-                    casClient.setCasProtocol(CasClient.CasProtocol.valueOf(protocol));
+                    configuration.setProtocol(CasProtocol.valueOf(protocol));
                 }
                 if (i != 0) {
                     casClient.setName(casClient.getName().concat("." + i));

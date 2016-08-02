@@ -4,10 +4,10 @@ import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
-import org.pac4j.cas.credentials.CasCredentials;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
@@ -55,7 +55,7 @@ public final class CasRestClientIT implements TestsConstants {
         assertEquals(USERNAME, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final CasCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
+        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
         assertEquals(USERNAME, casProfile.getId());
@@ -84,7 +84,7 @@ public final class CasRestClientIT implements TestsConstants {
         assertEquals(USERNAME, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final CasCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
+        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
         assertEquals(USERNAME, casProfile.getId());
