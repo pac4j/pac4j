@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
  *
  * <p>As web sessions are saved in a specific storage, the {@link org.jasig.cas.client.session.SingleSignOutHttpSessionListener} must also be declared to clean this storage when sessions are destroyed (to avoid an out of memory).</p>
  *
+ * <p>To use this logout handler, the <code>renewSession</code> option must be disabled on the "callback filter".</p>
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
