@@ -1,7 +1,5 @@
 package org.pac4j.cas.logout;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jasig.cas.client.session.HashMapBackedSessionMappingStorage;
@@ -23,15 +21,13 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class CasSingleSignOutHandler implements CasLogoutHandler<J2EContext> {
-    
+
     protected static final Logger logger = LoggerFactory.getLogger(CasSingleSignOutHandler.class);
 
     private SessionMappingStorage sessionMappingStorage = new HashMapBackedSessionMappingStorage();
 
     private boolean eagerlyCreateSessions = true;
 
-    private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
-    
     public CasSingleSignOutHandler() { }
 
     @Override
@@ -52,7 +48,7 @@ public class CasSingleSignOutHandler implements CasLogoutHandler<J2EContext> {
         }
         sessionMappingStorage.addSessionById(ticket, session);
     }
-    
+
     @Override
     public void destroySessionBack(final J2EContext context, final String ticket) {
         final HttpSession session = this.sessionMappingStorage.removeSessionByMappingId(ticket);
@@ -65,42 +61,6 @@ public class CasSingleSignOutHandler implements CasLogoutHandler<J2EContext> {
                 session.invalidate();
             } catch (final IllegalStateException e) {
                 logger.debug("Error invalidating session", e);
-            }
-            this.logoutStrategy.logout(context.getRequest());
-        }
-    }
-
-    private static boolean isServlet30() {
-        try {
-            return HttpServletRequest.class.getMethod("logout") != null;
-        } catch (final NoSuchMethodException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Abstracts the ways we can force logout with the Servlet spec.
-     */
-    private interface LogoutStrategy {
-
-        void logout(HttpServletRequest request);
-    }
-
-    private static class Servlet25LogoutStrategy implements LogoutStrategy {
-
-        @Override
-        public void logout(final HttpServletRequest request) {
-            // nothing additional to do here
-        }
-    }
-
-    private static class Servlet30LogoutStrategy implements LogoutStrategy {
-
-        public void logout(final HttpServletRequest request) {
-            try {
-                request.logout();
-            } catch (final ServletException e) {
-                logger.debug("Error performing request.logout.");
             }
         }
     }
