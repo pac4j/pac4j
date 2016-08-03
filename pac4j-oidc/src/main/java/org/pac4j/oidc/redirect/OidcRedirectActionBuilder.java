@@ -63,6 +63,15 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
     public RedirectAction redirect(final WebContext context) throws HttpAction {
         final Map<String, String> params = new HashMap<>(this.authParams);
 
+        addStateAndNonceParameters(context, params);
+
+        final String location = buildAuthenticationRequestUrl(params);
+        logger.debug("Authentication request url: {}", location);
+
+        return RedirectAction.redirect(location);
+    }
+
+    protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
         // Init state for CSRF mitigation
         State state = new State();
         params.put("state", state.getValue());
@@ -73,18 +82,17 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
             params.put("nonce", nonce.getValue());
             context.setSessionAttribute(OidcConfiguration.NONCE_ATTRIBUTE, nonce.getValue());
         }
+    }
 
+    protected String buildAuthenticationRequestUrl(final Map<String, String> params) {
         // Build authentication request query string
-        String queryString;
+        final String queryString;
         try {
             queryString = AuthenticationRequest.parse(params).toQueryString();
         } catch (Exception e) {
             throw new TechnicalException(e);
         }
-        String location = configuration.getProviderMetadata().getAuthorizationEndpointURI().toString() + "?" + queryString;
-        logger.debug("Authentication request url: {}", location);
-
-        return RedirectAction.redirect(location);
+        return configuration.getProviderMetadata().getAuthorizationEndpointURI().toString() + "?" + queryString;
     }
 
     public OidcConfiguration getConfiguration() {
