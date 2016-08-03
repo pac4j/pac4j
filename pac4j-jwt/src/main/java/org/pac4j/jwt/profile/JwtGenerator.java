@@ -1,23 +1,15 @@
 package org.pac4j.jwt.profile;
 
-import com.nimbusds.jose.EncryptionMethod;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.JWEHeader;
-import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.Payload;
-import com.nimbusds.jose.crypto.DirectEncrypter;
-import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtConstants;
+import org.pac4j.jwt.config.DirectEncryptionConfiguration;
+import org.pac4j.jwt.config.EncryptionConfiguration;
+import org.pac4j.jwt.config.MacSigningConfiguration;
+import org.pac4j.jwt.config.SigningConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,35 +29,47 @@ public class JwtGenerator<U extends CommonProfile> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String signingSecret;
-    private String encryptionSecret;
+    private SigningConfiguration signingConfiguration;
 
-    private JWSAlgorithm jwsAlgorithm = JWSAlgorithm.HS256;
-    private JWEAlgorithm jweAlgorithm = JWEAlgorithm.DIR;
-    private EncryptionMethod encryptionMethod = EncryptionMethod.A256GCM;
+    private EncryptionConfiguration encryptionConfiguration;
 
+    public JwtGenerator() {}
+
+    public JwtGenerator(final SigningConfiguration signingConfiguration) {
+        this.signingConfiguration = signingConfiguration;
+    }
+
+    public JwtGenerator(final SigningConfiguration signingConfiguration, final EncryptionConfiguration encryptionConfiguration) {
+        this.signingConfiguration = signingConfiguration;
+        this.encryptionConfiguration = encryptionConfiguration;
+    }
+
+    @Deprecated
     public JwtGenerator(final String secret) {
         this(secret, true);
     }
 
+    @Deprecated
     public JwtGenerator(final String secret, final boolean encrypted) {
-        this.signingSecret = secret;
+        if (secret != null) {
+            this.signingConfiguration = new MacSigningConfiguration(secret);
+        }
         if (encrypted) {
-            this.encryptionSecret = secret;
+            if (secret != null) {
+                this.encryptionConfiguration = new DirectEncryptionConfiguration(secret);
+            }
             logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
         }
     }
 
-    /**
-     * Initializes the generator that will create JWT tokens that is signed and optionally encrypted.
-     *
-     * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
-     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null} if you want encryption
-     * @since 1.8.2
-     */
+    @Deprecated
     public JwtGenerator(final String signingSecret, final String encryptionSecret) {
-        this.signingSecret = signingSecret;
-        this.encryptionSecret = encryptionSecret;
+        if (signingSecret != null) {
+            this.signingConfiguration = new MacSigningConfiguration(signingSecret);
+        }
+        if (encryptionSecret != null) {
+            this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
+        }
     }
     
     /**
@@ -75,65 +79,34 @@ public class JwtGenerator<U extends CommonProfile> {
      * @return the created JWT
      */
     public String generate(final U profile) {
-    	return generate(profile, null, this.jwsAlgorithm);
-    }
+        verifyProfile(profile);
 
-    /**
-     * Generates a JWT from a user profile.
-     *
-     * @param profile the given user profile
-     * @param signer the given user profile
-     * @param jwsAlgorithm the signing algorithm
-     * @return the created JWT
-     */
-    public String generate(final U profile, final JWSSigner signer, final JWSAlgorithm jwsAlgorithm) {
-         verifyProfile(profile);
+        final JWTClaimsSet claims = buildJwtClaimsSet(profile);
 
-        try {
-            final JWTClaimsSet claims = buildJwtClaimsSet(profile);
-            if (CommonHelper.isNotBlank(this.signingSecret)) {
-                CommonHelper.assertNotNull("jwsAlgorithm", jwsAlgorithm);
-                
-                final SignedJWT signedJWT = signJwt(claims, signer, jwsAlgorithm);
-                
-                if (CommonHelper.isNotBlank(this.encryptionSecret)) {
-                    CommonHelper.assertNotNull("jweAlgorithm", jweAlgorithm);
-                    CommonHelper.assertNotNull("encryptionMethod", encryptionMethod);
+        // no signing configuration -> plain JWT
+        if (signingConfiguration == null) {
+            return new PlainJWT(claims).serialize();
 
-                    return encryptJwt(signedJWT);
-                }
+        } else {
+
+            final SignedJWT signedJWT = signingConfiguration.sign(claims);
+
+            if (encryptionConfiguration != null) {
+
+                return encryptionConfiguration.encrypt(signedJWT);
+            } else {
                 return signedJWT.serialize();
             }
 
-            return new PlainJWT(claims).serialize();
-
-        } catch (final Exception e) {
-            throw new TechnicalException("Cannot generate JWT", e);
         }
     }
 
-    protected String encryptJwt(final SignedJWT signedJWT) throws Exception {
-        // Create JWE object with signed JWT as payload
-        final JWEObject jweObject = new JWEObject(
-                new JWEHeader.Builder(jweAlgorithm, encryptionMethod).contentType("JWT").build(),
-                new Payload(signedJWT));
-
-        // Perform encryption
-        jweObject.encrypt(new DirectEncrypter(this.encryptionSecret.getBytes("UTF-8")));
-
-        // Serialise to JWE compact form
-        return jweObject.serialize();
-    }
-
-    protected SignedJWT signJwt(final JWTClaimsSet claims, JWSSigner signer, JWSAlgorithm jwsAlgorithm) throws JOSEException {
-        if (signer == null) {
-        	// Create HMAC signer
-        	signer = new MACSigner(this.signingSecret);
-        }
-    	final SignedJWT signedJWT = new SignedJWT(new JWSHeader(jwsAlgorithm), claims);
-        // Apply the HMAC
-        signedJWT.sign(signer);
-        return signedJWT;
+    protected void verifyProfile(final U profile) {
+        CommonHelper.assertNotNull("profile", profile);
+        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
+        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
+        CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
+        CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
     }
 
     protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
@@ -154,56 +127,24 @@ public class JwtGenerator<U extends CommonProfile> {
         return builder.build();
     }
 
-    private void verifyProfile(final U profile) {
-        CommonHelper.assertNotNull("profile", profile);
-        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
-        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
-        CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
-        CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
+    public SigningConfiguration getSigningConfiguration() {
+        return signingConfiguration;
     }
 
-    public String getSigningSecret() {
-        return signingSecret;
+    public void setSigningConfiguration(SigningConfiguration signingConfiguration) {
+        this.signingConfiguration = signingConfiguration;
     }
 
-    public void setSigningSecret(final String signingSecret) {
-        this.signingSecret = signingSecret;
+    public EncryptionConfiguration getEncryptionConfiguration() {
+        return encryptionConfiguration;
     }
 
-    public String getEncryptionSecret() {
-        return encryptionSecret;
+    public void setEncryptionConfiguration(EncryptionConfiguration encryptionConfiguration) {
+        this.encryptionConfiguration = encryptionConfiguration;
     }
 
-    public void setEncryptionSecret(final String encryptionSecret) {
-        this.encryptionSecret = encryptionSecret;
-    }
-
-    public JWSAlgorithm getJwsAlgorithm() {
-        return jwsAlgorithm;
-    }
-
-    /**
-     * Only the HS256, HS384 and HS512 are currently supported.
-     *
-     * @param jwsAlgorithm the signing algorithm
-     */
-    public void setJwsAlgorithm(final JWSAlgorithm jwsAlgorithm) {
-        this.jwsAlgorithm = jwsAlgorithm;
-    }
-
-    public JWEAlgorithm getJweAlgorithm() {
-        return jweAlgorithm;
-    }
-
-    public void setJweAlgorithm(final JWEAlgorithm jweAlgorithm) {
-        this.jweAlgorithm = jweAlgorithm;
-    }
-
-    public EncryptionMethod getEncryptionMethod() {
-        return encryptionMethod;
-    }
-
-    public void setEncryptionMethod(final EncryptionMethod encryptionMethod) {
-        this.encryptionMethod = encryptionMethod;
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "signingConfiguration", signingConfiguration , "encryptionConfiguration", encryptionConfiguration);
     }
 }

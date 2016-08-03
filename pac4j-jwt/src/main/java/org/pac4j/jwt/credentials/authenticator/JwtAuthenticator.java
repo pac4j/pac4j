@@ -1,8 +1,6 @@
 package org.pac4j.jwt.credentials.authenticator;
 
-import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
 import com.nimbusds.jose.proc.JWSVerifierFactory;
 import com.nimbusds.jose.util.X509CertUtils;
@@ -22,8 +20,9 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.jwt.JwtConstants;
+import org.pac4j.jwt.config.DirectEncryptionConfiguration;
+import org.pac4j.jwt.config.EncryptionConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
@@ -49,58 +48,34 @@ import javax.crypto.spec.SecretKeySpec;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator extends InitializableWebObject implements TokenAuthenticator {
+public class JwtAuthenticator implements TokenAuthenticator {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String encryptionSecret;
-    
+    private EncryptionConfiguration encryptionConfiguration;
+
     private JWSVerifierFactory factory = new DefaultJWSVerifierFactory();
 
 	private Key key;
 
-    public JwtAuthenticator() {
-    }
+    public JwtAuthenticator() {}
 
+    @Deprecated
     public JwtAuthenticator(final String signingSecret) {
         this(signingSecret, signingSecret);
-        warning();
-    }
-
-    private void warning() {
         logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
     }
 
-    /**
-     * Initializes the authenticator that will validate JWT tokens.
-     *
-     * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
-     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null} for encrypted JWT
-     * @since 1.8.2
-     */
+    @Deprecated
     public JwtAuthenticator(final String signingSecret, final String encryptionSecret) {
     	setSigningSecret(signingSecret);
-        this.encryptionSecret = encryptionSecret;
+        this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
     }
-    
-    /**
-     * Define the signing certificate and the encryption secret.
-     *
-     * @param publicKeyPEM the public key certificate
-     * @param algorithm the key algorithm
-     * @param encryptionSecret the encryption secret
-     * @throws NoSuchAlgorithmException No such algorithm exception
-     * @throws InvalidKeySpecException  Invalid key exception
-     * @since 1.8.2
-     */
+
+    @Deprecated
     public JwtAuthenticator(final String publicKeyPEM, final String algorithm, final String encryptionSecret) throws NoSuchAlgorithmException, InvalidKeySpecException {
     	setSigningPem(publicKeyPEM, algorithm);
-        this.encryptionSecret = encryptionSecret;
-    }
-
-    @Override
-    protected void internalInit(final WebContext context) {
-
+        this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
     }
 
     /**
@@ -129,27 +104,28 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
             JWT jwt = JWTParser.parse(token);
 
 			if (jwt instanceof PlainJWT) {
+                logger.debug("JWT is not signed -> verified");
                 verified = true;
             } else {
+
             	SignedJWT signedJWT;
             	if (jwt instanceof SignedJWT) {
                     logger.debug("JWT is signed");
                     signedJWT = (SignedJWT) jwt;
+
             	} else if (jwt instanceof EncryptedJWT) {
-                	CommonHelper.assertNotBlank("encryptionSecret", encryptionSecret);
+                    logger.debug("JWT is encrypted and signed");
+                    CommonHelper.assertNotNull("encryptionConfiguration", encryptionConfiguration);
 
-                	final JWEObject jweObject = (JWEObject) jwt;
-                	jweObject.decrypt(new DirectDecrypter(this.encryptionSecret.getBytes("UTF-8")));
+                    signedJWT = encryptionConfiguration.decrypt((EncryptedJWT) jwt);
+                    jwt = signedJWT;
 
-                	// Extract payload
-                	signedJWT = jweObject.getPayload().toSignedJWT();
-                	jwt = signedJWT;
             	} else {
                 	throw new TechnicalException("unsupported unsecured jwt");
             	}
+
             	CommonHelper.assertNotNull("key", key);
     			JWSVerifier verifier = factory.createJWSVerifier(signedJWT.getHeader(), key);
-
             	verified = signedJWT.verify(verifier);
             }
         	if (!verified) {
@@ -157,19 +133,15 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
             	throw new CredentialsException(message);
         	}
 
-        	try {
-            	createJwtProfile(credentials, jwt);
-        	} catch (final Exception e) {
-            	throw new TechnicalException("Cannot get claimSet", e);
-        	}
+          	createJwtProfile(credentials, jwt);
+
         } catch (final Exception e) {
             throw new TechnicalException("Cannot decrypt / verify JWT", e);
         }
-
-
     }
 
-    private static void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
+    @SuppressWarnings("unchecked")
+    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
         final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
         String subject = claimSet.getSubject();
 
@@ -179,12 +151,12 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
 
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
         attributes.remove(JwtConstants.SUBJECT);
-        @SuppressWarnings("unchecked")
+
 		final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
-        @SuppressWarnings("unchecked")
 		final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
+
         final CommonProfile profile = ProfileHelper.buildProfile(subject, attributes);
         if (roles != null) {
             profile.addRoles(roles);
@@ -231,14 +203,6 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
     	this.key = keyFactory.generatePublic(keySpec);
     }
 
-    public String getEncryptionSecret() {
-        return encryptionSecret;
-    }
-
-    public void setEncryptionSecret(final String encryptionSecret) {
-        this.encryptionSecret = encryptionSecret;
-    }
-    
 	public Key getKey() {
 		return key;
 	}
@@ -246,4 +210,12 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
 	public void setKey(Key key) {
 		this.key = key;
 	}
+
+    public EncryptionConfiguration getEncryptionConfiguration() {
+        return encryptionConfiguration;
+    }
+
+    public void setEncryptionConfiguration(EncryptionConfiguration encryptionConfiguration) {
+        this.encryptionConfiguration = encryptionConfiguration;
+    }
 }

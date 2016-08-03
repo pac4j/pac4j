@@ -10,13 +10,14 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.jwt.config.DirectEncryptionConfiguration;
+import org.pac4j.jwt.config.ECSigningConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.crypto.ECDSASigner;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -57,7 +58,6 @@ public final class JwtTests implements TestsConstants {
 
         final TokenCredentials credentials = new TokenCredentials(token, JwtAuthenticator.class.getName());
         final JwtAuthenticator authenticator = new JwtAuthenticator(JWT_KEY);
-        authenticator.init(null);
         authenticator.validate(credentials, null);
         assertNotNull(credentials.getUserProfile());
     }
@@ -82,21 +82,23 @@ public final class JwtTests implements TestsConstants {
 
     @Test
     public void testPlainJwt() throws HttpAction {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(null, null);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>((String) null, null);
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
     }
-    
+
     @Test
     public void testPemJwt() throws Exception {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(null, null);
         final FacebookProfile profile = createProfile();
+
         KeyPair keyPair = createECKeyPair(EC256SPEC);
-        
         ECPublicKey publicKey = (ECPublicKey) keyPair.getPublic();
 		ECPrivateKey privateKey = (ECPrivateKey) keyPair.getPrivate();
-        final String token = generator.generate(profile, new ECDSASigner(privateKey), JWSAlgorithm.ES256);
+
+        final ECSigningConfiguration signingConfiguration = new ECSigningConfiguration(privateKey, JWSAlgorithm.ES256);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(signingConfiguration);
+        final String token = generator.generate(profile);
         assertToken(profile, token, new JwtAuthenticator(getPem("PUBLIC KEY", publicKey.getEncoded()), "EC", null));
     }
     private static final int COFACTOR = 1;
@@ -178,7 +180,6 @@ public final class JwtTests implements TestsConstants {
 
     private CommonProfile assertToken(FacebookProfile profile, String token, JwtAuthenticator authenticator) throws HttpAction {
         final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
-        authenticator.init(null);
         authenticator.validate(credentials, null);
         final CommonProfile profile2 = credentials.getUserProfile();
         assertTrue(profile2 instanceof FacebookProfile);
@@ -202,29 +203,28 @@ public final class JwtTests implements TestsConstants {
     @Test(expected = TechnicalException.class)
     public void testAuthenticateFailed() throws HttpAction {
         final JwtAuthenticator authenticator = new JwtAuthenticator(JWT_KEY);
-        authenticator.init(null);
         final TokenCredentials credentials = new TokenCredentials("fakeToken", CLIENT_NAME);
         authenticator.validate(credentials, null);
     }
     
     @Test
     public void testJwtGenerationA256CBC() {
-        final JwtGenerator<CommonProfile> g = new JwtGenerator<CommonProfile>(
+        final JwtGenerator<CommonProfile> g = new JwtGenerator<>(
                 JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY , 
                 JWT_KEY2 + JWT_KEY2
         );
-        g.setEncryptionMethod(EncryptionMethod.A256CBC_HS512);
+        ((DirectEncryptionConfiguration) g.getEncryptionConfiguration()).setMethod(EncryptionMethod.A256CBC_HS512);
         final String g1 = g.generate(new CommonProfile());
         assertNotNull(g1);
     }
 
     @Test
     public void testJwtGenerationA256GCM() {
-        final JwtGenerator<CommonProfile> g = new JwtGenerator<CommonProfile>(
+        final JwtGenerator<CommonProfile> g = new JwtGenerator<>(
                 JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY + JWT_KEY ,
                 JWT_KEY 
         );
-        g.setEncryptionMethod(EncryptionMethod.A256GCM);
+        ((DirectEncryptionConfiguration) g.getEncryptionConfiguration()).setMethod(EncryptionMethod.A256GCM);
         final String g1 = g.generate(new CommonProfile());
         assertNotNull(g1);
     }
