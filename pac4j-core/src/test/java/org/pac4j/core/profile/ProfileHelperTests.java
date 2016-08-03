@@ -44,11 +44,8 @@ public final class ProfileHelperTests implements TestsConstants {
 	        final CommonProfile profile = new CommonProfile();
 	        profile.setId(ID);
 	        profile.addAttribute(NAME, VALUE);
-	        final CommonProfile profile2 = ProfileHelper.buildUserProfileByClassCompleteName(profile.getTypedId(), profile.getAttributes(), CommonProfile.class.getName());
-	        assertEquals(ID, profile2.getId());
-	        final Map<String, Object> attributes = profile2.getAttributes();
-	        assertEquals(1, attributes.size());
-	        assertEquals(VALUE, attributes.get(NAME));
+	        final CommonProfile profile2 = ProfileHelper.buildUserProfileByClassCompleteName(CommonProfile.class.getName());
+            assertNotNull(profile2);
 	        final CommonProfile profile3 = ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
 	        assertEquals(ID, profile3.getId());
     	} catch(Exception e) {
