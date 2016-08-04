@@ -2,6 +2,7 @@ package org.pac4j.jwt.config;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
@@ -36,9 +37,16 @@ public class MacSigningConfiguration extends InitializableObject implements Sign
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotBlank("secret", secret);
 
-        if (algorithm != JWSAlgorithm.HS256 && algorithm != JWSAlgorithm.HS384 && algorithm != JWSAlgorithm.HS512) {
+        if (!supports(this.algorithm)) {
             throw new TechnicalException("Only the HS256, HS384 and HS512 algorithms are supported for HMac signature");
         }
+    }
+
+    @Override
+    public boolean supports(final JWSAlgorithm algorithm) {
+        init();
+
+        return MACVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
     @Override

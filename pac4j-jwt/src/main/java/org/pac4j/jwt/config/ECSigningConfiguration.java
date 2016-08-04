@@ -5,6 +5,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.ECDSASigner;
+import com.nimbusds.jose.crypto.ECDSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
@@ -41,9 +42,17 @@ public class ECSigningConfiguration extends InitializableObject implements Signi
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotNull("key", key);
 
-        if (algorithm != JWSAlgorithm.ES256 && algorithm != JWSAlgorithm.ES384 && algorithm != JWSAlgorithm.ES512) {
+        if (!supports(this.algorithm)) {
             throw new TechnicalException("Only the ES256, ES384 and ES512 algorithms are supported for elliptic curve signature");
         }
+    }
+
+
+    @Override
+    public boolean supports(final JWSAlgorithm algorithm) {
+        init();
+
+        return ECDSAVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
     @Override

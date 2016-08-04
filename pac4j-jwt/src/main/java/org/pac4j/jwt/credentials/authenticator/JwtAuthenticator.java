@@ -1,5 +1,6 @@
 package org.pac4j.jwt.credentials.authenticator;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
 import com.nimbusds.jose.proc.JWSVerifierFactory;
@@ -23,6 +24,7 @@ import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.jwt.JwtConstants;
 import org.pac4j.jwt.config.DirectEncryptionConfiguration;
 import org.pac4j.jwt.config.EncryptionConfiguration;
+import org.pac4j.jwt.config.SigningConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
@@ -35,6 +37,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +57,22 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
     private EncryptionConfiguration encryptionConfiguration;
 
+    private List<SigningConfiguration> signingConfigurations = new ArrayList<>();
+
     private JWSVerifierFactory factory = new DefaultJWSVerifierFactory();
 
 	private Key key;
 
     public JwtAuthenticator() {}
+
+    public JwtAuthenticator(final List<SigningConfiguration> signingConfigurations) {
+        this.signingConfigurations = signingConfigurations;
+    }
+
+    public JwtAuthenticator(final List<SigningConfiguration> signingConfigurations, final EncryptionConfiguration encryptionConfiguration) {
+        this.signingConfigurations = signingConfigurations;
+        this.encryptionConfiguration = encryptionConfiguration;
+    }
 
     @Deprecated
     public JwtAuthenticator(final String signingSecret) {
@@ -69,7 +83,9 @@ public class JwtAuthenticator implements TokenAuthenticator {
     @Deprecated
     public JwtAuthenticator(final String signingSecret, final String encryptionSecret) {
     	setSigningSecret(signingSecret);
-        this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
+        if (encryptionSecret != null) {
+            this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
+        }
     }
 
     @Deprecated
@@ -124,6 +140,8 @@ public class JwtAuthenticator implements TokenAuthenticator {
                 	throw new TechnicalException("unsupported unsecured jwt");
             	}
 
+                CommonHelper.assertNotNull("signingConfigurations", signingConfigurations);
+
             	CommonHelper.assertNotNull("key", key);
     			JWSVerifier verifier = factory.createJWSVerifier(signedJWT.getHeader(), key);
             	verified = signedJWT.verify(verifier);
@@ -135,7 +153,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
           	createJwtProfile(credentials, jwt);
 
-        } catch (final Exception e) {
+        } catch (final ParseException | JOSEException e) {
             throw new TechnicalException("Cannot decrypt / verify JWT", e);
         }
     }
@@ -215,7 +233,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
         return encryptionConfiguration;
     }
 
-    public void setEncryptionConfiguration(EncryptionConfiguration encryptionConfiguration) {
+    public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         this.encryptionConfiguration = encryptionConfiguration;
     }
 }
