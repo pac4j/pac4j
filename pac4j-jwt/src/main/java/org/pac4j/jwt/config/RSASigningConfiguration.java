@@ -5,6 +5,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
@@ -41,10 +42,16 @@ public class RSASigningConfiguration extends InitializableObject implements Sign
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotNull("key", key);
 
-        if (algorithm != JWSAlgorithm.RS256 && algorithm != JWSAlgorithm.RS384 && algorithm != JWSAlgorithm.RS512 &&
-                algorithm != JWSAlgorithm.PS256 && algorithm != JWSAlgorithm.PS384 && algorithm != JWSAlgorithm.PS512) {
+        if (!supports(this.algorithm)) {
             throw new TechnicalException("Only the RS256, RS384, RS512, PS256, PS384 and PS512 algorithms are supported for RSA signature");
         }
+    }
+
+    @Override
+    public boolean supports(final JWSAlgorithm algorithm) {
+        init();
+
+        return RSASSAVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
     @Override
