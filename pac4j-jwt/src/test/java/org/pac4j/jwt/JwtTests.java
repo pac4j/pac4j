@@ -1,8 +1,6 @@
 package org.pac4j.jwt;
 
 import com.nimbusds.jose.EncryptionMethod;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
 import org.junit.Test;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -11,7 +9,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.jwt.config.DirectEncryptionConfiguration;
-import org.pac4j.jwt.config.ECSigningConfiguration;
+import org.pac4j.jwt.config.ECSignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
@@ -19,13 +17,9 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import com.nimbusds.jose.JWSAlgorithm;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.ECFieldFp;
 import java.security.spec.ECParameterSpec;
@@ -93,13 +87,13 @@ public final class JwtTests implements TestsConstants {
         final FacebookProfile profile = createProfile();
 
         KeyPair keyPair = createECKeyPair(EC256SPEC);
-        ECPublicKey publicKey = (ECPublicKey) keyPair.getPublic();
-		ECPrivateKey privateKey = (ECPrivateKey) keyPair.getPrivate();
 
-        final ECSigningConfiguration signingConfiguration = new ECSigningConfiguration(privateKey, JWSAlgorithm.ES256);
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(signingConfiguration);
+        final ECSignatureConfiguration signatureConfiguration = new ECSignatureConfiguration(keyPair, JWSAlgorithm.ES256);
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(signatureConfiguration);
         final String token = generator.generate(profile);
-        assertToken(profile, token, new JwtAuthenticator(getPem("PUBLIC KEY", publicKey.getEncoded()), "EC", null));
+        final JwtAuthenticator authenticator = new JwtAuthenticator();
+        authenticator.addSignatureConfiguration(signatureConfiguration);
+        assertToken(profile, token, authenticator);
     }
     private static final int COFACTOR = 1;
 	private static final ECParameterSpec EC256SPEC = new ECParameterSpec(
@@ -120,14 +114,6 @@ public final class JwtTests implements TestsConstants {
 			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("EC");
 			keyGenerator.initialize(spec);
 			return keyGenerator.generateKeyPair();
-	}
-	private String getPem(String keyTitle, byte[] encodedKey) throws IOException {
-		StringWriter writer = new StringWriter();
-		PemWriter pemWriter = new PemWriter(writer);
-		pemWriter.writeObject(new PemObject(keyTitle, encodedKey));
-		pemWriter.flush();
-		pemWriter.close();
-		return writer.toString();
 	}
 
     @Test

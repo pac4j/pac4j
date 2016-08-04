@@ -5,12 +5,12 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 /**
- * Signing configuration.
+ * Signature configuration.
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public interface SigningConfiguration {
+public interface SignatureConfiguration {
 
     /**
      * Whether this signing configuration supports this algorithm.
@@ -34,5 +34,5 @@ public interface SigningConfiguration {
      * @param jwt the signed JWT
      * @return whether the signed JWT is verified
      */
-    //boolean verify(SignedJWT jwt);
+    boolean verify(SignedJWT jwt);
 }

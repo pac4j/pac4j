@@ -8,8 +8,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtConstants;
 import org.pac4j.jwt.config.DirectEncryptionConfiguration;
 import org.pac4j.jwt.config.EncryptionConfiguration;
-import org.pac4j.jwt.config.MacSigningConfiguration;
-import org.pac4j.jwt.config.SigningConfiguration;
+import org.pac4j.jwt.config.MacSignatureConfiguration;
+import org.pac4j.jwt.config.SignatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,18 +29,18 @@ public class JwtGenerator<U extends CommonProfile> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private SigningConfiguration signingConfiguration;
+    private SignatureConfiguration signatureConfiguration;
 
     private EncryptionConfiguration encryptionConfiguration;
 
     public JwtGenerator() {}
 
-    public JwtGenerator(final SigningConfiguration signingConfiguration) {
-        this.signingConfiguration = signingConfiguration;
+    public JwtGenerator(final SignatureConfiguration signatureConfiguration) {
+        this.signatureConfiguration = signatureConfiguration;
     }
 
-    public JwtGenerator(final SigningConfiguration signingConfiguration, final EncryptionConfiguration encryptionConfiguration) {
-        this.signingConfiguration = signingConfiguration;
+    public JwtGenerator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
+        this.signatureConfiguration = signatureConfiguration;
         this.encryptionConfiguration = encryptionConfiguration;
     }
 
@@ -52,20 +52,20 @@ public class JwtGenerator<U extends CommonProfile> {
     @Deprecated
     public JwtGenerator(final String secret, final boolean encrypted) {
         if (secret != null) {
-            this.signingConfiguration = new MacSigningConfiguration(secret);
+            this.signatureConfiguration = new MacSignatureConfiguration(secret);
         }
         if (encrypted) {
             if (secret != null) {
                 this.encryptionConfiguration = new DirectEncryptionConfiguration(secret);
             }
-            logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
+            logger.warn("Using the same key for signature and encryption may lead to security vulnerabilities. Consider using different keys");
         }
     }
 
     @Deprecated
     public JwtGenerator(final String signingSecret, final String encryptionSecret) {
         if (signingSecret != null) {
-            this.signingConfiguration = new MacSigningConfiguration(signingSecret);
+            this.signatureConfiguration = new MacSignatureConfiguration(signingSecret);
         }
         if (encryptionSecret != null) {
             this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
@@ -83,13 +83,13 @@ public class JwtGenerator<U extends CommonProfile> {
 
         final JWTClaimsSet claims = buildJwtClaimsSet(profile);
 
-        // no signing configuration -> plain JWT
-        if (signingConfiguration == null) {
+        // no signature configuration -> plain JWT
+        if (signatureConfiguration == null) {
             return new PlainJWT(claims).serialize();
 
         } else {
 
-            final SignedJWT signedJWT = signingConfiguration.sign(claims);
+            final SignedJWT signedJWT = signatureConfiguration.sign(claims);
 
             if (encryptionConfiguration != null) {
 
@@ -127,24 +127,24 @@ public class JwtGenerator<U extends CommonProfile> {
         return builder.build();
     }
 
-    public SigningConfiguration getSigningConfiguration() {
-        return signingConfiguration;
+    public SignatureConfiguration getSignatureConfiguration() {
+        return signatureConfiguration;
     }
 
-    public void setSigningConfiguration(SigningConfiguration signingConfiguration) {
-        this.signingConfiguration = signingConfiguration;
+    public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
+        this.signatureConfiguration = signatureConfiguration;
     }
 
     public EncryptionConfiguration getEncryptionConfiguration() {
         return encryptionConfiguration;
     }
 
-    public void setEncryptionConfiguration(EncryptionConfiguration encryptionConfiguration) {
+    public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
         this.encryptionConfiguration = encryptionConfiguration;
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "signingConfiguration", signingConfiguration , "encryptionConfiguration", encryptionConfiguration);
+        return CommonHelper.toString(this.getClass(), "signatureConfiguration", signatureConfiguration, "encryptionConfiguration", encryptionConfiguration);
     }
 }

@@ -3,31 +3,38 @@ package org.pac4j.jwt.config;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
+import java.io.UnsupportedEncodingException;
+
 /**
- * HMac signing configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac
+ * HMac signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class MacSigningConfiguration extends InitializableObject implements SigningConfiguration {
+public class MacSignatureConfiguration extends InitializableObject implements SignatureConfiguration {
 
     private String secret;
 
     private JWSAlgorithm algorithm = JWSAlgorithm.HS256;
 
-    public MacSigningConfiguration() {}
+    public MacSignatureConfiguration() {}
 
-    public MacSigningConfiguration(final String secret) {
+    public MacSignatureConfiguration(final String secret) {
         this.secret = secret;
     }
 
-    public MacSigningConfiguration(final String secret, final JWSAlgorithm algorithm) {
+    public MacSignatureConfiguration(final OctetSequenceKey jwk) {
+        setSecret(jwk);
+    }
+
+    public MacSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
         this.secret = secret;
         this.algorithm = algorithm;
     }
@@ -44,13 +51,11 @@ public class MacSigningConfiguration extends InitializableObject implements Sign
 
     @Override
     public boolean supports(final JWSAlgorithm algorithm) {
-        init();
-
-        return MACVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
+        return algorithm != null && MACVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
     @Override
-    public SignedJWT sign(JWTClaimsSet claims) {
+    public SignedJWT sign(final JWTClaimsSet claims) {
         init();
 
         try {
@@ -63,12 +68,32 @@ public class MacSigningConfiguration extends InitializableObject implements Sign
         }
     }
 
+    @Override
+    public boolean verify(final SignedJWT jwt) {
+        init();
+
+        try {
+            final JWSVerifier verifier = new MACVerifier(this.secret);
+            return jwt.verify(verifier);
+        } catch (final JOSEException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
     public String getSecret() {
         return secret;
     }
 
     public void setSecret(final String secret) {
         this.secret = secret;
+    }
+
+    public void setSecret(final OctetSequenceKey jwk) {
+        try {
+            this.secret = new String(jwk.toByteArray(), "UTF-8");
+        } catch (final UnsupportedEncodingException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     public JWSAlgorithm getAlgorithm() {
