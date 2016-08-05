@@ -105,7 +105,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         // Create profile
         final U profile = (U) ProfileHelper.buildUserProfileByClassCompleteName(clazz.getName());
         profile.setAccessToken(accessToken);
-        profile.setIdTokenString(credentials.getIdTokenString());
+        profile.setIdTokenString(credentials.getIdToken().getParsedString());
         // Check if there is refresh token
         if (credentials.getRefreshToken() != null && !credentials.getRefreshToken().getValue().isEmpty()) {
             profile.setRefreshTokenString(credentials.getRefreshToken().getValue());
