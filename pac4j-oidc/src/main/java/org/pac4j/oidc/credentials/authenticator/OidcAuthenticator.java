@@ -105,7 +105,6 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
             credentials.setAccessToken(oidcTokens.getAccessToken());
             credentials.setRefreshToken(oidcTokens.getRefreshToken());
             credentials.setIdToken(oidcTokens.getIDToken());
-            credentials.setIdTokenString(oidcTokens.getIDTokenString());
 
         } catch (final URISyntaxException | IOException | ParseException e) {
             throw new TechnicalException(e);
