@@ -107,7 +107,10 @@ public final class JwtTests implements TestsConstants {
         final JwtAuthenticator jwtAuthenticator = new JwtAuthenticator(new MacSignatureConfiguration(MAC_SECRET), new DirectEncryptionConfiguration(MAC_SECRET));
         final JwtProfile profile = (JwtProfile) jwtAuthenticator.validateToken(token);
         assertEquals(VALUE, profile.getSubject());
-        assertEquals(now.getSeconds(), profile.getExpirationDate().getSeconds());
+        assertEquals(now.getTime() / 1000, profile.getExpirationDate().getTime() / 1000);
+        final Map<String, Object> claims2 = jwtAuthenticator.validateTokenAndGetClaims(token);
+        assertEquals(VALUE, claims2.get(JwtClaims.SUBJECT));
+        assertEquals(now.getTime() / 1000, ((Date) claims2.get(JwtClaims.EXPIRATION_TIME)).getTime() / 1000);
     }
 
     @Test
