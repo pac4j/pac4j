@@ -24,7 +24,6 @@ public class OidcCredentials extends Credentials {
     private AccessToken accessToken;
     private RefreshToken refreshToken;
     private JWT idToken;
-    //private String idTokenString;
 
     public OidcCredentials(final AuthorizationCode code, final String clientName) {
         this.code = code;
