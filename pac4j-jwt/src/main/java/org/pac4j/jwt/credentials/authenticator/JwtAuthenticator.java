@@ -87,6 +87,21 @@ public class JwtAuthenticator implements TokenAuthenticator {
      * @param token the JWT
      * @return the corresponding user profile
      */
+    public Map<String, Object> validateTokenAndGetClaims(final String token) {
+        final CommonProfile profile = validateToken(token);
+
+        final Map<String, Object> claims = new HashMap<>(profile.getAttributes());
+        claims.put(JwtClaims.SUBJECT, profile.getId());
+
+        return claims;
+    }
+
+    /**
+     * Validates the token and returns the corresponding user profile.
+     *
+     * @param token the JWT
+     * @return the corresponding user profile
+     */
     public CommonProfile validateToken(final String token) {
         final TokenCredentials credentials = new TokenCredentials(token, "(validateToken)Method");
         try {
