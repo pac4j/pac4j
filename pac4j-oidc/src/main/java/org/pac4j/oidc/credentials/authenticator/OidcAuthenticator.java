@@ -48,6 +48,8 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
 
+        configuration.init(context);
+
         // check authentication methods
         final List<ClientAuthenticationMethod> metadataMethods = configuration.getProviderMetadata().getTokenEndpointAuthMethods();
 
@@ -80,6 +82,7 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
 
     @Override
     public void validate(final OidcCredentials credentials, final WebContext context) throws HttpAction {
+        init(context);
 
         try {
             // Token request

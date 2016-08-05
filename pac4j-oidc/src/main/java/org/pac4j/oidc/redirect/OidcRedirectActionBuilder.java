@@ -42,6 +42,8 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
 
+        configuration.init(context);
+
         this.authParams = new HashMap<>();
         final String scope = configuration.getScope();
         // add scope
@@ -61,6 +63,8 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
 
     @Override
     public RedirectAction redirect(final WebContext context) throws HttpAction {
+        init(context);
+
         final Map<String, String> params = buildParams();
 
         addStateAndNonceParameters(context, params);

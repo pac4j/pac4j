@@ -44,10 +44,14 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
+
+        configuration.init(context);
     }
 
     @Override
     public TokenCredentials extract(WebContext context) throws HttpAction {
+        init(context);
+
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
             final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);

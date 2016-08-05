@@ -46,6 +46,8 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     @Override
     public void validate(final T credentials, final WebContext context) throws HttpAction {
+        init(context);
+
         try {
             final CommonProfile profile = this.cache.get(credentials, () -> {
                 logger.debug("Delegating authentication to {}...", delegate);

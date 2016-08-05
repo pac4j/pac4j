@@ -44,10 +44,13 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
+
+        configuration.init(context);
     }
 
     @Override
     public OidcCredentials extract(WebContext context) throws HttpAction {
+        init(context);
 
         Map<String, String> parameters = toSingleParameter(context.getRequestParameters());
         AuthenticationResponse response;
