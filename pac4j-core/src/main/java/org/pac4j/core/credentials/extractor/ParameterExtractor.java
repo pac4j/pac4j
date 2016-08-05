@@ -12,7 +12,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class ParameterExtractor implements TokenCredentialsExtractor {
+public class ParameterExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String parameterName;
 

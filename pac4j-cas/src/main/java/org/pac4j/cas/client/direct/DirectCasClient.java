@@ -11,7 +11,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -90,9 +89,7 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CasProfile
         // only a fake one for the initialization as we will build a new one with the current url for each request
         super.setAuthenticator(new CasAuthenticator(configuration, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
-
         super.internalInit(context);
-        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
     }
 
     public CasConfiguration getConfiguration() {
@@ -104,7 +101,7 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CasProfile
     }
 
     @Override
-    public void setAuthenticator(final Authenticator<TokenCredentials> authenticator) {
+    public void setAuthenticator(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is automatically created for each request");
     }
 

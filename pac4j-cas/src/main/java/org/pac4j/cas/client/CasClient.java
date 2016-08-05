@@ -14,7 +14,6 @@ import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -94,8 +93,6 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
 
         super.internalInit(context);
-        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
-        assertAuthenticatorTypes(CasAuthenticator.class);
     }
 
     public CasConfiguration getConfiguration() {

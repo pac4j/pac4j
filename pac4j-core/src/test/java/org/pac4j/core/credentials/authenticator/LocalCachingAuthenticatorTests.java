@@ -14,14 +14,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test cases for {@link LocalCachingAuthenticator}
+ * Test cases for {@link LocalCachingAuthenticator}.
+ *
  * @author Misagh Moayyed
  * @since 1.8
  */
 @SuppressWarnings("unchecked")
 public class LocalCachingAuthenticatorTests {
 
-    private static class OnlyOneCallAuthenticator implements UsernamePasswordAuthenticator {
+    private static class OnlyOneCallAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
         private int n = 0;
 
@@ -35,7 +36,7 @@ public class LocalCachingAuthenticatorTests {
         }
     }
 
-    private static class SimpleUPAuthenticator implements UsernamePasswordAuthenticator {
+    private static class SimpleUPAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
         @Override
         public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
@@ -47,7 +48,7 @@ public class LocalCachingAuthenticatorTests {
 
     private final Authenticator delegate = new SimpleUPAuthenticator();
 
-    private final Credentials credentials =
+    private final UsernamePasswordCredentials credentials =
             new UsernamePasswordCredentials("a", "a", this.getClass().getName());
 
     @Test
@@ -82,8 +83,8 @@ public class LocalCachingAuthenticatorTests {
 
     @Test
     public void testValidateAndCacheSwitchDelegate() throws HttpAction {
-        final LocalCachingAuthenticator authenticator = new
-                LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
+        final LocalCachingAuthenticator<UsernamePasswordCredentials> authenticator = new
+                LocalCachingAuthenticator<>(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
 
         authenticator.validate(this.credentials, null);
@@ -141,7 +142,7 @@ public class LocalCachingAuthenticatorTests {
         assertFalse(authenticator.isCached(this.credentials));
     }
 
-    private static class ThrowingAuthenticator implements UsernamePasswordAuthenticator {
+    private static class ThrowingAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
         @Override
         public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {

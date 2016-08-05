@@ -9,6 +9,7 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -17,7 +18,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
 import org.pac4j.jwt.JwtClaims;
 import org.pac4j.jwt.config.DirectEncryptionConfiguration;
 import org.pac4j.jwt.config.EncryptionConfiguration;
@@ -41,7 +41,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator implements TokenAuthenticator {
+public class JwtAuthenticator implements Authenticator<TokenCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

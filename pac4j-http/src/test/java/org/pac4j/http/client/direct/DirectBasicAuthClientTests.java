@@ -3,18 +3,15 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -36,12 +33,6 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.initShouldFail(basicAuthClient, "profileCreator cannot be null");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new LocalCachingAuthenticator<>(new SimpleTestTokenAuthenticator(), 10, 10, TimeUnit.HOURS));
-        TestsHelper.initShouldFail(basicAuthClient, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator");
     }
 
     @Test
