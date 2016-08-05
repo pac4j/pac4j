@@ -10,7 +10,6 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -36,12 +35,6 @@ public final class CookieClientTests implements TestsConstants {
         final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
         cookieClient.setProfileCreator(null);
         TestsHelper.initShouldFail(cookieClient, "profileCreator cannot be null");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestUsernamePasswordAuthenticator());
-        TestsHelper.initShouldFail(cookieClient, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator");
     }
 
     @Test

@@ -10,7 +10,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import java.util.concurrent.TimeUnit;
@@ -35,12 +34,6 @@ public final class DirectFormClientTests implements TestsConstants {
     public void testMissingProfileCreator() {
         final DirectFormClient formClient = new DirectFormClient(new SimpleTestUsernamePasswordAuthenticator(), null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final DirectFormClient formClient = new DirectFormClient(new SimpleTestTokenAuthenticator());
-        TestsHelper.initShouldFail(formClient, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator");
     }
 
     @Test

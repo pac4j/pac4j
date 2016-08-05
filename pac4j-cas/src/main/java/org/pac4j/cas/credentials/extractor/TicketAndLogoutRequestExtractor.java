@@ -6,7 +6,7 @@ import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -23,7 +23,7 @@ import java.util.zip.Inflater;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements TokenCredentialsExtractor {
+public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements CredentialsExtractor<TokenCredentials> {
 
     private final static int DECOMPRESSION_FACTOR = 10;
 

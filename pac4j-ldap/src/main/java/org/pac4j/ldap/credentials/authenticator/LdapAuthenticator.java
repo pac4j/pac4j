@@ -15,7 +15,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapAuthenticator extends InitializableWebObject implements UsernamePasswordAuthenticator {
+public class LdapAuthenticator extends InitializableWebObject implements org.pac4j.core.credentials.authenticator.Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

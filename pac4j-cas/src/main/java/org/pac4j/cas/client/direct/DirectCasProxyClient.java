@@ -10,7 +10,6 @@ import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -52,10 +51,7 @@ public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, CasPr
         setCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         super.setAuthenticator(new CasAuthenticator(configuration, this.serviceUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
-
         super.internalInit(context);
-        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
-        assertAuthenticatorTypes(CasAuthenticator.class);
     }
 
     public CasConfiguration getConfiguration() {

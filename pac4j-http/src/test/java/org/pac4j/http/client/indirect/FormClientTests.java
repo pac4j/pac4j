@@ -10,7 +10,6 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
@@ -37,13 +36,6 @@ public final class FormClientTests implements TestsConstants {
         formClient.setCallbackUrl(CALLBACK_URL);
         formClient.setProfileCreator(null);
         TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestTokenAuthenticator());
-        formClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(formClient, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator");
     }
 
     @Test

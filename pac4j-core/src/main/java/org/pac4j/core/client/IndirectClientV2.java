@@ -3,11 +3,9 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
@@ -78,27 +76,6 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
-    }
-
-    protected void assertAuthenticatorTypes(final Class<? extends Authenticator> clazz) {
-        if (this.authenticator != null && clazz != null) {
-            Class<? extends Authenticator> authClazz = this.authenticator.getClass();
-            if (LocalCachingAuthenticator.class.isAssignableFrom(authClazz)) {
-                authClazz = ((LocalCachingAuthenticator) this.authenticator).getDelegate().getClass();
-            }
-            if (!clazz.isAssignableFrom(authClazz)) {
-                throw new TechnicalException("Unsupported authenticator type: " + authClazz);
-            }
-        }
-    }
-
-    protected void assertCredentialsExtractorTypes(final Class<? extends CredentialsExtractor> clazz) {
-        if (this.authenticator != null && clazz != null) {
-            Class<? extends CredentialsExtractor> authClazz = this.credentialsExtractor.getClass();
-            if (!clazz.isAssignableFrom(authClazz)) {
-                throw new TechnicalException("Unsupported credentials extractor type: " + authClazz);
-            }
-        }
     }
 
     public RedirectActionBuilder getRedirectActionBuilder() {

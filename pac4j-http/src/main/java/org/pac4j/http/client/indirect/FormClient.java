@@ -12,7 +12,6 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.extractor.FormExtractor;
-import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 /**
@@ -65,10 +64,10 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
         this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
+
         setRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
         setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
         super.internalInit(context);
-        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     @Override
