@@ -5,7 +5,7 @@ import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.jwt.JwtConstants;
+import org.pac4j.jwt.JwtClaims;
 import org.pac4j.jwt.config.DirectEncryptionConfiguration;
 import org.pac4j.jwt.config.EncryptionConfiguration;
 import org.pac4j.jwt.config.MacSignatureConfiguration;
@@ -71,9 +71,27 @@ public class JwtGenerator<U extends CommonProfile> {
             this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
         }
     }
-    
+
     /**
-     * Generates a JWT from a user profile.
+     * Generate a JWT from a map of claims.
+     *
+     * @param claims the map of claims
+     * @return the created JWT
+     */
+    public String generate(final Map<String, Object> claims) {
+        // claims builder
+        final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
+
+        // add claims
+        for (final Map.Entry<String, Object> entry : claims.entrySet()) {
+            builder.claim(entry.getKey(), entry.getValue());
+        }
+
+        return internalGenerate(builder.build());
+    }
+
+    /**
+     * Generate a JWT from a user profile.
      *
      * @param profile the given user profile
      * @return the created JWT
@@ -81,15 +99,23 @@ public class JwtGenerator<U extends CommonProfile> {
     public String generate(final U profile) {
         verifyProfile(profile);
 
-        final JWTClaimsSet claims = buildJwtClaimsSet(profile);
+        return internalGenerate(buildJwtClaimsSet(profile));
+    }
 
+    /**
+     * Generate a JWT from a claims set.
+     *
+     * @param claimsSet the claims set
+     * @return the JWT
+     */
+    protected String internalGenerate(final JWTClaimsSet claimsSet) {
         // no signature configuration -> plain JWT
         if (signatureConfiguration == null) {
-            return new PlainJWT(claims).serialize();
+            return new PlainJWT(claimsSet).serialize();
 
         } else {
 
-            final SignedJWT signedJWT = signatureConfiguration.sign(claims);
+            final SignedJWT signedJWT = signatureConfiguration.sign(claimsSet);
 
             if (encryptionConfiguration != null) {
 
@@ -103,14 +129,14 @@ public class JwtGenerator<U extends CommonProfile> {
 
     protected void verifyProfile(final U profile) {
         CommonHelper.assertNotNull("profile", profile);
-        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtConstants.SUBJECT));
-        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtConstants.ISSUE_TIME));
+        CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtClaims.SUBJECT));
+        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtClaims.ISSUED_AT));
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
     }
 
     protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
-        // Build claims
+        // claims builder with subject and issue time
         final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .subject(profile.getTypedId())
                 .issueTime(new Date());

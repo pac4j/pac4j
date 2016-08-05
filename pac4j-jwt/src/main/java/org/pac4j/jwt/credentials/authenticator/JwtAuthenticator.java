@@ -1,5 +1,6 @@
 package org.pac4j.jwt.credentials.authenticator;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWT;
@@ -17,7 +18,7 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
-import org.pac4j.jwt.JwtConstants;
+import org.pac4j.jwt.JwtClaims;
 import org.pac4j.jwt.config.DirectEncryptionConfiguration;
 import org.pac4j.jwt.config.EncryptionConfiguration;
 import org.pac4j.jwt.config.MacSignatureConfiguration;
@@ -52,6 +53,11 @@ public class JwtAuthenticator implements TokenAuthenticator {
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
+    }
+
+    public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
+        setSignatureConfiguration(signatureConfiguration);
+        this.encryptionConfiguration = encryptionConfiguration;
     }
 
     public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations, final EncryptionConfiguration encryptionConfiguration) {
@@ -125,9 +131,14 @@ public class JwtAuthenticator implements TokenAuthenticator {
                 final JWSAlgorithm jwtAlgorithm = signedJWT.getHeader().getAlgorithm();
                 for (final SignatureConfiguration config : signatureConfigurations) {
                     if (config.supports(jwtAlgorithm)) {
-                        verified = config.verify(signedJWT);
-                        found = true;
-                        break;
+                        logger.debug("Using signature configuration: {}", config);
+                        try {
+                            verified = config.verify(signedJWT);
+                            found = true;
+                            break;
+                        } catch (final JOSEException e) {
+                            logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
+                        }
                     }
                 }
                 if (!found) {
@@ -155,7 +166,7 @@ public class JwtAuthenticator implements TokenAuthenticator {
         }
 
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
-        attributes.remove(JwtConstants.SUBJECT);
+        attributes.remove(JwtClaims.SUBJECT);
 
 		final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
