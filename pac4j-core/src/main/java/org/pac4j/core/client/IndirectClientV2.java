@@ -11,7 +11,6 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
 
 /**
  * New indirect client type using the {@link RedirectActionBuilder}, {@link CredentialsExtractor}, {@link Authenticator}
@@ -37,18 +36,6 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
-        if (redirectActionBuilder instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.redirectActionBuilder).init(context);
-        }
-        if (credentialsExtractor instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.credentialsExtractor).init(context);
-        }
-        if (authenticator instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.authenticator).init(context);
-        }
-        if (profileCreator instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.profileCreator).init(context);
-        }
     }
 
     @Override

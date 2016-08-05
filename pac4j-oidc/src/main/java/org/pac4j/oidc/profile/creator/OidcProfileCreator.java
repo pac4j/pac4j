@@ -60,6 +60,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         assertNotNull("configuration", configuration);
         assertNotNull("clazz", clazz);
 
+        configuration.init(context);
+
         // check algorithms
         final List<JWSAlgorithm> metadataAlgorithms = configuration.getProviderMetadata().getIDTokenJWSAlgs();
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms), "There must at least one JWS algorithm supported on the OpenID Connect provider side");
@@ -99,6 +101,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
     @Override
     @SuppressWarnings("unchecked")
     public U create(final OidcCredentials credentials, final WebContext context) throws HttpAction {
+        init(context);
 
         final BearerAccessToken accessToken = (BearerAccessToken) credentials.getAccessToken();
 

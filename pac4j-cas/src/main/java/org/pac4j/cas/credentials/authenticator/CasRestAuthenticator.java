@@ -67,6 +67,8 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+        init(context);
+
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");
         }

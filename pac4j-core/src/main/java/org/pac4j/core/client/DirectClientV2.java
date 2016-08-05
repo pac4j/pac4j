@@ -10,7 +10,6 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
 
 /**
  * New direct client type using the {@link CredentialsExtractor}, {@link Authenticator} and {@link ProfileCreator} concepts.
@@ -31,15 +30,6 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
         CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
         CommonHelper.assertNotNull("profileCreator", this.profileCreator);
-        if (credentialsExtractor instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.credentialsExtractor).init(context);
-        }
-        if (authenticator instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.authenticator).init(context);
-        }
-        if (profileCreator instanceof InitializableWebObject) {
-            ((InitializableWebObject) this.profileCreator).init(context);
-        }
     }
 
     @Override

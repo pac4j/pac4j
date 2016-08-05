@@ -54,6 +54,7 @@ public class LdapAuthenticator extends InitializableWebObject implements org.pac
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+        init(context);
 
         final String username = credentials.getUsername();
         final String[] ldapAttributes = attributes.split(",");
