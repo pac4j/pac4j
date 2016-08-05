@@ -13,6 +13,7 @@ import org.pac4j.core.util.InitializableObject;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
 
 /**
  * RSA signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-rsa-signature
@@ -37,10 +38,6 @@ public class RSASignatureConfiguration extends InitializableObject implements Si
     public RSASignatureConfiguration(final KeyPair keyPair, final JWSAlgorithm algorithm) {
         setKeyPair(keyPair);
         this.algorithm = algorithm;
-    }
-
-    public RSASignatureConfiguration(final RSAKey jwk) {
-        setRSAKey(jwk);
     }
 
     @Override
@@ -73,24 +70,21 @@ public class RSASignatureConfiguration extends InitializableObject implements Si
     }
 
     @Override
-    public boolean verify(final SignedJWT jwt) {
+    public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
         CommonHelper.assertNotNull("publicKey", publicKey);
 
-        try {
-            final JWSVerifier verifier = new RSASSAVerifier(this.publicKey);
-            return jwt.verify(verifier);
-        } catch (final JOSEException e) {
-            throw new TechnicalException(e);
-        }
+        final JWSVerifier verifier = new RSASSAVerifier(this.publicKey);
+        return jwt.verify(verifier);
     }
 
-    public void setRSAKey(final RSAKey jwk) {
-        CommonHelper.assertNotNull("jwk", jwk);
+    public static RSASignatureConfiguration buildFromJwk(final String json) {
+        CommonHelper.assertNotBlank("json", json);
+
         try {
-            this.privateKey = jwk.toRSAPrivateKey();
-            this.publicKey = jwk.toRSAPublicKey();
-        } catch (final JOSEException e) {
+            final RSAKey rsaKey = RSAKey.parse(json);
+            return new RSASignatureConfiguration(rsaKey.toKeyPair());
+        } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);
         }
     }

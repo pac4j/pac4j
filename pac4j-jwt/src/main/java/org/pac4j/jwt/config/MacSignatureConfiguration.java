@@ -11,6 +11,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 
 /**
  * HMac signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac
@@ -28,10 +29,6 @@ public class MacSignatureConfiguration extends InitializableObject implements Si
 
     public MacSignatureConfiguration(final String secret) {
         this.secret = secret;
-    }
-
-    public MacSignatureConfiguration(final OctetSequenceKey jwk) {
-        setSecret(jwk);
     }
 
     public MacSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
@@ -69,15 +66,11 @@ public class MacSignatureConfiguration extends InitializableObject implements Si
     }
 
     @Override
-    public boolean verify(final SignedJWT jwt) {
+    public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
 
-        try {
-            final JWSVerifier verifier = new MACVerifier(this.secret);
-            return jwt.verify(verifier);
-        } catch (final JOSEException e) {
-            throw new TechnicalException(e);
-        }
+        final JWSVerifier verifier = new MACVerifier(this.secret);
+        return jwt.verify(verifier);
     }
 
     public String getSecret() {
@@ -88,10 +81,13 @@ public class MacSignatureConfiguration extends InitializableObject implements Si
         this.secret = secret;
     }
 
-    public void setSecret(final OctetSequenceKey jwk) {
+    public static MacSignatureConfiguration buildFromJwk(final String json) {
+        CommonHelper.assertNotBlank("json", json);
+
         try {
-            this.secret = new String(jwk.toByteArray(), "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
+            final OctetSequenceKey octetSequenceKey = OctetSequenceKey.parse(json);
+            return new MacSignatureConfiguration(new String(octetSequenceKey.toByteArray(), "UTF-8"));
+        } catch (final UnsupportedEncodingException | ParseException e) {
             throw new TechnicalException(e);
         }
     }

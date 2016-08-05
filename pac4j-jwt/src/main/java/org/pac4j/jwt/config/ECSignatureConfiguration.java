@@ -13,6 +13,7 @@ import org.pac4j.core.util.InitializableObject;
 import java.security.KeyPair;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
+import java.text.ParseException;
 
 /**
  * Elliptic curve signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-ec-signature
@@ -37,10 +38,6 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
     public ECSignatureConfiguration(final KeyPair keyPair, final JWSAlgorithm algorithm) {
         setKeyPair(keyPair);
         this.algorithm = algorithm;
-    }
-
-    public ECSignatureConfiguration(final ECKey jwk) {
-        setECKey(jwk);
     }
 
     @Override
@@ -74,24 +71,21 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
     }
 
     @Override
-    public boolean verify(final SignedJWT jwt) {
+    public boolean verify(final SignedJWT jwt) throws JOSEException {
         init();
         CommonHelper.assertNotNull("publicKey", publicKey);
 
-        try {
-            final JWSVerifier verifier = new ECDSAVerifier(this.publicKey);
-            return jwt.verify(verifier);
-        } catch (final JOSEException e) {
-            throw new TechnicalException(e);
-        }
+        final JWSVerifier verifier = new ECDSAVerifier(this.publicKey);
+        return jwt.verify(verifier);
     }
 
-    public void setECKey(final ECKey jwk) {
-        CommonHelper.assertNotNull("jwk", jwk);
+    public static ECSignatureConfiguration buildFromJwk(final String json) {
+        CommonHelper.assertNotBlank("json", json);
+
         try {
-            this.privateKey = jwk.toECPrivateKey();
-            this.publicKey = jwk.toECPublicKey();
-        } catch (final JOSEException e) {
+            final ECKey ecKey = ECKey.parse(json);
+            return new ECSignatureConfiguration(ecKey.toKeyPair());
+        } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);
         }
     }

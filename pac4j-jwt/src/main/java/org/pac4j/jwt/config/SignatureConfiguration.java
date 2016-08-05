@@ -1,5 +1,6 @@
 package org.pac4j.jwt.config;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -33,6 +34,7 @@ public interface SignatureConfiguration {
      *
      * @param jwt the signed JWT
      * @return whether the signed JWT is verified
+     * @throws JOSEException exception when verifying the JWT
      */
-    boolean verify(SignedJWT jwt);
+    boolean verify(SignedJWT jwt) throws JOSEException;
 }
