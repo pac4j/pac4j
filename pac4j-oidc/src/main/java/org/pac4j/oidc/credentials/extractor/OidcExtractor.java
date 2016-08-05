@@ -67,7 +67,7 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
         AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) response;
 
         // state value must be equal
-        if (!successResponse.getState().equals(context.getSessionAttribute(OidcConfiguration.STATE_ATTRIBUTE))) {
+        if (!successResponse.getState().equals(context.getSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE))) {
             throw new TechnicalException("State parameter is different from the one sent in authentication request. "
                     + "Session expired or possible threat of cross-site request forgery");
         }

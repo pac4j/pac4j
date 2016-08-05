@@ -46,22 +46,22 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
         final String scope = configuration.getScope();
         // add scope
         if(StringUtils.isNotBlank(scope)){
-            this.authParams.put("scope", scope);
+            this.authParams.put(OidcConfiguration.SCOPE, scope);
         } else {
             // default values
-            this.authParams.put("scope", "openid profile email");
+            this.authParams.put(OidcConfiguration.SCOPE, "openid profile email");
         }
-        this.authParams.put("response_type", "code");
-        this.authParams.put("redirect_uri", configuration.getCallbackUrl());
+        this.authParams.put(OidcConfiguration.RESPONSE_TYPE, "code");
+        this.authParams.put(OidcConfiguration.REDIRECT_URI, configuration.getCallbackUrl());
         // add custom values
         this.authParams.putAll(configuration.getCustomParams());
         // Override with required values
-        this.authParams.put("client_id", configuration.getClientId());
+        this.authParams.put(OidcConfiguration.CLIENT_ID, configuration.getClientId());
     }
 
     @Override
     public RedirectAction redirect(final WebContext context) throws HttpAction {
-        final Map<String, String> params = new HashMap<>(this.authParams);
+        final Map<String, String> params = buildParams();
 
         addStateAndNonceParameters(context, params);
 
@@ -71,16 +71,20 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
         return RedirectAction.redirect(location);
     }
 
+    protected Map<String, String> buildParams() {
+        return new HashMap<>(this.authParams);
+    }
+
     protected void addStateAndNonceParameters(final WebContext context, final Map<String, String> params) {
         // Init state for CSRF mitigation
         State state = new State();
-        params.put("state", state.getValue());
-        context.setSessionAttribute(OidcConfiguration.STATE_ATTRIBUTE, state);
+        params.put(OidcConfiguration.STATE, state.getValue());
+        context.setSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE, state);
         // Init nonce for replay attack mitigation
         if (configuration.isUseNonce()) {
             Nonce nonce = new Nonce();
-            params.put("nonce", nonce.getValue());
-            context.setSessionAttribute(OidcConfiguration.NONCE_ATTRIBUTE, nonce.getValue());
+            params.put(OidcConfiguration.NONCE, nonce.getValue());
+            context.setSessionAttribute(OidcConfiguration.NONCE_SESSION_ATTRIBUTE, nonce.getValue());
         }
     }
 

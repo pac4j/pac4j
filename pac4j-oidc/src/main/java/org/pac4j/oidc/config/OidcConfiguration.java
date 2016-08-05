@@ -25,11 +25,18 @@ import java.util.Map;
  */
 public class OidcConfiguration extends InitializableWebObject {
 
+    public static final String SCOPE = "scope";
+    public static final String RESPONSE_TYPE = "response_type";
+    public static final String REDIRECT_URI = "redirect_uri";
+    public static final String CLIENT_ID = "client_id";
+    public static final String STATE = "state";
+    public static final String NONCE = "nonce";
+
     /* state attribute name in session */
-    public static final String STATE_ATTRIBUTE = "oidcStateAttribute";
+    public static final String STATE_SESSION_ATTRIBUTE = "oidcStateAttribute";
 
     /* nonce attribute name in session */
-    public static final String NONCE_ATTRIBUTE = "oidcNonceAttribute";
+    public static final String NONCE_SESSION_ATTRIBUTE = "oidcNonceAttribute";
 
     /* default max clock skew */
     public static final int DEFAULT_MAX_CLOCK_SKEW = 30;

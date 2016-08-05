@@ -138,7 +138,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
 
             final Nonce nonce;
             if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionAttribute(OidcConfiguration.NONCE_ATTRIBUTE));
+                nonce = new Nonce((String) context.getSessionAttribute(OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
             } else {
                 nonce = null;
             }
