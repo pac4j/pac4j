@@ -58,7 +58,7 @@ mvn clean install
 
 The latest released version is the [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/org.pac4j/pac4j), available in the [Maven central repository](http://search.maven.org/#search%7Cga%7C1%7Cpac4j-). See the [release notes](https://github.com/pac4j/pac4j/wiki/Versions).
 
-Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.1/index.html) and the [technical components](https://github.com/pac4j/pac4j/wiki/Technical-components) documentation for more information.
+Read the [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.1/index.html) and the [documentation](https://github.com/pac4j/pac4j/wiki) for more information.
 
 
 ## Need help?
