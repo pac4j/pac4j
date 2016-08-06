@@ -2,7 +2,7 @@ package org.pac4j.http.credentials.authenticator.test;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
@@ -15,7 +15,8 @@ import org.pac4j.http.credentials.DigestCredentials;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class SimpleTestDigestAuthenticator implements TokenAuthenticator {
+public class SimpleTestDigestAuthenticator implements Authenticator<TokenCredentials> {
+
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
         if (credentials == null) {

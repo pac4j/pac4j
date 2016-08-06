@@ -19,6 +19,7 @@ public interface TestsConstants {
     String KEY = "key";
     String FAKE_VALUE = "fakeValue";
     String SECRET = "secret";
+    String MAC_SECRET = "12345678901234567890123456789012";
     String TOKEN = "token";
     String VERIFIER = "verifier";
     String CODE = "code";

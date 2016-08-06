@@ -18,6 +18,7 @@ import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oauth.client.WindowsLiveClient;
 import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oidc.client.OidcClient;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 
@@ -261,34 +262,38 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String secret = getProperty(OIDC_SECRET.concat(i == 0 ? "" : "." + i));
             final String discoveryUri = getProperty(OIDC_DISCOVERY_URI.concat(i == 0 ? "" : "." + i));
             if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret) && CommonHelper.isNotBlank(discoveryUri)) {
-                final OidcClient oidcClient = new OidcClient(id, secret, discoveryUri);
+                final OidcConfiguration configuration = new OidcConfiguration();
+                configuration.setClientId(id);
+                configuration.setSecret(secret);
+                configuration.setDiscoveryURI(discoveryUri);
                 final String useNonce = getProperty(OIDC_USE_NONCE.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(useNonce)) {
-                    oidcClient.setUseNonce(Boolean.parseBoolean(useNonce));
+                    configuration.setUseNonce(Boolean.parseBoolean(useNonce));
                 }
                 final String jwsAlgo = getProperty(OIDC_PREFERRED_JWS_ALGORITHM.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(jwsAlgo)) {
-                    oidcClient.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
+                    configuration.setPreferredJwsAlgorithm(JWSAlgorithm.parse(jwsAlgo));
                 }
                 final String maxClockSkew = getProperty(OIDC_MAX_CLOCK_SKEW.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(maxClockSkew)) {
-                    oidcClient.setMaxClockSkew(Integer.parseInt(maxClockSkew));
+                    configuration.setMaxClockSkew(Integer.parseInt(maxClockSkew));
                 }
                 final String clientAuthenticationMethod = getProperty(OIDC_CLIENT_AUTHENTICATION_METHOD.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(clientAuthenticationMethod)) {
-                    oidcClient.setClientAuthenticationMethod(ClientAuthenticationMethod.parse(clientAuthenticationMethod));
+                    configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.parse(clientAuthenticationMethod));
                 }
                 final String key1 = getProperty(OIDC_CUSTOM_PARAM_KEY1.concat(i == 0 ? "" : "." + i));
                 final String value1 = getProperty(OIDC_CUSTOM_PARAM_VALUE1.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(key1)) {
-                    oidcClient.addCustomParam(key1, value1);
+                    configuration.addCustomParam(key1, value1);
                 }
                 final String key2 = getProperty(OIDC_CUSTOM_PARAM_KEY2.concat(i == 0 ? "" : "." + i));
                 final String value2 = getProperty(OIDC_CUSTOM_PARAM_VALUE2.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(key2)) {
-                    oidcClient.addCustomParam(key2, value2);
+                    configuration.addCustomParam(key2, value2);
                 }
 
+                final OidcClient oidcClient = new OidcClient(configuration);
                 if (i != 0) {
                     oidcClient.setName(oidcClient.getName().concat("." + i));
                 }

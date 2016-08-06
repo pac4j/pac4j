@@ -10,7 +10,7 @@ import org.pac4j.core.exception.HttpAction;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class FormExtractor implements UsernamePasswordCredentialsExtractor {
+public class FormExtractor implements CredentialsExtractor<UsernamePasswordCredentials> {
 
     private final String usernameParameter;
 

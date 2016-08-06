@@ -8,6 +8,7 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.oidc.client.GoogleOidcClient;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
 import org.pac4j.oidc.profile.GoogleOidcProfile;
 
@@ -39,9 +40,10 @@ public class RunGoogleOidcClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final GoogleOidcClient client = new GoogleOidcClient();
-        client.setClientID("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
-        client.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
+        final OidcConfiguration configuration = new OidcConfiguration();
+        configuration.setClientId("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
+        configuration.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");
+        final GoogleOidcClient client = new GoogleOidcClient(configuration);
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
     }

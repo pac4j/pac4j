@@ -1,12 +1,10 @@
 package org.pac4j.oidc.client;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.util.ResourceRetriever;
-import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
-import org.pac4j.oidc.client.azuread.AzureAdIdTokenValidator;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.AzureAdProfile;
+import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
 /**
  * A specialized {@link OidcClient} for authenticating againt Microsoft Azure AD. Microsoft Azure
@@ -31,24 +29,26 @@ import org.pac4j.oidc.profile.AzureAdProfile;
  */
 public class AzureAdClient extends OidcClient<AzureAdProfile> {
 
-    public AzureAdClient() {
+    public AzureAdClient() {}
+
+    public AzureAdClient(final OidcConfiguration configuration) {
+        super(configuration);
     }
-	
+
+    @Deprecated
     public AzureAdClient(final String clientId, final String secret, final String discoveryURI) {
         super(clientId, secret, discoveryURI);
     }
-	
-	protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) throws java.net.MalformedURLException {
-		return new AzureAdIdTokenValidator(super.createRSATokenValidator(jwsAlgorithm, clientID));
-	}
-	
-	@Override
-	protected ResourceRetriever createResourceRetriever() {
-		return new AzureAdResourceRetriever();
-	}
 
     @Override
-    protected AzureAdProfile createProfile() {
-        return new AzureAdProfile();
+    protected void internalInit(final WebContext context) {
+        getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
+        setProfileCreator(new AzureAdProfileCreator(getConfiguration()));
+        super.internalInit(context);
+    }
+
+    @Override
+    protected Class<AzureAdProfile> getProfileClass() {
+        return AzureAdProfile.class;
     }
 }

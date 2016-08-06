@@ -8,7 +8,6 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import static org.junit.Assert.*;
 
@@ -31,12 +30,6 @@ public final class HeaderClientTests implements TestsConstants {
         final HeaderClient client = new HeaderClient(NAME, new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
         TestsHelper.initShouldFail(client, "profileCreator cannot be null");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final HeaderClient client = new HeaderClient(NAME, new SimpleTestUsernamePasswordAuthenticator());
-        TestsHelper.initShouldFail(client, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator");
     }
 
     @Test

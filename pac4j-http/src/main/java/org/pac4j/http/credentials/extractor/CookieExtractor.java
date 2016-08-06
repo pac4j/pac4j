@@ -3,7 +3,7 @@ package org.pac4j.http.credentials.extractor;
 import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
@@ -15,7 +15,7 @@ import java.util.Collection;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class CookieExtractor implements TokenCredentialsExtractor {
+public class CookieExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String cookieName;
 

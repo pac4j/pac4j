@@ -3,6 +3,7 @@ package org.pac4j.http.credentials.extractor;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.credentials.extractor.HeaderExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
@@ -19,7 +20,7 @@ import java.util.StringTokenizer;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class DigestAuthExtractor implements DigestCredentialsExtractor {
+public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentials> {
 
     private final HeaderExtractor extractor;
 

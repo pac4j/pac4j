@@ -10,7 +10,6 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 
 /**
@@ -45,10 +44,10 @@ public class IndirectBasicAuthClient extends IndirectClientV2<UsernamePasswordCr
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("realmName", this.realmName);
+
         setRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         setCredentialsExtractor(new BasicAuthExtractor(getName()));
         super.internalInit(context);
-        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     @Override
