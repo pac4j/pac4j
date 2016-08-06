@@ -1,7 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator implements TokenAuthenticator {
+public class IpRegexpAuthenticator implements Authenticator<TokenCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

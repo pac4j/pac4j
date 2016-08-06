@@ -1,11 +1,7 @@
 package org.pac4j.jwt.credentials.authenticator;
 
-import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.DirectDecrypter;
-import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
-import com.nimbusds.jose.proc.JWSVerifierFactory;
-import com.nimbusds.jose.util.X509CertUtils;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -13,6 +9,7 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -21,26 +18,21 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.authenticator.TokenAuthenticator;
-import org.pac4j.core.util.InitializableWebObject;
-import org.pac4j.jwt.JwtConstants;
+import org.pac4j.jwt.JwtClaims;
+import org.pac4j.jwt.config.DirectEncryptionConfiguration;
+import org.pac4j.jwt.config.EncryptionConfiguration;
+import org.pac4j.jwt.config.MacSignatureConfiguration;
+import org.pac4j.jwt.config.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -49,58 +41,59 @@ import javax.crypto.spec.SecretKeySpec;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator extends InitializableWebObject implements TokenAuthenticator {
+public class JwtAuthenticator implements Authenticator<TokenCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String encryptionSecret;
-    
-    private JWSVerifierFactory factory = new DefaultJWSVerifierFactory();
+    private EncryptionConfiguration encryptionConfiguration;
 
-	private Key key;
+    private List<SignatureConfiguration> signatureConfigurations = new ArrayList<>();
 
-    public JwtAuthenticator() {
+    public JwtAuthenticator() {}
+
+    public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations) {
+        this.signatureConfigurations = signatureConfigurations;
     }
 
+    public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
+        setSignatureConfiguration(signatureConfiguration);
+        this.encryptionConfiguration = encryptionConfiguration;
+    }
+
+    public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations, final EncryptionConfiguration encryptionConfiguration) {
+        this.signatureConfigurations = signatureConfigurations;
+        this.encryptionConfiguration = encryptionConfiguration;
+    }
+
+    @Deprecated
     public JwtAuthenticator(final String signingSecret) {
         this(signingSecret, signingSecret);
-        warning();
+        logger.warn("Using the same key for signature and encryption may lead to security vulnerabilities. Consider using different keys");
     }
 
-    private void warning() {
-        logger.warn("Using the same key for signing and encryption may lead to security vulnerabilities. Consider using different keys");
-    }
-
-    /**
-     * Initializes the authenticator that will validate JWT tokens.
-     *
-     * @param signingSecret    The signingSecret. Must be at least 256 bits long and not {@code null}
-     * @param encryptionSecret The encryptionSecret. Must be at least 256 bits long and not {@code null} for encrypted JWT
-     * @since 1.8.2
-     */
+    @Deprecated
     public JwtAuthenticator(final String signingSecret, final String encryptionSecret) {
-    	setSigningSecret(signingSecret);
-        this.encryptionSecret = encryptionSecret;
+        if (signingSecret != null) {
+            addSignatureConfiguration(new MacSignatureConfiguration(signingSecret));
+        }
+        if (encryptionSecret != null) {
+            this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
+        }
     }
-    
+
     /**
-     * Define the signing certificate and the encryption secret.
+     * Validates the token and returns the corresponding user profile.
      *
-     * @param publicKeyPEM the public key certificate
-     * @param algorithm the key algorithm
-     * @param encryptionSecret the encryption secret
-     * @throws NoSuchAlgorithmException No such algorithm exception
-     * @throws InvalidKeySpecException  Invalid key exception
-     * @since 1.8.2
+     * @param token the JWT
+     * @return the corresponding user profile
      */
-    public JwtAuthenticator(final String publicKeyPEM, final String algorithm, final String encryptionSecret) throws NoSuchAlgorithmException, InvalidKeySpecException {
-    	setSigningPem(publicKeyPEM, algorithm);
-        this.encryptionSecret = encryptionSecret;
-    }
+    public Map<String, Object> validateTokenAndGetClaims(final String token) {
+        final CommonProfile profile = validateToken(token);
 
-    @Override
-    protected void internalInit(final WebContext context) {
+        final Map<String, Object> claims = new HashMap<>(profile.getAttributes());
+        claims.put(JwtClaims.SUBJECT, profile.getId());
 
+        return claims;
     }
 
     /**
@@ -129,47 +122,57 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
             JWT jwt = JWTParser.parse(token);
 
 			if (jwt instanceof PlainJWT) {
+                logger.debug("JWT is not signed -> verified");
                 verified = true;
             } else {
+
             	SignedJWT signedJWT;
             	if (jwt instanceof SignedJWT) {
                     logger.debug("JWT is signed");
                     signedJWT = (SignedJWT) jwt;
+
             	} else if (jwt instanceof EncryptedJWT) {
-                	CommonHelper.assertNotBlank("encryptionSecret", encryptionSecret);
+                    logger.debug("JWT is encrypted and signed");
+                    CommonHelper.assertNotNull("encryptionConfiguration", encryptionConfiguration);
 
-                	final JWEObject jweObject = (JWEObject) jwt;
-                	jweObject.decrypt(new DirectDecrypter(this.encryptionSecret.getBytes("UTF-8")));
+                    signedJWT = encryptionConfiguration.decrypt((EncryptedJWT) jwt);
+                    jwt = signedJWT;
 
-                	// Extract payload
-                	signedJWT = jweObject.getPayload().toSignedJWT();
-                	jwt = signedJWT;
             	} else {
                 	throw new TechnicalException("unsupported unsecured jwt");
             	}
-            	CommonHelper.assertNotNull("key", key);
-    			JWSVerifier verifier = factory.createJWSVerifier(signedJWT.getHeader(), key);
 
-            	verified = signedJWT.verify(verifier);
+                boolean found = false;
+                final JWSAlgorithm jwtAlgorithm = signedJWT.getHeader().getAlgorithm();
+                for (final SignatureConfiguration config : signatureConfigurations) {
+                    if (config.supports(jwtAlgorithm)) {
+                        logger.debug("Using signature configuration: {}", config);
+                        try {
+                            verified = config.verify(signedJWT);
+                            found = true;
+                            break;
+                        } catch (final JOSEException e) {
+                            logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
+                        }
+                    }
+                }
+                if (!found) {
+                    throw new CredentialsException("No signature algorithm found for JWT: " + token);
+                }
             }
         	if (!verified) {
-            	final String message = "JWT verification failed: " + token;
-            	throw new CredentialsException(message);
+            	throw new CredentialsException("JWT verification failed: " + token);
         	}
 
-        	try {
-            	createJwtProfile(credentials, jwt);
-        	} catch (final Exception e) {
-            	throw new TechnicalException("Cannot get claimSet", e);
-        	}
-        } catch (final Exception e) {
+          	createJwtProfile(credentials, jwt);
+
+        } catch (final ParseException e) {
             throw new TechnicalException("Cannot decrypt / verify JWT", e);
         }
-
-
     }
 
-    private static void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
+    @SuppressWarnings("unchecked")
+    protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
         final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
         String subject = claimSet.getSubject();
 
@@ -178,13 +181,13 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         }
 
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
-        attributes.remove(JwtConstants.SUBJECT);
-        @SuppressWarnings("unchecked")
+        attributes.remove(JwtClaims.SUBJECT);
+
 		final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
-        @SuppressWarnings("unchecked")
 		final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
+
         final CommonProfile profile = ProfileHelper.buildProfile(subject, attributes);
         if (roles != null) {
             profile.addRoles(roles);
@@ -195,55 +198,34 @@ public class JwtAuthenticator extends InitializableWebObject implements TokenAut
         credentials.setUserProfile(profile);
     }
 
-    public String getSigningSecret() {
-        return new String(key.getEncoded(), Charset.forName("UTF-8"));
+    public List<SignatureConfiguration> getSignatureConfigurations() {
+        return signatureConfigurations;
     }
 
-    public void setSigningSecret(final String signingSecret) {
-    	X509Certificate cert = X509CertUtils.parse(signingSecret);
-    	if (cert == null) {
-    		this.key = new SecretKeySpec(signingSecret.getBytes(Charset.forName("UTF-8")), "AES");
-    	} else {
-    		this.key = cert.getPublicKey();
-    	}
-    }
-    
-    /**
-     * Define the signing certificate.
-     *
-     * @param publicKeyPEM the public key certificate
-     * @param algorithm the key algorithm
-     * @throws NoSuchAlgorithmException No such algorithm exception
-     * @throws InvalidKeySpecException  Invalid key exception
-     * @since 1.8.2
-     */
-    public void setSigningPem(final String publicKeyPEM, final String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
-    	// from http://stackoverflow.com/questions/35739932/how-do-i-decode-a-jwt-token-using-an-rsa-public-key-in-pem-format
-    	// decode to its constituent bytes
-    	String publicKeyPEMToUse = publicKeyPEM;
-    	publicKeyPEMToUse = publicKeyPEMToUse.replaceAll("-----BEGIN PUBLIC KEY-----[\\r\\n]+", "");
-    	publicKeyPEMToUse = publicKeyPEMToUse.replace("-----END PUBLIC KEY-----", "");
-    	byte[] publicKeyBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(publicKeyPEMToUse);
-
-    	java.security.spec.X509EncodedKeySpec keySpec = new java.security.spec.X509EncodedKeySpec(publicKeyBytes);
-
-    	KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
-    	this.key = keyFactory.generatePublic(keySpec);
+    public void setSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
+        addSignatureConfiguration(signatureConfiguration);
     }
 
-    public String getEncryptionSecret() {
-        return encryptionSecret;
+    public void addSignatureConfiguration(final SignatureConfiguration signatureConfiguration) {
+        CommonHelper.assertNotNull("signatureConfiguration", signatureConfiguration);
+        signatureConfigurations.add(signatureConfiguration);
     }
 
-    public void setEncryptionSecret(final String encryptionSecret) {
-        this.encryptionSecret = encryptionSecret;
+    public void setSignatureConfigurations(final List<SignatureConfiguration> signatureConfigurations) {
+        CommonHelper.assertNotNull("signatureConfigurations", signatureConfigurations);
+        this.signatureConfigurations = signatureConfigurations;
     }
-    
-	public Key getKey() {
-		return key;
-	}
 
-	public void setKey(Key key) {
-		this.key = key;
-	}
+    public EncryptionConfiguration getEncryptionConfiguration() {
+        return encryptionConfiguration;
+    }
+
+    public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
+        this.encryptionConfiguration = encryptionConfiguration;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations, "encryptionConfiguration", encryptionConfiguration);
+    }
 }

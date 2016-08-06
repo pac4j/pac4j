@@ -1,9 +1,11 @@
 package org.pac4j.core.profile;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,10 +63,13 @@ public final class ProfileHelper {
                         logger.warn("Typed identifier starting with only a simple class name (without package name) are deprecated and will be removed in future versions. See profile#getOldTypedId() versus profile#getTypedId()");
                         completeName = determineProfileClassByName(className);
                     }
-                    return buildUserProfileByClassCompleteName(typedId, attributes, completeName);
+                    final CommonProfile profile = buildUserProfileByClassCompleteName(completeName);
+                    profile.build(typedId, attributes);
+                    logger.debug("userProfile built: {}", profile);
+                    return profile;
                 }
             }
-        } catch (final Exception e) {
+        } catch (final TechnicalException e) {
             logger.error("Cannot build instance", e);
         }
         return null;
@@ -104,17 +109,31 @@ public final class ProfileHelper {
         return completeName;
     }
 
-    public static CommonProfile buildUserProfileByClassCompleteName(final String typedId, final Map<String, Object> attributes,
-                                                                   final String completeName) throws Exception {
-        final Constructor<? extends CommonProfile> constructor = getConstructor(completeName);
-        final CommonProfile userProfile = constructor.newInstance();
-        userProfile.build(typedId, attributes);
-        logger.debug("userProfile built: {}", userProfile);
-        return userProfile;
+    /**
+     * Build a profile by its class name.
+     *
+     * @param completeName the class name
+     * @return the built user profile
+     */
+    public static CommonProfile buildUserProfileByClassCompleteName(final String completeName) {
+        try {
+            final Constructor<? extends CommonProfile> constructor = getConstructor(completeName);
+            return constructor.newInstance();
+        } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            throw new TechnicalException(e);
+        }
     }
 
+    /**
+     * Get the constructor of the class.
+     *
+     * @param name the name of the class
+     * @return the constructor
+     * @throws ClassNotFoundException class not found
+     * @throws NoSuchMethodException method not found
+     */
     @SuppressWarnings("unchecked")
-    private static Constructor<? extends CommonProfile> getConstructor(final String name) throws Exception {
+    private static Constructor<? extends CommonProfile> getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
         Constructor<? extends CommonProfile> constructor = constructorsCache.get(name);
         if (constructor == null) {
             synchronized (constructorsCache) {

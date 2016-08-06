@@ -6,7 +6,7 @@ import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -23,7 +23,7 @@ import java.util.zip.Inflater;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements TokenCredentialsExtractor {
+public class TicketAndLogoutRequestExtractor extends InitializableWebObject implements CredentialsExtractor<TokenCredentials> {
 
     private final static int DECOMPRESSION_FACTOR = 10;
 
@@ -44,10 +44,14 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("clientName", clientName);
+
+        configuration.init(context);
     }
 
     @Override
     public TokenCredentials extract(WebContext context) throws HttpAction {
+        init(context);
+
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
             final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);

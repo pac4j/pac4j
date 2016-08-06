@@ -6,7 +6,6 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
@@ -43,13 +42,6 @@ public final class IndirectBasicAuthClientTests implements TestsConstants {
         final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(null, new SimpleTestUsernamePasswordAuthenticator());
         basicAuthClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(basicAuthClient, "realmName cannot be blank");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final IndirectBasicAuthClient basicAuthClient = new IndirectBasicAuthClient(NAME, new SimpleTestTokenAuthenticator());
-        basicAuthClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(basicAuthClient, "Unsupported authenticator type: class org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator");
     }
 
     @Test

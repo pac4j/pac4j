@@ -14,7 +14,6 @@ import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
-import org.pac4j.core.credentials.extractor.TokenCredentialsExtractor;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -94,8 +93,6 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
 
         super.internalInit(context);
-        assertCredentialsExtractorTypes(TokenCredentialsExtractor.class);
-        assertAuthenticatorTypes(CasAuthenticator.class);
     }
 
     public CasConfiguration getConfiguration() {
@@ -108,18 +105,8 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
     }
 
     @Deprecated
-    public String getCasLoginUrl() {
-        return configuration.getLoginUrl();
-    }
-
-    @Deprecated
     public void setCasLoginUrl(final String casLoginUrl) {
         configuration.setLoginUrl(casLoginUrl);
-    }
-
-    @Deprecated
-    public String getCasPrefixUrl() {
-        return configuration.getPrefixUrl();
     }
 
     @Deprecated
@@ -128,18 +115,8 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
     }
 
     @Deprecated
-    public CasProtocol getCasProtocol() {
-        return configuration.getProtocol();
-    }
-
-    @Deprecated
     public void setCasProtocol(final CasProtocol casProtocol) {
         configuration.setProtocol(casProtocol);
-    }
-
-    @Deprecated
-    public boolean isRenew() {
-        return configuration.isRenew();
     }
 
     @Deprecated
@@ -148,18 +125,8 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
     }
 
     @Deprecated
-    public boolean isGateway() {
-        return configuration.isGateway();
-    }
-
-    @Deprecated
     public void setGateway(final boolean gateway) {
         configuration.setGateway(gateway);
-    }
-
-    @Deprecated
-    public CasLogoutHandler getLogoutHandler() {
-        return configuration.getLogoutHandler();
     }
 
     @Deprecated
@@ -168,28 +135,13 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
     }
 
     @Deprecated
-    public boolean isAcceptAnyProxy() {
-        return configuration.isAcceptAnyProxy();
-    }
-
-    @Deprecated
     public void setAcceptAnyProxy(final boolean acceptAnyProxy) {
         configuration.setAcceptAnyProxy(acceptAnyProxy);
     }
 
     @Deprecated
-    public ProxyList getAllowedProxyChains() {
-        return configuration.getAllowedProxyChains();
-    }
-
-    @Deprecated
     public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
         configuration.setAllowedProxyChains(allowedProxyChains);
-    }
-
-    @Deprecated
-    public CasProxyReceptor getCasProxyReceptor() {
-        return configuration.getProxyReceptor();
     }
 
     @Deprecated

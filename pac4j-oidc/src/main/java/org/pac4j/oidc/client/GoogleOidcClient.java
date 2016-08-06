@@ -1,5 +1,7 @@
 package org.pac4j.oidc.client;
 
+import org.pac4j.core.context.WebContext;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.GoogleOidcProfile;
 
 /**
@@ -11,12 +13,20 @@ import org.pac4j.oidc.profile.GoogleOidcProfile;
  */
 public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
 
-    public GoogleOidcClient() {
-        setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
+    public GoogleOidcClient() {}
+
+    public GoogleOidcClient(final OidcConfiguration configuration) {
+        super(configuration);
     }
 
     @Override
-    protected GoogleOidcProfile createProfile() {
-        return new GoogleOidcProfile();
+    protected void internalInit(final WebContext context) {
+        getConfiguration().setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
+        super.internalInit(context);
+    }
+
+    @Override
+    protected Class<GoogleOidcProfile> getProfileClass() {
+        return GoogleOidcProfile.class;
     }
 }

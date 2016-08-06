@@ -16,7 +16,7 @@ import java.util.Base64;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class BasicAuthExtractor implements UsernamePasswordCredentialsExtractor {
+public class BasicAuthExtractor implements CredentialsExtractor<UsernamePasswordCredentials> {
 
     private final HeaderExtractor extractor;
 

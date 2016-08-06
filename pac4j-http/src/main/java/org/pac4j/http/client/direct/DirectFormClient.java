@@ -4,12 +4,10 @@ import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.credentials.extractor.UsernamePasswordCredentialsExtractor;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.extractor.FormExtractor;
 
 /**
@@ -31,7 +29,7 @@ public class DirectFormClient extends DirectClientV2<UsernamePasswordCredentials
     }
 
     public DirectFormClient(final String usernameParameter, final String passwordParameter,
-                            final UsernamePasswordAuthenticator usernamePasswordAuthenticator) {
+                            final Authenticator usernamePasswordAuthenticator) {
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
         setAuthenticator(usernamePasswordAuthenticator);
@@ -49,10 +47,7 @@ public class DirectFormClient extends DirectClientV2<UsernamePasswordCredentials
         CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
 
         setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
-
         super.internalInit(context);
-        assertCredentialsExtractorTypes(UsernamePasswordCredentialsExtractor.class);
-        assertAuthenticatorTypes(UsernamePasswordAuthenticator.class);
     }
 
     public String getUsernameParameter() {

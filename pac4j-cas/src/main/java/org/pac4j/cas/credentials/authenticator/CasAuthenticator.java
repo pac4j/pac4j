@@ -42,10 +42,14 @@ public class CasAuthenticator extends InitializableWebObject implements Authenti
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
+
+        configuration.init(context);
     }
 
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
+        init(context);
+
         final String ticket = credentials.getToken();
         try {
             String finalCallbackUrl = callbackUrl;

@@ -11,7 +11,7 @@ import org.pac4j.core.exception.HttpAction;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class HeaderExtractor implements TokenCredentialsExtractor {
+public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private final String headerName;
 

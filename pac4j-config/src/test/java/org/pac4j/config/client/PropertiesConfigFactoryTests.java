@@ -63,15 +63,15 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         assertEquals(ID, twClient.getKey());
         assertEquals(SECRET, twClient.getSecret());
         final CasClient casClient = (CasClient) clients.findClient("CasClient");
-        assertEquals(CALLBACK_URL, casClient.getCasLoginUrl());
-        assertEquals(CasProtocol.CAS20, casClient.getCasProtocol());
+        assertEquals(CALLBACK_URL, casClient.getConfiguration().getLoginUrl());
+        assertEquals(CasProtocol.CAS20, casClient.getConfiguration().getProtocol());
         final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
         assertNotNull(saml2client);
         final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
         assertNotNull(oidcClient);
-        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getClientAuthenticationMethod().toString().toLowerCase());
+        assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
 
         final CasClient casClient1 = (CasClient) clients.findClient("CasClient.1");
-        assertEquals(CasProtocol.CAS30, casClient1.getCasProtocol());
+        assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
     }
 }
