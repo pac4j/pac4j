@@ -10,8 +10,10 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
+import org.pac4j.oidc.profile.GoogleIdTokenProfile;
 import org.pac4j.oidc.profile.GoogleOidcProfile;
 
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
@@ -62,11 +64,23 @@ public class RunGoogleOidcClient extends RunClient {
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
         assertNotNull(profile.getIdTokenString());
-        assertCommonProfile(userProfile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
+        assertCommonProfile(profile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
                 Gender.MALE, Locale.ENGLISH,
                 "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                 "https://plus.google.com/113675986756217860428", null);
-        assertEquals(12, profile.getAttributes().size());
         assertTrue(profile.getEmailVerified());
+        assertEquals(12, profile.getAttributes().size());
+        final GoogleIdTokenProfile idTokenProfile = profile.getIdToken().get();
+        assertCommonProfile(idTokenProfile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
+                Gender.UNSPECIFIED, Locale.ENGLISH,
+                "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/s96-c/photo.jpg",
+                null, null);
+        assertEquals("https://accounts.google.com", idTokenProfile.getIssuer());
+        assertEquals("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com", idTokenProfile.getAzp());
+        assertNotNull(idTokenProfile.getExpirationDate());
+        assertNotNull(idTokenProfile.getIssuedAt());
+        final List<String> audience =  (List<String>) idTokenProfile.getAudience();
+        assertEquals("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com", audience.get(0));
+        assertEquals(13, idTokenProfile.getAttributes().size());
     }
 }

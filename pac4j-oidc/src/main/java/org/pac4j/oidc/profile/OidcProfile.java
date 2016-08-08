@@ -1,9 +1,11 @@
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
@@ -14,6 +16,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -22,7 +26,7 @@ import java.util.List;
  * @author Michael Remond
  * @version 1.7.0
  */
-public class OidcProfile extends CommonProfile implements Externalizable {
+public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile implements Externalizable {
 
     private static final long serialVersionUID = -52855988661742374L;
 
@@ -49,11 +53,34 @@ public class OidcProfile extends CommonProfile implements Externalizable {
         addAttribute(ID_TOKEN, idTokenString);
     }
 
-    public JWT getIdToken() throws ParseException {
+    public Optional<U> getIdToken() {
         if (getIdTokenString() != null) {
-            return JWTParser.parse(getIdTokenString());
+            try {
+                final JWT jwt = JWTParser.parse(getIdTokenString());
+                final CommonProfile profile = (CommonProfile) buildJwtIdTokenProfile();
+                final JWTClaimsSet claims = jwt.getJWTClaimsSet();
+                if (claims != null) {
+                    final Map<String, Object> mapClaims = claims.getClaims();
+                    for (final Map.Entry<String, Object> entry: mapClaims.entrySet()) {
+                        final String key = entry.getKey();
+                        final Object value = entry.getValue();
+                        if (JwtIdTokenClaims.SUBJECT.equalsIgnoreCase(key)) {
+                            profile.setId(value);
+                        } else {
+                            profile.addAttribute(key, value);
+                        }
+                    }
+                }
+                return Optional.of((U) profile);
+            } catch (final ParseException e) {
+                throw new TechnicalException(e);
+            }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    protected U buildJwtIdTokenProfile() {
+        return (U) new DefaultIdTokenProfile();
     }
 
     public String getRefreshTokenString() {

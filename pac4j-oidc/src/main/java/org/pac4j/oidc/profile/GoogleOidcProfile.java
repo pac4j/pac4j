@@ -10,7 +10,7 @@ import org.pac4j.oidc.profile.google.GoogleOidcAttributesDefinition;
  * @author Jerome Leleu
  * @version 1.9.0
  */
-public class GoogleOidcProfile extends OidcProfile {
+public class GoogleOidcProfile extends OidcProfile<GoogleIdTokenProfile> {
 
     private static final long serialVersionUID = -6076954328349948251L;
 
@@ -43,5 +43,10 @@ public class GoogleOidcProfile extends OidcProfile {
 
     public Boolean getEmailVerified() {
         return (Boolean) getAttribute(GoogleOidcAttributesDefinition.EMAIL_VERIFIED);
+    }
+
+    @Override
+    protected GoogleIdTokenProfile buildJwtIdTokenProfile() {
+        return new GoogleIdTokenProfile();
     }
 }
