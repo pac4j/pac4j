@@ -1,6 +1,8 @@
 package org.pac4j.oidc.profile;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Profile of the JWT ID token.
@@ -18,8 +20,14 @@ public interface JwtIdTokenProfile {
         return (String) getAttribute(JwtIdTokenClaims.ISSUER);
     }
 
-    default Object getAudience() {
-        return getAttribute(JwtIdTokenClaims.AUDIENCE);
+    @SuppressWarnings("unchecked")
+    default List<String> getAudience() {
+        final Object audience = getAttribute(JwtIdTokenClaims.AUDIENCE);
+        if (audience instanceof String) {
+            return Collections.singletonList((String) audience);
+        } else {
+            return (List<String>) audience;
+        }
     }
 
     default Date getExpirationDate() {
