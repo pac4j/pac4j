@@ -5,20 +5,15 @@ import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.authorization.authorizer.csrf.DefaultCsrfTokenGenerator;
-import org.pac4j.core.context.ContextHelper;
-import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.context.Pac4jConstants;
-import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.*;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AnonymousProfile;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -206,6 +201,21 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         assertNotNull(context.getResponseHeaders().get("Cache-Control"));
         assertNotNull(context.getResponseHeaders().get("Pragma"));
         assertNotNull(context.getResponseHeaders().get("Expires"));
+    }
+
+    @Test
+    public void testAllowAjaxRequests() throws HttpAction {
+        final MockWebContext context = MockWebContext.create();
+        checker.isAuthorized(context, profiles, "allowAjaxRequests", null);
+        assertEquals("*", context.getResponseHeaders().get(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER));
+        assertEquals("true", context.getResponseHeaders().get(HttpConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER));
+        final String methods = context.getResponseHeaders().get(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER);
+        final List<String> methodArray = Arrays.asList(methods.split(",")).stream().map(String::trim).collect(Collectors.toList());
+        assertTrue(methodArray.contains("POST"));
+        assertTrue(methodArray.contains("PUT"));
+        assertTrue(methodArray.contains("DELETE"));
+        assertTrue(methodArray.contains("OPTIONS"));
+        assertTrue(methodArray.contains("GET"));
     }
 
     @Test
