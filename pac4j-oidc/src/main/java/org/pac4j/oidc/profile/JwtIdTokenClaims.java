@@ -1,7 +1,7 @@
 package org.pac4j.oidc.profile;
 
 /**
- * JWT ID Token claims.
+ * JWT ID Token claims: http://openid.net/specs/openid-connect-core-1_0.html#IDToken
  *
  * @author Jerome Leleu
  * @since 1.9.2

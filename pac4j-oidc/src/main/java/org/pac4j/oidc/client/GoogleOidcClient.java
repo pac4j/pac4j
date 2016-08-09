@@ -2,7 +2,7 @@ package org.pac4j.oidc.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.profile.GoogleOidcProfile;
+import org.pac4j.oidc.profile.google.GoogleOidcProfile;
 
 /**
  * <p>This class is the OpenID Connect client to authenticate users in Google.</p>

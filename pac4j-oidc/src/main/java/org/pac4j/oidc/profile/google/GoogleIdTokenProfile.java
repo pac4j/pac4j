@@ -1,4 +1,6 @@
-package org.pac4j.oidc.profile;
+package org.pac4j.oidc.profile.google;
+
+import org.pac4j.oidc.profile.JwtIdTokenProfile;
 
 /**
  * Google profile for the ID Token.
