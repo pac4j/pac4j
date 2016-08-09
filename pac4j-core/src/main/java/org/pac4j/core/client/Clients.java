@@ -210,13 +210,13 @@ public class Clients extends InitializableObject {
         return this.clients;
     }
 
-	public void setDefaultClient(final Client defaultClient) {
-		this.defaultClient = defaultClient;
-	}
+    public void setDefaultClient(final Client defaultClient) {
+        this.defaultClient = defaultClient;
+    }
 
-	public Client getDefaultClient() {
-		return defaultClient;
-	}
+    public Client getDefaultClient() {
+        return defaultClient;
+    }
 
     public AjaxRequestResolver getAjaxRequestResolver() {
         return ajaxRequestResolver;
