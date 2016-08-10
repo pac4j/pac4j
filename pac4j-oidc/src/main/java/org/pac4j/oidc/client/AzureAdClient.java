@@ -3,7 +3,7 @@ package org.pac4j.oidc.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.profile.AzureAdProfile;
+import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
 
 /**

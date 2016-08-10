@@ -1,7 +1,7 @@
 package org.pac4j.oidc.profile.azuread;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.oidc.profile.OidcAttributesDefinition;
 
 import java.util.Arrays;
 
@@ -11,15 +11,14 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class AzureAdAttributesDefinition extends AttributesDefinition {
+public class AzureAdAttributesDefinition extends OidcAttributesDefinition {
 
-    public static final String NAME = "name";
-    public static final String GIVEN_NAME = "given_name";
-    public static final String FAMILY_NAME = "family_name";
-    public static final String EMAIL = "email";
     public static final String IDP = "idp";
+    public static final String OID = "oid";
+    public static final String TID = "tid";
 
     public AzureAdAttributesDefinition() {
-        Arrays.stream(new String[] {NAME, GIVEN_NAME, FAMILY_NAME, IDP, EMAIL}).forEach(a -> primary(a, Converters.STRING));
+        super();
+        Arrays.stream(new String[] {IDP, OID, TID}).forEach(a -> primary(a, Converters.STRING));
     }
 }

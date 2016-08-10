@@ -5,7 +5,6 @@ import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.oidc.client.azuread.AzureAdIdTokenValidator;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.profile.AzureAdProfile;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 
 /**
