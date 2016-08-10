@@ -8,8 +8,10 @@ import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.oidc.client.AzureAdClient;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
-import org.pac4j.oidc.profile.AzureAdProfile;
+import org.pac4j.oidc.profile.azuread.AzureAdIdTokenProfile;
+import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 
 import static org.junit.Assert.*;
 
@@ -37,10 +39,11 @@ public class RunAzureAdClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final AzureAdClient client = new AzureAdClient();
-        client.setClientID("788339d7-1c44-4732-97c9-134cb201f01f");
-        client.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
-        client.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration");
+        final OidcConfiguration configuration = new OidcConfiguration();
+        configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
+        configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");
+        configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration");
+        final AzureAdClient client = new AzureAdClient(configuration);
         client.setCallbackUrl(PAC4J_URL);
         return client;
     }
@@ -59,9 +62,27 @@ public class RunAzureAdClient extends RunClient {
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), AzureAdProfile.class));
         assertNotNull(profile.getIdTokenString());
-        assertCommonProfile(userProfile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
+        assertCommonProfile(profile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
                 Gender.UNSPECIFIED, null, null, null, null);
         assertEquals("live.com", profile.getIdp());
+        assertEquals("6c59c433-11b5-4fb1-9641-40b829e7a8e4", profile.getOid());
+        assertEquals("38c46e5a-21f0-46e5-940d-3ca06fd1a330", profile.getTid());
         assertEquals(11, profile.getAttributes().size());
+        final AzureAdIdTokenProfile idTokenProfile = profile.getIdToken().get();
+        assertEquals("1.0", idTokenProfile.getVer());
+        assertCommonProfile(idTokenProfile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
+                Gender.UNSPECIFIED, null, null, null, null);
+        assertNotNull(idTokenProfile.getAmr());
+        assertNotNull(idTokenProfile.getIssuer());
+        assertEquals("6c59c433-11b5-4fb1-9641-40b829e7a8e4", idTokenProfile.getOid());
+        assertEquals("38c46e5a-21f0-46e5-940d-3ca06fd1a330", idTokenProfile.getTid());
+        assertEquals("788339d7-1c44-4732-97c9-134cb201f01f", idTokenProfile.getAudience().get(0));
+        assertEquals("live.com#" + getLogin(), idTokenProfile.getUniqueName());
+        assertNotNull(idTokenProfile.getNbf());
+        assertEquals("live.com", idTokenProfile.getIdp());
+        assertNotNull(idTokenProfile.getExpirationDate());
+        assertNotNull(idTokenProfile.getIpaddr());
+        assertNotNull(idTokenProfile.getIssuedAt());
+        assertEquals(16, idTokenProfile.getAttributes().size());
     }
 }

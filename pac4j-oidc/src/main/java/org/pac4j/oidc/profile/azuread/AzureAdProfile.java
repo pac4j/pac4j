@@ -1,7 +1,7 @@
-package org.pac4j.oidc.profile;
+package org.pac4j.oidc.profile.azuread;
 
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.oidc.profile.azuread.AzureAdAttributesDefinition;
+import org.pac4j.oidc.profile.OidcProfile;
 
 /**
  * <p>This class is the user profile for Azure AD (using OpenID Connect protocol) with appropriate getters.</p>
@@ -10,7 +10,7 @@ import org.pac4j.oidc.profile.azuread.AzureAdAttributesDefinition;
  * @author Jerome Leleu
  * @version 1.9.0
  */
-public class AzureAdProfile extends OidcProfile {
+public class AzureAdProfile extends OidcProfile<AzureAdIdTokenProfile> {
 
     private static final long serialVersionUID = -8659029290353954198L;
 
@@ -21,18 +21,20 @@ public class AzureAdProfile extends OidcProfile {
         return ATTRIBUTES_DEFINITION;
     }
 
-
-    @Override
-    public String getFirstName() {
-        return (String) getAttribute(AzureAdAttributesDefinition.GIVEN_NAME);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return (String) getAttribute(AzureAdAttributesDefinition.NAME);
-    }
-
     public String getIdp() {
         return (String) getAttribute(AzureAdAttributesDefinition.IDP);
+    }
+
+    public String getOid() {
+        return (String) getAttribute(AzureAdAttributesDefinition.OID);
+    }
+
+    public String getTid() {
+        return (String) getAttribute(AzureAdAttributesDefinition.TID);
+    }
+
+    @Override
+    protected AzureAdIdTokenProfile buildJwtIdTokenProfile() {
+        return new AzureAdIdTokenProfile();
     }
 }

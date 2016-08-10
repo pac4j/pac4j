@@ -1,7 +1,7 @@
 package org.pac4j.jwt;
 
 /**
- * JWT claims.
+ * JWT claims: https://tools.ietf.org/html/rfc7519#page-9
  *
  * @author Jerome Leleu
  * @since 1.8.3
