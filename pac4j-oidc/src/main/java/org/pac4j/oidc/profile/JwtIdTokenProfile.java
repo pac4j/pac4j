@@ -17,12 +17,12 @@ public interface JwtIdTokenProfile {
     }
 
     default String getIssuer() {
-        return (String) getAttribute(JwtIdTokenClaims.ISSUER);
+        return (String) getAttribute(OidcIdTokenAttributesDefinition.ISSUER);
     }
 
     @SuppressWarnings("unchecked")
     default List<String> getAudience() {
-        final Object audience = getAttribute(JwtIdTokenClaims.AUDIENCE);
+        final Object audience = getAttribute(OidcIdTokenAttributesDefinition.AUDIENCE);
         if (audience instanceof String) {
             return Collections.singletonList((String) audience);
         } else {
@@ -31,31 +31,35 @@ public interface JwtIdTokenProfile {
     }
 
     default Date getExpirationDate() {
-        return (Date) getAttribute(JwtIdTokenClaims.EXPIRATION_TIME);
+        return (Date) getAttribute(OidcIdTokenAttributesDefinition.EXPIRATION_TIME);
     }
 
     default Date getIssuedAt() {
-        return (Date) getAttribute(JwtIdTokenClaims.ISSUED_AT);
+        return (Date) getAttribute(OidcIdTokenAttributesDefinition.ISSUED_AT);
+    }
+
+    default Date getNbf() {
+        return (Date) getAttribute(OidcIdTokenAttributesDefinition.NBF);
     }
 
     default Date getAuthTime() {
-        return (Date) getAttribute(JwtIdTokenClaims.AUTH_TIME);
+        return (Date) getAttribute(OidcIdTokenAttributesDefinition.AUTH_TIME);
     }
 
     default String getNonce() {
-        return (String) getAttribute(JwtIdTokenClaims.NONCE);
+        return (String) getAttribute(OidcIdTokenAttributesDefinition.NONCE);
     }
 
     default String getAcr() {
-        return (String) getAttribute(JwtIdTokenClaims.ACR);
+        return (String) getAttribute(OidcIdTokenAttributesDefinition.ACR);
     }
 
     default Object getAmr() {
-        return getAttribute(JwtIdTokenClaims.AMR);
+        return getAttribute(OidcIdTokenAttributesDefinition.AMR);
     }
 
     default String getAzp() {
-        return (String) getAttribute(JwtIdTokenClaims.AZP);
+        return (String) getAttribute(OidcIdTokenAttributesDefinition.AZP);
     }
 
     String getId();

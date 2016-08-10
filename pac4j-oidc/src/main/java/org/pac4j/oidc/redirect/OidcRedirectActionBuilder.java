@@ -3,7 +3,6 @@ package org.pac4j.oidc.redirect;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.Nonce;
-import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
@@ -45,19 +44,30 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
         configuration.init(context);
 
         this.authParams = new HashMap<>();
-        final String scope = configuration.getScope();
         // add scope
-        if(StringUtils.isNotBlank(scope)){
+        final String scope = configuration.getScope();
+        if(CommonHelper.isNotBlank(scope)){
             this.authParams.put(OidcConfiguration.SCOPE, scope);
         } else {
             // default values
             this.authParams.put(OidcConfiguration.SCOPE, "openid profile email");
         }
-        this.authParams.put(OidcConfiguration.RESPONSE_TYPE, "code");
+        // add response type
+        final String responseType = configuration.getResponseType();
+        if (CommonHelper.isNotBlank(responseType)) {
+            this.authParams.put(OidcConfiguration.RESPONSE_TYPE, responseType);
+        } else {
+            this.authParams.put(OidcConfiguration.RESPONSE_TYPE, "code");
+        }
+        // add response mode?
+        final String responseMode = configuration.getResponseMode();
+        if (CommonHelper.isNotBlank(responseMode)) {
+            this.authParams.put(OidcConfiguration.RESPONSE_MODE, responseMode);
+        }
         this.authParams.put(OidcConfiguration.REDIRECT_URI, configuration.getCallbackUrl());
         // add custom values
         this.authParams.putAll(configuration.getCustomParams());
-        // Override with required values
+        // client id
         this.authParams.put(OidcConfiguration.CLIENT_ID, configuration.getClientId());
     }
 

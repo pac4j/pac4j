@@ -20,18 +20,20 @@ public class OidcCredentials extends Credentials {
     private static final long serialVersionUID = 6772331801527223938L;
 
     private AuthorizationCode code;
-
     private AccessToken accessToken;
     private RefreshToken refreshToken;
     private JWT idToken;
 
-    public OidcCredentials(final AuthorizationCode code, final String clientName) {
-        this.code = code;
+    public OidcCredentials(final String clientName) {
         this.setClientName(clientName);
     }
 
     public AuthorizationCode getCode() {
-        return this.code;
+        return code;
+    }
+
+    public void setCode(final AuthorizationCode code) {
+        this.code = code;
     }
 
     public AccessToken getAccessToken() {

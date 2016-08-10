@@ -18,7 +18,7 @@ import java.util.Locale;
 import static org.junit.Assert.*;
 
 /**
- * Run manually a test for the {@link GoogleOidcClient}.
+ * Run a manual test the {@link GoogleOidcClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -62,6 +62,7 @@ public class RunGoogleOidcClient extends RunClient {
         assertEquals(GoogleOidcProfile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
+        assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getIdTokenString());
         assertCommonProfile(profile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
                 Gender.MALE, Locale.ENGLISH,

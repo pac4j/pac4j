@@ -22,12 +22,13 @@ public final class TestsHelper {
         int pos = url.indexOf("?");
         if (pos >= 0) {
             url = url.substring(pos + 1);
+        } else {
+            pos = url.indexOf("#");
+            if (pos >= 0) {
+                url = url.substring(pos + 1);
+            }
         }
-        pos = url.indexOf("#");
-        if (pos >= 0) {
-            url = url.substring(0, pos);
-        }
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         final StringTokenizer st = new StringTokenizer(url, "&");
         while (st.hasMoreTokens()) {
             final String keyValue = st.nextToken();

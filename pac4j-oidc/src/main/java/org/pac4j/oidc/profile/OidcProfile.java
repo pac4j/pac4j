@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,10 +28,6 @@ import java.util.Optional;
 public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile implements Externalizable {
 
     private static final long serialVersionUID = -52855988661742374L;
-
-    private transient static final String ACCESS_TOKEN = "access_token";
-    private transient static final String ID_TOKEN = "id_token";
-    private transient static final String REFRESH_TOKEN = "refresh_token";
 
     public OidcProfile() { }
 
@@ -91,20 +88,24 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
         return (Boolean) getAttribute(OidcAttributesDefinition.PHONE_NUMBER_VERIFIED);
     }
 
+    public Date getUpatedAt() {
+        return (Date) getAttribute(OidcAttributesDefinition.UPDATED_AT);
+    }
+
     public void setAccessToken(final BearerAccessToken accessToken) {
-        addAttribute(ACCESS_TOKEN, accessToken);
+        addAttribute(OidcAttributesDefinition.ACCESS_TOKEN, accessToken);
     }
 
     public BearerAccessToken getAccessToken() {
-        return (BearerAccessToken) getAttribute(ACCESS_TOKEN);
+        return (BearerAccessToken) getAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
     }
 
     public String getIdTokenString() {
-        return (String) getAttribute(ID_TOKEN);
+        return (String) getAttribute(OidcAttributesDefinition.ID_TOKEN);
     }
 
     public void setIdTokenString(final String idTokenString) {
-        addAttribute(ID_TOKEN, idTokenString);
+        addAttribute(OidcAttributesDefinition.ID_TOKEN, idTokenString);
     }
 
     public Optional<U> getIdToken() {
@@ -118,7 +119,7 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
                     for (final Map.Entry<String, Object> entry: mapClaims.entrySet()) {
                         final String key = entry.getKey();
                         final Object value = entry.getValue();
-                        if (JwtIdTokenClaims.SUBJECT.equalsIgnoreCase(key)) {
+                        if (OidcIdTokenAttributesDefinition.SUBJECT.equalsIgnoreCase(key)) {
                             profile.setId(value);
                         } else {
                             profile.addAttribute(key, value);
@@ -138,11 +139,11 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
     }
 
     public String getRefreshTokenString() {
-        return (String) getAttribute(REFRESH_TOKEN);
+        return (String) getAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
     }
 
     public void setRefreshTokenString(final String refreshTokenString) {
-        addAttribute(REFRESH_TOKEN, refreshTokenString);
+        addAttribute(OidcAttributesDefinition.REFRESH_TOKEN, refreshTokenString);
     }
 
     @Override
@@ -170,8 +171,8 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
 
     @Override
     public void clearSensitiveData() {
-        removeAttribute(ACCESS_TOKEN);
-        removeAttribute(ID_TOKEN);
-        removeAttribute(REFRESH_TOKEN);
+        removeAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
+        removeAttribute(OidcAttributesDefinition.ID_TOKEN);
+        removeAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
     }
 }

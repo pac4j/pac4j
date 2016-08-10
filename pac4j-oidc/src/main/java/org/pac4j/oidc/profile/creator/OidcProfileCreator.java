@@ -9,6 +9,7 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
@@ -110,14 +111,15 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         profile.setAccessToken(accessToken);
         profile.setIdTokenString(credentials.getIdToken().getParsedString());
         // Check if there is refresh token
-        if (credentials.getRefreshToken() != null && !credentials.getRefreshToken().getValue().isEmpty()) {
-            profile.setRefreshTokenString(credentials.getRefreshToken().getValue());
+        final RefreshToken refreshToken = credentials.getRefreshToken();
+        if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
+            profile.setRefreshTokenString(refreshToken.getValue());
             logger.debug("Refresh Token successful retrieved");
         }
 
         try {
             // User Info request
-            if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null) {
+            if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
                 final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
@@ -161,7 +163,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         return configuration;
     }
 
-    public void setConfiguration(OidcConfiguration configuration) {
+    public void setConfiguration(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -169,7 +171,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         return clazz;
     }
 
-    public void setClazz(Class<U> clazz) {
+    public void setClazz(final Class<U> clazz) {
         this.clazz = clazz;
     }
 
