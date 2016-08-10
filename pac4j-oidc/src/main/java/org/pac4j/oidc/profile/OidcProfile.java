@@ -3,16 +3,13 @@ package org.pac4j.oidc.profile;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
@@ -25,7 +22,7 @@ import java.util.Optional;
  * @author Michael Remond
  * @version 1.7.0
  */
-public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile implements Externalizable {
+public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile {
 
     private static final long serialVersionUID = -52855988661742374L;
 
@@ -92,23 +89,23 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
         return (Date) getAttribute(OidcAttributesDefinition.UPDATED_AT);
     }
 
-    public void setAccessToken(final BearerAccessToken accessToken) {
+    public void setAccessToken(final AccessToken accessToken) {
         addAttribute(OidcAttributesDefinition.ACCESS_TOKEN, accessToken);
     }
 
-    public BearerAccessToken getAccessToken() {
-        return (BearerAccessToken) getAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
+    public AccessToken getAccessToken() {
+        return (AccessToken) getAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
     }
 
     public String getIdTokenString() {
         return (String) getAttribute(OidcAttributesDefinition.ID_TOKEN);
     }
 
-    public void setIdTokenString(final String idTokenString) {
-        addAttribute(OidcAttributesDefinition.ID_TOKEN, idTokenString);
+    public void setIdTokenString(final String idToken) {
+        addAttribute(OidcAttributesDefinition.ID_TOKEN, idToken);
     }
 
-    public Optional<U> getIdToken() {
+    public Optional<U> getIdTokenProfile() {
         if (getIdTokenString() != null) {
             try {
                 final JWT jwt = JWTParser.parse(getIdTokenString());
@@ -138,35 +135,12 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
         return (U) new DefaultIdTokenProfile();
     }
 
-    public String getRefreshTokenString() {
-        return (String) getAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
+    public RefreshToken getRefreshToken() {
+        return (RefreshToken) getAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
     }
 
-    public void setRefreshTokenString(final String refreshTokenString) {
-        addAttribute(OidcAttributesDefinition.REFRESH_TOKEN, refreshTokenString);
-    }
-
-    @Override
-    public void writeExternal(final ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        BearerAccessTokenBean bean = null; 
-        if (getAccessToken() != null) {
-            bean = BearerAccessTokenBean.toBean(getAccessToken());
-        }
-        out.writeObject(bean);
-        out.writeObject(getIdTokenString());
-        out.writeObject(getRefreshTokenString());
-    }
-
-    @Override
-    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
-        if (bean != null) {
-            setAccessToken(BearerAccessTokenBean.fromBean(bean));
-        }
-        setIdTokenString((String) in.readObject());
-        setRefreshTokenString((String) in.readObject());
+    public void setRefreshToken(final RefreshToken refreshToken) {
+        addAttribute(OidcAttributesDefinition.REFRESH_TOKEN, refreshToken);
     }
 
     @Override

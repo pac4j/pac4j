@@ -41,9 +41,9 @@ import static org.junit.Assert.*;
  */
 public class RunIdentityServer4 extends RunClient {
 
-    private enum Flow { IMPLICIT_FLOW, IMPLICIT_FLOW_CLIENT_SIDE, AUTHORIZATION_CODE };
+    private enum Flow { IMPLICIT_FLOW, IMPLICIT_FLOW_CLIENT_SIDE, AUTHORIZATION_CODE, HYBRID_FLOW };
 
-    private final static Flow flow = Flow.AUTHORIZATION_CODE;
+    private final static Flow flow = Flow.HYBRID_FLOW;
 
     public static void main(final String[] args) throws Exception {
         new RunIdentityServer4().run();
@@ -77,7 +77,11 @@ public class RunIdentityServer4 extends RunClient {
             configuration.setUseNonce(true);
         /*} else if (flow == Flow.AUTHORIZATION_CODE) {
             AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,*/
-        } else {
+        } else if (flow == Flow.HYBRID_FLOW) {
+            // AllowAccessTokensViaBrowser = true, AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+            configuration.setResponseType("code id_token token");
+            configuration.setUseNonce(true);
+        } else if (flow != Flow.AUTHORIZATION_CODE) {
             throw new TechnicalException("Unsupported flow for tests");
         }
         final OidcClient client = new OidcClient(configuration);
@@ -95,7 +99,7 @@ public class RunIdentityServer4 extends RunClient {
     protected void verifyProfile(final CommonProfile userProfile) {
         final OidcProfile profile = (OidcProfile) userProfile;
         assertEquals("818727", profile.getId());
-        final DefaultIdTokenProfile idTokenProfile = (DefaultIdTokenProfile) profile.getIdToken().get();
+        final DefaultIdTokenProfile idTokenProfile = (DefaultIdTokenProfile) profile.getIdTokenProfile().get();
         assertEquals("test", idTokenProfile.getAudience().get(0));
         assertNotNull(idTokenProfile.getNbf());
         assertEquals("idsvr", idTokenProfile.getAttribute("idp"));
@@ -112,6 +116,10 @@ public class RunIdentityServer4 extends RunClient {
             assertNotNull(profile.getAccessToken());
             assertEquals(3, profile.getAttributes().size());
             assertEquals(9, idTokenProfile.getAttributes().size());
+        } else if (flow == Flow.HYBRID_FLOW) {
+            assertNotNull(profile.getAccessToken());
+            assertEquals(3, profile.getAttributes().size());
+            assertEquals(10, idTokenProfile.getAttributes().size());
         }
     }
 }

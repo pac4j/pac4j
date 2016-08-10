@@ -1,6 +1,10 @@
 package org.pac4j.oidc.profile;
 
+import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oidc.profile.converter.OidcLongTimeConverter;
 
@@ -39,12 +43,34 @@ public class OidcAttributesDefinition extends AttributesDefinition {
 
     public OidcAttributesDefinition() {
         Arrays.stream(new String[] {NAME, GIVEN_NAME, FAMILY_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, PROFILE, PICTURE, WEBSITE, EMAIL,
-                PHONE_NUMBER, ZONEINFO, ID_TOKEN, REFRESH_TOKEN}).forEach(a -> primary(a, Converters.STRING));
+                PHONE_NUMBER, ZONEINFO, ID_TOKEN}).forEach(a -> primary(a, Converters.STRING));
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
         primary(PHONE_NUMBER_VERIFIED, Converters.BOOLEAN);
         primary(GENDER, Converters.GENDER);
         primary(LOCALE, Converters.LOCALE);
         primary(UPDATED_AT, new OidcLongTimeConverter());
+        primary(ACCESS_TOKEN, new AttributeConverter<AccessToken>() {
+            @Override
+            public AccessToken convert(final Object attribute) {
+                if (attribute instanceof AccessToken) {
+                    return (AccessToken) attribute;
+                } else if (attribute instanceof String) {
+                    return new BearerAccessToken((String) attribute);
+                }
+                return null;
+            }
+        });
+        primary(REFRESH_TOKEN, new AttributeConverter<RefreshToken>() {
+            @Override
+            public RefreshToken convert(final Object attribute) {
+                if (attribute instanceof RefreshToken) {
+                    return (RefreshToken) attribute;
+                } else if (attribute instanceof String) {
+                    return new RefreshToken((String) attribute);
+                }
+                return null;
+            }
+        });
         // TODO: birthdate, address
     }
 }

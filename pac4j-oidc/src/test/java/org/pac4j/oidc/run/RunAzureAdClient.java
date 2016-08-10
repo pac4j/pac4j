@@ -69,7 +69,7 @@ public class RunAzureAdClient extends RunClient {
         assertEquals("6c59c433-11b5-4fb1-9641-40b829e7a8e4", profile.getOid());
         assertEquals("38c46e5a-21f0-46e5-940d-3ca06fd1a330", profile.getTid());
         assertEquals(11, profile.getAttributes().size());
-        final AzureAdIdTokenProfile idTokenProfile = profile.getIdToken().get();
+        final AzureAdIdTokenProfile idTokenProfile = profile.getIdTokenProfile().get();
         assertEquals("1.0", idTokenProfile.getVer());
         assertCommonProfile(idTokenProfile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,
                 Gender.UNSPECIFIED, null, null, null, null);
