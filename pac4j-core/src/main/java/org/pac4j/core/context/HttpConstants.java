@@ -53,4 +53,16 @@ public interface HttpConstants {
     String AJAX_HEADER_NAME = "X-Requested-With";
 
     enum HTTP_METHOD { GET, POST, HEAD, TRACE, PUT, DELETE, OPTIONS }
+
+    String ACCESS_CONTROL_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
+
+    String ACCESS_CONTROL_EXPOSE_HEADERS_HEADER = "Access-Control-Expose-Header";
+
+    String ACCESS_CONTROL_MAX_AGE_HEADER = "Access-Control-Max-Age";
+
+    String ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER = "Access-Control-Allow-Credentials";
+
+    String ACCESS_CONTROL_ALLOW_METHODS_HEADER = "Access-Control-Allow-Methods";
+
+    String ACCESS_CONTROL_ALLOW_HEADERS_HEADER = "Access-Control-Allow-Headers";
 }
