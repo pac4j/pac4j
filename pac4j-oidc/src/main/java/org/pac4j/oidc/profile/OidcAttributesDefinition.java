@@ -2,6 +2,7 @@ package org.pac4j.oidc.profile;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.oidc.profile.converter.OidcLongTimeConverter;
 
 import java.util.Arrays;
 
@@ -32,14 +33,18 @@ public class OidcAttributesDefinition extends AttributesDefinition {
     public static final String PHONE_NUMBER_VERIFIED = "phone_number_verified";
     public static final String ADDRESS = "address";
     public static final String UPDATED_AT = "updated_at";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String ID_TOKEN = "id_token";
+    public static final String REFRESH_TOKEN = "refresh_token";
 
     public OidcAttributesDefinition() {
         Arrays.stream(new String[] {NAME, GIVEN_NAME, FAMILY_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, PROFILE, PICTURE, WEBSITE, EMAIL,
-                PHONE_NUMBER, ZONEINFO}).forEach(a -> primary(a, Converters.STRING));
+                PHONE_NUMBER, ZONEINFO, ID_TOKEN, REFRESH_TOKEN}).forEach(a -> primary(a, Converters.STRING));
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
         primary(PHONE_NUMBER_VERIFIED, Converters.BOOLEAN);
         primary(GENDER, Converters.GENDER);
         primary(LOCALE, Converters.LOCALE);
-        // TODO: birthdate, address, updated_at
+        primary(UPDATED_AT, new OidcLongTimeConverter());
+        // TODO: birthdate, address
     }
 }

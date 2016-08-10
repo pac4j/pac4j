@@ -16,7 +16,7 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 import static org.junit.Assert.*;
 
 /**
- * Run manually a test for the {@link AzureAdClient}.
+ * Run a manual test for the {@link AzureAdClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -60,6 +60,7 @@ public class RunAzureAdClient extends RunClient {
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
         assertEquals(AzureAdProfile.class.getName() + CommonProfile.SEPARATOR + "alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE",
                 profile.getTypedId());
+        assertNotNull(profile.getAccessToken());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), AzureAdProfile.class));
         assertNotNull(profile.getIdTokenString());
         assertCommonProfile(profile, getLogin(), "Jérôme", "TESTPAC4J", "MyDisplayName", null,

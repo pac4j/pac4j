@@ -24,7 +24,8 @@ public final class OidcCredentialsTests implements TestsConstants {
 
     @Test
     public void testSerialization() throws ParseException {
-        final OidcCredentials credentials = new OidcCredentials(new AuthorizationCode(VALUE), CLIENT_NAME);
+        final OidcCredentials credentials = new OidcCredentials(CLIENT_NAME);
+        credentials.setCode(new AuthorizationCode(VALUE));
         credentials.setAccessToken(new BearerAccessToken(VALUE, 0L, Scope.parse("oidc email")));
         credentials.setRefreshToken(new RefreshToken(VALUE));
         credentials.setIdToken(JWTParser.parse(OidcProfileTests.ID_TOKEN));

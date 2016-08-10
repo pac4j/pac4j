@@ -1,7 +1,9 @@
 package org.pac4j.oidc.credentials.extractor;
 
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
@@ -49,10 +51,10 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
     }
 
     @Override
-    public OidcCredentials extract(WebContext context) throws HttpAction {
+    public OidcCredentials extract(final WebContext context) throws HttpAction {
         init(context);
 
-        Map<String, String> parameters = toSingleParameter(context.getRequestParameters());
+        final Map<String, String> parameters = toSingleParameter(context.getRequestParameters());
         AuthenticationResponse response;
         try {
             response = AuthenticationResponseParser.parse(new URI(configuration.getCallbackUrl()), parameters);
@@ -74,10 +76,25 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
             throw new TechnicalException("State parameter is different from the one sent in authentication request. "
                     + "Session expired or possible threat of cross-site request forgery");
         }
-        // Get authorization code
-        final AuthorizationCode code = successResponse.getAuthorizationCode();
 
-        return new OidcCredentials(code, clientName);
+        final OidcCredentials credentials = new OidcCredentials(clientName);
+        // get authorization code
+        final AuthorizationCode code = successResponse.getAuthorizationCode();
+        if (code != null) {
+            credentials.setCode(code);
+        }
+        // get ID token
+        final JWT idToken = successResponse.getIDToken();
+        if (idToken != null) {
+            credentials.setIdToken(idToken);
+        }
+        // get access token
+        final AccessToken accessToken = successResponse.getAccessToken();
+        if (accessToken != null) {
+            credentials.setAccessToken(accessToken);
+        }
+
+        return credentials;
     }
 
     protected Map<String, String> toSingleParameter(final Map<String, String[]> requestParameters) {
