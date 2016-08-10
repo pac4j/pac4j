@@ -115,6 +115,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         this.authorizationGenerators.add(authorizationGenerator);
     }
 
+    public void addAuthorizationGenerators(final List<AuthorizationGenerator<U>> authorizationGenerators) {
+        CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
+        this.authorizationGenerators.addAll(authorizationGenerators);
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName());

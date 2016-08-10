@@ -1,11 +1,14 @@
 package org.pac4j.core.client;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
+import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.http.AjaxRequestResolver;
+import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.http.DefaultAjaxRequestResolver;
+import org.pac4j.core.http.DefaultCallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -22,7 +25,7 @@ import org.pac4j.core.util.InitializableObject;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Clients extends InitializableObject {
 
     public final static String DEFAULT_CLIENT_NAME_PARAMETER = "client_name";
@@ -32,7 +35,14 @@ public class Clients extends InitializableObject {
     private List<Client> clients;
 
     private String callbackUrl = null;
+
 	private Client defaultClient;
+
+    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+
+    private CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
+
+    private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
     public Clients() {
     }
@@ -49,7 +59,7 @@ public class Clients extends InitializableObject {
 
     public Clients(final String callbackUrl, final Client client) {
         setCallbackUrl(callbackUrl);
-        setClients(Arrays.asList(client));
+        setClients(Collections.singletonList(client));
     }
 
     public Clients(final List<Client> clients) {
@@ -61,7 +71,7 @@ public class Clients extends InitializableObject {
     }
 
     public Clients(final Client client) {
-        setClients(Arrays.asList(client));
+        setClients(Collections.singletonList(client));
     }
 
     /**
@@ -78,21 +88,33 @@ public class Clients extends InitializableObject {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
             names.add(lowerName);
-            if (CommonHelper.isNotBlank(this.callbackUrl) && client instanceof IndirectClient) {
+            if (client instanceof IndirectClient) {
                 final IndirectClient indirectClient = (IndirectClient) client;
-                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                // no callback url defined for the client -> set it with the group callback url
-                if (indirectClientCallbackUrl == null) {
-                    indirectClient.setCallbackUrl(this.callbackUrl);
-                    indirectClientCallbackUrl = this.callbackUrl;
+                if (CommonHelper.isNotBlank(this.callbackUrl)) {
+                    String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+                    // no callback url defined for the client -> set it with the group callback url
+                    if (indirectClientCallbackUrl == null) {
+                        indirectClient.setCallbackUrl(this.callbackUrl);
+                        indirectClientCallbackUrl = this.callbackUrl;
+                    }
+                    // if the "client_name" parameter is not already part of the callback url, add it unless the client
+                    // has indicated to not include it.
+                    if (indirectClient.isIncludeClientNameInCallbackUrl() && !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
+                        indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, name));
+                    }
                 }
-                // if the "client_name" parameter is not already part of the callback url, add it unless the client
-                // has indicated to not include it.
-                if (indirectClient.isIncludeClientNameInCallbackUrl() &&
-                        indirectClientCallbackUrl.indexOf(this.clientNameParameter + "=") < 0) {
-                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter,
-                            name));
+                final AjaxRequestResolver clientAjaxRequestResolver = indirectClient.getAjaxRequestResolver();
+                if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
+                    indirectClient.setAjaxRequestResolver(ajaxRequestResolver);
                 }
+                final CallbackUrlResolver clientCallbackUrlResolver = indirectClient.getCallbackUrlResolver();
+                if (callbackUrlResolver != null && (clientCallbackUrlResolver == null || clientCallbackUrlResolver instanceof DefaultCallbackUrlResolver)) {
+                    indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+                }
+            }
+            final BaseClient baseClient = (BaseClient) client;
+            if (!authorizationGenerators.isEmpty()) {
+                baseClient.addAuthorizationGenerators(this.authorizationGenerators);
             }
         }
     }
@@ -188,18 +210,57 @@ public class Clients extends InitializableObject {
         return this.clients;
     }
 
+    public void setDefaultClient(final Client defaultClient) {
+        this.defaultClient = defaultClient;
+    }
+
+    public Client getDefaultClient() {
+        return defaultClient;
+    }
+
+    public AjaxRequestResolver getAjaxRequestResolver() {
+        return ajaxRequestResolver;
+    }
+
+    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
+        this.ajaxRequestResolver = ajaxRequestResolver;
+    }
+
+    public CallbackUrlResolver getCallbackUrlResolver() {
+        return callbackUrlResolver;
+    }
+
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
+        this.callbackUrlResolver = callbackUrlResolver;
+    }
+
+    public List<AuthorizationGenerator> getAuthorizationGenerators() {
+        return this.authorizationGenerators;
+    }
+
+    public void setAuthorizationGenerators(final List<AuthorizationGenerator> authorizationGenerators) {
+        CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
+        this.authorizationGenerators = authorizationGenerators;
+    }
+
+    public void setAuthorizationGenerators(final AuthorizationGenerator... authorizationGenerators) {
+        CommonHelper.assertNotNull("authorizationGenerators", authorizationGenerators);
+        this.authorizationGenerators = Arrays.asList(authorizationGenerators);
+    }
+
+    public void setAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
+        addAuthorizationGenerator(authorizationGenerator);
+    }
+
+    public void addAuthorizationGenerator(final AuthorizationGenerator authorizationGenerator) {
+        CommonHelper.assertNotNull("authorizationGenerator", authorizationGenerator);
+        this.authorizationGenerators.add(authorizationGenerator);
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
-                this.clientNameParameter, "clients", getClients());
-	}
-
-	public void setDefaultClient(Client defaultClient) {
-		this.defaultClient = defaultClient;
-	}
-
-	public Client getDefaultClient() {
-		return defaultClient;
-	}
-	
+                this.clientNameParameter, "clients", getClients(), "defaultClient", defaultClient, "ajaxRequestResolver", ajaxRequestResolver,
+                "callbackUrlResolver", callbackUrlResolver, "authorizationGenerators", authorizationGenerators);
+    }
 }

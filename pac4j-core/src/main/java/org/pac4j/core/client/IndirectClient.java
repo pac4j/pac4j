@@ -152,7 +152,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return ajaxRequestResolver;
     }
 
-    public void setAjaxRequestResolver(AjaxRequestResolver ajaxRequestResolver) {
+    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
         this.ajaxRequestResolver = ajaxRequestResolver;
     }
 
@@ -160,7 +160,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return callbackUrlResolver;
     }
 
-    public void setCallbackUrlResolver(CallbackUrlResolver callbackUrlResolver) {
+    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
         this.callbackUrlResolver = callbackUrlResolver;
     }
 
