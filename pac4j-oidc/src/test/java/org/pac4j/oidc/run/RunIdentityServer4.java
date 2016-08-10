@@ -43,7 +43,7 @@ public class RunIdentityServer4 extends RunClient {
 
     private enum Flow { IMPLICIT_FLOW, IMPLICIT_FLOW_CLIENT_SIDE, AUTHORIZATION_CODE, HYBRID_FLOW };
 
-    private final static Flow flow = Flow.HYBRID_FLOW;
+    private final static Flow flow = Flow.IMPLICIT_FLOW_CLIENT_SIDE;
 
     public static void main(final String[] args) throws Exception {
         new RunIdentityServer4().run();
@@ -71,7 +71,7 @@ public class RunIdentityServer4 extends RunClient {
             configuration.setResponseMode("form_post");
             configuration.setUseNonce(true);
             logger.warn("For the implicit flow, copy / paste the form body parameters after a ? as the returned url");
-        } else if (flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) {
+        } else if (flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) { // this flow can not be used in fact (as data ae passed as anchor parameters, only on client side)
             // AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials,
             configuration.setResponseType("id_token");
             configuration.setUseNonce(true);
@@ -108,7 +108,7 @@ public class RunIdentityServer4 extends RunClient {
         assertEquals("Alice Smith", idTokenProfile.getDisplayName());
         assertNotNull(idTokenProfile.getExpirationDate());
         assertNotNull(idTokenProfile.getIssuedAt());
-        assertEquals("50665cc0cf78943f5a5a0f7357175cb3", idTokenProfile.getAttribute("sid"));
+        assertNotNull(idTokenProfile.getAttribute("sid"));
         if (flow  == Flow.IMPLICIT_FLOW || flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) {
             assertEquals(1, profile.getAttributes().size());
             assertEquals(10, idTokenProfile.getAttributes().size());

@@ -3,6 +3,7 @@ package org.pac4j.oidc.credentials.extractor;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.openid.connect.sdk.*;
 import org.pac4j.core.context.WebContext;
@@ -54,7 +55,7 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
     public OidcCredentials extract(final WebContext context) throws HttpAction {
         init(context);
 
-        final Map<String, String> parameters = toSingleParameter(context.getRequestParameters());
+        final Map<String, String> parameters = retrieveParameters(context);
         AuthenticationResponse response;
         try {
             response = AuthenticationResponseParser.parse(new URI(configuration.getCallbackUrl()), parameters);
@@ -68,11 +69,14 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
             return null;
         }
 
-        logger.debug("Authentication response successful, get authorization code");
+        logger.debug("Authentication response successful");
         AuthenticationSuccessResponse successResponse = (AuthenticationSuccessResponse) response;
 
-        // state value must be equal
-        if (!successResponse.getState().equals(context.getSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE))) {
+        final State state = successResponse.getState();
+        if (state == null) {
+            throw new TechnicalException("Missing state parameter");
+        }
+        if (!state.equals(context.getSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE))) {
             throw new TechnicalException("State parameter is different from the one sent in authentication request. "
                     + "Session expired or possible threat of cross-site request forgery");
         }
@@ -97,8 +101,9 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
         return credentials;
     }
 
-    protected Map<String, String> toSingleParameter(final Map<String, String[]> requestParameters) {
-        final Map<String, String> map = new HashMap<>();
+    protected Map<String, String> retrieveParameters(final WebContext context) {
+        final Map<String, String[]> requestParameters = context.getRequestParameters();
+        Map<String, String> map = new HashMap<>();
         for (final Map.Entry<String, String[]> entry : requestParameters.entrySet()) {
             map.put(entry.getKey(), entry.getValue()[0]);
         }
