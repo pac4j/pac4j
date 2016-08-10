@@ -9,11 +9,11 @@ import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.pac4j.core.util.CommonHelper.*;
+
+import static org.pac4j.core.context.HttpConstants.*;
 
 /**
  * Default way to check the authorizations (with default authorizers).
@@ -32,10 +32,23 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static CacheControlHeader CACHE_CONTROL_HEADER = new CacheControlHeader();
     final static CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
     final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
+    final static CorsAuthorizer CORS_AUTHORIZER = new CorsAuthorizer();
     final static IsAnonymousAuthorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();
     final static IsAuthenticatedAuthorizer IS_AUTHENTICATED_AUTHORIZER =new IsAuthenticatedAuthorizer();
     final static IsFullyAuthenticatedAuthorizer IS_FULLY_AUTHENTICATED_AUTHORIZER = new IsFullyAuthenticatedAuthorizer();
     final static IsRememberedAuthorizer IS_REMEMBERED_AUTHORIZER = new IsRememberedAuthorizer();
+
+    static {
+        CORS_AUTHORIZER.setAllowOrigin("*");
+        CORS_AUTHORIZER.setAllowCredentials(true);
+        final Set<HTTP_METHOD> methods = new HashSet<>();
+        methods.add(HTTP_METHOD.GET);
+        methods.add(HTTP_METHOD.PUT);
+        methods.add(HTTP_METHOD.POST);
+        methods.add(HTTP_METHOD.DELETE);
+        methods.add(HTTP_METHOD.OPTIONS);
+        CORS_AUTHORIZER.setAllowMethods(methods);
+    }
 
     @Override
     public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws HttpAction {
@@ -69,6 +82,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
                 } else if ("csrf".equalsIgnoreCase(name)) {
                     authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
                     authorizers.add(CSRF_AUTHORIZER);
+                } else if ("allowAjaxRequests".equalsIgnoreCase(name)) {
+                    authorizers.add(CORS_AUTHORIZER);
                 } else if ("isAnonymous".equalsIgnoreCase(name)) {
                     authorizers.add(IS_ANONYMOUS_AUTHORIZER);
                 } else if ("isAuthenticated".equalsIgnoreCase(name)) {
