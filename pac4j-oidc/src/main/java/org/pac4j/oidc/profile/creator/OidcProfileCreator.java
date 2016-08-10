@@ -8,6 +8,7 @@ import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.*;
@@ -104,7 +105,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
     public U create(final OidcCredentials credentials, final WebContext context) throws HttpAction {
         init(context);
 
-        final BearerAccessToken accessToken = (BearerAccessToken) credentials.getAccessToken();
+        final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile
         final U profile = (U) ProfileHelper.buildUserProfileByClassCompleteName(clazz.getName());
@@ -113,14 +114,14 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         // Check if there is refresh token
         final RefreshToken refreshToken = credentials.getRefreshToken();
         if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
-            profile.setRefreshTokenString(refreshToken.getValue());
+            profile.setRefreshToken(refreshToken);
             logger.debug("Refresh Token successful retrieved");
         }
 
         try {
             // User Info request
             if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), accessToken);
+                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), (BearerAccessToken) accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
                 userInfoHttpRequest.setReadTimeout(configuration.getReadTimeout());

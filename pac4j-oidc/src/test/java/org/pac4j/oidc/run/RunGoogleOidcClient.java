@@ -70,7 +70,7 @@ public class RunGoogleOidcClient extends RunClient {
                 "https://plus.google.com/113675986756217860428", null);
         assertTrue(profile.getEmailVerified());
         assertEquals(12, profile.getAttributes().size());
-        final GoogleIdTokenProfile idTokenProfile = profile.getIdToken().get();
+        final GoogleIdTokenProfile idTokenProfile = profile.getIdTokenProfile().get();
         assertCommonProfile(idTokenProfile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
                 Gender.UNSPECIFIED, Locale.ENGLISH,
                 "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/s96-c/photo.jpg",
