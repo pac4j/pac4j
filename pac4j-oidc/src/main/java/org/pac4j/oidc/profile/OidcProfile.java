@@ -1,7 +1,6 @@
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
@@ -11,9 +10,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -22,7 +19,7 @@ import java.util.Optional;
  * @author Michael Remond
  * @version 1.7.0
  */
-public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile {
+public class OidcProfile extends CommonProfile {
 
     private static final long serialVersionUID = -52855988661742374L;
 
@@ -89,6 +86,52 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile {
         return (Date) getAttribute(OidcAttributesDefinition.UPDATED_AT);
     }
 
+    public String getIssuer() {
+        return (String) getAttribute(OidcAttributesDefinition.ISSUER);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getAudience() {
+        final Object audience = getAttribute(OidcAttributesDefinition.AUDIENCE);
+        if (audience instanceof String) {
+            return Collections.singletonList((String) audience);
+        } else {
+            return (List<String>) audience;
+        }
+    }
+
+    public Date getExpirationDate() {
+        return (Date) getAttribute(OidcAttributesDefinition.EXPIRATION_TIME);
+    }
+
+    public Date getIssuedAt() {
+        return (Date) getAttribute(OidcAttributesDefinition.ISSUED_AT);
+    }
+
+    public Date getNbf() {
+        return (Date) getAttribute(OidcAttributesDefinition.NBF);
+    }
+
+    public Date getAuthTime() {
+        return (Date) getAttribute(OidcAttributesDefinition.AUTH_TIME);
+    }
+
+    public String getNonce() {
+        return (String) getAttribute(OidcAttributesDefinition.NONCE);
+    }
+
+    public String getAcr() {
+        return (String) getAttribute(OidcAttributesDefinition.ACR);
+    }
+
+    public Object getAmr() {
+        return getAttribute(OidcAttributesDefinition.AMR);
+    }
+
+    public String getAzp() {
+        return (String) getAttribute(OidcAttributesDefinition.AZP);
+    }
+
     public void setAccessToken(final AccessToken accessToken) {
         addAttribute(OidcAttributesDefinition.ACCESS_TOKEN, accessToken);
     }
@@ -105,34 +148,12 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile {
         addAttribute(OidcAttributesDefinition.ID_TOKEN, idToken);
     }
 
-    public Optional<U> getIdTokenProfile() {
-        if (getIdTokenString() != null) {
-            try {
-                final JWT jwt = JWTParser.parse(getIdTokenString());
-                final CommonProfile profile = (CommonProfile) buildJwtIdTokenProfile();
-                final JWTClaimsSet claims = jwt.getJWTClaimsSet();
-                if (claims != null) {
-                    final Map<String, Object> mapClaims = claims.getClaims();
-                    for (final Map.Entry<String, Object> entry: mapClaims.entrySet()) {
-                        final String key = entry.getKey();
-                        final Object value = entry.getValue();
-                        if (OidcIdTokenAttributesDefinition.SUBJECT.equalsIgnoreCase(key)) {
-                            profile.setId(value);
-                        } else {
-                            profile.addAttribute(key, value);
-                        }
-                    }
-                }
-                return Optional.of((U) profile);
-            } catch (final ParseException e) {
-                throw new TechnicalException(e);
-            }
+    public JWT getIdToken() {
+        try {
+            return JWTParser.parse(getIdTokenString());
+        } catch (final ParseException e) {
+            throw new TechnicalException(e);
         }
-        return Optional.empty();
-    }
-
-    protected U buildJwtIdTokenProfile() {
-        return (U) new DefaultIdTokenProfile();
     }
 
     public RefreshToken getRefreshToken() {
