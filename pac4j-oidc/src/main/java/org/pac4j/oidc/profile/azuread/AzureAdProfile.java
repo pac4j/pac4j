@@ -10,7 +10,7 @@ import org.pac4j.oidc.profile.OidcProfile;
  * @author Jerome Leleu
  * @version 1.9.0
  */
-public class AzureAdProfile extends OidcProfile<AzureAdIdTokenProfile> {
+public class AzureAdProfile extends OidcProfile {
 
     private static final long serialVersionUID = -8659029290353954198L;
 
@@ -33,8 +33,15 @@ public class AzureAdProfile extends OidcProfile<AzureAdIdTokenProfile> {
         return (String) getAttribute(AzureAdAttributesDefinition.TID);
     }
 
-    @Override
-    protected AzureAdIdTokenProfile buildJwtIdTokenProfile() {
-        return new AzureAdIdTokenProfile();
+    public String getVer() {
+        return (String) getAttribute(AzureAdAttributesDefinition.VER);
+    }
+
+    public String getUniqueName() {
+        return (String) getAttribute(AzureAdAttributesDefinition.UNQIUE_NAME);
+    }
+
+    public String getIpaddr() {
+        return (String) getAttribute(AzureAdAttributesDefinition.IPADDR);
     }
 }

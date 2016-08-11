@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 /**
  * This class defines the attributes of the OpenID Connect profile: http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+ * + http://openid.net/specs/openid-connect-core-1_0.html#IDToken
  *
  * @author Jerome Leleu
  * @since 1.9.2
@@ -40,6 +41,17 @@ public class OidcAttributesDefinition extends AttributesDefinition {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String ID_TOKEN = "id_token";
     public static final String REFRESH_TOKEN = "refresh_token";
+    public static final String ISSUER          = "iss";
+    public static final String SUBJECT         = "sub";
+    public static final String AUDIENCE        = "aud";
+    public static final String EXPIRATION_TIME = "exp";
+    public static final String ISSUED_AT       = "iat";
+    public static final String AUTH_TIME       = "auth_time";
+    public static final String NONCE           = "nonce";
+    public static final String ACR             = "acr";
+    public static final String AMR             = "amr";
+    public static final String AZP             = "azp";
+    public static final String NBF             = "nbf";
 
     public OidcAttributesDefinition() {
         Arrays.stream(new String[] {NAME, GIVEN_NAME, FAMILY_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, PROFILE, PICTURE, WEBSITE, EMAIL,
@@ -72,5 +84,8 @@ public class OidcAttributesDefinition extends AttributesDefinition {
             }
         });
         // TODO: birthdate, address
+        Arrays.stream(new String[] {SUBJECT, ISSUER, NONCE, ACR, AZP}).forEach(a -> primary(a, Converters.STRING));
+        Arrays.stream(new String[] {EXPIRATION_TIME, ISSUED_AT, NBF}).forEach(a -> primary(a, Converters.DATE_TZ_GENERAL));
+        primary(AUTH_TIME, new OidcLongTimeConverter());
     }
 }
