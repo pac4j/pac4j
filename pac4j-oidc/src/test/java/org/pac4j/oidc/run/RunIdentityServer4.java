@@ -42,7 +42,7 @@ public class RunIdentityServer4 extends RunClient {
 
     private enum Flow { IMPLICIT_FLOW, IMPLICIT_FLOW_CLIENT_SIDE, AUTHORIZATION_CODE, HYBRID_FLOW };
 
-    private final static Flow flow = Flow.IMPLICIT_FLOW_CLIENT_SIDE;
+    private final static Flow flow = Flow.HYBRID_FLOW;
 
     public static void main(final String[] args) throws Exception {
         new RunIdentityServer4().run();
@@ -98,27 +98,25 @@ public class RunIdentityServer4 extends RunClient {
     protected void verifyProfile(final CommonProfile userProfile) {
         final OidcProfile profile = (OidcProfile) userProfile;
         assertEquals("818727", profile.getId());
-        /*final DefaultIdTokenProfile idTokenProfile = (DefaultIdTokenProfile) profile.getIdTokenProfile().get();
-        assertEquals("test", idTokenProfile.getAudience().get(0));
-        assertNotNull(idTokenProfile.getNbf());
-        assertEquals("idsvr", idTokenProfile.getAttribute("idp"));
-        assertNotNull(idTokenProfile.getAuthTime());
-        assertEquals("http://localhost:1941", idTokenProfile.getIssuer());
-        assertEquals("Alice Smith", idTokenProfile.getDisplayName());
-        assertNotNull(idTokenProfile.getExpirationDate());
-        assertNotNull(idTokenProfile.getIssuedAt());
-        assertNotNull(idTokenProfile.getAttribute("sid"));
-        if (flow  == Flow.IMPLICIT_FLOW || flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) {
-            assertEquals(1, profile.getAttributes().size());
-            assertEquals(10, idTokenProfile.getAttributes().size());
+        assertNotNull(profile.getIdToken());
+        assertEquals("test", profile.getAudience().get(0));
+        assertNotNull(profile.getNbf());
+        assertEquals("idsvr", profile.getAttribute("idp"));
+        assertNotNull(profile.getAuthTime());
+        assertEquals("http://localhost:1941", profile.getIssuer());
+        assertEquals("Alice Smith", profile.getDisplayName());
+        assertNotNull(profile.getExpirationDate());
+        assertNotNull(profile.getIssuedAt());
+        assertNotNull(profile.getAttribute("sid"));
+        if (flow == Flow.IMPLICIT_FLOW || flow == Flow.IMPLICIT_FLOW_CLIENT_SIDE) {
+            assertNull(profile.getAccessToken());
+            assertEquals(12, profile.getAttributes().size());
         } else if (flow == Flow.AUTHORIZATION_CODE) {
             assertNotNull(profile.getAccessToken());
-            assertEquals(3, profile.getAttributes().size());
-            assertEquals(9, idTokenProfile.getAttributes().size());
+            assertEquals(12, profile.getAttributes().size());
         } else if (flow == Flow.HYBRID_FLOW) {
             assertNotNull(profile.getAccessToken());
-            assertEquals(3, profile.getAttributes().size());
-            assertEquals(10, idTokenProfile.getAttributes().size());
-        }*/
+            assertEquals(13, profile.getAttributes().size());
+        }
     }
 }

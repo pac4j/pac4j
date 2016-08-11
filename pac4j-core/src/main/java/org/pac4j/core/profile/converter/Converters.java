@@ -21,8 +21,9 @@ public final class Converters {
     public final static ColorConverter COLOR = new ColorConverter();
     
     public final static GenderConverter GENDER = new GenderConverter("male", "female");
-    
-    public final static FormattedDateConverter DATE_TZ_GENERAL = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ssz");
+
+    public final static String DATE_TZ_GENERAL_FORMAT = "yyyy-MM-dd'T'HH:mm:ssz";
+    public final static FormattedDateConverter DATE_TZ_GENERAL = new FormattedDateConverter(DATE_TZ_GENERAL_FORMAT);
     public final static FormattedDateConverter DATE_TZ_RFC822 = new FormattedDateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public final static StringReplaceConverter URL = new StringReplaceConverter("\\/", "/");
