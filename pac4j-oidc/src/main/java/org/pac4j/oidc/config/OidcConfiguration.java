@@ -27,6 +27,7 @@ public class OidcConfiguration extends InitializableWebObject {
 
     public static final String SCOPE = "scope";
     public static final String RESPONSE_TYPE = "response_type";
+    public static final String RESPONSE_MODE = "response_mode";
     public static final String REDIRECT_URI = "redirect_uri";
     public static final String CLIENT_ID = "client_id";
     public static final String STATE = "state";
@@ -77,6 +78,10 @@ public class OidcConfiguration extends InitializableWebObject {
     private OIDCProviderMetadata providerMetadata;
 
     private String callbackUrl;
+
+    private String responseType;
+
+    private String responseMode;
 
     @Override
     protected void internalInit(final WebContext context) {
@@ -217,11 +222,27 @@ public class OidcConfiguration extends InitializableWebObject {
         this.callbackUrl = callbackUrl;
     }
 
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(final String responseType) {
+        this.responseType = responseType;
+    }
+
+    public String getResponseMode() {
+        return responseMode;
+    }
+
+    public void setResponseMode(final String responseMode) {
+        this.responseMode = responseMode;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "clientId", clientId, "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
                 "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm,
                 "maxClockSkew", maxClockSkew, "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
-                "callbackUrl", callbackUrl);
+                "callbackUrl", callbackUrl, "responseType", responseType, "responseMode", responseMode);
     }
 }

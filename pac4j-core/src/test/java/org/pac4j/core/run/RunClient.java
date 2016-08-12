@@ -12,10 +12,11 @@ import org.pac4j.core.profile.*;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.KryoSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.core.util.TestsHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -42,8 +43,7 @@ public abstract class RunClient implements TestsConstants {
         logger.warn("Returned url:");
         Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
         final String returnedUrl = scanner.nextLine();
-        final Map<String, String> parameters = TestsHelper.getParametersFromUrl(returnedUrl);
-        context.addRequestParameters(parameters);
+        populateContextWithUrl(context, returnedUrl);
         final Credentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);
         logger.debug("userProfile: {}", profile);
@@ -138,5 +138,32 @@ public abstract class RunClient implements TestsConstants {
             assertTrue(profUrl.startsWith(profileUrl));
         }
         assertEquals(location, profile.getLocation());
+    }
+
+    private void populateContextWithUrl(final MockWebContext context, String url) {
+        int pos = url.indexOf("?");
+        if (pos >= 0) {
+            url = url.substring(pos + 1);
+        } else {
+            // this is a hack to test client side stuffs, it would not work for server side
+            pos = url.indexOf("#");
+            if (pos >= 0) {
+                url = url.substring(pos + 1);
+            }
+        }
+        final Map<String, String> parameters = new HashMap<>();
+        final StringTokenizer st = new StringTokenizer(url, "&");
+        while (st.hasMoreTokens()) {
+            final String keyValue = st.nextToken();
+            final String[] parts = keyValue.split("=");
+            if (parts != null && parts.length >= 2) {
+                try {
+                    parameters.put(parts[0], URLDecoder.decode(parts[1], HttpConstants.UTF8_ENCODING));
+                } catch (final UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        context.addRequestParameters(parameters);
     }
 }

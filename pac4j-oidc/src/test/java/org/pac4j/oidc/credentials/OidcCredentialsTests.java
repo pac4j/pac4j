@@ -8,7 +8,6 @@ import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oidc.profile.OidcProfileTests;
 
 import java.text.ParseException;
 
@@ -22,12 +21,17 @@ import static org.junit.Assert.*;
  */
 public final class OidcCredentialsTests implements TestsConstants {
 
+    private final static String ID_TOKEN = "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwczovL2p3dC1pZHAuZXhhbX"
+            + "BsZS5jb20iLCJzdWIiOiJtYWlsdG86cGVyc29uQGV4YW1wbGUuY29tIiwibmJmIjoxNDQwMTEyMDE1LCJleHAiOjE0NDAxMTU2"
+            + "MTUsImlhdCI6MTQ0MDExMjAxNSwianRpIjoiaWQxMjM0NTYiLCJ0eXAiOiJodHRwczovL2V4YW1wbGUuY29tL3JlZ2lzdGVyIn0.";
+
     @Test
     public void testSerialization() throws ParseException {
-        final OidcCredentials credentials = new OidcCredentials(new AuthorizationCode(VALUE), CLIENT_NAME);
+        final OidcCredentials credentials = new OidcCredentials(CLIENT_NAME);
+        credentials.setCode(new AuthorizationCode(VALUE));
         credentials.setAccessToken(new BearerAccessToken(VALUE, 0L, Scope.parse("oidc email")));
         credentials.setRefreshToken(new RefreshToken(VALUE));
-        credentials.setIdToken(JWTParser.parse(OidcProfileTests.ID_TOKEN));
+        credentials.setIdToken(JWTParser.parse(ID_TOKEN));
         byte[] result = SerializationUtils.serialize(credentials);
         final OidcCredentials credentials2 = SerializationUtils.deserialize(result);
         assertEquals(credentials.getAccessToken(), credentials2.getAccessToken());

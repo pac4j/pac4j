@@ -1,21 +1,16 @@
 package org.pac4j.oidc.profile;
 
 import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.text.ParseException;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>This class is the user profile for sites using OpenID Connect protocol.</p>
@@ -24,13 +19,9 @@ import java.util.Optional;
  * @author Michael Remond
  * @version 1.7.0
  */
-public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile implements Externalizable {
+public class OidcProfile extends CommonProfile {
 
     private static final long serialVersionUID = -52855988661742374L;
-
-    private transient static final String ACCESS_TOKEN = "access_token";
-    private transient static final String ID_TOKEN = "id_token";
-    private transient static final String REFRESH_TOKEN = "refresh_token";
 
     public OidcProfile() { }
 
@@ -91,87 +82,92 @@ public class OidcProfile<U extends JwtIdTokenProfile> extends CommonProfile impl
         return (Boolean) getAttribute(OidcAttributesDefinition.PHONE_NUMBER_VERIFIED);
     }
 
-    public void setAccessToken(final BearerAccessToken accessToken) {
-        addAttribute(ACCESS_TOKEN, accessToken);
+    public Date getUpatedAt() {
+        return (Date) getAttribute(OidcAttributesDefinition.UPDATED_AT);
     }
 
-    public BearerAccessToken getAccessToken() {
-        return (BearerAccessToken) getAttribute(ACCESS_TOKEN);
+    public String getIssuer() {
+        return (String) getAttribute(OidcAttributesDefinition.ISSUER);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getAudience() {
+        final Object audience = getAttribute(OidcAttributesDefinition.AUDIENCE);
+        if (audience instanceof String) {
+            return Collections.singletonList((String) audience);
+        } else {
+            return (List<String>) audience;
+        }
+    }
+
+    public Date getExpirationDate() {
+        return (Date) getAttribute(OidcAttributesDefinition.EXPIRATION_TIME);
+    }
+
+    public Date getIssuedAt() {
+        return (Date) getAttribute(OidcAttributesDefinition.ISSUED_AT);
+    }
+
+    public Date getNbf() {
+        return (Date) getAttribute(OidcAttributesDefinition.NBF);
+    }
+
+    public Date getAuthTime() {
+        return (Date) getAttribute(OidcAttributesDefinition.AUTH_TIME);
+    }
+
+    public String getNonce() {
+        return (String) getAttribute(OidcAttributesDefinition.NONCE);
+    }
+
+    public String getAcr() {
+        return (String) getAttribute(OidcAttributesDefinition.ACR);
+    }
+
+    public Object getAmr() {
+        return getAttribute(OidcAttributesDefinition.AMR);
+    }
+
+    public String getAzp() {
+        return (String) getAttribute(OidcAttributesDefinition.AZP);
+    }
+
+    public void setAccessToken(final AccessToken accessToken) {
+        addAttribute(OidcAttributesDefinition.ACCESS_TOKEN, accessToken);
+    }
+
+    public AccessToken getAccessToken() {
+        return (AccessToken) getAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
     }
 
     public String getIdTokenString() {
-        return (String) getAttribute(ID_TOKEN);
+        return (String) getAttribute(OidcAttributesDefinition.ID_TOKEN);
     }
 
-    public void setIdTokenString(final String idTokenString) {
-        addAttribute(ID_TOKEN, idTokenString);
+    public void setIdTokenString(final String idToken) {
+        addAttribute(OidcAttributesDefinition.ID_TOKEN, idToken);
     }
 
-    public Optional<U> getIdToken() {
-        if (getIdTokenString() != null) {
-            try {
-                final JWT jwt = JWTParser.parse(getIdTokenString());
-                final CommonProfile profile = (CommonProfile) buildJwtIdTokenProfile();
-                final JWTClaimsSet claims = jwt.getJWTClaimsSet();
-                if (claims != null) {
-                    final Map<String, Object> mapClaims = claims.getClaims();
-                    for (final Map.Entry<String, Object> entry: mapClaims.entrySet()) {
-                        final String key = entry.getKey();
-                        final Object value = entry.getValue();
-                        if (JwtIdTokenClaims.SUBJECT.equalsIgnoreCase(key)) {
-                            profile.setId(value);
-                        } else {
-                            profile.addAttribute(key, value);
-                        }
-                    }
-                }
-                return Optional.of((U) profile);
-            } catch (final ParseException e) {
-                throw new TechnicalException(e);
-            }
+    public JWT getIdToken() {
+        try {
+            return JWTParser.parse(getIdTokenString());
+        } catch (final ParseException e) {
+            throw new TechnicalException(e);
         }
-        return Optional.empty();
     }
 
-    protected U buildJwtIdTokenProfile() {
-        return (U) new DefaultIdTokenProfile();
+    public RefreshToken getRefreshToken() {
+        return (RefreshToken) getAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
     }
 
-    public String getRefreshTokenString() {
-        return (String) getAttribute(REFRESH_TOKEN);
-    }
-
-    public void setRefreshTokenString(final String refreshTokenString) {
-        addAttribute(REFRESH_TOKEN, refreshTokenString);
-    }
-
-    @Override
-    public void writeExternal(final ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        BearerAccessTokenBean bean = null; 
-        if (getAccessToken() != null) {
-            bean = BearerAccessTokenBean.toBean(getAccessToken());
-        }
-        out.writeObject(bean);
-        out.writeObject(getIdTokenString());
-        out.writeObject(getRefreshTokenString());
-    }
-
-    @Override
-    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        final BearerAccessTokenBean bean = (BearerAccessTokenBean) in.readObject();
-        if (bean != null) {
-            setAccessToken(BearerAccessTokenBean.fromBean(bean));
-        }
-        setIdTokenString((String) in.readObject());
-        setRefreshTokenString((String) in.readObject());
+    public void setRefreshToken(final RefreshToken refreshToken) {
+        addAttribute(OidcAttributesDefinition.REFRESH_TOKEN, refreshToken);
     }
 
     @Override
     public void clearSensitiveData() {
-        removeAttribute(ACCESS_TOKEN);
-        removeAttribute(ID_TOKEN);
-        removeAttribute(REFRESH_TOKEN);
+        removeAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
+        removeAttribute(OidcAttributesDefinition.ID_TOKEN);
+        removeAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
     }
 }
