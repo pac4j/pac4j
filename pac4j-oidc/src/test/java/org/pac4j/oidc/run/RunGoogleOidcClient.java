@@ -10,7 +10,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
-import org.pac4j.oidc.profile.google.GoogleIdTokenProfile;
 import org.pac4j.oidc.profile.google.GoogleOidcProfile;
 
 import java.util.Locale;
@@ -18,7 +17,7 @@ import java.util.Locale;
 import static org.junit.Assert.*;
 
 /**
- * Run manually a test for the {@link GoogleOidcClient}.
+ * Run a manual test the {@link GoogleOidcClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -62,23 +61,19 @@ public class RunGoogleOidcClient extends RunClient {
         assertEquals(GoogleOidcProfile.class.getName() + CommonProfile.SEPARATOR + "113675986756217860428",
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), GoogleOidcProfile.class));
+        assertNotNull(profile.getAccessToken());
         assertNotNull(profile.getIdTokenString());
         assertCommonProfile(profile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
                 Gender.MALE, Locale.ENGLISH,
                 "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/photo.jpg",
                 "https://plus.google.com/113675986756217860428", null);
         assertTrue(profile.getEmailVerified());
-        assertEquals(12, profile.getAttributes().size());
-        final GoogleIdTokenProfile idTokenProfile = profile.getIdToken().get();
-        assertCommonProfile(idTokenProfile, getLogin(), "Jérôme", "ScribeUP", "Jérôme ScribeUP", null,
-                Gender.UNSPECIFIED, Locale.ENGLISH,
-                "https://lh4.googleusercontent.com/-fFUNeYqT6bk/AAAAAAAAAAI/AAAAAAAAAAA/5gBL6csVWio/s96-c/photo.jpg",
-                null, null);
-        assertEquals("https://accounts.google.com", idTokenProfile.getIssuer());
-        assertEquals("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com", idTokenProfile.getAzp());
-        assertNotNull(idTokenProfile.getExpirationDate());
-        assertNotNull(idTokenProfile.getIssuedAt());
-        assertEquals("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com", idTokenProfile.getAudience().get(0));
-        assertEquals(13, idTokenProfile.getAttributes().size());
+        assertEquals("https://accounts.google.com", profile.getIssuer());
+        assertEquals("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com", profile.getAzp());
+        assertNotNull(profile.getExpirationDate());
+        assertNotNull(profile.getIssuedAt());
+        assertNotNull(profile.getAttribute("at_hash"));
+        assertEquals("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com", profile.getAudience().get(0));
+        assertEquals(18, profile.getAttributes().size());
     }
 }

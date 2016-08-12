@@ -3,12 +3,15 @@ package org.pac4j.oidc.profile.creator;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
@@ -29,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Map;
 
 import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
@@ -103,22 +107,37 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
     public U create(final OidcCredentials credentials, final WebContext context) throws HttpAction {
         init(context);
 
-        final BearerAccessToken accessToken = (BearerAccessToken) credentials.getAccessToken();
+        final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile
         final U profile = (U) ProfileHelper.buildUserProfileByClassCompleteName(clazz.getName());
         profile.setAccessToken(accessToken);
-        profile.setIdTokenString(credentials.getIdToken().getParsedString());
-        // Check if there is refresh token
-        if (credentials.getRefreshToken() != null && !credentials.getRefreshToken().getValue().isEmpty()) {
-            profile.setRefreshTokenString(credentials.getRefreshToken().getValue());
+        final JWT idToken = credentials.getIdToken();
+        profile.setIdTokenString(idToken.getParsedString());
+        // Check if there is a refresh token
+        final RefreshToken refreshToken = credentials.getRefreshToken();
+        if (refreshToken != null && !refreshToken.getValue().isEmpty()) {
+            profile.setRefreshToken(refreshToken);
             logger.debug("Refresh Token successful retrieved");
         }
 
         try {
+
+            // check idToken
+            final Nonce nonce;
+            if (configuration.isUseNonce()) {
+                nonce = new Nonce((String) context.getSessionAttribute(OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
+            } else {
+                nonce = null;
+            }
+            // Check ID Token
+            final IDTokenClaimsSet claimsSet = this.idTokenValidator.validate(idToken, nonce);
+            assertNotNull("claimsSet", claimsSet);
+            profile.setId(claimsSet.getSubject());
+
             // User Info request
-            if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null) {
-                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), accessToken);
+            if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
+                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), (BearerAccessToken) accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
                 userInfoHttpRequest.setReadTimeout(configuration.getReadTimeout());
@@ -139,20 +158,18 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
                 }
             }
 
-            final Nonce nonce;
-            if (configuration.isUseNonce()) {
-                nonce = new Nonce((String) context.getSessionAttribute(OidcConfiguration.NONCE_SESSION_ATTRIBUTE));
-            } else {
-                nonce = null;
+            // add attributes of the ID token if they don't already exist
+            for (final Map.Entry<String, Object> entry : idToken.getJWTClaimsSet().getClaims().entrySet()) {
+                final String key = entry.getKey();
+                final Object value = entry.getValue();
+                if (profile.getAttribute(key) == null) {
+                    profile.addAttribute(key, value);
+                }
             }
-            // Check ID Token
-            final IDTokenClaimsSet claimsSet = this.idTokenValidator.validate(credentials.getIdToken(), nonce);
-            assertNotNull("claimsSet", claimsSet);
-            profile.setId(claimsSet.getSubject());
 
             return profile;
 
-        } catch (final IOException | ParseException | JOSEException | BadJOSEException e) {
+        } catch (final IOException | ParseException | JOSEException | BadJOSEException | java.text.ParseException e) {
             throw new TechnicalException(e);
         }
     }
@@ -161,7 +178,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         return configuration;
     }
 
-    public void setConfiguration(OidcConfiguration configuration) {
+    public void setConfiguration(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -169,7 +186,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         return clazz;
     }
 
-    public void setClazz(Class<U> clazz) {
+    public void setClazz(final Class<U> clazz) {
         this.clazz = clazz;
     }
 

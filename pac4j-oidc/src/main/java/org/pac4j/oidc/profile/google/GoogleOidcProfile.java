@@ -9,12 +9,7 @@ import org.pac4j.oidc.profile.OidcProfile;
  * @author Jerome Leleu
  * @version 1.9.0
  */
-public class GoogleOidcProfile extends OidcProfile<GoogleIdTokenProfile> {
+public class GoogleOidcProfile extends OidcProfile {
 
     private static final long serialVersionUID = -6076954328349948251L;
-
-    @Override
-    protected GoogleIdTokenProfile buildJwtIdTokenProfile() {
-        return new GoogleIdTokenProfile();
-    }
 }
