@@ -72,7 +72,7 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     @Override
     protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return "https://api.linkedin.com/v1/people/~?:(" + this.fields + ")&format=json";
+        return "https://api.linkedin.com/v1/people/~:(" + this.fields + ")?format=json";
     }
     
     @Override
