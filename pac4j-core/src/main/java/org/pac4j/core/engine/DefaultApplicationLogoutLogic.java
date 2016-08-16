@@ -9,6 +9,7 @@ import org.pac4j.core.profile.ProfileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static org.pac4j.core.util.CommonHelper.*;
@@ -25,6 +26,7 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
+    private Function<C, ProfileManager> profileManagerFactory = context -> new ProfileManager(context);
     private boolean killSession;
 
     @Override
@@ -48,7 +50,7 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
         assertNotBlank(Pac4jConstants.LOGOUT_URL_PATTERN, logoutUrlPattern);
 
         // logic
-        final ProfileManager manager = new ProfileManager(context);
+        final ProfileManager manager = getProfileManager(context);
         manager.logout();
         postLogout(context);
 
@@ -79,6 +81,16 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
         }
     }
 
+    /**
+     * Given a webcontext generate a profileManager for it.
+     * Can be overridden for custom profile manager implementations
+     * @param context the web context
+     * @return profile manager implementation built from the context
+     */
+    protected ProfileManager getProfileManager(final C context) {
+        return profileManagerFactory.apply(context);
+    }
+
     public boolean isKillSession() {
         return killSession;
     }
@@ -86,4 +98,13 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
     public void setKillSession(boolean killSession) {
         this.killSession = killSession;
     }
+
+    public Function<C, ProfileManager> getProfileManagerFactory() {
+        return profileManagerFactory;
+    }
+
+    public void setProfileManagerFactory(final Function<C, ProfileManager> factory) {
+        this.profileManagerFactory = factory;
+    }
+
 }
