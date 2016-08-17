@@ -12,7 +12,7 @@ import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import static org.junit.Assert.*;
 
 /**
- * Run manually a test for the {@link CasOAuthWrapperClient}.
+ * Run a manual test for the {@link CasOAuthWrapperClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -39,7 +39,8 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         client.setKey("key");
         client.setSecret("secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setCasOAuthUrl("http://casserverpac4j.herokuapp.com/oauth2.0");
+//        client.setCasOAuthUrl("http://casserverpac4j.herokuapp.com/oauth2.0");
+        client.setCasOAuthUrl("http://localhost:8888/cas/oauth2.0");
         return client;
     }
 
@@ -51,14 +52,16 @@ public final class RunCasOAuthWrapperClient extends RunClient {
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final CasOAuthWrapperProfile profile = (CasOAuthWrapperProfile) userProfile;
-        assertEquals(USERNAME, profile.getId());
-        assertEquals(CasOAuthWrapperProfile.class.getName() + CommonProfile.SEPARATOR + USERNAME,
+        assertEquals(getLogin(), profile.getId());
+        assertEquals(CasOAuthWrapperProfile.class.getName() + CommonProfile.SEPARATOR + getLogin(),
                 profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), CasOAuthWrapperProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
-        assertEquals("uid", profile.getAttribute("uid"));
-        assertEquals("eduPersonAffiliation", profile.getAttribute("eduPersonAffiliation"));
-        assertEquals("groupMembership", profile.getAttribute("groupMembership"));
-        assertEquals(4, profile.getAttributes().size());
+        assertTrue(profile.isFromNewLogin());
+        assertEquals("AcceptUsersAuthenticationHandler", profile.getAuthenticationMethod());
+        assertFalse(profile.isLongTermAuthenticationRequestTokenUsed());
+        assertEquals("AcceptUsersAuthenticationHandler", profile.getSuccessfulAuthenticationHandlers());
+        assertNotNull(profile.getAuthenticationDate());
+        assertEquals(6, profile.getAttributes().size());
     }
 }
