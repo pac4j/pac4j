@@ -69,7 +69,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         // check algorithms
         final List<JWSAlgorithm> metadataAlgorithms = configuration.getProviderMetadata().getIDTokenJWSAlgs();
         CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms), "There must at least one JWS algorithm supported on the OpenID Connect provider side");
-        final JWSAlgorithm jwsAlgorithm;
+        JWSAlgorithm jwsAlgorithm;
         final JWSAlgorithm preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
         if (metadataAlgorithms.contains(preferredAlgorithm)) {
             jwsAlgorithm = preferredAlgorithm;
@@ -77,11 +77,16 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
             jwsAlgorithm = metadataAlgorithms.get(0);
             logger.warn("Preferred JWS algorithm: {} not available. Defaulting to: {}", preferredAlgorithm, jwsAlgorithm);
         }
+        if ("none".equals(jwsAlgorithm.getName())) {
+            jwsAlgorithm = null;
+        }
 
         final ClientID _clientID = new ClientID(configuration.getClientId());
         final Secret _secret = new Secret(configuration.getSecret());
         // Init IDTokenVerifier
-        if (CommonHelper.isNotBlank(configuration.getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
+        if (jwsAlgorithm == null) {
+            this.idTokenValidator = new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), _clientID);
+        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
             this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
         } else {
             this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);

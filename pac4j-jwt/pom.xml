@@ -13,7 +13,7 @@
 	<name>pac4j for JWT</name>
 
 	<properties>
-		<jose-jwt.version>4.23</jose-jwt.version>
+		<jose-jwt.version>4.24</jose-jwt.version>
 		<bcprov.version>1.54</bcprov.version>
 	</properties>
 
