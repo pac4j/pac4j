@@ -1,6 +1,8 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
@@ -66,11 +68,21 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
             userProfile.setId(JsonHelper.getElement(json, "id"));
             json = json.get("attributes");
             if (json != null) {
-                final Iterator<JsonNode> nodes = json.iterator();
-                while (nodes.hasNext()) {
-                    json = nodes.next();
-                    final String attribute = json.fieldNames().next();
-                    userProfile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+                // CAS <= v4.2
+                if (json instanceof ArrayNode) {
+                    final Iterator<JsonNode> nodes = json.iterator();
+                    while (nodes.hasNext()) {
+                        json = nodes.next();
+                        final String attribute = json.fieldNames().next();
+                        userProfile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+                    }
+                    // CAS v5
+                } else if (json instanceof ObjectNode) {
+                    final Iterator<String> keys = json.fieldNames();
+                    while (keys.hasNext()) {
+                        final String key = keys.next();
+                        userProfile.addAttribute(key, JsonHelper.getElement(json, key));
+                    }
                 }
             }
         }
