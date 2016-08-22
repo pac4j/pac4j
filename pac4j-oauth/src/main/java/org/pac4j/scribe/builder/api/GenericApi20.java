@@ -13,16 +13,14 @@ import com.github.scribejava.core.model.OAuthConfig;
  */
 public class GenericApi20 extends DefaultApi20 {
 
-    private final static String AUTHORIZATION_URL = "%s%s?response_type=code&client_id=%s&redirect_uri=%s&scope=%s";
+    private final static String AUTHORIZATION_URL = "%s?response_type=code&client_id=%s&redirect_uri=%s&scope=%s";
 
-    protected final String baseUrl;
-    protected final String authEndpoint;
-    protected final String tokenEndpoint;
+    protected final String authUrl;
+    protected final String tokenUrl;
 
-    public GenericApi20(String baseUrl, String authEndpoint, String tokenEndpoint) {
-        this.baseUrl = baseUrl;
-        this.authEndpoint = authEndpoint;
-        this.tokenEndpoint = tokenEndpoint;
+    public GenericApi20(String authUrl, String tokenUrl) {
+        this.authUrl = authUrl;
+        this.tokenUrl = tokenUrl;
     }
 
     @Override
@@ -31,12 +29,12 @@ public class GenericApi20 extends DefaultApi20 {
     }
 
     public String getAccessTokenEndpoint() {
-        return baseUrl + tokenEndpoint;
+        return tokenUrl;
     }
 
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
-        String url = String.format(AUTHORIZATION_URL, baseUrl, authEndpoint, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
+        String url = String.format(AUTHORIZATION_URL, authUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
                                    OAuthEncoder.encode(config.getScope()));
         if (config.getState() != null) {
             url += "&state=" + OAuthEncoder.encode(config.getState());
