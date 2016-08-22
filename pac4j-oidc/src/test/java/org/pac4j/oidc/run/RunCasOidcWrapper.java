@@ -10,7 +10,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
 import org.pac4j.oidc.profile.OidcProfile;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Run a manual test for the CAS OpenID Connect wrapper support.
@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
  * @since 1.9.2
  */
 public class RunCasOidcWrapper extends RunClient {
+
+    private final static String CLIENT_ID = "testoidc";
 
     public static void main(final String[] args) throws Exception {
         new RunCasOidcWrapper().run();
@@ -37,7 +39,7 @@ public class RunCasOidcWrapper extends RunClient {
     @Override
     protected IndirectClient getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
-        configuration.setClientId("testoidc");
+        configuration.setClientId(CLIENT_ID);
         configuration.setSecret("secret");
         //configuration.setDiscoveryURI("https://casserverpac4j.herokuapp.com/oidc/.well-known/openid-configuration");
         configuration.setDiscoveryURI("http://localhost:8888/cas/oidc/.well-known/openid-configuration");
@@ -55,7 +57,18 @@ public class RunCasOidcWrapper extends RunClient {
     @Override
     protected void verifyProfile(final CommonProfile userProfile) {
         final OidcProfile profile = (OidcProfile) userProfile;
-        assertEquals("", profile.getId());
-        //final DefaultIdTokenProfile idTokenProfile = (DefaultIdTokenProfile) profile.getIdTokenProfile().get();
+        assertEquals(getLogin(), profile.getId());
+        assertNotNull(profile.getIdToken());
+        assertEquals("http://localhost:8080/cas/oidc", profile.getIssuer());
+        assertEquals(CLIENT_ID, profile.getAttribute("preferred_username"));
+        assertNotNull(profile.getAccessToken());
+        assertEquals(CLIENT_ID, profile.getAudience().get(0));
+        assertNotNull(profile.getNbf());
+        assertNotNull(profile.getAuthTime());
+        assertNotNull(profile.getAttribute("state"));
+        assertNotNull(profile.getExpirationDate());
+        assertNotNull(profile.getIssuedAt());
+        assertNotNull(profile.getAttribute("jti"));
+        assertEquals(13, profile.getAttributes().size());
     }
 }
