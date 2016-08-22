@@ -9,19 +9,19 @@ import org.pac4j.core.profile.converter.Converters;
  * @author aherrick
  * @since 1.9.2
  */
-public class GenericAttributesDefinition extends AttributesDefinition {
+public class DefaultGenericAttributesDefinition extends AttributesDefinition {
 
-    public final String EMAIL = "email";
-    public final String FIRST_NAME = "first_name";
-    public final String FAMILY_NAME = "family_name";
-    public final String DISPLAY_NAME = "display_name";
-    public final String GENDER = "gender";
-    public final String LOCALE = "locale";
-    public final String PICTURE_URL = "picture_url";
-    public final String PROFILE_URL = "profile_url";
-    public final String LOCATION = "location";
+    public static final String EMAIL = "email";
+    public static final String FIRST_NAME = "first_name";
+    public static final String FAMILY_NAME = "family_name";
+    public static final String DISPLAY_NAME = "display_name";
+    public static final String GENDER = "gender";
+    public static final String LOCALE = "locale";
+    public static final String PICTURE_URL = "picture_url";
+    public static final String PROFILE_URL = "profile_url";
+    public static final String LOCATION = "location";
 
-    public GenericAttributesDefinition() {
+    public DefaultGenericAttributesDefinition() {
         primary(EMAIL, Converters.STRING);
         primary(FIRST_NAME, Converters.STRING);
         primary(FAMILY_NAME, Converters.STRING);

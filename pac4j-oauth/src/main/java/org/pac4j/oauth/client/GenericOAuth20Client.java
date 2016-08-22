@@ -5,9 +5,9 @@ import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.generic.GenericAttributesDefinition;
 import org.pac4j.oauth.profile.generic.GenericOAuth20Profile;
 import org.pac4j.scribe.builder.api.GenericApi20;
 
@@ -20,11 +20,10 @@ import org.pac4j.scribe.builder.api.GenericApi20;
  */
 public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profile> {
 
-    protected String baseUrl = null;
-    protected String authEndpoint = null;
-    protected String tokenEndpoint = null;
-    protected String profileEndpoint = null;
-    protected GenericAttributesDefinition attributesDefinition = null;
+    protected String authUrl = null;
+    protected String tokenUrl = null;
+    protected String profileUrl = null;
+    protected AttributesDefinition attributesDefinition = null;
 
     protected String scope = null;
 
@@ -32,78 +31,58 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
     }
 
     /**
-     * Convenience constructor. Uses {@link org.pac4j.oauth.profile.generic.GenericAttributesDefinition}
+     * Convenience constructor. Uses {@link org.pac4j.oauth.profile.generic.DefaultGenericAttributesDefinition}
      * for the attributes definition
      */
     public GenericOAuth20Client(final String key,
                                 final String secret,
-                                final String baseUrl,
-                                final String authEndpoint,
-                                final String tokenEndpoint,
-                                final String profileEndpoint,
+                                final String authUrl,
+                                final String tokenUrl,
+                                final String profileUrl,
                                 final String scope) {
         setKey(key);
         setSecret(secret);
-        this.baseUrl = baseUrl;
-        this.authEndpoint = authEndpoint;
-        this.tokenEndpoint = tokenEndpoint;
-        this.profileEndpoint = profileEndpoint;
+        this.authUrl = authUrl;
+        this.tokenUrl = tokenUrl;
+        this.profileUrl = profileUrl;
         this.scope = scope;
     }
 
     /**
-     * Convenience constructor. Allows for a user-defined GenericAttributesDefinition to be passed in.
-     * See {@link org.pac4j.oauth.profile.generic.GenericAttributesDefinition}
+     * Convenience constructor. Allows for a user-defined AttributesDefinition to be passed in.
      */
     public GenericOAuth20Client(final String key,
                                 final String secret,
-                                final String baseUrl,
-                                final String authEndpoint,
-                                final String tokenEndpoint,
-                                final String profileEndpoint,
+                                final String authUrl,
+                                final String tokenUrl,
+                                final String profileUrl,
                                 final String scope,
-                                final GenericAttributesDefinition attributes) {
+                                final AttributesDefinition attributes) {
         setKey(key);
         setSecret(secret);
-        this.baseUrl = baseUrl;
-        this.authEndpoint = authEndpoint;
-        this.tokenEndpoint = tokenEndpoint;
-        this.profileEndpoint = profileEndpoint;
+        this.authUrl = authUrl;
+        this.tokenUrl = tokenUrl;
+        this.profileUrl = profileUrl;
         this.scope = scope;
         this.attributesDefinition = attributes;
     }
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("baseUrl", this.baseUrl);
-        CommonHelper.assertNotBlank("authEndpoint", this.authEndpoint);
-        CommonHelper.assertNotBlank("tokenEndpoint", this.tokenEndpoint);
-        CommonHelper.assertNotBlank("profileEndpoint", this.profileEndpoint);
-        CommonHelper.assertNotNull("scope", this.scope);
+        CommonHelper.assertNotBlank("authEndpoint", this.authUrl);
+        CommonHelper.assertNotBlank("tokenEndpoint", this.tokenUrl);
+        CommonHelper.assertNotBlank("profileEndpoint", this.profileUrl);
         super.internalInit(context);
     }
 
     @Override
     protected BaseApi<OAuth20Service> getApi() {
-        return new GenericApi20(baseUrl, authEndpoint, tokenEndpoint);
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return this.scope;
-    }
-
-    public String getScope() {
-        return this.scope;
-    }
-
-    public void setScope(final String scope) {
-        this.scope = scope;
+        return new GenericApi20(authUrl, tokenUrl);
     }
 
     @Override
     protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return baseUrl + profileEndpoint;
+        return profileUrl;
     }
 
     @Override
@@ -120,5 +99,45 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
             }
         }
         return profile;
+    }
+
+    public String getAuthUrl() {
+        return authUrl;
+    }
+
+    public void setAuthUrl(String authUrl) {
+        this.authUrl = authUrl;
+    }
+
+    public String getTokenUrl() {
+        return tokenUrl;
+    }
+
+    public void setTokenUrl(String tokenUrl) {
+        this.tokenUrl = tokenUrl;
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public AttributesDefinition getAttributesDefinition() {
+        return attributesDefinition;
+    }
+
+    public void setAttributesDefinition(AttributesDefinition attributesDefinition) {
+        this.attributesDefinition = attributesDefinition;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 }
