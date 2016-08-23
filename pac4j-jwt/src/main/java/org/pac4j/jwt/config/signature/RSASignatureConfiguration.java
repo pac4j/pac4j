@@ -3,17 +3,14 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.text.ParseException;
 
 /**
  * RSA signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-rsa-signature
@@ -21,17 +18,18 @@ import java.text.ParseException;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class RSASignatureConfiguration extends InitializableObject implements SignatureConfiguration {
+public class RSASignatureConfiguration extends AbstractSignatureConfiguration {
 
     private RSAPublicKey publicKey;
 
     private RSAPrivateKey privateKey;
 
-    private JWSAlgorithm algorithm = JWSAlgorithm.RS256;
-
-    public RSASignatureConfiguration() {}
+    public RSASignatureConfiguration() {
+        algorithm = JWSAlgorithm.RS256;
+    }
 
     public RSASignatureConfiguration(final KeyPair keyPair) {
+        this();
         setKeyPair(keyPair);
     }
 
@@ -78,17 +76,6 @@ public class RSASignatureConfiguration extends InitializableObject implements Si
         return jwt.verify(verifier);
     }
 
-    public static RSASignatureConfiguration buildFromJwk(final String json) {
-        CommonHelper.assertNotBlank("json", json);
-
-        try {
-            final RSAKey rsaKey = RSAKey.parse(json);
-            return new RSASignatureConfiguration(rsaKey.toKeyPair());
-        } catch (final JOSEException | ParseException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
         this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
@@ -109,14 +96,6 @@ public class RSASignatureConfiguration extends InitializableObject implements Si
 
     public void setPrivateKey(final RSAPrivateKey privateKey) {
         this.privateKey = privateKey;
-    }
-
-    public JWSAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(final JWSAlgorithm algorithm) {
-        this.algorithm = algorithm;
     }
 
     @Override
