@@ -1,4 +1,4 @@
-package org.pac4j.jwt.config;
+package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -19,19 +19,19 @@ import java.text.ParseException;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class MacSignatureConfiguration extends InitializableObject implements SignatureConfiguration {
+public class SecretSignatureConfiguration extends InitializableObject implements SignatureConfiguration {
 
     private String secret;
 
     private JWSAlgorithm algorithm = JWSAlgorithm.HS256;
 
-    public MacSignatureConfiguration() {}
+    public SecretSignatureConfiguration() {}
 
-    public MacSignatureConfiguration(final String secret) {
+    public SecretSignatureConfiguration(final String secret) {
         this.secret = secret;
     }
 
-    public MacSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
+    public SecretSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
         this.secret = secret;
         this.algorithm = algorithm;
     }
@@ -81,12 +81,12 @@ public class MacSignatureConfiguration extends InitializableObject implements Si
         this.secret = secret;
     }
 
-    public static MacSignatureConfiguration buildFromJwk(final String json) {
+    public static SecretSignatureConfiguration buildFromJwk(final String json) {
         CommonHelper.assertNotBlank("json", json);
 
         try {
             final OctetSequenceKey octetSequenceKey = OctetSequenceKey.parse(json);
-            return new MacSignatureConfiguration(new String(octetSequenceKey.toByteArray(), "UTF-8"));
+            return new SecretSignatureConfiguration(new String(octetSequenceKey.toByteArray(), "UTF-8"));
         } catch (final UnsupportedEncodingException | ParseException e) {
             throw new TechnicalException(e);
         }
