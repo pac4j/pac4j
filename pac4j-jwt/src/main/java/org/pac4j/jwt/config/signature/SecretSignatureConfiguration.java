@@ -3,15 +3,10 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
-
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 
 /**
  * HMac signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac
@@ -19,15 +14,16 @@ import java.text.ParseException;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class SecretSignatureConfiguration extends InitializableObject implements SignatureConfiguration {
+public class SecretSignatureConfiguration extends AbstractSignatureConfiguration {
 
     private String secret;
 
-    private JWSAlgorithm algorithm = JWSAlgorithm.HS256;
-
-    public SecretSignatureConfiguration() {}
+    public SecretSignatureConfiguration() {
+        algorithm = JWSAlgorithm.HS256;
+    }
 
     public SecretSignatureConfiguration(final String secret) {
+        this();
         this.secret = secret;
     }
 
@@ -79,25 +75,6 @@ public class SecretSignatureConfiguration extends InitializableObject implements
 
     public void setSecret(final String secret) {
         this.secret = secret;
-    }
-
-    public static SecretSignatureConfiguration buildFromJwk(final String json) {
-        CommonHelper.assertNotBlank("json", json);
-
-        try {
-            final OctetSequenceKey octetSequenceKey = OctetSequenceKey.parse(json);
-            return new SecretSignatureConfiguration(new String(octetSequenceKey.toByteArray(), "UTF-8"));
-        } catch (final UnsupportedEncodingException | ParseException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    public JWSAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(final JWSAlgorithm algorithm) {
-        this.algorithm = algorithm;
     }
 
     @Override

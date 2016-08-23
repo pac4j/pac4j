@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.jwt.util.JWKHelper;
 
 import java.io.UnsupportedEncodingException;
 
@@ -43,7 +44,7 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
         final String json = new OctetSequenceKey.Builder(MAC_SECRET.getBytes("UTF-8")).build().toJSONObject().toJSONString();
-        SecretSignatureConfiguration.buildFromJwk(json);
+        JWKHelper.buildSecretFromJwk(json);
     }
 
     @Test
