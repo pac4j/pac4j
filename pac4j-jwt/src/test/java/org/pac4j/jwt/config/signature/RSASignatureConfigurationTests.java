@@ -1,31 +1,32 @@
-package org.pac4j.jwt.config;
+package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.ECKey;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.jwt.config.signature.RSASignatureConfiguration;
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link ECSignatureConfiguration}.
+ * Tests {@link RSASignatureConfiguration}.
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public final class ECSignatureConfigurationTests implements TestsConstants {
+public final class RSASignatureConfigurationTests implements TestsConstants {
 
     private JWTClaimsSet buildClaims() {
         return new JWTClaimsSet.Builder().subject(VALUE).build();
@@ -33,7 +34,7 @@ public final class ECSignatureConfigurationTests implements TestsConstants {
 
     private KeyPair buildKeyPair() {
         try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             return keyGen.generateKeyPair();
         } catch (final NoSuchAlgorithmException e) {
             throw new TechnicalException(e);
@@ -42,39 +43,39 @@ public final class ECSignatureConfigurationTests implements TestsConstants {
 
     @Test
     public void testMissingPrivateKey() {
-        final ECSignatureConfiguration config = new ECSignatureConfiguration();
+        final RSASignatureConfiguration config = new RSASignatureConfiguration();
         TestsHelper.expectException(() -> config.sign(buildClaims()), TechnicalException.class, "privateKey cannot be null");
     }
 
     @Test
     public void testMissingPublicKey() {
-        final ECSignatureConfiguration config = new ECSignatureConfiguration();
-        config.setPrivateKey((ECPrivateKey) buildKeyPair().getPrivate());
+        final RSASignatureConfiguration config = new RSASignatureConfiguration();
+        config.setPrivateKey((RSAPrivateKey) buildKeyPair().getPrivate());
         final SignedJWT signedJWT = config.sign(buildClaims());
         TestsHelper.expectException(() -> config.verify(signedJWT), TechnicalException.class, "publicKey cannot be null");
     }
 
     @Test
     public void testMissingAlgorithm() {
-        final ECSignatureConfiguration config = new ECSignatureConfiguration(buildKeyPair(), null);
+        final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair(), null);
         TestsHelper.expectException(config::init, TechnicalException.class, "algorithm cannot be null");
     }
 
     @Test
     public void testBadAlgorithm() {
-        final ECSignatureConfiguration config = new ECSignatureConfiguration(buildKeyPair(), JWSAlgorithm.HS256);
-        TestsHelper.expectException(config::init, TechnicalException.class, "Only the ES256, ES384 and ES512 algorithms are supported for elliptic curve signature");
+        final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair(), JWSAlgorithm.HS256);
+        TestsHelper.expectException(config::init, TechnicalException.class, "Only the RS256, RS384, RS512, PS256, PS384 and PS512 algorithms are supported for RSA signature");
     }
 
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
-        final String json = new ECKey.Builder(ECKey.Curve.P_256, (ECPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
-        ECSignatureConfiguration.buildFromJwk(json);
+        final String json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
+        RSASignatureConfiguration.buildFromJwk(json);
     }
 
     @Test
     public void testSignVerify() throws JOSEException {
-        final ECSignatureConfiguration config = new ECSignatureConfiguration(buildKeyPair());
+        final RSASignatureConfiguration config = new RSASignatureConfiguration(buildKeyPair());
         final JWTClaimsSet claims = new JWTClaimsSet.Builder().subject(VALUE).build();
         final SignedJWT signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));

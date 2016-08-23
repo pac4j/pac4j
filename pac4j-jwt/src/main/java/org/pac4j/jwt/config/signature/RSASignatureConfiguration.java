@@ -1,9 +1,9 @@
-package org.pac4j.jwt.config;
+package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.ECDSASigner;
-import com.nimbusds.jose.crypto.ECDSAVerifier;
-import com.nimbusds.jose.jwk.ECKey;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
@@ -11,31 +11,31 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
 import java.security.KeyPair;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 
 /**
- * Elliptic curve signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-ec-signature
+ * RSA signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-rsa-signature
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class ECSignatureConfiguration extends InitializableObject implements SignatureConfiguration {
+public class RSASignatureConfiguration extends InitializableObject implements SignatureConfiguration {
 
-    private ECPublicKey publicKey;
+    private RSAPublicKey publicKey;
 
-    private ECPrivateKey privateKey;
+    private RSAPrivateKey privateKey;
 
-    private JWSAlgorithm algorithm = JWSAlgorithm.ES256;
+    private JWSAlgorithm algorithm = JWSAlgorithm.RS256;
 
-    public ECSignatureConfiguration() {}
+    public RSASignatureConfiguration() {}
 
-    public ECSignatureConfiguration(final KeyPair keyPair) {
+    public RSASignatureConfiguration(final KeyPair keyPair) {
         setKeyPair(keyPair);
     }
 
-    public ECSignatureConfiguration(final KeyPair keyPair, final JWSAlgorithm algorithm) {
+    public RSASignatureConfiguration(final KeyPair keyPair, final JWSAlgorithm algorithm) {
         setKeyPair(keyPair);
         this.algorithm = algorithm;
     }
@@ -45,14 +45,13 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
         CommonHelper.assertNotNull("algorithm", algorithm);
 
         if (!supports(this.algorithm)) {
-            throw new TechnicalException("Only the ES256, ES384 and ES512 algorithms are supported for elliptic curve signature");
+            throw new TechnicalException("Only the RS256, RS384, RS512, PS256, PS384 and PS512 algorithms are supported for RSA signature");
         }
     }
 
-
     @Override
     public boolean supports(final JWSAlgorithm algorithm) {
-        return algorithm != null && ECDSAVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
+        return algorithm != null && RSASSAVerifier.SUPPORTED_ALGORITHMS.contains(algorithm);
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
         CommonHelper.assertNotNull("privateKey", privateKey);
 
         try {
-            final JWSSigner signer = new ECDSASigner(this.privateKey);
+            final JWSSigner signer = new RSASSASigner(this.privateKey);
             final SignedJWT signedJWT = new SignedJWT(new JWSHeader(algorithm), claims);
             signedJWT.sign(signer);
             return signedJWT;
@@ -75,16 +74,16 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
         init();
         CommonHelper.assertNotNull("publicKey", publicKey);
 
-        final JWSVerifier verifier = new ECDSAVerifier(this.publicKey);
+        final JWSVerifier verifier = new RSASSAVerifier(this.publicKey);
         return jwt.verify(verifier);
     }
 
-    public static ECSignatureConfiguration buildFromJwk(final String json) {
+    public static RSASignatureConfiguration buildFromJwk(final String json) {
         CommonHelper.assertNotBlank("json", json);
 
         try {
-            final ECKey ecKey = ECKey.parse(json);
-            return new ECSignatureConfiguration(ecKey.toKeyPair());
+            final RSAKey rsaKey = RSAKey.parse(json);
+            return new RSASignatureConfiguration(rsaKey.toKeyPair());
         } catch (final JOSEException | ParseException e) {
             throw new TechnicalException(e);
         }
@@ -92,23 +91,23 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
 
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
-        this.privateKey = (ECPrivateKey) keyPair.getPrivate();
-        this.publicKey = (ECPublicKey) keyPair.getPublic();
+        this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        this.publicKey = (RSAPublicKey) keyPair.getPublic();
     }
 
-    public ECPublicKey getPublicKey() {
+    public RSAPublicKey getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(final ECPublicKey publicKey) {
+    public void setPublicKey(final RSAPublicKey publicKey) {
         this.publicKey = publicKey;
     }
 
-    public ECPrivateKey getPrivateKey() {
+    public RSAPrivateKey getPrivateKey() {
         return privateKey;
     }
 
-    public void setPrivateKey(final ECPrivateKey privateKey) {
+    public void setPrivateKey(final RSAPrivateKey privateKey) {
         this.privateKey = privateKey;
     }
 
