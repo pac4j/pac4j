@@ -6,23 +6,27 @@
 
 It is currently **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/Big-picture).
 
-## Available authentication mechanims:
+## Authentication mechanims:
 
 [CAS](https://github.com/pac4j/pac4j/wiki/CAS-protocol) - [SAML](https://github.com/pac4j/pac4j/wiki/SAML-protocol) - [OpenID Connect](https://github.com/pac4j/pac4j/wiki/OpenID-Connect-protocol) - [OAuth](https://github.com/pac4j/pac4j/wiki/Other-clients) - [HTTP](https://github.com/pac4j/pac4j/wiki/Other-clients) - [OpenID](https://github.com/pac4j/pac4j/wiki/Other-clients) - [Google App Engine](https://github.com/pac4j/pac4j/wiki/Other-clients)
 
 [LDAP](https://github.com/pac4j/pac4j/wiki/Authenticators) - [SQL](https://github.com/pac4j/pac4j/wiki/Authenticators) - [JWT](https://github.com/pac4j/pac4j/wiki/Authenticators) - [MongoDB](https://github.com/pac4j/pac4j/wiki/Authenticators) - [Stormpath](https://github.com/pac4j/pac4j/wiki/Authenticators)
 
 
-## Available authorization mechanims:
+## Authorization mechanims:
 
 [Roles / permissions](https://github.com/pac4j/pac4j/wiki/Authorizers) - [Anonymous / rememeber-me / (fully) authenticated](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
 [CORS](https://github.com/pac4j/pac4j/wiki/Authorizers) - [CSRF](https://github.com/pac4j/pac4j/wiki/Authorizers) - [IP address](https://github.com/pac4j/pac4j/wiki/Authorizers) - [HTTP Security headers](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
 
-## Frameworks / tools implementing `pac4j`:
+## Available for:
 
-[J2E](https://github.com/pac4j/j2e-pac4j) - [Spring Web MVC / Boot](https://github.com/pac4j/spring-webmvc-pac4j) - [Play 2.x framework](https://github.com/pac4j/play-pac4j) - [Vertx](https://github.com/pac4j/vertx-pac4j) - [Spark Java framework](https://github.com/pac4j/spark-pac4j) - [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) - [Undertow](https://github.com/pac4j/undertow-pac4j) - [Jooby framework](http://jooby.org/doc/pac4j) - [Apache Shiro](https://github.com/bujiio/buji-pac4j) - [Spring Security](https://github.com/pac4j/spring-security-pac4j) - [SSO CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) - [Dropwizard](https://github.com/evnm/dropwizard-pac4j) - [Knox gateway for Hadoop](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect)
+[J2E](https://github.com/pac4j/j2e-pac4j) - [Spring Web MVC / Boot](https://github.com/pac4j/spring-webmvc-pac4j) - [Spring Security](https://github.com/pac4j/spring-security-pac4j) - [Apache Shiro](https://github.com/bujiio/buji-pac4j)
+
+[Play 2.x framework](https://github.com/pac4j/play-pac4j) - [Vertx](https://github.com/pac4j/vertx-pac4j) - [Spark Java framework](https://github.com/pac4j/spark-pac4j) - [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) - [Undertow](https://github.com/pac4j/undertow-pac4j)
+
+[SSO CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) - [Dropwizard](https://github.com/evnm/dropwizard-pac4j) - [Knox gateway for Hadoop](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) - [Jooby framework](http://jooby.org/doc/pac4j)
 
 You can also implement `pac4j` for a new framework / tool by following these [guidelines](https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool).
 
