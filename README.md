@@ -4,7 +4,7 @@
 
 `pac4j` is an **easy** and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It provides a comprehensive set of **concepts and components**. It is based on Java 8 and available under the Apache 2 license.
 
-It is currently **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/Big-picture).
+It is currently **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**.
 
 ## Authentication mechanims:
 
@@ -28,7 +28,7 @@ It is currently **available for most frameworks / tools** and **supports most au
 
 [SSO CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) - [Dropwizard](https://github.com/evnm/dropwizard-pac4j) - [Knox gateway for Hadoop](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) - [Jooby framework](http://jooby.org/doc/pac4j)
 
-You can also implement `pac4j` for a new framework / tool by following these [guidelines](https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool).
+<br />
 
 ---
 
