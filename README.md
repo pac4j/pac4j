@@ -30,6 +30,7 @@ It is currently **available for most frameworks / tools** and **supports most au
 
 You can also implement `pac4j` for a new framework / tool by following these [guidelines](https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool).
 
+---
 
 ## Main concepts and components:
 
