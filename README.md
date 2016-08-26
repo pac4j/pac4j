@@ -8,9 +8,9 @@ It is **available for most frameworks / tools** and **supports most authenticati
 
 ## Authentication mechanims:
 
-[OAuth (Facebook, Twitter, Google...)](https://github.com/pac4j/pac4j/wiki/Other-clients) - [SAML](https://github.com/pac4j/pac4j/wiki/SAML-protocol) - [CAS](https://github.com/pac4j/pac4j/wiki/CAS-protocol) - [OpenID Connect](https://github.com/pac4j/pac4j/wiki/OpenID-Connect-protocol) - [HTTP](https://github.com/pac4j/pac4j/wiki/Other-clients)
+[OAuth (Facebook, Twitter, Google...)](https://github.com/pac4j/pac4j/wiki/Other-clients) - [SAML](https://github.com/pac4j/pac4j/wiki/SAML-protocol) - [CAS](https://github.com/pac4j/pac4j/wiki/CAS-protocol) - [OpenID Connect](https://github.com/pac4j/pac4j/wiki/OpenID-Connect-protocol) - [HTTP](https://github.com/pac4j/pac4j/wiki/Other-clients) - [OpenID](https://github.com/pac4j/pac4j/wiki/Other-clients) - [Google App Engine](https://github.com/pac4j/pac4j/wiki/Other-clients)
 
-[LDAP](https://github.com/pac4j/pac4j/wiki/Authenticators) - [SQL](https://github.com/pac4j/pac4j/wiki/Authenticators) - [JWT](https://github.com/pac4j/pac4j/wiki/Authenticators) - [MongoDB](https://github.com/pac4j/pac4j/wiki/Authenticators) - [Stormpath](https://github.com/pac4j/pac4j/wiki/Authenticators) - [OpenID](https://github.com/pac4j/pac4j/wiki/Other-clients) - [Google App Engine](https://github.com/pac4j/pac4j/wiki/Other-clients)
+[LDAP](https://github.com/pac4j/pac4j/wiki/Authenticators) - [SQL](https://github.com/pac4j/pac4j/wiki/Authenticators) - [JWT](https://github.com/pac4j/pac4j/wiki/Authenticators) - [MongoDB](https://github.com/pac4j/pac4j/wiki/Authenticators) - [Stormpath](https://github.com/pac4j/pac4j/wiki/Authenticators)
 
 
 ## Authorization mechanims:
