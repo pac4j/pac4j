@@ -4,9 +4,21 @@
 
 `pac4j` is an **easy** and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It provides a comprehensive set of [concepts and components](#main-concepts-and-components). It is based on Java 8 and available under the Apache 2 license.
 
-It is currently **available for most [frameworks / tools](#frameworks--tools-implementing-pac4j)** and **supports most [authentication](https://github.com/pac4j/pac4j/wiki/Clients) / [authorization](https://github.com/pac4j/pac4j/wiki/Authorizers) mechanisms**.
+It is currently **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**. See the [big picture](https://github.com/pac4j/pac4j/wiki/Big-picture).
 
-[![pac4j big picture](https://pac4j.github.io/pac4j/img/pac4j.png)](https://pac4j.github.io/pac4j/img/pac4j.png)
+## Available authentication mechanims:
+
+[CAS](https://github.com/pac4j/pac4j/wiki/CAS-protocol) - [SAML](https://github.com/pac4j/pac4j/wiki/SAML-protocol) - [OpenID Connect](https://github.com/pac4j/pac4j/wiki/OpenID-Connect-protocol) - [OAuth](https://github.com/pac4j/pac4j/wiki/Other-clients) - [HTTP](https://github.com/pac4j/pac4j/wiki/Other-clients) - [OpenID](https://github.com/pac4j/pac4j/wiki/Other-clients) - [Google App Engine](https://github.com/pac4j/pac4j/wiki/Other-clients)
+
+[LDAP](https://github.com/pac4j/pac4j/wiki/Authenticators) - [SQL](https://github.com/pac4j/pac4j/wiki/Authenticators) - [JWT](https://github.com/pac4j/pac4j/wiki/Authenticators) - [MongoDB](https://github.com/pac4j/pac4j/wiki/Authenticators) - [Stormpath](https://github.com/pac4j/pac4j/wiki/Authenticators)
+
+
+## Available authorization mechanims:
+
+[Roles / permissions](https://github.com/pac4j/pac4j/wiki/Authorizers) - [Anonymous / rememeber-me / (fully) authenticated](https://github.com/pac4j/pac4j/wiki/Authorizers)
+
+[CORS](https://github.com/pac4j/pac4j/wiki/Authorizers) - [CSRF](https://github.com/pac4j/pac4j/wiki/Authorizers) - [IP address](https://github.com/pac4j/pac4j/wiki/Authorizers) - [HTTP Security headers](https://github.com/pac4j/pac4j/wiki/Authorizers)
+
 
 ## Frameworks / tools implementing `pac4j`:
 
@@ -26,10 +38,8 @@ It is currently **available for most [frameworks / tools](#frameworks--tools-imp
 | [Dropwizard](http://www.dropwizard.io/) | [dropwizard-pac4j](https://github.com/evnm/dropwizard-pac4j) | |
 | [Knox gateway for Hadoop](https://knox.apache.org) | [gateway-provider-security-pac4j](http://knox.apache.org/books/knox-0-8-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) | [knox-pac4j-demo](https://github.com/pac4j/knox-pac4j-demo) |
 
-
-
-
 You can implement `pac4j` for a new framework / tool by following these [guidelines](https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool).
+
 
 ## Main concepts and components:
 
