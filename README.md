@@ -20,7 +20,7 @@ It is currently **available for most frameworks / tools** and **supports most au
 [CORS](https://github.com/pac4j/pac4j/wiki/Authorizers) - [CSRF](https://github.com/pac4j/pac4j/wiki/Authorizers) - [IP address](https://github.com/pac4j/pac4j/wiki/Authorizers) - [HTTP Security headers](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
 
-## Available for:
+## Available for (*click on your framework*):
 
 [J2E](https://github.com/pac4j/j2e-pac4j) - [Spring Web MVC / Boot](https://github.com/pac4j/spring-webmvc-pac4j) - [Spring Security](https://github.com/pac4j/spring-security-pac4j) - [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 
