@@ -2,15 +2,15 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
-`pac4j` is an **easy** and **powerful Java security engine** to authenticate users, get their profiles and manage authorizations in order to secure a Java web application. It provides a comprehensive set of **concepts and components**. It is based on Java 8 and available under the Apache 2 license.
+`pac4j` is an **easy** and **powerful security engine** for **Java** to authenticate users, get their profiles and manage authorizations in order to secure web applications. It provides a comprehensive set of **concepts and components**. It is based on Java 8 and available under the Apache 2 license.
 
-It is currently **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**.
+It is **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**.
 
 ## Authentication mechanims:
 
-[CAS](https://github.com/pac4j/pac4j/wiki/CAS-protocol) - [SAML](https://github.com/pac4j/pac4j/wiki/SAML-protocol) - [OpenID Connect](https://github.com/pac4j/pac4j/wiki/OpenID-Connect-protocol) - [OAuth](https://github.com/pac4j/pac4j/wiki/Other-clients) - [HTTP](https://github.com/pac4j/pac4j/wiki/Other-clients) - [OpenID](https://github.com/pac4j/pac4j/wiki/Other-clients) - [Google App Engine](https://github.com/pac4j/pac4j/wiki/Other-clients)
+[OAuth (Facebook, Twitter, Google...)](https://github.com/pac4j/pac4j/wiki/Other-clients) - [SAML](https://github.com/pac4j/pac4j/wiki/SAML-protocol) - [CAS](https://github.com/pac4j/pac4j/wiki/CAS-protocol) - [OpenID Connect](https://github.com/pac4j/pac4j/wiki/OpenID-Connect-protocol) - [HTTP](https://github.com/pac4j/pac4j/wiki/Other-clients)
 
-[LDAP](https://github.com/pac4j/pac4j/wiki/Authenticators) - [SQL](https://github.com/pac4j/pac4j/wiki/Authenticators) - [JWT](https://github.com/pac4j/pac4j/wiki/Authenticators) - [MongoDB](https://github.com/pac4j/pac4j/wiki/Authenticators) - [Stormpath](https://github.com/pac4j/pac4j/wiki/Authenticators)
+[LDAP](https://github.com/pac4j/pac4j/wiki/Authenticators) - [SQL](https://github.com/pac4j/pac4j/wiki/Authenticators) - [JWT](https://github.com/pac4j/pac4j/wiki/Authenticators) - [MongoDB](https://github.com/pac4j/pac4j/wiki/Authenticators) - [Stormpath](https://github.com/pac4j/pac4j/wiki/Authenticators) - [OpenID](https://github.com/pac4j/pac4j/wiki/Other-clients) - [Google App Engine](https://github.com/pac4j/pac4j/wiki/Other-clients)
 
 
 ## Authorization mechanims:
@@ -20,15 +20,13 @@ It is currently **available for most frameworks / tools** and **supports most au
 [CORS](https://github.com/pac4j/pac4j/wiki/Authorizers) - [CSRF](https://github.com/pac4j/pac4j/wiki/Authorizers) - [IP address](https://github.com/pac4j/pac4j/wiki/Authorizers) - [HTTP Security headers](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
 
-## Available for (*click on your framework*):
+## Available implementations (*click on your framework*):
 
 [J2E](https://github.com/pac4j/j2e-pac4j) - [Spring Web MVC / Boot](https://github.com/pac4j/spring-webmvc-pac4j) - [Spring Security](https://github.com/pac4j/spring-security-pac4j) - [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 
 [Play 2.x framework](https://github.com/pac4j/play-pac4j) - [Vertx](https://github.com/pac4j/vertx-pac4j) - [Spark Java framework](https://github.com/pac4j/spark-pac4j) - [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) - [Undertow](https://github.com/pac4j/undertow-pac4j)
 
 [SSO CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) - [Dropwizard](https://github.com/evnm/dropwizard-pac4j) - [Knox gateway for Hadoop](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) - [Jooby framework](http://jooby.org/doc/pac4j)
-
-<br />
 
 ---
 
