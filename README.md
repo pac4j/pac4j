@@ -15,7 +15,7 @@ It is **available for most frameworks / tools** and **supports most authenticati
 
 ## Authorization mechanims:
 
-[Roles / permissions](https://github.com/pac4j/pac4j/wiki/Authorizers) - [Anonymous / rememeber-me / (fully) authenticated](https://github.com/pac4j/pac4j/wiki/Authorizers)
+[Roles / permissions](https://github.com/pac4j/pac4j/wiki/Authorizers) - [Anonymous / remember-me / (fully) authenticated](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
 [CORS](https://github.com/pac4j/pac4j/wiki/Authorizers) - [CSRF](https://github.com/pac4j/pac4j/wiki/Authorizers) - [IP address](https://github.com/pac4j/pac4j/wiki/Authorizers) - [HTTP Security headers](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
