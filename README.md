@@ -2,7 +2,7 @@
   <img src="https://pac4j.github.io/pac4j/img/logo.png" width="300" />
 </p>
 
-`pac4j` is an **easy** and **powerful security engine** for **Java** to authenticate users, get their profiles and manage authorizations in order to secure web applications. It provides a comprehensive set of **concepts and components**. It is based on Java 8 and available under the Apache 2 license.
+`pac4j` is an **easy** and **powerful security engine** for **Java** to authenticate users, get their profiles and manage authorizations in order to secure web applications. It provides a comprehensive set of [**concepts and components**](pac4j/pac4j/wiki/Main-concepts-and-components). It is based on Java 8 and available under the Apache 2 license.
 
 It is **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**.
 
@@ -20,7 +20,7 @@ It is **available for most frameworks / tools** and **supports most authenticati
 [CORS](https://github.com/pac4j/pac4j/wiki/Authorizers) - [CSRF](https://github.com/pac4j/pac4j/wiki/Authorizers) - [IP address](https://github.com/pac4j/pac4j/wiki/Authorizers) - [HTTP Security headers](https://github.com/pac4j/pac4j/wiki/Authorizers)
 
 
-## Available implementations (*click on your framework*):
+## Available implementations (*Get started by clicking on your framework*):
 
 [J2E](https://github.com/pac4j/j2e-pac4j) - [Spring Boot](https://github.com/pac4j/spring-webmvc-pac4j) - [Spring Web MVC](https://github.com/pac4j/spring-webmvc-pac4j) - [Spring Security](https://github.com/pac4j/spring-security-pac4j) - [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 
@@ -29,23 +29,6 @@ It is **available for most frameworks / tools** and **supports most authenticati
 [SSO CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) - [Dropwizard](https://github.com/evnm/dropwizard-pac4j) - [Knox gateway for Hadoop](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) - [Jooby framework](http://jooby.org/doc/pac4j)
 
 ---
-
-## Main concepts and components:
-
-1) A [**client**](https://github.com/pac4j/pac4j/wiki/Clients) represents an authentication mechanism. It performs the login process and returns a user profile. An indirect client is for UI authentication while a direct client is for web services authentication
-
-2) An [**authorizer**](https://github.com/pac4j/pac4j/wiki/Authorizers) is meant to check authorizations on the authenticated user profile(s) or on the current web context
-
-3) A [**matcher**](https://github.com/pac4j/pac4j/wiki/Matchers) defines whether the security must apply on a specific url
-
-4) A [**config**](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/config/Config.java) defines the security configuration via clients, authorizers and matchers
-
-5) The ["**security filter**"](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java) (or whatever the mechanism used to intercept HTTP requests) protects an url by checking that the user is authenticated and that the authorizations are valid, according to the clients and authorizers configuration. If the user is not authenticated, it performs authentication for direct clients or starts the login process for indirect clients
-
-6) The ["**callback controller**"](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java) finishes the login process for an indirect client
-
-7) The [**application logout controller**"](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultApplicationLogoutLogic.java) logs out the user from the application.
-
 
 ## Versions
 
