@@ -28,7 +28,7 @@ public class J2EContext implements WebContext {
     /**
      * Build a J2E context from the current HTTP request and response.
      *
-     * @param request the current request
+     * @param request  the current request
      * @param response the current response
      */
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response) {
@@ -38,8 +38,8 @@ public class J2EContext implements WebContext {
     /**
      * Build a J2E context from the current HTTP request and response.
      *
-     * @param request the current request
-     * @param response the current response
+     * @param request      the current request
+     * @param response     the current response
      * @param sessionStore the session store to use
      */
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
@@ -58,10 +58,14 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public Object getRequestAttribute(final String name) { return this.request.getAttribute(name); }
+    public Object getRequestAttribute(final String name) {
+        return this.request.getAttribute(name);
+    }
 
     @Override
-    public void setRequestAttribute(final String name, final Object value) { this.request.setAttribute(name, value); }
+    public void setRequestAttribute(final String name, final Object value) {
+        this.request.setAttribute(name, value);
+    }
 
     @Override
     public Map<String, String[]> getRequestParameters() {
@@ -99,7 +103,9 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public String getRemoteAddr() { return this.request.getRemoteAddr(); }
+    public String getRemoteAddr() {
+        return this.request.getRemoteAddr();
+    }
 
     /**
      * Return the HTTP request.
@@ -173,17 +179,19 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public boolean isSecure() { return this.request.isSecure(); }
+    public boolean isSecure() {
+        return this.request.isSecure();
+    }
 
     @Override
     public String getFullRequestURL() {
-        StringBuffer requestURL = request.getRequestURL();
-        String queryString = request.getQueryString();
+        final StringBuffer requestURL = request.getRequestURL();
+        final String queryString = request.getQueryString();
         if (queryString == null) {
             return requestURL.toString();
-        } else {
-            return requestURL.append('?').append(queryString).toString();
-        }
+        } 
+        return requestURL.append('?').append(queryString).toString();
+        
     }
 
     @Override
@@ -192,23 +200,23 @@ public class J2EContext implements WebContext {
         final javax.servlet.http.Cookie[] cookies = this.request.getCookies();
 
         if (cookies != null) {
-	        for (javax.servlet.http.Cookie c : cookies) {
-	            final Cookie cookie = new Cookie(c.getName(), c.getValue());
-	            cookie.setComment(c.getComment());
-	            cookie.setDomain(c.getDomain());
-	            cookie.setHttpOnly(c.isHttpOnly());
-	            cookie.setMaxAge(c.getMaxAge());
-	            cookie.setPath(c.getPath());
-	            cookie.setSecure(c.getSecure());
-	            pac4jCookies.add(cookie);
-	        }
+            for (final javax.servlet.http.Cookie c : cookies) {
+                final Cookie cookie = new Cookie(c.getName(), c.getValue());
+                cookie.setComment(c.getComment());
+                cookie.setDomain(c.getDomain());
+                cookie.setHttpOnly(c.isHttpOnly());
+                cookie.setMaxAge(c.getMaxAge());
+                cookie.setPath(c.getPath());
+                cookie.setSecure(c.getSecure());
+                pac4jCookies.add(cookie);
+            }
         }
         return pac4jCookies;
     }
 
     @Override
     public void addResponseCookie(final Cookie cookie) {
-        javax.servlet.http.Cookie c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
+        final javax.servlet.http.Cookie c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
         c.setSecure(cookie.isSecure());
         c.setPath(cookie.getPath());
         c.setMaxAge(cookie.getMaxAge());
@@ -225,18 +233,27 @@ public class J2EContext implements WebContext {
      */
     @Override
     public String getPath() {
-        String fullPath = request.getRequestURI();
+        final String fullPath = request.getRequestURI();
         // it shouldn't be null, but in case it is, it's better to return empty string
         if (fullPath == null) {
             return "";
-        } else {
-            String context = request.getContextPath();
-            // this one shouldn't be null either, but in case it is, then let's consider it is empty
-            if (context != null) {
-                return fullPath.substring(context.length());
-            } else {
-                return fullPath;
-            }
+        } 
+        final String context = request.getContextPath();
+        // this one shouldn't be null either, but in case it is, then let's consider it is empty
+        if (context != null) {
+            return fullPath.substring(context.length());
+        }
+        return fullPath;
+    }
+
+    @Override
+    public String getRequestContent() {
+        try {
+            return request.getReader()
+                          .lines()
+                          .reduce("", (accumulator, actual) -> accumulator.concat(actual));
+        } catch (final IOException e) {
+            throw new TechnicalException(e);
         }
     }
 }
