@@ -37,7 +37,7 @@ public interface WebContext {
     /**
      * Save a request attribute.
      *
-     * @param name the name of the attribute
+     * @param name  the name of the attribute
      * @param value the attribute
      */
     void setRequestAttribute(String name, Object value);
@@ -53,7 +53,7 @@ public interface WebContext {
     /**
      * Save an attribute in session.
      *
-     * @param name name of the session attribute
+     * @param name  name of the session attribute
      * @param value value of the session attribute
      */
     void setSessionAttribute(String name, Object value);
@@ -68,6 +68,7 @@ public interface WebContext {
 
     /**
      * Gets the session id for this context.
+     *
      * @return the session identifier
      */
     Object getSessionIdentifier();
@@ -110,13 +111,14 @@ public interface WebContext {
     /**
      * Add a header to the response.
      *
-     * @param name name of the header
+     * @param name  name of the header
      * @param value value of the header
      */
     void setResponseHeader(String name, String value);
 
     /**
      * Sets the response content type.
+     *
      * @param content the content type
      */
     void setResponseContentType(String content);
@@ -180,4 +182,12 @@ public interface WebContext {
      * @since 1.8.1
      */
     String getPath();
+
+    /**
+     * Gets content body of the original request.
+     *
+     * @return the request content
+     * @since 1.9.2
+     */
+    String getRequestContent();
 }

@@ -287,4 +287,9 @@ public final class MockWebContext implements WebContext {
     public void addResponseCookie(Cookie cookie) {
         this.responseCookies.add(cookie);
     }
+
+    @Override
+    public String getRequestContent() {
+        return "";
+    }
 }
