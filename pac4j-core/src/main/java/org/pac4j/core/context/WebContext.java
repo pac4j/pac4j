@@ -1,5 +1,7 @@
 package org.pac4j.core.context;
 
+import org.pac4j.core.exception.TechnicalException;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -189,5 +191,7 @@ public interface WebContext {
      * @return the request content
      * @since 1.9.2
      */
-    String getRequestContent();
+    default String getRequestContent() {
+        throw new TechnicalException("Operation not supported");
+    }
 }
