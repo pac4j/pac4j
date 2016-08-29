@@ -3,7 +3,7 @@ package org.pac4j.core.authorization.authorizer;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.springframework.util.StringUtils;
+import org.pac4j.core.util.CommonHelper;
 
 import java.util.Collection;
 
@@ -34,7 +34,7 @@ public class RequireAnyAttributeAuthorizer<U extends CommonProfile> extends Abst
             return false;
         }
 
-        if (StringUtils.isEmpty(this.valueToMatch)) {
+        if (CommonHelper.isBlank(this.valueToMatch)) {
             return true;
         }
         
