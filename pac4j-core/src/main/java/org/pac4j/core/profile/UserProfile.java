@@ -184,6 +184,15 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
+     * Check to see if profile contains attribute name.
+     *
+     * @param name the name
+     * @return true/false
+     */
+    public boolean containsAttribute(final String name) {
+        return this.attributes.containsKey(name);
+    }
+    /**
      * Return the attribute with name.
      *
      * @param name the attribute name
