@@ -46,3 +46,6 @@ p {
 .highlight {
 	padding: 10px 10px 10px 10px
 }
+.nav-link {
+	padding-right: 30px;
+}
