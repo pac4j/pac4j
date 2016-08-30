@@ -2,7 +2,7 @@ body {
 	padding-bottom: 60px;
 }
 .navbar {
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 }
 h1 {
 	font-size: 26px !important;
@@ -27,9 +27,22 @@ code {
 #content a:hover {
 	text-decoration: none !important;
 }
-img { 
+img, table, th, td, .highlight { 
    border:1px solid #BBBBBB;
+}
+th {
+	text-align: center;
 }
 #bannerImage {
 	border:0;
+}
+p {
+	text-align: justify;
+}
+.text-center {
+	text-align: center;
+	width: 100%;
+}
+.highlight {
+	padding: 10px 10px 10px 10px
 }

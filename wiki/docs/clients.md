@@ -41,6 +41,7 @@ Clients are of two kinds:
 | Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback filter") |
 | Are the credentials mandatory? | Generally, no. If no credentials are provided, the direct client will be ignored (by the "security filter") | Generally, yes. Credentials are expected on the callback endpoint |
 | What are the protected urls? | The urls of the web service are protected by the "security filter" | The urls of the web application are protected by the "security filter", but the callback url is not protected as it is used during the login process when the user is still anonymous |
+{:.table-striped}
 
 ---
 

@@ -7,9 +7,9 @@ title: User manual&#58;
 
 ## 2) Authentication mechanisms:
 
-### [Clients](/docs/clients.html): [OAuth](/docs/clients/oauth.html) - [SAML](/docs/clients/saml.html) - [CAS](/docs/clients/cas.html) - [OpenID Connect](/docs/clients/openid-connect.html) - [HTTP](/docs/clients/http.html) - [OpenID](/docs/clients/openid.html) - [Google App Engine](/docs/clients/google-app-engine.html)
+### &#9656; [Clients](/docs/clients.html): [OAuth](/docs/clients/oauth.html) - [SAML](/docs/clients/saml.html) - [CAS](/docs/clients/cas.html) - [OpenID Connect](/docs/clients/openid-connect.html) - [HTTP](/docs/clients/http.html) - [OpenID](/docs/clients/openid.html) - [Google App Engine](/docs/clients/google-app-engine.html)
 
-### [Authenticators](/docs/authenticators.html): LDAP - SQL - JWT - MongoDB - Stormpath
+### &#9656; [Authenticators](/docs/authenticators.html): LDAP - SQL - JWT - MongoDB - Stormpath
 
 ## 3) Authorization mechanisms: [Authorizers](/docs/authorizers.html)
 
