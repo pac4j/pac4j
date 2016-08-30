@@ -21,8 +21,7 @@ title: User manual&#58;
 
 ---
 
-# <span class="alert alert-warning">Developer Manual&#58;</span>
-<br />
+<h1 class="text-center"><span class="alert alert-warning">Developer Manual&#58;</span></h1><br />
 
 ## 1) [Customizations](/docs/customizations.html)
 

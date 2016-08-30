@@ -9,11 +9,11 @@ title: Authentication flows&#58;
 
 <div class="text-center">
 
-<a href="http://www.pac4j.org/img/pac4j-stateful.png"><img alt="External/stateful authentication flow" src="http://www.pac4j.org/img/pac4j-stateful.png" /></a>
+<a href="/img/pac4j-stateful.png"><img alt="External/stateful authentication flow" src="/img/pac4j-stateful.png" /></a>
 
 <h3>CAS specific stateful authentication flow:</h3>
 
-<a href="http://www.pac4j.org/img/sequence_diagram.jpg"><img alt="CAS specific stateful authentication flow" src="http://www.pac4j.org/img/sequence_diagram.jpg" /></a>
+<a href="/img/sequence_diagram.jpg"><img alt="CAS specific stateful authentication flow" src="/img/sequence_diagram.jpg" /></a>
 
 </div>
 
@@ -25,6 +25,6 @@ title: Authentication flows&#58;
 
 <div class="text-center">
 
-<a href="http://www.pac4j.org/img/pac4j-stateless.png"><img src="http://www.pac4j.org/img/pac4j-stateless.png" alt="Stateless authentication flow" /></a>
+<a href="/img/pac4j-stateless.png"><img src="/img/pac4j-stateless.png" alt="Stateless authentication flow" /></a>
 
 </div>
