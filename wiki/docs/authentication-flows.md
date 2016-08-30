@@ -9,11 +9,11 @@ title: Authentication flows&#58;
 
 <div class="text-center">
 
-<a href="/img/pac4j-stateful.png"><img alt="External/stateful authentication flow" src="/img/pac4j-stateful.png" /></a>
+<img alt="External/stateful authentication flow" src="/img/pac4j-stateful.png" />
 
 <h3>CAS specific stateful authentication flow:</h3>
 
-<a href="/img/sequence_diagram.jpg"><img alt="CAS specific stateful authentication flow" src="/img/sequence_diagram.jpg" /></a>
+<img alt="CAS specific stateful authentication flow" src="/img/sequence_diagram.jpg" />
 
 </div>
 
@@ -25,6 +25,6 @@ title: Authentication flows&#58;
 
 <div class="text-center">
 
-<a href="/img/pac4j-stateless.png"><img src="/img/pac4j-stateless.png" alt="Stateless authentication flow" /></a>
+<img src="/img/pac4j-stateless.png" alt="Stateless authentication flow" />
 
 </div>
