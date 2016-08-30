@@ -164,12 +164,12 @@ public final class CommonHelperTests {
     
     @Test
     public void testHttpPrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("http://cnn.com"));
+    	assertNotNull(CommonHelper.getInputStreamFromName("http://www.yahoo.com"));
     }
     
     @Test
     public void testHttpsPrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("https://facebook.com"));
+    	assertNotNull(CommonHelper.getInputStreamFromName("https://www.yahoo.com"));
     }
 
     @Test(expected = TechnicalException.class)
