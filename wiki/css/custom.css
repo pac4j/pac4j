@@ -1,3 +1,6 @@
+body {
+	padding-bottom: 60px;
+}
 .navbar {
 	margin-bottom: 15px;
 }
@@ -23,4 +26,10 @@ code {
 }
 #content a:hover {
 	text-decoration: none !important;
+}
+img { 
+   border:1px solid #BBBBBB;
+}
+#bannerImage {
+	border:0;
 }

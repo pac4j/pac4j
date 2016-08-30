@@ -1,19 +1,19 @@
 ---
 layout: doc
-title: User manual
+title: User manual&#58;
 ---
 
 ## 1) [Main concepts and components](/docs/main-concepts-and-components.html)
 
 ## 2) Authentication mechanisms:
 
-### [Clients](/docs/clients.html): [OAuth](/docs/clients/oauth-protocol.html) - [SAML](/docs/clients/saml-protocol.html) - [CAS](/docs/clients/cas-protocol.html) - [OpenID Connect](/docs/clients/openid-connect-protocol.html) - [HTTP](/docs/clients/http-protocol.html) - [OpenID](/docs/clients/openid-protocol.html) - [Google App Engine](/docs/clients/google-app-engine.html)
+### [Clients](/docs/clients.html): [OAuth](/docs/clients/oauth.html) - [SAML](/docs/clients/saml.html) - [CAS](/docs/clients/cas.html) - [OpenID Connect](/docs/clients/openid-connect.html) - [HTTP](/docs/clients/http.html) - [OpenID](/docs/clients/openid.html) - [Google App Engine](/docs/clients/google-app-engine.html)
 
 ### [Authenticators](/docs/authenticators.html): LDAP - SQL - JWT - MongoDB - Stormpath
 
 ## 3) Authorization mechanisms: [Authorizers](/docs/authorizers.html)
 
-## 4) [SessionStore](/docs/sessionstore.html) and [matchers](/docs/matchers.html)
+## 4) [SessionStore](/docs/session-store.html) and [matchers](/docs/matchers.html)
 
 ## 5) [Release notes](/docs/release-notes.html) / [Backward compatibility](/docs/backward-compatibility.html)
 
@@ -21,11 +21,12 @@ title: User manual
 
 ---
 
-# <span class="alert alert-warning">Developer Manual</span>
+# <span class="alert alert-warning">Developer Manual&#58;</span>
+<br />
 
 ## 1) [Customizations](/docs/customizations.html)
 
-## 2) [Javadoc](/apidocs/pac4j/1.9.1/index.html)
+## 2) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.1/index.html)
 
 ## 3) [How to implement `pac4j` for a new framework / tool](/docs/how-to-implement-pac4j-for-a-new-framework.html)
 

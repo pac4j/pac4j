@@ -1,6 +1,6 @@
 ---
 layout: doc
-title: Authentication flows
+title: Authentication flows&#58;
 ---
 
 ## 1) UI authentication (stateful / indirect client)
