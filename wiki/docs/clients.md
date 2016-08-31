@@ -15,7 +15,7 @@ A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java
 
 While most clients are self-sufficient, the HTTP clients require to define an [Authenticator](/docs/authenticators.html) to handle the credentials validation.
 
-Clients (like Authenticators) are generally defined in a [security configuration](/docs/config.html).
+Clients (like Authorizers) are generally defined in a [security configuration](/docs/config.html).
 
 Understand the main features:
 
