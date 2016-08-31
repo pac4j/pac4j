@@ -19,7 +19,8 @@ h3 {
 	margin-top: 20px;
 }
 hr {
-	margin-top: 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 code {
 	color: inherit !important;
