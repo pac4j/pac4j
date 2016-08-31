@@ -13,11 +13,13 @@ title: <i class="fa fa-user" aria-hidden="true"></i> User manual&#58;
 
 ## 3) Authorization mechanisms: [Authorizers](/docs/authorizers.html)
 
-## 4) [SessionStore](/docs/session-store.html) and [matchers](/docs/matchers.html)
+## 4) [Security configuration](/docs/config.html)
 
-## 5) [Release notes](/docs/release-notes.html) / [Backward compatibility](/docs/backward-compatibility.html)
+## 5) [SessionStore](/docs/session-store.html) and [matchers](/docs/matchers.html)
 
-## 6) [Authentication flows](/docs/authentication-flows.html) / [Big picture](/docs/big-picture.html)
+## 6) [Release notes](/docs/release-notes.html) / [Backward compatibility](/docs/backward-compatibility.html)
+
+## 7) [Authentication flows](/docs/authentication-flows.html) / [Big picture](/docs/big-picture.html)
 
 ---
 
