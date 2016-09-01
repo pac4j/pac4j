@@ -13,7 +13,7 @@
     <name>pac4j for SAML protocol</name>
 
     <properties>
-        <opensaml.version>3.1.1</opensaml.version>
+        <opensaml.version>3.2.0</opensaml.version>
         <joda-time.version>2.9.2</joda-time.version>
         <velocity.version>1.7</velocity.version>
         <spring.extensions.version>5.1.1</spring.extensions.version>
