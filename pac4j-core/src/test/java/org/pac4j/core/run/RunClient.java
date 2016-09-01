@@ -42,7 +42,7 @@ public abstract class RunClient implements TestsConstants {
         }
         logger.warn("Returned url:");
         Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
-        final String returnedUrl = scanner.nextLine();
+        final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
         final Credentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);
