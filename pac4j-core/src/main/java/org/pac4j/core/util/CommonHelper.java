@@ -1,5 +1,13 @@
 package org.pac4j.core.util;
 
+import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.Resource;
+import org.pac4j.core.io.WritableResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,13 +21,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Date;
-
-import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.Resource;
-import org.pac4j.core.io.WritableResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class gathers all the utilities methods.
@@ -201,7 +202,7 @@ public final class CommonHelper {
         try {
             return URLEncoder.encode(text, HttpConstants.UTF8_ENCODING);
         } catch (final UnsupportedEncodingException e) {
-            String message = "Unable to encode text : " + text;
+            final String message = "Unable to encode text : " + text;
             throw new TechnicalException(message, e);
         }
     }
@@ -304,7 +305,12 @@ public final class CommonHelper {
 	public static Resource getResource(final String filePath) {
 		return new WritableResource() {
 
-			@Override
+            @Override
+            public File getFile() {
+                return new File(filePath);
+            }
+
+            @Override
 			public InputStream getInputStream() throws IOException {
 				return getInputStreamFromName(filePath);
 			}
@@ -316,7 +322,7 @@ public final class CommonHelper {
 
 			@Override
 			public boolean exists() {
-				return true;
+				return getFile().exists();
 			}
 			
 			@Override
