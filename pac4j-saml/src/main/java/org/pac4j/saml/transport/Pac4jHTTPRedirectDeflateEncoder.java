@@ -18,11 +18,13 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.SAMLMessageSecuritySupport;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -48,9 +50,15 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
     private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
-
-    public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter) {
+    private final SPSSODescriptor spssoDescriptor;
+    private final boolean forceSignRedirectBindingAuthnRequest;
+    
+    public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter,
+                                           final SPSSODescriptor spssoDescriptor,
+                                           final boolean forceSignRedirectBindingAuthnRequest) {
         this.responseAdapter = responseAdapter;
+        this.spssoDescriptor = spssoDescriptor;
+        this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
     }
 
     @Override
@@ -58,7 +66,11 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         final MessageContext messageContext = this.getMessageContext();
         final SAMLObject outboundMessage = (SAMLObject)messageContext.getMessage();
         final String endpointURL = this.getEndpointURL(messageContext).toString();
-        this.removeSignature(outboundMessage);
+        
+        if (!this.forceSignRedirectBindingAuthnRequest) {
+            this.removeSignature(outboundMessage);
+        }
+        
         final String encodedMessage = this.deflateAndBase64Encode(outboundMessage);
         final String redirectURL = this.buildRedirectURL(messageContext, endpointURL, encodedMessage);
 
@@ -176,9 +188,9 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         SAMLObject outboundMessage = messageContext.getMessage();
 
         if (outboundMessage instanceof RequestAbstractType) {
-            queryParams.add(new Pair<String, String>("SAMLRequest", message));
+            queryParams.add(new Pair<>("SAMLRequest", message));
         } else if (outboundMessage instanceof StatusResponseType) {
-            queryParams.add(new Pair<String, String>("SAMLResponse", message));
+            queryParams.add(new Pair<>("SAMLResponse", message));
         } else {
             throw new MessageEncodingException(
                     "SAML message is neither a SAML RequestAbstractType or StatusResponseType");
@@ -186,18 +198,18 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
 
         String relayState = SAMLBindingSupport.getRelayState(messageContext);
         if (SAMLBindingSupport.checkRelayState(relayState)) {
-            queryParams.add(new Pair<String, String>("RelayState", relayState));
+            queryParams.add(new Pair<>("RelayState", relayState));
         }
 
         SignatureSigningParameters signingParameters =
                 SAMLMessageSecuritySupport.getContextSigningParameters(messageContext);
         if (signingParameters != null && signingParameters.getSigningCredential() != null) {
             String sigAlgURI =  getSignatureAlgorithmURI(signingParameters);
-            Pair<String, String> sigAlg = new Pair<String, String>("SigAlg", sigAlgURI);
+            Pair<String, String> sigAlg = new Pair<>("SigAlg", sigAlgURI);
             queryParams.add(sigAlg);
             String sigMaterial = urlBuilder.buildQueryString();
 
-            queryParams.add(new Pair<String, String>("Signature", generateSignature(
+            queryParams.add(new Pair<>("Signature", generateSignature(
                     signingParameters.getSigningCredential(), sigAlgURI, sigMaterial)));
         } else {
             log.debug("No signing credential was supplied, skipping HTTP-Redirect DEFLATE signing");

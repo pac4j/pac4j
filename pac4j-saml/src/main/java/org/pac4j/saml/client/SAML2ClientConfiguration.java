@@ -40,6 +40,8 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
     private boolean forceAuth = false;
 
+    private boolean forceSignRedirectBindingAuthnRequest;
+    
     private String comparisonType = null;
 
     private String destinationBindingType = SAMLConstants.SAML2_POST_BINDING_URI;
@@ -63,7 +65,8 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private List<String> signatureReferenceDigestMethods;
     private String signatureCanonicalizationAlgorithm;
     private boolean wantsAssertionsSigned = true;
-
+    private boolean signErrorResponses;
+    
 	private String keyStoreAlias;
 
 	private String keyStoreType;
@@ -378,11 +381,23 @@ public final class SAML2ClientConfiguration implements Cloneable {
         }
     }
 
-    public boolean isAuthnRequestSigned() {
-        return authnRequestSigned;
+    public boolean isForceSignRedirectBindingAuthnRequest() {
+        return forceSignRedirectBindingAuthnRequest;
     }
 
-    public void setAuthnRequestSigned(boolean authnRequestSigned) {
-        this.authnRequestSigned = authnRequestSigned;
+    public void setForceSignRedirectBindingAuthnRequest(final boolean forceSignRedirectBindingAuthnRequest) {
+        this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
+    }
+
+    public boolean isSignErrorResponses() {
+        return signErrorResponses;
+    }
+
+    public void setSignErrorResponses(final boolean signErrorResponses) {
+        this.signErrorResponses = signErrorResponses;
+    }
+
+    public boolean isAuthnRequestSigned() {
+        return authnRequestSigned;
     }
 }

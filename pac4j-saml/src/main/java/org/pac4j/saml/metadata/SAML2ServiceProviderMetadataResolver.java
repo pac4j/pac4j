@@ -127,7 +127,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     logger.info("Metadata file already exists at {}.", this.spMetadataResource.getFilename());
                 } else {
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
-                    File parent = spMetadataResource.getFile().getParentFile();
+                    final File parent = spMetadataResource.getFile().getParentFile();
                     if (!parent.mkdirs()) {
                         logger.error("Could not construct the directory structure for SP metadata {}", 
                                 this.spMetadataResource.getFilename());
