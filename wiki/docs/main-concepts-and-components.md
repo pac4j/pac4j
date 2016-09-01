@@ -11,7 +11,7 @@ title: Main concepts and components&#58;
 
 4) A [**matcher**](/docs/matchers.html) defines whether the security must apply on the **security filter**
 
-5) A [**config**](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/config/Config.java) defines the security configuration via clients, authorizers and matchers
+5) A [**config**](/docs/config.html) defines the security configuration via clients, authorizers and matchers
 
 ---
 
