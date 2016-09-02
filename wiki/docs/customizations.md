@@ -3,7 +3,7 @@ layout: ddoc
 title: Customizations&#58;
 ---
 
-pac4j comes with a huge set of components for various needs, so before any customization, you should carefully read the [Clients](/pac4j/pac4j/wiki/Clients), [Authenticators](/pac4j/pac4j/wiki/Authenticators) and [Authorizers](/pac4j/pac4j/wiki/Authorizers) pages to check what is already provided.
+pac4j comes with a huge set of components for various needs, so before any customization, you should carefully read the [Clients](/docs/clients.html), [Authenticators](/docs/authenticators.html) and [Authorizers](/docs/authorizers.html) pages to check what is already provided.
 
 ### Customizing components:
 
@@ -32,7 +32,7 @@ Nonetheless, building a `Client` requires extra efforts. Notice that:
 
 ### Customizing the behaviour:
 
-Overriding or creating new components allows you to implement new behaviour inside the boundaries of the defined [logics](https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool) of the regular pac4j "filters". Though, in some cases, it may not be enough. So you may decide to break the flow and change the provided behaviour by requesting some extra actions. And this can be done by throwing an [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/HttpAction.java) (like any exception) as most components allow that.
+Overriding or creating new components allows you to implement new behaviour inside the boundaries of the defined [logics](/docs/how-to-implement-pac4j-for-a-new-framework.html) of the regular pac4j "filters". Though, in some cases, it may not be enough. So you may decide to break the flow and change the provided behaviour by requesting some extra actions. And this can be done by throwing an [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/HttpAction.java) (like any exception) as most components allow that.
 
 **Example:**
 

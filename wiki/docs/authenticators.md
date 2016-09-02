@@ -14,13 +14,18 @@ This `Authenticator` interface has only one method: `void validate(C credentials
 
 The [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/HttpAction.java) allows you to interrupt the credentials validation and trigger a specific HTTP action (like a temporary redirection).
 
-You can use several `Authenticator` for many identity systems:
+You can use various `Authenticator` for many identity systems:
 
-[LDAP](/docs/authenticators/ldap.html) - [SQL](/docs/authenticators/sql.html) - [JWT](/docs/authenticators/jwt.html) - [MongoDB](/docs/authenticators/mongodb.html) - [Stormpath](/docs/authenticators/stormpath.html)
+- [LDAP](/docs/authenticators/ldap.html)
+- [SQL](/docs/authenticators/sql.html)
+- [JWT](/docs/authenticators/jwt.html)
+- [MongoDB](/docs/authenticators/mongodb.html)
+- [Stormpath](/docs/authenticators/stormpath.html)
+- [IP address](/docs/authenticators/ip.html)
 
 ## 1) Deal with performance issues
 
-For direct HTTP clients, credentials are passed and validated for each request, which may lead to performance issues (too many calls of the underlying identity system). So the use of a cache is highly recommended.
+For direct HTTP clients, credentials are passed and validated for each request, which may lead to performance issues (too many calls to the underlying identity system). So the use of a cache is highly recommended.
 
 This can be done using the [`LocalCachingAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/LocalCachingAuthenticator.java) class (available in the `pac4j-core` module) which caches the resulted user profile depending on the provided credentials and can thus spare credentials validation on the identity system.
 
@@ -32,7 +37,7 @@ LocalCachingAuthenticator authent = new LocalCachingAuthenticator(new JwtAuthent
 
 ## 2) `PasswordEncoder`
 
-For the `Authenticator<UsernamePasswordCredentials>` types of authenticators, the root implementation: [`AbstractUsernamePasswordAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java) allows you to define a [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java): it will encode the password before the credentials check against the identity system.
+For the `Authenticator<UsernamePasswordCredentials>` types of authenticators, the root implementation: [`AbstractUsernamePasswordAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java) allows you to define a [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java) with the `setPasswordEncoder(passwordEncoder)` method: in that case, it will encode the password before the credentials check against the identity system.
 
 By default, no encoding is performed ([`NopPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/NopPasswordEncoder.java)), but you can use the default implementation: [`BasicSaltedSha512PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/BasicSaltedSha512PasswordEncoder.java) or create your own.
 
