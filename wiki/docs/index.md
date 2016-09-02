@@ -9,7 +9,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> User manual&#58;
 
 ### &#9656; [Clients](/docs/clients.html): [OAuth](/docs/clients/oauth.html) - [SAML](/docs/clients/saml.html) - [CAS](/docs/clients/cas.html) - [OpenID Connect](/docs/clients/openid-connect.html) - [HTTP](/docs/clients/http.html) - [OpenID](/docs/clients/openid.html) - [Google App Engine](/docs/clients/google-app-engine.html)
 
-### &#9656; [Authenticators](/docs/authenticators.html): LDAP - SQL - JWT - MongoDB - Stormpath
+### &#9656; [Authenticators](/docs/authenticators.html): [LDAP](/docs/authenticators/ldap.html) - [SQL](/docs/authenticators/sql.html) - [JWT](/docs/authenticators/jwt.html) - [MongoDB](/docs/authenticators/mongodb.html) - [Stormpath](/docs/authenticators/stormpath.html)
 
 ## 3) Authorization mechanisms: [Authorizers](/docs/authorizers.html)
 
