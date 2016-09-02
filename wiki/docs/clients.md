@@ -3,7 +3,7 @@ layout: doc
 title: Clients&#58;
 ---
 
-A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents an **authentication mechanism**. It performs the login process and returns (if successful) a user profile ([`CommonProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java)). Many clients are available for the:
+A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents an **authentication mechanism**. It performs the login process and returns (if successful) a [user profile](/docs/user-profile.html). Many clients are available for the:
 
 - [OAuth protocol](/docs/clients/oauth.html)
 - [SAML protocol](/docs/clients/saml.html)

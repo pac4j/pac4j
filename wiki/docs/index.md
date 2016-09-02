@@ -15,11 +15,13 @@ title: <i class="fa fa-user" aria-hidden="true"></i> User manual&#58;
 
 ## 4) [Security configuration](/docs/config.html)
 
-## 5) [SessionStore](/docs/session-store.html) and [matchers](/docs/matchers.html)
+## 5) [User profile](/docs/user-profile.html)
 
-## 6) [Release notes](/docs/release-notes.html) / [Backward compatibility](/docs/backward-compatibility.html)
+## 6) [SessionStore](/docs/session-store.html) and [matchers](/docs/matchers.html)
 
-## 7) [Authentication flows](/docs/authentication-flows.html) / [Big picture](/docs/big-picture.html)
+## 7) [Release notes](/docs/release-notes.html) / [Backward compatibility](/docs/backward-compatibility.html)
+
+## 8) [Authentication flows](/docs/authentication-flows.html) / [Big picture](/docs/big-picture.html)
 
 ---
 

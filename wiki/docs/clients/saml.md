@@ -53,6 +53,8 @@ Finally, you need to declare the `SAML2Client` based on the previous configurati
 Saml2Client client = new Saml2Client(cfg);
 ```
 
+After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/profile/SAML2Profile.java) is returned.
+
 ## 3) Additional configuration:
 
 Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the `maximumAuthenticationLifetime parameter:

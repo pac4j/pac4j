@@ -15,7 +15,7 @@ title: Main concepts and components&#58;
 
 ---
 
-6) A [**user profile**](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java) is the profile of the authenticated user. It has an identifier, attributes, roles, permissions and a "remember-me" nature
+6) A [**user profile**](/docs/user-profile.html) is the profile of the authenticated user. It has an identifier, attributes, roles, permissions and a "remember-me" nature
 
 ---
 
