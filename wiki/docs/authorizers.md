@@ -10,14 +10,12 @@ title: Authorizers&#58;
 
 <div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that this concept of `Authorizer` has a broader meaning than generally in the security field.</div>
 
-
-
 Generally, authorizers are defined in the [security configuration](/docs/config.html) of the application.
 
 Various authorizers are available:
 
-- [Roles / permissions](/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile](/docs/authorizers/profile-authorizers.html#profile)
-- [CORS](/docs/authorizers/web-authorizers.html#cors) - [CSRF](/docs/authorizers/web-authorizers.html#csrf) - [HTTP Security headers](/docs/authorizers/web-authorizers.html#http-security-headers) - [HTTP request](/docs/authorizers/web-authorizers.html#http-request)
+- [Roles / permissions](/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](/docs/authorizers/profile-authorizers.html#others)
+- [CORS](/docs/authorizers/web-authorizers.html#cors) - [CSRF](/docs/authorizers/web-authorizers.html#csrf) - [Security headers](/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](/docs/authorizers/web-authorizers.html#others)
 
 
 ## &#9656; Default authorizer names

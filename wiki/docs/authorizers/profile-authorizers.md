@@ -29,7 +29,7 @@ To check roles and permissions on the user profile, you first need to compute th
 - [`IsRememberedAuthorizer`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/IsRememberedAuthorizer.java) checks that the user is authenticated and only remembered (`isRemembered` method)
 
 
-## 3) Profile
+## 3) Others
 
 - [`CheckProfileTypeAuthorizer`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CheckProfileTypeAuthorizer.java) checks the current profile type of the authenticated user
 

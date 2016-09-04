@@ -15,7 +15,7 @@ Some authorizers only apply on the web context:
 
 - [`CsrfAuthorizer`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/csrf/CsrfAuthorizer.java) check sthat the web context has the appropriate CSRF token in order to protect against CSRF attacks. Using the [`DefaultCsrfTokenGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/csrf/DefaultCsrfTokenGenerator.java) or the `csrfToken` authorizer, you can get the CSRF token and send it as a parameter or as a header. The `CsrfAuthorizer` checks that the request is a POST and has a CSRF token (found in a parameter or header)
 
-## 3) HTTP Security headers
+## 3) Security headers
 
 - [`XFrameOptionsHeader`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/XFrameOptionsHeader.java) checks that the website is not called in a Iframe
 
@@ -27,7 +27,7 @@ Some authorizers only apply on the web context:
 
 - [`CacheControlHeader`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CacheControlHeader.java) enforces the browser that it should only be communicated with using HTTPS
 
-## 4) HTTP request
+## 4) Others
 
 - [`IpRegexpAuthorizer`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/authorization/authorizer/IpRegexpAuthorizer.java) checks the incoming IP address
 

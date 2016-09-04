@@ -13,8 +13,8 @@ title: <i class="fa fa-user" aria-hidden="true"></i> User manual&#58;
 
 ## 3) Authorization mechanisms: [Authorizers](/docs/authorizers.html)
 
-### &#9656; [Roles / permissions](/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile](/docs/authorizers/profile-authorizers.html#profile)
-### &#9656; [CORS](/docs/authorizers/web-authorizers.html#cors) - [CSRF](/docs/authorizers/web-authorizers.html#csrf) - [HTTP Security headers](/docs/authorizers/web-authorizers.html#http-security-headers) - [HTTP request](/docs/authorizers/web-authorizers.html#http-request)
+### &#9656; [Roles / permissions](/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](/docs/authorizers/profile-authorizers.html#others)
+### &#9656; [CORS](/docs/authorizers/web-authorizers.html#cors) - [CSRF](/docs/authorizers/web-authorizers.html#csrf) - [Security headers](/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](/docs/authorizers/web-authorizers.html#others)
 
 ## 4) [Security configuration](/docs/config.html)
 
@@ -36,4 +36,6 @@ title: <i class="fa fa-user" aria-hidden="true"></i> User manual&#58;
 
 ## 3) [How to implement `pac4j` for a new framework / tool](/docs/how-to-implement-pac4j-for-a-new-framework.html)
 
-## 4) [Release process](/docs/release-process.html)
+## 4) [Tests strategy](/docs/tests-strategy.html)
+
+## 5) [Release process](/docs/release-process.html)

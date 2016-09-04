@@ -35,6 +35,8 @@ This can be done using the [`LocalCachingAuthenticator`](https://github.com/pac4
 LocalCachingAuthenticator authent = new LocalCachingAuthenticator(new JwtAuthenticator(secret), 10000, 15, TimeUnit.MINUTES);
 ```
 
+<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that this <code>LocalCachingAuthenticator</code> requires the additionnal <i>guava</i> dependency.</div>
+
 ## 2) `PasswordEncoder`
 
 For the `Authenticator<UsernamePasswordCredentials>` types of authenticators, the root implementation: [`AbstractUsernamePasswordAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java) allows you to define a [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java) with the `setPasswordEncoder(passwordEncoder)` method: in that case, it will encode the password before the credentials check against the identity system.
