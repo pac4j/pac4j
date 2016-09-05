@@ -4,6 +4,7 @@ title: Release notes&#58;
 ---
 
 **pac4j 1.9.2**:
+
 - the CAS support has been upgraded: the CAS configuration is defined via the `CasConfiguration`, the new `DirectCasProxyClient` must be used to validate proxy tickets, the front channel logout is supported by the `CasSingleSignOutHandler`, the OAuth support is compatible with CAS v5
 - the JWT support has been upgraded: `SignatureConfiguration` classes allow to define HMac, RSA or Elliptic Curve signatures
 - the OpenID Connect support has been upgraded: the OIDC configuration is defined via the `OidcConfiguration`, all standard claims are supported in the `OidcProfile`, most flows are supported
@@ -12,10 +13,12 @@ title: Release notes&#58;
 - the `AjaxRequestResolver`,  `CallbackUrlResolver` and `AuthorizationGenerator` can be defined at the `Clients` level for all defined clients
 
 **pac4j 1.9.1**:
+
 - the `Authenticator` and `ProfileCreator` have access to the web context
 - the signature of the SAML authentication requests can be disabled
 
 **pac4j 1.9.0**:
+
 - Upgraded to Java 8 as well as all most dependency versions
 - Removed useless concepts: client type, client cloning capabilities, raw data, direct/indirect redirection, proxy configuration for OAuth clients (to be set at the JVM level or by overriding the `OAuthRequest` class)
 - All security logics are now available in the core via the `SecurityLogic`, `CallbackLogic` and `ApplicationLogoutLogic` components
@@ -27,31 +30,38 @@ title: Release notes&#58;
 - Updated OpenID Connect support (`GoogleOidClient` and `AzureAdClient`)
 
 **pac4j 1.8.8**:
+
 - Support default client in `Clients`
 - Properly handle Javascript calls on `FormClient`
 - Add `Resource` concept from Spring (in SAML support)
 
 **pac4j 1.8.7**:
+
 - Ability to define the ticket validator for the CAS REST authenticator
 - Option to disable SAML requests signing
 
 **pac4j 1.8.6**:
+
 - New DirectFormClient
 - Improved CAS support: callbackUrlResolver applies on CAS prefix url + the LocalCachingAuthenticator can be used with the CasRest*Client
 - The `RelativeCallbackUrlResolver` properly handles HTTPS requests
 - Roles / permissions are kept through JWT
 
 **pac4j 1.8.5**:
+
 - Remove the `setResponseCharacterEncoding` from the `WebContext`
 
 **pac4j 1.8.4**:
+
 - Improved SAML support security configuration
 
 **pac4j 1.8.2 & 1.8.3**:
+
 - Improved JWT support
 - Added Microsft Azure AD (OpenID Connect) support
 
 **pac4j 1.8.1**:
+
 - More authorizers: IP check, HTTP method check, profile type verification, Spring Security like security filters (cache control, Xframe...)
 - Updated CSRF protection support
 - Path exclusions support
@@ -62,6 +72,7 @@ title: Release notes&#58;
 - Customizable callback urls
 
 **pac4j 1.8.0**:
+
 - Support REST authentication (basic auth, request parameter, request header, IP, cookie)
 - New authentication mechanisms (JWT, LDAP, RDBMS, MongoDB, Stormpath)
 - AJAX requests are automatically detected
