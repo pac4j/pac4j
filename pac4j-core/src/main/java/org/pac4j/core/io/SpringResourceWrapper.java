@@ -1,7 +1,6 @@
 package org.pac4j.core.io;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.pac4j.core.exception.TechnicalException;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +13,6 @@ import java.io.InputStream;
  * @since 1.9.0
  */
 public class SpringResourceWrapper implements Resource {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SpringResourceWrapper.class);
-	
 	protected org.springframework.core.io.Resource springResource;
 
 	public SpringResourceWrapper(org.springframework.core.io.Resource springResource) {
@@ -42,8 +39,7 @@ public class SpringResourceWrapper implements Resource {
 		try {
 			return springResource.getFile();
 		} catch (final Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
+			throw new TechnicalException(e);
 		}
 	}
 }

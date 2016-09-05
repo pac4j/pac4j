@@ -13,7 +13,6 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -36,16 +35,13 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
     private final String destinationBindingType;
-    private final boolean signErrorResponses;
     private final boolean forceSignRedirectBindingAuthnRequest;
     
     public SAML2WebSSOMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
                                     final String destinationBindingType,
-                                    final boolean signErrorResponses,
                                     final boolean forceSignRedirectBindingAuthnRequest) {
         this.signatureSigningParametersProvider = signatureSigningParametersProvider;
         this.destinationBindingType = destinationBindingType;
-        this.signErrorResponses = signErrorResponses;
         this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
     }
 
@@ -60,7 +56,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
 
-        final MessageEncoder encoder = getMessageEncoder(context, spDescriptor);
+        final MessageEncoder encoder = getMessageEncoder(context);
 
         final SAML2MessageContext outboundContext = new SAML2MessageContext(context);
         outboundContext.getProfileRequestContext().setProfileId(context.getProfileRequestContext().getProfileId());
@@ -122,8 +118,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
             if (spDescriptor.isAuthnRequestsSigned()) {
                 final SAMLOutboundProtocolMessageSigningHandler handler = new
                         SAMLOutboundProtocolMessageSigningHandler();
-                handler.setSignErrorResponses(this.signErrorResponses);
-                //handler.invoke(outboundContext);
+                handler.invoke(outboundContext);
 
             } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
                 logger.warn("IdP wants authn requests signed, it will perhaps reject your authn requests unless you provide a keystore");
@@ -141,8 +136,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
      * @param spssoDescriptor the spsso descriptor
      * @return the encoder instance
      */
-    private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx,
-                                             final SPSSODescriptor spssoDescriptor) {
+    private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
 
         final Pac4jSAMLResponse adapter = ctx.getProfileRequestContextOutboundMessageTransportResponse();
 
@@ -155,7 +149,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         }
 
         if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            return new Pac4jHTTPRedirectDeflateEncoder(adapter, spssoDescriptor, forceSignRedirectBindingAuthnRequest);
+            return new Pac4jHTTPRedirectDeflateEncoder(adapter, forceSignRedirectBindingAuthnRequest);
         }
 
         throw new UnsupportedOperationException("Binding type - "

@@ -129,7 +129,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                     final File parent = spMetadataResource.getFile().getParentFile();
                     if (!parent.mkdirs()) {
-                        logger.error("Could not construct the directory structure for SP metadata {}", 
+                        throw new TechnicalException("Could not construct the directory structure for SP metadata " + 
                                 this.spMetadataResource.getFilename());
                     }
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
