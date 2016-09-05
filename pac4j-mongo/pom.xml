@@ -14,6 +14,7 @@
 
 	<properties>
 		<mongo-driver.version>3.2.1</mongo-driver.version>
+		<mongo-allanbank.version>2.0.1</mongo-allanbank.version>
 		<flapdoodle.version>1.50.2</flapdoodle.version>
 	</properties>
 
@@ -26,6 +27,13 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>${mongo-driver.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.allanbank</groupId>
+			<artifactId>mongodb-async-driver</artifactId>
+			<version>${mongo-allanbank.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<!-- for testing -->
 		<dependency>

@@ -1,43 +1,41 @@
 package org.pac4j.mongo.credentials.authenticator;
 
-import static com.mongodb.client.model.Filters.eq;
-
-import org.bson.Document;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.util.CommonHelper;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.allanbank.mongodb.MongoClient;
+import com.allanbank.mongodb.MongoCollection;
+import com.allanbank.mongodb.MongoDatabase;
+import com.allanbank.mongodb.bson.Document;
+import com.allanbank.mongodb.bson.Element;
+import com.allanbank.mongodb.builder.QueryBuilder;
 
 /**
- * Authenticator for users stored in a MongoDB database, based on the {@link MongoClient} class from the Java Mongo
- * driver.
- *
- * Add the <code>spring-security-crypto</code> dependency to use this class.
+ * Authenticator for users stored in a MongoDB database, based on the {@link MongoClient} class from the Allanbank
+ * Async-based Mongo driver (the synchronous API is used).
  *
  * @author Victor Noël
  * @since 1.9.2
  */
-public class MongoAuthenticator extends AbstractMongoAuthenticator<Document> {
+public class MongoAllanbankAuthenticator extends AbstractMongoAuthenticator<Document> {
 
     protected MongoClient mongoClient;
 
-    public MongoAuthenticator() {
+    public MongoAllanbankAuthenticator() {
     }
 
-    public MongoAuthenticator(final MongoClient mongoClient) {
+    public MongoAllanbankAuthenticator(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
     }
 
-    public MongoAuthenticator(final MongoClient mongoClient, final String attributes) {
+    public MongoAllanbankAuthenticator(final MongoClient mongoClient, final String attributes) {
         super(attributes);
         this.mongoClient = mongoClient;
     }
 
-    public MongoAuthenticator(final MongoClient mongoClient, final String attributes,
+    public MongoAllanbankAuthenticator(final MongoClient mongoClient, final String attributes,
             final PasswordEncoder passwordEncoder) {
         super(attributes, passwordEncoder);
         this.mongoClient = mongoClient;
@@ -53,14 +51,15 @@ public class MongoAuthenticator extends AbstractMongoAuthenticator<Document> {
     @Override
     protected Iterable<Document> getUsersFor(UsernamePasswordCredentials credentials) {
         final MongoDatabase db = mongoClient.getDatabase(usersDatabase);
-        final MongoCollection<Document> collection = db.getCollection(usersCollection);
+        final MongoCollection collection = db.getCollection(usersCollection);
 
-        return collection.find(eq(usernameAttribute, credentials.getUsername()));
+        return collection.find(QueryBuilder.where(usernameAttribute).equals(credentials.getUsername()));
     }
 
     @Override
     protected String getUserAttribute(Document user, String attribute) {
-        return user.getString(attribute);
+        final Element element = user.get(attribute);
+        return element == null ? null : element.getValueAsString();
     }
 
     public MongoClient getMongoClient() {
