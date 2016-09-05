@@ -13,7 +13,7 @@
 	<name>pac4j for MongoDB</name>
 
 	<properties>
-		<mongo-driver.version>3.2.1</mongo-driver.version>
+		<mongo-driver.version>3.3.0</mongo-driver.version>
 		<mongo-allanbank.version>2.0.1</mongo-allanbank.version>
 		<flapdoodle.version>1.50.2</flapdoodle.version>
 	</properties>
@@ -25,7 +25,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
+			<artifactId>mongodb-driver</artifactId>
 			<version>${mongo-driver.version}</version>
 			<optional>true</optional>
 		</dependency>
