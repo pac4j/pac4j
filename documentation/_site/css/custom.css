@@ -1,0 +1,35 @@
+body {
+	padding-bottom: 60px;
+}
+.navbar {
+	margin-bottom: 15px;
+}
+h1 {
+	font-size: 26px !important;
+	margin-top: 20px;
+}
+h2 {
+	font-size: 22px !important;
+	padding-left: 10px !important;
+	margin-top: 20px;
+}
+h3 {
+	font-size: 18px !important;
+	padding-left: 20px !important;
+	margin-top: 20px;
+}
+hr {
+	margin-top: 40px;
+}
+code {
+	color: inherit !important;
+}
+#content a:hover {
+	text-decoration: none !important;
+}
+img { 
+   border:1px solid #BBBBBB;
+}
+#bannerImage {
+	border:0;
+}

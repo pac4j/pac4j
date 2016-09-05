@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">Authenticators&#58;</span></h1><br />
+
+		  <h2 id="understanding-the-concept">Understanding the concept</h2>
+
+<p>A <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java"><code class="highlighter-rouge">Client</code></a> represents an <strong>authentication mechanism</strong> defined by the following methods:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Associated sub-component</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">HttpAction redirect(WebContext context) throws HttpAction</code> (only for indirect clients)</td>
+      <td>the redirection of the user to the identity provider can be defined via a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectActionBuilder.java"><code class="highlighter-rouge">RedirectActionBuilder</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">C getCredentials(WebContext context) throws HttpAction</code></td>
+      <td>the extraction of the credentials can be done by a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java"><code class="highlighter-rouge">CredentialsExtractor</code></a> while the credentials validation is ensured by an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java"><code class="highlighter-rouge">Authenticator</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">U getUserProfile(C credentials, WebContext context) throws HttpAction</code></td>
+      <td>the creation of the authenticated user profile can be performed by a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java"><code class="highlighter-rouge">ProfileCreator</code></a></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Clients are generally populated with a default <code class="highlighter-rouge">RedirectActionBuilder</code>, <code class="highlighter-rouge">CredentialsExtractor</code> and <code class="highlighter-rouge">ProfileCreator</code>, but an <code class="highlighter-rouge">Authenticator</code> must be defined for credentials validation. Other sub-components can of course be changed for different <a href="https://github.com/pac4j/pac4j/wiki/Customizations">customizations</a>.</p>
+
+<p>In fact, the <code class="highlighter-rouge">Authenticator</code> also creates the user profile during the credentials validation and saves it in the credentials, so that the default <code class="highlighter-rouge">AuthenticatorProfileCreator</code> defined in clients can retrieve it and does not need to be customized (even if this is perfectly feasible).</p>
+
+<hr />
+
+<h3 id="available-authenticators">Available authenticators:</h3>
+
+<h4 id="ldapauthenticator-pac4j-ldap-module"><code class="highlighter-rouge">LdapAuthenticator</code> (pac4j-ldap module)</h4>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/credentials/authenticator/LdapAuthenticator.java"><code class="highlighter-rouge">LdapAuthenticator</code></a> can be used for LDAP authentication, for clients which deals with <code class="highlighter-rouge">UsernamePasswordCredentials</code>. It is based on the great <a href="http://www.ldaptive.org/">Ldpative</a> library and built with a <code class="highlighter-rouge">org.ldaptive.auth.Authenticator</code>.</p>
+
+<p><strong>Example</strong>:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">LdapAuthenticator</span> <span class="n">ldapAuthenticator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LdapAuthenticator</span><span class="o">(</span><span class="n">ldaptiveAuthenticator</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>==</p>
+
+<h4 id="jwtauthenticator-pac4j-jwt-module"><code class="highlighter-rouge">JwtAuthenticator</code> (pac4j-jwt module)</h4>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/credentials/authenticator/JwtAuthenticator.java"><code class="highlighter-rouge">JwtAuthenticator</code></a> validates JWT tokens produced by the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/profile/JwtGenerator.java"><code class="highlighter-rouge">JwtGenerator</code></a> or by any other means.</p>
+
+<p>It supports plain text or signed (and encrypted) JWT tokens. To handle that use cases, <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/SignatureConfiguration.java"><code class="highlighter-rouge">SignatureConfiguration</code></a> can be defined: <code class="highlighter-rouge">MacSignatureConfiguration</code>, <code class="highlighter-rouge">RSASignatureConfiguration</code> and <code class="highlighter-rouge">ECSignatureConfiguration</code> as well as <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/EncryptionConfiguration.java"><code class="highlighter-rouge">EncryptionConfiguration</code></a> like the <code class="highlighter-rouge">DirectEncryptionConfiguration</code>.</p>
+
+<p><strong>Example</strong>:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">JwtAuthenticator</span> <span class="n">jwtAuthenticator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JwtAuthenticator</span><span class="o">();</span>
+<span class="n">jwtAuthenticator</span><span class="o">.</span><span class="na">addSignatureConfiguration</span><span class="o">(</span><span class="k">new</span> <span class="n">MacSignatureConfiguration</span><span class="o">(</span><span class="n">KEY2</span><span class="o">));</span>
+<span class="n">KeyPairGenerator</span> <span class="n">keyGen</span> <span class="o">=</span> <span class="n">KeyPairGenerator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"RSA"</span><span class="o">);</span>
+<span class="n">KeyPair</span> <span class="n">rsaKeyPair</span> <span class="o">=</span> <span class="n">keyGen</span><span class="o">.</span><span class="na">generateKeyPair</span><span class="o">();</span>
+<span class="n">jwtAuthenticator</span><span class="o">.</span><span class="na">addSignatureConfiguration</span><span class="o">(</span><span class="k">new</span> <span class="n">RSASignatureConfiguration</span><span class="o">(</span><span class="n">rsaKeyPair</span><span class="o">));</span>
+<span class="n">jwtAuthenticator</span><span class="o">.</span><span class="na">setEncryptionConfiguration</span><span class="o">(</span><span class="k">new</span> <span class="n">DirectEncryptionConfiguration</span><span class="o">(</span><span class="n">SECRET</span><span class="o">));</span>
+</code></pre>
+</div>
+
+<p>==</p>
+
+<h4 id="dbauthenticator-pac4j-sql-module"><code class="highlighter-rouge">DbAuthenticator</code> (pac4j-sql module)</h4>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-sql/src/main/java/org/pac4j/sql/credentials/authenticator/DbAuthenticator.java"><code class="highlighter-rouge">DbAuthenticator</code></a> validates username / password on a relational database. It is built with a <code class="highlighter-rouge">javax.sql.DataSource</code>.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">DbAuthenticator</span> <span class="n">authenticator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DbAuthenticator</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>==</p>
+
+<h4 id="mongoauthenticator-pac4j-mongo-module"><code class="highlighter-rouge">MongoAuthenticator</code> (pac4j-mongo module)</h4>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/credentials/authenticator/MongoAuthenticator.java"><code class="highlighter-rouge">MongoAuthenticator</code></a> validates username / password on a MongoDB database. It is built with a <code class="highlighter-rouge">com.mongodb.MongoClient</code>.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">MongoAuthenticator</span> <span class="n">authenticator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoAuthenticator</span><span class="o">(</span><span class="n">mongoClient</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>==</p>
+
+<h4 id="ipregexpauthenticator-pac4j-http-module"><code class="highlighter-rouge">IpRegexpAuthenticator</code> (pac4j-http module)</h4>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/authorization/authorizer/IpRegexpAuthorizer.java"><code class="highlighter-rouge">IpRegexpAuthenticator</code></a> allows you to check that a given IP address is valid. It is generally defined for an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/IpClient.java"><code class="highlighter-rouge">IpClient</code></a>.</p>
+
+<p>==</p>
+
+<h4 id="stormpathauthenticator-pac4j-stormpath-module"><code class="highlighter-rouge">StormpathAuthenticator</code> (pac4j-stormpath module)</h4>
+
+<p>The [<a href="https://github.com/pac4j/pac4j/blob/master/pac4j-stormpath/src/main/java/org/pac4j/stormpath/credentials/authenticator/StormpathAuthenticator.java"><code class="highlighter-rouge">StormpathAuthenticator</code></a> validates username / password on the Strompath cloud provider.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">StormpathAuthenticator</span> <span class="n">authenticator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StormpathAuthenticator</span><span class="o">(</span><span class="n">accessId</span><span class="o">,</span> <span class="n">secretKey</span><span class="o">,</span> <span class="n">applicationId</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>==</p>
+
+<h4 id="localcachingauthenticator-pac4j-core-module"><code class="highlighter-rouge">LocalCachingAuthenticator</code> (pac4j-core module)</h4>
+
+<p>There is also a specific <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/LocalCachingAuthenticator.java"><code class="highlighter-rouge">LocalCachingAuthenticator</code></a> class available which does not actually perform any credentials validation, but caches the resulted user profile depending on the provided credentials.</p>
+
+<p>For direct clients, credentials are passed and validated for each request, which may lead to performance issues so the use of a cache is generally recommended and this can be done using the <code class="highlighter-rouge">LocalCachingAuthenticator</code>:</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">authenticator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LocalCachingAuthenticator</span><span class="o">(</span><span class="k">new</span> <span class="n">JwtAuthenticator</span><span class="o">(</span><span class="n">secret</span><span class="o">),</span> <span class="mi">10000</span><span class="o">,</span> <span class="mi">15</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">MINUTES</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>==</p>
+
+<h4 id="password-encoders">Password encoders:</h4>
+
+<p>For the <code class="highlighter-rouge">Authenticator&lt;UsernamePasswordCredentials&gt;</code> types of authenticators, the root implementation: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java"><code class="highlighter-rouge">AbstractUsernamePasswordAuthenticator</code></a> allows you to define a <code class="highlighter-rouge">PasswordEncoder</code> which may be used in the authenticators: the password will be encoded before being checked against the source of the credentials.</p>
+
+<p>By default, no encoding is performed (<code class="highlighter-rouge">NopPasswordEncoder</code>), but you can use the default implementation: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/BasicSaltedSha512PasswordEncoder.java"><code class="highlighter-rouge">BasicSaltedSha512PasswordEncoder</code></a> or create your own.</p>
+
+<hr />
+
+<h3 id="available-profile-creators">Available profile creators:</h3>
+
+<p>Currently, the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/AuthenticatorProfileCreator.java"><code class="highlighter-rouge">AuthenticatorProfileCreator</code></a> is the only available profile creator.</p>
+
+
+	</div>
+
+  </body>
+</html>
+
