@@ -29,6 +29,13 @@ public class BasicSaltedSha512PasswordEncoder implements PasswordEncoder {
         return DigestUtils.sha512Hex(password + salt);
     }
 
+    @Override
+    public boolean matches(final String plainPassword, final String encodedPassword) {
+        CommonHelper.assertNotBlank("salt", salt);
+
+        return CommonHelper.areEquals(encode(plainPassword), encodedPassword);
+    }
+
     public String getSalt() {
         return salt;
     }
