@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">Authorizers&#58;</span></h1><br />
+
+		  <p><strong>Authorizers</strong> are meant to check authorizations to access an url (in the “<a href="https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool">security filter</a>”):</p>
+
+<ul>
+  <li>either on the authenticated user profile: has the user the appropriate role?</li>
+  <li>or on the web context: can you call this resource in an iframe?</li>
+</ul>
+
+<p>Notice that this concept of <code class="highlighter-rouge">Authorizer</code> has a broader meaning than generally in the security field.</p>
+
+<p>To define the security configuration of the application, all authorizers are defined in the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/config/Config.java"><code class="highlighter-rouge">Config</code></a></p>
+
+<h2 id="default-authorizer-names">Default authorizer names</h2>
+
+<p>Most pac4j implementations using authorizers use the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/checker/DefaultAuthorizationChecker.java"><code class="highlighter-rouge">DefaultAuthorizationChecker</code></a> component and thus, some of the following <code class="highlighter-rouge">Authorizer</code> are automatically available via the short names described below:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">hsts</code> for the <code class="highlighter-rouge">StrictTransportSecurityHeader</code> authorizer</li>
+  <li><code class="highlighter-rouge">nosniff</code> for the <code class="highlighter-rouge">XContentTypeOptionsHeader</code> authorizer</li>
+  <li><code class="highlighter-rouge">noframe</code> for the <code class="highlighter-rouge">XFrameOptionsHeader</code> authorizer</li>
+  <li><code class="highlighter-rouge">xssprotection</code> for the <code class="highlighter-rouge">XSSProtectionHeader</code> authorizer</li>
+  <li><code class="highlighter-rouge">nocache</code> for the <code class="highlighter-rouge">CacheControlHeader</code> authorizer</li>
+  <li><code class="highlighter-rouge">securityheaders</code> as a shortcut for <code class="highlighter-rouge">hsts,nosniff,noframe,xssprotection,nocache</code></li>
+  <li><code class="highlighter-rouge">csrfToken</code> for the <code class="highlighter-rouge">CsrfTokenGeneratorAuthorizer</code> authorizer</li>
+  <li><code class="highlighter-rouge">csrfCheck</code> for the <code class="highlighter-rouge">CsrfAuthorizer</code> authorizer</li>
+  <li><code class="highlighter-rouge">csrf</code> as a shortcut for <code class="highlighter-rouge">csrfToken,csrfCheck</code></li>
+  <li><code class="highlighter-rouge">isAnonymous</code> for the <code class="highlighter-rouge">IsAnonymousAuthorizer</code> authorizer</li>
+  <li><code class="highlighter-rouge">isAuthenticated</code> for the <code class="highlighter-rouge">IsAuthenticatedAuthorizer</code> authorizer</li>
+  <li><code class="highlighter-rouge">isFullyAuthenticated</code> for the <code class="highlighter-rouge">IsFullyAuthenticatedAuthorizer</code> authorizer</li>
+  <li><code class="highlighter-rouge">isRemembered</code> for the <code class="highlighter-rouge">IsRememberedAuthorizer</code> authorizer</li>
+  <li><code class="highlighter-rouge">allowAjaxRequests</code> for a default configuration of the <code class="highlighter-rouge">CorsAuthorizer</code> authorizer with the <code class="highlighter-rouge">Access-Control-Allow-Origin</code> header set to <code class="highlighter-rouge">*</code>.</li>
+</ul>
+
+<h2 id="available-authorizers-for-the-user-profile">Available <strong>authorizers</strong> for the user profile:</h2>
+
+<p>To check roles and permissions on the user profile, you first need to compute them by creating an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java"><code class="highlighter-rouge">AuthorizationGenerator</code></a> and attaching it to the appropriate <code class="highlighter-rouge">Client</code> (using the <code class="highlighter-rouge">addAuthorizationGenerator</code> method).</p>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/RequireAnyRoleAuthorizer.java"><code class="highlighter-rouge">RequireAnyRoleAuthorizer</code></a> checks that a user profile has at least one of the expected roles</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/RequireAllRolesAuthorizer.java"><code class="highlighter-rouge">RequireAllRolesAuthorizer</code></a> checks that a user profile has all the expected roles</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/RequireAnyPermissionAuthorizer.java"><code class="highlighter-rouge">RequireAnyPermissionAuthorizer</code></a> checks that a user profile has at least one of the expected permissions</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/RequireAllPermissionsAuthorizer.java"><code class="highlighter-rouge">RequireAllPermissionsAuthorizer</code></a> checks that a user profile has all the expected permissions</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/IsAnonymousAuthorizer.java"><code class="highlighter-rouge">IsAnonymousAuthorizer</code></a> checks that the user is anonymous (no profile or an <code class="highlighter-rouge">AnonymousProfile</code>)</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/IsAuthenticatedAuthorizer.java"><code class="highlighter-rouge">IsAuthenticatedAuthorizer</code></a> checks that the user has the profile which is not an <code class="highlighter-rouge">AnonymousProfile</code></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/IsFullyAuthenticatedAuthorizer.java"><code class="highlighter-rouge">IsFullyAuthenticatedAuthorizer</code></a> checks that the user is authenticated, but not remembered (<code class="highlighter-rouge">isRemembered</code> method)</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/IsRememberedAuthorizer.java"><code class="highlighter-rouge">IsRememberedAuthorizer</code></a> checks that the user is authenticated and only remembered (<code class="highlighter-rouge">isRemembered</code> method)</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CheckProfileTypeAuthorizer.java"><code class="highlighter-rouge">CheckProfileTypeAuthorizer</code></a> checks the current profile type of the authenticated user</p>
+  </li>
+</ul>
+
+<h2 id="available-authorizers-for-the-web-context">Available <strong>authorizers</strong> for the web context:</h2>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/authorization/authorizer/IpRegexpAuthorizer.java"><code class="highlighter-rouge">IpRegexpAuthorizer</code></a> checks the incoming IP address</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CheckHttpMethodAuthorizer.java"><code class="highlighter-rouge">CheckHttpMethodAuthorizer</code></a> checks that the request was performed with the appropriate HTTP method</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/csrf/CsrfTokenGeneratorAuthorizer.java"><code class="highlighter-rouge">CsrfTokenGeneratorAuthorizer</code></a> generates a CSRF token based on a provided <code class="highlighter-rouge">CsrfTokenGenerator</code> and adds it to the current request (<code class="highlighter-rouge">pac4jCsrfToken</code> attribute) and saves it in the <code class="highlighter-rouge">pac4jCsrfToken</code> cookie</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/csrf/CsrfAuthorizer.java"><code class="highlighter-rouge">CsrfAuthorizer</code></a> check sthat the web context has the appropriate CSRF token in order to protect against CSRF attacks. Using the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/csrf/DefaultCsrfTokenGenerator.java"><code class="highlighter-rouge">DefaultCsrfTokenGenerator</code></a> or the <code class="highlighter-rouge">csrfToken</code> authorizer, you can get the CSRF token and send it as a parameter or as a header. The <code class="highlighter-rouge">CsrfAuthorizer</code> checks that the request is a POST and has a CSRF token (found in a parameter or header)</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/XFrameOptionsHeader.java"><code class="highlighter-rouge">XFrameOptionsHeader</code></a> checks that the website is not called in a Iframe</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/XSSProtectionHeader.java"><code class="highlighter-rouge">XSSProtectionHeader</code></a> protects against XSS attacks</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/XContentTypeOptionsHeader.java"><code class="highlighter-rouge">XContentTypeOptionsHeader</code></a> prevents the browser from doing MIME-type sniffing</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/StrictTransportSecurityHeader.java"><code class="highlighter-rouge">StrictTransportSecurityHeader</code></a> enforces the browser that it should only be communicated with using HTTPS</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CacheControlHeader.java"><code class="highlighter-rouge">CacheControlHeader</code></a> enforces the browser that it should only be communicated with using HTTPS</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/CorsAuthorizer.java"><code class="highlighter-rouge">CorsAuthorizer</code></a> defines how CORS requests are authorized via the <code class="highlighter-rouge">Access-Control-*</code> response headers</p>
+  </li>
+</ul>
+
+
+	</div>
+
+  </body>
+</html>
+

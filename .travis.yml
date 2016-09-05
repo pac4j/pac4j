@@ -1,6 +1,6 @@
 language: java
 
-sudo: false
+sudo: required
 
 script: "mvn test javadoc:javadoc --settings travis/settings.xml"
 
@@ -13,5 +13,7 @@ env:
   - secure: "Ti1BykkCxqBW7s1l+yB8TDqfsJ66olEfLswisSbPu+oFCaSGD9opCLcJ3YpGEPQlbviplAiLVeNZosCqhR3gUiN7sjd7ZA+n5oVxcL7AzraTWOEU6y7kq+Edrv+6B667zusTHN+r7qWVZt497OwlYr/AkbAnpTY05ltUAeu5NSg="
 
 after_success:
+- chmod -R 777 ./travis/push-doc-to-gh-pages.sh
+- ./travis/push-doc-to-gh-pages.sh
 - chmod -R 777 ./travis/deploy-to-sonatype.sh
 - ./travis/deploy-to-sonatype.sh

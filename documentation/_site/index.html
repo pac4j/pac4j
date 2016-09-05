@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+		<script>
+    var links = ["https://github.com/pac4j/j2e-pac4j", "https://github.com/pac4j/spring-webmvc-pac4j", "https://github.com/pac4j/spring-security-pac4j", "https://github.com/bujiio/buji-pac4j",
+        "https://github.com/pac4j/play-pac4j", "https://github.com/pac4j/vertx-pac4j", "https://github.com/pac4j/spark-pac4j", "http://ratpack.io/manual/current/pac4j.html#pac4j",
+        "https://github.com/pac4j/undertow-pac4j", "http://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html", "https://github.com/evnm/dropwizard-pac4j",
+        "http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect", "http://jooby.org/doc/pac4j", "https://github.com/pac4j/pac4j"];
+
+    var images = ["https://pac4j.github.io/pac4j/img/logo-j2e.png", "https://pac4j.github.io/pac4j/img/logo-spring-webmvc.png", "https://pac4j.github.io/pac4j/img/logo-spring-security.png",
+        "https://pac4j.github.io/pac4j/img/logo-shiro.png", "https://pac4j.github.io/pac4j/img/logo-play.png", "https://pac4j.github.io/pac4j/img/logo-vertx.png",
+        "https://pac4j.github.io/pac4j/img/logo-spark.png", "https://pac4j.github.io/pac4j/img/logo-ratpack.png", "https://pac4j.github.io/pac4j/img/logo-undertow.png",
+        "https://pac4j.github.io/pac4j/img/logo-cas.png", "https://pac4j.github.io/pac4j/img/logo-dropwizard.png", "https://pac4j.github.io/pac4j/img/logo-knox.png",
+        "https://pac4j.github.io/pac4j/img/logo-jooby.png", "https://pac4j.github.io/pac4j/img/logo.png"];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(links.length == i){
+            i = 0;
+        }
+        else {
+        document.getElementById("bannerImage").src = images[i]; 
+        document.getElementById("bannerLink").href = links[i]; 
+        i++;
+
+    }
+    },2000);
+</script>
+
+<div style="text-align: center; width: 100%">
+
+    <a id="bannerLink" href="https://github.com/pac4j/pac4j"><img width="320" id="bannerImage" src="https://pac4j.github.io/pac4j/img/logo.png" /></a>
+
+    <h1 style="margin-bottom: 40px;">The <a href="https://github.com/pac4j/pac4j">Java security engine</a> to protect all your web applications</h1>
+
+    <h2 style="margin-bottom: 40px; line-height: 1.6;">Available for most frameworks/tools:<br />
+        <a href="https://github.com/pac4j/j2e-pac4j">J2E</a> &bull; <a href="https://github.com/pac4j/spring-webmvc-pac4j">Spring Boot</a> &bull; <a href="https://github.com/pac4j/spring-webmvc-pac4j">Spring Web MVC</a> &bull; <a href="https://github.com/pac4j/spring-security-pac4j">Spring Security</a> &bull; <a href="https://github.com/bujiio/buji-pac4j">Apache Shiro</a><br />
+
+         <a href="https://github.com/pac4j/play-pac4j">Play 2.x</a> &bull; <a href="https://github.com/pac4j/vertx-pac4j">Vertx</a> &bull; <a href="https://github.com/pac4j/spark-pac4j">Spark Java</a> &bull; <a href="http://ratpack.io/manual/current/pac4j.html#pac4j">Ratpack</a> &bull; <a href="https://github.com/pac4j/undertow-pac4j">Undertow</a><br />
+
+         <a href="http://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html">SSO CAS server</a> &bull; <a href="https://github.com/evnm/dropwizard-pac4j">Dropwizard</a> &bull; <a href="http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect">Knox Hadoop</a> &bull; <a href="http://jooby.org/doc/pac4j">Jooby</a>
+     </h2>
+
+    <h2>Supports most authentication mechanisms:<br />
+
+        <small>OAuth (Facebook, Twitter, Google...) - SAML - CAS - OpenID Connect - HTTP - OpenID - Google App Engine<br />
+        LDAP - SQL - JWT - MongoDB - Stormpath</small><br />
+
+        <br />and authorization mechanisms:<br />
+
+        <small>Roles / permissions - Anonymous / remember-me / (fully) authenticated<br />
+        CORS - CSRF - IP address - HTTP Security headers</small>
+
+    </h2>
+
+</div>
+
+
+	</div>
+
+  </body>
+</html>
+

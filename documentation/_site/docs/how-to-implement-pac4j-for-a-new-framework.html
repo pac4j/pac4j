@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-warning">Customizations&#58;</span></h1><br />
+
+		  <p><code class="highlighter-rouge">pac4j</code> is an easy and powerful security engine. It comes with the appropriate concepts and components to be implemented in any framework / tooks.</p>
+
+<h2 id="dependency">1) Dependency</h2>
+
+<p>Add the <code class="highlighter-rouge">pac4j-core</code> dependency to benefit from the core API of <code class="highlighter-rouge">pac4j</code>. Other dependencies will be optionally added for specific support: <code class="highlighter-rouge">pac4j-oauth</code> for OAuth, <code class="highlighter-rouge">pac4j-cas</code> for CAS, <code class="highlighter-rouge">pac4j-saml</code> for SAML…</p>
+
+<h2 id="configuration">2) Configuration</h2>
+
+<p>To define your security configuration, gather all your authentication mechanisms = <a href="https://github.com/pac4j/pac4j/wiki/Clients"><strong>clients</strong></a> via the <code class="highlighter-rouge">Clients</code> class (to share the same callback url). Also define your <a href="https://github.com/pac4j/pac4j/wiki/Authorizers"><strong>authorizers</strong></a> to check authorizations and aggregate both (clients and authorizers) on the <code class="highlighter-rouge">Config</code>:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">FacebookClient</span> <span class="n">facebookClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FacebookClient</span><span class="o">(</span><span class="n">FB_KEY</span><span class="o">,</span> <span class="n">FB_SECRET</span><span class="o">);</span>
+<span class="n">TwitterClient</span> <span class="n">twitterClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TwitterClient</span><span class="o">(</span><span class="n">TW_KEY</span><span class="o">,</span> <span class="n">TW_SECRET</span><span class="o">);</span>
+<span class="n">FormClient</span> <span class="n">formClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FormClient</span><span class="o">(</span><span class="s">"http://localhost:8080/theForm.jsp"</span><span class="o">,</span> <span class="k">new</span> <span class="n">SimpleTestUsernamePasswordAuthenticator</span><span class="o">(),</span> <span class="k">new</span> <span class="n">UsernameProfileCreator</span><span class="o">());</span>
+<span class="n">CasClient</span> <span class="n">casClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CasClient</span><span class="o">();</span>
+<span class="n">casClient</span><span class="o">.</span><span class="na">setCasLoginUrl</span><span class="o">(</span><span class="s">"http://mycasserver/login"</span><span class="o">);</span>
+<span class="n">Clients</span> <span class="n">clients</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Clients</span><span class="o">(</span><span class="s">"http://localhost:8080/callback"</span><span class="o">,</span> <span class="n">facebookClient</span><span class="o">,</span> <span class="n">twitterClient</span><span class="o">,</span> <span class="n">formClient</span><span class="o">,</span> <span class="n">casClient</span><span class="o">);</span>
+<span class="n">Config</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Config</span><span class="o">(</span><span class="n">clients</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addAuthorizer</span><span class="o">(</span><span class="s">"admin"</span><span class="o">,</span> <span class="k">new</span> <span class="n">RequireAnyRoleAuthorizer</span><span class="o">(</span><span class="s">"ROLE_ADMIN"</span><span class="o">));</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addAuthorizer</span><span class="o">(</span><span class="s">"custom"</span><span class="o">,</span> <span class="k">new</span> <span class="n">CustomAuthorizer</span><span class="o">());</span>
+</code></pre>
+</div>
+
+<p>Notice you may also use the <code class="highlighter-rouge">ConfigSingleton</code> object to keep one instance of your configuration and share it among the different components (if you don’t have any dependency injection capability). You can also use the <code class="highlighter-rouge">ConfigFactory</code> to build you configuration if no other mean is available.
+You can also add <strong>matchers</strong> to define whether the security must apply or not.</p>
+
+<hr />
+
+<h2 id="filters--controllers">3) “Filters / controllers”</h2>
+
+<p>To secure your Java web application, <strong>the reference implementation is to create three “filters / controllers”</strong>:</p>
+
+<ul>
+  <li>one to <strong>protect urls</strong></li>
+  <li>another one to <strong>receive callbacks</strong> for stateful authentication processes (indirect clients)</li>
+  <li>the last one <strong>to perform application logout</strong>.</li>
+</ul>
+
+<p>In your framework, you will need to create:</p>
+
+<p>1) a specific <code class="highlighter-rouge">EnvSpecificWebContext</code> implementing the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java"><code class="highlighter-rouge">WebContext</code></a> interface except for J2E environment where you can already use the existing <code class="highlighter-rouge">J2EContext</code>. Your <code class="highlighter-rouge">EnvSpecificWebContext</code> should delegate to a <a href="https://github.com/pac4j/pac4j/wiki/SessionStore"><code class="highlighter-rouge">SessionStore</code></a> the calls regarding the web session, to be able to choose the implementation used for the web session management</p>
+
+<p>2) optionally a specific <code class="highlighter-rouge">EnvSpecificHttpActionAdapter</code> implementing the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java"><code class="highlighter-rouge">HttpActionAdapter</code></a> if you need to turn actions performed on the web context into specific framework actions.</p>
+
+<h3 id="a-secure-an-url">A) Secure an url</h3>
+
+<p>The logic to secure an url is defined by the <code class="highlighter-rouge">SecurityLogic</code> interface and its default implementation: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultSecurityLogic.java"><code class="highlighter-rouge">DefaultSecurityLogic</code></a>. In your framework, you must define the appropriate “filter”, “interceptor”, “controller” or whatever the mechanism used to intercept the HTTP request and delegate to the <code class="highlighter-rouge">SecurityLogic</code> class:</p>
+
+<p>1) If the HTTP request matches the <strong>matchers</strong> configuration (or no <strong>matchers</strong> are defined), the security is applied. Otherwise, the user is automatically granted access</p>
+
+<p>2) First, if the user is not authenticated (no profile) and if some clients have been defined in the <strong>clients</strong> parameter, a login is tried for the direct clients</p>
+
+<p>3) Then, if the user has profile, authorizations are checked according to the <strong>authorizers</strong> configuration. If the authorizations are valid, the user is granted access. Otherwise, a 403 error page is displayed</p>
+
+<p>4) Finally, if the user is still not authenticated (no profile), he is redirected to the appropriate identity provider if the first defined client is an indirect one in the <strong>clients</strong> configuration. Otherwise, a 401 error page is displayed.</p>
+
+<p><strong>Examples</strong>:</p>
+
+<ul>
+  <li>In J2E:</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kd">final</span> <span class="kt">void</span> <span class="nf">internalFilter</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span>
+                                        <span class="kd">final</span> <span class="n">FilterChain</span> <span class="n">filterChain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"securityLogic"</span><span class="o">,</span> <span class="n">securityLogic</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">Config</span> <span class="n">config</span> <span class="o">=</span> <span class="n">getConfig</span><span class="o">();</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">J2EContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">J2EContext</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">,</span> <span class="n">config</span><span class="o">.</span><span class="na">getSessionStore</span><span class="o">());</span>
+
+        <span class="n">securityLogic</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">config</span><span class="o">,</span> <span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">parameters</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+
+            <span class="n">filterChain</span><span class="o">.</span><span class="na">doFilter</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="o">},</span> <span class="n">J2ENopHttpActionAdapter</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span> <span class="n">clients</span><span class="o">,</span> <span class="n">authorizers</span><span class="o">,</span> <span class="n">matchers</span><span class="o">,</span> <span class="n">multiProfile</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre>
+</div>
+
+<ul>
+  <li>In Play:</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">CompletionStage</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span> <span class="nf">internalCall</span><span class="o">(</span><span class="kd">final</span> <span class="n">Context</span> <span class="n">ctx</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">clients</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">authorizers</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">multiProfile</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"securityLogic"</span><span class="o">,</span> <span class="n">securityLogic</span><span class="o">);</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">PlayWebContext</span> <span class="n">playWebContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PlayWebContext</span><span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">sessionStore</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">HttpActionAdapterWrapper</span> <span class="n">actionAdapterWrapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpActionAdapterWrapper</span><span class="o">(</span><span class="n">config</span><span class="o">.</span><span class="na">getHttpActionAdapter</span><span class="o">());</span>
+
+        <span class="k">return</span> <span class="n">securityLogic</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">playWebContext</span><span class="o">,</span> <span class="n">config</span><span class="o">,</span> <span class="o">(</span><span class="n">webCtx</span><span class="o">,</span> <span class="n">parameters</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+            <span class="c1">// when called from Scala</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">delegate</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">CompletableFuture</span><span class="o">.</span><span class="na">completedFuture</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">delegate</span><span class="o">.</span><span class="na">call</span><span class="o">(</span><span class="n">ctx</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">},</span> <span class="n">actionAdapterWrapper</span><span class="o">,</span> <span class="n">clients</span><span class="o">,</span> <span class="n">authorizers</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">multiProfile</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="b-handle-callback-for-indirect-client">B) Handle callback for indirect client</h3>
+
+<p>The logic to handle callbacks is defined by the <code class="highlighter-rouge">CallbackLogic</code> interface and its default implementations: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java"><code class="highlighter-rouge">DefaultCallbackLogic</code></a> and <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/J2ERenewSessionCallbackLogic.java"><code class="highlighter-rouge">J2ERenewSessionCallbackLogic</code></a>. In your framework, you must define the appropriate “controller” to reply to an HTTP request and delegate the call to the <code class="highlighter-rouge">CallbackLogic</code> class:</p>
+
+<p>1) the credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in the web session.</p>
+
+<p>2) finally, the user is redirected back to the originally requested url (or to the <strong>defaultUrl</strong>).</p>
+
+<p><strong>Examples</strong>:</p>
+
+<ul>
+  <li>In J2E:</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">internalFilter</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span>
+                                           <span class="kd">final</span> <span class="n">FilterChain</span> <span class="n">chain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"callbackLogic"</span><span class="o">,</span> <span class="n">callbackLogic</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">Config</span> <span class="n">config</span> <span class="o">=</span> <span class="n">getConfig</span><span class="o">();</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">J2EContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">J2EContext</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">,</span> <span class="n">config</span><span class="o">.</span><span class="na">getSessionStore</span><span class="o">());</span>
+
+        <span class="n">callbackLogic</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">config</span><span class="o">,</span> <span class="n">J2ENopHttpActionAdapter</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">defaultUrl</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">multiProfile</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">renewSession</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre>
+</div>
+
+<ul>
+  <li>In Play:</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">Result</span> <span class="nf">callback</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"callbackLogic"</span><span class="o">,</span> <span class="n">callbackLogic</span><span class="o">);</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">PlayWebContext</span> <span class="n">playWebContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PlayWebContext</span><span class="o">(</span><span class="n">ctx</span><span class="o">(),</span> <span class="n">playSessionStore</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="n">callbackLogic</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">playWebContext</span><span class="o">,</span> <span class="n">config</span><span class="o">,</span> <span class="n">config</span><span class="o">.</span><span class="na">getHttpActionAdapter</span><span class="o">(),</span> <span class="k">this</span><span class="o">.</span><span class="na">defaultUrl</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">multiProfile</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="c-application-logout">C) Application logout</h3>
+
+<p>The logic to perform the application logout is defined by the <code class="highlighter-rouge">ApplicationLogoutLogic</code> interface and its default implementation: <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultApplicationLogoutLogic.java"><code class="highlighter-rouge">DefaultApplicationLogoutLogic</code></a>. In your framework, you must define the appropriate “controller” to reply to an HTTP request and delegate the call to the <code class="highlighter-rouge">ApplicationLogoutLogic</code> class:</p>
+
+<p>1) after logout, the user is redirected to the url defined by the <strong>url</strong> request parameter if it matches the <strong>logoutUrlPattern</strong></p>
+
+<p>2) or the user is redirected to the <strong>defaultUrl</strong> if it is defined</p>
+
+<p>3) otherwise, a blank page is displayed.</p>
+
+<p><strong>Examples</strong>:</p>
+
+<ul>
+  <li>In J2E:</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">internalFilter</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span>
+                                           <span class="kd">final</span> <span class="n">FilterChain</span> <span class="n">chain</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ServletException</span> <span class="o">{</span>
+
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"applicationLogoutLogic"</span><span class="o">,</span> <span class="n">applicationLogoutLogic</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">Config</span> <span class="n">config</span> <span class="o">=</span> <span class="n">getConfig</span><span class="o">();</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">J2EContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">J2EContext</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">,</span> <span class="n">config</span><span class="o">.</span><span class="na">getSessionStore</span><span class="o">());</span>
+
+        <span class="n">applicationLogoutLogic</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">config</span><span class="o">,</span> <span class="n">J2ENopHttpActionAdapter</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">defaultUrl</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">logoutUrlPattern</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre>
+</div>
+
+<ul>
+  <li>In Play:</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">Result</span> <span class="nf">logout</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"applicationLogoutLogic"</span><span class="o">,</span> <span class="n">applicationLogoutLogic</span><span class="o">);</span>
+        <span class="n">assertNotNull</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="n">config</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">PlayWebContext</span> <span class="n">playWebContext</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PlayWebContext</span><span class="o">(</span><span class="n">ctx</span><span class="o">(),</span> <span class="n">playSessionStore</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="n">applicationLogoutLogic</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="n">playWebContext</span><span class="o">,</span> <span class="n">config</span><span class="o">,</span> <span class="n">config</span><span class="o">.</span><span class="na">getHttpActionAdapter</span><span class="o">(),</span> <span class="k">this</span><span class="o">.</span><span class="na">defaultUrl</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">logoutUrlPattern</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre>
+</div>
+
+
+	</div>
+
+  </body>
+</html>
+
