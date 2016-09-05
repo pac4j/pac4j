@@ -7,11 +7,10 @@ import java.io.InputStream;
 /**
  * Interface for a resource descriptor that abstracts from the actual
  * type of underlying resource, such as a file or class path resource.
- * <p>
  * <p>An InputStream can be opened for every resource if it exists in
  * physical form, but a URL or File handle can just be returned for
  * certain resources. The actual behavior is implementation-specific.
- * <p>
+ * </p>
  * This is based originally off spring abstraction.
  *
  * @author Keith Garry Boyce
@@ -23,7 +22,7 @@ public interface Resource {
 	 * Return whether this resource actually exists in physical form.
 	 * <p>This method performs a definitive existence check, whereas the
 	 * existence of a {@code Resource} handle only guarantees a
-	 * valid descriptor handle.
+	 * valid descriptor handle.</p>
 	 *
 	 * @return whether this resource actually exists in physical form
 	 */

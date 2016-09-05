@@ -18,13 +18,11 @@ import org.opensaml.saml.common.binding.SAMLBindingSupport;
 import org.opensaml.saml.common.messaging.SAMLMessageSecuritySupport;
 import org.opensaml.saml.saml2.core.RequestAbstractType;
 import org.opensaml.saml.saml2.core.StatusResponseType;
-import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.CredentialSupport;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.crypto.XMLSigningUtil;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -50,14 +48,11 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
     private final static Logger log = LoggerFactory.getLogger(Pac4jHTTPPostEncoder.class);
 
     private final Pac4jSAMLResponse responseAdapter;
-    private final SPSSODescriptor spssoDescriptor;
     private final boolean forceSignRedirectBindingAuthnRequest;
     
     public Pac4jHTTPRedirectDeflateEncoder(final Pac4jSAMLResponse responseAdapter,
-                                           final SPSSODescriptor spssoDescriptor,
                                            final boolean forceSignRedirectBindingAuthnRequest) {
         this.responseAdapter = responseAdapter;
-        this.spssoDescriptor = spssoDescriptor;
         this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
     }
 
@@ -107,7 +102,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
      */
     protected void removeSignature(SAMLObject message) {
         if (message instanceof SignableSAMLObject) {
-            SignableSAMLObject signableMessage = (SignableSAMLObject) message;
+            final SignableSAMLObject signableMessage = (SignableSAMLObject) message;
             if (signableMessage.isSigned()) {
                 log.debug("Removing SAML protocol message signature");
                 signableMessage.setSignature(null);
