@@ -35,14 +35,14 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
     private final String destinationBindingType;
-    private final boolean signErrorResponses;
-
+    private final boolean forceSignRedirectBindingAuthnRequest;
+    
     public SAML2WebSSOMessageSender(final SignatureSigningParametersProvider signatureSigningParametersProvider,
                                     final String destinationBindingType,
-                                    final boolean signErrorResponses) {
+                                    final boolean forceSignRedirectBindingAuthnRequest) {
         this.signatureSigningParametersProvider = signatureSigningParametersProvider;
         this.destinationBindingType = destinationBindingType;
-        this.signErrorResponses = signErrorResponses;
+        this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
     }
 
     @Override
@@ -79,10 +79,10 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         if (relayState != null) {
             outboundContext.getSAMLBindingContext().setRelayState(relayState.toString());
         }
-
-        invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, outboundContext);
-
+        
         try {
+            invokeOutboundMessageHandlers(spDescriptor, idpssoDescriptor, outboundContext);
+            
             encoder.setMessageContext(outboundContext);
             encoder.initialize();
             encoder.prepareContext();
@@ -118,7 +118,6 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
             if (spDescriptor.isAuthnRequestsSigned()) {
                 final SAMLOutboundProtocolMessageSigningHandler handler = new
                         SAMLOutboundProtocolMessageSigningHandler();
-                handler.setSignErrorResponses(this.signErrorResponses);
                 handler.invoke(outboundContext);
 
             } else if (idpssoDescriptor.getWantAuthnRequestsSigned()) {
@@ -132,7 +131,9 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
 
     /**
      * Build the WebSSO handler for sending and receiving SAML2 messages.
-     * @param ctx
+     *
+     * @param ctx             the ctx
+     * @param spssoDescriptor the spsso descriptor
      * @return the encoder instance
      */
     private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {
@@ -148,9 +149,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         }
 
         if (SAMLConstants.SAML2_REDIRECT_BINDING_URI.equals(destinationBindingType)) {
-            final Pac4jHTTPRedirectDeflateEncoder encoder =
-                    new Pac4jHTTPRedirectDeflateEncoder(adapter);
-            return encoder;
+            return new Pac4jHTTPRedirectDeflateEncoder(adapter, forceSignRedirectBindingAuthnRequest);
         }
 
         throw new UnsupportedOperationException("Binding type - "
