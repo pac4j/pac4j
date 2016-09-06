@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-warning">Release process&#58;</span></h1><br />
+
+		  <p>1) Ensure your SSH key is properly loaded (<code class="highlighter-rouge">ssh-add -l</code>) and that your security key is loaded as well (GPG)</p>
+
+<p>2) Check that the Javadoc process does not generate any warning: <code class="highlighter-rouge">mvn javadoc:aggregate</code></p>
+
+<p>3) Verify that all unit and integration tests pass: <code class="highlighter-rouge">mvn -PforceIT clean verify</code></p>
+
+<p>4) Manually run other tests (classes named <code class="highlighter-rouge">RunXXXX</code>)</p>
+
+<p>5) Release: <code class="highlighter-rouge">mvn release:clean release:prepare</code> and <code class="highlighter-rouge">mvn release:perform</code></p>
+
+<p>6) Publish on the Maven central repository via https://oss.sonatype.org</p>
+
+
+	</div>
+
+  </body>
+</html>
+

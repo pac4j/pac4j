@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">Release notes&#58;</span></h1><br />
+
+		  <p><strong>pac4j 1.9.2</strong>:</p>
+<ul>
+  <li>the CAS support has been upgraded: the CAS configuration is defined via the <code class="highlighter-rouge">CasConfiguration</code>, the new <code class="highlighter-rouge">DirectCasProxyClient</code> must be used to validate proxy tickets, the front channel logout is supported by the <code class="highlighter-rouge">CasSingleSignOutHandler</code></li>
+  <li>the JWT support has been upgraded: <code class="highlighter-rouge">SignatureConfiguration</code> classes allow to define HMac, RSA or Elliptic Curve signatures</li>
+  <li>the OpenID Connect support has been upgraded: the OIDC configuration is defined via the <code class="highlighter-rouge">OidcConfiguration</code>, all standard claims are supported in the <code class="highlighter-rouge">OidcProfile</code>, most flows are supported</li>
+  <li>CORS (AJAX) requests can be controlled via the <code class="highlighter-rouge">CorsAuthorizer</code> and its default pre-defined <code class="highlighter-rouge">allowAjaxRequests</code> name</li>
+  <li>the <code class="highlighter-rouge">AjaxRequestResolver</code>,  <code class="highlighter-rouge">CallbackUrlResolver</code> and <code class="highlighter-rouge">AuthorizationGenerator</code> can be defined at the <code class="highlighter-rouge">Clients</code> level for all defined clients</li>
+</ul>
+
+<p><strong>pac4j 1.9.1</strong>:</p>
+<ul>
+  <li>the <code class="highlighter-rouge">Authenticator</code> and <code class="highlighter-rouge">ProfileCreator</code> have access to the web context</li>
+  <li>the signature of the SAML authentication requests can be disabled</li>
+</ul>
+
+<p><strong>pac4j 1.9.0</strong>:</p>
+<ul>
+  <li>Upgraded to Java 8 as well as all most dependency versions</li>
+  <li>Removed useless concepts: client type, client cloning capabilities, raw data, direct/indirect redirection, proxy configuration for OAuth clients (to be set at the JVM level or by overriding the <code class="highlighter-rouge">OAuthRequest</code> class)</li>
+  <li>All security logics are now available in the core via the <code class="highlighter-rouge">SecurityLogic</code>, <code class="highlighter-rouge">CallbackLogic</code> and <code class="highlighter-rouge">ApplicationLogoutLogic</code> components</li>
+  <li>Any client can be built using the <code class="highlighter-rouge">RedirectActionBuilder</code>, <code class="highlighter-rouge">CredentialsExtractor</code>, <code class="highlighter-rouge">Authenticator</code> and <code class="highlighter-rouge">ProfileCreator</code> concepts (<code class="highlighter-rouge">DirectClientV2</code> and <code class="highlighter-rouge">IndirectClientV2</code>): to be re-used to build asynchronous clients</li>
+  <li><code class="highlighter-rouge">CredentialsExtractor</code>, <code class="highlighter-rouge">Authenticator</code>, <code class="highlighter-rouge">ProfileCreator</code> and <code class="highlighter-rouge">Authorizer</code> can throw <code class="highlighter-rouge">HttpAction</code> (previously named <code class="highlighter-rouge">RequiresHttpAction</code>) to break the flow and handle custom use cases</li>
+  <li>Typed id are now defined using the full class name (with package): “org.pac4j.oauth.profile.facebook.FacebookProfile#id” instead of “FacebookProfile#id” (use the <code class="highlighter-rouge">getOldTypedId()</code> method to get the old value)</li>
+  <li>Comparisons for clients / authorizers names are case insensitive and trimmed</li>
+  <li>Most integration tests have been replaced by manual tests (RunXXX classes)</li>
+  <li>Updated OpenID Connect support (<code class="highlighter-rouge">GoogleOidClient</code> and <code class="highlighter-rouge">AzureAdClient</code>)</li>
+</ul>
+
+<p><strong>pac4j 1.8.8</strong>:</p>
+<ul>
+  <li>Support default client in <code class="highlighter-rouge">Clients</code></li>
+  <li>Properly handle Javascript calls on <code class="highlighter-rouge">FormClient</code></li>
+  <li>Add <code class="highlighter-rouge">Resource</code> concept from Spring (in SAML support)</li>
+</ul>
+
+<p><strong>pac4j 1.8.7</strong>:</p>
+<ul>
+  <li>Ability to define the ticket validator for the CAS REST authenticator</li>
+  <li>Option to disable SAML requests signing</li>
+</ul>
+
+<p><strong>pac4j 1.8.6</strong>:</p>
+<ul>
+  <li>New DirectFormClient</li>
+  <li>Improved CAS support: callbackUrlResolver applies on CAS prefix url + the LocalCachingAuthenticator can be used with the CasRest*Client</li>
+  <li>The <code class="highlighter-rouge">RelativeCallbackUrlResolver</code> properly handles HTTPS requests</li>
+  <li>Roles / permissions are kept through JWT</li>
+</ul>
+
+<p><strong>pac4j 1.8.5</strong>:</p>
+<ul>
+  <li>Remove the <code class="highlighter-rouge">setResponseCharacterEncoding</code> from the <code class="highlighter-rouge">WebContext</code></li>
+</ul>
+
+<p><strong>pac4j 1.8.4</strong>:</p>
+<ul>
+  <li>Improved SAML support security configuration</li>
+</ul>
+
+<p><strong>pac4j 1.8.2 &amp; 1.8.3</strong>:</p>
+<ul>
+  <li>Improved JWT support</li>
+  <li>Added Microsft Azure AD (OpenID Connect) support</li>
+</ul>
+
+<p><strong>pac4j 1.8.1</strong>:</p>
+<ul>
+  <li>More authorizers: IP check, HTTP method check, profile type verification, Spring Security like security filters (cache control, Xframe…)</li>
+  <li>Updated CSRF protection support</li>
+  <li>Path exclusions support</li>
+  <li>new AnonymousClient for advanced use cases</li>
+  <li>Updated OAuth, CAS, SAML and OpenID Connect supports</li>
+  <li>new session store mechanism</li>
+  <li>new configuration module (build clients via properties only)</li>
+  <li>Customizable callback urls</li>
+</ul>
+
+<p><strong>pac4j 1.8.0</strong>:</p>
+<ul>
+  <li>Support REST authentication (basic auth, request parameter, request header, IP, cookie)</li>
+  <li>New authentication mechanisms (JWT, LDAP, RDBMS, MongoDB, Stormpath)</li>
+  <li>AJAX requests are automatically detected</li>
+  <li>Arbitrary attributes are allowed on profiles (even with a definition)</li>
+  <li>Upgrade SAML support</li>
+  <li>Upgrade CAS support (protocol v3, REST API)</li>
+  <li>Handle authorizations (on roles, permissions, CSRF protection…)</li>
+  <li>Bring default guidelines (DefaultClientFinder, DefaulutAuthorizationChecker)</li>
+  <li>Add ok.ru support</li>
+  <li>Remove the LinkedIn OAuth v1 support (use the OAuth version 2 support)</li>
+</ul>
+
+<p><strong>pac4j 1.7.1</strong>:</p>
+<ul>
+  <li>the SAML support is improved, but unfortunately, it only works in J2E environment (j2e-pac4j and spring-security-pac4j libraries)</li>
+</ul>
+
+<p><strong>pac4j 1.7.0</strong>:</p>
+<ul>
+  <li>Improve roles management</li>
+  <li>Remove Google OpenID support</li>
+  <li>Add Strava (OAuth 2) support</li>
+  <li>Add OpenID Connect support</li>
+</ul>
+
+<p><strong>pac4j 1.6.0</strong>:</p>
+<ul>
+  <li>Update to scribe 1.3.6</li>
+  <li>SAML improvments</li>
+  <li>CAS client update (v3.3.3 for a security fix)</li>
+  <li>New Google App Engine module</li>
+  <li>Support for Yahoo with OpenID</li>
+  <li>Upgrade to Java 6</li>
+  <li>Support for ORCiD (OAuth)</li>
+</ul>
+
+<p><strong>pac4j 1.5.1</strong>:</p>
+<ul>
+  <li>add Bitbucket support</li>
+</ul>
+
+<p><strong>pac4j 1.5.0</strong>:</p>
+<ul>
+  <li>callback urls can be dynamically computed according to the current host and port</li>
+  <li>added PayPal support (OAuth 2.0)</li>
+  <li>AJAX requests can be handled properly instead of performing a redirection to the provider for authentication</li>
+  <li>infinite loop when accessing a protected page and authentication fails are now automatically handled by returning a forbidden response (HTTP 403)</li>
+  <li>remove myopenid.com support</li>
+  <li>add Vk.com support</li>
+  <li>add Foursquare support</li>
+  <li>add SAML support</li>
+  <li>authorizations support: roles, permissions and a “remembered” status are now available in all user profiles</li>
+</ul>
+
+<p><strong>pac4j 1.4.1</strong>:</p>
+<ul>
+  <li>Add LinkedIn OAuth 2.0 protocol support</li>
+  <li>Add Google OpenID support</li>
+</ul>
+
+<p><strong>pac4j 1.4.0</strong>:</p>
+<ul>
+  <li>Rebuilding of the project to support also CAS, HTTP (form &amp; basic auth), OpenID (myopenid.com)… protocols</li>
+  <li>“Cancel” actions are/can be now properly handled (Facebook, Twitter)</li>
+  <li>Indirect redirection urls (OAuth 1.0, myopenid.com) are integrated within the library</li>
+  <li>handle Kryo serialization</li>
+  <li>remove Google OAuth 1.0 support</li>
+</ul>
+
+<p>==</p>
+
+<p><strong>scribe-up 1.3.1</strong>:</p>
+<ul>
+  <li>Bug fix the CAS OAuth wrapping</li>
+</ul>
+
+<p><strong>scribe-up 1.3.0</strong>:</p>
+<ul>
+  <li>Create common profile for all profiles</li>
+  <li>Add providers definition with specific mechanism to handle redirection to and from OAuth provider when having multiples providers with only one callback url</li>
+  <li>Add the ability to handle HTTP exceptions when requesting a user profile (use <i>BaseOAuthProvider.retrieveUserProfile</i> method instead of <i>OAuthProvider.getUserProfile</i> method)</li>
+  <li>Add the ability to handle credential exceptions when retriving credentials (use <i>BaseOAuthProvider.retrieveCredential</i> method instead of <i>OAuthProvider.getCredential</i> method)</li>
+  <li>Add support for CAS OAuth wrapper</li>
+</ul>
+
+<p><strong>scribe-up 1.2.0</strong>:</p>
+<ul>
+  <li>Add 2 providers: DropBox and Google (OAuth 2.0)</li>
+  <li>Make provider type settable</li>
+  <li>Make providers cloneable</li>
+  <li>Replace java.awt.Color by a specific Color object to be compatible with Google App Engine</li>
+  <li>Optimize Facebook calls and add more data</li>
+  <li>Hide completely the dependency on scribe</li>
+  <li>Add proxy capabilities for OAuth requests</li>
+  <li>Add state parameter (security) for Facebook</li>
+  <li>Optimize profile creations for none CAS usage</li>
+  <li>Upgrade to scribe 1.3.2, Jackson 2.0.6 and slf4j-api 1.7.0</li>
+  <li>Add dependency on commons-lang3</li>
+</ul>
+
+<p><strong>scribe-up 1.1.0</strong>:</p>
+<ul>
+  <li>Simplify OAuth provider interface : 4 methods instead of 6, remove explicit dependency on scribe</li>
+  <li>Create specific and more complete profiles for all providers</li>
+  <li>Add 2 more providers : Windows Live and WordPress</li>
+  <li>Refactor profiles to be compatible with “CAS serialization” on client side</li>
+  <li>Add typedId concept to differentiate profiles</li>
+  <li>Make init() calls implicit</li>
+  <li>Add access_token as default attribute of profile</li>
+  <li>Add connect and read timeouts</li>
+  <li>Switch GitHub provider from API v2 to API v3</li>
+  <li>Make profiles serializable</li>
+  <li>Upgrade to scribe 1.3.1 and Jackson 1.9.7</li>
+</ul>
+
+<p><strong>scribe-up 1.0.0</strong>:</p>
+<ul>
+  <li>This is the first version of the project</li>
+  <li>6 OAuth providers are available : Google (OAuth 1.0), GitHub, LinkedIn, Twitter, Yahoo and Facebook</li>
+  <li>Each provider returns a generic profile (UserProfile class), except the Facebook one which returns a minimal FacebookProfile</li>
+  <li>Based on scribe 1.3.0, Jackson 1.9.4 and slf4j-api 1.6.4</li>
+</ul>
+
+
+	</div>
+
+  </body>
+</html>
+
