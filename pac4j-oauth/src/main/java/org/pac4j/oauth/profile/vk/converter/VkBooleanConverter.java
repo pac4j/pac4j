@@ -22,6 +22,6 @@ public final class VkBooleanConverter implements AttributeConverter<Boolean> {
 				return Integer.valueOf(1).equals(attribute);
 			}
 		}
-		return null;
+		return Boolean.FALSE;
 	}
 }
