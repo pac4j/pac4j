@@ -83,6 +83,10 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
         for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
             profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
         }
+        final Object positions = JsonHelper.getElement(json, LinkedIn2AttributesDefinition.POSITIONS);
+        if (positions != null && positions instanceof JsonNode) {
+            profile.addAttribute(LinkedIn2AttributesDefinition.POSITIONS, JsonHelper.getElement((JsonNode) positions, "values"));
+        }
         addUrl(profile, json, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST);
         addUrl(profile, json, LinkedIn2AttributesDefinition.API_STANDARD_PROFILE_REQUEST);
         return profile;
