@@ -30,6 +30,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
+
 /**
  * @author Misagh Moayyed
  * @since 1.7
@@ -128,13 +130,12 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 } else {
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                     final File parent = spMetadataResource.getFile().getParentFile();
+                    logger.info("Attempting to create directory structure for {}", parent.getCanonicalPath());
                     if (!parent.mkdirs()) {
-                        logger.warn("Could not construct the directory structure for SP metadata {}", 
-                                this.spMetadataResource.getFilename());
-                    }
-                    if (!spMetadataResource.exists()) {
-                        throw new TechnicalException("SP metadata path " + spMetadataResource.getFilename() 
-                                + " does not exist");
+                        if (!spMetadataResource.exists()) {
+                            logger.warn("Could not construct the directory structure for SP metadata {}",
+                                    this.spMetadataResource.getFilename());
+                        }
                     }
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
