@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">Authentication flows&#58;</span></h1><br />
+
+		  <h2 id="ui-authentication-stateful--indirect-client">1) UI authentication (stateful / indirect client)</h2>
+
+<p><code class="highlighter-rouge">pac4j</code> supports <strong>UI authentication, that is stateful / indirect client</strong>: the user is redirected to the external identity provider, logs in and is finally redirected back to the application.</p>
+
+<p><img src="http://www.pac4j.org/img/pac4j-stateful.png" alt="External/stateful authentication flow" /></p>
+
+<h3 id="cas-specific-stateful-authentication-flow">CAS specific stateful authentication flow:</h3>
+
+<p><img src="http://www.pac4j.org/img/sequence_diagram.jpg" alt="CAS specific stateful authentication flow" /></p>
+
+<hr />
+
+<h2 id="web-services-authentication-stateless--direct-client">2) Web services authentication (stateless / direct client)</h2>
+
+<p><code class="highlighter-rouge">pac4j</code> also supports <strong>web services authentication, that is stateless / direct client</strong>: credentials are passed with the HTTP request and an <code class="highlighter-rouge">Authenticator</code> must be defined to validate the credentials (a specific <code class="highlighter-rouge">ProfileCreator</code> can also be defined to get the user profile from another source).</p>
+
+<p><img src="http://www.pac4j.org/img/pac4j-stateless.png" alt="Stateless authentication flow" /></p>
+
+
+
+	</div>
+
+  </body>
+</html>
+

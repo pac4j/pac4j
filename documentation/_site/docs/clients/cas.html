@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">CAS</span></h1><br />
+
+		  <h3 id="module-pac4j-cas">Module: <code class="highlighter-rouge">pac4j-cas</code></h3>
+
+<p>To login with a CAS server, the indirect <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/CasClient.java"><code class="highlighter-rouge">CasClient</code></a> must be defined and optionally a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/CasProxyReceptor.java"><code class="highlighter-rouge">CasProxyReceptor</code></a> to deal with proxies. To validate proxy tickets (web services), the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/direct/DirectCasProxyClient.java"><code class="highlighter-rouge">DirectCasProxyClient</code></a> must be used. Both requires a <code class="highlighter-rouge">CasConfiguration</code>.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">CasClient</span> <span class="n">casClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CasClient</span><span class="o">(</span><span class="k">new</span> <span class="n">CasConfiguration</span><span class="o">(</span><span class="s">"https://mycasserver/login"</span><span class="o">));</span>
+</code></pre>
+</div>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestFormClient.java"><code class="highlighter-rouge">CasRestFormClient</code></a> and <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestBasicAuthClient.java"><code class="highlighter-rouge">CasRestBasicAuthClient</code></a> are direct clients which can be used to interact with the REST API of a CAS server. For performance reasons, a <code class="highlighter-rouge">LocalCachingAuthenticator</code> should be used to avoid sending the credentials for each request.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">CasRestFormClient</span> <span class="n">casRestClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CasRestFormClient</span><span class="o">(</span><span class="k">new</span> <span class="n">LocalCachingAuthenticator</span><span class="o">(</span><span class="k">new</span> <span class="n">CasRestAuthenticator</span><span class="o">(</span><span class="s">"https://mycasserver/"</span><span class="o">),</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">));</span>
+</code></pre>
+</div>
+
+<hr />
+
+<p>After a sucessful login with a CAS server, a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/profile/CasProfile.java"><code class="highlighter-rouge">CasProfile</code></a> is returned.</p>
+
+<p>The <code class="highlighter-rouge">CasConfiguration</code> can be built with the CAS login url and / or with the CAS prefix url:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">CasConfiguration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CasConfiguration</span><span class="o">();</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setLoginUrl</span><span class="o">(</span><span class="s">"https://casserverpac4j.herokuapp.com/login"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setPrefixUrl</span><span class="o">(</span><span class="s">"https://casserverpac4j.herokuapp.com"</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>You can also define the CAS protocol you want to support (<code class="highlighter-rouge">CasProtocol.CAS30</code> by default):</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">config</span><span class="o">.</span><span class="na">setProtocol</span><span class="o">(</span><span class="n">CasProtocol</span><span class="o">.</span><span class="na">CAS20</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>For proxy support, the <code class="highlighter-rouge">CasProxyReceptor</code> class must be used (on the same or new callback url) and declared with the <code class="highlighter-rouge">CasConfiguration</code> class:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">config</span><span class="o">.</span><span class="na">setProxyReceptor</span><span class="o">(</span><span class="k">new</span> <span class="n">CasProxyReceptor</span><span class="o">());</span>
+<span class="c1">// config.setAcceptAnyProxy(false);</span>
+<span class="c1">// config.setAllowedProxyChains(proxies);</span>
+</code></pre>
+</div>
+
+<p>In this case, a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/profile/CasProxyProfile.java"><code class="highlighter-rouge">CasProxyProfile</code></a> is returned after a successful authentication and it can be used to get proxy tickets for other CAS services:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">CasProxyProfile</span> <span class="n">casProxyProfile</span> <span class="o">=</span> <span class="o">(</span><span class="n">CasProxyProfile</span><span class="o">)</span> <span class="n">casProfile</span><span class="o">;</span>
+<span class="n">String</span> <span class="n">proxyTicket</span> <span class="o">=</span> <span class="n">casProxyProfile</span><span class="o">.</span><span class="na">getProxyTicketFor</span><span class="o">(</span><span class="n">anotherCasService</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>To handle CAS logout requests, a specific <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/logout/CasLogoutHandler.java"><code class="highlighter-rouge">CasLogoutHandler</code></a> can be specified. By default (J2E), the <code class="highlighter-rouge">CasSingleSignOutHandler</code> is defined: it must be used in conjonction with the J2E <code class="highlighter-rouge">SingleSignOutHttpSessionListener</code> and the <code class="highlighter-rouge">renewSession</code>flag must be disabled in the “callback filter” in that case.</p>
+
+
+	</div>
+
+  </body>
+</html>
+
