@@ -144,6 +144,12 @@ public abstract class RunClient implements TestsConstants {
         int pos = url.indexOf("?");
         if (pos >= 0) {
             url = url.substring(pos + 1);
+
+            // removing stuffs after the hash for a regular query string
+            pos = url.indexOf("#");
+            if (pos >= 0) {
+                url = url.substring(0, pos);
+            }
         } else {
             // this is a hack to test client side stuffs, it would not work for server side
             pos = url.indexOf("#");
