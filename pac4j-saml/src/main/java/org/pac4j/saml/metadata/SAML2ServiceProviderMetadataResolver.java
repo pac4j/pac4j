@@ -31,7 +31,7 @@ import java.io.StringWriter;
 import java.net.URL;
 
 /**
- * @author misagh moayyed
+ * @author Misagh Moayyed
  * @since 1.7
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
