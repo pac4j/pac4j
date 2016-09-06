@@ -15,4 +15,15 @@ public interface PasswordEncoder {
      * @return the encoded password
      */
     String encode(String password);
+
+    /**
+     * Validate if a plainPassword matches
+     * 
+     * @param plainPassword
+     *            the not encoded password to check
+     * @param encodedPassword
+     *            the encoded password
+     * @return <code>true</code> if they match
+     */
+    boolean matches(String plainPassword, String encodedPassword);
 }
