@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-warning">Customizations&#58;</span></h1><br />
+
+		  <p>pac4j comes with a huge set of components for various needs, so before any customization, you should carefully read the <a href="/pac4j/pac4j/wiki/Clients">Clients</a>, <a href="/pac4j/pac4j/wiki/Authenticators">Authenticators</a> and <a href="/pac4j/pac4j/wiki/Authorizers">Authorizers</a> pages to check what is already provided.</p>
+
+<h3 id="customizing-components">Customizing components:</h3>
+
+<p>Be sure to clearly understand what the roles of the different components are:</p>
+
+<ul>
+  <li>a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java"><code class="highlighter-rouge">Client</code></a> is a whole login process: it is indirect for UI (<a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/IndirectClientV2.java"><code class="highlighter-rouge">IndirectClientV2</code></a>) and direct for web services (<a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/DirectClientV2.java"><code class="highlighter-rouge">DirectClientV2</code></a>. It redirects to the identity provider (indirect client only), extracts the user credentials, validates the user credentials and creates a user profile for the authenticated user</li>
+  <li>a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/redirect/RedirectActionBuilder.java"><code class="highlighter-rouge">RedirectActionBuilder</code></a> redirects the user to the identity provider for login (indirect clients)</li>
+  <li>a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/extractor/CredentialsExtractor.java"><code class="highlighter-rouge">CredentialsExtractor</code></a> extracts the user credentials from the HTTP request (indirect and direct clients)</li>
+  <li>an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java"><code class="highlighter-rouge">Authenticator</code></a> validates the user credentials (indirect and direct clients)</li>
+  <li>a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/ProfileCreator.java"><code class="highlighter-rouge">ProfileCreator</code></a> creates a user profile for the authenticated user (indirect and direct clients)</li>
+  <li>an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/authorizer/Authorizer.java"><code class="highlighter-rouge">Authorizer</code></a> allows access based on the user profiles or on the web context</li>
+  <li>a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/Matcher.java"><code class="highlighter-rouge">Matcher</code></a> defines if the security must apply on the web context</li>
+  <li>an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java"><code class="highlighter-rouge">AuthorizationGenerator</code></a> generates the appropriate roles and permissions for a given user profile.</li>
+</ul>
+
+<p>Overriding or creating new components should be straightforward.</p>
+
+<p>Nonetheless, building a <code class="highlighter-rouge">Client</code> requires extra efforts. Notice that:</p>
+
+<ul>
+  <li>
+    <p>you really need to understand what kind of authentication mechanism you want to support: is it for UI (credentials are provided only once and authentication almost always occurs at an external identity provider) or for web services (credentials are passed for every request)</p>
+  </li>
+  <li>
+    <p>some indirect clients implement the deprecated <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/IndirectClient.java"><code class="highlighter-rouge">IndirectClient</code></a> interface when the redirection, authentication process and profile retrieval are closely linked to the authentication mechanism. All should implement the <code class="highlighter-rouge">IndirectClientV2</code> interface and define the appropriate <code class="highlighter-rouge">RedirectActionBuilder</code>, <code class="highlighter-rouge">CredentialsExtractor</code>, <code class="highlighter-rouge">Authenticator</code> and <code class="highlighter-rouge">ProfileCreator</code></p>
+  </li>
+  <li>
+    <p>it may require to create a new <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java"><code class="highlighter-rouge">Credentials</code></a> type (if it is not a simple string designed by the <code class="highlighter-rouge">TokenCredentials</code> or a username / password designed by the <code class="highlighter-rouge">UsernamePasswordCredentials</code>). These new credentials may inherit from the base credentials of the supported protocol (like <code class="highlighter-rouge">OAuthCredentials</code>)</p>
+  </li>
+  <li>
+    <p>it is generally a good practice to create a new profile for a new client (whether this profile will have or not specific data) to be able to distinguish between all user profiles. The new user profile should certainly inherit from the base profile of the protocol support, like <code class="highlighter-rouge">OAuth20Profile</code>. At least, it must inherit from <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java"><code class="highlighter-rouge">CommonProfile</code></a>. The data returned by the identity provider may need to be converted (a single string into a Java enumeration for example) and for that, converters (classes extending <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/AttributeConverter.java"><code class="highlighter-rouge">AttributeConverter</code></a>) and an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/AttributesDefinition.java"><code class="highlighter-rouge">AttributesDefinition</code></a> are necessary.</p>
+  </li>
+</ul>
+
+<h3 id="customizing-the-behaviour">Customizing the behaviour:</h3>
+
+<p>Overriding or creating new components allows you to implement new behaviour inside the boundaries of the defined <a href="https://github.com/pac4j/pac4j/wiki/How-to-implement-pac4j-for-a-new-framework---tool">logics</a> of the regular pac4j “filters”. Though, in some cases, it may not be enough. So you may decide to break the flow and change the provided behaviour by requesting some extra actions. And this can be done by throwing an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/HttpAction.java"><code class="highlighter-rouge">HttpAction</code></a> (like any exception) as most components allow that.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExampleAuthorizer</span> <span class="kd">implements</span> <span class="n">Authorizer</span><span class="o">&lt;</span><span class="n">CommonProfile</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isAuthorized</span><span class="o">(</span><span class="n">WebContext</span> <span class="n">context</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">CommonProfile</span><span class="o">&gt;</span> <span class="n">profiles</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">HttpAction</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="s">"specificValue"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getRequestHeader</span><span class="o">(</span><span class="s">"specificHeader"</span><span class="o">)))</span>
+        <span class="o">{</span>
+            <span class="k">throw</span> <span class="n">HttpAction</span><span class="o">.</span><span class="na">redirect</span><span class="o">(</span><span class="s">"force redirection"</span><span class="o">,</span> <span class="n">context</span><span class="o">,</span> <span class="s">"/message.html"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>In all cases, there is nothing better than taking a look at the existing components as examples. Don’t hesitate to ask any questions on the <a href="https://groups.google.com/forum/?fromgroups#!forum/pac4j-dev">pac4j-dev mailing list</a>.</p>
+
+
+	</div>
+
+  </body>
+</html>
+
