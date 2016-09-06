@@ -16,12 +16,12 @@ public final class BooleanConverterTests {
 
     @Test
     public void testNull() {
-        assertNull(this.converter.convert(null));
+        assertFalse(this.converter.convert(null));
     }
 
     @Test
     public void testNotAStringNotABoolean() {
-        assertNull(this.converter.convert(1));
+        assertFalse(this.converter.convert(1));
     }
 
     @Test
