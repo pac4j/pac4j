@@ -40,7 +40,7 @@ public abstract class RunClient implements TestsConstants {
         if (canCancel()) {
             logger.warn("You can CANCEL the authentication.");
         }
-        logger.warn("Returned url:");
+        logger.warn("Returned url (copy/paste the fragment starting before the question mark of the query string):");
         final Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
         final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);

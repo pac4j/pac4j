@@ -23,7 +23,7 @@ public class VelocityEngineFactory {
 
             final Properties props =
                     new Properties(net.shibboleth.utilities.java.support.velocity.VelocityEngine.getDefaultProperties());
-            props.setProperty(RuntimeConstants.ENCODING_DEFAULT, "UTF-8");
+            props.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
             props.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             props.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, SLF4JLogChute.class.getName());
