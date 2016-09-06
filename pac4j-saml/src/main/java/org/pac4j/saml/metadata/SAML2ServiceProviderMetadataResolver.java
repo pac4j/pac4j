@@ -30,8 +30,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.l;
-
 /**
  * @author Misagh Moayyed
  * @since 1.7
