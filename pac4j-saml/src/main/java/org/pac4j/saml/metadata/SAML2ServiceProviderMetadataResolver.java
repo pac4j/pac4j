@@ -30,6 +30,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import static com.sun.tools.doclint.Entity.not;
+
 /**
  * @author Misagh Moayyed
  * @since 1.7
@@ -129,8 +131,12 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                     final File parent = spMetadataResource.getFile().getParentFile();
                     if (!parent.mkdirs()) {
-                        throw new TechnicalException("Could not construct the directory structure for SP metadata " + 
+                        logger.warn("Could not construct the directory structure for SP metadata {}", 
                                 this.spMetadataResource.getFilename());
+                    }
+                    if (!spMetadataResource.exists()) {
+                        throw new TechnicalException("SP metadata path " + spMetadataResource.getFilename() 
+                                + " does not exist");
                     }
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
