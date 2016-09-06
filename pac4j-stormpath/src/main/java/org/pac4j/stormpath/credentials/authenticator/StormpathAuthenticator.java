@@ -9,9 +9,10 @@ import com.stormpath.sdk.resource.ResourceException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.stormpath.profile.StormpathProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,8 @@ import java.util.Map;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticator {
+public class StormpathAuthenticator extends InitializableWebObject
+        implements Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -68,8 +70,6 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
                     "Please verify that your provided Stormpath <accessId>, " +
                     "<secretKey>, and <applicationId> are correct. Original Stormpath error: " + e.getMessage());
         }
-
-        super.internalInit(context);
     }
 
     @Override
@@ -88,10 +88,8 @@ public class StormpathAuthenticator extends AbstractUsernamePasswordAuthenticato
     }
 
     protected Account authenticateAccount(final UsernamePasswordCredentials credentials) throws ResourceException {
-        final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
-
         return this.application.authenticateAccount(
-                new UsernamePasswordRequest(credentials.getUsername(), expectedPassword)).getAccount();
+                new UsernamePasswordRequest(credentials.getUsername(), credentials.getPassword())).getAccount();
     }
 
     protected StormpathProfile createProfile(final Account account) {
