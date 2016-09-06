@@ -116,7 +116,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected void initSAMLProfileHandler() {
         this.profileHandler = new SAML2WebSSOProfileHandler(
                 new SAML2WebSSOMessageSender(this.signatureSigningParametersProvider,
-                        this.configuration.getDestinationBindingType(), false),
+                        this.configuration.getDestinationBindingType(), 
+                        this.configuration.isForceSignRedirectBindingAuthnRequest()),
                 new SAML2WebSSOMessageReceiver(this.responseValidator));
     }
 
@@ -278,7 +279,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         return this.spMetadataResolver.getEntityId();
     }
 
-    public void setConfiguration(SAML2ClientConfiguration configuration) {
+    public void setConfiguration(final SAML2ClientConfiguration configuration) {
         this.configuration = configuration;
     }
 

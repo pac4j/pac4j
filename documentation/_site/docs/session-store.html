@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">Session store</span></h1><br />
+
+		  <p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java"><code class="highlighter-rouge">WebContext</code></a> is an abstraction do deal with the HTTP request and response but also with the web session, via the <code class="highlighter-rouge">getSessionIdentifier</code>, <code class="highlighter-rouge">getSessionAttribute</code> and <code class="highlighter-rouge">setSessionAttribute</code> methods.</p>
+
+<p>These methods can be backed by a <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/session/SessionStore.java"><code class="highlighter-rouge">SessionStore</code></a>. This interface defines the proper implementation for the web session thanks to the following methods: <code class="highlighter-rouge">getOrCreateSessionId</code>, <code class="highlighter-rouge">get</code> and <code class="highlighter-rouge">set</code>.</p>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/J2EContext.java"><code class="highlighter-rouge">J2EContext</code></a> currently uses the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/session/J2ESessionStore.java"><code class="highlighter-rouge">J2ESessionStore</code></a>. In Play, we have a specific cache-based <a href="https://github.com/pac4j/play-pac4j/blob/master/src/main/java/org/pac4j/play/store/PlayCacheStore.java"><code class="highlighter-rouge">PlayCacheStore</code></a> as well as in Knox, which has a cookie-based <a href="https://github.com/apache/knox/blob/master/gateway-provider-security-pac4j/src/main/java/org/apache/hadoop/gateway/pac4j/session/KnoxSessionStore.java"><code class="highlighter-rouge">KnoxSessionStore</code></a>.</p>
+
+<p>In the future, we could have session store implementations for Memcached or Redis.</p>
+
+
+	</div>
+
+  </body>
+</html>
+
