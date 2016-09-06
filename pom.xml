@@ -314,6 +314,7 @@
 				<version>3.6</version>
 				<configuration>
 					<includeTests>true</includeTests>
+					<printFailingErrors>true</printFailingErrors>
 				</configuration>
 				<executions>
 					<execution>
