@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">OpenID Connect</span></h1><br />
+
+		  <h3 id="module-pac4j-oidc">Module: <code class="highlighter-rouge">pac4j-oidc</code></h3>
+
+<p>For the OpenID Connect support, you should use the generic <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/OidcClient.java">OidcClient</a>. In some cases (when the discovery url is already known for example), you can use a specific client like for <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/GoogleOidcClient.java">Google</a> or <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/client/AzureAdClient.java">Azure Active Directory</a>.</p>
+
+<p><strong>Example</strong>:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">OidcConfiguration</span> <span class="n">oidcConfiguration</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OidcConfiguration</span><span class="o">();</span>
+<span class="n">oidcConfiguration</span><span class="o">.</span><span class="na">setClientId</span><span class="o">(</span><span class="n">clientId</span><span class="o">);</span>
+<span class="n">oidcConfiguration</span><span class="o">.</span><span class="na">setSecret</span><span class="o">(</span><span class="n">secret</span><span class="o">);</span>
+<span class="n">GoogleOidcClient</span> <span class="n">googleOidcClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GoogleOidcClient</span><span class="o">(</span><span class="n">oidcConfiguration</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<hr />
+
+<p>To integrate an application with an OpenID Connect Provider server, you should use the <code class="highlighter-rouge">OidcClient</code> (or one of its subclasses) and the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-oidc/src/main/java/org/pac4j/oidc/config/OidcConfiguration.java"><code class="highlighter-rouge">OidcConfiguration</code></a>:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">final</span> <span class="n">OidcConfiguration</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OidcConfiguration</span><span class="o">();</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setClientId</span><span class="o">(</span><span class="n">clientId</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setSecret</span><span class="o">(</span><span class="n">secret</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setDiscoveryURI</span><span class="o">(</span><span class="n">discoveryUri</span><span class="o">);</span>
+<span class="kd">final</span> <span class="n">OidcClient</span> <span class="n">oidcClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">OidcClient</span><span class="o">(</span><span class="n">config</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">clientId</code> and <code class="highlighter-rouge">secret</code> will be provided by the OpenID Connect provider, as well as the <code class="highlighter-rouge">discoveryUri</code> (to read the metadata of the identity provider).</p>
+
+<p>An <code class="highlighter-rouge">OidcProfile</code> is returned after a successful authentication (or one of its subclasses: <code class="highlighter-rouge">AzureAdProfile</code> or <code class="highlighter-rouge">GoogleOidcProfile</code>). All the attributes returned in the ID Token will be available in the <code class="highlighter-rouge">OidcProfile</code> even if you can get the ID token directly via the <code class="highlighter-rouge">getIdToken()</code> method.</p>
+
+<p>You can define the flow you want to use via the <code class="highlighter-rouge">setResponseType</code> and <code class="highlighter-rouge">setResponseMode</code> methods:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="c1">// implicit flow</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setResponseType</span><span class="o">(</span><span class="s">"id_token"</span><span class="o">);</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setResponseMode</span><span class="o">(</span><span class="s">"form_post"</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>By default, the <code class="highlighter-rouge">response_type</code> is set to <code class="highlighter-rouge">code</code> and the <code class="highlighter-rouge">response_mode</code> is empty.</p>
+
+<p>You can define the scope to use with the <code class="highlighter-rouge">setScope</code> method:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">config</span><span class="o">.</span><span class="na">setScope</span><span class="o">(</span><span class="s">"openid email profile phone"</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>You can request to use the <code class="highlighter-rouge">nonce</code> parameter to reinforce security via:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">config</span><span class="o">.</span><span class="na">setUseNonce</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<h3 id="additional-configuration">Additional configuration:</h3>
+
+<p>You can define how the client credentials (<code class="highlighter-rouge">clientId</code> and <code class="highlighter-rouge">secret</code>)  are passed to the token endpoint with the <code class="highlighter-rouge">setClientAuthenticationMethod</code> method:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">config</span><span class="o">.</span><span class="na">setClientAuthenticationMethod</span><span class="o">(</span><span class="n">ClientAuthenticationMethod</span><span class="o">.</span><span class="na">CLIENT_SECRET_BASIC</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>When validating the IDToken in the login process, you can set a clock skew:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="c1">// 1 minute</span>
+<span class="n">config</span><span class="o">.</span><span class="na">setMaxClockSkew</span><span class="o">(</span><span class="mi">60</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>You can also choose your preferred algorithm to sign the JSON web tokens:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">config</span><span class="o">.</span><span class="na">setPreferredJwsAlgorithm</span><span class="o">(</span><span class="n">JWSAlgorithm</span><span class="o">.</span><span class="na">RS256</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>You can finally set additional parameters by using the <code class="highlighter-rouge">addCustomParam(String key, String value)</code> method:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="c1">// select display mode: page, popup, touch, and wap</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addCustomParam</span><span class="o">(</span><span class="s">"display"</span><span class="o">,</span> <span class="s">"popup"</span><span class="o">);</span>
+<span class="c1">// select prompt mode: none, consent, select_account</span>
+<span class="n">config</span><span class="o">.</span><span class="na">addCustomParam</span><span class="o">(</span><span class="s">"prompt"</span><span class="o">,</span> <span class="s">"none"</span><span class="o">);</span>
+</code></pre>
+</div>
+
+
+	</div>
+
+  </body>
+</html>
+

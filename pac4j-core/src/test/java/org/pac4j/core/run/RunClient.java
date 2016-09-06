@@ -40,9 +40,9 @@ public abstract class RunClient implements TestsConstants {
         if (canCancel()) {
             logger.warn("You can CANCEL the authentication.");
         }
-        logger.warn("Returned url:");
-        Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
-        final String returnedUrl = scanner.nextLine();
+        logger.warn("Returned url (copy/paste the fragment starting before the question mark of the query string):");
+        final Scanner scanner = new Scanner(System.in, HttpConstants.UTF8_ENCODING);
+        final String returnedUrl = scanner.nextLine().trim();
         populateContextWithUrl(context, returnedUrl);
         final Credentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);
@@ -144,6 +144,12 @@ public abstract class RunClient implements TestsConstants {
         int pos = url.indexOf("?");
         if (pos >= 0) {
             url = url.substring(pos + 1);
+
+            // removing stuffs after the hash for a regular query string
+            pos = url.indexOf("#");
+            if (pos >= 0) {
+                url = url.substring(0, pos);
+            }
         } else {
             // this is a hack to test client side stuffs, it would not work for server side
             pos = url.indexOf("#");

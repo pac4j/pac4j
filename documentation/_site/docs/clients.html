@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">Clients&#58;</span></h1><br />
+
+		  <p>A <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java"><code class="highlighter-rouge">Client</code></a> represents an <strong>authentication mechanism</strong>. It performs the login process and returns (if successful) a user profile (<a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java"><code class="highlighter-rouge">CommonProfile</code></a>):</p>
+
+<ul>
+  <li><a href="/docs/clients/cas.html">CAS protocol support</a></li>
+  <li><a href="/docs/clients/saml.html">SAML protocol support</a></li>
+  <li><a href="/docs/clients/openid-connect.html">OpenID Connect protocol support</a></li>
+  <li><a href="/doc/clients/oauth.html">OAuth protocol support</a></li>
+  <li><a href="/docs/clients/http.html">HTTP protocol support</a></li>
+  <li><a href="/docs/clients/openid.html">OpenID</a></li>
+  <li><a href="/docs/google-app-engine.html">Google App Engine support</a></li>
+</ul>
+
+<hr />
+
+<h2 id="client-methods"><code class="highlighter-rouge">Client</code> methods</h2>
+
+<p>The <code class="highlighter-rouge">Client</code> interface has the following methods:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">HttpAction redirect(WebContext context) throws HttpAction</code></td>
+      <td>redirects the user to the identity provider for login</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">C getCredentials(WebContext context) throws HttpAction</code></td>
+      <td>extracts the credentials from the HTTP request and validates them</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">U getUserProfile(C credentials, WebContext context) throws HttpAction</code></td>
+      <td>builds the authenticated user profile</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To define the security configuration of the application, all clients are defined in the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Clients.java"><code class="highlighter-rouge">Clients</code></a> object, then or directly in the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/config/Config.java"><code class="highlighter-rouge">Config</code></a> object.</p>
+
+<h2 id="direct-vs-indirect-clients">Direct vs indirect clients</h2>
+
+<p>Clients are of two kinds:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Direct clients</th>
+      <th>Indirect clients</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Use cases</td>
+      <td>For web services</td>
+      <td>For web applications (UI)</td>
+    </tr>
+    <tr>
+      <td><a href="/docs/authentication-flows.html">Authentication flows</a></td>
+      <td>1) Credentials are passed for each HTTP request (to the “<a href="/docs/how-to-implement-pac4j-for-a-new-framework.html">security filter</a>”)</td>
+      <td>1) The originally requested url is saved in session (by the “security filter”)<br />2) The user is redirected to the identity provider (by the “security filter”)<br />3) Authentication happens at the identity provider (or locally for the <code class="highlighter-rouge">FormClient</code> and the <code class="highlighter-rouge">IndirectBasicAuthClient</code>)<br />4) The user is redirected back to the callback endpoint / url (“callback filter”)<br />5) The user is redirected to the originally requested url (by the “<a href="/docs/how-to-implement-pac4j-for-a-new-framework.html">callback filter</a>”)</td>
+    </tr>
+    <tr>
+      <td>How many times the login process occurs?</td>
+      <td>The authentication happens for every HTTP request (in the “security filter”) via the defined <a href="/dcs/authenticators.html"><code class="highlighter-rouge">Authenticator</code></a> and <code class="highlighter-rouge">ProfileCreator</code>.<br />For performance reasons, a cache may be used by wrapping the current <code class="highlighter-rouge">Authenticator</code> in a <code class="highlighter-rouge">LocalCachingAuthenticator</code> or the user profile can be saved (by the <code class="highlighter-rouge">Authenticator</code> or <code class="highlighter-rouge">ProfileCreator</code>) into the web session using the available web context and the <code class="highlighter-rouge">ProfileManager</code> class</td>
+      <td>The authentication happens only once (in the “callback filter”)</td>
+    </tr>
+    <tr>
+      <td>Where is the user profile saved by default?</td>
+      <td>In the HTTP request  (stateless)</td>
+      <td>In the web session (statefull)</td>
+    </tr>
+    <tr>
+      <td>Where are the credentials?</td>
+      <td>Passed for every HTTP request (processed by the “security filter”)</td>
+      <td>On the callback endpoint returned by the identity provider (and retrieved by the “callback filter”)</td>
+    </tr>
+    <tr>
+      <td>Are the credentials mandatory?</td>
+      <td>Generally, no. If no credentials are provided, the direct client will be ignored (by the “security filter”)</td>
+      <td>Generally, yes. Credentials are expected on the callback endpoint</td>
+    </tr>
+    <tr>
+      <td>What are the protected urls?</td>
+      <td>The urls of the web service are protected by the “security filter”</td>
+      <td>The urls of the web application are protected by the “security filter”, but the callback url is not protected as it is used during the login process when the user is still anonymous</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="compute-roles-and-permissions">Compute roles and permissions</h2>
+
+<p>To compute the appropriate roles and permissions of the authenticated user profile, you need to define an <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/AuthorizationGenerator.java"><code class="highlighter-rouge">AuthorizationGenerator</code></a> and attach it to the client.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">AuthorizationGenerator</span> <span class="n">authGen</span> <span class="o">=</span> <span class="n">profile</span> <span class="o">-&gt;</span> <span class="o">{</span>
+  <span class="n">String</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"roles"</span><span class="o">);</span>
+  <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="nl">role:</span> <span class="n">roles</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">","</span><span class="o">))</span> <span class="o">{</span>
+    <span class="n">profile</span><span class="o">.</span><span class="na">addRole</span><span class="o">(</span><span class="n">role</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">};</span>
+<span class="n">client</span><span class="o">.</span><span class="na">addAuthorizationGenerator</span><span class="o">(</span><span class="n">authGen</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>You can attach it to the <code class="highlighter-rouge">Clients</code> object (in the <code class="highlighter-rouge">Config</code>) if you want the <code class="highlighter-rouge">AuthorizationGenerator</code> to be used for all clients.</p>
+
+<hr />
+
+<h2 id="custom-ajaxrequestresolver-and-callbackurlresolver">Custom <code class="highlighter-rouge">AjaxRequestResolver</code> and <code class="highlighter-rouge">CallbackUrlResolver</code></h2>
+
+<p>For an indirect client, you define the callback url which will be used in the login process: after a successful login, the identity provider will redirect the user back to the application on the callback url.</p>
+
+<p>By default, the callback url is expected to be an absolute url and is passed “as is” (by the <code class="highlighter-rouge">DefaultCallbackUrlResolver</code>). Though, you can provide your own <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/CallbackUrlResolver.java"><code class="highlighter-rouge">CallbackUrlResolver</code></a> to compute the appropriate callback url. The available <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/RelativeCallbackUrlResolver.java"><code class="highlighter-rouge">RelativeCallbackUrlResolver</code></a> turns the defined relative callback url into an absolute one. Example: <code class="highlighter-rouge">client.setCallbackUrlResolver(myCallbackUrlResolver);</code>.</p>
+
+<p>For an indirect client, if the user tries to access a protected url, he will be redirected to the identity provider for login. Though, if the incoming HTTP request is an AJAX one, no redirection will be performed and a 401 error page will be returned. The HTTP request is considered to be an AJAX one if the value of the <code class="highlighter-rouge">X-Requested-With</code> header is <code class="highlighter-rouge">XMLHttpRequest</code> or if the <code class="highlighter-rouge">is_ajax_request</code> parameter or header is <code class="highlighter-rouge">true</code>. This is the behaviour of the <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/DefaultAjaxRequestResolver.java"><code class="highlighter-rouge">DefaultAjaxRequestResolver</code></a>, but you can provide your own <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/AjaxRequestResolver.java"><code class="highlighter-rouge">AjaxRequestResolver</code></a>. Example: <code class="highlighter-rouge">client.setAjaxRequestResolver(myAjaxRequestResolver);</code>.</p>
+
+
+	</div>
+
+  </body>
+</html>
+

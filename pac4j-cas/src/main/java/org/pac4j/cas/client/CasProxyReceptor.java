@@ -65,25 +65,25 @@ public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, C
         setRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         setCredentialsExtractor(ctx -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
-            final String proxyGrantingTicketIou = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
+            final String proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
-            final String proxyGrantingTicket = context.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
+            final String proxyGrantingTicket = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET);
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
             if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-                context.writeResponseContent("");
+                ctx.writeResponseContent("");
                 final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
-                throw HttpAction.ok(message, context);
+                throw HttpAction.ok(message, ctx);
             }
 
             this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
 
-            context.writeResponseContent("<?xml version=\"1.0\"?>");
-            context.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
+            ctx.writeResponseContent("<?xml version=\"1.0\"?>");
+            ctx.writeResponseContent("<casClient:proxySuccess xmlns:casClient=\"http://www.yale.edu/tp/casClient\" />");
 
             final String message = "No credential for CAS proxy receptor -> returns ok";
             logger.debug(message);
-            throw HttpAction.ok(message, context);
+            throw HttpAction.ok(message, ctx);
         });
         setAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
         super.internalInit(context);

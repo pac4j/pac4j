@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>pac4j: the security engine for Java</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+  </head>
+  <body>
+
+
+    <nav class="navbar navbar-light bg-faded">
+      
+      <div class="container">
+      
+        <ul class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">HOME</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/docs/index.html">DOCUMENTATION</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mailing-lists.html">MAILING-LISTS</a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+
+    <div id="content" class="container">
+
+      <h1><span class="alert alert-success">SAML</span></h1><br />
+
+		  <h3 id="module-pac4j-saml">Module: <code class="highlighter-rouge">pac4j-saml</code></h3>
+
+<p>The <a href="https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2Client.java"><code class="highlighter-rouge">SAML2Client</code></a> allows to login with a SAML 2 identity provider.</p>
+
+<hr />
+
+<p>To integrate an application with a SAML2 Identity Provider server, you should use the <code class="highlighter-rouge">org.pac4j.saml.client.SAML2ClientConfiguration</code> and the <code class="highlighter-rouge">org.pac4j.saml.client.SAML2Client</code>.</p>
+
+<p>First, you need to generate a keystore for all signature and encryption operations:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
+</code></pre>
+</div>
+
+<p>Then, define the SAML configuration:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">SAML2ClientConfiguration</span> <span class="n">cfg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SAML2ClientConfiguration</span><span class="o">(</span><span class="s">"resource:samlKeystore.jks"</span><span class="o">,</span> <span class="s">"pac4j-demo-passwd"</span><span class="o">,</span> <span class="s">"pac4j-demo-passwd"</span><span class="o">,</span> <span class="s">"resource:testshib-providers.xml"</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>The first parameter (<code class="highlighter-rouge">keystorePath</code>) should point to your keystore:</p>
+<ul>
+  <li>using the <code class="highlighter-rouge">resource:</code> prefix, the following file path will be searched in as a resources stream (<code class="highlighter-rouge">CommonHelper.class.getResourceAsStream</code>)</li>
+  <li>using the <code class="highlighter-rouge">classpath:</code> prefix, the following file path will be searched in as a resources stream (<code class="highlighter-rouge">Thread.currentThread().getContextClassLoader().getResourceAsStream</code>)</li>
+  <li>using <code class="highlighter-rouge">file:</code> prefix means the keystore is accessible on the following file path</li>
+  <li>it can also be an url (starting with <code class="highlighter-rouge">http:</code> or <code class="highlighter-rouge">https:</code>)</li>
+  <li>otherwise, it is considered to be a file path.</li>
+</ul>
+
+<p>The second parameter (<code class="highlighter-rouge">keystorePassword</code>) is the value of the <code class="highlighter-rouge">-storepass</code> option for the keystore generation while the third parameter (<code class="highlighter-rouge">privateKeyPassword</code>) is the value of the <code class="highlighter-rouge">-keypass</code> option.</p>
+
+<p>The fourth parameter (<code class="highlighter-rouge">identityProviderMetadataPath</code>) should point to your IdP metadata, assuming you can use the same syntax than for the keystore.</p>
+
+<p>Finally, you need to declare the <code class="highlighter-rouge">SAML2Client</code> based on the previous configuration:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">Saml2Client</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Saml2Client</span><span class="o">(</span><span class="n">cfg</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<h3 id="additional-configuration">Additional configuration:</h3>
+
+<p>Once you have an authenticated web session on the Identity Provider, usually it won’t prompt you again to enter your credentials and it will automatically generate you a new assertion. By default, the SAML pac4j client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the maximumAuthenticationLifetime parameter:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="c1">// Lifetime in seconds</span>
+<span class="n">client</span><span class="o">.</span><span class="na">setMaximumAuthenticationLifetime</span><span class="o">(</span><span class="mi">600</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>By default, the entity ID of your application (the Service Provider) will be equals to the pac4j callback url. This can lead to problems with some IDP because of the query string not being accepted (like ADFS2.0). You can force your own entity ID with the serviceProviderEntityId parameter:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="c1">// custom SP entity ID</span>
+<span class="n">cfg</span><span class="o">.</span><span class="na">setServiceProviderEntityId</span><span class="o">(</span><span class="s">"http://localhost:8080/callback?client_name=SAML2Client"</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>To configure the supported algorithms and digest methods for the initial authentication request, specify what is supported via the configuration object:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">cfg</span><span class="o">.</span><span class="na">setBlackListedSignatureSigningAlgorithms</span><span class="o">(...);</span>
+<span class="n">cfg</span><span class="o">.</span><span class="na">setSignatureAlgorithms</span><span class="o">(...);</span>
+<span class="n">cfg</span><span class="o">.</span><span class="na">setSignatureReferenceDigestMethods</span><span class="o">(...);</span>
+<span class="n">cfg</span><span class="o">.</span><span class="na">setSignatureCanonicalizationAlgorithm</span><span class="o">(...);</span>
+</code></pre>
+</div>
+
+<p>By default, assertions must be signed, but this may be disabled using:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">cfg</span><span class="o">.</span><span class="na">setWantsAssertionsSigned</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</code></pre>
+</div>
+
+<p>The final result will be determined based on the IdP metadata and the configuration above. The IdP metadata will always be chosen in favor of the Pac4j configuration, so if you need to purely rely on Pac4j, you need to modify the metadata.</p>
+
+<p>You can generate the SP metadata in two ways:</p>
+<ul>
+  <li>either programmatically using the <code class="highlighter-rouge">SAML2Client</code>: <code class="highlighter-rouge">String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();</code></li>
+  <li>or by defining the appropriate configuration: <code class="highlighter-rouge">cfg.setServiceProviderMetadataPath("/tmp/sp-metadata.xml");</code></li>
+</ul>
+
+<p>In case you use the library against Microsoft ADFS (Active Directory Federation Services), a SAML Identity Provider server, please have a look into file README-ADFS.txt for details on how to setup your client.</p>
+
+<h3 id="adfs-20--30">ADFS 2.0 / 3.0</h3>
+
+<p>Follow these rules to successfully authenticate using Microsoft ADFS 2.0 / 3.0.</p>
+
+<h4 id="entity-id">Entity ID</h4>
+
+<p>Always specify an explicit Entity ID that does not contain any question mark. By default, pac4j uses the same Entity ID as the
+AssertionConsumerService location, which contains the client’s name as a parameter after a question mark. Unfortunately ADFS does not work
+well with such IDs and starts an infinite redirection loop when A SAML message with such a message arrives.</p>
+
+<p>This property is supported since pac4j 1.6.0.</p>
+
+<p>Don’t forget to change your metadata accordingly!</p>
+
+<h4 id="maximum-authentication-time">Maximum authentication time</h4>
+
+<p>pac4j has the default maximum time set to 1 hour while ADFS has it set to 8 hours. Therefore it can happen that ADFS sends
+an assertion which is still valid on ADFS side but evaluated as invalid on pac4j side.</p>
+
+<p>You can see the following error message:
+org.pac4j.saml.exceptions.SAMLException: Authentication issue instant is too old or in the future</p>
+
+<p>There are two possibilities how to make the values equal:</p>
+<ul>
+  <li>Change the value in ADFS management console in the trust properties dialog.</li>
+  <li>Change the value on pac4j side.</li>
+</ul>
+
+<h4 id="java-cryptography-extension-jce-unlimited-strength-jurisdiction-policy-files">Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files</h4>
+
+<p>You must install Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files into your JRE/JDK
+running pac4j. If you don’t do it, you may encounter errors like this:</p>
+
+<p>ERROR [org.opensaml.xml.encryption.Decrypter] - <Error decrypting="" the="" encrypted="" data="" element="">
+org.apache.xml.security.encryption.XMLEncryptionException: Illegal key size
+ERROR [org.opensaml.xml.encryption.Decrypter] - &lt;Failed to decrypt EncryptedData using either EncryptedData KeyInfoCredentialResolver or EncryptedKeyResolver + EncryptedKey KeyInfoCredentialResolver&gt;
+ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter="" encountered="" an="" error="" decrypting="" element="" content=""></SAML></Error></p>
+
+<p>Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle’s Java Download site.</p>
+
+
+	</div>
+
+  </body>
+</html>
+

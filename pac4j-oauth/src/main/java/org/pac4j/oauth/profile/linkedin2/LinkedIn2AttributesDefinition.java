@@ -44,6 +44,6 @@ public class LinkedIn2AttributesDefinition extends AttributesDefinition {
         primary(NUM_CONNECTIONS, Converters.INTEGER);
         primary(NUM_CONNECTIONS_CAPPED, Converters.BOOLEAN);
         primary(LOCATION, new JsonConverter<>(LinkedIn2Location.class));
-        primary(POSITIONS, new JsonListConverter(LinkedIn2Position.class, LinkedIn2Position[].class));
+        secondary(POSITIONS, new JsonListConverter(LinkedIn2Position.class, LinkedIn2Position[].class));
     }
 }
