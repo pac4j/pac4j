@@ -57,8 +57,8 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                                                 final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
         this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl,
-            configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider,
-            configuration.isAuthnRequestSigned());
+                configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider,
+                configuration.isAuthnRequestSigned());
     }
 
     private SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
@@ -129,11 +129,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                     final File parent = spMetadataResource.getFile().getParentFile();
                     logger.info("Attempting to create directory structure for {}", parent.getCanonicalPath());
-                    if (!parent.mkdirs()) {
-                        if (!spMetadataResource.exists()) {
-                            logger.warn("Could not construct the directory structure for SP metadata {}",
-                                    this.spMetadataResource.getFilename());
-                        }
+                    if (!parent.mkdirs() || !spMetadataResource.exists()) {
+                        logger.warn("Could not construct the directory structure for SP metadata {}",
+                                this.spMetadataResource.getFilename());
                     }
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");

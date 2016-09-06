@@ -14,12 +14,14 @@ public final class VkBooleanConverter implements AttributeConverter<Boolean> {
 		if (attribute != null) {
 			if (attribute instanceof Boolean) {
 				return (Boolean) attribute;
-			} else if (attribute instanceof String) {
+			} 
+			if (attribute instanceof String) {
 				return "1".equals(attribute);
-			} else if (attribute instanceof Number) {
+			} 
+			if (attribute instanceof Number) {
 				return Integer.valueOf(1).equals(attribute);
 			}
 		}
-		return null;
+		return Boolean.FALSE;
 	}
 }
