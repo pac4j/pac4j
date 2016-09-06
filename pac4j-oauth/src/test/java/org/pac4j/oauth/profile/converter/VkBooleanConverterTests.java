@@ -18,7 +18,7 @@ public final class VkBooleanConverterTests {
 
 	@Test
 	public void testNull() {
-		assertNull(this.converter.convert(null));
+		assertFalse(this.converter.convert(null));
 	}
 
 	@Test
