@@ -30,10 +30,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
-import static com.sun.tools.doclint.Entity.not;
-
 /**
- * @author Misagh Moayyed
+ * @author misagh moayyed
  * @since 1.7
  */
 public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolver {
