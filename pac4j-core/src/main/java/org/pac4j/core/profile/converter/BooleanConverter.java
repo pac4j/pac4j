@@ -18,6 +18,6 @@ public final class BooleanConverter implements AttributeConverter<Boolean> {
                 return Boolean.parseBoolean((String) attribute);
             }
         }
-        return Boolean.FALSE;
+        return null;
     }
 }
