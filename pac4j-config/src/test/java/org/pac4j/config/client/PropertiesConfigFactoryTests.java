@@ -6,9 +6,11 @@ import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
+import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
 
@@ -52,10 +54,14 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(CAS_LOGIN_URL.concat(".1"), CALLBACK_URL);
         properties.put(CAS_PROTOCOL.concat(".1"), CasProtocol.CAS30.toString());
 
+        properties.put(OIDC_TYPE.concat(".1"), "google");
+        properties.put(OIDC_ID.concat(".1"), ID);
+        properties.put(OIDC_SECRET.concat(".1"), SECRET);
+
         final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
         final Config config = factory.build();
         final Clients clients = config.getClients();
-        assertEquals(6, clients.getClients().size());
+        assertEquals(7, clients.getClients().size());
         final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient");
         assertEquals(ID, fbClient.getKey());
         assertEquals(SECRET, fbClient.getSecret());
@@ -73,5 +79,12 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
         final CasClient casClient1 = (CasClient) clients.findClient("CasClient.1");
         assertEquals(CasProtocol.CAS30, casClient1.getConfiguration().getProtocol());
+
+        final GoogleOidcClient googleOidcClient = (GoogleOidcClient) clients.findClient("GoogleOidcClient.1");
+        googleOidcClient.init(MockWebContext.create());
+        assertEquals(ID, googleOidcClient.getConfiguration().getClientId());
+        assertEquals(SECRET, googleOidcClient.getConfiguration().getSecret());
+        assertEquals("https://accounts.google.com/.well-known/openid-configuration", googleOidcClient.getConfiguration().getDiscoveryURI());
+        assertEquals(CALLBACK_URL + "?client_name=GoogleOidcClient.1", googleOidcClient.getCallbackUrl());
     }
 }
