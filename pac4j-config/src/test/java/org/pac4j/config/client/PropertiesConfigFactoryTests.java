@@ -9,6 +9,8 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
+import org.pac4j.oidc.client.AzureAdClient;
+import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.saml.client.SAML2Client;
 
@@ -25,6 +27,39 @@ import static org.junit.Assert.*;
  * @since 1.8.1
  */
 public final class PropertiesConfigFactoryTests implements TestsConstants {
+
+    @Test
+    public void testOidcClientTypeDefault() {
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(OIDC_ID, ID);
+        properties.put(OIDC_SECRET, SECRET);
+        properties.put(OIDC_TYPE, "nothing");
+        final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
+        final Config config = factory.build();
+        assertNotNull(config.getClients().findClient(OidcClient.class));
+    }
+    
+    @Test
+    public void testOidcClientTypeAzure() {
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(OIDC_ID, ID);
+        properties.put(OIDC_SECRET, SECRET);
+        properties.put(OIDC_TYPE, "AZURE");
+        final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
+        final Config config = factory.build();
+        assertNotNull(config.getClients().findClient(AzureAdClient.class));
+    }
+    
+    @Test
+    public void testOidcClientTypeGoogle() {
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(OIDC_ID, ID);
+        properties.put(OIDC_SECRET, SECRET);
+        properties.put(OIDC_TYPE, " gOOgle ");
+        final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
+        final Config config = factory.build();
+        assertNotNull(config.getClients().findClient(GoogleOidcClient.class));
+    }
 
     @Test
     public void test() {
