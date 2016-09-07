@@ -17,6 +17,8 @@ import org.pac4j.oauth.client.Google2Client;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oauth.client.WindowsLiveClient;
 import org.pac4j.oauth.client.YahooClient;
+import org.pac4j.oidc.client.AzureAdClient;
+import org.pac4j.oidc.client.GoogleOidcClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.saml.client.SAML2Client;
@@ -73,6 +75,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String CAS_PROTOCOL = "cas.protocol";
 
     public static final String OIDC_ID = "oidc.id";
+    public static final String OIDC_TYPE = "oidc.type";
     public static final String OIDC_SECRET = "oidc.secret";
     public static final String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
     public static final String OIDC_USE_NONCE = "oidc.useNonce";
@@ -208,15 +211,15 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String keystorePassword = getProperty(SAML_KEYSTORE_PASSWORD.concat(i == 0 ? "" : "." + i));
             final String privateKeyPassword = getProperty(SAML_PRIVATE_KEY_PASSWORD.concat(i == 0 ? "" : "." + i));
             final String keystorePath = getProperty(SAML_KEYSTORE_PATH.concat(i == 0 ? "" : "." + i));
-            final String ientityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
+            final String identityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
             final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME.concat(i == 0 ? "" : "." + i));
             final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID.concat(i == 0 ? "" : "." + i));
             final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
 
             if (CommonHelper.isNotBlank(keystorePassword) && CommonHelper.isNotBlank(privateKeyPassword)
-                    && CommonHelper.isNotBlank(keystorePath) && CommonHelper.isNotBlank(ientityProviderMetadataPath)) {
+                    && CommonHelper.isNotBlank(keystorePath) && CommonHelper.isNotBlank(identityProviderMetadataPath)) {
                 final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(keystorePath, keystorePassword,
-                        privateKeyPassword, ientityProviderMetadataPath);
+                        privateKeyPassword, identityProviderMetadataPath);
                 if (CommonHelper.isNotBlank(maximumAuthenticationLifetime)) {
                     cfg.setMaximumAuthenticationLifetime(Integer.parseInt(maximumAuthenticationLifetime));
                 }
@@ -259,13 +262,13 @@ public class PropertiesConfigFactory implements ConfigFactory {
     private void tryCreateOidcClient(final List<Client> clients) {
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
             final String id = getProperty(OIDC_ID.concat(i == 0 ? "" : "." + i));
+            final String type = getProperty(OIDC_TYPE.concat(i == 0 ? "" : "." + i));
             final String secret = getProperty(OIDC_SECRET.concat(i == 0 ? "" : "." + i));
-            final String discoveryUri = getProperty(OIDC_DISCOVERY_URI.concat(i == 0 ? "" : "." + i));
-            if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret) && CommonHelper.isNotBlank(discoveryUri)) {
+            
+            if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
                 final OidcConfiguration configuration = new OidcConfiguration();
                 configuration.setClientId(id);
                 configuration.setSecret(secret);
-                configuration.setDiscoveryURI(discoveryUri);
                 final String useNonce = getProperty(OIDC_USE_NONCE.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(useNonce)) {
                     configuration.setUseNonce(Boolean.parseBoolean(useNonce));
@@ -292,8 +295,25 @@ public class PropertiesConfigFactory implements ConfigFactory {
                 if (CommonHelper.isNotBlank(key2)) {
                     configuration.addCustomParam(key2, value2);
                 }
-
-                final OidcClient oidcClient = new OidcClient(configuration);
+                
+                OidcClient oidcClient = null;
+                if (CommonHelper.isNotBlank(type)) {
+                    switch (type.trim().toLowerCase()) {
+                        case "google":
+                            oidcClient = new GoogleOidcClient(configuration);
+                            break;
+                        case "azure":
+                            oidcClient = new AzureAdClient(configuration);
+                            break;
+                    }
+                }
+                
+                if (oidcClient == null) {
+                    final String discoveryUri = getProperty(OIDC_DISCOVERY_URI.concat(i == 0 ? "" : "." + i));
+                    configuration.setDiscoveryURI(discoveryUri);
+                    oidcClient = new OidcClient(configuration);
+                }
+                
                 if (i != 0) {
                     oidcClient.setName(oidcClient.getName().concat("." + i));
                 }
