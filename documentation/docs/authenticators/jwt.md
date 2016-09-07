@@ -5,6 +5,8 @@ title: JWT
 
 *pac4j* allows you to validate JSON Web Token.
 
+The JWT support is based on the excellent [Nimbus JOSE JWT library](http://connect2id.com/products/nimbus-jose-jwt) and you should consider reading this [algorithm selection guide](http://connect2id.com/products/nimbus-jose-jwt/algorithm-selection-guide).
+
 ## 1) Dependency
 
 You need to use the following module: `pac4j-jwt`.
