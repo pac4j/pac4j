@@ -1,17 +1,33 @@
 package org.pac4j.saml.client;
 
+import org.bouncycastle.jce.X509Principal;
+import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +38,8 @@ import java.util.List;
  * @since 1.7
  */
 public final class SAML2ClientConfiguration implements Cloneable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
+
     private KeyStore keyStore;
 
     private Resource keystoreResource;
@@ -106,6 +124,11 @@ public final class SAML2ClientConfiguration implements Cloneable {
         }
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
+
+        if (this.keystoreResource == null || !this.keystoreResource.exists()) {
+            LOGGER.warn("Provided path to keystore does not exist. Creating one at {}", keystorePath);
+            createKeystore();
+        }
         this.identityProviderMetadataResource = identityProviderMetadataResource;
         if (this.identityProviderMetadataResource == null) {
             this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
@@ -127,6 +150,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
 
     }
+
 
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
         this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
@@ -388,8 +412,62 @@ public final class SAML2ClientConfiguration implements Cloneable {
     public void setForceSignRedirectBindingAuthnRequest(final boolean forceSignRedirectBindingAuthnRequest) {
         this.forceSignRedirectBindingAuthnRequest = forceSignRedirectBindingAuthnRequest;
     }
-    
+
     public boolean isAuthnRequestSigned() {
         return authnRequestSigned;
+    }
+
+    private void createKeystore() {
+        try {
+            if (CommonHelper.isBlank(this.keyStoreAlias)) {
+                this.keyStoreAlias = getClass().getSimpleName();
+                LOGGER.warn("Using keystore alias {}", this.keyStoreAlias);
+            }
+
+            if (CommonHelper.isBlank(this.keyStoreType)) {
+                this.keyStoreType = KeyStore.getDefaultType();
+                LOGGER.warn("Using keystore type {}", this.keyStoreType);
+            }
+
+            final KeyStore ks = KeyStore.getInstance(this.keyStoreType);
+            final char[] password = this.keystorePassword.toCharArray();
+            ks.load(null, password);
+
+            final KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(2048);
+            final KeyPair kp = kpg.genKeyPair();
+
+            final X509V3CertificateGenerator cert = new X509V3CertificateGenerator();
+            cert.setSerialNumber(BigInteger.valueOf(1));
+            final String dn = InetAddress.getLocalHost().getHostName();
+            cert.setSubjectDN(new X509Principal("CN=" + dn));
+            cert.setIssuerDN(new X509Principal("CN=" + dn));
+
+            cert.setPublicKey(kp.getPublic());
+            cert.setNotBefore(new Date());
+
+            final Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.YEAR, 1);
+            cert.setNotAfter(c.getTime());
+
+            cert.setSignatureAlgorithm("SHA1WithRSA");
+            final PrivateKey signingKey = kp.getPrivate();
+            final X509Certificate certificate = cert.generate(signingKey, new SecureRandom());
+            ks.setKeyEntry(this.keyStoreAlias, signingKey, password, new Certificate[]{certificate});
+
+            try (FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {
+                ks.store(fos, password);
+                fos.flush();
+            }
+
+            LOGGER.info("Created keystore {} with key alias {} ",
+                    keystoreResource.getFile().getCanonicalPath(),
+                    ks.aliases().nextElement());
+
+            this.keyStore = ks;
+        } catch (final Exception e) {
+            throw new SAMLException("Could not create keystore", e);
+        }
     }
 }
