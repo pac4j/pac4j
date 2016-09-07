@@ -11,6 +11,7 @@ title: Release notes&#58;
 - CORS (AJAX) requests can be controlled via the `CorsAuthorizer` and its default pre-defined `allowAjaxRequests` name
 - Profile attribute can be checked via the `RequireAnyAttributeAuthorizer`
 - the `AjaxRequestResolver`,  `CallbackUrlResolver` and `AuthorizationGenerator` can be defined at the `Clients` level for all defined clients
+- new implementations for the `PasswordEncoder` are available for Spring Security, Shiro or JBCrypt.
 
 **pac4j 1.9.1**:
 
