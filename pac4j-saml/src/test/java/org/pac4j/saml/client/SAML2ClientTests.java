@@ -33,7 +33,7 @@ public final class SAML2ClientTests {
 
     @Test
     public void testSaml2ConfigurationOfKeyStore() throws Exception {
-        Resource rs = CommonHelper.getResource("resource:testKeystore.jks");
+        final Resource rs = CommonHelper.getResource("resource:testKeystore.jks");
         if (rs.exists()) {
             rs.getFile().delete();
         }
