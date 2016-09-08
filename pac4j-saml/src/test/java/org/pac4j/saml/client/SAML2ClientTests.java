@@ -1,6 +1,7 @@
 package org.pac4j.saml.client;
 
 import org.junit.Test;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.util.Configuration;
@@ -45,7 +46,9 @@ public final class SAML2ClientTests {
                         "resource:testshib-providers.xml");
         assertNotNull(cfg.getKeyStore());
         assertTrue(cfg.getKeyStore().size() == 1);
-        rs.getFile().delete();
+        if (!rs.getFile().delete()) {
+            throw new TechnicalException("File could not be deleted");
+        }
     }
 
 
