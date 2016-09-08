@@ -26,11 +26,14 @@ You need to use the following module: `pac4j-saml`.
 The [`SAML2Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2Client.java) 
 must be used to login with a SAML 2 identity provider.
 
-First, you need to generate a keystore for all signature and encryption operations:
+First, optionally you need to generate a keystore for all signature and encryption operations:
 
 ```bash
 keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
 ```
+
+Alternatively, you can also let pac4j create the keystore for you. If the keystore resource path does not exist, pac4j will attempt to 
+generate a keystore and produce the relevant key pairs inside it.
 
 Then, you must define a [`SAML2ClientConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2ClientConfiguration.java):
 
