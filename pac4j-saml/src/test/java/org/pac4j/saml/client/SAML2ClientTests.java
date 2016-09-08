@@ -35,10 +35,8 @@ public final class SAML2ClientTests {
     @Test
     public void testSaml2ConfigurationOfKeyStore() throws Exception {
         final Resource rs = CommonHelper.getResource("resource:testKeystore.jks");
-        if (rs.exists()) {
-            if (!rs.getFile().delete()) {
-                throw new TechnicalException("File could not be deleted");
-            }
+        if (rs.exists() && !rs.getFile().delete()) {
+            throw new TechnicalException("File could not be deleted");
         }
         
         final SAML2ClientConfiguration cfg =
