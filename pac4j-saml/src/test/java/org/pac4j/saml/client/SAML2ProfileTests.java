@@ -11,8 +11,11 @@ import org.pac4j.saml.profile.SAML2Profile;
 
 /**
  * Generic test for {@link SAML2Profile}
+ * 
+ * @author Ruochao Zheng
+ * @since 1.9.2
  */
-public class SAML2ProfileTest {
+public class SAML2ProfileTests {
 
     @Test
     public void testAttributes() {
