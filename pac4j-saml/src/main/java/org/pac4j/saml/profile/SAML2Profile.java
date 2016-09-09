@@ -15,6 +15,7 @@ import org.pac4j.saml.client.SAML2Client;
  * 
  * @author Michael Remond
  * @author Misagh Moayyed
+ * @author Ruochao Zheng
  * @version 1.5.0
  */
 public class SAML2Profile extends CommonProfile {
