@@ -13,7 +13,6 @@
 	<name>pac4j for JWT</name>
 
 	<properties>
-		<jose-jwt.version>4.24</jose-jwt.version>
 		<bcprov.version>1.54</bcprov.version>
 	</properties>
 
@@ -25,7 +24,6 @@
 		<dependency>
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
-			<version>${jose-jwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
