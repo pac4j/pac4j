@@ -29,7 +29,7 @@ public final class SAML2ClientTests {
 
     @Test
     public void testIdpMetadataParsing_fromUrl() {
-        internalTestIdpMetadataParsing("https://idp.testshib.org/idp/profile/Metadata/SAML");
+        internalTestIdpMetadataParsing("http://www.pac4j.org/testshib-providers.xml");
     }
 
     @Test
