@@ -1,4 +1,4 @@
-package org.pac4j.jwt.config;
+package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+import org.pac4j.jwt.util.JWKHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
@@ -69,7 +70,7 @@ public final class RSASignatureConfigurationTests implements TestsConstants {
     @Test
     public void buildFromJwk() throws UnsupportedEncodingException {
         final String json = new RSAKey.Builder((RSAPublicKey) buildKeyPair().getPublic()).build().toJSONObject().toJSONString();
-        RSASignatureConfiguration.buildFromJwk(json);
+        JWKHelper.buildRSAKeyPairFromJwk(json);
     }
 
     @Test
