@@ -1,15 +1,15 @@
 package org.pac4j.jwt.profile;
 
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtClaims;
-import org.pac4j.jwt.config.DirectEncryptionConfiguration;
-import org.pac4j.jwt.config.EncryptionConfiguration;
-import org.pac4j.jwt.config.MacSignatureConfiguration;
-import org.pac4j.jwt.config.SignatureConfiguration;
+import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
+import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
+import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,11 +52,11 @@ public class JwtGenerator<U extends CommonProfile> {
     @Deprecated
     public JwtGenerator(final String secret, final boolean encrypted) {
         if (secret != null) {
-            this.signatureConfiguration = new MacSignatureConfiguration(secret);
+            this.signatureConfiguration = new SecretSignatureConfiguration(secret);
         }
         if (encrypted) {
             if (secret != null) {
-                this.encryptionConfiguration = new DirectEncryptionConfiguration(secret);
+                this.encryptionConfiguration = new SecretEncryptionConfiguration(secret);
             }
             logger.warn("Using the same key for signature and encryption may lead to security vulnerabilities. Consider using different keys");
         }
@@ -65,10 +65,10 @@ public class JwtGenerator<U extends CommonProfile> {
     @Deprecated
     public JwtGenerator(final String signingSecret, final String encryptionSecret) {
         if (signingSecret != null) {
-            this.signatureConfiguration = new MacSignatureConfiguration(signingSecret);
+            this.signatureConfiguration = new SecretSignatureConfiguration(signingSecret);
         }
         if (encryptionSecret != null) {
-            this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
+            this.encryptionConfiguration = new SecretEncryptionConfiguration(encryptionSecret);
         }
     }
 
@@ -109,21 +109,19 @@ public class JwtGenerator<U extends CommonProfile> {
      * @return the JWT
      */
     protected String internalGenerate(final JWTClaimsSet claimsSet) {
-        // no signature configuration -> plain JWT
+        JWT jwt;
+        // signature?
         if (signatureConfiguration == null) {
-            return new PlainJWT(claimsSet).serialize();
-
+            jwt = new PlainJWT(claimsSet);
         } else {
+            jwt = signatureConfiguration.sign(claimsSet);
+        }
 
-            final SignedJWT signedJWT = signatureConfiguration.sign(claimsSet);
-
-            if (encryptionConfiguration != null) {
-
-                return encryptionConfiguration.encrypt(signedJWT);
-            } else {
-                return signedJWT.serialize();
-            }
-
+        // encryption?
+        if (encryptionConfiguration != null) {
+            return encryptionConfiguration.encrypt(jwt);
+        } else {
+            return jwt.serialize();
         }
     }
 

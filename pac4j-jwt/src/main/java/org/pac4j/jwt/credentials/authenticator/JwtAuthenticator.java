@@ -1,7 +1,6 @@
 package org.pac4j.jwt.credentials.authenticator;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.*;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -19,10 +18,10 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.jwt.JwtClaims;
-import org.pac4j.jwt.config.DirectEncryptionConfiguration;
-import org.pac4j.jwt.config.EncryptionConfiguration;
-import org.pac4j.jwt.config.MacSignatureConfiguration;
-import org.pac4j.jwt.config.SignatureConfiguration;
+import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
+import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
+import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
@@ -45,7 +44,7 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private EncryptionConfiguration encryptionConfiguration;
+    private List<EncryptionConfiguration> encryptionConfigurations = new ArrayList<>();
 
     private List<SignatureConfiguration> signatureConfigurations = new ArrayList<>();
 
@@ -55,15 +54,16 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
         this.signatureConfigurations = signatureConfigurations;
     }
 
-    public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
-        setSignatureConfiguration(signatureConfiguration);
-        this.encryptionConfiguration = encryptionConfiguration;
+    public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations, final List<EncryptionConfiguration> encryptionConfigurations) {
+        this.signatureConfigurations = signatureConfigurations;
+        this.encryptionConfigurations = encryptionConfigurations;
     }
 
-    public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations, final EncryptionConfiguration encryptionConfiguration) {
-        this.signatureConfigurations = signatureConfigurations;
-        this.encryptionConfiguration = encryptionConfiguration;
+    public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
+        setSignatureConfiguration(signatureConfiguration);
+        setEncryptionConfiguration(encryptionConfiguration);
     }
+
 
     @Deprecated
     public JwtAuthenticator(final String signingSecret) {
@@ -74,10 +74,10 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
     @Deprecated
     public JwtAuthenticator(final String signingSecret, final String encryptionSecret) {
         if (signingSecret != null) {
-            addSignatureConfiguration(new MacSignatureConfiguration(signingSecret));
+            addSignatureConfiguration(new SecretSignatureConfiguration(signingSecret));
         }
         if (encryptionSecret != null) {
-            this.encryptionConfiguration = new DirectEncryptionConfiguration(encryptionSecret);
+            addEncryptionConfiguration(new SecretEncryptionConfiguration(encryptionSecret));
         }
     }
 
@@ -115,7 +115,6 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
         final String token = credentials.getToken();
-        boolean verified = false;
 
         try {
             // Parse the token
@@ -123,46 +122,71 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
 
 			if (jwt instanceof PlainJWT) {
                 logger.debug("JWT is not signed -> verified");
-                verified = true;
             } else {
 
-            	SignedJWT signedJWT;
-            	if (jwt instanceof SignedJWT) {
-                    logger.debug("JWT is signed");
+                SignedJWT signedJWT = null;
+                if (jwt instanceof SignedJWT) {
                     signedJWT = (SignedJWT) jwt;
+                }
 
-            	} else if (jwt instanceof EncryptedJWT) {
-                    logger.debug("JWT is encrypted and signed");
-                    CommonHelper.assertNotNull("encryptionConfiguration", encryptionConfiguration);
+                // encrypted?
+                if (jwt instanceof EncryptedJWT) {
+                    logger.debug("JWT is encrypted");
 
-                    signedJWT = encryptionConfiguration.decrypt((EncryptedJWT) jwt);
-                    jwt = signedJWT;
-
-            	} else {
-                	throw new TechnicalException("unsupported unsecured jwt");
-            	}
-
-                boolean found = false;
-                final JWSAlgorithm jwtAlgorithm = signedJWT.getHeader().getAlgorithm();
-                for (final SignatureConfiguration config : signatureConfigurations) {
-                    if (config.supports(jwtAlgorithm)) {
-                        logger.debug("Using signature configuration: {}", config);
-                        try {
-                            verified = config.verify(signedJWT);
-                            found = true;
-                            break;
-                        } catch (final JOSEException e) {
-                            logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
+                    final EncryptedJWT encryptedJWT = (EncryptedJWT) jwt;
+                    boolean found = false;
+                    final JWEHeader header = encryptedJWT.getHeader();
+                    final JWEAlgorithm algorithm = header.getAlgorithm();
+                    final EncryptionMethod method = header.getEncryptionMethod();
+                    for (final EncryptionConfiguration config : encryptionConfigurations) {
+                        if (config.supports(algorithm, method)) {
+                            logger.debug("Using encryption configuration: {}", config);
+                            try {
+                                config.decrypt(encryptedJWT);
+                                signedJWT = encryptedJWT.getPayload().toSignedJWT();
+                                if (signedJWT != null) {
+                                    jwt = signedJWT;
+                                }
+                                found = true;
+                                break;
+                            } catch (final JOSEException e) {
+                                logger.debug("Decryption fails with encryption configuration: {}, passing to the next one", config);
+                            }
                         }
                     }
+                    if (!found) {
+                        throw new CredentialsException("No encryption algorithm found for JWT: " + token);
+                    }
                 }
-                if (!found) {
-                    throw new CredentialsException("No signature algorithm found for JWT: " + token);
+
+                // signed?
+                if (signedJWT != null) {
+                    logger.debug("JWT is signed");
+
+                    boolean verified = false;
+                    boolean found = false;
+                    final JWSAlgorithm algorithm = signedJWT.getHeader().getAlgorithm();
+                    for (final SignatureConfiguration config : signatureConfigurations) {
+                        if (config.supports(algorithm)) {
+                            logger.debug("Using signature configuration: {}", config);
+                            try {
+                                verified = config.verify(signedJWT);
+                                found = true;
+                                break;
+                            } catch (final JOSEException e) {
+                                logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
+                            }
+                        }
+                    }
+                    if (!found) {
+                        throw new CredentialsException("No signature algorithm found for JWT: " + token);
+                    }
+                    if (!verified) {
+                        throw new CredentialsException("JWT verification failed: " + token);
+                    }
                 }
             }
-        	if (!verified) {
-            	throw new CredentialsException("JWT verification failed: " + token);
-        	}
+
 
           	createJwtProfile(credentials, jwt);
 
@@ -216,16 +240,26 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
         this.signatureConfigurations = signatureConfigurations;
     }
 
-    public EncryptionConfiguration getEncryptionConfiguration() {
-        return encryptionConfiguration;
+    public List<EncryptionConfiguration> getEncryptionConfigurations() {
+        return encryptionConfigurations;
     }
 
     public void setEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
-        this.encryptionConfiguration = encryptionConfiguration;
+        addEncryptionConfiguration(encryptionConfiguration);
+    }
+
+    public void addEncryptionConfiguration(final EncryptionConfiguration encryptionConfiguration) {
+        CommonHelper.assertNotNull("encryptionConfiguration", encryptionConfiguration);
+        encryptionConfigurations.add(encryptionConfiguration);
+    }
+
+    public void setEncryptionConfigurations(final List<EncryptionConfiguration> encryptionConfigurations) {
+        CommonHelper.assertNotNull("encryptionConfigurations", encryptionConfigurations);
+        this.encryptionConfigurations = encryptionConfigurations;
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations, "encryptionConfiguration", encryptionConfiguration);
+        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations, "encryptionConfigurations", encryptionConfigurations);
     }
 }

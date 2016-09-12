@@ -1,19 +1,16 @@
-package org.pac4j.jwt.config;
+package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jose.crypto.ECDSAVerifier;
-import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
 
 import java.security.KeyPair;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
-import java.text.ParseException;
 
 /**
  * Elliptic curve signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-ec-signature
@@ -21,17 +18,18 @@ import java.text.ParseException;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class ECSignatureConfiguration extends InitializableObject implements SignatureConfiguration {
+public class ECSignatureConfiguration extends AbstractSignatureConfiguration {
 
     private ECPublicKey publicKey;
 
     private ECPrivateKey privateKey;
 
-    private JWSAlgorithm algorithm = JWSAlgorithm.ES256;
-
-    public ECSignatureConfiguration() {}
+    public ECSignatureConfiguration() {
+        algorithm = JWSAlgorithm.ES256;
+    }
 
     public ECSignatureConfiguration(final KeyPair keyPair) {
+        this();
         setKeyPair(keyPair);
     }
 
@@ -79,17 +77,6 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
         return jwt.verify(verifier);
     }
 
-    public static ECSignatureConfiguration buildFromJwk(final String json) {
-        CommonHelper.assertNotBlank("json", json);
-
-        try {
-            final ECKey ecKey = ECKey.parse(json);
-            return new ECSignatureConfiguration(ecKey.toKeyPair());
-        } catch (final JOSEException | ParseException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
     public void setKeyPair(final KeyPair keyPair) {
         CommonHelper.assertNotNull("keyPair", keyPair);
         this.privateKey = (ECPrivateKey) keyPair.getPrivate();
@@ -110,14 +97,6 @@ public class ECSignatureConfiguration extends InitializableObject implements Sig
 
     public void setPrivateKey(final ECPrivateKey privateKey) {
         this.privateKey = privateKey;
-    }
-
-    public JWSAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(final JWSAlgorithm algorithm) {
-        this.algorithm = algorithm;
     }
 
     @Override

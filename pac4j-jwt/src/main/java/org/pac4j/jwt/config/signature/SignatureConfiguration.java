@@ -1,4 +1,4 @@
-package org.pac4j.jwt.config;
+package org.pac4j.jwt.config.signature;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -14,10 +14,10 @@ import com.nimbusds.jwt.SignedJWT;
 public interface SignatureConfiguration {
 
     /**
-     * Whether this signing configuration supports this algorithm.
+     * Whether this signature configuration supports this algorithm.
      *
-     * @param algorithm the signing algorithm
-     * @return whether this signing configuration supports this algorithm
+     * @param algorithm the signature algorithm
+     * @return whether this signature configuration supports this algorithm
      */
     boolean supports(JWSAlgorithm algorithm);
 
