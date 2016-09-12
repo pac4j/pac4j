@@ -23,7 +23,7 @@ public class GenericOAuth20Profile extends OAuth20Profile {
     /**
      * Used to set a custom AttributesDefinition.
      *
-     * @param attributes
+     * @param attributes the attributes definition
      */
     public void setAttributesDefinition(AttributesDefinition attributes) {
         this.attributes = attributes;
