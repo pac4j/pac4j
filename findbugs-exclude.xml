@@ -11,4 +11,9 @@
         <Class name="~.*SAML2Credentials"/>
         <Bug code="Se" />
     </Match>
+    <Match>
+        <Class name="~.*SAML2ClientConfiguration"/>
+        <Bug code="REC" />
+    </Match>
+    
 </FindBugsFilter>

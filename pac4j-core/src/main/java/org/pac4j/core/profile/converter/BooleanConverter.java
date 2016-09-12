@@ -13,10 +13,11 @@ public final class BooleanConverter implements AttributeConverter<Boolean> {
         if (attribute != null) {
             if (attribute instanceof Boolean) {
                 return (Boolean) attribute;
-            } else if (attribute instanceof String) {
+            } 
+            if (attribute instanceof String) {
                 return Boolean.parseBoolean((String) attribute);
             }
         }
-        return null;
+        return Boolean.FALSE;
     }
 }

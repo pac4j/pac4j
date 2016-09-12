@@ -90,18 +90,15 @@ public class Clients extends InitializableObject {
             names.add(lowerName);
             if (client instanceof IndirectClient) {
                 final IndirectClient indirectClient = (IndirectClient) client;
-                if (CommonHelper.isNotBlank(this.callbackUrl)) {
-                    String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                    // no callback url defined for the client -> set it with the group callback url
-                    if (indirectClientCallbackUrl == null) {
-                        indirectClient.setCallbackUrl(this.callbackUrl);
-                        indirectClientCallbackUrl = this.callbackUrl;
-                    }
-                    // if the "client_name" parameter is not already part of the callback url, add it unless the client
-                    // has indicated to not include it.
-                    if (indirectClient.isIncludeClientNameInCallbackUrl() && !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
-                        indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, name));
-                    }
+                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+                // no callback url defined for the client but a group callback one -> set it with the group callback url
+                if (CommonHelper.isNotBlank(this.callbackUrl) && indirectClientCallbackUrl == null) {
+                    indirectClient.setCallbackUrl(this.callbackUrl);
+                    indirectClientCallbackUrl = this.callbackUrl;
+                }
+                // if the "client_name" parameter is not already part of the client callback url, add it unless the client has indicated to not include it.
+                if (indirectClient.isIncludeClientNameInCallbackUrl() && indirectClientCallbackUrl != null && !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
+                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, name));
                 }
                 final AjaxRequestResolver clientAjaxRequestResolver = indirectClient.getAjaxRequestResolver();
                 if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
