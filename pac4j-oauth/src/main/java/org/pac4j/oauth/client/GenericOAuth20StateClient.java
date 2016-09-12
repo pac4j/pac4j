@@ -33,6 +33,13 @@ public class GenericOAuth20StateClient extends BaseOAuth20StateClient<GenericOAu
     /**
      * Convenience constructor. Uses {@link org.pac4j.oauth.profile.generic.DefaultGenericAttributesDefinition}
      * for the attributes definition
+     *
+     * @param key the key
+     * @param secret the secret
+     * @param authUrl the authorization url
+     * @param tokenUrl the access token url
+     * @param profileUrl the url to retrieve the profile
+     * @param scope the OAuth scope
      */
     public GenericOAuth20StateClient(final String key,
                                 final String secret,
@@ -50,6 +57,14 @@ public class GenericOAuth20StateClient extends BaseOAuth20StateClient<GenericOAu
 
     /**
      * Convenience constructor. Allows for a user-defined AttributesDefinition to be passed in.
+     *
+     * @param key the key
+     * @param secret the secret
+     * @param authUrl the authorization url
+     * @param tokenUrl the access token url
+     * @param profileUrl the url to retrieve the profile
+     * @param scope the OAuth scope
+     * @param attributes the attributes definition
      */
     public GenericOAuth20StateClient(final String key,
                                 final String secret,
