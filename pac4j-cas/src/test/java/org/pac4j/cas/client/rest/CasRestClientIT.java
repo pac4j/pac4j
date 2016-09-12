@@ -31,6 +31,7 @@ import static org.junit.Assert.*;
 public final class CasRestClientIT implements TestsConstants {
 
     private final static String CAS_PREFIX_URL = "http://casserverpac4j.herokuapp.com/";
+    private final static String USER = "jleleu";
 
     @Test
     public void testRestForm() throws HttpAction {
@@ -47,24 +48,24 @@ public final class CasRestClientIT implements TestsConstants {
         client.setAuthenticator(authenticator);
 
         final MockWebContext context = MockWebContext.create();
-        context.addRequestParameter(client.getUsernameParameter(), USERNAME);
-        context.addRequestParameter(client.getPasswordParameter(), USERNAME);
+        context.addRequestParameter(client.getUsernameParameter(), USER);
+        context.addRequestParameter(client.getPasswordParameter(), USER);
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final CasRestProfile profile = client.getUserProfile(credentials, context);
-        assertEquals(USERNAME, profile.getId());
+        assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
         final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
-        assertEquals(USERNAME, casProfile.getId());
+        assertEquals(USER, casProfile.getId());
         assertTrue(casProfile.getAttributes().size() > 0);
     }
 
     @Test
     public void testRestBasic() throws HttpAction, UnsupportedEncodingException {
-        internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 3);
+        internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 5);
     }
 
     @Test
@@ -76,22 +77,22 @@ public final class CasRestClientIT implements TestsConstants {
 
     private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws HttpAction, UnsupportedEncodingException {
         final MockWebContext context = MockWebContext.create();
-        final String token = USERNAME + ":" + USERNAME;
+        final String token = USER + ":" + USER;
         context.addRequestHeader(VALUE, NAME + Base64.getEncoder().encodeToString(token.getBytes(HttpConstants.UTF8_ENCODING)));
 
         final UsernamePasswordCredentials credentials = client.getCredentials(context);
         final CasRestProfile profile = client.getUserProfile(credentials, context);
-        assertEquals(USERNAME, profile.getId());
+        assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
         final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
         final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
         assertNotNull(casProfile);
-        assertEquals(USERNAME, casProfile.getId());
+        assertEquals(USER, casProfile.getId());
         assertEquals(nbAttributes, casProfile.getAttributes().size());
         client.destroyTicketGrantingTicket(profile);
 
         TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile), TechnicalException.class,
-                "Service ticket request for `#CasRestProfile# | id: username | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found");
+                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (500)");
     }
 }
