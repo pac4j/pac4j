@@ -44,6 +44,7 @@ public class RunAzureAdClient extends RunClient {
         configuration.setDiscoveryURI("https://login.microsoftonline.com/38c46e5a-21f0-46e5-940d-3ca06fd1a330/.well-known/openid-configuration");
         final AzureAdClient client = new AzureAdClient(configuration);
         client.setCallbackUrl(PAC4J_URL);
+        //client.setCallbackUrl(CommonHelper.addParameter(PAC4J_URL, Clients.DEFAULT_CLIENT_NAME_PARAMETER, client.getName()));
         return client;
     }
 
@@ -79,6 +80,8 @@ public class RunAzureAdClient extends RunClient {
         assertNotNull(profile.getExpirationDate());
         assertNotNull(profile.getIpaddr());
         assertNotNull(profile.getIssuedAt());
-        assertEquals(20, profile.getAttributes().size());
+        assertNotNull(profile.getAttribute("sub"));
+        assertEquals("0", profile.getAttribute("pwd_exp"));
+        assertEquals(22, profile.getAttributes().size());
     }
 }

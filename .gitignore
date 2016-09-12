@@ -26,3 +26,4 @@ perfStats.log
 overlays
 pac4j-test-cas/overlays/
 .DS_Store
+documentation/_site/

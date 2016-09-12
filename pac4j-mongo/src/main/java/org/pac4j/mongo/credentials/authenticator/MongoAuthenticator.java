@@ -100,9 +100,8 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
             throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
         } else {
             final Map<String, Object> user = users.get(0);
-            final String expectedPassword = getPasswordEncoder().encode(credentials.getPassword());
             final String returnedPassword = (String) user.get(passwordAttribute);
-            if (CommonHelper.areNotEquals(returnedPassword, expectedPassword)) {
+            if (!getPasswordEncoder().matches(credentials.getPassword(), returnedPassword)) {
                 throw new BadCredentialsException("Bad credentials for: " + username);
             } else {
                 final MongoProfile profile = createProfile(username, attributes.split(","), user);

@@ -1,5 +1,8 @@
 package org.pac4j.core.io;
 
+import org.pac4j.core.exception.TechnicalException;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -31,4 +34,12 @@ public class SpringResourceWrapper implements Resource {
 		return springResource.getFilename();
 	}
 
+	@Override
+	public File getFile() {
+		try {
+			return springResource.getFile();
+		} catch (final Exception e) {
+			throw new TechnicalException(e);
+		}
+	}
 }

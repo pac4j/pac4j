@@ -1,6 +1,9 @@
 package org.pac4j.saml.client;
 
 import org.junit.Test;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.Resource;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.util.Configuration;
 
 import java.io.File;
@@ -28,6 +31,26 @@ public final class SAML2ClientTests {
     public void testIdpMetadataParsing_fromUrl() {
         internalTestIdpMetadataParsing("https://idp.testshib.org/idp/profile/Metadata/SAML");
     }
+
+    @Test
+    public void testSaml2ConfigurationOfKeyStore() throws Exception {
+        final Resource rs = CommonHelper.getResource("resource:testKeystore.jks");
+        if (rs.exists() && !rs.getFile().delete()) {
+            throw new TechnicalException("File could not be deleted");
+        }
+        
+        final SAML2ClientConfiguration cfg =
+                new SAML2ClientConfiguration("resource:testKeystore.jks",
+                        "pac4j-test-passwd",
+                        "pac4j-test-passwd",
+                        "resource:testshib-providers.xml");
+        assertNotNull(cfg.getKeyStore());
+        assertTrue(cfg.getKeyStore().size() == 1);
+        if (!rs.getFile().delete()) {
+            throw new TechnicalException("File could not be deleted");
+        }
+    }
+
 
     private void internalTestIdpMetadataParsing(final String metadata) {
         final SAML2Client client = getClient();
