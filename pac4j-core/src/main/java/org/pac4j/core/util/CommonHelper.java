@@ -24,7 +24,7 @@ import java.util.Date;
 
 /**
  * This class gathers all the utilities methods.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -41,7 +41,7 @@ public final class CommonHelper {
 
     /**
      * Return if the String is not blank.
-     * 
+     *
      * @param s string
      * @return if the String is not blank
      */
@@ -54,7 +54,7 @@ public final class CommonHelper {
 
     /**
      * Return if the String is blank.
-     * 
+     *
      * @param s string
      * @return if the String is blank
      */
@@ -64,7 +64,7 @@ public final class CommonHelper {
 
     /**
      * Compare two String to see if they are equals (both null is ok).
-     * 
+     *
      * @param s1 string
      * @param s2 string
      * @return if two String are equals
@@ -92,7 +92,7 @@ public final class CommonHelper {
 
     /**
      * Compare two String to see if they are not equals.
-     * 
+     *
      * @param s1 string
      * @param s2 string
      * @return if two String are not equals
@@ -123,7 +123,7 @@ public final class CommonHelper {
 
     /**
      * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
-     * 
+     *
      * @param value the value to be checked for truth
      * @param message the message to include in the exception if the value is false
      */
@@ -135,7 +135,7 @@ public final class CommonHelper {
 
     /**
      * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
-     * 
+     *
      * @param name name if the string
      * @param value value of the string
      */
@@ -145,7 +145,7 @@ public final class CommonHelper {
 
     /**
      * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
-     * 
+     *
      * @param name name of the object
      * @param obj object
      */
@@ -165,7 +165,7 @@ public final class CommonHelper {
 
     /**
      * Add a new parameter to an url.
-     * 
+     *
      * @param url url
      * @param name name of the parameter
      * @param value value of the parameter
@@ -194,7 +194,7 @@ public final class CommonHelper {
 
     /**
      * URL encode a text using UTF-8.
-     * 
+     *
      * @param text text to encode
      * @return the encoded text
      */
@@ -209,7 +209,7 @@ public final class CommonHelper {
 
     /**
      * Build a normalized "toString" text for an object.
-     * 
+     *
      * @param clazz class
      * @param args arguments
      * @return a normalized "toString" text
@@ -236,24 +236,51 @@ public final class CommonHelper {
     }
 
     /**
+     * Extract the prefix of the name.
+     *
+     * @param name the name
+     * @return the prefix
+     */
+    protected static String extractPrefix(final String name) {
+        int prefixEnd = name.indexOf(":");
+        String prefix = null;
+        if (prefixEnd != -1) {
+            prefix = name.substring(0, prefixEnd);
+        }
+        return prefix;
+    }
+
+    /**
+     * Add a slash at the beginning of a path if missing.
+     *
+     * @param path the path
+     * @return the completed path
+     */
+    protected static String startWithSlash(final String path) {
+        if (!path.startsWith("/")) {
+            return "/" + path;
+        } else {
+            return path;
+        }
+    }
+
+    /**
      * Returns an {@link InputStream} from given name depending on its format:
      * - loads from the classloader if name starts with "resource:"
      * - loads as {@link FileInputStream} otherwise
-     * 
+     *
      * Caller is responsible for closing inputstream
-     * 
+     *
      * @param name name of the resource
      * @return the input stream
      */
     public static InputStream getInputStreamFromName(String name) {
-		int prefixEnd = name.indexOf(":");
-		String prefix = null;
 		String path = name;
-		if (prefixEnd != -1) {
-			prefix = name.substring(0, prefixEnd);
-			path = name.substring(prefixEnd + 1);
+        final String prefix = extractPrefix(name);
+		if (prefix != null) {
+			path = name.substring(prefix.length() + 1);
 		}
-		if (prefix == null || prefix.isEmpty()) {
+		if (CommonHelper.isEmpty(prefix)) {
 			try {
 				return new FileInputStream(path);
 			} catch (FileNotFoundException e) {
@@ -263,15 +290,12 @@ public final class CommonHelper {
 
 		switch (prefix) {
 		case RESOURCE_PREFIX:
-			if (!path.startsWith("/")) {
-				path = "/" + path;
-			}
 			// The choice here was to keep legacy behavior and remove / prior to
 			// calling classloader.getResourceAsStream.. or make it work exactly
 			// as it did before but have different behavior for resource: and
 			// classpath:
 			// My decision was to keep legacy working the same.
-			return CommonHelper.class.getResourceAsStream(path);
+			return CommonHelper.class.getResourceAsStream(startWithSlash(path));
 		case CLASSPATH_PREFIX:
 			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		case HttpConstants.SCHEME_HTTP:
@@ -307,7 +331,11 @@ public final class CommonHelper {
 
             @Override
             public File getFile() {
-                return new File(filePath);
+                final String filename = getFilename();
+                if (filename != null) {
+                    return new File(filename);
+                }
+                return null;
             }
 
             @Override
@@ -317,19 +345,39 @@ public final class CommonHelper {
 
 			@Override
 			public String getFilename() {
-				return filePath;
+                final String prefix = extractPrefix(filePath);
+                if (prefix == null) {
+                    return filePath;
+                } else if (prefix.equals(RESOURCE_PREFIX) || prefix.equals(CLASSPATH_PREFIX)) {
+                    final URL url;
+                    if (prefix.equals(RESOURCE_PREFIX)) {
+                        url = CommonHelper.class.getResource(".");
+                    } else {
+                        url = Thread.currentThread().getContextClassLoader().getResource(".");
+                    }
+                    // remove file: from the url and add the requested path
+                    return url.toString().substring(5) + filePath.substring(prefix.length() + 1);
+                }
+                return null;
 			}
 
 			@Override
 			public boolean exists() {
-				return getFile().exists();
-			}
-			
-			@Override
-			public OutputStream getOutputStream() throws IOException {
-				return new FileOutputStream(filePath);
+                final File f = getFile();
+                if (f != null) {
+                    return f.exists();
+                }
+                return true;
 			}
 
+			@Override
+			public OutputStream getOutputStream() throws IOException {
+                final String filename = getFilename();
+                if (filename != null) {
+                    return new FileOutputStream(filePath);
+                }
+                return null;
+			}
 		};
 	}
 
