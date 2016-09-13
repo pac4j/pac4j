@@ -50,7 +50,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 		this(null, null, DEFAULT_KEYSTORE_TYPE, null, name, storePasswd, privateKeyPasswd);
     }
 
-	public KeyStoreCredentialProvider(final KeyStore keyStore, final String keyStoreAlias, String keyStoreType,
+	public KeyStoreCredentialProvider(final KeyStore keyStore, final String keyStoreAlias, final String keyStoreType,
 			final Resource keyStoreResource, final String keyStorePath, final String storePasswd,
 			final String privateKeyPasswd) {
 		CommonHelper.assertTrue(keyStore != null || keyStoreResource != null || CommonHelper.isNotBlank(keyStorePath),
@@ -87,7 +87,8 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 	}
 
 	public KeyStoreCredentialProvider(SAML2ClientConfiguration configuration) {
-		this(configuration.getKeyStore(), configuration.getKeyStoreAlias(), (configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType()),
+		this(configuration.getKeyStore(), configuration.getKeyStoreAlias(), 
+                (configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType()),
 				configuration.getKeystoreResource(), configuration.getKeystorePath(),
 				configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
 	}
@@ -151,8 +152,8 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         try {
             final Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {
-	            String currentAlias = aliases.nextElement();
-				if (keyStoreAlias == null || currentAlias.equals(keyStoreAlias)) {
+	            final String currentAlias = aliases.nextElement();
+				if (keyStoreAlias == null || currentAlias.equalsIgnoreCase(keyStoreAlias)) {
 					return currentAlias;
 				}
 			}
