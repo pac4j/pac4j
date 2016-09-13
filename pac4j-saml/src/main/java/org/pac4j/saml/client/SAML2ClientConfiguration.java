@@ -1,6 +1,7 @@
 package org.pac4j.saml.client;
 
 import org.bouncycastle.jce.X509Principal;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
@@ -21,7 +22,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
-import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -150,8 +151,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
 
     }
-
-
+    
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
         this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
     }
@@ -419,6 +419,8 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
     private void createKeystore() {
         try {
+            Security.addProvider(new BouncyCastleProvider());
+            
             if (CommonHelper.isBlank(this.keyStoreAlias)) {
                 this.keyStoreAlias = getClass().getSimpleName();
                 LOGGER.warn("Using keystore alias {}", this.keyStoreAlias);
@@ -442,7 +444,6 @@ public final class SAML2ClientConfiguration implements Cloneable {
             final String dn = InetAddress.getLocalHost().getHostName();
             cert.setSubjectDN(new X509Principal("CN=" + dn));
             cert.setIssuerDN(new X509Principal("CN=" + dn));
-
             cert.setPublicKey(kp.getPublic());
             cert.setNotBefore(new Date());
 
@@ -453,7 +454,8 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
             cert.setSignatureAlgorithm("SHA1WithRSA");
             final PrivateKey signingKey = kp.getPrivate();
-            final X509Certificate certificate = cert.generate(signingKey, new SecureRandom());
+            final X509Certificate certificate = cert.generate(signingKey, "BC");
+          
             ks.setKeyEntry(this.keyStoreAlias, signingKey, password, new Certificate[]{certificate});
 
             try (FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.util.Configuration;
 
 import java.io.File;
@@ -49,6 +50,13 @@ public final class SAML2ClientTests {
         if (!rs.getFile().delete()) {
             throw new TechnicalException("File could not be deleted");
         }
+        
+        final KeyStoreCredentialProvider p = new KeyStoreCredentialProvider(cfg);
+        assertNotNull(p.getKeyInfoGenerator());
+        assertNotNull(p.getCredentialResolver());
+        assertNotNull(p.getKeyInfo());
+        assertNotNull(p.getKeyInfoCredentialResolver());
+        assertNotNull(p.getCredential());
     }
 
 
