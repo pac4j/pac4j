@@ -128,10 +128,12 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                 } else {
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                     final File parent = spMetadataResource.getFile().getParentFile();
-                    logger.info("Attempting to create directory structure for {}", parent.getCanonicalPath());
-                    if (!parent.mkdirs() || !spMetadataResource.exists()) {
-                        logger.warn("Could not construct the directory structure for SP metadata {}",
-                                this.spMetadataResource.getFilename());
+                    if (parent != null) {
+                        logger.info("Attempting to create directory structure for {}", parent.getCanonicalPath());
+                        if (!parent.mkdirs() || !spMetadataResource.exists()) {
+                            logger.warn("Could not construct the directory structure for SP metadata {}",
+                                    this.spMetadataResource.getFilename());
+                        }
                     }
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");

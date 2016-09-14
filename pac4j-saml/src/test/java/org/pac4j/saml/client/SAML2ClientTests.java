@@ -35,13 +35,13 @@ public final class SAML2ClientTests {
 
     @Test
     public void testSaml2ConfigurationOfKeyStore() throws Exception {
-        final Resource rs = CommonHelper.getResource("resource:testKeystore.jks");
+        final Resource rs = CommonHelper.getResource("testKeystore.jks");
         if (rs.exists() && !rs.getFile().delete()) {
             throw new TechnicalException("File could not be deleted");
         }
         
         final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("resource:testKeystore.jks",
+                new SAML2ClientConfiguration("testKeystore.jks",
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
                         "resource:testshib-providers.xml");
