@@ -345,20 +345,26 @@ public final class CommonHelper {
 
 			@Override
 			public String getFilename() {
+                String filename = null;
                 final String prefix = extractPrefix(filePath);
                 if (prefix == null) {
-                    return filePath;
+                    filename = filePath;
                 } else if (prefix.equals(RESOURCE_PREFIX) || prefix.equals(CLASSPATH_PREFIX)) {
+                    final String path = filePath.substring(prefix.length() + 1);
                     final URL url;
                     if (prefix.equals(RESOURCE_PREFIX)) {
-                        url = CommonHelper.class.getResource(".");
+                        url = CommonHelper.class.getResource(startWithSlash(path));
                     } else {
-                        url = Thread.currentThread().getContextClassLoader().getResource(".");
+                        url = Thread.currentThread().getContextClassLoader().getResource(path);
                     }
-                    // remove file: from the url and add the requested path
-                    return url.toString().substring(5) + filePath.substring(prefix.length() + 1);
+                    if (url == null) {
+                        throw new TechnicalException("Do not use the resource: or classpath: prefix for non-existing files. Use a direct path (relative or absolute, no prefix)");
+                    }
+                    // remove the file: prefix
+                    filename = url.toString().substring(5);
                 }
-                return null;
+                logger.debug("filepath: {} -> filename: {}", filePath, filename);
+                return filename;
 			}
 
 			@Override
