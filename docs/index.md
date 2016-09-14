@@ -33,7 +33,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> User manual&#58;
 
 ## 1) [Customizations](/docs/customizations.html)
 
-## 2) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.1/index.html)
+## 2) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.2/index.html)
 
 ## 3) [How to implement `pac4j` for a new framework / tool](/docs/how-to-implement-pac4j-for-a-new-framework.html)
 
