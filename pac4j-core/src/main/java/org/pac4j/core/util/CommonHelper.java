@@ -32,12 +32,12 @@ public final class CommonHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
 
-	public static final String RESOURCE_PREFIX = "resource";
-	public static final String CLASSPATH_PREFIX = "classpath";
+    public static final String RESOURCE_PREFIX = "resource";
+    public static final String CLASSPATH_PREFIX = "classpath";
 
     public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
-			+ ":', '" + HttpConstants.SCHEME_HTTP + ":', '"+ HttpConstants.SCHEME_HTTPS + ":' or it must be a physical readable non-empty local file "
-			+ "at the path specified.";
+            + ":', '" + HttpConstants.SCHEME_HTTP + ":', '" + HttpConstants.SCHEME_HTTPS + ":' or it must be a physical readable non-empty local file "
+            + "at the path specified.";
 
     /**
      * Return if the String is not blank.
@@ -83,7 +83,7 @@ public final class CommonHelper {
     public static boolean areEqualsIgnoreCaseAndTrim(final String s1, final String s2) {
         if (s1 == null && s2 == null) {
             return true;
-        } else if (s1 != null && s2 !=  null) {
+        } else if (s1 != null && s2 != null) {
             return s1.trim().equalsIgnoreCase(s2.trim());
         } else {
             return false;
@@ -124,7 +124,7 @@ public final class CommonHelper {
     /**
      * Verify that a boolean is true otherwise throw a {@link TechnicalException}.
      *
-     * @param value the value to be checked for truth
+     * @param value   the value to be checked for truth
      * @param message the message to include in the exception if the value is false
      */
     public static void assertTrue(final boolean value, final String message) {
@@ -136,7 +136,7 @@ public final class CommonHelper {
     /**
      * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
      *
-     * @param name name if the string
+     * @param name  name if the string
      * @param value value of the string
      */
     public static void assertNotBlank(final String name, final String value) {
@@ -147,7 +147,7 @@ public final class CommonHelper {
      * Verify that an Object is not <code>null</code> otherwise throw a {@link TechnicalException}.
      *
      * @param name name of the object
-     * @param obj object
+     * @param obj  object
      */
     public static void assertNotNull(final String name, final Object obj) {
         assertTrue(obj != null, name + " cannot be null");
@@ -157,7 +157,7 @@ public final class CommonHelper {
      * Verify that an Object is <code>null</code> otherwise throw a {@link TechnicalException}.
      *
      * @param name name of the object
-     * @param obj object
+     * @param obj  object
      */
     public static void assertNull(final String name, final Object obj) {
         assertTrue(obj == null, name + " must be null");
@@ -166,8 +166,8 @@ public final class CommonHelper {
     /**
      * Add a new parameter to an url.
      *
-     * @param url url
-     * @param name name of the parameter
+     * @param url   url
+     * @param name  name of the parameter
      * @param value value of the parameter
      * @return the new url with the parameter appended
      */
@@ -211,7 +211,7 @@ public final class CommonHelper {
      * Build a normalized "toString" text for an object.
      *
      * @param clazz class
-     * @param args arguments
+     * @param args  arguments
      * @return a normalized "toString" text
      */
     public static String toString(final Class<?> clazz, final Object... args) {
@@ -268,66 +268,66 @@ public final class CommonHelper {
      * Returns an {@link InputStream} from given name depending on its format:
      * - loads from the classloader if name starts with "resource:"
      * - loads as {@link FileInputStream} otherwise
-     *
+     * <p>
      * Caller is responsible for closing inputstream
      *
      * @param name name of the resource
      * @return the input stream
      */
     public static InputStream getInputStreamFromName(String name) {
-		String path = name;
+        String path = name;
         final String prefix = extractPrefix(name);
-		if (prefix != null) {
-			path = name.substring(prefix.length() + 1);
-		}
-		if (CommonHelper.isEmpty(prefix)) {
-			try {
-				return new FileInputStream(path);
-			} catch (FileNotFoundException e) {
-				throw new TechnicalException(e);
-			}
-		}
+        if (prefix != null) {
+            path = name.substring(prefix.length() + 1);
+        }
+        if (CommonHelper.isEmpty(prefix)) {
+            try {
+                return new FileInputStream(path);
+            } catch (FileNotFoundException e) {
+                throw new TechnicalException(e);
+            }
+        }
 
-		switch (prefix) {
-		case RESOURCE_PREFIX:
-			// The choice here was to keep legacy behavior and remove / prior to
-			// calling classloader.getResourceAsStream.. or make it work exactly
-			// as it did before but have different behavior for resource: and
-			// classpath:
-			// My decision was to keep legacy working the same.
-			return CommonHelper.class.getResourceAsStream(startWithSlash(path));
-		case CLASSPATH_PREFIX:
-			return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-		case HttpConstants.SCHEME_HTTP:
-			logger.warn("file is retrieved from an insecure http endpoint [{}]", path);
-			return getInputStreamViaHttp(name);
-		case HttpConstants.SCHEME_HTTPS:
-			return getInputStreamViaHttp(name);
-		default:
-			throw new TechnicalException("prefix is not handled:" + prefix);
-		}
+        switch (prefix) {
+            case RESOURCE_PREFIX:
+                // The choice here was to keep legacy behavior and remove / prior to
+                // calling classloader.getResourceAsStream.. or make it work exactly
+                // as it did before but have different behavior for resource: and
+                // classpath:
+                // My decision was to keep legacy working the same.
+                return CommonHelper.class.getResourceAsStream(startWithSlash(path));
+            case CLASSPATH_PREFIX:
+                return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+            case HttpConstants.SCHEME_HTTP:
+                logger.warn("file is retrieved from an insecure http endpoint [{}]", path);
+                return getInputStreamViaHttp(name);
+            case HttpConstants.SCHEME_HTTPS:
+                return getInputStreamViaHttp(name);
+            default:
+                throw new TechnicalException("prefix is not handled:" + prefix);
+        }
 
-	}
+    }
 
-	private static InputStream getInputStreamViaHttp(String name) {
-		URLConnection con = null;
-		try {
-			URL url = new URL(name);
+    private static InputStream getInputStreamViaHttp(String name) {
+        URLConnection con = null;
+        try {
+            URL url = new URL(name);
 
-			con = url.openConnection();
+            con = url.openConnection();
 
-			return con.getInputStream();
-		} catch (IOException ex) {
-			// Close the HTTP connection (if applicable).
-			if (con instanceof HttpURLConnection) {
-				((HttpURLConnection) con).disconnect();
-			}
-			throw new TechnicalException(ex);
-		}
-	}
+            return con.getInputStream();
+        } catch (IOException ex) {
+            // Close the HTTP connection (if applicable).
+            if (con instanceof HttpURLConnection) {
+                ((HttpURLConnection) con).disconnect();
+            }
+            throw new TechnicalException(ex);
+        }
+    }
 
-	public static Resource getResource(final String filePath) {
-		return new WritableResource() {
+    public static Resource getResource(final String filePath) {
+        return new WritableResource() {
 
             @Override
             public File getFile() {
@@ -339,12 +339,12 @@ public final class CommonHelper {
             }
 
             @Override
-			public InputStream getInputStream() throws IOException {
-				return getInputStreamFromName(filePath);
-			}
+            public InputStream getInputStream() throws IOException {
+                return getInputStreamFromName(filePath);
+            }
 
-			@Override
-			public String getFilename() {
+            @Override
+            public String getFilename() {
                 String filename = null;
                 final String prefix = extractPrefix(filePath);
                 if (prefix == null) {
@@ -365,27 +365,27 @@ public final class CommonHelper {
                 }
                 logger.debug("filepath: {} -> filename: {}", filePath, filename);
                 return filename;
-			}
+            }
 
-			@Override
-			public boolean exists() {
+            @Override
+            public boolean exists() {
                 final File f = getFile();
                 if (f != null) {
                     return f.exists();
                 }
                 return true;
-			}
+            }
 
-			@Override
-			public OutputStream getOutputStream() throws IOException {
+            @Override
+            public OutputStream getOutputStream() throws IOException {
                 final String filename = getFilename();
                 if (filename != null) {
                     return new FileOutputStream(filePath);
                 }
                 return null;
-			}
-		};
-	}
+            }
+        };
+    }
 
     /**
      * Return a random string of a certain size.
@@ -451,7 +451,7 @@ public final class CommonHelper {
         }
         int pos = str.indexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
-           return str;
+            return str;
         }
         return str.substring(0, pos);
     }
