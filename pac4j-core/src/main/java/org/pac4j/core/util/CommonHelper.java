@@ -266,7 +266,9 @@ public final class CommonHelper {
 
     /**
      * Returns an {@link InputStream} from given name depending on its format:
-     * - loads from the classloader if name starts with "resource:"
+     * - loads from the classloader of this class if name starts with "resource:" (add a slash a the beginning if absent)
+     * - loads from the classloader of the current thread if name starts with "classpath:"
+     * - loads from the given url if name starts with "http:" or "https:"
      * - loads as {@link FileInputStream} otherwise
      * <p>
      * Caller is responsible for closing inputstream
@@ -290,11 +292,6 @@ public final class CommonHelper {
 
         switch (prefix) {
             case RESOURCE_PREFIX:
-                // The choice here was to keep legacy behavior and remove / prior to
-                // calling classloader.getResourceAsStream.. or make it work exactly
-                // as it did before but have different behavior for resource: and
-                // classpath:
-                // My decision was to keep legacy working the same.
                 return CommonHelper.class.getResourceAsStream(startWithSlash(path));
             case CLASSPATH_PREFIX:
                 return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
@@ -313,9 +310,7 @@ public final class CommonHelper {
         URLConnection con = null;
         try {
             URL url = new URL(name);
-
             con = url.openConnection();
-
             return con.getInputStream();
         } catch (IOException ex) {
             // Close the HTTP connection (if applicable).
@@ -335,6 +330,7 @@ public final class CommonHelper {
                 if (filename != null) {
                     return new File(filename);
                 }
+                logger.warn("This filePath: {} is not a file. Returning null in the getFile() method", filePath);
                 return null;
             }
 
@@ -373,6 +369,7 @@ public final class CommonHelper {
                 if (f != null) {
                     return f.exists();
                 }
+                // if we get there, it means that this is not a file, so it's a URL and we assume it exists
                 return true;
             }
 
