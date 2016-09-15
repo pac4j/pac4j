@@ -8,15 +8,15 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Available implementations (*Get started by clicking on your framework*):
 
-[J2E](https://github.com/pac4j/j2e-pac4j) &bull; [Spring Boot](https://github.com/pac4j/spring-webmvc-pac4j) &bull; [Spring Web MVC](https://github.com/pac4j/spring-webmvc-pac4j) &bull; [Spring Security](https://github.com/pac4j/spring-security-pac4j) &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
+[J2E](https://github.com/pac4j/j2e-pac4j) &bull; [Spring Web MVC (Spring Boot)](https://github.com/pac4j/spring-webmvc-pac4j) &bull; [Spring Security (Spring Boot)](https://github.com/pac4j/spring-security-pac4j) &bull; [Apache Shiro](https://github.com/bujiio/buji-pac4j)
 
-[Play 2 framework](https://github.com/pac4j/play-pac4j) &bull; [Vertx](https://github.com/pac4j/vertx-pac4j) &bull; [Spark Java framework](https://github.com/pac4j/spark-pac4j) &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
+[Play 2.x](https://github.com/pac4j/play-pac4j) &bull; [Vertx](https://github.com/pac4j/vertx-pac4j) &bull; [Spark Java](https://github.com/pac4j/spark-pac4j) &bull; [Ratpack](http://ratpack.io/manual/current/pac4j.html#pac4j) &bull; [Undertow](https://github.com/pac4j/undertow-pac4j)
 
-[CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) &bull; [Dropwizard](https://github.com/evnm/dropwizard-pac4j) &bull; [Knox gateway for Hadoop](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) &bull; [Jooby framework](http://jooby.org/doc/pac4j)
+[CAS server](https://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html) &bull; [Dropwizard](https://github.com/evnm/dropwizard-pac4j) &bull; [Apache Knox](http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect) &bull; [Jooby](http://jooby.org/doc/pac4j)
 
 ## Authentication mechanims:
 
-[OAuth](http://www.pac4j.org/docs/clients/oauth.html) - [SAML](http://www.pac4j.org/docs/clients/saml.html) - [CAS](http://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](http://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](http://www.pac4j.org/docs/clients/http.html) - [OpenID](http://www.pac4j.org/docs/clients/openid.html) - [Google App Engine](http://www.pac4j.org/docs/clients/google-app-engine.html)
+[OAuth (Facebook, Twitter, Google...)](http://www.pac4j.org/docs/clients/oauth.html) - [SAML](http://www.pac4j.org/docs/clients/saml.html) - [CAS](http://www.pac4j.org/docs/clients/cas.html) - [OpenID Connect](http://www.pac4j.org/docs/clients/openid-connect.html) - [HTTP](http://www.pac4j.org/docs/clients/http.html) - [OpenID](http://www.pac4j.org/docs/clients/openid.html) - [Google App Engine](http://www.pac4j.org/docs/clients/google-app-engine.html)
 
 [LDAP](http://www.pac4j.org/docs/authenticators/ldap.html) - [SQL](http://www.pac4j.org/docs/authenticators/sql.html) - [JWT](http://www.pac4j.org/docs/authenticators/jwt.html) - [MongoDB](http://www.pac4j.org/docs/authenticators/mongodb.html) - [Stormpath](http://www.pac4j.org/docs/authenticators/stormpath.html) - [IP address](http://www.pac4j.org/docs/authenticators/ip.html)
 
