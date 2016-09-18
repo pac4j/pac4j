@@ -9,11 +9,9 @@ title: Home
         "https://github.com/pac4j/undertow-pac4j", "http://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html", "https://github.com/evnm/dropwizard-pac4j",
         "http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect", "http://jooby.org/doc/pac4j", "https://github.com/pac4j/pac4j"];
 
-    var images = ["https://pac4j.github.io/pac4j/img/logo-j2e.png", "https://pac4j.github.io/pac4j/img/logo-spring-webmvc.png", "https://pac4j.github.io/pac4j/img/logo-spring-security.png",
-        "https://pac4j.github.io/pac4j/img/logo-shiro.png", "https://pac4j.github.io/pac4j/img/logo-play.png", "https://pac4j.github.io/pac4j/img/logo-vertx.png",
-        "https://pac4j.github.io/pac4j/img/logo-spark.png", "https://pac4j.github.io/pac4j/img/logo-ratpack.png", "https://pac4j.github.io/pac4j/img/logo-undertow.png",
-        "https://pac4j.github.io/pac4j/img/logo-cas.png", "https://pac4j.github.io/pac4j/img/logo-dropwizard.png", "https://pac4j.github.io/pac4j/img/logo-knox.png",
-        "https://pac4j.github.io/pac4j/img/logo-jooby.png", "https://pac4j.github.io/pac4j/img/logo.png"];
+    var images = ["/img/logo-j2e.png", "/img/logo-spring-webmvc.png", "/img/logo-spring-security.png", "/img/logo-shiro.png", "/img/logo-play.png", "/img/logo-vertx.png",
+        "/img/logo-spark.png", "/img/logo-ratpack.png", "/img/logo-undertow.png", "/img/logo-cas.png", "/img/logo-dropwizard.png", "/img/logo-knox.png", "/img/logo-jooby.png",
+        "/img/logo.png"];
     var i = 0;
     var renew = setInterval(function(){
         if(links.length == i){
@@ -30,16 +28,16 @@ title: Home
 
 <div class="text-center">
 
-    <a id="bannerLink" href="https://github.com/pac4j/pac4j"><img width="320" height="285" id="bannerImage" src="https://pac4j.github.io/pac4j/img/logo.png" /></a>
+    <a id="bannerLink" href="https://github.com/pac4j/pac4j"><img width="320" height="285" id="bannerImage" src="/img/logo.png" /></a>
 
     <h1 style="margin-bottom: 40px;">The <a href="https://github.com/pac4j/pac4j">Java security engine</a> to protect all your web applications</h1>
 
     <h2 style="margin-bottom: 40px; line-height: 1.6;">Available for most frameworks/tools:<br />
-        <a href="https://github.com/pac4j/j2e-pac4j">J2E</a> &bull; <a href="https://github.com/pac4j/spring-webmvc-pac4j">Spring Web MVC <small>(Spring Boot)</small></a> &bull; <a href="https://github.com/pac4j/spring-security-pac4j">Spring Security <small>(Spring Boot)</small></a> &bull; <a href="https://github.com/bujiio/buji-pac4j">Apache Shiro</a><br />
+        <a href="https://github.com/pac4j/j2e-pac4j">J2E</a> &bull; <a href="https://github.com/pac4j/spring-webmvc-pac4j">Spring Web MVC <small>(Spring Boot)</small></a> &bull; <a href="https://github.com/pac4j/spring-security-pac4j">Spring Security <small>(Spring Boot)</small></a> &bull; <a href="https://github.com/bujiio/buji-pac4j">Shiro</a><br />
 
          <a href="https://github.com/pac4j/play-pac4j">Play 2.x</a> &bull; <a href="https://github.com/pac4j/vertx-pac4j">Vertx</a> &bull; <a href="https://github.com/pac4j/spark-pac4j">Spark Java</a> &bull; <a href="http://ratpack.io/manual/current/pac4j.html#pac4j">Ratpack</a> &bull; <a href="https://github.com/pac4j/undertow-pac4j">Undertow</a><br />
 
-         <a href="http://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html">CAS server</a> &bull; <a href="https://github.com/evnm/dropwizard-pac4j">Dropwizard</a> &bull; <a href="http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect">Apache Knox</a> &bull; <a href="http://jooby.org/doc/pac4j">Jooby</a>
+         <a href="http://apereo.github.io/cas/4.2.x/integration/Delegate-Authentication.html">CAS server</a> &bull; <a href="https://github.com/evnm/dropwizard-pac4j">Dropwizard</a> &bull; <a href="http://knox.apache.org/books/knox-0-9-0/user-guide.html#Pac4j+Provider+-+CAS+/+OAuth+/+SAML+/+OpenID+Connect">Knox</a> &bull; <a href="http://jooby.org/doc/pac4j">Jooby</a>
      </h2>
 
     <h2>Supports most authentication mechanisms:<br />
@@ -49,8 +47,7 @@ title: Home
 
         <br />and authorization mechanisms:<br />
 
-        <small>Roles / permissions - Anonymous / remember-me / (fully) authenticated - Profile type, attribute<br />
-        CORS - CSRF - HTTP Security headers - IP address, HTTP method</small>
+        <small>Roles / permissions - Anonymous / remember-me / (fully) authenticated - CORS - CSRF - HTTP Security headers ...</small>
 
     </h2>
 

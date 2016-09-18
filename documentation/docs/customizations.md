@@ -1,5 +1,5 @@
 ---
-layout: ddoc
+layout: doc
 title: Customizations&#58;
 ---
 
