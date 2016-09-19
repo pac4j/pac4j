@@ -31,6 +31,5 @@ public class DirectBasicAuthClient extends DirectClientV2<UsernamePasswordCreden
     @Override
     protected void internalInit(final WebContext context) {
         setCredentialsExtractor(new BasicAuthExtractor(getName()));
-        super.internalInit(context);
     }
 }

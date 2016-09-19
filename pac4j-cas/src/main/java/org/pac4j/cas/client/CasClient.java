@@ -77,10 +77,12 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        super.internalInit(context);
 
+        CommonHelper.assertNotNull("configuration", configuration);
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);
+
         setRedirectActionBuilder(ctx -> {
             final String loginUrl = configuration.getCallbackUrlResolver().compute(configuration.getLoginUrl(), context);
             final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
@@ -91,8 +93,6 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
         setCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
         setAuthenticator(new CasAuthenticator(configuration, callbackUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
-
-        super.internalInit(context);
     }
 
     public CasConfiguration getConfiguration() {
@@ -100,7 +100,6 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
     }
 
     public void setConfiguration(final CasConfiguration configuration) {
-        CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
     }
 
