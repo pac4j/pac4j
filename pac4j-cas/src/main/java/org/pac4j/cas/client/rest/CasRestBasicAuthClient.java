@@ -54,7 +54,6 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         if (CommonHelper.isNotBlank(this.casServerPrefixUrl)) {
             setAuthenticator(new CasRestAuthenticator(this.casServerPrefixUrl));
         }
-        super.internalInit(context);
     }
 
     public String getCasServerPrefixUrl() {

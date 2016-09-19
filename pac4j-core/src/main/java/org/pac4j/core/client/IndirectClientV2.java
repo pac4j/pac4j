@@ -30,21 +30,17 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
     private ProfileCreator<C, U> profileCreator =  AuthenticatorProfileCreator.INSTANCE;
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
-        CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
-        CommonHelper.assertNotNull("authenticator", this.authenticator);
-        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
-    }
-
-    @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
+
         return redirectActionBuilder.redirect(context);
     }
 
     @Override
     protected C retrieveCredentials(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
+        CommonHelper.assertNotNull("authenticator", this.authenticator);
+
         try {
             final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
@@ -60,6 +56,8 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
 
     @Override
     protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
+
         final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;

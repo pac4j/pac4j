@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -26,13 +27,14 @@ public final class DirectBasicAuthClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(null);
-        TestsHelper.initShouldFail(basicAuthClient, "authenticator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final DirectBasicAuthClient basicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), null);
-        TestsHelper.initShouldFail(basicAuthClient, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> basicAuthClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, CLIENT_NAME),
+                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test

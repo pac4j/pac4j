@@ -43,7 +43,6 @@ public class CookieClient extends DirectClientV2<TokenCredentials, CommonProfile
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
         setCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));
-        super.internalInit(context);
     }
 
     public String getCookieName() {

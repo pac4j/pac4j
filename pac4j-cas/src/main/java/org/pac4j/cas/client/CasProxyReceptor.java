@@ -48,7 +48,8 @@ public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, C
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        super.internalInit(context);
+
         CommonHelper.assertNotNull("proxyGrantingTicketStorage", this.proxyGrantingTicketStorage);
         // timer to clean proxyGrantingTicketStorage
         if (this.millisBetweenCleanUps > 0) {
@@ -86,7 +87,6 @@ public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, C
             throw HttpAction.ok(message, ctx);
         });
         setAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
-        super.internalInit(context);
     }
 
     public ProxyGrantingTicketStorage getProxyGrantingTicketStorage() {
