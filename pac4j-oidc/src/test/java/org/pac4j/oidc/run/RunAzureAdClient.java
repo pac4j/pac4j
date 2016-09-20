@@ -81,7 +81,7 @@ public class RunAzureAdClient extends RunClient {
         assertNotNull(profile.getIpaddr());
         assertNotNull(profile.getIssuedAt());
         assertNotNull(profile.getAttribute("sub"));
-        assertEquals("0", profile.getAttribute("pwd_exp"));
-        assertEquals(22, profile.getAttributes().size());
+        assertNull(profile.getAttribute("pwd_exp"));
+        assertEquals(20, profile.getAttributes().size());
     }
 }

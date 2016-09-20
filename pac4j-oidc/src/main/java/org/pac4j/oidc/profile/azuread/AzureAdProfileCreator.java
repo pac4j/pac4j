@@ -16,7 +16,8 @@ import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile> {
 
     public AzureAdProfileCreator(final OidcConfiguration configuration) {
-        super(configuration, AzureAdProfile.class);
+        super(configuration);
+        setProfileFactory(() -> new AzureAdProfile());
     }
 
     @Override
