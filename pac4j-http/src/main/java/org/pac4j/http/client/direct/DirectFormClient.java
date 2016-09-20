@@ -47,7 +47,6 @@ public class DirectFormClient extends DirectClientV2<UsernamePasswordCredentials
         CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
 
         setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
-        super.internalInit(context);
     }
 
     public String getUsernameParameter() {

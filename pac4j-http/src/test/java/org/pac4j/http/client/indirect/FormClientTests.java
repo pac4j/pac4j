@@ -6,6 +6,7 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.TestsConstants;
@@ -27,7 +28,7 @@ public final class FormClientTests implements TestsConstants {
     public void testMissingUsernamePasswordAuthenticator() {
         final FormClient formClient = new FormClient(LOGIN_URL, null);
         formClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(formClient, "authenticator cannot be null");
+        TestsHelper.expectException(() -> formClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
@@ -35,7 +36,8 @@ public final class FormClientTests implements TestsConstants {
         final FormClient formClient = new FormClient(LOGIN_URL, new SimpleTestUsernamePasswordAuthenticator());
         formClient.setCallbackUrl(CALLBACK_URL);
         formClient.setProfileCreator(null);
-        TestsHelper.initShouldFail(formClient, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> formClient.getUserProfile(new UsernamePasswordCredentials(USERNAME, PASSWORD, CLIENT_NAME),
+                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test
@@ -48,6 +50,7 @@ public final class FormClientTests implements TestsConstants {
     @Test
     public void testMissingLoginUrl() {
         final FormClient formClient = new FormClient(null, new SimpleTestUsernamePasswordAuthenticator());
+        formClient.setCallbackUrl(CALLBACK_URL);
         TestsHelper.initShouldFail(formClient, "loginUrl cannot be blank");
     }
 

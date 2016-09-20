@@ -60,6 +60,8 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
 
     @Override
     protected void internalInit(final WebContext context) {
+        super.internalInit(context);
+
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
         this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
@@ -67,11 +69,13 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
 
         setRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
         setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
-        super.internalInit(context);
     }
 
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+
         final String username = context.getRequestParameter(this.usernameParameter);
         UsernamePasswordCredentials credentials;
         try {

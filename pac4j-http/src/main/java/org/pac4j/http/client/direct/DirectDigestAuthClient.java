@@ -41,7 +41,6 @@ public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, Co
     @Override
     protected void internalInit(final WebContext context) {
         setCredentialsExtractor(new DigestAuthExtractor(getName()));
-        super.internalInit(context);
     }
 
     /** Per RFC 2617

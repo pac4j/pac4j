@@ -3,6 +3,7 @@ package org.pac4j.http.client.direct;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -24,14 +25,15 @@ public final class IpClientTests implements TestsConstants {
     @Test
     public void testMissingTokendAuthenticator() {
         final IpClient client = new IpClient(null);
-        TestsHelper.initShouldFail(client, "authenticator cannot be null");
+        TestsHelper.expectException(() -> client.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final IpClient client = new IpClient(new SimpleTestTokenAuthenticator());
         client.setProfileCreator(null);
-        TestsHelper.initShouldFail(client, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> client.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME),
+                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test

@@ -46,12 +46,11 @@ public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, CasPr
         // must be a CAS proxy protocol
         final CasProtocol protocol = configuration.getProtocol();
         CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY, "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
-
         configuration.init(context);
+
         setCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
-        super.setAuthenticator(new CasAuthenticator(configuration, this.serviceUrl));
+        setAuthenticator(new CasAuthenticator(configuration, this.serviceUrl));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
-        super.internalInit(context);
     }
 
     public CasConfiguration getConfiguration() {
