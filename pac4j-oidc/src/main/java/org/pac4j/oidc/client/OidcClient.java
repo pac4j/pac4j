@@ -32,7 +32,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
     public OidcClient() { }
 
     public OidcClient(final OidcConfiguration oidcConfiguration) {
-        setConfiguration(oidcConfiguration);
         this.configuration = oidcConfiguration;
     }
 
@@ -41,7 +40,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
     }
 
     public void setConfiguration(final OidcConfiguration oidcConfiguration) {
-        CommonHelper.assertNotNull("oidcConfiguration", oidcConfiguration);
         this.configuration = oidcConfiguration;
     }
 
@@ -82,22 +80,22 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
         configuration.setCustomParams(customParams);
     }
 
-    @SuppressWarnings("uncheked")
-    protected Class<U> getProfileClass() {
-        return (Class<U>) OidcProfile.class;
-    }
-
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
 
+        CommonHelper.assertNotNull("configuration", configuration);
         configuration.setCallbackUrl(computeFinalCallbackUrl(context));
         configuration.init(context);
 
         setRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
         setCredentialsExtractor(new OidcExtractor(configuration, getName()));
         setAuthenticator(new OidcAuthenticator(configuration));
-        setProfileCreator(new OidcProfileCreator<U>(configuration, getProfileClass()));
+        createProfileCreator();
+    }
+
+    protected void createProfileCreator() {
+        setProfileCreator(new OidcProfileCreator<>(configuration));
     }
 
     @Deprecated
