@@ -5,6 +5,7 @@ import org.pac4j.core.context.Cookie;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -27,14 +28,14 @@ public final class CookieClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final CookieClient cookieClient = new CookieClient("testcookie", null);
-        TestsHelper.initShouldFail(cookieClient, "authenticator cannot be null");
+        TestsHelper.expectException(() -> cookieClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final CookieClient cookieClient = new CookieClient("testcookie", new SimpleTestTokenAuthenticator());
         cookieClient.setProfileCreator(null);
-        TestsHelper.initShouldFail(cookieClient, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> cookieClient.getUserProfile(new TokenCredentials(TOKEN, CLIENT_NAME), MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test

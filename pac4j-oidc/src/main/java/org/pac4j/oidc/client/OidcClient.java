@@ -89,7 +89,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
+        super.internalInit(context);
 
         configuration.setCallbackUrl(computeFinalCallbackUrl(context));
         configuration.init(context);
@@ -98,7 +98,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
         setCredentialsExtractor(new OidcExtractor(configuration, getName()));
         setAuthenticator(new OidcAuthenticator(configuration));
         setProfileCreator(new OidcProfileCreator<U>(configuration, getProfileClass()));
-        super.internalInit(context);
     }
 
     @Deprecated

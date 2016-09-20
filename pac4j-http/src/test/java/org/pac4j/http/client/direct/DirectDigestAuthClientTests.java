@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -25,13 +26,14 @@ public class DirectDigestAuthClientTests implements TestsConstants {
     @Test
     public void testMissingUsernamePasswordAuthenticator() {
         final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(null);
-        TestsHelper.initShouldFail(digestAuthClient, "authenticator cannot be null");
+        TestsHelper.expectException(() -> digestAuthClient.getCredentials(MockWebContext.create()), TechnicalException.class, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
         final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
-        TestsHelper.initShouldFail(digestAuthClient, "profileCreator cannot be null");
+        TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, "POST", CLIENT_NAME, null, null, null, null, null, null, null),
+                MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
     @Test

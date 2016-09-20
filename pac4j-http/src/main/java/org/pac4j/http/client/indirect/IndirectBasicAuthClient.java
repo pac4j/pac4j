@@ -43,15 +43,18 @@ public class IndirectBasicAuthClient extends IndirectClientV2<UsernamePasswordCr
 
     @Override
     protected void internalInit(final WebContext context) {
+        super.internalInit(context);
         CommonHelper.assertNotBlank("realmName", this.realmName);
 
         setRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         setCredentialsExtractor(new BasicAuthExtractor(getName()));
-        super.internalInit(context);
     }
 
     @Override
     protected UsernamePasswordCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+
         final UsernamePasswordCredentials credentials;
         try {
             // retrieve credentials

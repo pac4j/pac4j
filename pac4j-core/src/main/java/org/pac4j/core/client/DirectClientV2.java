@@ -26,15 +26,10 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
     private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected C retrieveCredentials(final WebContext context) throws HttpAction {
         CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
-        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
-    }
 
-    @Override
-    protected C retrieveCredentials(final WebContext context) throws HttpAction {
-        init(context);
         try {
             final C credentials = this.credentialsExtractor.extract(context);
             if (credentials == null) {
@@ -50,6 +45,8 @@ public abstract class DirectClientV2<C extends Credentials, U extends CommonProf
 
     @Override
     protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
+
         final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
