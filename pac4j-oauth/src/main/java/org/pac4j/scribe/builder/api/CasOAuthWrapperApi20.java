@@ -20,10 +20,13 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     private final String casServerUrl;
     
     private final boolean springSecurityCompliant;
-    
-    public CasOAuthWrapperApi20(final String casServerUrl, final boolean springSecurityCompliant) {
+
+    private final boolean implicitFlow;
+
+    public CasOAuthWrapperApi20(final String casServerUrl, final boolean springSecurityCompliant, final boolean implicitFlow) {
         this.casServerUrl = casServerUrl;
         this.springSecurityCompliant = springSecurityCompliant;
+        this.implicitFlow = implicitFlow;
     }
     
     @Override
@@ -42,8 +45,13 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     
     @Override
     public String getAuthorizationUrl(final OAuthConfig config) {
-        return String.format(this.casServerUrl + "/authorize?" + "response_type=code&client_id=%s&redirect_uri=%s",
-                             config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+        if (implicitFlow) {
+            return String.format(this.casServerUrl + "/authorize?" + "response_type=token&client_id=%s&redirect_uri=%s",
+                    config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+        } else {
+            return String.format(this.casServerUrl + "/authorize?" + "response_type=code&client_id=%s&redirect_uri=%s",
+                    config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+        }
     }
     
     @Override

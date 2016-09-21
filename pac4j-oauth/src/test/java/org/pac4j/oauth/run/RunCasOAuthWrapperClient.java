@@ -39,7 +39,8 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         client.setKey("key");
         client.setSecret("secret");
         client.setCallbackUrl(PAC4J_BASE_URL);
-//        client.setCasOAuthUrl("http://casserverpac4j.herokuapp.com/oauth2.0");
+        //client.setImplicitFlow(true);
+        //client.setCasOAuthUrl("http://casserverpac4j.herokuapp.com/oauth2.0");
         client.setCasOAuthUrl("http://localhost:8888/cas/oauth2.0");
         return client;
     }
