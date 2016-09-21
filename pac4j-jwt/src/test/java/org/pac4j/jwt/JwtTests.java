@@ -80,6 +80,14 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testPlainJwtNoSubject() throws HttpAction {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        final String token = generator.generate(new HashMap<>());
+        JwtAuthenticator authenticator = new JwtAuthenticator();
+        TestsHelper.expectException(() -> authenticator.validateToken(token), TechnicalException.class, "JWT must contain a subject ('sub' claim)");
+    }
+
+    @Test
     public void testPemJwt() throws Exception {
         final FacebookProfile profile = createProfile();
         final ECSignatureConfiguration signatureConfiguration = buildECSignatureConfiguration();
