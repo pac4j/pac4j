@@ -25,10 +25,14 @@ public class AuthenticatorProfileCreator<C extends Credentials, P extends Common
         if (getProfileFactory() == null) {
             return profile;
         } else {
-            // rebuild new profile type
+            // rebuild the new profile type
             final P newProfile = getProfileFactory().get();
             newProfile.setId(profile.getId());
             newProfile.addAttributes(profile.getAttributes());
+            newProfile.addRoles(profile.getRoles());
+            newProfile.addPermissions(profile.getPermissions());
+            newProfile.setRemembered(profile.isRemembered());
+            newProfile.setClientName(profile.getClientName());
             return newProfile;
         }
     }
