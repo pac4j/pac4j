@@ -31,7 +31,9 @@ public final class AuthenticatorProfileCreatorTests implements TestsConstants {
         assertEquals(profile, profile2);
     }
 
-    private static final class MyCommonProfile extends CommonProfile { }
+    private static final class MyCommonProfile extends CommonProfile {
+        public MyCommonProfile() { }
+    }
 
     @Test
     public void testReturnNewProfile() throws HttpAction {
