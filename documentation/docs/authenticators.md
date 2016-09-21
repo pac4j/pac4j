@@ -55,7 +55,7 @@ In fact, in the HTTP clients, you can also define the way the user profile is cr
 
 In practice:
 
-- all the available `Authenticator` create a user profile when validating credentials and save it in the current `Credentials`
+- all the available `Authenticator` create a specific user profile when validating credentials and save it in the current `Credentials`
 - all the clients are configured by default with the [`AuthenticatorProfileCreator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/creator/AuthenticatorProfileCreator.java) which retrieves the user profile from the current `Credentials` and returns it.
 
 So it works out of the box, even if providing a specific `ProfileCreator` is perfectly feasible.
