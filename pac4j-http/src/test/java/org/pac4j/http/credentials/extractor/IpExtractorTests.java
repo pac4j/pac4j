@@ -28,6 +28,15 @@ public final class IpExtractorTests implements TestsConstants {
     }
 
     @Test
+    public void testRetrieveIpFromHeader() throws HttpAction {
+        final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP);
+        final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
+        ipExtractor.setAlternateIpHeader(HEADER_NAME);
+        final TokenCredentials credentials = ipExtractor.extract(context);
+        assertEquals(GOOD_IP, credentials.getToken());
+    }
+
+    @Test
     public void testNoIp() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         final TokenCredentials credentials = extractor.extract(context);
