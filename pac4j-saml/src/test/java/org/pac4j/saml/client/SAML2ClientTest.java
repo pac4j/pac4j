@@ -50,7 +50,7 @@ public class SAML2ClientTest {
     @Test
     public void testIdpMetadataParsing_fromUrl() {
         final SAML2Client client = getClient();
-        client.getConfiguration().setIdentityProviderMetadataPath("https://idp.testshib.org/idp/profile/Metadata/SAML");
+        client.getConfiguration().setIdentityProviderMetadataPath("http://www.pac4j.org/testshib-providers.xml");
         client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();

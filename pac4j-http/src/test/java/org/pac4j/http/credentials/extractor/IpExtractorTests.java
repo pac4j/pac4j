@@ -17,6 +17,7 @@ package org.pac4j.http.credentials.extractor;
 
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.credentials.TokenCredentials;
 
 import static org.junit.Assert.*;
@@ -27,7 +28,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public final class IpExtractorTests {
+public final class IpExtractorTests implements TestsConstants {
 
     private final static String GOOD_IP = "1.2.3.4";
 
@@ -37,6 +38,15 @@ public final class IpExtractorTests {
     public void testRetrieveIpOk() {
         final MockWebContext context = MockWebContext.create().setRemoteAddress(GOOD_IP);
         final TokenCredentials credentials = extractor.extract(context);
+        assertEquals(GOOD_IP, credentials.getToken());
+    }
+
+    @Test
+    public void testRetrieveIpFromHeader() {
+        final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP);
+        final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
+        ipExtractor.setAlternateIpHeader(HEADER_NAME);
+        final TokenCredentials credentials = ipExtractor.extract(context);
         assertEquals(GOOD_IP, credentials.getToken());
     }
 

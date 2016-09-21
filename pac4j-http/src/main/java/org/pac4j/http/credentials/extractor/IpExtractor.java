@@ -28,16 +28,32 @@ public class IpExtractor implements Extractor<TokenCredentials> {
 
     private final String clientName;
 
+    private String alternateIpHeader;
+
     public IpExtractor(final String clientName) {
         this.clientName = clientName;
     }
 
     public TokenCredentials extract(WebContext context) {
-        final String ip = context.getRemoteAddr();
+        final String ip;
+        if (alternateIpHeader == null) {
+            ip = context.getRemoteAddr();
+        } else {
+            ip = context.getRequestHeader(alternateIpHeader);
+        }
+
         if (ip == null) {
             return null;
         }
 
         return new TokenCredentials(ip, clientName);
+    }
+
+    public String getAlternateIpHeader() {
+        return alternateIpHeader;
+    }
+
+    public void setAlternateIpHeader(final String alternateIpHeader) {
+        this.alternateIpHeader = alternateIpHeader;
     }
 }
