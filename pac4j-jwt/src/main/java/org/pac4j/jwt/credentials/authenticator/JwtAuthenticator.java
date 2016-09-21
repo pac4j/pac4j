@@ -199,6 +199,9 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
     protected void createJwtProfile(final TokenCredentials credentials, final JWT jwt) throws ParseException {
         final JWTClaimsSet claimSet = jwt.getJWTClaimsSet();
         String subject = claimSet.getSubject();
+        if (subject == null) {
+            throw new TechnicalException("JWT must contain a subject ('sub' claim)");
+        }
 
         if (!subject.contains(CommonProfile.SEPARATOR)) {
             subject = JwtProfile.class.getName() + CommonProfile.SEPARATOR + subject;
