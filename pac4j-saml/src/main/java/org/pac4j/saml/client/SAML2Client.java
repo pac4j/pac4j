@@ -8,6 +8,7 @@ import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -53,6 +54,7 @@ import java.util.List;
  *
  * @author Michael Remond
  * @author Misagh Moayyed
+ * @author Ruochao Zheng
  * @since 1.5.0
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
@@ -60,6 +62,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
+    public static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
+    public static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";
 
     protected CredentialProvider credentialProvider;
 
@@ -246,6 +250,13 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
             } else {
                 logger.debug("No attribute values found for {}", attribute.getName());
             }
+        }
+        
+        // Retrieve conditions attributes
+        Conditions conditions = credentials.getConditions(); 
+        if (conditions != null) {            
+            profile.addAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());
+            profile.addAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE, conditions.getNotOnOrAfter());
         }
 
         return profile;
