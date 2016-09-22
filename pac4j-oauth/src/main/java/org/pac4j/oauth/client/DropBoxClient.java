@@ -1,18 +1,14 @@
 package org.pac4j.oauth.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.apis.DropBoxApi;
 import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth1RequestToken;
-import com.github.scribejava.core.model.OAuth1Token;
-import com.github.scribejava.core.oauth.OAuth10aService;
-import org.pac4j.core.context.WebContext;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.oauth.credentials.OAuth10Credentials;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
+import org.pac4j.scribe.builder.api.DropboxApi20;
 
 /**
  * <p>This class is the OAuth client to authenticate users in DropBox.</p>
@@ -22,7 +18,7 @@ import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
+public class DropBoxClient extends BaseOAuth20Client<DropBoxProfile> {
     
     public DropBoxClient() {
     }
@@ -33,27 +29,20 @@ public class DropBoxClient extends BaseOAuth10Client<DropBoxProfile> {
     }
 
     @Override
-    protected BaseApi<OAuth10aService> getApi() {
-        return DropBoxApi.instance();
+    protected BaseApi<OAuth20Service> getApi() {
+        return DropboxApi20.INSTANCE;
     }
 
     @Override
-    protected String getProfileUrl(final OAuth1Token token) {
+    protected boolean hasOAuthGrantType() {
+        return true;
+    }
+
+    @Override
+    protected String getProfileUrl(final OAuth2AccessToken token) {
         return "https://api.dropbox.com/1/account/info";
     }
-    
-    @Override
-    protected OAuthCredentials getOAuthCredentials(final WebContext context) throws HttpAction {
-        // get tokenRequest from session
-        final OAuth1RequestToken tokenRequest = (OAuth1RequestToken) context.getSessionAttribute(getRequestTokenSessionAttributeName());
-        logger.debug("tokenRequest: {}", tokenRequest);
-        // don't get parameters from url
-        // token and verifier are equals and extracted from saved request token
-        final String token = tokenRequest.getToken();
-        logger.debug("token = verifier: {}", token);
-        return new OAuth10Credentials(tokenRequest, token, token, getName());
-    }
-    
+
     @Override
     protected DropBoxProfile extractUserProfile(final String body) throws HttpAction {
         final DropBoxProfile profile = new DropBoxProfile();
