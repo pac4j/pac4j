@@ -140,7 +140,7 @@ public abstract class RunClient implements TestsConstants {
         assertEquals(location, profile.getLocation());
     }
 
-    private void populateContextWithUrl(final MockWebContext context, String url) {
+    protected void populateContextWithUrl(final MockWebContext context, String url) {
         int pos = url.indexOf("?");
         if (pos >= 0) {
             url = url.substring(pos + 1);
