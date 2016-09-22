@@ -3,6 +3,7 @@ package org.pac4j.saml.profile;
 import java.util.List;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
@@ -21,6 +22,14 @@ import org.pac4j.saml.client.SAML2Client;
 public class SAML2Profile extends CommonProfile {
 
     private static final long serialVersionUID = -7811733390277407623L;
+    
+    public DateTime getNotBefore() {
+        return (DateTime) getAttribute(SAML2Client.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
+    }
+    
+    public DateTime getNotOnOrAfter() {
+        return (DateTime) getAttribute(SAML2Client.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
+    }
 
     @Override
     public String getEmail() {
