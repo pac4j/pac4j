@@ -28,10 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -202,9 +199,17 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
         if (subject == null) {
             throw new TechnicalException("JWT must contain a subject ('sub' claim)");
         }
-
         if (!subject.contains(CommonProfile.SEPARATOR)) {
             subject = JwtProfile.class.getName() + CommonProfile.SEPARATOR + subject;
+        }
+
+        final Date expirationTime = claimSet.getExpirationTime();
+        if (expirationTime != null) {
+            final Date now = new Date();
+            if (expirationTime.before(now)) {
+                logger.error("The JWT is expired: no profile is built");
+                return;
+            }
         }
 
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
