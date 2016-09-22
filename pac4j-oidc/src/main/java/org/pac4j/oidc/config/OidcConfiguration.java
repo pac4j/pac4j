@@ -85,7 +85,6 @@ public class OidcConfiguration extends InitializableWebObject {
 
     @Override
     protected void internalInit(final WebContext context) {
-
         // checks
         CommonHelper.assertNotBlank("clientId", clientId);
         CommonHelper.assertNotBlank("secret", secret);
