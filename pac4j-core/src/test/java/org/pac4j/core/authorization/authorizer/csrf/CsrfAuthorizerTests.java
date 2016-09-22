@@ -70,4 +70,10 @@ public final class CsrfAuthorizerTests implements TestsConstants {
         context.setRequestMethod("post");
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
+
+    @Test
+    public void testHeaderOkButNoTokenInSession() throws HttpAction {
+        final WebContext context = MockWebContext.create().addRequestHeader(Pac4jConstants.CSRF_TOKEN, VALUE);
+        Assert.assertFalse(authorizer.isAuthorized(context, null));
+    }
 }

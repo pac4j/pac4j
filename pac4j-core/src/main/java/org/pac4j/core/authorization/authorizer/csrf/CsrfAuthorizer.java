@@ -6,7 +6,6 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.util.CommonHelper;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class CsrfAuthorizer implements Authorizer<CommonProfile> {
             final String parameterToken = context.getRequestParameter(parameterName);
             final String headerToken = context.getRequestHeader(headerName);
             final String sessionToken = (String) context.getSessionAttribute(Pac4jConstants.CSRF_TOKEN);
-            return CommonHelper.areEquals(parameterToken, sessionToken) || CommonHelper.areEquals(headerToken, sessionToken);
+            return sessionToken != null && (sessionToken.equals(parameterToken) || sessionToken.equals(headerToken));
         } else {
             return true;
         }
