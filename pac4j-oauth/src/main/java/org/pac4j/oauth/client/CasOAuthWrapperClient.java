@@ -29,7 +29,9 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     private String casOAuthUrl;
     
     private boolean springSecurityCompliant = false;
-    
+
+    private boolean implicitFlow = false;
+
     public CasOAuthWrapperClient() {
     }
     
@@ -47,7 +49,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
 
     @Override
     protected BaseApi<OAuth20Service> getApi() {
-        return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant);
+        return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant, this.implicitFlow);
     }
 
     @Override
@@ -103,5 +105,13 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     public void setSpringSecurityCompliant(final boolean springSecurityCompliant) {
         this.springSecurityCompliant = springSecurityCompliant;
+    }
+
+    public boolean isImplicitFlow() {
+        return implicitFlow;
+    }
+
+    public void setImplicitFlow(final boolean implicitFlow) {
+        this.implicitFlow = implicitFlow;
     }
 }
