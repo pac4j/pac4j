@@ -19,10 +19,8 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.ProfileHelper;
-import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.profile.creator.AbstractProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -42,28 +40,23 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebObject implements ProfileCreator<OidcCredentials, U> {
+public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCreator<OidcCredentials, U> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
     private OidcConfiguration configuration;
 
-    private Class<U> clazz;
-
     protected IDTokenValidator idTokenValidator;
 
     public OidcProfileCreator() {}
 
-    public OidcProfileCreator(final OidcConfiguration configuration, final Class<U> clazz) {
+    public OidcProfileCreator(final OidcConfiguration configuration) {
         this.configuration = configuration;
-        this.clazz = clazz;
     }
 
     @Override
     protected void internalInit(final WebContext context) {
         assertNotNull("configuration", configuration);
-        assertNotNull("clazz", clazz);
-
         configuration.init(context);
 
         // check algorithms
@@ -92,6 +85,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
             this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
         }
         this.idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
+
+        setProfileFactory(() -> (U) new OidcProfile());
     }
 
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
@@ -115,7 +110,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile
-        final U profile = (U) ProfileHelper.buildUserProfileByClassCompleteName(clazz.getName());
+        final U profile = getProfileFactory().get();
         profile.setAccessToken(accessToken);
         final JWT idToken = credentials.getIdToken();
         profile.setIdTokenString(idToken.getParsedString());
@@ -187,20 +182,12 @@ public class OidcProfileCreator<U extends OidcProfile> extends InitializableWebO
         this.configuration = configuration;
     }
 
-    public Class<U> getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(final Class<U> clazz) {
-        this.clazz = clazz;
-    }
-
     public IDTokenValidator getIdTokenValidator() {
         return idTokenValidator;
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clazz", clazz);
+        return CommonHelper.toString(this.getClass(), "configuration", configuration);
     }
 }

@@ -1,6 +1,7 @@
 package org.pac4j.oidc.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
@@ -42,13 +43,14 @@ public class AzureAdClient extends OidcClient<AzureAdProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
-        setProfileCreator(new AzureAdProfileCreator(getConfiguration()));
+
         super.internalInit(context);
     }
 
     @Override
-    protected Class<AzureAdProfile> getProfileClass() {
-        return AzureAdProfile.class;
+    protected void createProfileCreator() {
+        setProfileCreator(new AzureAdProfileCreator(getConfiguration()));
     }
 }
