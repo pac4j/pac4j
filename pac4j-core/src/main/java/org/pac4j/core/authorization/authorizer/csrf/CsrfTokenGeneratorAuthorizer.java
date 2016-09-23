@@ -40,6 +40,8 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<CommonProfile> {
         final Cookie cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
         if (domain != null) {
             cookie.setDomain(domain);
+        } else {
+            cookie.setDomain(context.getServerName());
         }
         if (path != null) {
             cookie.setPath(path);
