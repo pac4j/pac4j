@@ -44,7 +44,7 @@ public final class SAML2ClientTests {
                 new SAML2ClientConfiguration("testKeystore.jks",
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
-                        "resource:testshib-providers.xml");
+                        "resource:testshib-providers.xml", true);
         assertNotNull(cfg.getKeyStore());
         assertTrue(cfg.getKeyStore().size() == 1);
         if (!rs.getFile().delete()) {

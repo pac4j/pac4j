@@ -32,13 +32,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The {@link SAML2ClientConfiguration} is responsible for...
- * capturing client settings and passing them around.
+ * The {@link SAML2ClientConfiguration} is responsible for capturing client settings and passing them around.
  *
  * @author Misagh Moayyed
  * @since 1.7
  */
 public final class SAML2ClientConfiguration implements Cloneable {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
 
     private KeyStore keyStore;
@@ -77,9 +77,6 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
     private boolean authnRequestSigned = true;
 
-    public SAML2ClientConfiguration() {
-    }
-
     private Collection<String> blackListedSignatureSigningAlgorithms;
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
@@ -90,9 +87,18 @@ public final class SAML2ClientConfiguration implements Cloneable {
 
     private String keyStoreType;
 
+    public SAML2ClientConfiguration() {
+    }
+
     public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
                                     final String privateKeyPassword, final String identityProviderMetadataPath) {
         this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null, identityProviderMetadataPath, null, null);
+    }
+
+    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
+                                    final String privateKeyPassword, final String identityProviderMetadataPath,
+                                    final boolean createKeystore) {
+        this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null, identityProviderMetadataPath, null, null, createKeystore);
     }
 
     public SAML2ClientConfiguration(final KeyStore keystore,
@@ -116,6 +122,15 @@ public final class SAML2ClientConfiguration implements Cloneable {
                                      final String privateKeyPassword, final Resource identityProviderMetadataResource,
                                      final String identityProviderMetadataPath,
                                      final String identityProviderEntityId, final String serviceProviderEntityId) {
+        this(keyStore, keyStoreAlias, keyStoreType, keystoreResource, keystorePath, keystorePassword, privateKeyPassword,
+        identityProviderMetadataResource, identityProviderMetadataPath, identityProviderEntityId, serviceProviderEntityId, false);
+    }
+
+    private SAML2ClientConfiguration(final KeyStore keyStore, final String keyStoreAlias, final String keyStoreType,
+                                     final Resource keystoreResource, final String keystorePath, final String keystorePassword,
+                                     final String privateKeyPassword, final Resource identityProviderMetadataResource,
+                                     final String identityProviderMetadataPath, final String identityProviderEntityId,
+                                     final String serviceProviderEntityId, final boolean createKeystore) {
         this.keyStore = keyStore;
         this.keyStoreAlias = keyStoreAlias;
         this.keyStoreType = keyStoreType;
@@ -126,7 +141,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
 
-        if (this.keystoreResource == null || !this.keystoreResource.exists()) {
+        if (createKeystore && (this.keystoreResource == null || !this.keystoreResource.exists())) {
             LOGGER.warn("Provided path to keystore does not exist. Creating one at {}", keystorePath);
             createKeystore();
         }
