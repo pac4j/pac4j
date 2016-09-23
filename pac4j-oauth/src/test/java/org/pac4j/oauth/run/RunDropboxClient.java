@@ -33,7 +33,7 @@ public final class RunDropboxClient extends RunClient {
 
     @Override
     protected String getPassword() {
-        return "testpwdscribeup";
+        return "testpac4j";
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class RunDropboxClient extends RunClient {
         final DropBoxClient dropBoxClient = new DropBoxClient();
         dropBoxClient.setKey("0194c6m79qll0ia");
         dropBoxClient.setSecret("a0ylze9a0bhsvxv");
-        dropBoxClient.setCallbackUrl(GOOGLE_URL);
+        dropBoxClient.setCallbackUrl("https://www.google.com");
         return dropBoxClient;
     }
 
@@ -62,7 +62,6 @@ public final class RunDropboxClient extends RunClient {
         assertEquals(0L, profile.getShared().longValue());
         assertEquals(1410412L, profile.getNormal().longValue());
         assertEquals(2147483648L, profile.getQuota().longValue());
-        assertNotNull(profile.getAccessSecret());
-        assertEquals(8, profile.getAttributes().size());
+        assertEquals(7, profile.getAttributes().size());
     }
 }
