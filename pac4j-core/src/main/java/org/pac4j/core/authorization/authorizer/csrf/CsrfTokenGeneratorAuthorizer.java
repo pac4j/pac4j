@@ -18,7 +18,15 @@ import java.util.List;
  */
 public class CsrfTokenGeneratorAuthorizer implements Authorizer<CommonProfile> {
 
-    private final CsrfTokenGenerator csrfTokenGenerator;
+    private CsrfTokenGenerator csrfTokenGenerator;
+
+    private String domain;
+
+    private String path = "/";
+
+    private Boolean httpOnly;
+
+    private Boolean secure;
 
     public CsrfTokenGeneratorAuthorizer(final CsrfTokenGenerator csrfTokenGenerator) {
         this.csrfTokenGenerator = csrfTokenGenerator;
@@ -30,8 +38,66 @@ public class CsrfTokenGeneratorAuthorizer implements Authorizer<CommonProfile> {
         final String token = csrfTokenGenerator.get(context);
         context.setRequestAttribute(Pac4jConstants.CSRF_TOKEN, token);
         final Cookie cookie = new Cookie(Pac4jConstants.CSRF_TOKEN, token);
-        cookie.setDomain(context.getServerName());
+        if (domain != null) {
+            cookie.setDomain(domain);
+        } else {
+            cookie.setDomain(context.getServerName());
+        }
+        if (path != null) {
+            cookie.setPath(path);
+        }
+        if (httpOnly != null) {
+            cookie.setHttpOnly(httpOnly.booleanValue());
+        }
+        if (secure != null) {
+            cookie.setSecure(secure.booleanValue());
+        }
         context.addResponseCookie(cookie);
         return true;
+    }
+
+    public CsrfTokenGenerator getCsrfTokenGenerator() {
+        return csrfTokenGenerator;
+    }
+
+    public void setCsrfTokenGenerator(final CsrfTokenGenerator csrfTokenGenerator) {
+        this.csrfTokenGenerator = csrfTokenGenerator;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(final String domain) {
+        this.domain = domain;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(final String path) {
+        this.path = path;
+    }
+
+    public Boolean getHttpOnly() {
+        return httpOnly;
+    }
+
+    public void setHttpOnly(final Boolean httpOnly) {
+        this.httpOnly = httpOnly;
+    }
+
+    public Boolean getSecure() {
+        return secure;
+    }
+
+    public void setSecure(final Boolean secure) {
+        this.secure = secure;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "csrfTokenGenerator", csrfTokenGenerator, "domain", domain, "path", path, "httpOnly", httpOnly, "secure", secure);
     }
 }
