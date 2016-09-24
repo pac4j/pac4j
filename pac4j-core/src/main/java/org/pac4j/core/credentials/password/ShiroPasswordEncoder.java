@@ -13,11 +13,10 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class ShiroPasswordEncoder implements PasswordEncoder {
 
-    private final PasswordService delegate;
+    private PasswordService delegate;
 
     public ShiroPasswordEncoder(final PasswordService delegate) {
-        CommonHelper.assertNotNull("delegate", delegate);
-        this.delegate = delegate;
+        setDelegate(delegate);
     }
 
     @Override
@@ -32,5 +31,10 @@ public class ShiroPasswordEncoder implements PasswordEncoder {
 
     public PasswordService getDelegate() {
         return delegate;
+    }
+
+    public void setDelegate(final PasswordService delegate) {
+        CommonHelper.assertNotNull("delegate", delegate);
+        this.delegate = delegate;
     }
 }
