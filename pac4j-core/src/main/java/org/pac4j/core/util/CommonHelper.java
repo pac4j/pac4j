@@ -363,7 +363,7 @@ public final class CommonHelper {
                     if (sUrl.startsWith(FILE_PREFIX)) {
                         filename = sUrl.substring(FILE_PREFIX.length());
                     } else {
-                        throw new TechnicalException("Unsupported resource format: " + sUrl);
+                        throw new TechnicalException("Unsupported resource format: " + sUrl + ". Use a relative or absolute path");
                     }
                 }
                 logger.debug("filepath: {} -> filename: {}", filePath, filename);
