@@ -202,6 +202,7 @@ public class J2EContext implements WebContext {
         if (cookies != null) {
             for (final javax.servlet.http.Cookie c : cookies) {
                 final Cookie cookie = new Cookie(c.getName(), c.getValue());
+                cookie.setVersion(c.getVersion());
                 cookie.setComment(c.getComment());
                 cookie.setDomain(c.getDomain());
                 cookie.setHttpOnly(c.isHttpOnly());
@@ -217,6 +218,7 @@ public class J2EContext implements WebContext {
     @Override
     public void addResponseCookie(final Cookie cookie) {
         final javax.servlet.http.Cookie c = new javax.servlet.http.Cookie(cookie.getName(), cookie.getValue());
+        c.setVersion(cookie.getVersion());
         c.setSecure(cookie.isSecure());
         c.setPath(cookie.getPath());
         c.setMaxAge(cookie.getMaxAge());
