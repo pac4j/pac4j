@@ -35,6 +35,8 @@ public final class CommonHelper {
     public static final String RESOURCE_PREFIX = "resource";
     public static final String CLASSPATH_PREFIX = "classpath";
 
+    protected static final String FILE_PREFIX = "file:";
+
     public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
             + ":', '" + HttpConstants.SCHEME_HTTP + ":', '" + HttpConstants.SCHEME_HTTPS + ":' or it must be a physical readable non-empty local file "
             + "at the path specified.";
@@ -353,11 +355,16 @@ public final class CommonHelper {
                     } else {
                         url = Thread.currentThread().getContextClassLoader().getResource(path);
                     }
-                    if (url == null) {
+                    if (url == null || url.toString() == null) {
                         throw new TechnicalException("Do not use the resource: or classpath: prefix for non-existing files. Use a direct path (relative or absolute, no prefix)");
                     }
-                    // remove the file: prefix
-                    filename = url.toString().substring(5);
+                    final String sUrl = url.toString();
+                    // create filename from url if we know the prefix (we remove it)
+                    if (sUrl.startsWith(FILE_PREFIX)) {
+                        filename = sUrl.substring(FILE_PREFIX.length());
+                    } else {
+                        throw new TechnicalException("Unsupported resource format: " + sUrl + ". Use a relative or absolute path");
+                    }
                 }
                 logger.debug("filepath: {} -> filename: {}", filePath, filename);
                 return filename;
