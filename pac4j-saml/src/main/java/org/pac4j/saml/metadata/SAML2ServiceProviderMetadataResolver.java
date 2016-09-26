@@ -166,7 +166,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
     @Override
     public String getMetadataPath() {
-        return this.spMetadataResource.getFilename();
+        if (this.spMetadataResource != null) {
+            return this.spMetadataResource.getFilename();
+        }
+        return null;
     }
 
     @Override
