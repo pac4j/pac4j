@@ -51,6 +51,8 @@ The first parameter (`keystorePath`) should point to your keystore:
 - it can also be an url (starting with `http:` or `https:`)
 - otherwise, it is considered to be a file path.
 
+<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> With <code>pac4j-saml</code> v1.9.2, the <code>resource:</code> and <code>classpath:</code> prefixes are not usable for the <code>keystorePath</code> definition in CAS and Vertx. Use a relative or absolute path without any prefix</div>
+
 The second parameter (`keystorePassword`) is the value of the `-storepass` option for the keystore generation while 
 the third parameter (`privateKeyPassword`) is the value of the `-keypass` option.
 

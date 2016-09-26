@@ -151,7 +151,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
         this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
 
     }
-    
+
     public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
         this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
     }
@@ -420,7 +420,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
     private void createKeystore() {
         try {
             Security.addProvider(new BouncyCastleProvider());
-            
+
             if (CommonHelper.isBlank(this.keyStoreAlias)) {
                 this.keyStoreAlias = getClass().getSimpleName();
                 LOGGER.warn("Using keystore alias {}", this.keyStoreAlias);
@@ -455,7 +455,7 @@ public final class SAML2ClientConfiguration implements Cloneable {
             cert.setSignatureAlgorithm("SHA1WithRSA");
             final PrivateKey signingKey = kp.getPrivate();
             final X509Certificate certificate = cert.generate(signingKey, "BC");
-          
+
             ks.setKeyEntry(this.keyStoreAlias, signingKey, password, new Certificate[]{certificate});
 
             try (FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {
