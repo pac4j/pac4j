@@ -80,6 +80,28 @@ public final class JwtTests implements TestsConstants {
     }
 
     @Test
+    public void testPlainJwtNotExpired() throws HttpAction {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.EXPIRATION_TIME, tomorrow());
+        final String token = generator.generate(claims);
+        JwtAuthenticator authenticator = new JwtAuthenticator();
+        assertNotNull(authenticator.validateToken(token));
+    }
+
+    @Test
+    public void testPlainJwtExpired() throws HttpAction {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaims.SUBJECT, ID);
+        claims.put(JwtClaims.EXPIRATION_TIME, yesterday());
+        final String token = generator.generate(claims);
+        JwtAuthenticator authenticator = new JwtAuthenticator();
+        assertNull(authenticator.validateToken(token));
+    }
+
+    @Test
     public void testPlainJwtNoSubject() throws HttpAction {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final String token = generator.generate(new HashMap<>());
@@ -111,16 +133,28 @@ public final class JwtTests implements TestsConstants {
         final JwtGenerator<JwtProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         final Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaims.SUBJECT, VALUE);
-        final Date now = new Date();
-        claims.put(JwtClaims.EXPIRATION_TIME, now);
+        final Date tomorrow = tomorrow();
+        claims.put(JwtClaims.EXPIRATION_TIME, tomorrow);
         final String token = generator.generate(claims);
         final JwtAuthenticator jwtAuthenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
         final JwtProfile profile = (JwtProfile) jwtAuthenticator.validateToken(token);
         assertEquals(VALUE, profile.getSubject());
-        assertEquals(now.getTime() / 1000, profile.getExpirationDate().getTime() / 1000);
+        assertEquals(tomorrow.getTime() / 1000, profile.getExpirationDate().getTime() / 1000);
         final Map<String, Object> claims2 = jwtAuthenticator.validateTokenAndGetClaims(token);
         assertEquals(VALUE, claims2.get(JwtClaims.SUBJECT));
-        assertEquals(now.getTime() / 1000, ((Date) claims2.get(JwtClaims.EXPIRATION_TIME)).getTime() / 1000);
+        assertEquals(tomorrow.getTime() / 1000, ((Date) claims2.get(JwtClaims.EXPIRATION_TIME)).getTime() / 1000);
+    }
+
+    private Date tomorrow() {
+        final Date now = new Date();
+        long tomorrow = now.getTime() + 24 * 3600 * 1000;
+        return new Date(tomorrow);
+    }
+
+    private Date yesterday() {
+        final Date now = new Date();
+        long tomorrow = now.getTime() - 24 * 3600 * 1000;
+        return new Date(tomorrow);
     }
 
     @Test
