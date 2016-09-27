@@ -123,6 +123,7 @@ public class Clients extends InitializableObject {
      * @return the right client
      */
     public Client findClient(final WebContext context) {
+        init();
         final String name = context.getRequestParameter(this.clientNameParameter);
 		if (name == null && defaultClient != null) {
 			return defaultClient;
