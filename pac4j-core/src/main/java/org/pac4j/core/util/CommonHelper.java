@@ -244,10 +244,12 @@ public final class CommonHelper {
      * @return the prefix
      */
     protected static String extractPrefix(final String name) {
-        int prefixEnd = name.indexOf(":");
         String prefix = null;
-        if (prefixEnd != -1) {
-            prefix = name.substring(0, prefixEnd);
+        if (name != null) {
+            int prefixEnd = name.indexOf(":");
+            if (prefixEnd != -1) {
+                prefix = name.substring(0, prefixEnd);
+            }
         }
         return prefix;
     }
