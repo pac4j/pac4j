@@ -336,7 +336,10 @@ public final class SAML2ClientConfiguration implements Cloneable {
     }
 
     public String getServiceProviderMetadataPath() {
-        return serviceProviderMetadataResource.getFilename();
+        if (serviceProviderMetadataResource != null) {
+            return serviceProviderMetadataResource.getFilename();
+        }
+        return null;
     }
 
     public WritableResource getServiceProviderMetadataResource() {
