@@ -10,6 +10,7 @@ public final class Cookie {
 
     private String name;
     private String value;
+    private int version = 0;
     private String comment;
     private String domain;
     private int maxAge = -1;
@@ -39,6 +40,14 @@ public final class Cookie {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getComment() {
