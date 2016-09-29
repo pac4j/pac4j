@@ -88,24 +88,33 @@ public class OidcConfiguration extends InitializableWebObject {
         // checks
         CommonHelper.assertNotBlank("clientId", clientId);
         CommonHelper.assertNotBlank("secret", secret);
-        CommonHelper.assertNotBlank("discoveryURI", discoveryURI);
+        if (this.discoveryURI == null && this.providerMetadata == null) {
+            throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
+        }
 
         // default value
         if (resourceRetriever == null) {
             resourceRetriever = new DefaultResourceRetriever(connectTimeout, readTimeout);
         }
-        try {
-            // Download OIDC metadata
-            this.providerMetadata = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
-                    new URL(getDiscoveryURI())).getContent());
+        if (this.providerMetadata == null) {
+            CommonHelper.assertNotBlank("discoveryURI", discoveryURI);
+            try {
+                // Download OIDC metadata
+                this.providerMetadata = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
+                        new URL(this.discoveryURI)).getContent());
 
-        } catch (final IOException | ParseException e) {
-            throw new TechnicalException(e);
+            } catch (final IOException | ParseException e) {
+                throw new TechnicalException(e);
+            }
         }
     }
 
     public OIDCProviderMetadata getProviderMetadata() {
         return this.providerMetadata;
+    }
+
+    public void setProviderMetadata(final OIDCProviderMetadata providerMetadata) {
+        this.providerMetadata = providerMetadata;
     }
 
     public String getClientId() {
