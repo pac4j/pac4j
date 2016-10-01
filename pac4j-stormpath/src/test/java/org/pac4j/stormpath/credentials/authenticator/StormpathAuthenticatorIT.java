@@ -4,6 +4,7 @@ import com.stormpath.sdk.group.GroupList;
 import com.stormpath.sdk.group.GroupMembershipList;
 import org.junit.Test;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
@@ -26,7 +27,7 @@ public final class StormpathAuthenticatorIT implements TestsConstants {
     }
 
     @Test
-    public void testFullAuthentication() throws HttpAction {
+    public void testFullAuthentication() throws HttpAction, CredentialsException {
         // luminous-smoke1
         final StormpathAuthenticator authenticator = new StormpathAuthenticator("77NW47MHGJV5DA8R5UA5YORE0",
                 "nPCDRYPPxhBNpq1HT9Gr85hB7fCACQXSHx0aCuG6D/Q", "2MahZGmC0Rcl7gYkVIea94");

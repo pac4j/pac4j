@@ -2,7 +2,7 @@ package org.pac4j.oauth.exception;
 
 import java.util.*;
 
-import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.TechnicalException;
 
 /**
  * This class represents an exception occurring during OAuth credentials retrieval.
@@ -10,7 +10,7 @@ import org.pac4j.core.exception.CredentialsException;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public class OAuthCredentialsException extends CredentialsException {
+public class OAuthCredentialsException extends TechnicalException {
     
     private static final long serialVersionUID = -3540979749535811079L;
     

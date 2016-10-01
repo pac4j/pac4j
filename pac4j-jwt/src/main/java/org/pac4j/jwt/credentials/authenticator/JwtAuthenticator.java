@@ -1,13 +1,14 @@
 package org.pac4j.jwt.credentials.authenticator;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.SignedJWT;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
@@ -16,10 +17,9 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.jwt.JwtClaims;
-import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
+import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
@@ -27,8 +27,17 @@ import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
-import java.util.*;
+import com.nimbusds.jose.EncryptionMethod;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.JWEHeader;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.jwt.SignedJWT;
 
 /**
  * Authenticator for JWT. It creates the user profile and stores it in the credentials
@@ -105,12 +114,16 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
             validate(credentials, null);
         } catch (final HttpAction e) {
             throw new TechnicalException(e);
+        } catch (final CredentialsException e) {
+            logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
+            logger.debug("Failed to retrieve or validate credentials", e);
+            return null;
         }
         return credentials.getUserProfile();
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
         final String token = credentials.getToken();
 
         try {
@@ -188,7 +201,7 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
           	createJwtProfile(credentials, jwt);
 
         } catch (final ParseException e) {
-            throw new TechnicalException("Cannot decrypt / verify JWT", e);
+            throw new CredentialsException("Cannot decrypt / verify JWT", e);
         }
     }
 

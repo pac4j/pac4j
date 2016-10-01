@@ -52,7 +52,7 @@ public class LocalCachingAuthenticatorTests {
             new UsernamePasswordCredentials("a", "a", this.getClass().getName());
 
     @Test
-    public void testDoubleCalls() throws HttpAction {
+    public void testDoubleCalls() throws HttpAction, CredentialsException {
         final OnlyOneCallAuthenticator authenticator = new OnlyOneCallAuthenticator();
         final LocalCachingAuthenticator localCachingAuthenticator = new LocalCachingAuthenticator(authenticator, 10, 10, TimeUnit.SECONDS);
         localCachingAuthenticator.init(null);
@@ -72,7 +72,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCache() throws HttpAction {
+    public void testValidateAndCache() throws HttpAction, CredentialsException {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -82,7 +82,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCacheSwitchDelegate() throws HttpAction {
+    public void testValidateAndCacheSwitchDelegate() throws HttpAction, CredentialsException {
         final LocalCachingAuthenticator<UsernamePasswordCredentials> authenticator = new
                 LocalCachingAuthenticator<>(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -107,7 +107,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCacheAndRemove() throws HttpAction {
+    public void testValidateAndCacheAndRemove() throws HttpAction, CredentialsException {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -119,7 +119,7 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCacheAndClean() throws HttpAction {
+    public void testValidateAndCacheAndClean() throws HttpAction, CredentialsException {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
         authenticator.init(null);
@@ -145,7 +145,7 @@ public class LocalCachingAuthenticatorTests {
     private static class ThrowingAuthenticator implements Authenticator<UsernamePasswordCredentials> {
 
         @Override
-        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) {
+        public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws CredentialsException {
             throw new CredentialsException("fail");
         }
     }
