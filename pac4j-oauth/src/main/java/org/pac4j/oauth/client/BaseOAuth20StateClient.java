@@ -36,6 +36,7 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
     @Override
     protected OAuthConfig buildOAuthConfig(WebContext context) {
         final String state = getStateParameter(context);
+        logger.debug("save sessionState: {}", state);
         // the state is held in a specific context.
         context.setSessionAttribute(getName() + STATE_PARAMETER, state);
         return new OAuthConfig(this.getKey(), this.getSecret(), computeFinalCallbackUrl(context),
