@@ -7,7 +7,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.util.CommonHelper;
@@ -114,7 +113,7 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
      * @param e the technical exception
      * @return the error message
      */
-    protected String computeErrorMessage(final TechnicalException e) {
+    protected String computeErrorMessage(final Exception e) {
         return e.getClass().getSimpleName();
     }
 

@@ -17,7 +17,7 @@ import org.pac4j.core.credentials.TokenCredentials;
 public class SimpleTestTokenAuthenticator implements Authenticator<TokenCredentials> {
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
         if (credentials == null) {
             throw new CredentialsException("credentials must not be null");
         }

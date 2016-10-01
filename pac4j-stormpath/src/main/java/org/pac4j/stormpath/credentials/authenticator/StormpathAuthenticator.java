@@ -10,7 +10,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.stormpath.profile.StormpathProfile;
@@ -66,14 +68,14 @@ public class StormpathAuthenticator extends InitializableWebObject
             this.application = client.getDataStore().getResource(
                     String.format("/applications/%s", applicationId), Application.class);
         } catch (final Exception e) {
-            throw new BadCredentialsException("An exception is caught trying to access Stormpath cloud. " +
+            throw new TechnicalException("An exception is caught trying to access Stormpath cloud. " +
                     "Please verify that your provided Stormpath <accessId>, " +
-                    "<secretKey>, and <applicationId> are correct. Original Stormpath error: " + e.getMessage());
+                    "<secretKey>, and <applicationId> are correct.", e);
         }
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
 
         init(context);
 

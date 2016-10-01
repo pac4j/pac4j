@@ -53,7 +53,7 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
      * @return the Digest credentials
      */
     @Override
-    public DigestCredentials extract(WebContext context) throws HttpAction {
+    public DigestCredentials extract(WebContext context) throws HttpAction, CredentialsException {
         final TokenCredentials credentials = this.extractor.extract(context);
 
         if (credentials == null) {

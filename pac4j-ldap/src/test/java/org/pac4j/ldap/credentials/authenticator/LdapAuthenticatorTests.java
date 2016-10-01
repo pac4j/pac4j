@@ -3,6 +3,7 @@ package org.pac4j.ldap.credentials.authenticator;
 import org.junit.*;
 import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -42,26 +43,26 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void testNullAuthenticator() throws HttpAction {
+    public void testNullAuthenticator() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator();
         TestsHelper.expectException(() -> ldapAuthenticator.init(null), TechnicalException.class, "ldapAuthenticator cannot be null");
     }
 
     @Test
-    public void testNullAttributes() throws HttpAction {
+    public void testNullAttributes() {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, null);
         TestsHelper.expectException(() -> ldapAuthenticator.init(null), TechnicalException.class, "attributes cannot be null");
     }
 
     @Test(expected = BadCredentialsException.class)
-    public void authentFailed() throws HttpAction {
+    public void authentFailed() throws HttpAction, CredentialsException {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
     }
 
     @Test
-    public void authentSuccessNoAttribute() throws HttpAction {
+    public void authentSuccessNoAttribute() throws HttpAction, CredentialsException {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
@@ -75,7 +76,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void authentSuccessSingleAttribute() throws HttpAction {
+    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
@@ -91,7 +92,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     }
 
     @Test
-    public void authentSuccessMultiAttribute() throws HttpAction {
+    public void authentSuccessMultiAttribute() throws HttpAction, CredentialsException {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN + "," + LdapServer.ROLE);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);

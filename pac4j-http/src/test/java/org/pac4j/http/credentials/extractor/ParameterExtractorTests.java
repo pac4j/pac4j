@@ -25,40 +25,40 @@ public final class ParameterExtractorTests implements TestsConstants {
     private final static ParameterExtractor postExtractor = new ParameterExtractor(GOOD_PARAMETER, false, true, CLIENT_NAME);
 
     @Test
-    public void testRetrieveGetParameterOk() throws HttpAction {
+    public void testRetrieveGetParameterOk() throws HttpAction, CredentialsException {
         final MockWebContext context = MockWebContext.create().setRequestMethod("GET").addRequestParameter(GOOD_PARAMETER, VALUE);
         final TokenCredentials credentials = getExtractor.extract(context);
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
-    public void testRetrievePostParameterOk() throws HttpAction {
+    public void testRetrievePostParameterOk() throws HttpAction, CredentialsException {
         final MockWebContext context = MockWebContext.create().setRequestMethod("POST").addRequestParameter(GOOD_PARAMETER, VALUE);
         final TokenCredentials credentials = postExtractor.extract(context);
         assertEquals(VALUE, credentials.getToken());
     }
 
     @Test
-    public void testRetrievePostParameterNotSupported() throws HttpAction {
+    public void testRetrievePostParameterNotSupported() {
         final MockWebContext context = MockWebContext.create().setRequestMethod("POST").addRequestParameter(GOOD_PARAMETER, VALUE);
         TestsHelper.expectException(() -> getExtractor.extract(context), CredentialsException.class, "POST requests not supported");
     }
 
     @Test
-    public void testRetrieveGetParameterNotSupported() throws HttpAction {
+    public void testRetrieveGetParameterNotSupported() {
         final MockWebContext context = MockWebContext.create().setRequestMethod("GET").addRequestParameter(GOOD_PARAMETER, VALUE);
         TestsHelper.expectException(() -> postExtractor.extract(context), CredentialsException.class, "GET requests not supported");
     }
 
     @Test
-    public void testRetrieveNoGetParameter() throws HttpAction {
+    public void testRetrieveNoGetParameter() throws HttpAction, CredentialsException {
         final MockWebContext context = MockWebContext.create().setRequestMethod("GET");
         final TokenCredentials credentials = getExtractor.extract(context);
         assertNull(credentials);
     }
 
     @Test
-    public void testRetrieveNoPostParameter() throws HttpAction {
+    public void testRetrieveNoPostParameter() throws HttpAction, CredentialsException {
         final MockWebContext context = MockWebContext.create().setRequestMethod("POST");
         final TokenCredentials credentials = postExtractor.extract(context);
         assertNull(credentials);

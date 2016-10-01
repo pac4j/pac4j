@@ -45,7 +45,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     }
 
     @Override
-    public void validate(final T credentials, final WebContext context) throws HttpAction {
+    public void validate(final T credentials, final WebContext context) throws HttpAction, CredentialsException {
         init(context);
 
         try {

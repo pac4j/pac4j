@@ -20,6 +20,7 @@ public interface CredentialsExtractor<C extends Credentials> {
      * @param context the current web context
      * @return the credentials
      * @throws HttpAction requires a specific HTTP action if necessary
+     * @throws CredentialsException the credentials are invalid
      */
-    C extract(WebContext context) throws HttpAction;
+    C extract(WebContext context) throws HttpAction, CredentialsException;
 }

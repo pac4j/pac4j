@@ -32,7 +32,7 @@ public class BasicAuthExtractor implements CredentialsExtractor<UsernamePassword
     }
 
     @Override
-    public UsernamePasswordCredentials extract(WebContext context) throws HttpAction {
+    public UsernamePasswordCredentials extract(WebContext context) throws HttpAction, CredentialsException {
         final TokenCredentials credentials = this.extractor.extract(context);
         if (credentials == null) {
             return null;
