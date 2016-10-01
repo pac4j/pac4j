@@ -49,7 +49,9 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
             this.authenticator.validate(credentials, context);
             return credentials;
         } catch (CredentialsException e) {
-            logger.error("Failed to retrieve or validate credentials", e);
+            logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
+            logger.debug("Failed to retrieve or validate credentials", e);
+
             return null;
         }
     }
