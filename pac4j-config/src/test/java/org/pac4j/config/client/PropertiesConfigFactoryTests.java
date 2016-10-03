@@ -2,6 +2,7 @@ package org.pac4j.config.client;
 
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.junit.Test;
+import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
@@ -41,6 +42,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(SAML_PRIVATE_KEY_PASSWORD, PASSWORD);
         properties.put(SAML_KEYSTORE_PATH, PATH);
         properties.put(SAML_IDENTITY_PROVIDER_METADATA_PATH, PATH);
+        properties.put(SAML_DESTINATION_BINDING_TYPE, SAMLConstants.SAML2_REDIRECT_BINDING_URI);
         properties.put(OIDC_ID, ID);
         properties.put(OIDC_SECRET, SECRET);
         properties.put(OIDC_DISCOVERY_URI, CALLBACK_URL);
@@ -62,17 +64,23 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         final Config config = factory.build();
         final Clients clients = config.getClients();
         assertEquals(7, clients.getClients().size());
+
         final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient");
         assertEquals(ID, fbClient.getKey());
         assertEquals(SECRET, fbClient.getSecret());
+
         final TwitterClient twClient = (TwitterClient) clients.findClient("TwitterClient");
         assertEquals(ID, twClient.getKey());
         assertEquals(SECRET, twClient.getSecret());
+
         final CasClient casClient = (CasClient) clients.findClient("CasClient");
         assertEquals(CALLBACK_URL, casClient.getConfiguration().getLoginUrl());
         assertEquals(CasProtocol.CAS20, casClient.getConfiguration().getProtocol());
+
         final SAML2Client saml2client = (SAML2Client) clients.findClient("SAML2Client");
         assertNotNull(saml2client);
+        assertEquals(SAMLConstants.SAML2_REDIRECT_BINDING_URI, saml2client.getConfiguration().getDestinationBindingType());
+
         final OidcClient oidcClient = (OidcClient) clients.findClient("OidcClient");
         assertNotNull(oidcClient);
         assertEquals(ClientAuthenticationMethod.CLIENT_SECRET_POST.toString(), oidcClient.getConfiguration().getClientAuthenticationMethod().toString().toLowerCase());
