@@ -69,6 +69,13 @@ After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/p
 
 ## 3) Additional configuration:
 
+Since *pac4j* v1.9.3, you can define the binding type via the `setDestinationBindingType` method:
+
+```java
+cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+// or cfg.setDestinationBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
+```
+
 Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the `maximumAuthenticationLifetime parameter:
 
 ```java
