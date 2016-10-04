@@ -70,6 +70,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String SAML_MAXIMUM_AUTHENTICATION_LIFETIME = "saml.maximumAuthenticationLifetime";
     public static final String SAML_SERVICE_PROVIDER_ENTITY_ID = "saml.serviceProviderEntityId";
     public static final String SAML_SERVICE_PROVIDER_METADATA_PATH = "saml.serviceProviderMetadataPath";
+    public static final String SAML_DESTINATION_BINDING_TYPE = "saml.destinationBindingType";
 
     public static final String CAS_LOGIN_URL = "cas.loginUrl";
     public static final String CAS_PROTOCOL = "cas.protocol";
@@ -217,6 +218,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
             final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME.concat(i == 0 ? "" : "." + i));
             final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID.concat(i == 0 ? "" : "." + i));
             final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
+            final String destinationBindingType = getProperty(SAML_DESTINATION_BINDING_TYPE.concat(i == 0 ? "" : "." + i));
 
             if (CommonHelper.isNotBlank(keystorePassword) && CommonHelper.isNotBlank(privateKeyPassword)
                     && CommonHelper.isNotBlank(keystorePath) && CommonHelper.isNotBlank(ientityProviderMetadataPath)) {
@@ -230,6 +232,9 @@ public class PropertiesConfigFactory implements ConfigFactory {
                 }
                 if (CommonHelper.isNotBlank(serviceProviderMetadataPath)) {
                     cfg.setServiceProviderMetadataPath(serviceProviderMetadataPath);
+                }
+                if (CommonHelper.isNotBlank(destinationBindingType)) {
+                    cfg.setDestinationBindingType(destinationBindingType);
                 }
                 final SAML2Client saml2Client = new SAML2Client(cfg);
 
