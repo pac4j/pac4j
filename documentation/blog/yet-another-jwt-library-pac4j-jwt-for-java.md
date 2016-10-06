@@ -99,7 +99,7 @@ So we must generate JWTs from these profiles (it's done via the `JwtGenerator`) 
 We can also verify JWT created in other applications without using the `JwtGenerator` to address other use cases.
 
 Both the `JwtGenerator` and `JwtAuthenticator` are available in the `pac4j-jwt` module (groupId: `org.pac4j`).
-As we want to be able to handle more than just one encryption / signature use cases in the `JwtAuthenticator`, we offer higher abstractions to configure signature and encryption: the `SignatureConfiguration` and the `EncryptionConfiguration` classes.
+As we want to be able to handle more than just one encryption / signature use case in the `JwtAuthenticator`, we offer higher abstractions to configure signature and encryption: the `SignatureConfiguration` and the `EncryptionConfiguration` classes.
 
 Inspired by the [pac4j JWT documentation](http://www.pac4j.org/docs/authenticators/jwt.html):
 
