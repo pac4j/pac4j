@@ -4,8 +4,6 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.session.SessionStore;
-import org.pac4j.core.engine.DefaultSecurityLogic;
-import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.matching.Matcher;
 import org.pac4j.core.util.CommonHelper;
@@ -31,8 +29,6 @@ public class Config {
     protected SessionStore sessionStore;
 
     protected HttpActionAdapter httpActionAdapter;
-
-    protected SecurityLogic securityLogic = new DefaultSecurityLogic();
 
     public Config() {}
 
@@ -152,8 +148,4 @@ public class Config {
     public void setHttpActionAdapter(HttpActionAdapter httpActionAdapter) {
         this.httpActionAdapter = httpActionAdapter;
     }
-
-    public void setSecurityLogic(SecurityLogic securityLogic){ this.securityLogic = securityLogic; }
-
-    public SecurityLogic getSecurityLogic() { return this.securityLogic; }
 }
