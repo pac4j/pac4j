@@ -81,7 +81,8 @@ public class MongoAuthenticatorIT implements TestsConstants {
     public void testNullPassword() throws HttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
         authenticator.setPasswordAttribute(null);
-        TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "passwordAttribute cannot be null");
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class, "passwordAttribute cannot be null");
     }
 
     private MongoClient getClient() {
@@ -91,8 +92,6 @@ public class MongoAuthenticatorIT implements TestsConstants {
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), attribute);
         authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
-        authenticator.init(null);
-
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials, null);
 

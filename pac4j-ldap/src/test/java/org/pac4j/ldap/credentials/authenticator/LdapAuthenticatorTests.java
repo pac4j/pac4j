@@ -56,7 +56,6 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test(expected = BadCredentialsException.class)
     public void authentFailed() throws HttpAction {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
-        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
     }
@@ -64,7 +63,6 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test
     public void authentSuccessNoAttribute() throws HttpAction {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator);
-        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
 
@@ -79,7 +77,6 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test
     public void authentSuccessSingleAttribute() throws HttpAction {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN);
-        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
 
@@ -96,7 +93,6 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     @Test
     public void authentSuccessMultiAttribute() throws HttpAction {
         final LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(authenticator, LdapServer.CN + "," + LdapServer.SN + "," + LdapServer.ROLE);
-        ldapAuthenticator.init(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapAuthenticator.validate(credentials, null);
 
