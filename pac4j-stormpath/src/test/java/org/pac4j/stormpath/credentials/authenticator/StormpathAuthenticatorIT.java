@@ -30,7 +30,6 @@ public final class StormpathAuthenticatorIT implements TestsConstants {
         // luminous-smoke1
         final StormpathAuthenticator authenticator = new StormpathAuthenticator("77NW47MHGJV5DA8R5UA5YORE0",
                 "nPCDRYPPxhBNpq1HT9Gr85hB7fCACQXSHx0aCuG6D/Q", "2MahZGmC0Rcl7gYkVIea94");
-        authenticator.init(null);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("leleuj", "Pac4jtest", CLIENT_NAME);
         authenticator.validate(credentials, null);
