@@ -74,6 +74,9 @@ public class StormpathAuthenticator extends InitializableWebObject
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+
+        init(context);
+
         try {
             logger.debug("Attempting to authenticate user [{}] against application [{}] in Stormpath cloud...",
                     credentials.getUsername(), this.application.getName());
