@@ -7,7 +7,7 @@ import org.pac4j.core.util.CommonHelper;
 import java.util.regex.Pattern;
 
 /**
- * Matching on HTTP methods.
+ * Matching on a HTTP header.
  *
  * @author Jerome Leleu
  * @since 1.9.3
