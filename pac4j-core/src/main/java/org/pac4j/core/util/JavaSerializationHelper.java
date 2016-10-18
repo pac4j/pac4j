@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Helper for Java serialization.
@@ -15,6 +17,8 @@ import java.io.*;
 public class JavaSerializationHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
+
+    private List<String> trustedPackages = Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.");
 
     /**
      * Serialize a Java object into a base64 String.
@@ -64,11 +68,54 @@ public class JavaSerializationHelper {
     public Serializable unserializeFromBytes(final byte[] bytes) {
         Serializable o = null;
         try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-            final ObjectInputStream ois = new ObjectInputStream(bais)) {
+            final ObjectInputStream ois = new RestrictedObjectInputStream(bais, this.trustedPackages)) {
             o = (Serializable) ois.readObject();
         } catch (final IOException | ClassNotFoundException e) {
             logger.warn("cannot Java deserialize object", e);
         }
         return o;
+    }
+
+    public List<String> getTrustedPackages() {
+        return trustedPackages;
+    }
+
+    public void setTrustedPackages(final List<String> trustedPackages) {
+        this.trustedPackages = trustedPackages;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "trustedPackages", this.trustedPackages);
+    }
+
+    /**
+     * Restricted <code>ObjectInputStream</code> for security reasons.
+     */
+    private static class RestrictedObjectInputStream extends ObjectInputStream {
+
+        private final List<String> trustedPackages;
+
+        private RestrictedObjectInputStream(final InputStream in, final List<String> trustedPackages) throws IOException {
+            super(in);
+            CommonHelper.assertNotNull("trustedPackages", trustedPackages);
+            this.trustedPackages = trustedPackages;
+        }
+
+        @Override
+        protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+            final String qualifiedClassName = desc.getName();
+            for (final String p : trustedPackages) {
+                if (qualifiedClassName.startsWith(p)) {
+                    return super.resolveClass(desc);
+                }
+            }
+            throw new ClassNotFoundException("Wont resolve untrusted class: " + qualifiedClassName);
+        }
+
+        @Override
+        protected Class<?> resolveProxyClass(String[] interfaces) throws IOException, ClassNotFoundException {
+            throw new ClassNotFoundException("Wont resolve proxy classes at all.");
+        }
     }
 }
