@@ -65,7 +65,7 @@ public final class CasRestClientIT implements TestsConstants {
 
     @Test
     public void testRestBasic() throws HttpAction, UnsupportedEncodingException {
-        internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 5);
+        internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 3);
     }
 
     @Test
@@ -93,6 +93,6 @@ public final class CasRestClientIT implements TestsConstants {
         client.destroyTicketGrantingTicket(profile);
 
         TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile), TechnicalException.class,
-                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (500)");
+                "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found");
     }
 }
