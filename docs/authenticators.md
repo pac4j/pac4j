@@ -3,7 +3,7 @@ layout: doc
 title: Authenticators&#58;
 ---
 
-[HTTP](/docs/clients/http.html) [clients](/docs/clients.html) require an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) to validate the credentials.
+[HTTP](clients/http.html) [clients](clients.html) require an [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java) to validate the credentials.
 
 This `Authenticator` interface has only one method: `void validate(C credentials, WebContext context) throws HttpAction;`.
 
@@ -16,12 +16,12 @@ The [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/mai
 
 You can use various `Authenticator` for many identity systems:
 
-- [LDAP](/docs/authenticators/ldap.html)
-- [SQL](/docs/authenticators/sql.html)
-- [JWT](/docs/authenticators/jwt.html)
-- [MongoDB](/docs/authenticators/mongodb.html)
-- [Stormpath](/docs/authenticators/stormpath.html)
-- [IP address](/docs/authenticators/ip.html)
+- [LDAP](authenticators/ldap.html)
+- [SQL](authenticators/sql.html)
+- [JWT](authenticators/jwt.html)
+- [MongoDB](authenticators/mongodb.html)
+- [Stormpath](authenticators/stormpath.html)
+- [IP address](authenticators/ip.html)
 
 ## 1) Deal with performance issues
 
