@@ -7,9 +7,9 @@ In most `pac4j` implementations, the security configuration can be defined via a
 
 It gathers the required:
 
-- [Clients](/docs/clients.html)
-- [Authorizers](/docs/authorizers.html)
-- [Matchers](/docs/matchers.html)
+- [Clients](clients.html)
+- [Authorizers](authorizers.html)
+- [Matchers](matchers.html)
 
 **Example:**
 
@@ -38,7 +38,7 @@ Config config = new Config(clients);
 
 Thus, you could define for **all** clients:
 
-- a [`CallbackUrlResolver`](http://localhost:4000/docs/clients.html#the-callback-url): `clients.setCallbackUrlResolver(callbackUrlResolver);`
-- a [default client](http://localhost:4000/docs/clients.html#the-callback-url): `clients.setDefaultClient(facebookClient);`
-- an [`AjaxRequestResolver`](http://localhost:4000/docs/clients.html#ajax-requests): `clients.setAjaxRequestResolver(ajaxRequestResolver);`
-- an [`AuthorizationGenerator`](http://localhost:4000/docs/clients.html#compute-roles-and-permissions): `clients.addAuthorizationGenerator(authorizationGenerator);`
+- a [`CallbackUrlResolver`](clients.html#the-callback-url): `clients.setCallbackUrlResolver(callbackUrlResolver);`
+- a [default client](clients.html#the-callback-url): `clients.setDefaultClient(facebookClient);`
+- an [`AjaxRequestResolver`](clients.html#ajax-requests): `clients.setAjaxRequestResolver(ajaxRequestResolver);`
+- an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions): `clients.addAuthorizationGenerator(authorizationGenerator);`

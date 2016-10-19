@@ -3,6 +3,17 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**pac4j 1.9.3**:
+
+- Bug fixes (`Authenticator` initialization, `resource:` / `classpath:` prefixes in the SAML support...)
+- New `HeaderMatcher` and `HttpMethodMatcher`
+- The `Config` holds a `SecurityLogic`
+- The OpenID Connect configuration can be done without a discovery URL
+- The Dropbox support uses the OAuth protocol v2.0
+- The expiration time is checked on JWT, as well as the existence of the subject
+- The `IpExtractor` can work on an alternative header name
+- A specific profile can be built by the `AuthenticatorProfileCreator`
+
 **pac4j 1.9.2**:
 
 - the CAS support has been upgraded: the CAS configuration is defined via the `CasConfiguration`, the new `DirectCasProxyClient` must be used to validate proxy tickets, the front channel logout is supported by the `CasSingleSignOutHandler`, the OAuth support is compatible with CAS v5
@@ -85,4 +96,4 @@ title: Release notes&#58;
 - Add ok.ru support
 - Remove the LinkedIn OAuth v1 support (use the OAuth version 2 support)
 
-[&#9656; Older versions...](/docs/release-notes-older.html)
+[&#9656; Older versions...](release-notes-older.html)

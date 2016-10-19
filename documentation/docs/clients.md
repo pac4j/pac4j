@@ -3,19 +3,19 @@ layout: doc
 title: Clients&#58;
 ---
 
-A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents an **authentication mechanism**. It performs the login process and returns (if successful) a [user profile](/docs/user-profile.html). Many clients are available for the:
+A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/client/Client.java) represents an **authentication mechanism**. It performs the login process and returns (if successful) a [user profile](user-profile.html). Many clients are available for the:
 
-- [OAuth protocol](/docs/clients/oauth.html)
-- [SAML protocol](/docs/clients/saml.html)
-- [CAS protocol](/docs/clients/cas.html)
-- [OpenID Connect protocol](/docs/clients/openid-connect.html)
-- [HTTP protocol](/docs/clients/http.html)
-- [OpenID protocol](/docs/clients/openid.html)
-- [Google App Engine support](/docs/clients/google-app-engine.html)
+- [OAuth protocol](clients/oauth.html)
+- [SAML protocol](clients/saml.html)
+- [CAS protocol](clients/cas.html)
+- [OpenID Connect protocol](clients/openid-connect.html)
+- [HTTP protocol](clients/http.html)
+- [OpenID protocol](clients/openid.html)
+- [Google App Engine support](clients/google-app-engine.html)
 
-While most clients are self-sufficient, the HTTP clients require to define an [Authenticator](/docs/authenticators.html) to handle the credentials validation.
+While most clients are self-sufficient, the HTTP clients require to define an [Authenticator](authenticators.html) to handle the credentials validation.
 
-Clients (like Authorizers) are generally defined in a [security configuration](/docs/config.html).
+Clients (like Authorizers) are generally defined in a [security configuration](config.html).
 
 Each client has a name which is by default the class name (like `FacebookClient`), but it can be explicitly set to another value with the `setName` method.
 
@@ -35,7 +35,7 @@ Clients are of two kinds: direct for web services authentication and indirect fo
 
 | | Direct clients = web services authentication | Indirect clients = UI authentication
 |------|----------------|-----------------
-| [Authentication flows](/docs/authentication-flows.html) | 1) Credentials are passed for each HTTP request (to the "[security filter](/docs/how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url)") | 1) The originally requested url is saved in session (by the "security filter")<br />2) The user is redirected to the identity provider (by the "security filter")<br />3) Authentication happens at the identity provider (or locally for the `FormClient` and the `IndirectBasicAuthClient`)<br />4) The user is redirected back to the callback endpoint / url ("callback filter")<br />5) The user is redirected to the originally requested url (by the "[callback filter](/docs/how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client)") |
+| [Authentication flows](authentication-flows.html) | 1) Credentials are passed for each HTTP request (to the "[security filter](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url)") | 1) The originally requested url is saved in session (by the "security filter")<br />2) The user is redirected to the identity provider (by the "security filter")<br />3) Authentication happens at the identity provider (or locally for the `FormClient` and the `IndirectBasicAuthClient`)<br />4) The user is redirected back to the callback endpoint / url ("callback filter")<br />5) The user is redirected to the originally requested url (by the "[callback filter](how-to-implement-pac4j-for-a-new-framework.html#b-handle-callback-for-indirect-client)") |
 | How many times the login process occurs? | The authentication happens for every HTTP request (in the "security filter") via the defined [`Authenticator`](/dcos/authenticators.html) and `ProfileCreator`.<br />For performance reasons, a cache may be used by wrapping the current `Authenticator` in a `LocalCachingAuthenticator` or the user profile can be saved (by the `Authenticator` or `ProfileCreator`) into the web session using the available web context and the `ProfileManager` class | The authentication happens only once (in the "callback filter") |
 | Where is the user profile saved by default? | In the HTTP request  (stateless) | In the web session (statefull) |
 | Where are the credentials? | Passed for every HTTP request (processed by the "security filter") | On the callback endpoint returned by the identity provider (and retrieved by the "callback filter") |
@@ -134,4 +134,4 @@ The `Client` interface has the following methods:
 
 <br />
 
-Clients are generally populated with default sub-components: `RedirectActionBuilder`, `CredentialsExtractor`, `ProfileCreator` and `Authenticator`, except for HTTP clients where the `Authenticator` must be defined. Sub-components can of course be changed for various [customizations](/docs/customizations.html).
+Clients are generally populated with default sub-components: `RedirectActionBuilder`, `CredentialsExtractor`, `ProfileCreator` and `Authenticator`, except for HTTP clients where the `Authenticator` must be defined. Sub-components can of course be changed for various [customizations](customizations.html).

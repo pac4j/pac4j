@@ -100,7 +100,7 @@ Many attribute converters already exists: [`BooleanConverter`](https://github.co
 
 Roles and permissions can be added to the user profile via the `addRole(role)`, `addRoles(roles)`, `addPermission(permission)` and `addPermissions(permissions)` methods.
 
-They are generally computed in an [`AuthorizationGenerator`](/docs/clients.html#compute-roles-and-permissions).
+They are generally computed in an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions).
 
 
 ## 4) Client name

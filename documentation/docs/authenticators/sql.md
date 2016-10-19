@@ -50,4 +50,4 @@ In fact, you can even adapt to a new / existing structure for the `users` table 
 
 The query is built as: `startQuery + "," + attributes + endQuery` and by default, `startQuery` is "select username, password" and `endQuery` is " from users where username = _username_;".
 
-This `DbAuthenticator` supports the use of a specific [`PasswordEncoder`](/docs/authenticators.html#passwordencoder).
+This `DbAuthenticator` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder).

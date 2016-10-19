@@ -13,7 +13,7 @@ Add the `pac4j-core` dependency to benefit from the core API of `pac4j`. Other d
 
 ## 2) Configuration
 
-To define your security configuration, gather all your authentication mechanisms = [**clients**](/docs/clients.html) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](/docs/authorizers.html) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
+To define your security configuration, gather all your authentication mechanisms = [**clients**](clients.html) via the `Clients` class (to share the same callback url). Also define your [**authorizers**](authorizers.html) to check authorizations and aggregate both (clients and authorizers) on the `Config`:
 
 ```java
 FacebookClient facebookClient = new FacebookClient(FB_KEY, FB_SECRET);
@@ -42,7 +42,7 @@ To secure your Java web application, **the reference implementation is to create
 
 In your framework, you will need to create:
 
-1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for J2E environment where you can already use the existing `J2EContext`. Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](/docs/session-store.html) the calls regarding the web session, to be able to choose the implementation used for the web session management
+1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for J2E environment where you can already use the existing `J2EContext`. Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session, to be able to choose the implementation used for the web session management
 
 2) optionally a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
 

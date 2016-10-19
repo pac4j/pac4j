@@ -51,4 +51,4 @@ And the `username` and `password` attributes can be changed to other names via t
 
 The list of attributes can be defined as a list of attribute names separated by commas via the `setAttributes(String)`. In the previous example, it would be: `mongoAuthenticator.setattributes("first_name, last_name");`.
 
-This `MongoAuthenticator` supports the use of a specific [`PasswordEncoder`](/docs/authenticators.html#passwordencoder).
+This `MongoAuthenticator` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder).

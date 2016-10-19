@@ -83,7 +83,7 @@ Once you have an authenticated web session on the Identity Provider, usually it 
 client.setMaximumAuthenticationLifetime(600);
 ```
 
-By default, the entity ID of your application (the Service Provider) will be equals to the [callback url](/docs/clients.html#the-callback-url). 
+By default, the entity ID of your application (the Service Provider) will be equals to the [callback url](clients.html#the-callback-url). 
 This can lead to problems with some IDP because of the query string not being accepted (like ADFS v2.0). So you can force your own 
 entity ID with the `serviceProviderEntityId` parameter:
 
