@@ -3,7 +3,7 @@ layout: doc
 title: Release notes (older versions)&#58;
 ---
 
-[&#9656; Newer versions...](/docs/release-notes.html)
+[&#9656; Newer versions...](release-notes.html)
 
 **pac4j 1.7.1**:
 

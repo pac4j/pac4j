@@ -86,7 +86,7 @@ Read the [CAS documentation](https://apereo.github.io/cas/4.2.x/installation/Ser
 
 ### c) Proxy support
 
-For proxy support, the `CasProxyReceptor` class must be used, defined on the same or new callback url (via the [security configuration](/docs/config.html)) and declared in the `CasConfiguration`:
+For proxy support, the `CasProxyReceptor` class must be used, defined on the same or new callback url (via the [security configuration](config.html)) and declared in the `CasConfiguration`:
 
 ```java
 CasProxyReceptor casProxy = new CasProxyReceptor(); 
@@ -144,7 +144,7 @@ The `DirectCasProxyClient` will validate the proxy ticket and the service url (d
 
 This requires to define the appropriate CAS service (matching the `http://localhost:8080/webservices` url) on the CAS server side.
 
-This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasAuthenticator.java). See how to [deal with performance issues](/docs/authenticators.html#deal-with-performance-issues).
+This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasAuthenticator.java). See how to [deal with performance issues](authenticators.html#deal-with-performance-issues).
 
 ---
 
@@ -163,7 +163,7 @@ The [`CasRestFormClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/s
 CasRestFormClient casRestClient = new CasRestFormClient("https://mycasserver/");
 ```
 
-These direct clients internally rely on the [`CasRestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasRestAuthenticator.java). See how to [deal with performance issues](/docs/authenticators.html#deal-with-performance-issues).
+These direct clients internally rely on the [`CasRestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasRestAuthenticator.java). See how to [deal with performance issues](authenticators.html#deal-with-performance-issues).
 
 After a successful authentication via the `CasRestBasicAuthClient` / `CasRestFormClient`, a `CasRestProfile` will be created.
 

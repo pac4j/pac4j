@@ -3,19 +3,19 @@ layout: doc
 title: Authorizers&#58;
 ---
 
-**Authorizers** are meant to check authorizations to access an url (in the "[security filter](/docs/how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url)"):
+**Authorizers** are meant to check authorizations to access an url (in the "[security filter](how-to-implement-pac4j-for-a-new-framework.html#a-secure-an-url)"):
 
 * either on the authenticated user profile: has the user the appropriate role?
 * or on the web context: can you call this resource in an iframe?
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that this concept of `Authorizer` has a broader meaning than generally in the security field.</div>
+<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that this concept of <code>Authorizer</code> has a broader meaning than generally in the security field.</div>
 
-Generally, authorizers are defined in the [security configuration](/docs/config.html) of the application.
+Generally, authorizers are defined in the [security configuration](config.html) of the application.
 
 Various authorizers are available:
 
-- [Roles / permissions](/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](/docs/authorizers/profile-authorizers.html#others)
-- [CORS](/docs/authorizers/web-authorizers.html#cors) - [CSRF](/docs/authorizers/web-authorizers.html#csrf) - [Security headers](/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](/docs/authorizers/web-authorizers.html#others)
+- [Roles / permissions](authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
+- [CORS](authorizers/web-authorizers.html#cors) - [CSRF](authorizers/web-authorizers.html#csrf) - [Security headers](authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
 
 
 ## &#9656; Default authorizer names

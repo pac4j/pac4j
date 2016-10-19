@@ -5,9 +5,9 @@ title: Matchers&#58;
 
 ## 1) Definition
 
-*pac4j* provides a [security model and engine (specific behaviours)](/docs/how-to-implement-pac4j-for-a-new-framework.html). The "security filter" is in charge of protecting url, requesting authentication and optionally authorization.
+*pac4j* provides a [security model and engine (specific behaviours)](how-to-implement-pac4j-for-a-new-framework.html). The "security filter" is in charge of protecting url, requesting authentication and optionally authorization.
 
-In some cases, you may want to bypass this "security filter" and this can be done using the **matchers** parameter which is generally a list of matcher names. A matcher is generally defined in the [security configuration](/docs/config.html).
+In some cases, you may want to bypass this "security filter" and this can be done using the **matchers** parameter which is generally a list of matcher names. A matcher is generally defined in the [security configuration](config.html).
 
 ## 2) Implementation
 
