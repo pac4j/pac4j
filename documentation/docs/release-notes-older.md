@@ -5,6 +5,61 @@ title: Release notes (older versions)&#58;
 
 [&#9656; Newer versions...](release-notes.html)
 
+**pac4j 1.8.8**:
+
+- Support default client in `Clients`
+- Properly handle Javascript calls on `FormClient`
+- Add `Resource` concept from Spring (in SAML support)
+
+**pac4j 1.8.7**:
+
+- Ability to define the ticket validator for the CAS REST authenticator
+- Option to disable SAML requests signing
+
+**pac4j 1.8.6**:
+
+- New DirectFormClient
+- Improved CAS support: callbackUrlResolver applies on CAS prefix url + the LocalCachingAuthenticator can be used with the CasRest*Client
+- The `RelativeCallbackUrlResolver` properly handles HTTPS requests
+- Roles / permissions are kept through JWT
+
+**pac4j 1.8.5**:
+
+- Remove the `setResponseCharacterEncoding` from the `WebContext`
+
+**pac4j 1.8.4**:
+
+- Improved SAML support security configuration
+
+**pac4j 1.8.2 & 1.8.3**:
+
+- Improved JWT support
+- Added Microsft Azure AD (OpenID Connect) support
+
+**pac4j 1.8.1**:
+
+- More authorizers: IP check, HTTP method check, profile type verification, Spring Security like security filters (cache control, Xframe...)
+- Updated CSRF protection support
+- Path exclusions support
+- new AnonymousClient for advanced use cases
+- Updated OAuth, CAS, SAML and OpenID Connect supports
+- new session store mechanism
+- new configuration module (build clients via properties only)
+- Customizable callback urls
+
+**pac4j 1.8.0**:
+
+- Support REST authentication (basic auth, request parameter, request header, IP, cookie)
+- New authentication mechanisms (JWT, LDAP, RDBMS, MongoDB, Stormpath)
+- AJAX requests are automatically detected
+- Arbitrary attributes are allowed on profiles (even with a definition)
+- Upgrade SAML support
+- Upgrade CAS support (protocol v3, REST API)
+- Handle authorizations (on roles, permissions, CSRF protection...)
+- Bring default guidelines (DefaultClientFinder, DefaulutAuthorizationChecker)
+- Add ok.ru support
+- Remove the LinkedIn OAuth v1 support (use the OAuth version 2 support)
+
 **pac4j 1.7.1**:
 
 - the SAML support is improved, but unfortunately, it only works in J2E environment (j2e-pac4j and spring-security-pac4j libraries)
