@@ -72,9 +72,8 @@ public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, C
             logger.debug("proxyGrantingTicket: {}", proxyGrantingTicket);
 
             if (CommonUtils.isBlank(proxyGrantingTicket) || CommonUtils.isBlank(proxyGrantingTicketIou)) {
-                ctx.writeResponseContent("");
                 final String message = "Missing proxyGrantingTicket or proxyGrantingTicketIou";
-                throw HttpAction.ok(message, ctx);
+                throw HttpAction.ok(message, ctx, "");
             }
 
             this.proxyGrantingTicketStorage.save(proxyGrantingTicketIou, proxyGrantingTicket);
@@ -84,7 +83,7 @@ public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, C
 
             final String message = "No credential for CAS proxy receptor -> returns ok";
             logger.debug(message);
-            throw HttpAction.ok(message, ctx);
+            throw HttpAction.ok(message, ctx, "");
         });
         setAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }
