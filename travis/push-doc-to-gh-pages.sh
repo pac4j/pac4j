@@ -1,8 +1,8 @@
 #!/bin/bash
 invokeDoc=false
-branchVersion="development"
+branchVersion="1.9.x"
 
-if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
+if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "$branchVersion" ]; then
   case "${TRAVIS_JOB_NUMBER}" in
        *\.1)
         echo -e "Invoking auto-doc deployment for Travis job ${TRAVIS_JOB_NUMBER}"
@@ -27,10 +27,16 @@ if [ "$invokeDoc" == true ]; then
 
   cd gh-pages
 
-  echo -e "Staring to move project documentation over...\n"
+  echo -e "Starting to move project documentation over...\n"
 
-  echo -e "Copying new docs from $HOME/docs-latest over to gh-pages...\n"
-  cp -Rf $HOME/docs-latest/* .
+  echo -e "Removing previous documentation from $branchVersion...\n"
+  git rm -rf ./"$branchVersion" > /dev/null
+
+  echo -e "Creating $branchVersion directory...\n"
+  test -d "./$branchVersion" || mkdir -m777 -v "./$branchVersion"
+
+  echo -e "Copying new docs from $HOME/docs-latest over to $branchVersion...\n"
+  cp -Rf $HOME/docs-latest/* "./$branchVersion"
   echo -e "Copied project documentation...\n"
 
   echo -e "Adding changes to the git index...\n"
