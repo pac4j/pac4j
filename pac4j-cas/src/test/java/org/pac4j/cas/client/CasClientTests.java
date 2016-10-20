@@ -127,7 +127,7 @@ public final class CasClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
             .setRequestMethod("POST");
         TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class, "back logout request: no credential returned");
-        assertEquals(204, context.getResponseStatus());
+        assertEquals(200, context.getResponseStatus());
     }
 
     private String deflateAndBase64(final String data) {
