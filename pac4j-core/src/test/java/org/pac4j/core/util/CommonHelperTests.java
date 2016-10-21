@@ -138,6 +138,7 @@ public final class CommonHelperTests {
     @Test
     public void testAreEqualsFails() {
         assertFalse(CommonHelper.areEquals(VALUE, null));
+        assertFalse(CommonHelper.areEquals(null, VALUE));
         assertFalse(CommonHelper.areEquals(NAME, VALUE));
     }
 
