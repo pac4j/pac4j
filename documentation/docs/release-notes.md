@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**pac4j 1.9.4**:
+
+- Critical security issue on the `NopPasswordEncoder` regarding the `MongoAuthenticator` and the `DbAuthenticator`: upgrading is mandatory
+
 **pac4j 1.9.3**:
 
 - Bug fixes (`Authenticator` initialization, `resource:` / `classpath:` prefixes in the SAML support...)

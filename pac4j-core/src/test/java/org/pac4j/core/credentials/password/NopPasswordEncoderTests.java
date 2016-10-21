@@ -13,10 +13,19 @@ import static org.junit.Assert.*;
  */
 public final class NopPasswordEncoderTests implements TestsConstants {
 
+    private final static PasswordEncoder encoder = new NopPasswordEncoder();
+
     @Test
-    public void test() {
-        final PasswordEncoder encoder = new NopPasswordEncoder();
+    public void testEncoding() {
         final String encodedPwd = encoder.encode(PASSWORD);
         assertEquals(PASSWORD, encodedPwd);
+    }
+
+    @Test
+    public void testMatching() {
+        assertTrue(encoder.matches(NAME, NAME));
+        assertFalse(encoder.matches(NAME, null));
+        assertFalse(encoder.matches(NAME, VALUE));
+        assertFalse(encoder.matches(null, VALUE));
     }
 }
