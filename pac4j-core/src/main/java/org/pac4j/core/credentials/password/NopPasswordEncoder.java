@@ -17,6 +17,6 @@ public class NopPasswordEncoder implements PasswordEncoder {
 
     @Override
     public boolean matches(final String plainPassword, final String encodedPassword) {
-        return CommonHelper.areEquals(plainPassword, plainPassword);
+        return CommonHelper.areEquals(plainPassword, encodedPassword);
     }
 }
