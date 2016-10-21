@@ -82,7 +82,7 @@ public class OidcProfile extends CommonProfile {
         return (Boolean) getAttribute(OidcAttributesDefinition.PHONE_NUMBER_VERIFIED);
     }
 
-    public Date getUpatedAt() {
+    public Date getUpdatedAt() {
         return (Date) getAttribute(OidcAttributesDefinition.UPDATED_AT);
     }
 
