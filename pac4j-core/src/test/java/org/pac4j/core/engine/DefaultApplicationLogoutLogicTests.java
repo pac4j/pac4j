@@ -81,7 +81,7 @@ public final class DefaultApplicationLogoutLogicTests implements TestsConstants 
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
         call();
-        assertEquals(200, context.getResponseStatus());
+        assertEquals(204, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
         final LinkedHashMap<String, CommonProfile> profiles2 = (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
         assertEquals(0, profiles2.size());
@@ -110,7 +110,7 @@ public final class DefaultApplicationLogoutLogicTests implements TestsConstants 
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         logoutUrlPattern = VALUE;
         call();
-        assertEquals(200, context.getResponseStatus());
+        assertEquals(204, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
     }
 
