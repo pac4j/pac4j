@@ -10,6 +10,7 @@ import org.ldaptive.auth.Authenticator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
@@ -53,7 +54,7 @@ public class LdapAuthenticator extends InitializableWebObject implements org.pac
     }
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
         init(context);
 
         final String username = credentials.getUsername();

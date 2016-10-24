@@ -35,7 +35,7 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) throws HttpAction {
+    public TokenCredentials extract(WebContext context) throws HttpAction, CredentialsException {
         final String method = context.getRequestMethod();
         if ("GET".equals(method) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");

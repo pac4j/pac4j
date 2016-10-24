@@ -26,7 +26,7 @@ public class HeaderExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) throws HttpAction {
+    public TokenCredentials extract(WebContext context) throws HttpAction, CredentialsException {
         final String header = context.getRequestHeader(this.headerName);
         if (header == null) {
             return null;
