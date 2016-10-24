@@ -22,7 +22,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator<Us
     protected static final Logger logger = LoggerFactory.getLogger(SimpleTestUsernamePasswordAuthenticator.class);
 
     @Override
-    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
         if (credentials == null) {
             throwsException("No credential");
         }
@@ -43,7 +43,7 @@ public class SimpleTestUsernamePasswordAuthenticator implements Authenticator<Us
         credentials.setUserProfile(profile);
     }
 
-    protected void throwsException(final String message) {
+    protected void throwsException(final String message) throws CredentialsException {
         throw new CredentialsException(message);
     }
 }

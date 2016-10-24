@@ -33,7 +33,7 @@ public class IpRegexpAuthenticator implements Authenticator<TokenCredentials> {
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction {
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
         CommonHelper.assertNotNull("pattern", pattern);
 
         final String ip = credentials.getToken();
