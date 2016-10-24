@@ -49,14 +49,16 @@ public class HttpAction extends Exception {
     }
     
     /**
-     * Build an HTTP Ok.
+     * Build an HTTP Ok without any content.
      * 
      * @param message message
      * @param context context
      * @return an HTTP ok
      */
     public static HttpAction ok(final String message, final WebContext context) {
-        return ok(message, context, "");
+        context.setResponseStatus(HttpConstants.OK_NO_CONTENT);
+        context.writeResponseContent("");
+        return new HttpAction(message, HttpConstants.OK_NO_CONTENT);
     }
     
     /**
