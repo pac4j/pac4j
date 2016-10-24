@@ -13,7 +13,7 @@ Given a version X.Y.Z:
 - when Y changes, it's a minor version with no compilation / runtime breaking changes (for example, you can upgrade from 2.5.2 to 2.7.0 without any worry)
 - when Z changes, it's a bug fix(es) version with no compilation / runtime breaking change (no upgrade issue either).
 
-*pac4j* implementations will adopt the semver versioning when upgrading to `pac4j` version 2.
+Generally, *pac4j* implementations will adopt the semver versioning when upgrading to `pac4j` version 2, if they don't already have.
 
 ## 2) Maintenance
 
