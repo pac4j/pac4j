@@ -23,11 +23,6 @@ public class HeaderClient extends DirectClientV2<TokenCredentials, CommonProfile
 
     public HeaderClient() {}
 
-    @Deprecated
-    public HeaderClient(final Authenticator tokenAuthenticator) {
-        setAuthenticator(tokenAuthenticator);
-    }
-
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
         setAuthenticator(tokenAuthenticator);
@@ -38,12 +33,6 @@ public class HeaderClient extends DirectClientV2<TokenCredentials, CommonProfile
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
         setAuthenticator(tokenAuthenticator);
-    }
-
-    @Deprecated
-    public HeaderClient(final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
     }
 
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator,

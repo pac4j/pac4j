@@ -1,10 +1,8 @@
 package org.pac4j.cas.client;
 
 import org.jasig.cas.client.util.CommonUtils;
-import org.jasig.cas.client.validation.ProxyList;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.cas.logout.CasLogoutHandler;
@@ -41,40 +39,6 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
         setConfiguration(casConfiguration);
     }
 
-    /**
-     * Use {@link #CasClient(CasConfiguration)} instead.
-     *
-     * @param casLoginUrl the CAS login url
-     */
-    @Deprecated
-    public CasClient(final String casLoginUrl) {
-        configuration.setLoginUrl(casLoginUrl);
-    }
-
-    /**
-     * Use {@link #CasClient(CasConfiguration)} instead.
-     *
-     * @param casLoginUrl the CAS login url
-     * @param casProtocol the CAS protocol
-     */
-    @Deprecated
-    public CasClient(final String casLoginUrl, final CasProtocol casProtocol) {
-        configuration.setLoginUrl(casLoginUrl);
-        configuration.setProtocol(casProtocol);
-    }
-
-    /**
-     * Use {@link #CasClient(CasConfiguration)} instead.
-     *
-     * @param casLoginUrl the CAS login url
-     * @param casPrefixUrl the CAS server prefix url
-     */
-    @Deprecated
-    public CasClient(final String casLoginUrl, final String casPrefixUrl) {
-        configuration.setLoginUrl(casLoginUrl);
-        configuration.setPrefixUrl(casPrefixUrl);
-    }
-
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
@@ -101,51 +65,6 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
 
     public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
-    }
-
-    @Deprecated
-    public void setCasLoginUrl(final String casLoginUrl) {
-        configuration.setLoginUrl(casLoginUrl);
-    }
-
-    @Deprecated
-    public void setCasPrefixUrl(final String casPrefixUrl) {
-        configuration.setPrefixUrl(casPrefixUrl);
-    }
-
-    @Deprecated
-    public void setCasProtocol(final CasProtocol casProtocol) {
-        configuration.setProtocol(casProtocol);
-    }
-
-    @Deprecated
-    public void setRenew(final boolean renew) {
-        configuration.setRenew(renew);
-    }
-
-    @Deprecated
-    public void setGateway(final boolean gateway) {
-        configuration.setGateway(gateway);
-    }
-
-    @Deprecated
-    public void setLogoutHandler(final CasLogoutHandler logoutHandler) {
-        configuration.setLogoutHandler(logoutHandler);
-    }
-
-    @Deprecated
-    public void setAcceptAnyProxy(final boolean acceptAnyProxy) {
-        configuration.setAcceptAnyProxy(acceptAnyProxy);
-    }
-
-    @Deprecated
-    public void setAllowedProxyChains(final ProxyList allowedProxyChains) {
-        configuration.setAllowedProxyChains(allowedProxyChains);
-    }
-
-    @Deprecated
-    public void setCasProxyReceptor(final CasProxyReceptor casProxyReceptor) {
-        configuration.setProxyReceptor(casProxyReceptor);
     }
 
     @Override
