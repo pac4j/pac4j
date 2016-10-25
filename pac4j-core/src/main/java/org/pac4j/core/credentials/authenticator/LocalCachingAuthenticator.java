@@ -48,18 +48,17 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     public void validate(final T credentials, final WebContext context) throws HttpAction, CredentialsException {
         init(context);
 
-        try {
-            final CommonProfile profile = this.cache.get(credentials, () -> {
-                logger.debug("Delegating authentication to {}...", delegate);
-                delegate.validate(credentials, context);
-                return credentials.getUserProfile();
-            });
+        CommonProfile profile = this.cache.getIfPresent(credentials);
+        if (profile == null) {
+            logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
+            delegate.validate(credentials, context);
+            profile = credentials.getUserProfile();
+            logger.debug("Caching credential. Using profile {}...", profile);
+            cache.put(credentials, profile);
+        } else {
             credentials.setUserProfile(profile);
             logger.debug("Found cached credential. Using cached profile {}...", profile);
-        } catch (Exception e) {
-            throw new CredentialsException(e);
         }
-
     }
 
     @Override
