@@ -2,6 +2,7 @@ package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -82,22 +83,23 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (credentials == null) {
-                throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR, 401);
+                throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR);
             }
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error", computeErrorMessage(e), 403);
+            throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
         }
 
         return credentials;
     }
 
-    private HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage, int errorCode) throws HttpAction {
+    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage) throws HttpAction {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (getAjaxRequestResolver().isAjax(context)) {
-            logger.info("AJAX request detected -> returning " + errorCode);
-            return HttpAction.status("AJAX request -> " + errorCode, errorCode, context);
+            final String msg = "AJAX request detected -> returning 401";
+            logger.info(msg);
+            return HttpAction.status(msg, HttpConstants.UNAUTHORIZED, context);
         } else {
             String redirectionUrl = CommonHelper.addParameter(this.loginUrl, this.usernameParameter, username);
             redirectionUrl = CommonHelper.addParameter(redirectionUrl, ERROR_PARAMETER, errorMessage);
