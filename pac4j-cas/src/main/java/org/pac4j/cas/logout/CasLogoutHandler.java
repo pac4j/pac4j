@@ -37,19 +37,5 @@ public interface CasLogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param ticket the ticket
      */
-    default void destroySessionBack(C context, String ticket) {
-        // for backward compatibility
-        destroySession(context);
-    }
-
-    /**
-     * Destroys the current web session for the given CAS logout request.
-     *
-     * @param context the web context
-     * @deprecated to be removed, replaced by: {@link #destroySessionBack(WebContext, String)} and {@link #destroySessionFront(WebContext, String)}
-     */
-    @Deprecated
-    default void destroySession(C context) {
-        // do nothing by default
-    }
+    default void destroySessionBack(C context, String ticket) {}
 }

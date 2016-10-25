@@ -36,11 +36,6 @@ public class AzureAdClient extends OidcClient<AzureAdProfile> {
         super(configuration);
     }
 
-    @Deprecated
-    public AzureAdClient(final String clientId, final String secret, final String discoveryURI) {
-        super(clientId, secret, discoveryURI);
-    }
-
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", getConfiguration());
