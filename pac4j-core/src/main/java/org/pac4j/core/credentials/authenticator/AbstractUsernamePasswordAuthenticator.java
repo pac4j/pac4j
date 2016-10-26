@@ -1,10 +1,7 @@
 package org.pac4j.core.credentials.authenticator;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.password.NopPasswordEncoder;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 
 /**
@@ -15,19 +12,13 @@ import org.pac4j.core.util.InitializableWebObject;
  */
 public abstract class AbstractUsernamePasswordAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
 
-    private PasswordEncoder passwordEncoder = new NopPasswordEncoder();
+    private PasswordEncoder passwordEncoder;
 
     public PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
     }
 
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    public void setPasswordEncoder(final PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
-
-    @Override
-    protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
-    }
 }
-

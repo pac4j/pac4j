@@ -60,11 +60,10 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);
         this.dbi = new DBI(this.dataSource);
-
-        super.internalInit(context);
     }
 
     @Override
@@ -126,7 +125,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return dataSource;
     }
 
-    public void setDataSource(DataSource dataSource) {
+    public void setDataSource(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -134,7 +133,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(final String attributes) {
         this.attributes = attributes;
     }
 
@@ -142,7 +141,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return startQuery;
     }
 
-    public void setStartQuery(String startQuery) {
+    public void setStartQuery(final String startQuery) {
         this.startQuery = startQuery;
     }
 
@@ -150,7 +149,13 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return endQuery;
     }
 
-    public void setEndQuery(String endQuery) {
+    public void setEndQuery(final String endQuery) {
         this.endQuery = endQuery;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
+                "attributes", attributes, "startQuery", startQuery, "endQuery", endQuery);
     }
 }
