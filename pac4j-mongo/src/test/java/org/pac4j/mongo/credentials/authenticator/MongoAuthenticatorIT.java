@@ -6,8 +6,6 @@ import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.password.NopPasswordEncoder;
-import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.pac4j.mongo.test.tools.MongoServer;
@@ -20,7 +18,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class MongoAuthenticatorIT implements TestsConstants {
+public final class MongoAuthenticatorIT implements TestsConstants {
 
     private final static int PORT = 37017;
 
@@ -36,7 +34,6 @@ public class MongoAuthenticatorIT implements TestsConstants {
         mongoServer.stop();
     }
 
-
     @Test
     public void testNullPasswordEncoder() {
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME);
@@ -46,40 +43,40 @@ public class MongoAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testNullAttribute() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), null, new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), null, MongoServer.PASSWORD_ENCODER);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "attributes cannot be null");
     }
 
     @Test
     public void testNullMongoClient() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(null, FIRSTNAME, new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(null, FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "mongoClient cannot be null");
     }
 
     @Test
     public void testNullDatabase() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsersDatabase(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usersDatabase cannot be null");
     }
 
     @Test
     public void testNullCollection() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsersCollection(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usersCollection cannot be null");
     }
 
     @Test
     public void testNullUsername() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsernameAttribute(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usernameAttribute cannot be null");
     }
 
     @Test
     public void testNullPassword() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, new NopPasswordEncoder());
+        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setPasswordAttribute(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class, "passwordAttribute cannot be null");
@@ -91,7 +88,7 @@ public class MongoAuthenticatorIT implements TestsConstants {
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction, CredentialsException{
         final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), attribute);
-        authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
+        authenticator.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials, null);
 
@@ -122,18 +119,18 @@ public class MongoAuthenticatorIT implements TestsConstants {
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }
 
-    @Test(expected = MultipleAccountsFoundException.class)
+    @Test
     public void testMultipleUsername() throws HttpAction, CredentialsException {
-        login(MULTIPLE_USERNAME, PASSWORD, "");
+        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
     }
 
-    @Test(expected = AccountNotFoundException.class)
+    @Test
     public void testBadUsername() throws HttpAction, CredentialsException {
-        login(BAD_USERNAME, PASSWORD, "");
+        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class, "No account found for: michael");
     }
 
-    @Test(expected = BadCredentialsException.class)
+    @Test
     public void testBadPassword() throws HttpAction, CredentialsException {
-        login(GOOD_USERNAME, PASSWORD + "bad", "");
+        TestsHelper.expectException(() ->login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class, "Bad credentials for: jle");
     }
 }

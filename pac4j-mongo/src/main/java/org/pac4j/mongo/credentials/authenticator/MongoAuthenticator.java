@@ -68,14 +68,13 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);
         CommonHelper.assertNotNull("passwordAttribute", this.passwordAttribute);
         CommonHelper.assertNotNull("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotNull("usersCollection", this.usersCollection);
         CommonHelper.assertNotNull("attributes", this.attributes);
-
-        super.internalInit(context);
     }
 
     @Override
@@ -126,7 +125,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return mongoClient;
     }
 
-    public void setMongoClient(MongoClient mongoClient) {
+    public void setMongoClient(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
     }
 
@@ -134,7 +133,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(final String attributes) {
         this.attributes = attributes;
     }
 
@@ -142,7 +141,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return usernameAttribute;
     }
 
-    public void setUsernameAttribute(String usernameAttribute) {
+    public void setUsernameAttribute(final String usernameAttribute) {
         this.usernameAttribute = usernameAttribute;
     }
 
@@ -150,7 +149,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return passwordAttribute;
     }
 
-    public void setPasswordAttribute(String passwordAttribute) {
+    public void setPasswordAttribute(final String passwordAttribute) {
         this.passwordAttribute = passwordAttribute;
     }
 
@@ -158,7 +157,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return usersDatabase;
     }
 
-    public void setUsersDatabase(String usersDatabase) {
+    public void setUsersDatabase(final String usersDatabase) {
         this.usersDatabase = usersDatabase;
     }
 
@@ -166,7 +165,13 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return usersCollection;
     }
 
-    public void setUsersCollection(String usersCollection) {
+    public void setUsersCollection(final String usersCollection) {
         this.usersCollection = usersCollection;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "mongoClient", mongoClient, "passwordEncoder", getPasswordEncoder(), "usersDatabase", usersDatabase,
+                "usersCollection", usersCollection, "usernameAttribute", usernameAttribute, "passwordAttribute", passwordAttribute, "attributes", attributes);
     }
 }

@@ -5,8 +5,7 @@ import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.password.NopPasswordEncoder;
-import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
+import org.pac4j.core.util.TestsHelper;
 import org.pac4j.sql.profile.DbProfile;
 import org.pac4j.sql.test.tools.DbServer;
 
@@ -24,29 +23,28 @@ public final class DbAuthenticatorTests implements TestsConstants {
 
     private DataSource ds = DbServer.getInstance();
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullPasswordEncoder() throws HttpAction, CredentialsException {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, FIRSTNAME);
-        authenticator.validate(null, null);
+        TestsHelper.expectException(() -> authenticator.validate(null, null), TechnicalException.class, "passwordEncoder cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullAttribute() throws HttpAction, CredentialsException {
-        final DbAuthenticator authenticator = new DbAuthenticator(ds, null);
-        authenticator.setPasswordEncoder(new NopPasswordEncoder());
-        authenticator.validate(null, null);
+        final DbAuthenticator authenticator = new DbAuthenticator(ds, null, DbServer.PASSWORD_ENCODER);
+        TestsHelper.expectException(() -> authenticator.validate(null, null), TechnicalException.class, "attributes cannot be null");
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testNullDataSource() throws HttpAction, CredentialsException {
         final DbAuthenticator authenticator = new DbAuthenticator(null, FIRSTNAME);
-        authenticator.setPasswordEncoder(new NopPasswordEncoder());
-        authenticator.validate(null, null);
+        authenticator.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
+        TestsHelper.expectException(() -> authenticator.validate(null, null), TechnicalException.class, "dataSource cannot be null");
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction, CredentialsException {
         final DbAuthenticator authenticator = new DbAuthenticator(ds, attribute);
-        authenticator.setPasswordEncoder(new BasicSaltedSha512PasswordEncoder(SALT));
+        authenticator.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
 
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials, null);
@@ -78,18 +76,18 @@ public final class DbAuthenticatorTests implements TestsConstants {
         assertNull(dbProfile.getAttribute(FIRSTNAME));
     }
 
-    @Test(expected = MultipleAccountsFoundException.class)
+    @Test
     public void testMultipleUsername() throws HttpAction, CredentialsException {
-        login(MULTIPLE_USERNAME, PASSWORD, "");
+        TestsHelper.expectException(() -> login(MULTIPLE_USERNAME, PASSWORD, ""), MultipleAccountsFoundException.class, "Too many accounts found for: misagh");
     }
 
-    @Test(expected = AccountNotFoundException.class)
+    @Test
     public void testBadUsername() throws HttpAction, CredentialsException {
-        login(BAD_USERNAME, PASSWORD, "");
+        TestsHelper.expectException(() -> login(BAD_USERNAME, PASSWORD, ""), AccountNotFoundException.class, "No account found for: michael");
     }
 
-    @Test(expected = BadCredentialsException.class)
+    @Test
     public void testBadPassword() throws HttpAction, CredentialsException {
-        login(GOOD_USERNAME, PASSWORD + "bad", "");
+        TestsHelper.expectException(() -> login(GOOD_USERNAME, PASSWORD + "bad", ""), BadCredentialsException.class, "Bad credentials for: jle");
     }
 }
