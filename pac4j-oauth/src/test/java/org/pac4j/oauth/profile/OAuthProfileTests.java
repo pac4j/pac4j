@@ -40,9 +40,9 @@ public final class OAuthProfileTests implements TestsConstants {
     public void testBuildProfileOldTypedId() {
         final GitHubProfile profile = new GitHubProfile();
         profile.setId(ID);
-        final GitHubProfile profile2 = (GitHubProfile) ProfileHelper.buildProfile(profile.getOldTypedId(), profile.getAttributes());
+        final GitHubProfile profile2 = (GitHubProfile) ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
         assertEquals(ID, profile2.getId());
-        final GitHubProfile profile3 = (GitHubProfile) ProfileHelper.buildProfile(profile.getOldTypedId(), profile.getAttributes());
+        final GitHubProfile profile3 = (GitHubProfile) ProfileHelper.buildProfile(profile.getTypedId(), profile.getAttributes());
         assertEquals(ID, profile3.getId());
     }
 

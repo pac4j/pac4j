@@ -20,39 +20,39 @@ public final class DefaultCasAuthorizationGeneratorTests {
 
     @Test
     public void testNoAttribute() {
-        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<CommonProfile>();
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        CommonProfile profile = (CommonProfile) ProfileHelper.buildProfile("CasProfile#id", attributes);
+        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
+        Map<String, Object> attributes = new HashMap<>();
+        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
         generator.generate(profile);
         assertEquals(false, profile.isRemembered());
     }
 
     @Test
     public void testBadAttributeValue() {
-        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<CommonProfile>();
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
-        CommonProfile profile = (CommonProfile) ProfileHelper.buildProfile("CasProfile#id", attributes);
+        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
         generator.generate(profile);
         assertEquals(false, profile.isRemembered());
     }
 
     @Test
     public void testIsNotRemembered() {
-        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<CommonProfile>();
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
-        CommonProfile profile = (CommonProfile) ProfileHelper.buildProfile("CasProfile#id", attributes);
+        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
         generator.generate(profile);
         assertEquals(false, profile.isRemembered());
     }
 
     @Test
     public void testIsRemembered() {
-        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<CommonProfile>();
-        Map<String, Object> attributes = new HashMap<String, Object>();
+        AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
+        Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
-        CommonProfile profile = (CommonProfile) ProfileHelper.buildProfile("CasProfile#id", attributes);
+        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
         generator.generate(profile);
         assertEquals(true, profile.isRemembered());
     }

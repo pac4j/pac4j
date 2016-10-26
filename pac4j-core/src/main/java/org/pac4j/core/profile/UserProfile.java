@@ -154,17 +154,6 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Get the old typed id with a class name without package. Use {@link #getTypedId()} instead.
-     *
-     * @return the old typed id.
-     * @deprecated
-     */
-    @Deprecated
-    public String getOldTypedId() {
-        return this.getClass().getSimpleName() + SEPARATOR + this.id;
-    }
-
-    /**
      * Get attributes as immutable map.
      * 
      * @return the immutable attributes

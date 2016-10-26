@@ -43,7 +43,7 @@ public final class CommonProfileTests implements TestsConstants {
 
     @Test
     public void testAddAttributes() {
-        final Map<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<>();
         attributes.put(KEY, VALUE);
         final CommonProfile userProfile = new CommonProfile();
         assertEquals(0, userProfile.getAttributes().size());
@@ -94,13 +94,6 @@ public final class CommonProfileTests implements TestsConstants {
         final CommonProfile profile = new CommonProfile();
         profile.setId(ID);
         assertEquals("org.pac4j.core.profile.CommonProfile" + CommonProfile.SEPARATOR + ID, profile.getTypedId());
-    }
-
-    @Test
-    public void testOldTypeId() {
-        final CommonProfile profile = new CommonProfile();
-        profile.setId(ID);
-        assertEquals("CommonProfile" + CommonProfile.SEPARATOR + ID, profile.getOldTypedId());
     }
 
     @Test

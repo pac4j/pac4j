@@ -6,9 +6,7 @@ import com.nimbusds.jwt.PlainJWT;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtClaims;
-import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
-import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,34 +40,6 @@ public class JwtGenerator<U extends CommonProfile> {
     public JwtGenerator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         this.signatureConfiguration = signatureConfiguration;
         this.encryptionConfiguration = encryptionConfiguration;
-    }
-
-    @Deprecated
-    public JwtGenerator(final String secret) {
-        this(secret, true);
-    }
-
-    @Deprecated
-    public JwtGenerator(final String secret, final boolean encrypted) {
-        if (secret != null) {
-            this.signatureConfiguration = new SecretSignatureConfiguration(secret);
-        }
-        if (encrypted) {
-            if (secret != null) {
-                this.encryptionConfiguration = new SecretEncryptionConfiguration(secret);
-            }
-            logger.warn("Using the same key for signature and encryption may lead to security vulnerabilities. Consider using different keys");
-        }
-    }
-
-    @Deprecated
-    public JwtGenerator(final String signingSecret, final String encryptionSecret) {
-        if (signingSecret != null) {
-            this.signatureConfiguration = new SecretSignatureConfiguration(signingSecret);
-        }
-        if (encryptionSecret != null) {
-            this.encryptionConfiguration = new SecretEncryptionConfiguration(encryptionSecret);
-        }
     }
 
     /**
