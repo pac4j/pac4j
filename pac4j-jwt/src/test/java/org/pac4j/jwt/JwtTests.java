@@ -233,15 +233,6 @@ public final class JwtTests implements TestsConstants {
         assertToken(profile, token);
     }
 
-    @Deprecated
-    @Test
-    public void testGenerateAuthenticateAndEncrypted() throws HttpAction, CredentialsException {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(MAC_SECRET, MAC_SECRET);
-        final FacebookProfile profile = createProfile();
-        final String token = generator.generate(profile);
-        assertToken(profile, token, new JwtAuthenticator(MAC_SECRET, MAC_SECRET));
-    }
-
     @Test
     public void testGenerateAuthenticateAndEncryptedWithRolesPermissions() throws HttpAction, CredentialsException {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
@@ -252,15 +243,6 @@ public final class JwtTests implements TestsConstants {
         final CommonProfile profile2 = assertToken(profile, token);
         assertEquals(ROLES, profile2.getRoles());
         assertEquals(PERMISSIONS, profile2.getPermissions());
-    }
-
-    @Deprecated
-    @Test
-    public void testGenerateAuthenticateAndEncryptedDifferentKeys() throws HttpAction, CredentialsException {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(MAC_SECRET, KEY2);
-        final FacebookProfile profile = createProfile();
-        final String token = generator.generate(profile);
-        assertToken(profile, token, new JwtAuthenticator(MAC_SECRET, KEY2));
     }
 
     private CommonProfile assertToken(FacebookProfile profile, String token) throws HttpAction, CredentialsException {

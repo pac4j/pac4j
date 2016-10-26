@@ -66,21 +66,11 @@ public class CasRestFormClient extends AbstractCasRestClient {
         return usernameParameter;
     }
 
-    @Deprecated
-    public String getUsername() {
-        return usernameParameter;
-    }
-
     public void setUsernameParameter(String usernameParameter) {
         this.usernameParameter = usernameParameter;
     }
 
     public String getPasswordParameter() {
-        return passwordParameter;
-    }
-
-    @Deprecated
-    public String getPassword() {
         return passwordParameter;
     }
 

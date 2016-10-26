@@ -20,7 +20,6 @@ public final class ProfileHelperTests implements TestsConstants {
         assertFalse(ProfileHelper.isTypedIdOf(VALUE, CommonProfile.class));
         assertFalse(ProfileHelper.isTypedIdOf(null, CommonProfile.class));
         assertFalse(ProfileHelper.isTypedIdOf(VALUE, null));
-        assertTrue(ProfileHelper.isTypedIdOf("CommonProfile" + CommonProfile.SEPARATOR, CommonProfile.class));
         assertTrue(ProfileHelper.isTypedIdOf("org.pac4j.core.profile.CommonProfile" + CommonProfile.SEPARATOR, CommonProfile.class));
     }
 

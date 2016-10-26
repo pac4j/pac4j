@@ -19,8 +19,6 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
-import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration;
-import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
@@ -68,23 +66,6 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
         setEncryptionConfiguration(encryptionConfiguration);
-    }
-
-
-    @Deprecated
-    public JwtAuthenticator(final String signingSecret) {
-        this(signingSecret, signingSecret);
-        logger.warn("Using the same key for signature and encryption may lead to security vulnerabilities. Consider using different keys");
-    }
-
-    @Deprecated
-    public JwtAuthenticator(final String signingSecret, final String encryptionSecret) {
-        if (signingSecret != null) {
-            addSignatureConfiguration(new SecretSignatureConfiguration(signingSecret));
-        }
-        if (encryptionSecret != null) {
-            addEncryptionConfiguration(new SecretEncryptionConfiguration(encryptionSecret));
-        }
     }
 
     /**

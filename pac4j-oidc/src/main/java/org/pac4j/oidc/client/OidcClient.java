@@ -1,7 +1,5 @@
 package org.pac4j.oidc.client;
 
-import java.util.Map;
-
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
@@ -11,8 +9,6 @@ import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.credentials.extractor.OidcExtractor;
 import org.pac4j.oidc.profile.OidcProfile;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.redirect.OidcRedirectActionBuilder;
 
@@ -43,43 +39,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
         this.configuration = oidcConfiguration;
     }
 
-    @Deprecated
-    public OidcClient(final String clientId, final String secret, final String discoveryURI) {
-        configuration.setClientId(clientId);
-        configuration.setSecret(secret);
-        configuration.setDiscoveryURI(discoveryURI);
-    }
-
-    @Deprecated
-    public void setDiscoveryURI(final String discoveryURI) {
-        configuration.setDiscoveryURI(discoveryURI);
-    }
-
-    @Deprecated
-    public void setClientID(final String clientId) {
-        configuration.setClientId(clientId);
-    }
-
-    @Deprecated
-    public void setSecret(final String secret) {
-        configuration.setSecret(secret);
-    }
-
-    @Deprecated
-    public void setScope(final String scope) {
-        configuration.setScope(scope);
-    }
-
-    @Deprecated
-    public void addCustomParam(final String key, final String value) {
-        configuration.addCustomParam(key, value);
-    }
-
-    @Deprecated
-    public void setCustomParams(final Map<String, String> customParams) {
-        configuration.setCustomParams(customParams);
-    }
-
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
@@ -96,21 +55,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
 
     protected void createProfileCreator() {
         setProfileCreator(new OidcProfileCreator<>(configuration));
-    }
-
-    @Deprecated
-    public void setPreferredJwsAlgorithm(final JWSAlgorithm preferredJwsAlgorithm) {
-        configuration.setPreferredJwsAlgorithm(preferredJwsAlgorithm);
-    }
-
-    @Deprecated
-    public void setUseNonce(final boolean useNonce) {
-        configuration.setUseNonce(useNonce);
-    }
-
-    @Deprecated
-    public void setClientAuthenticationMethod(final ClientAuthenticationMethod clientAuthenticationMethod) {
-        configuration.setClientAuthenticationMethod(clientAuthenticationMethod);
     }
 
     @Override
