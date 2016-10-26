@@ -3,6 +3,12 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v2.0.0**:
+
+- Authenticators may throw the checked `CredentialsException`
+- Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
+
+
 **v1.9.4**:
 
 - Critical security issue since the version 1.9.2 on the `NopPasswordEncoder` regarding the `MongoAuthenticator` and the `DbAuthenticator`: upgrading is mandatory
