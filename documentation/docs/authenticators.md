@@ -44,7 +44,7 @@ Regarding the IP address authenticator, there is no need for password protection
 But for the MongoDB and SQL authenticators, the password protection must be handled explicitly by the [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java)
 which can encode plaintext passwords into crypted passwords as well as check if a plaintext password matches with an already encoded password.
 
-The password encoder must be defined for these two authenticators via constructors or the `setPasswordEncoder(passwordEncoder)` method (inherited from the [`AbstractUsernamePasswordAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java)).
+The password encoder must be defined for these two authenticators via constructors or via the `setPasswordEncoder(passwordEncoder)` method (inherited from the [`AbstractUsernamePasswordAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java)).
 
 Two `PasswordEncoder` implementations are available:
 
