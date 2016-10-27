@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.AccountNotFoundException;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.CredentialsException;
@@ -15,8 +16,8 @@ import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
+import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,20 +35,22 @@ import static com.mongodb.client.model.Filters.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
+public class MongoAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected MongoClient mongoClient;
+    private MongoClient mongoClient;
+
+    private PasswordEncoder passwordEncoder;
 
     /**
      * This must a list of attribute names separated by commas.
      */
-    protected String attributes = "";
-    protected String usernameAttribute = Pac4jConstants.USERNAME;
-    protected String passwordAttribute = Pac4jConstants.PASSWORD;
-    protected String usersDatabase = "users";
-    protected String usersCollection = "users";
+    private String attributes = "";
+    private String usernameAttribute = Pac4jConstants.USERNAME;
+    private String passwordAttribute = Pac4jConstants.PASSWORD;
+    private String usersDatabase = "users";
+    private String usersCollection = "users";
 
     public MongoAuthenticator() {}
 
@@ -63,19 +66,18 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
     public MongoAuthenticator(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
         this.attributes = attributes;
-        setPasswordEncoder(passwordEncoder);
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);
         CommonHelper.assertNotNull("passwordAttribute", this.passwordAttribute);
         CommonHelper.assertNotNull("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotNull("usersCollection", this.usersCollection);
         CommonHelper.assertNotNull("attributes", this.attributes);
-
-        super.internalInit(context);
     }
 
     @Override
@@ -104,7 +106,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         } else {
             final Map<String, Object> user = users.get(0);
             final String returnedPassword = (String) user.get(passwordAttribute);
-            if (!getPasswordEncoder().matches(credentials.getPassword(), returnedPassword)) {
+            if (!passwordEncoder.matches(credentials.getPassword(), returnedPassword)) {
                 throw new BadCredentialsException("Bad credentials for: " + username);
             } else {
                 final MongoProfile profile = createProfile(username, attributes.split(","), user);
@@ -126,7 +128,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return mongoClient;
     }
 
-    public void setMongoClient(MongoClient mongoClient) {
+    public void setMongoClient(final MongoClient mongoClient) {
         this.mongoClient = mongoClient;
     }
 
@@ -134,7 +136,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(final String attributes) {
         this.attributes = attributes;
     }
 
@@ -142,7 +144,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return usernameAttribute;
     }
 
-    public void setUsernameAttribute(String usernameAttribute) {
+    public void setUsernameAttribute(final String usernameAttribute) {
         this.usernameAttribute = usernameAttribute;
     }
 
@@ -150,7 +152,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return passwordAttribute;
     }
 
-    public void setPasswordAttribute(String passwordAttribute) {
+    public void setPasswordAttribute(final String passwordAttribute) {
         this.passwordAttribute = passwordAttribute;
     }
 
@@ -158,7 +160,7 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return usersDatabase;
     }
 
-    public void setUsersDatabase(String usersDatabase) {
+    public void setUsersDatabase(final String usersDatabase) {
         this.usersDatabase = usersDatabase;
     }
 
@@ -166,7 +168,21 @@ public class MongoAuthenticator extends AbstractUsernamePasswordAuthenticator {
         return usersCollection;
     }
 
-    public void setUsersCollection(String usersCollection) {
+    public void setUsersCollection(final String usersCollection) {
         this.usersCollection = usersCollection;
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(final PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "mongoClient", mongoClient, "passwordEncoder", passwordEncoder, "usersDatabase", usersDatabase,
+                "usersCollection", usersCollection, "usernameAttribute", usernameAttribute, "passwordAttribute", passwordAttribute, "attributes", attributes);
     }
 }

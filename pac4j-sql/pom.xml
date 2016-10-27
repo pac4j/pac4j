@@ -13,8 +13,8 @@
 	<name>pac4j for relational DB</name>
 
 	<properties>
-		<jdbi.version>2.71</jdbi.version>
-		<h2.version>1.4.191</h2.version>
+		<jdbi.version>2.77</jdbi.version>
+		<h2.version>1.4.192</h2.version>
 	</properties>
 
 	<dependencies>
@@ -40,8 +40,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
