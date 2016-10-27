@@ -13,8 +13,8 @@
 	<name>pac4j for MongoDB</name>
 
 	<properties>
-		<mongo-driver.version>3.2.1</mongo-driver.version>
-		<flapdoodle.version>1.50.2</flapdoodle.version>
+		<mongo-driver.version>3.3.0</mongo-driver.version>
+		<flapdoodle.version>1.50.5</flapdoodle.version>
 	</properties>
 
 	<dependencies>
@@ -45,8 +45,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
