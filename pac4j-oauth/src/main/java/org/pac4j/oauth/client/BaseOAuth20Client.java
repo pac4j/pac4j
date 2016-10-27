@@ -4,6 +4,8 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.utils.OAuthEncoder;
+import java.io.IOException;
+import java.util.logging.Level;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -52,7 +54,13 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         // no request token saved in context and no token (OAuth v2.0)
         final String code = oAuth20Credentials.getCode();
         logger.debug("code: {}", code);
-        final OAuth2AccessToken accessToken = this.service.getAccessToken(code);
+        final OAuth2AccessToken accessToken;
+        try {
+            accessToken = this.service.getAccessToken(code);
+        } catch (IOException ex) {
+            final String message = "Error getting token:"+ex.getMessage();
+            throw new OAuthCredentialsException(message);
+        }
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }

@@ -5,6 +5,7 @@ import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
+import java.util.Map;
 
 /**
  * This class represents the OAuth API implementation for Strava.
@@ -45,16 +46,19 @@ public final class StravaApi20 extends DefaultApi20 {
     }
 
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config) {
+    public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
         Preconditions.checkValidUrl(config.getCallback(), "Must provide a valid callback url.");
 
         // Append scope if present
-        if (config.hasScope()) {
+        if (config.getScope() != null) {
             return String.format(SCOPED_AUTHORIZE_URL, this.approvalPrompt, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
                     OAuthEncoder.encode(config.getScope()));
         } else {
             return String.format(AUTHORIZE_URL, this.approvalPrompt, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
-
+    @Override
+    protected String getAuthorizationBaseUrl() {
+        return "https://www.strava.com/oauth/authorize";
+    }  
 }

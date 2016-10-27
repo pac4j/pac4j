@@ -9,6 +9,8 @@ import com.github.scribejava.core.model.SignatureType;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
+import java.io.IOException;
+import java.util.logging.Level;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -64,8 +66,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @return the OAuth configuration
      */
     protected OAuthConfig buildOAuthConfig(final WebContext context) {
+            
         return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null, null, this.responseType);
+                SignatureType.Header, getOAuthScope(), null, null, this.responseType, null,
+                this.connectTimeout, this.readTimeout, null, null);
+                //hasOAuthGrantType() ? "authorization_code" : null, null, this.responseType);
     }
 
     /**
@@ -216,7 +221,13 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
         signRequest(accessToken, request);
         final Response response = request.send();
         final int code = response.getCode();
-        final String body = response.getBody();
+        final String body;
+        try {
+            body = response.getBody();
+        } catch (IOException ex) {
+            final String message = "Error getting body:"+ex.getMessage();
+            throw new OAuthCredentialsException(message);
+        }
         final long t1 = System.currentTimeMillis();
         logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
         logger.debug("response code: {} / response body: {}", code, body);
