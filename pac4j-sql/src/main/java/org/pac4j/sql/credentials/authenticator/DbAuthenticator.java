@@ -2,12 +2,13 @@ package org.pac4j.sql.credentials.authenticator;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.AbstractUsernamePasswordAuthenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
+import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -25,21 +26,23 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
+public class DbAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected DBI dbi;
 
-    protected DataSource dataSource;
+    private DataSource dataSource;
+
+    private PasswordEncoder passwordEncoder;
 
     /**
      * This must a list of attribute names separated by commas. No aliasing (AS).
      */
-    protected String attributes = "";
+    private String attributes = "";
 
-    protected String startQuery = "select username, password";
-    protected String endQuery = " from users where username = :username";
+    private String startQuery = "select username, password";
+    private String endQuery = " from users where username = :username";
 
     public DbAuthenticator() {}
 
@@ -55,12 +58,12 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
     public DbAuthenticator(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         this.attributes = attributes;
-        setPasswordEncoder(passwordEncoder);
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
+        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);
         this.dbi = new DBI(this.dataSource);
@@ -92,7 +95,7 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
             } else {
                 final Map<String, Object> result = results.get(0);
                 final String returnedPassword = (String) result.get(Pac4jConstants.PASSWORD);
-                if (!getPasswordEncoder().matches(credentials.getPassword(), returnedPassword)) {
+                if (!passwordEncoder.matches(credentials.getPassword(), returnedPassword)) {
                     throw new BadCredentialsException("Bad credentials for: " + username);
                 } else {
                     final DbProfile profile = createProfile(username, attributes.split(","), result);
@@ -153,9 +156,17 @@ public class DbAuthenticator extends AbstractUsernamePasswordAuthenticator {
         this.endQuery = endQuery;
     }
 
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(final PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
+        return CommonHelper.toString(this.getClass(), "dataSource", dataSource, "passwordEncoder", passwordEncoder,
                 "attributes", attributes, "startQuery", startQuery, "endQuery", endQuery);
     }
 }
