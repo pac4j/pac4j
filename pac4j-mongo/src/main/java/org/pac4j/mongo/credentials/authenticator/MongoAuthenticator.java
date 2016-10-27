@@ -71,7 +71,7 @@ public class MongoAuthenticator extends InitializableWebObject implements Authen
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("passwordEncoder", passwordEncoder);
+        CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotNull("usernameAttribute", this.usernameAttribute);
         CommonHelper.assertNotNull("passwordAttribute", this.passwordAttribute);
