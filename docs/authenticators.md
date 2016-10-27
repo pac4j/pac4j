@@ -39,15 +39,19 @@ LocalCachingAuthenticator authent = new LocalCachingAuthenticator(new JwtAuthent
 
 ## 2) `PasswordEncoder`
 
-For the `Authenticator<UsernamePasswordCredentials>` types of authenticators, the root implementation: [`AbstractUsernamePasswordAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/AbstractUsernamePasswordAuthenticator.java) allows you to define a [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java) with the `setPasswordEncoder(passwordEncoder)` method.
+Regarding the IP address authenticator, there is no need for password protection. Regarding the LDAP and Stormpath authenticators, the password protection is handled by the systems themselves.
 
-The [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java) can encode plaintext passwords into crypted passwords as well as check if a plaintext password matches with an already encoded password.
-The latter is especially used in database [`Authenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/authenticator/Authenticator.java)s such as [`MongoAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/credentials/authenticator/MongoAuthenticator.java) or [`DbAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-sql/src/main/java/org/pac4j/sql/credentials/authenticator/DbAuthenticator.java).
+But for the MongoDB and SQL authenticators, the password protection must be handled explicitly by the [`PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/PasswordEncoder.java)
+which can encode plaintext passwords into crypted passwords as well as check if a plaintext password matches with an already encoded password.
 
-By default, no encoding is performed ([`NopPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/NopPasswordEncoder.java)), but you can use one of the default implementations: [`BasicSaltedSha512PasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/BasicSaltedSha512PasswordEncoder.java), [`JBCryptPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/JBCryptPasswordEncoder.java) or create your own.
-Wrappers for Spring Security Crypto [`PasswordEncoder`](https://github.com/spring-projects/spring-security/blob/master/crypto/src/main/java/org/springframework/security/crypto/password/PasswordEncoder.java) ([`SpringSecurityPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/SpringSecurityPasswordEncoder.java)) and Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.2.5/apidocs/org/apache/shiro/authc/credential/PasswordService.html) ([`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java)) are also available.
+The password encoder must be defined for these two authenticators via constructors or via the `setPasswordEncoder(passwordEncoder)` method.
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additionnal <i>spring-security-crypto</i> dependency, the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency, the <code>JBCryptPasswordEncoder</code> the <i>jBCrypt</i> dependency and the <code>BasicSaltedSha512PasswordEncoder</code> the <i>commons-codec</i> dependency.</div>
+Two `PasswordEncoder` implementations are available:
+
+- a wrapper for the Spring Security Crypto [`PasswordEncoder`](https://github.com/spring-projects/spring-security/blob/master/crypto/src/main/java/org/springframework/security/crypto/password/PasswordEncoder.java): the [`SpringSecurityPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/SpringSecurityPasswordEncoder.java)
+- a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.3.1/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java).
+
+<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additionnal <i>spring-security-crypto</i> dependency and the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency.</div>
 
 ## 3) `ProfileCreator`
 
