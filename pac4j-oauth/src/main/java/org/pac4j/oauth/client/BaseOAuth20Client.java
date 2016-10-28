@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import java.io.IOException;
@@ -79,6 +80,9 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         this.service.signRequest(accessToken, request);
         if (this.isTokenAsHeader()) {
             request.addHeader("Authorization", "Bearer " + accessToken.getAccessToken());
+        }
+        if (Verb.POST.equals(request.getVerb())) {
+            request.addParameter("oauth_token", accessToken.getAccessToken());
         }
     }
 }

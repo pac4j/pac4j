@@ -182,6 +182,10 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      */
     protected abstract T getAccessToken(OAuthCredentials credentials) throws HttpAction;
 
+    public Verb getProfileVerb() {
+        return Verb.GET;
+    }
+    
     /**
      * Retrieve the user profile from the access token.
      *
@@ -190,7 +194,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected U retrieveUserProfileFromToken(final T accessToken) throws HttpAction {
-        final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
+        final String body = sendRequestForData(accessToken, getProfileUrl(accessToken), getProfileVerb());
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
@@ -214,10 +218,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @param dataUrl     url of the data
      * @return the user data response
      */
-    protected String sendRequestForData(final T accessToken, final String dataUrl) {
+    protected String sendRequestForData(final T accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
-        final OAuthRequest request = createOAuthRequest(dataUrl);
+        // J: Temporal, the verb should be configurable
+        final OAuthRequest request = createOAuthRequest(dataUrl, verb);
         signRequest(accessToken, request);
         final Response response = request.send();
         final int code = response.getCode();
@@ -246,7 +251,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @return the request
      */
     protected OAuthRequest createOAuthRequest(final String url) {
-        return new OAuthRequest(Verb.GET, url, this.service);
+        return createOAuthRequest(url, Verb.GET);
+    }
+
+    protected OAuthRequest createOAuthRequest(final String url, Verb verb) {
+        return new OAuthRequest(verb, url, this.service);
     }
 
     /**

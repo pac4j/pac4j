@@ -33,9 +33,13 @@ public final class JsonHelper {
      * @param text JSON text
      * @return the first node of the JSON response or null if exception is thrown
      */
-    public static JsonNode getFirstNode(final String text) {
+    public static JsonNode getFirstNode(final String text, final String path) {
         try {
-            return mapper.readValue(text, JsonNode.class);
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            if (path != null) {
+                node = (JsonNode) getElement(node, path);
+            }
+            return node;
         } catch (final IOException e) {
             logger.error("Cannot get first node", e);
         }
@@ -71,7 +75,11 @@ public final class JsonHelper {
             JsonNode node = json;
             for (String nodeName : name.split("\\.")) {
                 if (node != null) {
-                    node = node.get(nodeName);
+                    if (nodeName.matches("\\d+")) {
+                        node = node.get(Integer.parseInt(nodeName));
+                    } else {
+                        node = node.get(nodeName);
+                    }
                 }
             }
             if (node != null) {
