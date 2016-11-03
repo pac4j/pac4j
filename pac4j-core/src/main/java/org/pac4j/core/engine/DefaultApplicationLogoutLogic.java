@@ -1,18 +1,23 @@
 package org.pac4j.core.engine;
 
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.HttpActionAdapter;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 import java.util.regex.Pattern;
-
+import java.util.List;
 import static org.pac4j.core.util.CommonHelper.*;
+
 
 /**
  * <p>Default application logout logic:</p>
@@ -51,9 +56,34 @@ public class DefaultApplicationLogoutLogic<R, C extends WebContext> implements A
 
         // logic
         final ProfileManager manager = getProfileManager(context);
+
+        // logout redirection if needed
+        // this computation is done just before logout
+        final List<CommonProfile> profiles = manager.getAll(true);
+        final Clients clients = config.getClients();
+        HttpAction redirection = null;
+
+        for(CommonProfile profile : profiles) {
+        	String clientName = profile.getClientName();
+        	if(clientName != null) {
+            	Client<Credentials, CommonProfile> client = clients.findClient(clientName);
+            	if(client != null) {
+                	redirection = client.logoutRedirect(context);
+            	}
+        	}
+        	if (redirection != null) {
+        		break;
+        	}
+        }
+
+        // logout logic
         manager.logout();
         postLogout(context);
 
+        // if we need a redirection (from client), then we don't care about the rest
+        if (redirection != null) {
+        	return httpActionAdapter.adapt(redirection.getCode(), context);
+        }
         final String url = context.getRequestParameter(Pac4jConstants.URL);
         String redirectUrl = defaultUrl;
         if (url != null && Pattern.matches(logoutUrlPattern, url)) {

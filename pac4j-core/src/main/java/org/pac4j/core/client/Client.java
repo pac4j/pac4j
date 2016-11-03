@@ -41,6 +41,14 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
     HttpAction redirect(WebContext context) throws HttpAction;
 
     /**
+     * <p>Perform the logout action for the indirect client.</p>
+     *
+     * @param context the current web context
+     * @return the redirection
+     */
+    HttpAction logoutRedirect(WebContext context);
+
+    /**
      * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at this step.</p>
      * <p>In some cases, a {@link HttpAction} may be thrown instead.</p>
      *

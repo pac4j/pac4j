@@ -49,6 +49,17 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         }
     }
 
+    @Override
+    public final HttpAction logoutRedirect(final WebContext context) {
+        final RedirectAction action = getLogoutRedirectAction(context);
+        if (action.getType() == RedirectType.REDIRECT) {
+            return HttpAction.redirect("logout redirection via 302", context, action.getLocation());
+        } else {
+        	// if it is not a redirection, we don't care
+        	return null;
+        }
+    }
+
     /**
      * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
      * {@link #redirect(WebContext)} should be generally called instead.</p>
@@ -77,6 +88,32 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         init(context);
         return retrieveRedirectAction(context);
     }
+    
+    /**
+     * <p>Get the redirectAction computed for the logout of this client. It should not be called be directly, the
+     * {@link #redirect(WebContext)} should be generally called instead.</p>
+     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is an AJAX one,
+     * an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
+     *
+     * @param context context
+     * @return the redirection action
+     */
+    public final RedirectAction getLogoutRedirectAction(final WebContext context) {
+        // it's an AJAX request -> unauthorized (instead of a redirection)
+        if (ajaxRequestResolver.isAjax(context)) {
+            logger.info("AJAX request detected -> returning 401");
+            cleanRequestedUrl(context);
+            return null;
+        }
+        // authentication has already been tried -> unauthorized
+        final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
+        if (CommonHelper.isNotBlank(attemptedAuth)) {
+        	return null;
+        }
+
+        init(context);
+        return retrieveLogoutRedirectAction(context);
+    }
 
     /**
      * Retrieve the redirect action.
@@ -86,6 +123,16 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws HttpAction requires a specific HTTP action if necessary
      */
     protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction;
+
+    /**
+     * Retrieve the redirect action for the logout.
+     * 
+     * @param context the web context
+     * @return the redirection action
+     */
+    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context) {
+    	return null;
+    };
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
