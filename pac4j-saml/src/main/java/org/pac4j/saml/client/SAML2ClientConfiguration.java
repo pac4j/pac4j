@@ -38,7 +38,7 @@ import java.util.List;
  * @author Misagh Moayyed
  * @since 1.7
  */
-public final class SAML2ClientConfiguration implements Cloneable {
+public class SAML2ClientConfiguration implements Cloneable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
 
     private KeyStore keyStore;
