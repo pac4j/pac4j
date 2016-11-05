@@ -295,7 +295,7 @@
 					<effort>Low</effort> <!-- Max -->
 					<threshold>Max</threshold> <!-- Medium Low -->
 					<failOnError>true</failOnError>
-					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+					<excludeFilterFile>${basedir}/../findbugs-exclude.xml</excludeFilterFile>
 					<includeTests>true</includeTests>
 				</configuration>
 				<executions>
