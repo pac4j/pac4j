@@ -14,9 +14,11 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class JavaSerializationHelper {
+public class JavaSerializationHelper implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
+    private static final long serialVersionUID = -752260329685838265L;
+
+    private transient static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
 
     private List<String> trustedPackages = Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "org.joda.");
 

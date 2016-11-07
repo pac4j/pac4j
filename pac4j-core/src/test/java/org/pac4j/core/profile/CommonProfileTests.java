@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -130,5 +131,29 @@ public final class CommonProfileTests implements TestsConstants {
     public void testNullPermissions() {
         final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.addPermissions((Set<String>) null), TechnicalException.class, "permissions cannot be null");
+    }
+
+    @Test
+    public void serializeProfile() {
+        final JavaSerializationHelper helper = new JavaSerializationHelper();
+        final CommonProfile profile = new CommonProfile();
+        final String s = helper.serializeToBase64(profile);
+        final CommonProfile profile2 = (CommonProfile) helper.unserializeFromBase64(s);
+        assertNotNull(profile2);
+    }
+
+    @Test
+    public void stringifyProfile() {
+        try {
+            UserProfile.getInternalAttributeHandler().setStringify(true);
+            final CommonProfile profile = new CommonProfile();
+            profile.setId(ID);
+            profile.addAttribute(KEY, true);
+            profile.addAttribute(NAME, 1);
+            assertEquals(true, profile.getAttribute(KEY));
+            assertEquals(1, profile.getAttributes().get(NAME));
+        } finally {
+            UserProfile.getInternalAttributeHandler().setStringify(false);
+        }
     }
 }

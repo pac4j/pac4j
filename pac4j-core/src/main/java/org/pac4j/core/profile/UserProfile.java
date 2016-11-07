@@ -39,6 +39,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private String clientName;
 
+    private static InternalAttributeHandler internalAttributeHandler = new InternalAttributeHandler();
+
     /**
      * Build a profile from user identifier and attributes.
      * 
@@ -72,7 +74,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
             if (definition == null) {
                 logger.debug("no conversion => key: {} / value: {} / {}",
                         new Object[] { key, value, value.getClass() });
-                this.attributes.put(key, value);
+                this.attributes.put(key, internalAttributeHandler.prepare(value));
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
@@ -85,7 +87,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
                     }
                     logger.debug("converted to => key: {} / value: {} / {}",
                             new Object[] { key, value2, value2.getClass() });
-                    this.attributes.put(key, value2);
+                    this.attributes.put(key, internalAttributeHandler.prepare(value2));
                 }
             }
         }
@@ -154,12 +156,18 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Get attributes as immutable map.
+     * Get all attributes as immutable map.
      * 
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(this.attributes);
+        final Map<String, Object> newAttributes = new HashMap<>();
+        for (Map.Entry<String, Object> entries : this.attributes.entrySet()) {
+            final String key = entries.getKey();
+            final Object value = getAttribute(key);
+            newAttributes.put(key, value);
+        }
+        return Collections.unmodifiableMap(newAttributes);
     }
 
     /**
@@ -169,7 +177,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the attribute with name
      */
     public Object getAttribute(final String name) {
-        return this.attributes.get(name);
+        return internalAttributeHandler.restore(this.attributes.get(name));
     }
 
     /**
@@ -179,6 +187,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return true/false
      */
     public boolean containsAttribute(final String name) {
+        CommonHelper.assertNotNull("name", name);
         return this.attributes.containsKey(name);
     }
     /**
@@ -321,7 +330,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         this.id = (String) in.readObject();
         this.attributes = (Map) in.readObject();
-        this.isRemembered = (boolean) in.readBoolean();
+        this.isRemembered = in.readBoolean();
         this.roles = (Set) in.readObject();
         this.permissions = (Set) in.readObject();
     }
@@ -337,5 +346,13 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void setClientName(String clientName) {
         CommonHelper.assertNotNull("clientName", clientName);
         this.clientName = clientName;
+    }
+
+    public static InternalAttributeHandler getInternalAttributeHandler() {
+        return internalAttributeHandler;
+    }
+
+    public static void setInternalAttributeHandler(final InternalAttributeHandler internalAttributeHandler) {
+        UserProfile.internalAttributeHandler = internalAttributeHandler;
     }
 }
