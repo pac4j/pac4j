@@ -19,12 +19,12 @@ import static org.junit.Assert.*;
  */
 public final class InternalAttributeHandlerTests implements TestsConstants {
 
-    private final static boolean BOOL = true;
-    private final static int INT = 1;
-    private final static long LONG = 2L;
-    private final static Date DATE = new Date();
-    private final static URI URL;
-    private final static Color COLOR = new Color(1,1,1);
+    private static final boolean BOOL = true;
+    private static final int INT = 1;
+    private static final long LONG = 2L;
+    private static final Date DATE = new Date();
+    private static final URI URL;
+    private static final Color COLOR = new Color(1,1,1);
 
     static {
         try {
