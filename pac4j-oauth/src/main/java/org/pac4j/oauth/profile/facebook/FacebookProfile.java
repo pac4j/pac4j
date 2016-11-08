@@ -82,17 +82,6 @@ public class FacebookProfile extends OAuth20Profile {
         return (Boolean) getAttribute(FacebookAttributesDefinition.VERIFIED);
     }
 
-	/**
-	 * The bio field on the User object is no longer available. If the bio field was set for a person,
-	 * the value will now be appended to the about field.
-	 *
-	 * Use {@link #getAbout()} instead
-	 */
-	@Deprecated
-    public String getBio() {
-        return (String) getAttribute(FacebookAttributesDefinition.ABOUT);
-    }
-
     public String getAbout() {
         return (String) getAttribute(FacebookAttributesDefinition.ABOUT);
     }
