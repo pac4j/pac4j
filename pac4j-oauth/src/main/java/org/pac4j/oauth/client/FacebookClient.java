@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
  * <p>The <i>scope</i> can be defined to require permissions from the user and retrieve fields from Facebook, by using the
  * {@link #setScope(String)} method.</p>
  * <p>By default, the following <i>fields</i> are requested to Facebook : id, name, first_name, middle_name, last_name, gender, locale,
- * languages, link, third_party_id, timezone, updated_time, verified, bio, birthday, education, email, hometown, interested_in,
+ * languages, link, third_party_id, timezone, updated_time, verified, about, birthday, education, email, hometown, interested_in,
  * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.</p>
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
@@ -45,17 +45,17 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
 
-    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
+    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.8/oauth/access_token?grant_type=fb_exchange_token";
 
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
 
     private static final String APPSECRET_PARAMETER = "appsecret_proof";
 
-    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
+    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
 
     protected String fields = DEFAULT_FIELDS;
 
-    protected final static String BASE_URL = "https://graph.facebook.com/v2.4/me";
+    protected final static String BASE_URL = "https://graph.facebook.com/v2.8/me";
 
     public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
 
