@@ -88,7 +88,7 @@ public final class RunFacebookClient extends RunClient {
         assertTrue(CommonHelper.isNotBlank(profile.getThirdPartyId()));
         assertEquals(1, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
-        assertEquals("A propos de moi", profile.getBio());
+        assertEquals("A propos de moi", profile.getAbout());
         assertEquals("03/10/1979", profile.getBirthday().toString());
         final List<FacebookEducation> educations = profile.getEducation();
         FacebookEducation education = educations.get(0);
