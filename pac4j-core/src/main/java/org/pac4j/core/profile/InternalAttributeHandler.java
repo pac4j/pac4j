@@ -25,13 +25,13 @@ public class InternalAttributeHandler implements Serializable {
 
     protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public transient final static String PREFIX = "{#";
-    public transient final static String PREFIX_BOOLEAN = PREFIX + "bool}";
-    public transient final static String PREFIX_INT = PREFIX + "int}";
-    public transient final static String PREFIX_LONG = PREFIX + "long}";
-    public transient final static String PREFIX_DATE = PREFIX + "date}";
-    public transient final static String PREFIX_URI = PREFIX + "uri}";
-    public transient final static String PREFIX_SB64 = PREFIX + "sb64}";
+    public transient static final String PREFIX = "{#";
+    public transient static final String PREFIX_BOOLEAN = PREFIX + "bool}";
+    public transient static final String PREFIX_INT = PREFIX + "int}";
+    public transient static final String PREFIX_LONG = PREFIX + "long}";
+    public transient static final String PREFIX_DATE = PREFIX + "date}";
+    public transient static final String PREFIX_URI = PREFIX + "uri}";
+    public transient static final String PREFIX_SB64 = PREFIX + "sb64}";
 
     private JavaSerializationHelper serializationHelper = new JavaSerializationHelper();
 
@@ -48,17 +48,17 @@ public class InternalAttributeHandler implements Serializable {
             return value;
         } else {
             if (value instanceof Boolean) {
-                return PREFIX_BOOLEAN + value;
+                return PREFIX_BOOLEAN.concat(value.toString());
             } else if (value instanceof Integer) {
-                return PREFIX_INT + value;
+                return PREFIX_INT.concat(value.toString());
             } else if (value instanceof Long) {
-                return PREFIX_LONG + value;
+                return PREFIX_LONG.concat(value.toString());
             } else if (value instanceof Date) {
-                return PREFIX_DATE + newSdf().format((Date) value);
+                return PREFIX_DATE.concat(newSdf().format((Date) value));
             } else if (value instanceof URI) {
-                return PREFIX_URI + value.toString();
+                return PREFIX_URI.concat(value.toString());
             } else {
-                return PREFIX_SB64 + serializationHelper.serializeToBase64((Serializable) value);
+                return PREFIX_SB64.concat(serializationHelper.serializeToBase64((Serializable) value));
             }
         }
     }
@@ -117,6 +117,12 @@ public class InternalAttributeHandler implements Serializable {
         return stringify;
     }
 
+    /**
+     * Define if we need to turn all attributes into strings, to properly work with CAS
+     * (regarding Kryo serialization or service ticket validation).
+     *
+     * @param stringify whether we need to turn all attributes into strings
+     */
     public void setStringify(final boolean stringify) {
         this.stringify = stringify;
     }
