@@ -11,12 +11,12 @@ import java.util.Arrays;
 
 /**
  * This class defines the attributes of the Facebook profile.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
 public class FacebookAttributesDefinition extends AttributesDefinition {
-    
+
     public static final String NAME = "name";
     public static final String FIRST_NAME = "first_name";
     public static final String MIDDLE_NAME = "middle_name";
@@ -29,7 +29,7 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String TIMEZONE = "timezone";
     public static final String UPDATED_TIME = "updated_time";
     public static final String VERIFIED = "verified";
-    public static final String BIO = "bio";
+    public static final String ABOUT = "about";
     public static final String BIRTHDAY = "birthday";
     public static final String EDUCATION = "education";
     public static final String EMAIL = "email";
@@ -55,10 +55,10 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String GROUPS = "groups";
     public static final String MUSIC_LISTENS = "music.listens";
     public static final String PICTURE = "picture";
-    
+
     public FacebookAttributesDefinition() {
         Arrays.stream(new String[] {
-            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
+            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, THIRD_PARTY_ID, ABOUT, EMAIL, POLITICAL, QUOTES,
             RELIGION, WEBSITE
         }).forEach(a -> primary(a, Converters.STRING));
         primary(TIMEZONE, Converters.INTEGER);
