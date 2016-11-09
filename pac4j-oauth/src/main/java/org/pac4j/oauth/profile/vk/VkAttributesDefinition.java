@@ -3,8 +3,6 @@ package org.pac4j.oauth.profile.vk;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.FormattedDateConverter;
-import org.pac4j.core.profile.converter.GenderIntegerConverter;
-import org.pac4j.oauth.profile.vk.converter.VkBooleanConverter;
 
 import java.util.Arrays;
 
@@ -48,10 +46,9 @@ public class VkAttributesDefinition extends AttributesDefinition {
 				PHOTO_MAX, PHOTO_MAX_ORIG, DOMAIN, MOBILE_PHONE, HOME_PHONE, SKYPE, SITE, STATUS}).forEach(a -> primary(a, Converters.STRING));
 		primary(COMMON_COUNT, Converters.INTEGER);
 		primary(RELATION, Converters.INTEGER);
-		final VkBooleanConverter booleanConverter = new VkBooleanConverter();
 		Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO, CAN_WRITE_PRIVATE_MESSAGE})
-				.forEach(a -> primary(a, booleanConverter));
+				.forEach(a -> primary(a, Converters.BOOLEAN));
 		primary(BIRTH_DATE, new FormattedDateConverter("dd.MM.yyyy"));
-		primary(SEX, new GenderIntegerConverter(2, 1));
+		primary(SEX, Converters.GENDER);
 	}
 }

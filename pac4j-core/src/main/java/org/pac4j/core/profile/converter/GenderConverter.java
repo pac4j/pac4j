@@ -10,23 +10,24 @@ import org.pac4j.core.profile.Gender;
  */
 public final class GenderConverter implements AttributeConverter<Gender> {
     
-    private final String maleText;
-    
-    private final String femaleText;
-    
-    public GenderConverter(final String maleText, final String femaleText) {
-        this.maleText = maleText;
-        this.femaleText = femaleText;
-    }
-    
     @Override
     public Gender convert(final Object attribute) {
         if (attribute != null) {
             if (attribute instanceof String) {
                 final String s = ((String) attribute).toLowerCase();
-                if (s.equals(this.maleText) || Gender.MALE.toString().toLowerCase().equals(s)) {
+                if ("m".equals(s) || "male".equals(s)) {
                     return Gender.MALE;
-                } else if (s.equals(this.femaleText) || Gender.FEMALE.toString().toLowerCase().equals(s)) {
+                } else if ("f".equals(s) || "female".equals(s)) {
+                    return Gender.FEMALE;
+                } else {
+                    return Gender.UNSPECIFIED;
+                }
+                // for Vk:
+            } else if (attribute instanceof Integer) {
+                Integer value = (Integer) attribute;
+                if (value == 2) {
+                    return Gender.MALE;
+                } else if (value == 1) {
                     return Gender.FEMALE;
                 } else {
                     return Gender.UNSPECIFIED;

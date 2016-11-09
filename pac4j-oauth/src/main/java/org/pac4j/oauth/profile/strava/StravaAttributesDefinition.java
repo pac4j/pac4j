@@ -2,7 +2,6 @@ package org.pac4j.oauth.profile.strava;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.GenderConverter;
 import org.pac4j.oauth.profile.converter.JsonListConverter;
 
 import java.util.Arrays;
@@ -51,7 +50,7 @@ public class StravaAttributesDefinition extends AttributesDefinition {
         primary(FOLLOWER_COUNT, Converters.INTEGER);
         primary(FRIEND_COUNT, Converters.INTEGER);
         primary(PREMIUM, Converters.BOOLEAN);
-        primary(SEX, new GenderConverter("m", "f"));
+        primary(SEX, Converters.GENDER);
         primary(CREATED_AT, Converters.DATE_TZ_RFC822);
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
         primary(CLUBS, new JsonListConverter(StravaClub.class, StravaClub[].class));
