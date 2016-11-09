@@ -1,8 +1,5 @@
 package org.pac4j.oidc.run;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.nimbusds.oauth2.sdk.Scope;
-import com.nimbusds.oauth2.sdk.token.AccessTokenType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -10,8 +7,6 @@ import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
-import org.pac4j.oidc.kryo.ScopeValueSerializer;
 import org.pac4j.oidc.profile.OidcProfile;
 
 import java.util.Locale;
@@ -49,13 +44,6 @@ public class RunOkta extends RunClient {
         final OidcClient client = new OidcClient(configuration);
         client.setCallbackUrl(PAC4J_URL);
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(OidcProfile.class);
-        kryo.register(AccessTokenType.class, new AccessTokenTypeSerializer());
-        kryo.register(Scope.Value.class, new ScopeValueSerializer());
     }
 
     @Override
