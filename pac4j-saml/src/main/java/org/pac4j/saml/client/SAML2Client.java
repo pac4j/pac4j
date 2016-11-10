@@ -103,7 +103,11 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-
+        CommonHelper.assertNotNull("configuration", this.configuration); 
+        
+        // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
+        this.configuration.init(getName(), context); 
+        
         initCredentialProvider();
         initDecrypter();
         initSignatureSigningParametersProvider();
