@@ -6,6 +6,7 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.io.Resource;
 import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
@@ -38,7 +39,7 @@ import java.util.List;
  * @author Misagh Moayyed
  * @since 1.7
  */
-public final class SAML2ClientConfiguration implements Cloneable {
+public class SAML2ClientConfiguration implements Cloneable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
 
     private KeyStore keyStore;
@@ -419,7 +420,21 @@ public final class SAML2ClientConfiguration implements Cloneable {
     public boolean isAuthnRequestSigned() {
         return authnRequestSigned;
     }
-
+    
+    
+	/**
+	 * Initializes the configuration for a particular client.
+	 * 
+	 * @param clientName
+	 *            Name of the client. The configuration can use the value or not.
+	 * @param context
+	 *            Web context to transport additional information to the configuration.
+	 */
+    protected void init(final String clientName, final WebContext context) {
+    	// Intentionally left empty
+    }
+    
+    
     private void createKeystore() {
         try {
             Security.addProvider(new BouncyCastleProvider());
