@@ -14,9 +14,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class JavaSerializationHelper implements Serializable {
-
-    private static final long serialVersionUID = -752260329685838265L;
+public class JavaSerializationHelper {
 
     private transient static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
 

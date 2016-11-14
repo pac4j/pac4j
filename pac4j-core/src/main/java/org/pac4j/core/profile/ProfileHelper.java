@@ -22,6 +22,8 @@ public final class ProfileHelper {
 
     private static final Map<String, Constructor<? extends CommonProfile>> constructorsCache = new ConcurrentHashMap<>();
 
+    private static InternalAttributeHandler internalAttributeHandler = new InternalAttributeHandler();
+
     /**
      * Indicate if the user identifier matches this kind of profile.
      * 
@@ -148,5 +150,13 @@ public final class ProfileHelper {
             listProfiles.add(entry.getValue());
         }
         return Collections.unmodifiableList(listProfiles);
+    }
+
+    public static InternalAttributeHandler getInternalAttributeHandler() {
+        return internalAttributeHandler;
+    }
+
+    public static void setInternalAttributeHandler(final InternalAttributeHandler internalAttributeHandler) {
+        ProfileHelper.internalAttributeHandler = internalAttributeHandler;
     }
 }
