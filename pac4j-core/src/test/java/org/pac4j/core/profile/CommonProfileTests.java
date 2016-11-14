@@ -145,7 +145,7 @@ public final class CommonProfileTests implements TestsConstants {
     @Test
     public void stringifyProfile() {
         try {
-            UserProfile.getInternalAttributeHandler().setStringify(true);
+            ProfileHelper.getInternalAttributeHandler().setStringify(true);
             final CommonProfile profile = new CommonProfile();
             profile.setId(ID);
             profile.addAttribute(KEY, true);
@@ -153,7 +153,7 @@ public final class CommonProfileTests implements TestsConstants {
             assertEquals(true, profile.getAttribute(KEY));
             assertEquals(1, profile.getAttributes().get(NAME));
         } finally {
-            UserProfile.getInternalAttributeHandler().setStringify(false);
+            ProfileHelper.getInternalAttributeHandler().setStringify(false);
         }
     }
 }

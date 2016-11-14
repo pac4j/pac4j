@@ -39,8 +39,6 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     private String clientName;
 
-    private static InternalAttributeHandler internalAttributeHandler = new InternalAttributeHandler();
-
     /**
      * Build a profile from user identifier and attributes.
      * 
@@ -74,7 +72,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
             if (definition == null) {
                 logger.debug("no conversion => key: {} / value: {} / {}",
                         new Object[] { key, value, value.getClass() });
-                this.attributes.put(key, internalAttributeHandler.prepare(value));
+                this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
@@ -87,7 +85,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
                     }
                     logger.debug("converted to => key: {} / value: {} / {}",
                             new Object[] { key, value2, value2.getClass() });
-                    this.attributes.put(key, internalAttributeHandler.prepare(value2));
+                    this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value2));
                 }
             }
         }
@@ -177,7 +175,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the attribute with name
      */
     public Object getAttribute(final String name) {
-        return internalAttributeHandler.restore(this.attributes.get(name));
+        return ProfileHelper.getInternalAttributeHandler().restore(this.attributes.get(name));
     }
 
     /**
@@ -346,13 +344,5 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void setClientName(String clientName) {
         CommonHelper.assertNotNull("clientName", clientName);
         this.clientName = clientName;
-    }
-
-    public static InternalAttributeHandler getInternalAttributeHandler() {
-        return internalAttributeHandler;
-    }
-
-    public static void setInternalAttributeHandler(final InternalAttributeHandler internalAttributeHandler) {
-        UserProfile.internalAttributeHandler = internalAttributeHandler;
     }
 }

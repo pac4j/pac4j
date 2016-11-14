@@ -19,9 +19,7 @@ import java.util.Date;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class InternalAttributeHandler implements Serializable {
-
-    private static final long serialVersionUID = 3391226300882369266L;
+public class InternalAttributeHandler {
 
     protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 
