@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class JavaSerializationHelper {
 
-    private transient static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
 
     private List<String> trustedPackages = Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "org.joda.");
 
