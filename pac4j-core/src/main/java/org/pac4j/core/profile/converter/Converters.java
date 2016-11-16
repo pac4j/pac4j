@@ -27,5 +27,5 @@ public final class Converters {
 
     public final static DateConverter DATE_TZ_RFC822 = new DateConverter("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    public final static StringReplaceConverter URL = new StringReplaceConverter("\\/", "/");
+    public final static UrlConverter URL = new UrlConverter();
 }

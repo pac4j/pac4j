@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.windowslive;
 
+import java.net.URI;
 import java.util.Date;
 
 import org.pac4j.core.profile.AttributesDefinition;
@@ -34,8 +35,8 @@ public class WindowsLiveProfile extends OAuth20Profile {
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(WindowsLiveAttributesDefinition.LINK);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(WindowsLiveAttributesDefinition.LINK);
     }
     
     public Date getUpdatedTime() {

@@ -1,9 +1,11 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -36,17 +38,17 @@ public class FacebookProfile extends OAuth20Profile {
     }
 
     @Override
-    public String getPictureUrl() {
+    public URI getPictureUrl() {
         final FacebookPicture picture = (FacebookPicture) getAttribute(FacebookAttributesDefinition.PICTURE);
         if (picture != null) {
-            return picture.getUrl();
+            return CommonHelper.asURI(picture.getUrl());
         }
         return null;
     }
 
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(FacebookAttributesDefinition.LINK);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(FacebookAttributesDefinition.LINK);
     }
 
     @Override

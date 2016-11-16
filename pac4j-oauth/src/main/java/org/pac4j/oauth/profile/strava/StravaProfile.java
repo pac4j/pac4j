@@ -1,10 +1,12 @@
 package org.pac4j.oauth.profile.strava;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -48,13 +50,13 @@ public class StravaProfile extends OAuth20Profile {
     }
 
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(StravaAttributesDefinition.PROFILE);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(StravaAttributesDefinition.PROFILE);
     }
 
     @Override
-    public String getProfileUrl() {
-        return STRAVA_PROFILE_BASE_URL + (String) getAttribute(StravaAttributesDefinition.ID);
+    public URI getProfileUrl() {
+        return CommonHelper.asURI(STRAVA_PROFILE_BASE_URL + (String) getAttribute(StravaAttributesDefinition.ID));
     }
 
     @Override

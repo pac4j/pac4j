@@ -2,8 +2,10 @@ package org.pac4j.oauth.profile.ok;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.net.URI;
 import java.util.Locale;
 
 /**
@@ -56,13 +58,13 @@ public class OkProfile extends OAuth20Profile {
     }
 
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(OkAttributesDefinition.PIC_1);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(OkAttributesDefinition.PIC_1);
     }
 
     @Override
-    public String getProfileUrl() {
-        return BASE_PROFILE_URL + getId();
+    public URI getProfileUrl() {
+        return CommonHelper.asURI(BASE_PROFILE_URL + getId());
     }
 
     @Override

@@ -47,7 +47,7 @@ public final class RunBitbucketClient extends RunClient {
         assertEquals("Scribeup", profile.getFamilyName());
         assertEquals("Test Scribeup", profile.getDisplayName());
         assertFalse(profile.isTeam());
-        assertTrue(profile.getPictureUrl().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
+        assertTrue(profile.getPictureUrl().toString().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
         assertEquals("/1.0/users/testscribeup", profile.getProfileUrl());
     }
 }

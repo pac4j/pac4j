@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.google2;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -56,13 +57,13 @@ public class Google2Profile extends OAuth20Profile {
     }
 
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(Google2AttributesDefinition.PICTURE);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(Google2AttributesDefinition.PICTURE);
     }
 
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(Google2AttributesDefinition.URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(Google2AttributesDefinition.URL);
     }
 
     public Date getBirthday() {
