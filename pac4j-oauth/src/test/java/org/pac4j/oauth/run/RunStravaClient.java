@@ -57,7 +57,7 @@ public final class RunStravaClient extends RunClient {
         assertEquals("Hem", profile.getLocation());
         assertEquals("France", profile.getCountry());
         assertEquals("testscribeup@yahoo.fr", profile.getEmail());
-        assertEquals("avatar/athlete/large.png", profile.getPictureUrl());
+        assertEquals("avatar/athlete/large.png", profile.getPictureUrl().toString());
 
         assertEquals(1, profile.getBikes().size());
         assertEquals("b1700138", profile.getBikes().get(0).getId());
