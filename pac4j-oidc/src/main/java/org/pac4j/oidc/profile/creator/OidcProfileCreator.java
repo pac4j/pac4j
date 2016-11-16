@@ -152,7 +152,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
                 } else {
                     final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
                     final JWTClaimsSet userInfoClaimsSet;
-                    if (userInfoSuccessResponse.claimsSet != null) {
+                    if (userInfoSuccessResponse.getUserInfo() != null) {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
                     } else {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
