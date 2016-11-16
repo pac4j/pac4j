@@ -151,13 +151,13 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
                             ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
                     final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    final JWTClaimsSet claimsSet;
+                    final JWTClaimsSet userInfoClaimsSet;
                     if (userInfoSuccessResponse.claimsSet != null) {
-                        claimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
+                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
                     } else {
-                        claimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
+                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                     }
-                    profile.addAttributes(claimsSet.getClaims());
+                    profile.addAttributes(userInfoClaimsSet.getClaims());
                 }
             }
 
