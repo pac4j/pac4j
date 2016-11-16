@@ -89,25 +89,7 @@ public class Clients extends InitializableObject {
             }
             names.add(lowerName);
             if (client instanceof IndirectClient) {
-                final IndirectClient indirectClient = (IndirectClient) client;
-                String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
-                // no callback url defined for the client but a group callback one -> set it with the group callback url
-                if (CommonHelper.isNotBlank(this.callbackUrl) && indirectClientCallbackUrl == null) {
-                    indirectClient.setCallbackUrl(this.callbackUrl);
-                    indirectClientCallbackUrl = this.callbackUrl;
-                }
-                // if the "client_name" parameter is not already part of the client callback url, add it unless the client has indicated to not include it.
-                if (indirectClient.isIncludeClientNameInCallbackUrl() && indirectClientCallbackUrl != null && !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
-                    indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, name));
-                }
-                final AjaxRequestResolver clientAjaxRequestResolver = indirectClient.getAjaxRequestResolver();
-                if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
-                    indirectClient.setAjaxRequestResolver(ajaxRequestResolver);
-                }
-                final CallbackUrlResolver clientCallbackUrlResolver = indirectClient.getCallbackUrlResolver();
-                if (callbackUrlResolver != null && (clientCallbackUrlResolver == null || clientCallbackUrlResolver instanceof DefaultCallbackUrlResolver)) {
-                    indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
-                }
+                updateCallbackUrlOfIndirectClient((IndirectClient) client);
             }
             final BaseClient baseClient = (BaseClient) client;
             if (!authorizationGenerators.isEmpty()) {
@@ -116,6 +98,34 @@ public class Clients extends InitializableObject {
         }
     }
 
+    
+    /**
+     * Sets a client's Callback URL, if not already set. If requested, the "client_name" parameter will also be a part of the URL.
+     * 
+     * @param indirectClient A client.
+     */
+    protected void updateCallbackUrlOfIndirectClient(final IndirectClient indirectClient) {
+        String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
+        // no callback url defined for the client but a group callback one -> set it with the group callback url
+        if (CommonHelper.isNotBlank(this.callbackUrl) && indirectClientCallbackUrl == null) {
+            indirectClient.setCallbackUrl(this.callbackUrl);
+            indirectClientCallbackUrl = this.callbackUrl;
+        }
+        // if the "client_name" parameter is not already part of the client callback url, add it unless the client has indicated to not include it.
+        if (indirectClient.isIncludeClientNameInCallbackUrl() && indirectClientCallbackUrl != null && !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
+            indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, indirectClient.getName()));
+        }
+        final AjaxRequestResolver clientAjaxRequestResolver = indirectClient.getAjaxRequestResolver();
+        if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
+            indirectClient.setAjaxRequestResolver(ajaxRequestResolver);
+        }
+        final CallbackUrlResolver clientCallbackUrlResolver = indirectClient.getCallbackUrlResolver();
+        if (callbackUrlResolver != null && (clientCallbackUrlResolver == null || clientCallbackUrlResolver instanceof DefaultCallbackUrlResolver)) {
+            indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+        }
+    }
+
+    
     /**
      * Return the right client according to the web context.
      * 

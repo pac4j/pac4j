@@ -1,6 +1,5 @@
 package org.pac4j.saml.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.MockWebContext;
@@ -46,11 +45,6 @@ public class RunTestshib extends RunClient {
         final SAML2Client client = new SAML2Client(cfg);
         client.setCallbackUrl(PAC4J_URL);
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(SAML2Profile.class);
     }
 
     @Override

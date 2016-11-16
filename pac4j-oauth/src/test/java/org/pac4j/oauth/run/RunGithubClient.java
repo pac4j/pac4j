@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -43,12 +42,6 @@ public final class RunGithubClient extends RunClient {
         githubClient.setCallbackUrl(PAC4J_BASE_URL);
         githubClient.setScope("user");
         return githubClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(GitHubProfile.class);
-        kryo.register(GitHubPlan.class);
     }
 
     @Override

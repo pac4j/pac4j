@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -44,15 +43,6 @@ public final class RunLinkedIn2Client extends RunClient {
         client.setScope("r_basicprofile r_emailaddress rw_company_admin w_share");
         client.setCallbackUrl(PAC4J_URL);
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(LinkedIn2Profile.class);
-        kryo.register(LinkedIn2Location.class);
-        kryo.register(LinkedIn2Position.class);
-        kryo.register(LinkedIn2Date.class);
-        kryo.register(LinkedIn2Company.class);
     }
 
     @Override
