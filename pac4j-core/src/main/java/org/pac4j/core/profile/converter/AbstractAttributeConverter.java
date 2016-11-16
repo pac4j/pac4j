@@ -1,7 +1,7 @@
 package org.pac4j.core.profile.converter;
 
 /**
- * This abstract attribute converter handles somme common behaviors.
+ * This abstract attribute converter handles some common behaviors.
  * 
  * @author Jerome Leleu
  * @since 2.0.0

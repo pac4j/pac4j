@@ -32,6 +32,7 @@ public final class JsonConverter<T extends Object> implements AttributeConverter
         this.typeReference = typeReference;
     }
 
+    @Override
     public T convert(final Object attribute) {
         if (attribute != null) {
             if (clazz.isAssignableFrom(attribute.getClass())) {
