@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.vk;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.DateConverter;
 
 import java.util.Arrays;
 
@@ -48,7 +48,7 @@ public class VkAttributesDefinition extends AttributesDefinition {
 		primary(RELATION, Converters.INTEGER);
 		Arrays.stream(new String[] {ONLINE, ONLINE_MOBILE, HAS_MOBILE, CAN_POST, CAN_SEE_ALL_POST, CAN_SEE_AUDIO, CAN_WRITE_PRIVATE_MESSAGE})
 				.forEach(a -> primary(a, Converters.BOOLEAN));
-		primary(BIRTH_DATE, new FormattedDateConverter("dd.MM.yyyy"));
+		primary(BIRTH_DATE, new DateConverter("dd.MM.yyyy"));
 		primary(SEX, Converters.GENDER);
 	}
 }

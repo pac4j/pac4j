@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.google2;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.converter.JsonListConverter;
 
 /**
@@ -31,7 +31,7 @@ public class Google2AttributesDefinition extends AttributesDefinition {
         primary(PICTURE, Converters.STRING);
         primary(GENDER, Converters.GENDER);
         primary(LANGUAGE, Converters.LOCALE);
-        primary(BIRTHDAY, new FormattedDateConverter("yyyy-MM-dd"));
+        primary(BIRTHDAY, new DateConverter("yyyy-MM-dd"));
         primary(EMAILS, new JsonListConverter(Google2Email.class, Google2Email[].class));
     }
 }

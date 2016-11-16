@@ -45,7 +45,7 @@ public class DateConverter implements AttributeConverter<Date> {
                 try {
                     return simpleDateFormat.parse(s);
                 } catch (final ParseException e) {
-                    logger.error("parse exception on " + s + " with format : " + this.format, e);
+                    logger.error("parse exception on {} with format: {} and locale: {}", s, this.format, this.locale, e);
                 }
             } else if (attribute instanceof Date) {
                 return (Date) attribute;

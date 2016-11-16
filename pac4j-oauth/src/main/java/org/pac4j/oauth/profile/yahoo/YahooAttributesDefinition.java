@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.yahoo;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.converter.JsonListConverter;
 
@@ -47,7 +47,7 @@ public class YahooAttributesDefinition extends AttributesDefinition {
         primary(BIRTH_YEAR, Converters.INTEGER);
         primary(LANG, Converters.LOCALE);
         primary(DISPLAY_AGE, Converters.INTEGER);
-        primary(BIRTHDATE, new FormattedDateConverter("MM/dd"));
+        primary(BIRTHDATE, new DateConverter("MM/dd"));
         primary(ADDRESSES, new JsonListConverter(YahooAddress.class, YahooAddress[].class));
         primary(DISCLOSURES, new JsonListConverter(YahooDisclosure.class, YahooDisclosure[].class));
         primary(EMAILS, new JsonListConverter(YahooEmail.class, YahooEmail[].class));

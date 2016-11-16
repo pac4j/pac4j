@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.twitter;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.DateConverter;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -66,6 +66,6 @@ public class TwitterAttributesDefinition extends AttributesDefinition {
         Arrays.stream(new String[] {PROFILE_BACKGROUND_COLOR, PROFILE_LINK_COLOR, PROFILE_SIDEBAR_BORDER_COLOR,
                 PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.COLOR));
         primary(LANG, Converters.LOCALE);
-        primary(CREATED_AT, new FormattedDateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
+        primary(CREATED_AT, new DateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
     }
 }

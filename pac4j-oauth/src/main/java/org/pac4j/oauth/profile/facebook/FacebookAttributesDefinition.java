@@ -2,7 +2,7 @@ package org.pac4j.oauth.profile.facebook;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.converter.JsonListConverter;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
@@ -70,7 +70,7 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
         primary(GENDER, Converters.GENDER);
         primary(LOCALE, Converters.LOCALE);
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
-        primary(BIRTHDAY, new FormattedDateConverter("MM/dd/yyyy"));
+        primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
         primary(LANGUAGES, multiObjectConverter);
         primary(EDUCATION, new JsonListConverter(FacebookEducation.class, FacebookEducation[].class));
