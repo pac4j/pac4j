@@ -1,13 +1,10 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.client.StravaClient;
-import org.pac4j.oauth.profile.strava.StravaClub;
-import org.pac4j.oauth.profile.strava.StravaGear;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 
 import static org.junit.Assert.assertEquals;
@@ -43,13 +40,6 @@ public final class RunStravaClient extends RunClient {
         stravaClient.setCallbackUrl(PAC4J_BASE_URL);
         stravaClient.setScope("view_private");
         return stravaClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(StravaProfile.class);
-        kryo.register(StravaGear.class);
-        kryo.register(StravaClub.class);
     }
 
     @Override

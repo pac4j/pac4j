@@ -36,11 +36,6 @@
 			<groupId>com.nimbusds</groupId>
 			<artifactId>nimbus-jose-jwt</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo-shaded</artifactId>
-			<optional>true</optional>
-		</dependency>
 		<!-- for testing -->
 		<dependency>
 			<groupId>org.pac4j</groupId>

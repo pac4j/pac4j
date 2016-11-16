@@ -22,6 +22,8 @@ public final class ProfileHelper {
 
     private static final Map<String, Constructor<? extends CommonProfile>> constructorsCache = new ConcurrentHashMap<>();
 
+    private ProfileHelper() {}
+
     private static InternalAttributeHandler internalAttributeHandler = new InternalAttributeHandler();
 
     /**

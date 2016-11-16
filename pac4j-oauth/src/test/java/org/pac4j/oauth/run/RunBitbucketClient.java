@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -38,11 +37,6 @@ public final class RunBitbucketClient extends RunClient {
         client.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(Kryo kryo) {
-        kryo.register(BitbucketProfile.class);
     }
 
     @Override

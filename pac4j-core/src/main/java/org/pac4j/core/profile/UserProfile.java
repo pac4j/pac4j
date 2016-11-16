@@ -123,12 +123,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("id", id);
 
         String sId = id.toString();
-        final String oldType = this.getClass().getSimpleName() + SEPARATOR;
         final String type = this.getClass().getName() + SEPARATOR;
         if (sId.startsWith(type)) {
             sId = sId.substring(type.length());
-        } else if (sId.startsWith(oldType)) {
-            sId = sId.substring(oldType.length());
         }
         logger.debug("identifier: {}", sId);
         this.id = sId;
