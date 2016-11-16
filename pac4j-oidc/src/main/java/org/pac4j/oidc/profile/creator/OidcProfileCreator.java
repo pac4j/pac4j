@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -151,10 +152,13 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
                             ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
                     final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    final UserInfo userInfo = userInfoSuccessResponse.getUserInfo();
-                    if (userInfo != null) {
-                        profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
+                    final JWTClaimsSet claimsSet;
+                    if (userInfoSuccessResponse.claimsSet != null) {
+                        claimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
+                    } else {
+                        claimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                     }
+                    profile.addAttributes(claimsSet.getClaims());
                 }
             }
 
