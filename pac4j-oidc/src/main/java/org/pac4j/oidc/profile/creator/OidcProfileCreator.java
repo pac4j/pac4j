@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -14,7 +15,6 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.*;
 import com.nimbusds.openid.connect.sdk.claims.IDTokenClaimsSet;
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
@@ -151,10 +151,13 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
                             ((UserInfoErrorResponse) userInfoResponse).getErrorObject());
                 } else {
                     final UserInfoSuccessResponse userInfoSuccessResponse = (UserInfoSuccessResponse) userInfoResponse;
-                    final UserInfo userInfo = userInfoSuccessResponse.getUserInfo();
-                    if (userInfo != null) {
-                        profile.addAttributes(userInfo.toJWTClaimsSet().getClaims());
+                    final JWTClaimsSet userInfoClaimsSet;
+                    if (userInfoSuccessResponse.getUserInfo() != null) {
+                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfo().toJWTClaimsSet();
+                    } else {
+                        userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                     }
+                    profile.addAttributes(userInfoClaimsSet.getClaims());
                 }
             }
 
