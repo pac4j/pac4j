@@ -12,10 +12,13 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * CAS authenticator which validates the service ticket.
@@ -68,7 +71,16 @@ public class CasAuthenticator extends InitializableWebObject implements Authenti
                 casProfile = new CasProfile();
             }
             casProfile.setId(principal.getName());
-            casProfile.addAttributes(principal.getAttributes());
+            // restore attributes
+            final Map<String, Object> attributes = principal.getAttributes();
+            if (attributes != null) {
+                for (final Map.Entry<String, Object> entry : attributes.entrySet()){
+                    final String key = entry.getKey();
+                    final Object value = entry.getValue();
+                    final Object restored = ProfileHelper.getInternalAttributeHandler().restore(value);
+                    casProfile.addAttribute(key, restored);
+                }
+            }
             logger.debug("casProfile: {}", casProfile);
             credentials.setUserProfile(casProfile);
         } catch (final TicketValidationException e) {
