@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -55,23 +54,6 @@ public final class RunFacebookClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(FacebookProfile.class);
-        kryo.register(FacebookObject.class);
-        kryo.register(FacebookEvent.class);
-        kryo.register(FacebookInfo.class);
-        kryo.register(FacebookMusicListen.class);
-        kryo.register(FacebookApplication.class);
-        kryo.register(FacebookMusicData.class);
-        kryo.register(FacebookEducation.class);
-        kryo.register(FacebookRelationshipStatus.class);
-        kryo.register(FacebookGroup.class);
-        kryo.register(FacebookWork.class);
-        kryo.register(FacebookPicture.class);
-        kryo.register(FacebookPhoto.class);
-    }
-
-    @Override
     protected void verifyProfile(final CommonProfile userProfile) {
         final FacebookProfile profile = (FacebookProfile) userProfile;
         assertEquals("771361542992890", profile.getId());
@@ -103,7 +85,7 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("New York, New York", profile.getLocationObject().getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
         final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
-        assertEquals("Women's surfing", favoriteAthletes.get(0).getName());
+        assertEquals("Surfing", favoriteAthletes.get(0).getName());
         final List<FacebookObject> favoriteTeams = profile.getFavoriteTeams();
         assertEquals("Handball Féminin de France", favoriteTeams.get(0).getName());
         assertEquals("citation", profile.getQuotes());

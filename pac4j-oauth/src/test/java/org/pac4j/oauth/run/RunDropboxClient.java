@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -43,11 +42,6 @@ public final class RunDropboxClient extends RunClient {
         dropBoxClient.setSecret("a0ylze9a0bhsvxv");
         dropBoxClient.setCallbackUrl("https://www.google.com");
         return dropBoxClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(DropBoxProfile.class);
     }
 
     @Override

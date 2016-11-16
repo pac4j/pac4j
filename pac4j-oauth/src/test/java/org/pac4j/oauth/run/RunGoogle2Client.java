@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -8,7 +7,6 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.Google2Client;
-import org.pac4j.oauth.profile.google2.Google2Email;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 
 import java.util.Locale;
@@ -45,12 +43,6 @@ public final class RunGoogle2Client extends RunClient {
         google2Client.setCallbackUrl(PAC4J_BASE_URL);
         google2Client.setScope(Google2Client.Google2Scope.EMAIL_AND_PROFILE);
         return google2Client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(Google2Profile.class);
-        kryo.register(Google2Email.class);
     }
 
     @Override

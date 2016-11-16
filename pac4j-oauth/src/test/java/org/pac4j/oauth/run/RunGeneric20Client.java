@@ -5,7 +5,6 @@ import java.util.Date;
 import org.pac4j.oauth.profile.github.GitHubAttributesDefinition;
 import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -17,7 +16,7 @@ import org.pac4j.oauth.profile.generic.GenericOAuth20Profile;
 import static org.junit.Assert.*;
 
 /**
- * Test class for {@link GenericOAuth20StateClient}
+ * Test class for {@link GenericOAuth20Client}
  * Connects with Google for testing
  * @see RunGoogle2Client
  *
@@ -52,11 +51,6 @@ public class RunGeneric20Client extends RunClient {
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setScope("user");
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(GenericOAuth20Profile.class);
     }
 
     @Override

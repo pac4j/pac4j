@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -45,16 +44,6 @@ public final class RunYahooClient extends RunClient {
         yahooClient.setSecret("227eb8180d8212181a3856969a83e93fa14f1116");
         yahooClient.setCallbackUrl(PAC4J_BASE_URL);
         return yahooClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(YahooProfile.class);
-        kryo.register(YahooDisclosure.class);
-        kryo.register(YahooInterest.class);
-        kryo.register(YahooImage.class);
-        kryo.register(YahooEmail.class);
-        kryo.register(YahooAddress.class);
     }
 
     @Override

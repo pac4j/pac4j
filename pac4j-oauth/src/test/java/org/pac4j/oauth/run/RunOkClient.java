@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -70,11 +69,6 @@ public final class RunOkClient extends RunClient {
         okClient.setSecret("479452FD7CA726DF558B4303");
         okClient.setCallbackUrl(PAC4J_URL);
         return okClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(OkProfile.class);
     }
 
     @Override
