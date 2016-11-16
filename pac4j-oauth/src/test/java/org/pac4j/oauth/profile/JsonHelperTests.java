@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.facebook.FacebookObject;
@@ -64,16 +63,6 @@ public final class JsonHelperTests implements TestsConstants {
     public void testGetNode() {
         assertEquals(JsonHelper.getFirstNode(GOOD_TEXT_JSON),
                      JsonHelper.getElement(JsonHelper.getFirstNode(GOOD_NODE_JSON), KEY));
-    }
-
-    @Test
-    public void testGetAsType() {
-        final JsonNode node = JsonHelper.getFirstNode("{ \"id\": \"x\", \"name\": \"y\" }");
-        final FacebookObject object = JsonHelper.getAsType(node, FacebookObject.class);
-        assertNotNull(object);
-        assertNotNull(object);
-        assertEquals("x", object.getId());
-        assertEquals("y", object.getName());
     }
 
     @Test

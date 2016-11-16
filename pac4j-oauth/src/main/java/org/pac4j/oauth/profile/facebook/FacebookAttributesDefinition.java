@@ -1,13 +1,14 @@
 package org.pac4j.oauth.profile.facebook;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class defines the attributes of the Facebook profile.
@@ -64,32 +65,31 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
         final JsonConverter<FacebookObject> objectConverter = new JsonConverter<>(FacebookObject.class);
-        final JsonListConverter multiObjectConverter = new JsonListConverter(FacebookObject.class, FacebookObject[].class);
-        final JsonListConverter multiStringConverter = new JsonListConverter(String.class, String[].class);
-        final JsonListConverter multiInfoConverter = new JsonListConverter(FacebookInfo.class, FacebookInfo[].class);
+        final JsonConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
+        final JsonConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
         primary(GENDER, Converters.GENDER);
         primary(LOCALE, Converters.LOCALE);
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
         primary(LANGUAGES, multiObjectConverter);
-        primary(EDUCATION, new JsonListConverter(FacebookEducation.class, FacebookEducation[].class));
+        primary(EDUCATION, new JsonConverter(List.class, new TypeReference<List<FacebookEducation>>() {}));
         primary(HOMETOWN, objectConverter);
-        primary(INTERESTED_IN, multiStringConverter);
+        primary(INTERESTED_IN, new JsonConverter(List.class, new TypeReference<List<String>>() {}));
         primary(LOCATION, objectConverter);
         primary(FAVORITE_ATHLETES, multiObjectConverter);
         primary(FAVORITE_TEAMS, multiObjectConverter);
         primary(SIGNIFICANT_OTHER, objectConverter);
-        primary(WORK, new JsonListConverter(FacebookWork.class, FacebookWork[].class));
+        primary(WORK, new JsonConverter(List.class, new TypeReference<List<FacebookWork>>() {}));
         secondary(FRIENDS, multiObjectConverter);
         secondary(MOVIES, multiInfoConverter);
         secondary(MUSIC, multiInfoConverter);
         secondary(BOOKS, multiInfoConverter);
         secondary(LIKES, multiInfoConverter);
-        secondary(ALBUMS, new JsonListConverter(FacebookPhoto.class, FacebookPhoto[].class));
-        secondary(EVENTS, new JsonListConverter(FacebookEvent.class, FacebookEvent[].class));
-        secondary(GROUPS, new JsonListConverter(FacebookGroup.class, FacebookGroup[].class));
-        secondary(MUSIC_LISTENS, new JsonListConverter(FacebookMusicListen.class, FacebookMusicListen[].class));
+        secondary(ALBUMS, new JsonConverter(List.class, new TypeReference<List<FacebookPhoto>>() {}));
+        secondary(EVENTS, new JsonConverter(List.class, new TypeReference<List<FacebookEvent>>() {}));
+        secondary(GROUPS, new JsonConverter(List.class, new TypeReference<List<FacebookGroup>>() {}));
+        secondary(MUSIC_LISTENS, new JsonConverter(List.class, new TypeReference<List<FacebookMusicListen>>() {}));
         secondary(PICTURE, new JsonConverter<>(FacebookPicture.class));
     }
 }

@@ -27,6 +27,8 @@ public final class JsonHelper {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    private JsonHelper() {}
+
     /**
      * Return the first node of a JSON response.
      *
@@ -38,23 +40,6 @@ public final class JsonHelper {
             return mapper.readValue(text, JsonNode.class);
         } catch (final IOException e) {
             logger.error("Cannot get first node", e);
-        }
-        return null;
-    }
-
-    /**
-     * Return an Object from a JSON node.
-     *
-     * @param node a JSON node
-     * @param clazz the class to cast to
-     * @param <T> the class to cast to
-     * @return the parsed object
-     */
-    public static <T extends Object> T getAsType(final JsonNode node, final Class<T> clazz) {
-        try {
-            return mapper.treeToValue(node, clazz);
-        } catch (final IOException e) {
-            logger.error("Cannot get as type", e);
         }
         return null;
     }
@@ -104,5 +89,9 @@ public final class JsonHelper {
             logger.error("Cannot to JSON string", e);
         }
         return null;
+    }
+
+    public static ObjectMapper getMapper() {
+        return mapper;
     }
 }
