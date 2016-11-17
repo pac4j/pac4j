@@ -1,10 +1,12 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth10Profile;
 
 /**
@@ -65,17 +67,17 @@ public class YahooProfile extends OAuth10Profile {
     }
     
     @Override
-    public String getPictureUrl() {
+    public URI getPictureUrl() {
         final YahooImage yahooImage = (YahooImage) getAttribute(YahooAttributesDefinition.IMAGE);
         if (yahooImage != null) {
-            return yahooImage.getImageUrl();
+            return CommonHelper.asURI(yahooImage.getImageUrl());
         }
         return null;
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(YahooAttributesDefinition.PROFILE_URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(YahooAttributesDefinition.PROFILE_URL);
     }
     
     public String getAboutMe() {

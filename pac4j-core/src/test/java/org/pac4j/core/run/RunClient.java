@@ -80,12 +80,12 @@ public abstract class RunClient implements TestsConstants {
         if (pictureUrl == null) {
             assertNull(profile.getPictureUrl());
         } else {
-            assertTrue(profile.getPictureUrl().contains(pictureUrl));
+            assertTrue(profile.getPictureUrl().toString().contains(pictureUrl));
         }
         if (profileUrl == null) {
             assertNull(profile.getProfileUrl());
         } else {
-            final String profUrl = profile.getProfileUrl();
+            final String profUrl = profile.getProfileUrl().toString();
             assertTrue(profUrl.startsWith(profileUrl));
         }
         assertEquals(location, profile.getLocation());

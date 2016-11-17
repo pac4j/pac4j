@@ -9,6 +9,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.profile.facebook.*;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import static org.junit.Assert.*;
 
@@ -71,7 +72,7 @@ public final class RunFacebookClient extends RunClient {
         assertEquals(1, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getAbout());
-        assertEquals("03/10/1979", profile.getBirthday().toString());
+        assertEquals("03/10/1979", new SimpleDateFormat("MM/dd/yyyy").format(profile.getBirthday()));
         final List<FacebookEducation> educations = profile.getEducation();
         FacebookEducation education = educations.get(0);
         assertEquals("lycée mixte", education.getSchool().getName());

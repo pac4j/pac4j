@@ -76,16 +76,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
             } else {
                 value = definition.convert(key, value);
                 if (value != null) {
-                    // for OAuth: convert array as list
-                    Object value2;
-                    if (value instanceof Object[]) {
-                        value2 = new ArrayList(Arrays.asList((Object[]) value));
-                    } else {
-                        value2 = value;
-                    }
                     logger.debug("converted to => key: {} / value: {} / {}",
-                            new Object[] { key, value2, value2.getClass() });
-                    this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value2));
+                            new Object[] { key, value, value.getClass() });
+                    this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
                 }
             }
         }

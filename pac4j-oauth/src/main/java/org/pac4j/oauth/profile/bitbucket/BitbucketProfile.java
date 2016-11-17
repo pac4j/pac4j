@@ -3,6 +3,8 @@ package org.pac4j.oauth.profile.bitbucket;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth10Profile;
 
+import java.net.URI;
+
 /**
  * <p>This class is the user profile for Bitbucket with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oauth.client.BitbucketClient}.</p>
@@ -27,13 +29,13 @@ public class BitbucketProfile extends OAuth10Profile {
     }
     
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(BitbucketAttributesDefinition.AVATAR);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(BitbucketAttributesDefinition.AVATAR);
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(BitbucketAttributesDefinition.RESOURCE_URI);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(BitbucketAttributesDefinition.RESOURCE_URI);
     }
     
     public boolean isTeam() {
