@@ -1,13 +1,13 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
-import org.pac4j.core.profile.converter.GenderConverter;
+import org.pac4j.core.profile.converter.DateConverter;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class defines the attributes of the Yahoo profile.
@@ -48,13 +48,13 @@ public class YahooAttributesDefinition extends AttributesDefinition {
         primary(BIRTH_YEAR, Converters.INTEGER);
         primary(LANG, Converters.LOCALE);
         primary(DISPLAY_AGE, Converters.INTEGER);
-        primary(BIRTHDATE, new FormattedDateConverter("MM/dd"));
-        primary(ADDRESSES, new JsonListConverter(YahooAddress.class, YahooAddress[].class));
-        primary(DISCLOSURES, new JsonListConverter(YahooDisclosure.class, YahooDisclosure[].class));
-        primary(EMAILS, new JsonListConverter(YahooEmail.class, YahooEmail[].class));
-        primary(GENDER, new GenderConverter("m", "f"));
+        primary(BIRTHDATE, new DateConverter("MM/dd"));
+        primary(ADDRESSES, new JsonConverter(List.class, new TypeReference<List<YahooAddress>>() {}));
+        primary(DISCLOSURES, new JsonConverter(List.class, new TypeReference<List<YahooDisclosure>>() {}));
+        primary(EMAILS, new JsonConverter(List.class, new TypeReference<List<YahooEmail>>() {}));
+        primary(GENDER, Converters.GENDER);
         primary(IMAGE, new JsonConverter<>(YahooImage.class));
-        primary(INTERESTS, new JsonListConverter(YahooInterest.class, YahooInterest[].class));
+        primary(INTERESTS, new JsonConverter(List.class, new TypeReference<List<YahooInterest>>() {}));
         primary(CREATED, Converters.DATE_TZ_RFC822);
         primary(MEMBER_SINCE, Converters.DATE_TZ_RFC822);
         primary(UPDATED, Converters.DATE_TZ_RFC822);

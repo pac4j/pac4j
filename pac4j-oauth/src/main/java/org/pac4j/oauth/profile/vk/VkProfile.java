@@ -1,10 +1,12 @@
 package org.pac4j.oauth.profile.vk;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -39,13 +41,13 @@ public class VkProfile extends OAuth20Profile {
 	}
 
 	@Override
-	public String getPictureUrl() {
-		return getFotoMax();
+	public URI getPictureUrl() {
+		return CommonHelper.asURI(getFotoMax());
 	}
 
 	@Override
-	public String getProfileUrl() {
-		return String.format("https://vk.com/id%s", getId());
+	public URI getProfileUrl() {
+		return CommonHelper.asURI(String.format("https://vk.com/id%s", getId()));
 	}
 
 	@Override

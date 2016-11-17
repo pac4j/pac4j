@@ -2,6 +2,8 @@ package org.pac4j.core.profile.converter;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 /**
@@ -21,7 +23,7 @@ public final class BooleanConverterTests {
 
     @Test
     public void testNotAStringNotABoolean() {
-        assertFalse(this.converter.convert(1));
+        assertFalse(this.converter.convert(new Date()));
     }
 
     @Test
@@ -42,5 +44,15 @@ public final class BooleanConverterTests {
     @Test
     public void testTrue() {
         assertEquals(Boolean.TRUE, this.converter.convert("true"));
+    }
+
+    @Test
+    public void testOneString() {
+        assertEquals(Boolean.TRUE, this.converter.convert("1"));
+    }
+
+    @Test
+    public void testOneNumber() {
+        assertEquals(Boolean.TRUE, this.converter.convert(1));
     }
 }
