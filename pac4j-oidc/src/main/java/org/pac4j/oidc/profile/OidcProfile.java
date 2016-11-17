@@ -9,6 +9,7 @@ import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
+import java.net.URI;
 import java.text.ParseException;
 import java.util.*;
 
@@ -56,13 +57,13 @@ public class OidcProfile extends CommonProfile {
     }
 
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(OidcAttributesDefinition.PICTURE);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(OidcAttributesDefinition.PICTURE);
     }
 
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(OidcAttributesDefinition.PROFILE);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(OidcAttributesDefinition.PROFILE);
     }
 
     @Override

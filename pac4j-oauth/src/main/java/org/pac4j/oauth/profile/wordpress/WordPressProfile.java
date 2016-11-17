@@ -3,6 +3,8 @@ package org.pac4j.oauth.profile.wordpress;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.net.URI;
+
 /**
  * <p>This class is the user profile for WordPress with appropriate getters.</p>
  * <p>It is returned by the {@link org.pac4j.oauth.client.WordPressClient}.</p>
@@ -22,13 +24,13 @@ public class WordPressProfile extends OAuth20Profile {
     }
     
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(WordPressAttributesDefinition.AVATAR_URL);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(WordPressAttributesDefinition.AVATAR_URL);
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(WordPressAttributesDefinition.PROFILE_URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(WordPressAttributesDefinition.PROFILE_URL);
     }
     
     public Integer getPrimaryBlog() {

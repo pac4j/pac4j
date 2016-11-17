@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.dropbox;
 
+import java.net.URI;
 import java.util.Locale;
 
 import org.pac4j.core.profile.AttributesDefinition;
@@ -29,8 +30,8 @@ public class DropBoxProfile extends OAuth10Profile {
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(DropBoxAttributesDefinition.REFERRAL_LINK);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(DropBoxAttributesDefinition.REFERRAL_LINK);
     }
     
     public Long getNormal() {

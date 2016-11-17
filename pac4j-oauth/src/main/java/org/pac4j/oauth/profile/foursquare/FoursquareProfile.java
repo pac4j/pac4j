@@ -1,7 +1,10 @@
 package org.pac4j.oauth.profile.foursquare;
 
 import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
+
+import java.net.URI;
 
 /**
  * <p>This class is the user profile for Foursquare with appropriate getters.</p>
@@ -53,13 +56,13 @@ public class FoursquareProfile extends OAuth20Profile {
     }
 
     @Override
-    public String getProfileUrl() {
-        return "https://foursquare.com/user/" + getId();
+    public URI getProfileUrl() {
+        return CommonHelper.asURI("https://foursquare.com/user/" + getId());
     }
 
     @Override
-    public String getPictureUrl() {
-        return this.getPhoto().getPhotoUrl();
+    public URI getPictureUrl() {
+        return CommonHelper.asURI(this.getPhoto().getPhotoUrl());
     }
 
     @Override

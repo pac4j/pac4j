@@ -23,7 +23,7 @@ public class JavaSerializationHelper {
 
     public JavaSerializationHelper() {
         trustedPackages = new ArrayList<>();
-        trustedPackages.addAll(Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "org.joda."));
+        trustedPackages.addAll(Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "org.joda.", "net.minidev.json."));
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.github;
 
+import java.net.URI;
 import java.util.Date;
 
 import org.pac4j.core.profile.AttributesDefinition;
@@ -34,13 +35,13 @@ public class GitHubProfile extends OAuth20Profile {
     }
     
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(GitHubAttributesDefinition.AVATAR_URL);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(GitHubAttributesDefinition.AVATAR_URL);
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(GitHubAttributesDefinition.HTML_URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(GitHubAttributesDefinition.HTML_URL);
     }
     
     public String getCompany() {

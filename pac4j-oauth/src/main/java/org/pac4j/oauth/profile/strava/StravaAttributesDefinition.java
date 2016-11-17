@@ -1,11 +1,12 @@
 package org.pac4j.oauth.profile.strava;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.GenderConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
+import org.pac4j.oauth.profile.converter.JsonConverter;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class defines the attributes of the Strava profile.
@@ -51,11 +52,11 @@ public class StravaAttributesDefinition extends AttributesDefinition {
         primary(FOLLOWER_COUNT, Converters.INTEGER);
         primary(FRIEND_COUNT, Converters.INTEGER);
         primary(PREMIUM, Converters.BOOLEAN);
-        primary(SEX, new GenderConverter("m", "f"));
+        primary(SEX, Converters.GENDER);
         primary(CREATED_AT, Converters.DATE_TZ_RFC822);
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
-        primary(CLUBS, new JsonListConverter(StravaClub.class, StravaClub[].class));
-        final JsonListConverter multiGearConverter = new JsonListConverter(StravaGear.class, StravaGear[].class);
+        primary(CLUBS, new JsonConverter(List.class, new TypeReference<List<StravaClub>>() {}));
+        final JsonConverter multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
         primary(BIKES, multiGearConverter);
         primary(SHOES, multiGearConverter);
     }

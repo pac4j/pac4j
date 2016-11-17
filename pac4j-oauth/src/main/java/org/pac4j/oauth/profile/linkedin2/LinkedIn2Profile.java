@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.linkedin2;
 
+import java.net.URI;
 import java.util.List;
 
 import org.pac4j.core.profile.AttributesDefinition;
@@ -61,13 +62,13 @@ public class LinkedIn2Profile extends OAuth20Profile {
     }
     
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.PICTURE_URL);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(LinkedIn2AttributesDefinition.PICTURE_URL);
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.PUBLIC_PROFILE_URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(LinkedIn2AttributesDefinition.PUBLIC_PROFILE_URL);
     }
     
     public LinkedIn2Location getCompleteLocation() {

@@ -1,5 +1,6 @@
 package org.pac4j.saml.profile;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 
@@ -8,6 +9,7 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
 
 /**
@@ -91,13 +93,13 @@ public class SAML2Profile extends CommonProfile {
     }
 
     @Override
-    public String getPictureUrl() {
-        return getSingleAttributeAsString("picture_url");
+    public URI getPictureUrl() {
+        return CommonHelper.asURI(getSingleAttributeAsString("picture_url"));
     }
 
     @Override
-    public String getProfileUrl() {
-        return getSingleAttributeAsString("profile_url");
+    public URI getProfileUrl() {
+        return CommonHelper.asURI(getSingleAttributeAsString("profile_url"));
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.orcid;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
+import java.net.URI;
 import java.util.Locale;
 
 /**
@@ -51,8 +52,7 @@ public class OrcidProfile extends OAuth20Profile {
     }
 
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(OrcidAttributesDefinition.URI);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(OrcidAttributesDefinition.URI);
     }
-
 }

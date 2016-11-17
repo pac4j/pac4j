@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.Collection;
 import java.util.Date;
 
@@ -411,6 +408,20 @@ public final class CommonHelper {
      */
     public static Date newDate(final Date original) {
         return original != null ? new Date(original.getTime()) : null;
+    }
+
+    /**
+     * Convert a string into an URI.
+     *
+     * @param s the string
+     * @return the URI
+     */
+    public static URI asURI(final String s) {
+        try {
+            return new URI(s);
+        } catch (final URISyntaxException e) {
+            throw new TechnicalException("Cannot make an URI from: " + s, e);
+        }
     }
 
     /**
