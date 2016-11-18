@@ -3,7 +3,7 @@ package org.pac4j.core.profile.definition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * Profile definition with the common attributes.
@@ -32,11 +32,10 @@ public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDef
         primary(LOCALE, Converters.LOCALE);
         primary(PICTURE_URL, Converters.URL);
         primary(PROFILE_URL, Converters.URL);
-        primary(EMAIL, Converters.STRING);
         primary(LOCATION, Converters.STRING);
     }
 
-    public CommonProfileDefinition(final Supplier<P> profileFactory) {
+    public CommonProfileDefinition(final Function<Object[], P> profileFactory) {
         this();
         setProfileFactory(profileFactory);
     }

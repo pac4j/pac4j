@@ -4,6 +4,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.http.profile.IpProfile;
@@ -18,7 +20,7 @@ import java.util.regex.Pattern;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IpRegexpAuthenticator implements Authenticator<TokenCredentials> {
+public class IpRegexpAuthenticator extends ProfileDefinitionAware<IpProfile> implements Authenticator<TokenCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -33,8 +35,14 @@ public class IpRegexpAuthenticator implements Authenticator<TokenCredentials> {
     }
 
     @Override
-    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+    protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("pattern", pattern);
+        setProfileDefinition(new CommonProfileDefinition<>(parameters -> new IpProfile()));
+    }
+
+    @Override
+    public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+        init(context);
 
         final String ip = credentials.getToken();
 
@@ -42,12 +50,15 @@ public class IpRegexpAuthenticator implements Authenticator<TokenCredentials> {
             throw new CredentialsException("Unauthorized IP address: " + ip);
         }
 
-        final IpProfile profile = new IpProfile(ip);
+        final IpProfile profile = getProfileDefinition().newProfile();
+        profile.setId(ip);
         logger.debug("profile: {}", profile);
+
         credentials.setUserProfile(profile);
     }
 
     public void setRegexpPattern(final String regexpPattern) {
+        CommonHelper.assertNotNull("regexpPattern", regexpPattern);
         this.regexPattern = regexpPattern;
         this.pattern = Pattern.compile(regexpPattern);
     }

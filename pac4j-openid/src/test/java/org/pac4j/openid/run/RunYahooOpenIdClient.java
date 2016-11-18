@@ -51,7 +51,7 @@ public class RunYahooOpenIdClient  extends RunClient {
                 + "https://me.yahoo.com/a/" + id, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooOpenIdProfile.class));
         assertCommonProfile(userProfile, getLogin(), null, null, "Test ScribeUP", null,
-                Gender.UNSPECIFIED, Locale.FRANCE, null, null, null);
-        assertEquals(3, profile.getAttributes().size());
+                Gender.UNSPECIFIED, Locale.FRANCE, "https://s.yimg.com/dg/users/1DJGkdA6uAAECQWEo8AceAQ==.medium.png", null, null);
+        assertEquals(4, profile.getAttributes().size());
     }
 }

@@ -4,6 +4,7 @@ import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
 import org.pac4j.gae.profile.GaeUserServiceAttributesDefinition;
@@ -29,6 +30,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 		service = UserServiceFactory.getUserService();
 		CommonHelper.assertNotNull("service", this.service);
 		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+		setProfileDefinition(new CommonProfileDefinition<>(parameters -> new GaeUserServiceProfile()));
 	}
 
 	@Override
@@ -50,14 +52,14 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	protected GaeUserServiceProfile retrieveUserProfile(GaeUserCredentials credentials, WebContext context) throws HttpAction {
 		User user = credentials.getUser();
 		if (user != null) {
-			GaeUserServiceProfile gaeUserProfile = new GaeUserServiceProfile();
-			gaeUserProfile.setId(user.getEmail());
-			gaeUserProfile.addAttribute(GaeUserServiceAttributesDefinition.EMAIL, user.getEmail());
-			gaeUserProfile.addAttribute(GaeUserServiceAttributesDefinition.DISPLAYNAME, user.getNickname());
+			final GaeUserServiceProfile profile = getProfileDefinition().newProfile();
+			profile.setId(user.getEmail());
+			getProfileDefinition().convertAndAdd(profile, GaeUserServiceAttributesDefinition.EMAIL, user.getEmail());
+			getProfileDefinition().convertAndAdd(profile, GaeUserServiceAttributesDefinition.DISPLAYNAME, user.getNickname());
 			if (service.isUserAdmin()) {
-				gaeUserProfile.addRole(GaeUserServiceProfile.PAC4J_GAE_GLOBAL_ADMIN_ROLE);
+				profile.addRole(GaeUserServiceProfile.PAC4J_GAE_GLOBAL_ADMIN_ROLE);
 			}
-			return gaeUserProfile;
+			return profile;
 		}
 		return null;
 	}

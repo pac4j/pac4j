@@ -18,8 +18,10 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.openid.credentials.OpenIdCredentials;
+import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
 
 /**
  * This class is a base implementation for an OpenID protocol client based on the openid4java library. It should work

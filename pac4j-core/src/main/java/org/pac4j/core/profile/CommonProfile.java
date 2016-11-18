@@ -1,6 +1,7 @@
 package org.pac4j.core.profile;
 
 import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.net.URI;
 import java.util.Locale;
@@ -21,7 +22,11 @@ public class CommonProfile extends UserProfile {
      * @return the email of the user
      */
     public String getEmail() {
-        return (String) getAttribute("email");
+        final Object o = getAttribute(CommonProfileDefinition.EMAIL);
+        if (o instanceof String) {
+            return (String) o;
+        }
+        return null;
     }
     
     /**
@@ -30,7 +35,11 @@ public class CommonProfile extends UserProfile {
      * @return the first name of the user
      */
     public String getFirstName() {
-        return (String) getAttribute("first_name");
+        final Object o = getAttribute(CommonProfileDefinition.FIRST_NAME);
+        if (o instanceof String) {
+            return (String) o;
+        }
+        return null;
     }
     
     /**
@@ -39,7 +48,11 @@ public class CommonProfile extends UserProfile {
      * @return the family name of the user
      */
     public String getFamilyName() {
-        return (String) getAttribute("family_name");
+        final Object o = getAttribute(CommonProfileDefinition.FAMILY_NAME);
+        if (o instanceof String) {
+            return (String) o;
+        }
+        return null;
     }
     
     /**
@@ -48,7 +61,11 @@ public class CommonProfile extends UserProfile {
      * @return the displayed name of the user
      */
     public String getDisplayName() {
-        return (String) getAttribute("display_name");
+        final Object o = getAttribute(CommonProfileDefinition.DISPLAY_NAME);
+        if (o instanceof String) {
+            return (String) o;
+        }
+        return null;
     }
     
     /**
@@ -57,7 +74,11 @@ public class CommonProfile extends UserProfile {
      * @return the username of the user
      */
     public String getUsername() {
-        return (String) getAttribute(Pac4jConstants.USERNAME);
+        final Object o = getAttribute(Pac4jConstants.USERNAME);
+        if (o instanceof String) {
+            return (String) o;
+        }
+        return null;
     }
     
     /**
@@ -66,7 +87,7 @@ public class CommonProfile extends UserProfile {
      * @return the gender of the user
      */
     public Gender getGender() {
-        final Gender gender = (Gender) getAttribute("gender");
+        final Gender gender = (Gender) getAttribute(CommonProfileDefinition.GENDER);
         if (gender == null) {
             return Gender.UNSPECIFIED;
         } else {
@@ -80,7 +101,11 @@ public class CommonProfile extends UserProfile {
      * @return the locale of the user
      */
     public Locale getLocale() {
-        return (Locale) getAttribute("locale");
+        final Object o = getAttribute(CommonProfileDefinition.LOCALE);
+        if (o instanceof Locale) {
+            return (Locale) o;
+        }
+        return null;
     }
     
     /**
@@ -89,7 +114,11 @@ public class CommonProfile extends UserProfile {
      * @return the url of the picture of the user.
      */
     public URI getPictureUrl() {
-        return (URI) getAttribute("picture_url");
+        final Object o = getAttribute(CommonProfileDefinition.PICTURE_URL);
+        if (o instanceof URI) {
+            return (URI) o;
+        }
+        return null;
     }
     
     /**
@@ -98,7 +127,11 @@ public class CommonProfile extends UserProfile {
      * @return the url of the profile of the user.
      */
     public URI getProfileUrl() {
-        return (URI) getAttribute("profile_url");
+        final Object o = getAttribute(CommonProfileDefinition.PROFILE_URL);
+        if (o instanceof URI) {
+            return (URI) o;
+        }
+        return null;
     }
     
     /**
@@ -107,6 +140,10 @@ public class CommonProfile extends UserProfile {
      * @return the location of the user
      */
     public String getLocation() {
-        return (String) getAttribute("location");
+        final Object o = getAttribute(CommonProfileDefinition.LOCATION);
+        if (o instanceof String) {
+            return (String) o;
+        }
+        return null;
     }
 }
