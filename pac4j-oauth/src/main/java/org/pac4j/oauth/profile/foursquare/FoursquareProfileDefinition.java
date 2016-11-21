@@ -1,18 +1,18 @@
 package org.pac4j.oauth.profile.foursquare;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 
 import java.util.Arrays;
 
 /**
- * This class defines the attributes of the Foursquare profile.
+ * This class is the Foursquare profile definition.
  *
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareAttributesDefinition extends AttributesDefinition {
+public class FoursquareProfileDefinition extends CommonProfileDefinition<FoursquareProfile> {
 
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
@@ -24,7 +24,8 @@ public class FoursquareAttributesDefinition extends AttributesDefinition {
     public static final String CONTACT = "contact";
     public static final String BIO = "bio";
 
-    public FoursquareAttributesDefinition() {
+    public FoursquareProfileDefinition() {
+        super(x -> new FoursquareProfile());
         Arrays.stream(new String[] {
                 FIRST_NAME, LAST_NAME, GENDER, HOME_CITY, BIO, EMAIL, PHOTO
         }).forEach(a -> primary(a, Converters.STRING));

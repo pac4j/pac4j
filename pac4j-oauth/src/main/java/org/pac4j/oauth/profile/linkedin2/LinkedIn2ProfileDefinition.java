@@ -1,20 +1,20 @@
 package org.pac4j.oauth.profile.linkedin2;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class defines the attributes of the {@link LinkedIn2Profile}.
+ * This class is the LinkedIn profile definition.
  * 
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2AttributesDefinition extends AttributesDefinition {
+public class LinkedIn2ProfileDefinition extends CommonProfileDefinition<LinkedIn2Profile> {
     
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
@@ -38,12 +38,15 @@ public class LinkedIn2AttributesDefinition extends AttributesDefinition {
     public static final String API_STANDARD_PROFILE_REQUEST = "apiStandardProfileRequest";
     public static final String EMAIL_ADDRESS = "emailAddress";
 
-    public LinkedIn2AttributesDefinition() {
+    public LinkedIn2ProfileDefinition() {
+        super(x -> new LinkedIn2Profile());
         Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, MAIDEN_NAME, FORMATTED_NAME, PHONETIC_FIRST_NAME, PHONETIC_LAST_NAME,
-                FORMATTED_PHONETIC_NAME, HEADLINE, INDUSTRY, CURRENT_SHARE, SUMMARY, SPECIALTIES, PICTURE_URL, PUBLIC_PROFILE_URL,
-                EMAIL_ADDRESS}).forEach(a -> primary(a, Converters.STRING));
+                FORMATTED_PHONETIC_NAME, HEADLINE, INDUSTRY, CURRENT_SHARE, SUMMARY, SPECIALTIES, EMAIL_ADDRESS})
+                .forEach(a -> primary(a, Converters.STRING));
         primary(NUM_CONNECTIONS, Converters.INTEGER);
         primary(NUM_CONNECTIONS_CAPPED, Converters.BOOLEAN);
+        primary(PICTURE_URL, Converters.URL);
+        primary(PUBLIC_PROFILE_URL, Converters.URL);
         primary(LOCATION, new JsonConverter<>(LinkedIn2Location.class));
         secondary(POSITIONS, new JsonConverter(List.class, new TypeReference<List<LinkedIn2Position>>() {}));
     }

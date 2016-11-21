@@ -10,6 +10,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.foursquare.FoursquareProfile;
+import org.pac4j.oauth.profile.foursquare.FoursquareProfileDefinition;
 import org.pac4j.scribe.oauth.Foursquare20Service;
 
 /**
@@ -33,6 +34,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new Foursquare20Service((DefaultApi20) getApi(), buildOAuthConfig(context));
+        setProfileDefinition(new FoursquareProfileDefinition());
     }
 
     @Override
@@ -52,7 +54,7 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
 
     @Override
     protected FoursquareProfile extractUserProfile(String body) throws HttpAction {
-        FoursquareProfile profile = new FoursquareProfile();
+        FoursquareProfile profile = getProfileDefinition().newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {
             return profile;
@@ -65,8 +67,8 @@ public class FoursquareClient extends BaseOAuth20Client<FoursquareProfile>{
         if (user != null) {
             profile.setId(JsonHelper.getElement(user, "id"));
 
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(user, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(user, attribute));
             }
         }
         return profile;

@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.dropbox;
 import java.net.URI;
 import java.util.Locale;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth10Profile;
 
 /**
@@ -17,32 +16,29 @@ public class DropBoxProfile extends OAuth10Profile {
     
     private static final long serialVersionUID = 6671295443243112368L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new DropBoxAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public Locale getLocale() {
-        return (Locale) getAttribute(DropBoxAttributesDefinition.COUNTRY);
+        return (Locale) getAttribute(DropBoxProfileDefinition.COUNTRY);
     }
     
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(DropBoxAttributesDefinition.REFERRAL_LINK);
+        return (URI) getAttribute(DropBoxProfileDefinition.REFERRAL_LINK);
     }
     
     public Long getNormal() {
-        return (Long) getAttribute(DropBoxAttributesDefinition.NORMAL);
+        return (Long) getAttribute(DropBoxProfileDefinition.NORMAL);
     }
     
     public Long getQuota() {
-        return (Long) getAttribute(DropBoxAttributesDefinition.QUOTA);
+        return (Long) getAttribute(DropBoxProfileDefinition.QUOTA);
     }
     
     public Long getShared() {
-        return (Long) getAttribute(DropBoxAttributesDefinition.SHARED);
+        return (Long) getAttribute(DropBoxProfileDefinition.SHARED);
+    }
+
+    public Boolean getEmailVerified() {
+        return (Boolean) getAttribute(DropBoxProfileDefinition.EMAIL_VERIFIED);
     }
 }

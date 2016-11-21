@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.github;
 import java.net.URI;
 import java.util.Date;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -17,106 +16,99 @@ public class GitHubProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = -8030906034414268058L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new GitHubAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(GitHubAttributesDefinition.NAME);
+        return (String) getAttribute(GitHubProfileDefinition.NAME);
     }
     
     @Override
     public String getUsername() {
-        return (String) getAttribute(GitHubAttributesDefinition.LOGIN);
+        return (String) getAttribute(GitHubProfileDefinition.LOGIN);
     }
     
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(GitHubAttributesDefinition.AVATAR_URL);
+        return (URI) getAttribute(GitHubProfileDefinition.AVATAR_URL);
     }
     
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(GitHubAttributesDefinition.HTML_URL);
+        return (URI) getAttribute(GitHubProfileDefinition.HTML_URL);
     }
     
     public String getCompany() {
-        return (String) getAttribute(GitHubAttributesDefinition.COMPANY);
+        return (String) getAttribute(GitHubProfileDefinition.COMPANY);
     }
     
     public Integer getFollowing() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.FOLLOWING);
+        return (Integer) getAttribute(GitHubProfileDefinition.FOLLOWING);
     }
     
     public String getBlog() {
-        return (String) getAttribute(GitHubAttributesDefinition.BLOG);
+        return (String) getAttribute(GitHubProfileDefinition.BLOG);
     }
     
     public Integer getPublicRepos() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.PUBLIC_REPOS);
+        return (Integer) getAttribute(GitHubProfileDefinition.PUBLIC_REPOS);
     }
     
     public Integer getPublicGists() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.PUBLIC_GISTS);
+        return (Integer) getAttribute(GitHubProfileDefinition.PUBLIC_GISTS);
     }
     
     public Integer getDiskUsage() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.DISK_USAGE);
+        return (Integer) getAttribute(GitHubProfileDefinition.DISK_USAGE);
     }
     
     public Integer getCollaborators() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.COLLABORATORS);
+        return (Integer) getAttribute(GitHubProfileDefinition.COLLABORATORS);
     }
     
     public GitHubPlan getPlan() {
-        return (GitHubPlan) getAttribute(GitHubAttributesDefinition.PLAN);
+        return (GitHubPlan) getAttribute(GitHubProfileDefinition.PLAN);
     }
     
     public Integer getOwnedPrivateRepos() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.OWNED_PRIVATE_REPOS);
+        return (Integer) getAttribute(GitHubProfileDefinition.OWNED_PRIVATE_REPOS);
     }
     
     public Integer getTotalPrivateRepos() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.TOTAL_PRIVATE_REPOS);
+        return (Integer) getAttribute(GitHubProfileDefinition.TOTAL_PRIVATE_REPOS);
     }
     
     public Integer getPrivateGists() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.PRIVATE_GISTS);
+        return (Integer) getAttribute(GitHubProfileDefinition.PRIVATE_GISTS);
     }
     
     public Integer getFollowers() {
-        return (Integer) getAttribute(GitHubAttributesDefinition.FOLLOWERS);
+        return (Integer) getAttribute(GitHubProfileDefinition.FOLLOWERS);
     }
     
     public Date getCreatedAt() {
-        return (Date) getAttribute(GitHubAttributesDefinition.CREATED_AT);
+        return (Date) getAttribute(GitHubProfileDefinition.CREATED_AT);
     }
 
     public Date getUpdatedAt() {
-      return (Date) getAttribute(GitHubAttributesDefinition.UPDATED_AT);
+      return (Date) getAttribute(GitHubProfileDefinition.UPDATED_AT);
     }
 
     public String getType() {
-        return (String) getAttribute(GitHubAttributesDefinition.TYPE);
+        return (String) getAttribute(GitHubProfileDefinition.TYPE);
     }
     
     public String getGravatarId() {
-        return (String) getAttribute(GitHubAttributesDefinition.GRAVATAR_ID);
+        return (String) getAttribute(GitHubProfileDefinition.GRAVATAR_ID);
     }
     
     public String getUrl() {
-        return (String) getAttribute(GitHubAttributesDefinition.URL);
+        return (String) getAttribute(GitHubProfileDefinition.URL);
     }
     
     public Boolean getHireable() {
-        return (Boolean) getAttribute(GitHubAttributesDefinition.HIREABLE);
+        return (Boolean) getAttribute(GitHubProfileDefinition.HIREABLE);
     }
     
     public String getBio() {
-        return (String) getAttribute(GitHubAttributesDefinition.BIO);
+        return (String) getAttribute(GitHubProfileDefinition.BIO);
     }
 }

@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.foursquare;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
@@ -17,42 +16,35 @@ public class FoursquareProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 8919122885219420820L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new FoursquareAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     public String getBio() {
-        return (String) getAttribute(FoursquareAttributesDefinition.BIO);
+        return (String) getAttribute(FoursquareProfileDefinition.BIO);
     }
 
     public FoursquareUserContact getContact() {
-        return (FoursquareUserContact) getAttribute(FoursquareAttributesDefinition.CONTACT);
+        return (FoursquareUserContact) getAttribute(FoursquareProfileDefinition.CONTACT);
     }
 
     public FoursquareUserFriends getFriends() {
-        return (FoursquareUserFriends) getAttribute(FoursquareAttributesDefinition.FIRENDS);
+        return (FoursquareUserFriends) getAttribute(FoursquareProfileDefinition.FIRENDS);
     }
 
     public FoursquareUserPhoto getPhoto() {
-        return (FoursquareUserPhoto) getAttribute(FoursquareAttributesDefinition.PHOTO);
+        return (FoursquareUserPhoto) getAttribute(FoursquareProfileDefinition.PHOTO);
     }
 
     @Override
     public String getFirstName() {
-        return (String) getAttribute(FoursquareAttributesDefinition.FIRST_NAME);
+        return (String) getAttribute(FoursquareProfileDefinition.FIRST_NAME);
     }
 
     @Override
     public String getLocation() {
-        return (String) getAttribute(FoursquareAttributesDefinition.HOME_CITY);
+        return (String) getAttribute(FoursquareProfileDefinition.HOME_CITY);
     }
 
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(FoursquareAttributesDefinition.LAST_NAME);
+        return (String) getAttribute(FoursquareProfileDefinition.LAST_NAME);
     }
 
     @Override

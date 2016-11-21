@@ -8,6 +8,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
+import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in GitHub.</p>
@@ -26,9 +27,11 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     protected String scope = DEFAULT_SCOPE;
 
     public GitHubClient() {
+        setProfileDefinition(new GitHubProfileDefinition());
     }
 
     public GitHubClient(final String key, final String secret) {
+        this();
         setKey(key);
         setSecret(secret);
     }
@@ -50,12 +53,12 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
 
     @Override
     protected GitHubProfile extractUserProfile(final String body) throws HttpAction {
-        final GitHubProfile profile = new GitHubProfile();
+        final GitHubProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

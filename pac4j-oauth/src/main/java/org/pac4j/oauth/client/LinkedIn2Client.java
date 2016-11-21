@@ -10,7 +10,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.linkedin2.LinkedIn2AttributesDefinition;
+import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 
 /**
@@ -44,6 +44,7 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
         super.internalInit(context);
+        setProfileDefinition(new LinkedIn2ProfileDefinition());
     }
 
     @Override
@@ -77,24 +78,24 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     
     @Override
     protected LinkedIn2Profile extractUserProfile(final String body) throws HttpAction {
-        LinkedIn2Profile profile = new LinkedIn2Profile();
+        LinkedIn2Profile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         profile.setId(JsonHelper.getElement(json, "id"));
-        for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-            profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+        for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+            getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
         }
-        final Object positions = JsonHelper.getElement(json, LinkedIn2AttributesDefinition.POSITIONS);
+        final Object positions = JsonHelper.getElement(json, LinkedIn2ProfileDefinition.POSITIONS);
         if (positions != null && positions instanceof JsonNode) {
-            profile.addAttribute(LinkedIn2AttributesDefinition.POSITIONS, JsonHelper.getElement((JsonNode) positions, "values"));
+            getProfileDefinition().convertAndAdd(profile, LinkedIn2ProfileDefinition.POSITIONS, JsonHelper.getElement((JsonNode) positions, "values"));
         }
-        addUrl(profile, json, LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST);
-        addUrl(profile, json, LinkedIn2AttributesDefinition.API_STANDARD_PROFILE_REQUEST);
+        addUrl(profile, json, LinkedIn2ProfileDefinition.SITE_STANDARD_PROFILE_REQUEST);
+        addUrl(profile, json, LinkedIn2ProfileDefinition.API_STANDARD_PROFILE_REQUEST);
         return profile;
     }
 
     private void addUrl(final LinkedIn2Profile profile, final JsonNode json, final String name) {
         final String url = (String) JsonHelper.getElement(json, name + ".url");
-        profile.addAttribute(name, url);
+        getProfileDefinition().convertAndAdd(profile, name, url);
     }
 
     public String getScope() {
