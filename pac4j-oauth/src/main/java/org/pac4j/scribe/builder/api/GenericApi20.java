@@ -44,6 +44,13 @@ public class GenericApi20 extends DefaultApi20 {
         if (config.getState() != null) {
             url += "&state=" + OAuthEncoder.encode(config.getState());
         }
+        
+        if (additionalParams != null && !additionalParams.isEmpty()) {
+            for (String key: additionalParams.keySet()) {
+                url += "&" + key + "=" + OAuthEncoder.encode(additionalParams.get(key));
+            }
+        }
+        
         return url;
     }
     @Override

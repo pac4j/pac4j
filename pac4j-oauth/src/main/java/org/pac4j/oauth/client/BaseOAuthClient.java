@@ -10,6 +10,8 @@ import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
@@ -49,6 +51,9 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     private String responseType = null;
+    
+    /* Map containing user defined parameters */
+    private Map<String, String> customParams = new HashMap<>();    
 
     @Override
     protected void internalInit(final WebContext context) {
@@ -195,6 +200,7 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      */
     protected U retrieveUserProfileFromToken(final T accessToken) throws HttpAction {
         final String body = sendRequestForData(accessToken, getProfileUrl(accessToken), getProfileVerb());
+        logger.info("UserProfile:"+body);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
@@ -218,6 +224,10 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @param dataUrl     url of the data
      * @return the user data response
      */
+    protected String sendRequestForData(final T accessToken, final String dataUrl) {
+        return sendRequestForData(accessToken, dataUrl, Verb.GET);
+    }
+
     protected String sendRequestForData(final T accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
@@ -323,4 +333,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
     public void setResponseType(String responseType) {
         this.responseType = responseType;
     }
+
+    public Map<String, String> getCustomParams() {
+        return customParams;
+    }
+
+    public void setCustomParams(Map<String, String> customParams) {
+        this.customParams = customParams;
+    }   
 }

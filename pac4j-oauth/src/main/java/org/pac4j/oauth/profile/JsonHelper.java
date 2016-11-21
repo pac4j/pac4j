@@ -33,6 +33,10 @@ public final class JsonHelper {
      * @param text JSON text
      * @return the first node of the JSON response or null if exception is thrown
      */
+    public static JsonNode getFirstNode(final String text) {
+        return getFirstNode(text, null);
+    }
+
     public static JsonNode getFirstNode(final String text, final String path) {
         try {
             JsonNode node = mapper.readValue(text, JsonNode.class);

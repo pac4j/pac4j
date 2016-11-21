@@ -24,6 +24,7 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
     protected String authUrl = null;
     protected String tokenUrl = null;
     protected String profileUrl = null;
+    protected String erroUrl = null;
     private String profileNodePath = null;
     private String profileMethod = null;
     protected AttributesDefinition attributesDefinition = null;
@@ -164,6 +165,10 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
     public String getScope() {
         return scope;
     }
+    
+    public String getOAuthScope() {
+        return getScope();
+    }    
 
     public void setScope(String scope) {
         this.scope = scope;
@@ -191,5 +196,13 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
         } else {
             return Verb.GET;
         }
+    }
+
+    public String getErroUrl() {
+        return erroUrl;
+    }
+
+    public void setErroUrl(String erroUrl) {
+        this.erroUrl = erroUrl;
     }
 }

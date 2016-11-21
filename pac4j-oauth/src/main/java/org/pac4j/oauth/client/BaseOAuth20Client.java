@@ -31,7 +31,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
         // no request token for OAuth 2.0 -> no need to save it in the context
-        final String authorizationUrl = this.service.getAuthorizationUrl();
+        final String authorizationUrl = this.service.getAuthorizationUrl(getCustomParams());
         logger.debug("authorizationUrl: {}", authorizationUrl);
         return authorizationUrl;
     }
