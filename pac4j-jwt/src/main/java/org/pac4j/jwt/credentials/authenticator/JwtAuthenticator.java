@@ -221,7 +221,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
         final CommonProfile profile;
         if (subject.contains(CommonProfile.SEPARATOR)) {
-            profile = ProfileHelper.buildUserProfileByClassCompleteName(subject);
+            profile = ProfileHelper.buildUserProfileByClassCompleteName(CommonHelper.substringBefore(subject, CommonProfile.SEPARATOR));
             profile.addAttributes(attributes);
         } else {
             profile = getProfileDefinition().newProfile();
