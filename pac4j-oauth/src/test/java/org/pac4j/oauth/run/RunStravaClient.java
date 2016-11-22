@@ -1,13 +1,10 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.oauth.client.StravaClient;
-import org.pac4j.oauth.profile.strava.StravaClub;
-import org.pac4j.oauth.profile.strava.StravaGear;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 
 import static org.junit.Assert.assertEquals;
@@ -46,13 +43,6 @@ public final class RunStravaClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(StravaProfile.class);
-        kryo.register(StravaGear.class);
-        kryo.register(StravaClub.class);
-    }
-
-    @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final StravaProfile profile = (StravaProfile) userProfile;
         assertEquals("7319316", profile.getId());
@@ -67,7 +57,7 @@ public final class RunStravaClient extends RunClient {
         assertEquals("Hem", profile.getLocation());
         assertEquals("France", profile.getCountry());
         assertEquals("testscribeup@yahoo.fr", profile.getEmail());
-        assertEquals("avatar/athlete/large.png", profile.getPictureUrl());
+        assertEquals("avatar/athlete/large.png", profile.getPictureUrl().toString());
 
         assertEquals(1, profile.getBikes().size());
         assertEquals("b1700138", profile.getBikes().get(0).getId());

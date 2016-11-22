@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
@@ -43,11 +42,6 @@ public final class RunCasOAuthWrapperClient extends RunClient {
         //client.setCasOAuthUrl("http://casserverpac4j.herokuapp.com/oauth2.0");
         client.setCasOAuthUrl("http://localhost:8888/cas/oauth2.0");
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(CasOAuthWrapperProfile.class);
     }
 
     @Override

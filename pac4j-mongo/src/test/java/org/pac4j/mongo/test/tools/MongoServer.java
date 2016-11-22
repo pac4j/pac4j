@@ -10,10 +10,11 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.bson.Document;
+import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.credentials.password.BasicSaltedSha512PasswordEncoder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,6 +27,8 @@ import java.util.Map;
  * @since 1.8.0
  */
 public final class MongoServer implements TestsConstants {
+
+    public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
 
     private MongodExecutable mongodExecutable;
 
@@ -46,8 +49,7 @@ public final class MongoServer implements TestsConstants {
             final MongoDatabase db = mongo.getDatabase("users");
             db.createCollection("users");
             final MongoCollection<Document> collection = db.getCollection("users");
-            final PasswordEncoder encoder = new BasicSaltedSha512PasswordEncoder(SALT);
-            final String password = encoder.encode(PASSWORD);
+            final String password = PASSWORD_ENCODER.encode(PASSWORD);
             Map<String, Object> properties1 = new HashMap<>();
             properties1.put(USERNAME, GOOD_USERNAME);
             properties1.put(PASSWORD, password);

@@ -1,9 +1,12 @@
 package org.pac4j.oauth.profile.google2;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
+import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.oauth.profile.converter.JsonConverter;
+
+import java.util.List;
 
 /**
  * This class defines the attributes of the Google profile (using OAuth 2.0 protocol).
@@ -31,7 +34,7 @@ public class Google2AttributesDefinition extends AttributesDefinition {
         primary(PICTURE, Converters.STRING);
         primary(GENDER, Converters.GENDER);
         primary(LANGUAGE, Converters.LOCALE);
-        primary(BIRTHDAY, new FormattedDateConverter("yyyy-MM-dd"));
-        primary(EMAILS, new JsonListConverter(Google2Email.class, Google2Email[].class));
+        primary(BIRTHDAY, new DateConverter("yyyy-MM-dd"));
+        primary(EMAILS, new JsonConverter(List.class, new TypeReference<List<Google2Email>>() {}));
     }
 }

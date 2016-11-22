@@ -163,7 +163,9 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
                             try {
                                 verified = config.verify(signedJWT);
                                 found = true;
-                                break;
+                                if (verified) {
+                                  break;
+                                }
                             } catch (final JOSEException e) {
                                 logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
                             }

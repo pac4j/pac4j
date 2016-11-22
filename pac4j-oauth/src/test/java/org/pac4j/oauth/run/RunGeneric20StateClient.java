@@ -2,7 +2,6 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.oauth.profile.google2.Google2AttributesDefinition;
 import org.pac4j.oauth.profile.google2.Google2Email;
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -53,11 +52,6 @@ public class RunGeneric20StateClient extends RunClient {
         client.setCallbackUrl(PAC4J_BASE_URL);
         client.setScope("profile email");
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(GenericOAuth20Profile.class);
     }
 
     @Override

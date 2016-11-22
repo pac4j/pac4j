@@ -2,6 +2,7 @@ package org.pac4j.core.profile;
 
 import org.pac4j.core.context.Pac4jConstants;
 
+import java.net.URI;
 import java.util.Locale;
 
 /**
@@ -87,8 +88,8 @@ public class CommonProfile extends UserProfile {
      * 
      * @return the url of the picture of the user.
      */
-    public String getPictureUrl() {
-        return (String) getAttribute("picture_url");
+    public URI getPictureUrl() {
+        return (URI) getAttribute("picture_url");
     }
     
     /**
@@ -96,14 +97,14 @@ public class CommonProfile extends UserProfile {
      * 
      * @return the url of the profile of the user.
      */
-    public String getProfileUrl() {
-        return (String) getAttribute("profile_url");
+    public URI getProfileUrl() {
+        return (URI) getAttribute("profile_url");
     }
     
     /**
      * Return the location of the user.
      * 
-     * @return the locationle of the user
+     * @return the location of the user
      */
     public String getLocation() {
         return (String) getAttribute("location");

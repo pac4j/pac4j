@@ -1,5 +1,6 @@
 package org.pac4j.core.util;
 
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
@@ -41,6 +42,15 @@ public final class JavaSerializationHelperTests implements TestsConstants {
         final CommonProfile profile = getUserProfile();
         final byte[] serialized = h.serializeToBytes(profile);
         assertNull(h.unserializeFromBytes(serialized));
+    }
+
+    @Test
+    public void testBytesSerializationMadeSecure() {
+        JavaSerializationHelper h = new JavaSerializationHelper();
+        h.getTrustedPackages().add("org.apache");
+        final SimplePrincipalCollection spc = new SimplePrincipalCollection();
+        final byte[] serialized = h.serializeToBytes(spc);
+        assertNotNull(h.unserializeFromBytes(serialized));
     }
 
     @Test

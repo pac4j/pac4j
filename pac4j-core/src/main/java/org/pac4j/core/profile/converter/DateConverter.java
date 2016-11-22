@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class DateConverter implements AttributeConverter<Date> {
+public class DateConverter extends AbstractAttributeConverter<Date> {
     
     protected static final Logger logger = LoggerFactory.getLogger(DateConverter.class);
     
@@ -23,32 +23,29 @@ public class DateConverter implements AttributeConverter<Date> {
     protected Locale locale;
     
     public DateConverter(final String format) {
+        super(Date.class);
         this.format = format;
     }
     
     public DateConverter(final String format, final Locale locale) {
-        this.format = format;
+        this(format);
         this.locale = locale;
     }
     
     @Override
-    public Date convert(final Object attribute) {
-        if (attribute != null) {
-            if (attribute instanceof String) {
-                SimpleDateFormat simpleDateFormat;
-                if (this.locale == null) {
-                    simpleDateFormat = new SimpleDateFormat(this.format);
-                } else {
-                    simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
-                }
-                final String s = (String) attribute;
-                try {
-                    return simpleDateFormat.parse(s);
-                } catch (final ParseException e) {
-                    logger.error("parse exception on " + s + " with format : " + this.format, e);
-                }
-            } else if (attribute instanceof Date) {
-                return (Date) attribute;
+    protected Date internalConvert(final Object attribute) {
+        if (attribute instanceof String) {
+            SimpleDateFormat simpleDateFormat;
+            if (this.locale == null) {
+                simpleDateFormat = new SimpleDateFormat(this.format);
+            } else {
+                simpleDateFormat = new SimpleDateFormat(this.format, this.locale);
+            }
+            final String s = (String) attribute;
+            try {
+                return simpleDateFormat.parse(s);
+            } catch (final ParseException e) {
+                logger.error("parse exception on {} with format: {} and locale: {}", s, this.format, this.locale, e);
             }
         }
         return null;

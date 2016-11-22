@@ -1,6 +1,5 @@
 package org.pac4j.openid.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -40,11 +39,6 @@ public class RunYahooOpenIdClient  extends RunClient {
         final YahooOpenIdClient client = new YahooOpenIdClient();
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;
-    }
-
-    @Override
-    protected void registerForKryo(Kryo kryo) {
-        kryo.register(YahooOpenIdProfile.class);
     }
 
     @Override

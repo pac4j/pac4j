@@ -40,8 +40,8 @@ public class SAML2ProfileTests {
         Assert.assertEquals("rick", profile.getUsername());
         Assert.assertEquals(Gender.UNSPECIFIED, profile.getGender());
         Assert.assertEquals(null, profile.getLocale());
-        Assert.assertEquals("http://picture.com", profile.getPictureUrl());
-        Assert.assertEquals("http://profile.com", profile.getProfileUrl());
+        Assert.assertEquals("http://picture.com", profile.getPictureUrl().toString());
+        Assert.assertEquals("http://profile.com", profile.getProfileUrl().toString());
         Assert.assertEquals("San Francisco", profile.getLocation());
     }
 

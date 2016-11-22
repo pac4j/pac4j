@@ -1,5 +1,6 @@
 package org.pac4j.oauth.profile.twitter;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,13 +42,13 @@ public class TwitterProfile extends OAuth10Profile {
     }
     
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(TwitterAttributesDefinition.PROFILE_IMAGE_URL);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(TwitterAttributesDefinition.PROFILE_IMAGE_URL);
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(TwitterAttributesDefinition.URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(TwitterAttributesDefinition.URL);
     }
     
     public Boolean getContributorsEnabled() {

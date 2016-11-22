@@ -6,18 +6,18 @@ package org.pac4j.core.profile.converter;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class LongConverter implements AttributeConverter<Long> {
-    
+public final class LongConverter extends AbstractAttributeConverter<Long> {
+
+    public LongConverter() {
+        super(Long.class);
+    }
+
     @Override
-    public Long convert(final Object attribute) {
-        if (attribute != null) {
-            if (attribute instanceof Integer) {
-                return Long.valueOf((Integer) attribute);
-            } else if (attribute instanceof Long) {
-                return (Long) attribute;
-            } else if (attribute instanceof String) {
-                return Long.parseLong((String) attribute);
-            }
+    protected Long internalConvert(final Object attribute) {
+        if (attribute instanceof Integer) {
+            return Long.valueOf((Integer) attribute);
+        } else if (attribute instanceof String) {
+            return Long.parseLong((String) attribute);
         }
         return null;
     }

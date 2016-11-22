@@ -1,11 +1,12 @@
 package org.pac4j.oauth.profile.linkedin2;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.converter.JsonConverter;
-import org.pac4j.oauth.profile.converter.JsonListConverter;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class defines the attributes of the {@link LinkedIn2Profile}.
@@ -44,6 +45,6 @@ public class LinkedIn2AttributesDefinition extends AttributesDefinition {
         primary(NUM_CONNECTIONS, Converters.INTEGER);
         primary(NUM_CONNECTIONS_CAPPED, Converters.BOOLEAN);
         primary(LOCATION, new JsonConverter<>(LinkedIn2Location.class));
-        secondary(POSITIONS, new JsonListConverter(LinkedIn2Position.class, LinkedIn2Position[].class));
+        secondary(POSITIONS, new JsonConverter(List.class, new TypeReference<List<LinkedIn2Position>>() {}));
     }
 }

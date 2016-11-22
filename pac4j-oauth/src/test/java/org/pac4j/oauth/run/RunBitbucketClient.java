@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -41,11 +40,6 @@ public final class RunBitbucketClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(Kryo kryo) {
-        kryo.register(BitbucketProfile.class);
-    }
-
-    @Override
     protected void verifyProfile(CommonProfile userProfile) {
         BitbucketProfile profile = (BitbucketProfile) userProfile;
         assertEquals("testscribeup", profile.getUsername());
@@ -53,7 +47,7 @@ public final class RunBitbucketClient extends RunClient {
         assertEquals("Scribeup", profile.getFamilyName());
         assertEquals("Test Scribeup", profile.getDisplayName());
         assertFalse(profile.isTeam());
-        assertTrue(profile.getPictureUrl().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
-        assertEquals("/1.0/users/testscribeup", profile.getProfileUrl());
+        assertTrue(profile.getPictureUrl().toString().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
+        assertEquals("/1.0/users/testscribeup", profile.getProfileUrl().toString());
     }
 }

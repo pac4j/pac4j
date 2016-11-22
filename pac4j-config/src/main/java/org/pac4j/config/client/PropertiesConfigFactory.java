@@ -14,6 +14,7 @@ import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.FoursquareClient;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.client.Google2Client;
+import org.pac4j.oauth.client.LinkedIn2Client;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oauth.client.WindowsLiveClient;
 import org.pac4j.oauth.client.YahooClient;
@@ -56,6 +57,11 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String YAHOO_ID = "yahoo.id";
     public static final String YAHOO_SECRET = "yahoo.secret";
 
+    public static final String LINKEDIN_ID = "linkedin.id";
+    public static final String LINKEDIN_SECRET = "linkedin.secret";
+    public static final String LINKEDIN_FIELDS = "linkedin.fields";
+    public static final String LINKEDIN_SCOPE = "linkedin.scope";
+
     public static final String FOURSQUARE_ID = "foursquare.id";
     public static final String FOURSQUARE_SECRET = "foursquare.secret";
 
@@ -80,6 +86,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String OIDC_AZURE_TYPE = "azure";
     public static final String OIDC_ID = "oidc.id";
     public static final String OIDC_SECRET = "oidc.secret";
+    public static final String OIDC_SCOPE = "oidc.scope";
     public static final String OIDC_DISCOVERY_URI = "oidc.discoveryUri";
     public static final String OIDC_USE_NONCE = "oidc.useNonce";
     public static final String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
@@ -122,7 +129,26 @@ public class PropertiesConfigFactory implements ConfigFactory {
         tryCreateGoogleClient(clients);
         tryCreateFoursquareClient(clients);
         tryCreateWindowsLiveClient(clients);
+        tryCreateLinkedInClient(clients);
         return new Config(callbackUrl, clients);
+    }
+
+    private void tryCreateLinkedInClient(final List<Client> clients) {
+        final String id = getProperty(LINKEDIN_ID);
+        final String secret = getProperty(LINKEDIN_SECRET);
+        final String scope = getProperty(LINKEDIN_SCOPE);
+        final String fields = getProperty(LINKEDIN_FIELDS);
+
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final LinkedIn2Client linkedInClient = new LinkedIn2Client(id, secret);
+            if (CommonHelper.isNotBlank(scope)) {
+                linkedInClient.setScope(scope);
+            }
+            if (CommonHelper.isNotBlank(fields)) {
+                linkedInClient.setFields(fields);
+            }
+            clients.add(linkedInClient);
+        }
     }
 
     private void tryCreateFacebookClient(final List<Client> clients) {
@@ -274,6 +300,11 @@ public class PropertiesConfigFactory implements ConfigFactory {
                 final OidcConfiguration configuration = new OidcConfiguration();
                 configuration.setClientId(id);
                 configuration.setSecret(secret);
+
+                final String scope = getProperty(OIDC_SCOPE.concat(i == 0 ? "" : "." + i));
+                if (CommonHelper.isNotBlank(scope)) {
+                    configuration.setScope(scope);
+                }
                 final String discoveryUri = getProperty(OIDC_DISCOVERY_URI.concat(i == 0 ? "" : "." + i));
                 if (CommonHelper.isNotBlank(discoveryUri)) {
                     configuration.setDiscoveryURI(discoveryUri);

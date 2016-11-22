@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -48,16 +47,6 @@ public final class RunYahooClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(YahooProfile.class);
-        kryo.register(YahooDisclosure.class);
-        kryo.register(YahooInterest.class);
-        kryo.register(YahooImage.class);
-        kryo.register(YahooEmail.class);
-        kryo.register(YahooAddress.class);
-    }
-
-    @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
@@ -73,7 +62,7 @@ public final class RunYahooClient extends RunClient {
         final List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());
         final YahooAddress address = addresses.get(0);
-        assertEquals(1, address.getId().intValue());
+        assertEquals(3, address.getId().intValue());
         assertTrue(address.getCurrent());
         assertEquals(Locale.FRENCH, address.getCountry());
         assertEquals("", address.getState());
@@ -92,7 +81,7 @@ public final class RunYahooClient extends RunClient {
         assertEquals("bd", disclosure.getName());
         assertEquals("1", disclosure.getVersion());
         final List<YahooEmail> emails = profile.getEmails();
-        assertEquals(2, emails.size());
+        assertEquals(3, emails.size());
         final YahooEmail email = emails.get(1);
         assertEquals(1, email.getId().intValue());
         assertTrue(email.getPrimary());

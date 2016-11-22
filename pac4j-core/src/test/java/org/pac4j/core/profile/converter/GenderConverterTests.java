@@ -12,14 +12,8 @@ import static org.junit.Assert.*;
  * @since 1.0.0
  */
 public final class GenderConverterTests {
-    
-    private static final String MALE = "m";
-    
-    private static final String FEMALE = "f";
-    
-    private static final String UNSPECIFIED = "unspecified";
-    
-    private final GenderConverter converter = new GenderConverter(MALE, FEMALE);
+
+    private final GenderConverter converter = new GenderConverter();
 
     @Test
     public void testNull() {
@@ -33,17 +27,27 @@ public final class GenderConverterTests {
 
     @Test
     public void testMale() {
-        assertEquals(Gender.MALE, this.converter.convert(MALE));
+        assertEquals(Gender.MALE, this.converter.convert("m"));
     }
 
     @Test
     public void testFemale() {
-        assertEquals(Gender.FEMALE, this.converter.convert(FEMALE));
+        assertEquals(Gender.FEMALE, this.converter.convert("f"));
+    }
+
+    @Test
+    public void testMaleNumber() {
+        assertEquals(Gender.MALE, this.converter.convert(2));
+    }
+
+    @Test
+    public void testFemaleNumber() {
+        assertEquals(Gender.FEMALE, this.converter.convert(1));
     }
 
     @Test
     public void testUnspecified() {
-        assertEquals(Gender.UNSPECIFIED, this.converter.convert(UNSPECIFIED));
+        assertEquals(Gender.UNSPECIFIED, this.converter.convert("unspecified"));
     }
 
     @Test
