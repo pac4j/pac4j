@@ -5,6 +5,7 @@ import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.model.OAuthConfig;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * OAuth API class for the GenericOAuth20Client
@@ -29,30 +30,33 @@ public class GenericApi20 extends DefaultApi20 {
         return Verb.POST;
     }
 
+    @Override
     public String getAccessTokenEndpoint() {
         return tokenUrl;
     }
 
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
-        String url = String.format(AUTHORIZATION_URL, authUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         
+        StringBuilder url = new StringBuilder(String.format(AUTHORIZATION_URL, authUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback())));
+                
         if (config.getScope() != null) {
-            url += "&scope=" + OAuthEncoder.encode(config.getScope());            
+            url.append("&scope=").append(OAuthEncoder.encode(config.getScope()));            
         }
         
         if (config.getState() != null) {
-            url += "&state=" + OAuthEncoder.encode(config.getState());
+            url.append("&state=").append(OAuthEncoder.encode(config.getState()));
         }
         
         if (additionalParams != null && !additionalParams.isEmpty()) {
-            for (String key: additionalParams.keySet()) {
-                url += "&" + key + "=" + OAuthEncoder.encode(additionalParams.get(key));
+            for (Entry entry: additionalParams.entrySet()) {
+                url.append("&").append(entry.getKey()).append("=").append(OAuthEncoder.encode(entry.getValue().toString()));
             }
         }
         
-        return url;
+        return url.toString();
     }
+    
     @Override
     protected String getAuthorizationBaseUrl() {
         return authUrl;

@@ -166,6 +166,7 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
         return scope;
     }
     
+    @Override
     public String getOAuthScope() {
         return getScope();
     }    
@@ -190,6 +191,7 @@ public class GenericOAuth20Client extends BaseOAuth20Client<GenericOAuth20Profil
         this.profileMethod = profileMethod;
     }
     
+    @Override
     public Verb getProfileVerb() {
         if ("POST".equalsIgnoreCase(profileMethod)) {
             return Verb.POST;

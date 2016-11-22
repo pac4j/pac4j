@@ -12,7 +12,6 @@ import com.github.scribejava.core.oauth.OAuthService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -187,6 +186,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      */
     protected abstract T getAccessToken(OAuthCredentials credentials) throws HttpAction;
 
+    /**
+     * Get HTTP Method to request profile.
+     *
+     * @return http verb
+     */    
     public Verb getProfileVerb() {
         return Verb.GET;
     }
@@ -228,6 +232,14 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
         return sendRequestForData(accessToken, dataUrl, Verb.GET);
     }
 
+    /**
+     * Make a request to get the data of the authenticated user for the provider.
+     *
+     * @param accessToken the access token
+     * @param dataUrl     url of the data
+     * @param verb        method used to request data
+     * @return the user data response
+     */
     protected String sendRequestForData(final T accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
@@ -264,6 +276,13 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
         return createOAuthRequest(url, Verb.GET);
     }
 
+    /**
+     * Create an OAuth request.
+     *
+     * @param url the url to call
+     * @param verb method used to create the request
+     * @return the request
+     */
     protected OAuthRequest createOAuthRequest(final String url, Verb verb) {
         return new OAuthRequest(verb, url, this.service);
     }

@@ -57,6 +57,7 @@ public final class StravaApi20 extends DefaultApi20 {
             return String.format(AUTHORIZE_URL, this.approvalPrompt, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
+    
     @Override
     protected String getAuthorizationBaseUrl() {
         return "https://www.strava.com/oauth/authorize";

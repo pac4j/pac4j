@@ -39,7 +39,13 @@ public final class JsonHelper {
         return getFirstNode(text, null);
     }
 
-    public static JsonNode getFirstNode(final String text, final String path) {
+    /**
+     * Return the first node of a JSON response.
+     *
+     * @param text JSON text
+     * @param path path to find the first node
+     * @return the first node of the JSON response or null if exception is thrown
+     */    public static JsonNode getFirstNode(final String text, final String path) {
         try {
             JsonNode node = mapper.readValue(text, JsonNode.class);
             if (path != null) {

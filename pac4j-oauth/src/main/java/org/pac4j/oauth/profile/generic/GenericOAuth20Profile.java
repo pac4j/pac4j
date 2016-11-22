@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.generic;
 
-import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.profile.AttributesDefinition;
 
 import org.pac4j.oauth.profile.OAuth20Profile;
