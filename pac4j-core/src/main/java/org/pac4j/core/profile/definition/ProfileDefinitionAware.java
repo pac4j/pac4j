@@ -15,6 +15,7 @@ public abstract class ProfileDefinitionAware<P extends CommonProfile> extends In
     private ProfileDefinition<P> profileDefinition;
 
     public ProfileDefinition<P> getProfileDefinition() {
+        CommonHelper.assertNotNull("profileDefinition", profileDefinition);
         return profileDefinition;
     }
 

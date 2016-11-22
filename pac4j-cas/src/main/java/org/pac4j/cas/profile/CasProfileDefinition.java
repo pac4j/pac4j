@@ -14,8 +14,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 public class CasProfileDefinition extends CommonProfileDefinition<CommonProfile> {
 
     public CasProfileDefinition() {
-        super();
-        setProfileFactory(parameters -> {
+        super(parameters -> {
             final AttributePrincipal principal = (AttributePrincipal) parameters[0];
             final CasProxyReceptor proxyReceptor = (CasProxyReceptor) parameters[1];
             final CasProfile casProfile;

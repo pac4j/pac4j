@@ -80,7 +80,15 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
                 }
             }
 
-            final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal, configuration.getProxyReceptor());
+            final CommonProfile profile;
+            // in case of CAS proxy, don't restore the profile, just build a CAS one
+            if (configuration.getProxyReceptor() != null) {
+                profile = getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
+                profile.setId(id);
+                getProfileDefinition().convertAndAdd(profile, newAttributes);
+            } else {
+                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal, configuration.getProxyReceptor());
+            }
             logger.debug("profile returned by CAS: {}", profile);
 
             credentials.setUserProfile(profile);

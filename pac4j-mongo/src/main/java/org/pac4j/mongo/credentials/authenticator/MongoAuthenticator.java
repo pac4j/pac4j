@@ -79,7 +79,7 @@ public class MongoAuthenticator extends ProfileDefinitionAware<MongoProfile> imp
         CommonHelper.assertNotNull("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotNull("usersCollection", this.usersCollection);
         CommonHelper.assertNotNull("attributes", this.attributes);
-        setProfileDefinition(new CommonProfileDefinition<>(parameters -> new MongoProfile()));
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new MongoProfile()));
     }
 
     @Override

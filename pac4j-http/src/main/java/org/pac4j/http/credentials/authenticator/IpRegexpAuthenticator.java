@@ -37,7 +37,7 @@ public class IpRegexpAuthenticator extends ProfileDefinitionAware<IpProfile> imp
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("pattern", pattern);
-        setProfileDefinition(new CommonProfileDefinition<>(parameters -> new IpProfile()));
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new IpProfile()));
     }
 
     @Override

@@ -52,7 +52,7 @@ public class LdapAuthenticator extends ProfileDefinitionAware<LdapProfile> imple
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
         CommonHelper.assertNotNull("attributes", attributes);
-        setProfileDefinition(new CommonProfileDefinition<>(parameters -> new LdapProfile()));
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new LdapProfile()));
     }
 
     @Override
