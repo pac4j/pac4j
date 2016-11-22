@@ -12,7 +12,6 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
 public class DropBoxProfileDefinition extends CommonProfileDefinition<DropBoxProfile> {
     
     public static final String REFERRAL_LINK = "referral_link";
-    public static final String DISPLAY_NAME = "display_name";
     public static final String COUNTRY = "country";
     public static final String SHARED = "shared";
     public static final String QUOTA = "quota";
@@ -22,7 +21,6 @@ public class DropBoxProfileDefinition extends CommonProfileDefinition<DropBoxPro
     public DropBoxProfileDefinition() {
         super(x -> new DropBoxProfile());
         primary(REFERRAL_LINK, Converters.STRING);
-        primary(DISPLAY_NAME, Converters.STRING);
         primary(COUNTRY, Converters.LOCALE);
         primary(REFERRAL_LINK, Converters.URL);
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);

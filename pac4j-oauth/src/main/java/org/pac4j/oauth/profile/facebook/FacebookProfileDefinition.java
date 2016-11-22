@@ -19,11 +19,8 @@ import java.util.List;
 public class FacebookProfileDefinition extends CommonProfileDefinition<FacebookProfile> {
 
     public static final String NAME = "name";
-    public static final String FIRST_NAME = "first_name";
     public static final String MIDDLE_NAME = "middle_name";
     public static final String LAST_NAME = "last_name";
-    public static final String GENDER = "gender";
-    public static final String LOCALE = "locale";
     public static final String LANGUAGES = "languages";
     public static final String LINK = "link";
     public static final String THIRD_PARTY_ID = "third_party_id";
@@ -33,10 +30,8 @@ public class FacebookProfileDefinition extends CommonProfileDefinition<FacebookP
     public static final String ABOUT = "about";
     public static final String BIRTHDAY = "birthday";
     public static final String EDUCATION = "education";
-    public static final String EMAIL = "email";
     public static final String HOMETOWN = "hometown";
     public static final String INTERESTED_IN = "interested_in";
-    public static final String LOCATION = "location";
     public static final String POLITICAL = "political";
     public static final String FAVORITE_ATHLETES = "favorite_athletes";
     public static final String FAVORITE_TEAMS = "favorite_teams";
@@ -60,8 +55,7 @@ public class FacebookProfileDefinition extends CommonProfileDefinition<FacebookP
     public FacebookProfileDefinition() {
         super(x -> new FacebookProfile());
         Arrays.stream(new String[] {
-            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, THIRD_PARTY_ID, ABOUT, EMAIL, POLITICAL, QUOTES,
-            RELIGION, WEBSITE
+            NAME, MIDDLE_NAME, LAST_NAME, THIRD_PARTY_ID, ABOUT, POLITICAL, QUOTES, RELIGION, WEBSITE
         }).forEach(a -> primary(a, Converters.STRING));
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
@@ -69,8 +63,6 @@ public class FacebookProfileDefinition extends CommonProfileDefinition<FacebookP
         final JsonConverter<FacebookObject> objectConverter = new JsonConverter<>(FacebookObject.class);
         final JsonConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
         final JsonConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
-        primary(GENDER, Converters.GENDER);
-        primary(LOCALE, Converters.LOCALE);
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());

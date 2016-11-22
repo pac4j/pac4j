@@ -50,15 +50,6 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Return the attributes definition for this user profile. <code>null</code> for a (generic) user profile.
-     * 
-     * @return the attributes definition
-     */
-    public AttributesDefinition getAttributesDefinition() {
-        return null;
-    }
-
-    /**
      * Add an attribute.
      * 
      * @param key key of the attribute

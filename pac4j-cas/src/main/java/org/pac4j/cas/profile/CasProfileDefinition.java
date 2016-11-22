@@ -2,6 +2,7 @@ package org.pac4j.cas.profile;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.pac4j.cas.client.CasProxyReceptor;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 /**
@@ -10,7 +11,7 @@ import org.pac4j.core.profile.definition.CommonProfileDefinition;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CasProfileDefinition extends CommonProfileDefinition<CasProfile> {
+public class CasProfileDefinition extends CommonProfileDefinition<CommonProfile> {
 
     public CasProfileDefinition() {
         super();

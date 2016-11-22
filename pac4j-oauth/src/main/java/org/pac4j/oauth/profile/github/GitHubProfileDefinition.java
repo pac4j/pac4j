@@ -26,7 +26,6 @@ public class GitHubProfileDefinition extends CommonProfileDefinition<GitHubProfi
     public static final String FOLLOWERS = "followers";
     public static final String LOGIN = "login";
     public static final String COMPANY = "company";
-    public static final String EMAIL = "email";
     public static final String HIREABLE = "hireable";
     public static final String COLLABORATORS = "collaborators";
     public static final String HTML_URL = "html_url";
@@ -38,12 +37,11 @@ public class GitHubProfileDefinition extends CommonProfileDefinition<GitHubProfi
     public static final String DISK_USAGE = "disk_usage";
     public static final String PLAN = "plan";
     public static final String OWNED_PRIVATE_REPOS = "owned_private_repos";
-    public static final String LOCATION = "location";
-    
+
     public GitHubProfileDefinition() {
         super(x -> new GitHubProfile());
         Arrays.asList(new String[] {
-            URL, COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, GRAVATAR_ID, BIO
+            URL, COMPANY, NAME, BLOG, LOGIN, LOCATION, TYPE, GRAVATAR_ID, BIO
         }).forEach(a -> primary(a, Converters.STRING));
         Arrays.asList(new String[] {
             FOLLOWING, PUBLIC_REPOS, PUBLIC_GISTS, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPOS, TOTAL_PRIVATE_REPOS,

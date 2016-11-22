@@ -219,15 +219,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 		final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
 
-        final CommonProfile profile;
-        if (subject.contains(CommonProfile.SEPARATOR)) {
-            profile = ProfileHelper.buildUserProfileByClassCompleteName(CommonHelper.substringBefore(subject, CommonProfile.SEPARATOR));
-            profile.addAttributes(attributes);
-        } else {
-            profile = getProfileDefinition().newProfile();
-            getProfileDefinition().convertAndAdd(profile, attributes);
-        }
-        profile.setId(subject);
+        final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes);
+
         if (roles != null) {
             profile.addRoles(roles);
         }

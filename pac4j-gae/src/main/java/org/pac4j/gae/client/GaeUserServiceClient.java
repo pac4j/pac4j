@@ -7,7 +7,6 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.gae.credentials.GaeUserCredentials;
-import org.pac4j.gae.profile.GaeUserServiceAttributesDefinition;
 import org.pac4j.gae.profile.GaeUserServiceProfile;
 
 import com.google.appengine.api.users.User;
@@ -30,7 +29,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 		service = UserServiceFactory.getUserService();
 		CommonHelper.assertNotNull("service", this.service);
 		CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-		setProfileDefinition(new CommonProfileDefinition<>(parameters -> new GaeUserServiceProfile()));
+		setProfileDefinition(new CommonProfileDefinition<>(x -> new GaeUserServiceProfile()));
 	}
 
 	@Override
@@ -54,8 +53,8 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 		if (user != null) {
 			final GaeUserServiceProfile profile = getProfileDefinition().newProfile();
 			profile.setId(user.getEmail());
-			getProfileDefinition().convertAndAdd(profile, GaeUserServiceAttributesDefinition.EMAIL, user.getEmail());
-			getProfileDefinition().convertAndAdd(profile, GaeUserServiceAttributesDefinition.DISPLAYNAME, user.getNickname());
+			getProfileDefinition().convertAndAdd(profile, CommonProfileDefinition.EMAIL, user.getEmail());
+			getProfileDefinition().convertAndAdd(profile, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());
 			if (service.isUserAdmin()) {
 				profile.addRole(GaeUserServiceProfile.PAC4J_GAE_GLOBAL_ADMIN_ROLE);
 			}

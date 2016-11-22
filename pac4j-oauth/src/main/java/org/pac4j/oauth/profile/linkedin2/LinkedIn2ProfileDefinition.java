@@ -24,7 +24,6 @@ public class LinkedIn2ProfileDefinition extends CommonProfileDefinition<LinkedIn
     public static final String PHONETIC_LAST_NAME = "phoneticLastName";
     public static final String FORMATTED_PHONETIC_NAME = "formattedPhoneticName";
     public static final String HEADLINE = "headline";
-    public static final String LOCATION = "location";
     public static final String INDUSTRY = "industry";
     public static final String CURRENT_SHARE = "currentShare";
     public static final String NUM_CONNECTIONS = "numConnections";

@@ -5,9 +5,11 @@ import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
+import org.pac4j.oauth.profile.generic.GenericOAuth20Profile;
 import org.pac4j.scribe.builder.api.GenericApi20;
 
 /**
@@ -59,6 +61,7 @@ public class GenericOAuth20Client<U extends OAuth20Profile> extends BaseOAuth20C
         CommonHelper.assertNotBlank("tokenEndpoint", this.tokenUrl);
         CommonHelper.assertNotBlank("profileEndpoint", this.profileUrl);
         super.internalInit(context);
+        setProfileDefinition(new CommonProfileDefinition<U>(x -> (U) new GenericOAuth20Profile()));
     }
 
     @Override

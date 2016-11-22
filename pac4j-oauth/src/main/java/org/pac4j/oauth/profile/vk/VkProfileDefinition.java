@@ -1,20 +1,19 @@
 package org.pac4j.oauth.profile.vk;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.util.Arrays;
 
 /**
- * This class defines the attributes of the Vk profile.
+ * This class is the Vk profile definition.
  * 
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  */
-public class VkAttributesDefinition extends AttributesDefinition {
+public class VkProfileDefinition extends CommonProfileDefinition<VkProfile> {
 
-	public static final String FIRST_NAME = "first_name";
 	public static final String LAST_NAME = "last_name";
 	public static final String SEX = "sex";
 	public static final String BIRTH_DATE = "bdate";
@@ -41,8 +40,9 @@ public class VkAttributesDefinition extends AttributesDefinition {
 	public static final String COMMON_COUNT = "common_count";
 	public static final String RELATION = "relation";
 
-	public VkAttributesDefinition() {
-		Arrays.stream(new String[] {FIRST_NAME, LAST_NAME, PHOTO_50, PHOTO_100, PHOTO_200_ORIG, PHOTO_200, PHOTO_400_ORIG,
+	public VkProfileDefinition() {
+		super(x -> new VkProfile());
+		Arrays.stream(new String[] {LAST_NAME, PHOTO_50, PHOTO_100, PHOTO_200_ORIG, PHOTO_200, PHOTO_400_ORIG,
 				PHOTO_MAX, PHOTO_MAX_ORIG, DOMAIN, MOBILE_PHONE, HOME_PHONE, SKYPE, SITE, STATUS}).forEach(a -> primary(a, Converters.STRING));
 		primary(COMMON_COUNT, Converters.INTEGER);
 		primary(RELATION, Converters.INTEGER);

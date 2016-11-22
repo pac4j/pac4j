@@ -14,17 +14,14 @@ import java.util.Arrays;
  */
 public class BitbucketProfileDefinition extends CommonProfileDefinition<BitbucketProfile> {
 
-    public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";
-    public static final String DISPLAY_NAME = "display_name";
     public static final String IS_TEAM = "is_team";
     public static final String AVATAR = "avatar";
     public static final String RESOURCE_URI = "resource_uri";
-    public static final String EMAIL = "email";
 
     public BitbucketProfileDefinition() {
         super(x -> new BitbucketProfile());
-        Arrays.stream(new String[] {Pac4jConstants.USERNAME, FIRST_NAME, LAST_NAME, DISPLAY_NAME, IS_TEAM, RESOURCE_URI, EMAIL})
+        Arrays.stream(new String[] {Pac4jConstants.USERNAME, LAST_NAME, IS_TEAM})
                 .forEach(a -> primary(a, Converters.STRING));
         primary(IS_TEAM, Converters.BOOLEAN);
         primary(AVATAR, Converters.URL);

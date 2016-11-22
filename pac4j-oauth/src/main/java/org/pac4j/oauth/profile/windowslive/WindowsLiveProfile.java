@@ -3,7 +3,6 @@ package org.pac4j.oauth.profile.windowslive;
 import java.net.URI;
 import java.util.Date;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -17,29 +16,22 @@ public class WindowsLiveProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 1648212768999086087L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new WindowsLiveAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(WindowsLiveAttributesDefinition.LAST_NAME);
+        return (String) getAttribute(WindowsLiveProfileDefinition.LAST_NAME);
     }
     
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(WindowsLiveAttributesDefinition.NAME);
+        return (String) getAttribute(WindowsLiveProfileDefinition.NAME);
     }
     
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(WindowsLiveAttributesDefinition.LINK);
+        return (URI) getAttribute(WindowsLiveProfileDefinition.LINK);
     }
     
     public Date getUpdatedTime() {
-        return (Date) getAttribute(WindowsLiveAttributesDefinition.UPDATED_TIME);
+        return (Date) getAttribute(WindowsLiveProfileDefinition.UPDATED_TIME);
     }
 }

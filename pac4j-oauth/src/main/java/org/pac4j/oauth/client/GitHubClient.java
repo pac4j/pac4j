@@ -5,6 +5,7 @@ import com.github.scribejava.apis.GitHubApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
@@ -27,13 +28,17 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
     protected String scope = DEFAULT_SCOPE;
 
     public GitHubClient() {
-        setProfileDefinition(new GitHubProfileDefinition());
     }
 
     public GitHubClient(final String key, final String secret) {
-        this();
         setKey(key);
         setSecret(secret);
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new GitHubProfileDefinition());
+        super.internalInit(context);
     }
 
     @Override

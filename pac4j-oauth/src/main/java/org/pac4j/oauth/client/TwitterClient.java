@@ -11,6 +11,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
+import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Twitter.</p>
@@ -38,6 +39,7 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
         this.service = new OAuth10aService((DefaultApi10a) getApi(), buildOAuthConfig(context));
+        setProfileDefinition(new TwitterProfileDefinition());
     }
 
     @Override
@@ -68,12 +70,12 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     
     @Override
     protected TwitterProfile extractUserProfile(final String body) throws HttpAction {
-        final TwitterProfile profile = new TwitterProfile();
+        final TwitterProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

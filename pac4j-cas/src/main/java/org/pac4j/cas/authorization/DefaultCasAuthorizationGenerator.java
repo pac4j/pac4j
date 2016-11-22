@@ -32,5 +32,4 @@ public class DefaultCasAuthorizationGenerator<U extends CommonProfile> implement
         boolean isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);
     }
-
 }

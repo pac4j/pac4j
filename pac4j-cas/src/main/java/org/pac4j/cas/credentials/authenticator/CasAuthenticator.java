@@ -4,7 +4,6 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
@@ -12,6 +11,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticator extends ProfileDefinitionAware<CasProfile> implements Authenticator<TokenCredentials> {
+public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> implements Authenticator<TokenCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
@@ -80,12 +80,10 @@ public class CasAuthenticator extends ProfileDefinitionAware<CasProfile> impleme
                 }
             }
 
-            final CasProfile casProfile = getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
-            casProfile.setId(id);
-            getProfileDefinition().convertAndAdd(casProfile, newAttributes);
-            logger.debug("casProfile: {}", casProfile);
+            final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal, configuration.getProxyReceptor());
+            logger.debug("profile returned by CAS: {}", profile);
 
-            credentials.setUserProfile(casProfile);
+            credentials.setUserProfile(profile);
         } catch (final TicketValidationException e) {
             String message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);

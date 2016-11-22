@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class Google2ProfileDefinition extends CommonProfileDefinition<Google2Profile> {
 
-    public static final String GENDER = "gender";
     public static final String DISPLAY_NAME = "displayName";
     public static final String GIVEN_NAME = "name.givenName";
     public static final String FAMILY_NAME = "name.familyName";

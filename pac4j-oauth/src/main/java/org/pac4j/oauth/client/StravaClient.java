@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.strava.StravaAttributesDefinition;
+import org.pac4j.oauth.profile.strava.StravaProfileDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 import org.pac4j.scribe.builder.api.StravaApi20;
 
@@ -40,6 +41,12 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
     }
 
     @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new StravaProfileDefinition());
+        super.internalInit(context);
+    }
+
+    @Override
     protected BaseApi<OAuth20Service> getApi() {
         return new StravaApi20(approvalPrompt);
     }
@@ -56,12 +63,12 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
 
     @Override
     protected StravaProfile extractUserProfile(String body) throws HttpAction {
-        final StravaProfile profile = new StravaProfile();
+        final StravaProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            profile.setId(JsonHelper.getElement(json, StravaAttributesDefinition.ID));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            profile.setId(JsonHelper.getElement(json, StravaProfileDefinition.ID));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

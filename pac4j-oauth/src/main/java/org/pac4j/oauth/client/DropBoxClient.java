@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileDefinition;
@@ -21,13 +22,17 @@ import org.pac4j.scribe.builder.api.DropboxApi20;
 public class DropBoxClient extends BaseOAuth20Client<DropBoxProfile> {
     
     public DropBoxClient() {
-        setProfileDefinition(new DropBoxProfileDefinition());
     }
     
     public DropBoxClient(final String key, final String secret) {
-        this();
         setKey(key);
         setSecret(secret);
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new DropBoxProfileDefinition());
+        super.internalInit(context);
     }
 
     @Override

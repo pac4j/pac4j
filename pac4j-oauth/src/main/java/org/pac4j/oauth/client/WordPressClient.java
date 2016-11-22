@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.wordpress.WordPressAttributesDefinition;
+import org.pac4j.oauth.profile.wordpress.WordPressProfileDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 import org.pac4j.scribe.builder.api.WordPressApi20;
 
@@ -31,6 +32,12 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
     }
 
     @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new WordPressProfileDefinition());
+        super.internalInit(context);
+    }
+
+    @Override
     protected BaseApi<OAuth20Service> getApi() {
         return new WordPressApi20();
     }
@@ -47,17 +54,17 @@ public class WordPressClient extends BaseOAuth20Client<WordPressProfile> {
 
     @Override
     protected WordPressProfile extractUserProfile(final String body) throws HttpAction {
-        final WordPressProfile profile = new WordPressProfile();
+        final WordPressProfile profile = getProfileDefinition().newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "ID"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
             json = json.get("meta");
             if (json != null) {
-                final String attribute = WordPressAttributesDefinition.LINKS;
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+                final String attribute = WordPressProfileDefinition.LINKS;
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;
