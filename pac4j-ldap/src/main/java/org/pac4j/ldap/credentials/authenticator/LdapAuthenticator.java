@@ -14,9 +14,10 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class LdapAuthenticator extends InitializableWebObject implements org.pac4j.core.credentials.authenticator.Authenticator<UsernamePasswordCredentials> {
+public class LdapAuthenticator extends ProfileDefinitionAware<LdapProfile> implements org.pac4j.core.credentials.authenticator.Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -51,6 +52,7 @@ public class LdapAuthenticator extends InitializableWebObject implements org.pac
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
         CommonHelper.assertNotNull("attributes", attributes);
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new LdapProfile()));
     }
 
     @Override
@@ -84,16 +86,16 @@ public class LdapAuthenticator extends InitializableWebObject implements org.pac
     }
 
     protected LdapProfile createProfile(final String username, final String[] ldapAttributes, final LdapEntry entry) {
-        final LdapProfile profile = new LdapProfile();
+        final LdapProfile profile = getProfileDefinition().newProfile();
         profile.setId(username);
         for (String ldapAttribute: ldapAttributes) {
             final LdapAttribute entryAttribute = entry.getAttribute(ldapAttribute);
             if (entryAttribute != null) {
                 logger.debug("Found attribute: {}", ldapAttribute);
                 if (entryAttribute.size() > 1) {
-                    profile.addAttribute(ldapAttribute, entryAttribute.getStringValues());
+                    getProfileDefinition().convertAndAdd(profile, ldapAttribute, entryAttribute.getStringValues());
                 } else {
-                    profile.addAttribute(ldapAttribute, entryAttribute.getStringValue());
+                    getProfileDefinition().convertAndAdd(profile, ldapAttribute, entryAttribute.getStringValue());
                 }
             }
         }
@@ -104,7 +106,7 @@ public class LdapAuthenticator extends InitializableWebObject implements org.pac
         return ldapAuthenticator;
     }
 
-    public void setLdapAuthenticator(Authenticator ldapAuthenticator) {
+    public void setLdapAuthenticator(final Authenticator ldapAuthenticator) {
         this.ldapAuthenticator = ldapAuthenticator;
     }
 
@@ -112,7 +114,7 @@ public class LdapAuthenticator extends InitializableWebObject implements org.pac
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(final String attributes) {
         this.attributes = attributes;
     }
 }

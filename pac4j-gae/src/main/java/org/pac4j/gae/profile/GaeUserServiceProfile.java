@@ -1,6 +1,5 @@
 package org.pac4j.gae.profile;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.gae.client.GaeUserServiceClient;
 
@@ -16,12 +15,5 @@ public class GaeUserServiceProfile extends CommonProfile {
 
     private static final long serialVersionUID = 7866288887408897456L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new GaeUserServiceAttributesDefinition();
-
 	public final static String PAC4J_GAE_GLOBAL_ADMIN_ROLE = "GLOBAL_ADMIN";
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
 }

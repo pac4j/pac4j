@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 
@@ -42,6 +43,11 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
         }
         final String body = writer.toString();
         final CasOAuthWrapperClient client = new CasOAuthWrapperClient();
+        client.setKey(KEY);
+        client.setSecret(SECRET);
+        client.setCasOAuthUrl(CALLBACK_URL);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.init(MockWebContext.create());
         final CasOAuthWrapperProfile profile = client.extractUserProfile(body);
         assertEquals(ID, profile.getId());
         assertEquals(2, profile.getAttributes().size());
@@ -62,6 +68,11 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
                 .withDefaultPrettyPrinter()
                 .writeValueAsString(map);
         final CasOAuthWrapperClient client = new CasOAuthWrapperClient();
+        client.setKey(KEY);
+        client.setSecret(SECRET);
+        client.setCasOAuthUrl(CALLBACK_URL);
+        client.setCallbackUrl(CALLBACK_URL);
+        client.init(MockWebContext.create());
         final CasOAuthWrapperProfile profile = client.extractUserProfile(body);
         assertEquals(ID, profile.getId());
         assertEquals(2, profile.getAttributes().size());

@@ -13,25 +13,22 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.stormpath.profile.StormpathProfile;
+import org.pac4j.stormpath.profile.StormpathProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * An authentication handler for <a href="http://www.stormpath.com">Stormpath</a>.
- * This implementation uses Stormpath's
- * <a href="https://github.com/stormpath/stormpath-sdk-java/wiki">Java SDK</a>
+ * This implementation uses Stormpath's <a href="https://github.com/stormpath/stormpath-sdk-java/wiki">Java SDK</a>
  *
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public class StormpathAuthenticator extends InitializableWebObject
-        implements Authenticator<UsernamePasswordCredentials> {
+public class StormpathAuthenticator extends ProfileDefinitionAware<StormpathProfile> implements Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -72,6 +69,8 @@ public class StormpathAuthenticator extends InitializableWebObject
                     "Please verify that your provided Stormpath <accessId>, " +
                     "<secretKey>, and <applicationId> are correct.", e);
         }
+
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new StormpathProfile()));
     }
 
     @Override
@@ -98,30 +97,24 @@ public class StormpathAuthenticator extends InitializableWebObject
     }
 
     protected StormpathProfile createProfile(final Account account) {
-        final StormpathProfile profile = new StormpathProfile();
+        final StormpathProfile profile = getProfileDefinition().newProfile();
         profile.setId(account.getUsername());
-        profile.addAttributes(buildAttributesFromStormpathAccount(account));
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.FULL_NAME, account.getFullName());
+        getProfileDefinition().convertAndAdd(profile, CommonProfileDefinition.EMAIL, account.getEmail());
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.GIVEN_NAME, account.getGivenName());
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.MIDDLE_NAME, account.getMiddleName());
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.SUR_NAME, account.getSurname());
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.GROUPS, account.getGroups());
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.GROUP_MEMBERSHIPS, account.getGroupMemberships());
+        getProfileDefinition().convertAndAdd(profile, StormpathProfileDefinition.STATUS, account.getStatus());
         return profile;
-    }
-
-    protected Map<String, Object> buildAttributesFromStormpathAccount(final Account account) {
-        final Map<String, Object> attributes = new HashMap<>();
-        attributes.put("fullName", account.getFullName());
-        attributes.put("email", account.getEmail());
-        attributes.put("givenName", account.getGivenName());
-        attributes.put("middleName", account.getMiddleName());
-        attributes.put("surName", account.getSurname());
-        attributes.put("groups", account.getGroups());
-        attributes.put("groupMemberships", account.getGroupMemberships());
-        attributes.put("status", account.getStatus());
-        return attributes;
     }
 
     public String getAccessId() {
         return accessId;
     }
 
-    public void setAccessId(String accessId) {
+    public void setAccessId(final String accessId) {
         this.accessId = accessId;
     }
 
@@ -129,7 +122,7 @@ public class StormpathAuthenticator extends InitializableWebObject
         return secretKey;
     }
 
-    public void setSecretKey(String secretKey) {
+    public void setSecretKey(final String secretKey) {
         this.secretKey = secretKey;
     }
 
@@ -137,7 +130,7 @@ public class StormpathAuthenticator extends InitializableWebObject
         return applicationId;
     }
 
-    public void setApplicationId(String applicationId) {
+    public void setApplicationId(final String applicationId) {
         this.applicationId = applicationId;
     }
 }

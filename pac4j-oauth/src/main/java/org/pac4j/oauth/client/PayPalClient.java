@@ -9,6 +9,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.paypal.PayPalProfile;
+import org.pac4j.oauth.profile.paypal.PayPalProfileDefinition;
 import org.pac4j.scribe.builder.api.PayPalApi20;
 
 /**
@@ -42,6 +43,7 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("scope", this.scope);
         super.internalInit(context);
+        setProfileDefinition(new PayPalProfileDefinition());
     }
 
     @Override
@@ -66,13 +68,13 @@ public class PayPalClient extends BaseOAuth20Client<PayPalProfile> {
     
     @Override
     protected PayPalProfile extractUserProfile(final String body) throws HttpAction {
-        final PayPalProfile profile = new PayPalProfile();
+        final PayPalProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             final String userId = (String) JsonHelper.getElement(json, "user_id");
             profile.setId(CommonHelper.substringAfter(userId, "/user/"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

@@ -17,7 +17,7 @@ import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.jwt.profile.JwtProfile;
-import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
+import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import com.nimbusds.jose.JWSAlgorithm;
@@ -267,8 +267,8 @@ public final class JwtTests implements TestsConstants {
     private FacebookProfile createProfile() {
         final FacebookProfile profile = new FacebookProfile();
         profile.setId(ID);
-        profile.addAttribute(FacebookAttributesDefinition.NAME, NAME);
-        profile.addAttribute(FacebookAttributesDefinition.VERIFIED, true);
+        profile.addAttribute(FacebookProfileDefinition.NAME, NAME);
+        profile.addAttribute(FacebookProfileDefinition.VERIFIED, true);
         return profile;
     }
 

@@ -15,6 +15,7 @@ import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.context.SAML2ContextProvider;
 import org.pac4j.saml.context.SAML2MessageContext;
@@ -59,11 +60,12 @@ import java.util.List;
  */
 public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
 
-    protected static final Logger logger = LoggerFactory.getLogger(SAML2Client.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
     public static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
     public static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";
+    public static final String SESSION_INDEX = "sessionindex";
 
     protected CredentialProvider credentialProvider;
 
@@ -104,7 +106,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("configuration", this.configuration); 
-        
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new SAML2Profile()));
+
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.
         this.configuration.init(getName(), context); 
         
@@ -188,7 +191,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
         final ChainingMetadataResolver metadataManager = new ChainingMetadataResolver();
         metadataManager.setId(ChainingMetadataResolver.class.getCanonicalName());
         try {
-            final List<MetadataResolver> list = new ArrayList<MetadataResolver>();
+            final List<MetadataResolver> list = new ArrayList<>();
             list.add(idpMetadataProvider);
             list.add(spMetadataProvider);
             metadataManager.setResolvers(list);
@@ -230,13 +233,13 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
 
     @Override
     protected SAML2Profile retrieveUserProfile(final SAML2Credentials credentials, final WebContext context) throws HttpAction {
-        final SAML2Profile profile = new SAML2Profile();
+        final SAML2Profile profile = getProfileDefinition().newProfile();
         profile.setId(credentials.getNameId().getValue());
-        profile.addAttribute("sessionindex", credentials.getSessionIndex());
+        profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
         for (final Attribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
-            final List<String> values = new ArrayList<String>();
+            final List<String> values = new ArrayList<>();
             for (final XMLObject attributeValue : attribute.getAttributeValues()) {
                 final Element attributeValueElement = attributeValue.getDOM();
                 if (attributeValueElement != null) {
@@ -250,7 +253,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
             }
 
             if (!values.isEmpty()) {
-                profile.addAttribute(attribute.getName(), values);
+                getProfileDefinition().convertAndAdd(profile, attribute.getName(), values);
             } else {
                 logger.debug("No attribute values found for {}", attribute.getName());
             }

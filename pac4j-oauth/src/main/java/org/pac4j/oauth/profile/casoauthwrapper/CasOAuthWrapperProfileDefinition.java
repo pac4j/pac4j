@@ -1,15 +1,15 @@
 package org.pac4j.oauth.profile.casoauthwrapper;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 /**
- * {@link CasOAuthWrapperProfile} attributes definition.
+ * {@link CasOAuthWrapperProfile} profile definition.
  *
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasOAuthWrapperAttributesDefinition extends AttributesDefinition {
+public class CasOAuthWrapperProfileDefinition extends CommonProfileDefinition<CasOAuthWrapperProfile> {
 
     public static final String IS_FROM_NEW_LOGIN = "isFromNewLogin";
     public static final String AUTHENTICATION_DATE = "authenticationDate";
@@ -17,7 +17,8 @@ public class CasOAuthWrapperAttributesDefinition extends AttributesDefinition {
     public static final String SUCCESSFUL_AUTHENTICATION_HANDLERS = "successfulAuthenticationHandlers";
     public static final String LONG_TERM_AUTHENTICATION_REQUEST_TOKEN_USED = "longTermAuthenticationRequestTokenUsed";
 
-    public CasOAuthWrapperAttributesDefinition() {
+    public CasOAuthWrapperProfileDefinition() {
+        super(x -> new CasOAuthWrapperProfile());
         primary(IS_FROM_NEW_LOGIN, Converters.BOOLEAN);
         primary(AUTHENTICATION_DATE, new CasAuthenticationDateFormatter());
         primary(AUTHENTICATION_METHOD, Converters.STRING);

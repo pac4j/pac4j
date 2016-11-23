@@ -5,7 +5,6 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.oidc.client.OidcClient;
 
@@ -26,74 +25,67 @@ public class OidcProfile extends CommonProfile {
 
     public OidcProfile() { }
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new OidcAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     @Override
     public String getFirstName() {
-        return (String) getAttribute(OidcAttributesDefinition.GIVEN_NAME);
+        return (String) getAttribute(OidcProfileDefinition.GIVEN_NAME);
     }
 
     public String getMiddleName() {
-        return (String) getAttribute(OidcAttributesDefinition.MIDDLE_NAME);
+        return (String) getAttribute(OidcProfileDefinition.MIDDLE_NAME);
     }
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(OidcAttributesDefinition.NAME);
+        return (String) getAttribute(OidcProfileDefinition.NAME);
     }
 
     public String getNickname() {
-        return (String) getAttribute(OidcAttributesDefinition.NICKNAME);
+        return (String) getAttribute(OidcProfileDefinition.NICKNAME);
     }
 
     @Override
     public String getUsername() {
-        return (String) getAttribute(OidcAttributesDefinition.PREFERRED_USERNAME);
+        return (String) getAttribute(OidcProfileDefinition.PREFERRED_USERNAME);
     }
 
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(OidcAttributesDefinition.PICTURE);
+        return (URI) getAttribute(OidcProfileDefinition.PICTURE);
     }
 
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(OidcAttributesDefinition.PROFILE);
+        return (URI) getAttribute(OidcProfileDefinition.PROFILE);
     }
 
     @Override
     public String getLocation() {
-        return (String) getAttribute(OidcAttributesDefinition.ZONEINFO);
+        return (String) getAttribute(OidcProfileDefinition.ZONEINFO);
     }
 
     public Boolean getEmailVerified() {
-        return (Boolean) getAttribute(OidcAttributesDefinition.EMAIL_VERIFIED);
+        return (Boolean) getAttribute(OidcProfileDefinition.EMAIL_VERIFIED);
     }
 
     public String getPhoneNumber() {
-        return (String) getAttribute(OidcAttributesDefinition.PHONE_NUMBER);
+        return (String) getAttribute(OidcProfileDefinition.PHONE_NUMBER);
     }
 
     public Boolean getPhoneNumberVerified() {
-        return (Boolean) getAttribute(OidcAttributesDefinition.PHONE_NUMBER_VERIFIED);
+        return (Boolean) getAttribute(OidcProfileDefinition.PHONE_NUMBER_VERIFIED);
     }
 
     public Date getUpdatedAt() {
-        return (Date) getAttribute(OidcAttributesDefinition.UPDATED_AT);
+        return (Date) getAttribute(OidcProfileDefinition.UPDATED_AT);
     }
 
     public String getIssuer() {
-        return (String) getAttribute(OidcAttributesDefinition.ISSUER);
+        return (String) getAttribute(OidcProfileDefinition.ISSUER);
     }
 
     @SuppressWarnings("unchecked")
     public List<String> getAudience() {
-        final Object audience = getAttribute(OidcAttributesDefinition.AUDIENCE);
+        final Object audience = getAttribute(OidcProfileDefinition.AUDIENCE);
         if (audience instanceof String) {
             return Collections.singletonList((String) audience);
         } else {
@@ -102,51 +94,51 @@ public class OidcProfile extends CommonProfile {
     }
 
     public Date getExpirationDate() {
-        return (Date) getAttribute(OidcAttributesDefinition.EXPIRATION_TIME);
+        return (Date) getAttribute(OidcProfileDefinition.EXPIRATION_TIME);
     }
 
     public Date getIssuedAt() {
-        return (Date) getAttribute(OidcAttributesDefinition.ISSUED_AT);
+        return (Date) getAttribute(OidcProfileDefinition.ISSUED_AT);
     }
 
     public Date getNbf() {
-        return (Date) getAttribute(OidcAttributesDefinition.NBF);
+        return (Date) getAttribute(OidcProfileDefinition.NBF);
     }
 
     public Date getAuthTime() {
-        return (Date) getAttribute(OidcAttributesDefinition.AUTH_TIME);
+        return (Date) getAttribute(OidcProfileDefinition.AUTH_TIME);
     }
 
     public String getNonce() {
-        return (String) getAttribute(OidcAttributesDefinition.NONCE);
+        return (String) getAttribute(OidcProfileDefinition.NONCE);
     }
 
     public String getAcr() {
-        return (String) getAttribute(OidcAttributesDefinition.ACR);
+        return (String) getAttribute(OidcProfileDefinition.ACR);
     }
 
     public Object getAmr() {
-        return getAttribute(OidcAttributesDefinition.AMR);
+        return getAttribute(OidcProfileDefinition.AMR);
     }
 
     public String getAzp() {
-        return (String) getAttribute(OidcAttributesDefinition.AZP);
+        return (String) getAttribute(OidcProfileDefinition.AZP);
     }
 
     public void setAccessToken(final AccessToken accessToken) {
-        addAttribute(OidcAttributesDefinition.ACCESS_TOKEN, accessToken);
+        addAttribute(OidcProfileDefinition.ACCESS_TOKEN, accessToken);
     }
 
     public AccessToken getAccessToken() {
-        return (AccessToken) getAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
+        return (AccessToken) getAttribute(OidcProfileDefinition.ACCESS_TOKEN);
     }
 
     public String getIdTokenString() {
-        return (String) getAttribute(OidcAttributesDefinition.ID_TOKEN);
+        return (String) getAttribute(OidcProfileDefinition.ID_TOKEN);
     }
 
     public void setIdTokenString(final String idToken) {
-        addAttribute(OidcAttributesDefinition.ID_TOKEN, idToken);
+        addAttribute(OidcProfileDefinition.ID_TOKEN, idToken);
     }
 
     public JWT getIdToken() {
@@ -158,17 +150,17 @@ public class OidcProfile extends CommonProfile {
     }
 
     public RefreshToken getRefreshToken() {
-        return (RefreshToken) getAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
+        return (RefreshToken) getAttribute(OidcProfileDefinition.REFRESH_TOKEN);
     }
 
     public void setRefreshToken(final RefreshToken refreshToken) {
-        addAttribute(OidcAttributesDefinition.REFRESH_TOKEN, refreshToken);
+        addAttribute(OidcProfileDefinition.REFRESH_TOKEN, refreshToken);
     }
 
     @Override
     public void clearSensitiveData() {
-        removeAttribute(OidcAttributesDefinition.ACCESS_TOKEN);
-        removeAttribute(OidcAttributesDefinition.ID_TOKEN);
-        removeAttribute(OidcAttributesDefinition.REFRESH_TOKEN);
+        removeAttribute(OidcProfileDefinition.ACCESS_TOKEN);
+        removeAttribute(OidcProfileDefinition.ID_TOKEN);
+        removeAttribute(OidcProfileDefinition.REFRESH_TOKEN);
     }
 }

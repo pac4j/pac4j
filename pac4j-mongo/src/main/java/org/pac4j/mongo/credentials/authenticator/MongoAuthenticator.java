@@ -14,10 +14,11 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ import static com.mongodb.client.model.Filters.*;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class MongoAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
+public class MongoAuthenticator extends ProfileDefinitionAware<MongoProfile> implements Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -78,6 +79,7 @@ public class MongoAuthenticator extends InitializableWebObject implements Authen
         CommonHelper.assertNotNull("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotNull("usersCollection", this.usersCollection);
         CommonHelper.assertNotNull("attributes", this.attributes);
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new MongoProfile()));
     }
 
     @Override
@@ -116,11 +118,9 @@ public class MongoAuthenticator extends InitializableWebObject implements Authen
     }
 
     protected MongoProfile createProfile(final String username, final String[] attributes, final Map<String, Object> result) {
-        final MongoProfile profile = new MongoProfile();
+        final MongoProfile profile = getProfileDefinition().newProfile();
         profile.setId(username);
-        for (String attribute: attributes) {
-            profile.addAttribute(attribute, result.get(attribute));
-        }
+        getProfileDefinition().convertAndAdd(profile, result);
         return profile;
     }
 

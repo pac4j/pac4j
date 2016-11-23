@@ -22,7 +22,7 @@ public class AzureAdProfileCreator extends OidcProfileCreator<AzureAdProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileFactory(() -> new AzureAdProfile());
+        setProfileDefinition(new AzureAdProfileDefinition());
         super.internalInit(context);
     }
 
