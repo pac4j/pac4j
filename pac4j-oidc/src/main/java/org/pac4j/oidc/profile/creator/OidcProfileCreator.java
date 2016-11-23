@@ -19,11 +19,13 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.creator.AbstractProfileCreator;
+import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
+import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +42,7 @@ import static org.pac4j.core.util.CommonHelper.assertNotNull;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCreator<OidcCredentials, U> {
+public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinitionAware<U> implements ProfileCreator<OidcCredentials, U> {
 
     private static final Logger logger = LoggerFactory.getLogger(OidcProfileCreator.class);
 
@@ -86,7 +88,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
         }
         this.idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
 
-        setProfileFactory(() -> (U) new OidcProfile());
+        setProfileDefinition(new OidcProfileDefinition<U>());
     }
 
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {
@@ -110,7 +112,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
         final AccessToken accessToken = credentials.getAccessToken();
 
         // Create profile
-        final U profile = getProfileFactory().get();
+        final U profile = getProfileDefinition().newProfile();
         profile.setAccessToken(accessToken);
         final JWT idToken = credentials.getIdToken();
         profile.setIdTokenString(idToken.getParsedString());
@@ -157,7 +159,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
                     } else {
                         userInfoClaimsSet = userInfoSuccessResponse.getUserInfoJWT().getJWTClaimsSet();
                     }
-                    profile.addAttributes(userInfoClaimsSet.getClaims());
+                    getProfileDefinition().convertAndAdd(profile, userInfoClaimsSet.getClaims());
                 }
             }
 
@@ -166,7 +168,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
                 final String key = entry.getKey();
                 final Object value = entry.getValue();
                 if (profile.getAttribute(key) == null) {
-                    profile.addAttribute(key, value);
+                    getProfileDefinition().convertAndAdd(profile, key, value);
                 }
             }
 

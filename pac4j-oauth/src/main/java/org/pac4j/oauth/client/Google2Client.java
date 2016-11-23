@@ -11,6 +11,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.google2.Google2Profile;
+import org.pac4j.oauth.profile.google2.Google2ProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Google using OAuth protocol version 2.0.</p>
@@ -61,6 +62,7 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
             this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
         super.internalInit(context);
+        setProfileDefinition(new Google2ProfileDefinition());
     }
 
     @Override
@@ -80,12 +82,12 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
 
     @Override
     protected Google2Profile extractUserProfile(final String body) throws HttpAction {
-        final Google2Profile profile = new Google2Profile();
+        final Google2Profile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

@@ -5,11 +5,13 @@ import com.github.scribejava.apis.YahooApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
+import org.pac4j.oauth.profile.yahoo.YahooProfileDefinition;
 
 /**
  * <p>This class is the OAuth client to authenticate users in Yahoo.</p>
@@ -27,6 +29,12 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
     public YahooClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new YahooProfileDefinition());
+        super.internalInit(context);
     }
 
     @Override
@@ -57,14 +65,14 @@ public class YahooClient extends BaseOAuth10Client<YahooProfile> {
 
     @Override
     protected YahooProfile extractUserProfile(final String body) throws HttpAction {
-        final YahooProfile profile = new YahooProfile();
+        final YahooProfile profile = getProfileDefinition().newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = json.get("profile");
             if (json != null) {
                 profile.setId(JsonHelper.getElement(json, "guid"));
-                for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                    profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+                for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                    getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }

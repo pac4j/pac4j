@@ -37,7 +37,7 @@ You need to use the following module: `pac4j-cas`.
 
 To login with a CAS server, the indirect [`CasClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/CasClient.java) must be defined (and optionally a [`CasProxyReceptor`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/CasProxyReceptor.java) to deal with proxies). Your web application protected by the `CasClient` will thus participate in the SSO.
 
-Since *pac4j* v1.9.2, the CAS configuration must be defined in a [`CasConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/config/CasConfiguration.java) object instead of directly in the `CasClient`.
+The CAS configuration must be defined in a [`CasConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/config/CasConfiguration.java) object instead of directly in the `CasClient`.
 
 **Example:**
 
@@ -48,6 +48,8 @@ CasClient casClient = new CasClient(new CasConfiguration("https://mycasserver/lo
 The `https://mycasserver/login` url is the login url of your CAS server.
 
 After a sucessful login with a CAS server, a [`CasProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/profile/CasProfile.java) is returned.
+
+If an authentication delegation occured in CAS and no proxy configuration is defined, the returned profile will be the original profile after the authentication delegation.
 
 The `CasConfiguration` can be built with the CAS login url and / or with the CAS prefix url (when different urls are required):
 

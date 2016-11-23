@@ -16,7 +16,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
+import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import javax.crypto.Mac;
@@ -81,6 +81,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("fields", this.fields);
         super.internalInit(context);
+        setProfileDefinition(new FacebookProfileDefinition());
     }
 
     @Override
@@ -140,23 +141,23 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
 
     @Override
     protected FacebookProfile extractUserProfile(final String body) throws HttpAction {
-        final FacebookProfile profile = new FacebookProfile();
+        final FacebookProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
-            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
-            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
-            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
-            extractData(profile, json, FacebookAttributesDefinition.LIKES);
-            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
-            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
-            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
-            extractData(profile, json, FacebookAttributesDefinition.PICTURE);
+            extractData(profile, json, FacebookProfileDefinition.FRIENDS);
+            extractData(profile, json, FacebookProfileDefinition.MOVIES);
+            extractData(profile, json, FacebookProfileDefinition.MUSIC);
+            extractData(profile, json, FacebookProfileDefinition.BOOKS);
+            extractData(profile, json, FacebookProfileDefinition.LIKES);
+            extractData(profile, json, FacebookProfileDefinition.ALBUMS);
+            extractData(profile, json, FacebookProfileDefinition.EVENTS);
+            extractData(profile, json, FacebookProfileDefinition.GROUPS);
+            extractData(profile, json, FacebookProfileDefinition.MUSIC_LISTENS);
+            extractData(profile, json, FacebookProfileDefinition.PICTURE);
         }
         return profile;
     }
@@ -164,7 +165,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
         final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
-            profile.addAttribute(name, JsonHelper.getElement(data, "data"));
+            getProfileDefinition().convertAndAdd(profile, name, JsonHelper.getElement(data, "data"));
         }
     }
 

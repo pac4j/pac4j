@@ -1,12 +1,9 @@
 package org.pac4j.oauth.profile.ok;
 
-import org.pac4j.core.profile.AttributesDefinition;
-import org.pac4j.core.profile.Gender;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 import java.net.URI;
-import java.util.Locale;
 
 /**
  * Represents basic (OAuth20Profile) profile on Ok.ru (Odnoklassniki.ru)
@@ -20,46 +17,29 @@ public class OkProfile extends OAuth20Profile {
 
     public static final String BASE_PROFILE_URL = "http://ok.ru/profile/";
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new OkAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     @Override
     public String getFirstName() {
-        return (String) getAttribute(OkAttributesDefinition.FIRST_NAME);
+        return (String) getAttribute(OkProfileDefinition.FIRST_NAME);
     }
 
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(OkAttributesDefinition.LAST_NAME);
+        return (String) getAttribute(OkProfileDefinition.LAST_NAME);
     }
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(OkAttributesDefinition.NAME);
+        return (String) getAttribute(OkProfileDefinition.NAME);
     }
 
     @Override
     public String getUsername() {
-        return (String) getAttribute(OkAttributesDefinition.UID);
-    }
-
-    @Override
-    public Gender getGender() {
-        return Gender.valueOf(((String) getAttribute(OkAttributesDefinition.GENDER)).toUpperCase());
-    }
-
-    @Override
-    public Locale getLocale() {
-        return new Locale((String) getAttribute(OkAttributesDefinition.LOCALE));
+        return (String) getAttribute(OkProfileDefinition.UID);
     }
 
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(OkAttributesDefinition.PIC_1);
+        return (URI) getAttribute(OkProfileDefinition.PIC_1);
     }
 
     @Override
@@ -69,8 +49,8 @@ public class OkProfile extends OAuth20Profile {
 
     @Override
     public String getLocation() {
-        return getAttribute(OkAttributesDefinition.LOCATION_CITY) +
+        return getAttribute(OkProfileDefinition.LOCATION_CITY) +
                 ", " +
-                getAttribute(OkAttributesDefinition.LOCATION_COUNTRY);
+                getAttribute(OkProfileDefinition.LOCATION_COUNTRY);
     }
 }

@@ -24,8 +24,10 @@ Understand the main features:
 - 1) [Direct vs indirect clients](#direct-vs-indirect-clients)
 - 2) [Compute roles and permissions](#compute-roles-and-permissions)
 - 3) [The callback url](#the-callback-url)
-- 4) [AJAX requests](#ajax-requests)
-- 5) [The `Client` methods](#the-client-methods)
+- 4) [Profile definition](#profile-definition)
+- 5) [AJAX requests](#ajax-requests)
+- 6) [The `Client` methods](#the-client-methods)
+
 
 ---
 
@@ -44,6 +46,7 @@ Clients are of two kinds: direct for web services authentication and indirect fo
 {:.table-striped}
 
 ---
+
 
 ## 2) Compute roles and permissions
 
@@ -64,6 +67,7 @@ client.addAuthorizationGenerator(authGen);
 In fact, you can add as many authorization generators as you want using the `addAuthorizationGenerator` method or a list of authorization generators using the `setAuthorizationGenerators` method.
 
 ---
+
 
 ## 3) The callback url
 
@@ -107,9 +111,21 @@ In fact, the callback url is expected to be an absolute url and is passed "as is
 
 The other existing implementation you can use, is the [`RelativeCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/RelativeCallbackUrlResolver.java) which turns any relative callback url into an absolute one by adding the scheme, server name and port before the relative callback url.
 
+
 ---
 
-## 4) AJAX requests
+## 4) Profile definition
+
+Most clients rely on the `Authenticator` and `ProfileCreator` components to validate credentials and create the user profile.
+
+At the end of the login process, the returned user profile is created by the (internal) `Authenticator` or `ProfileCreator`, which holds a [profile definition](user-profile.html#profile-definition).
+
+This profile definition can be overridden using the `setProfileDefinition` method.
+
+
+---
+
+## 5) AJAX requests
 
 For an indirect client, if the user tries to access a protected url, he will be redirected to the identity provider for login.
 
@@ -119,9 +135,10 @@ The HTTP request is considered to be an AJAX one if the value of the `X-Requeste
 
 But you can provide your own [`AjaxRequestResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/AjaxRequestResolver.java) with: `client.setAjaxRequestResolver(myAjaxRequestResolver);`.
 
+
 ---
 
-## 5) The `Client` methods
+## 6) The `Client` methods
 
 The `Client` interface has the following methods:
 

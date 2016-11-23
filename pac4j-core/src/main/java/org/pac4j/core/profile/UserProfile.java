@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
- * (objects). The attributes definition is <code>null</code> (generic profile), it must be defined in subclasses. Additional concepts are the
- * "remember me" nature of the user profile and the associated roles, permissions and client name.
+ * (objects). Additional concepts are the "remember me" nature of the user profile and the associated roles, permissions and client name.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -51,36 +50,15 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Return the attributes definition for this user profile. <code>null</code> for a (generic) user profile.
-     * 
-     * @return the attributes definition
-     */
-    public AttributesDefinition getAttributesDefinition() {
-        return null;
-    }
-
-    /**
-     * Add an attribute and perform conversion if necessary.
+     * Add an attribute.
      * 
      * @param key key of the attribute
      * @param value value of the attribute
      */
     public void addAttribute(final String key, Object value) {
         if (value != null) {
-            final AttributesDefinition definition = getAttributesDefinition();
-            // no attributes definition -> no conversion
-            if (definition == null) {
-                logger.debug("no conversion => key: {} / value: {} / {}",
-                        new Object[] { key, value, value.getClass() });
-                this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
-            } else {
-                value = definition.convert(key, value);
-                if (value != null) {
-                    logger.debug("converted to => key: {} / value: {} / {}",
-                            new Object[] { key, value, value.getClass() });
-                    this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
-                }
-            }
+            logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
+            this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
         }
     }
 
@@ -178,6 +156,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("name", name);
         return this.attributes.containsKey(name);
     }
+
     /**
      * Return the attribute with name.
      *

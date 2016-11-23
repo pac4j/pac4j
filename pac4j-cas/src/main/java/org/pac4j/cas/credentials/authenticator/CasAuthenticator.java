@@ -4,20 +4,21 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.cas.profile.CasProfile;
-import org.pac4j.cas.profile.CasProxyProfile;
+import org.pac4j.cas.profile.CasProfileDefinition;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,7 +27,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticator extends InitializableWebObject implements Authenticator<TokenCredentials> {
+public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> implements Authenticator<TokenCredentials> {
 
     private final static Logger logger = LoggerFactory.getLogger(CasAuthenticator.class);
 
@@ -43,10 +44,12 @@ public class CasAuthenticator extends InitializableWebObject implements Authenti
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("configuration", configuration);
         CommonHelper.assertNotBlank("callbackUrl", callbackUrl);
 
+        CommonHelper.assertNotNull("configuration", configuration);
         configuration.init(context);
+
+        setProfileDefinition(new CasProfileDefinition());
     }
 
     @Override
@@ -63,14 +66,9 @@ public class CasAuthenticator extends InitializableWebObject implements Authenti
             final Assertion assertion = configuration.getTicketValidator().validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);
-            final CasProfile casProfile;
-            if (configuration.getProxyReceptor() != null) {
-                casProfile = new CasProxyProfile();
-                ((CasProxyProfile) casProfile).setPrincipal(principal);
-            } else {
-                casProfile = new CasProfile();
-            }
-            casProfile.setId(principal.getName());
+
+            final String id = principal.getName();
+            final Map<String, Object> newAttributes = new HashMap<>();
             // restore attributes
             final Map<String, Object> attributes = principal.getAttributes();
             if (attributes != null) {
@@ -78,11 +76,22 @@ public class CasAuthenticator extends InitializableWebObject implements Authenti
                     final String key = entry.getKey();
                     final Object value = entry.getValue();
                     final Object restored = ProfileHelper.getInternalAttributeHandler().restore(value);
-                    casProfile.addAttribute(key, restored);
+                    newAttributes.put(key, restored);
                 }
             }
-            logger.debug("casProfile: {}", casProfile);
-            credentials.setUserProfile(casProfile);
+
+            final CommonProfile profile;
+            // in case of CAS proxy, don't restore the profile, just build a CAS one
+            if (configuration.getProxyReceptor() != null) {
+                profile = getProfileDefinition().newProfile(principal, configuration.getProxyReceptor());
+                profile.setId(id);
+                getProfileDefinition().convertAndAdd(profile, newAttributes);
+            } else {
+                profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), id, newAttributes, principal, configuration.getProxyReceptor());
+            }
+            logger.debug("profile returned by CAS: {}", profile);
+
+            credentials.setUserProfile(profile);
         } catch (final TicketValidationException e) {
             String message = "cannot validate CAS ticket: " + ticket;
             throw new TechnicalException(message, e);

@@ -1,19 +1,19 @@
 package org.pac4j.oauth.profile.twitter;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.util.Arrays;
 import java.util.Locale;
 
 /**
- * This class defines the attributes of the Twitter profile.
+ * This class is the Twitter profile definition.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterAttributesDefinition extends AttributesDefinition {
+public class TwitterProfileDefinition extends CommonProfileDefinition<TwitterProfile> {
     
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";
@@ -29,7 +29,6 @@ public class TwitterAttributesDefinition extends AttributesDefinition {
     public static final String IS_TRANSLATOR = "is_translator";
     public static final String LANG = "lang";
     public static final String LISTED_COUNT = "listed_count";
-    public static final String LOCATION = "location";
     public static final String NAME = "name";
     public static final String NOTIFICATIONS = "notifications";
     public static final String PROFILE_BACKGROUND_COLOR = "profile_background_color";
@@ -52,8 +51,9 @@ public class TwitterAttributesDefinition extends AttributesDefinition {
     public static final String UTC_OFFSET = "utc_offset";
     public static final String VERIFIED = "verified";
     
-    public TwitterAttributesDefinition() {
-        Arrays.stream(new String[] {DESCRIPTION, LOCATION, NAME, SCREEN_NAME, TIME_ZONE, URL})
+    public TwitterProfileDefinition() {
+        super(x -> new TwitterProfile());
+        Arrays.stream(new String[] {DESCRIPTION, NAME, SCREEN_NAME, TIME_ZONE})
                 .forEach(a -> primary(a, Converters.STRING));
         Arrays.stream(new String[] {CONTRIBUTORS_ENABLED, DEFAULT_PROFILE, DEFAULT_PROFILE_IMAGE, FOLLOW_REQUEST_SENT, FOLLOWING,
                 GEO_ENABLED, IS_TRANSLATOR, NOTIFICATIONS, PROFILE_USE_BACKGROUND_IMAGE, PROTECTED, SHOW_ALL_INLINE_MEDIA,
@@ -61,7 +61,7 @@ public class TwitterAttributesDefinition extends AttributesDefinition {
                 .forEach(a -> primary(a, Converters.BOOLEAN));
         Arrays.stream(new String[] {FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, LISTED_COUNT, STATUSES_COUNT, UTC_OFFSET})
                 .forEach(a -> primary(a, Converters.INTEGER));
-        Arrays.stream(new String[] {PROFILE_BACKGROUND_IMAGE_URL, PROFILE_BACKGROUND_IMAGE_URL_HTTPS,
+        Arrays.stream(new String[] {URL, PROFILE_BACKGROUND_IMAGE_URL, PROFILE_BACKGROUND_IMAGE_URL_HTTPS,
                 PROFILE_IMAGE_URL, PROFILE_IMAGE_URL_HTTPS}).forEach(a -> primary(a, Converters.URL));
         Arrays.stream(new String[] {PROFILE_BACKGROUND_COLOR, PROFILE_LINK_COLOR, PROFILE_SIDEBAR_BORDER_COLOR,
                 PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.COLOR));

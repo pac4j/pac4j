@@ -5,10 +5,11 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.sql.profile.DbProfile;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
@@ -26,7 +27,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class DbAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
+public class DbAuthenticator extends ProfileDefinitionAware<DbProfile> implements Authenticator<UsernamePasswordCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -66,6 +67,7 @@ public class DbAuthenticator extends InitializableWebObject implements Authentic
         CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new DbProfile()));
         this.dbi = new DBI(this.dataSource);
     }
 
@@ -116,11 +118,9 @@ public class DbAuthenticator extends InitializableWebObject implements Authentic
     }
 
     protected DbProfile createProfile(final String username, final String[] attributes, final Map<String, Object> result) {
-        final DbProfile profile = new DbProfile();
+        final DbProfile profile = getProfileDefinition().newProfile();
         profile.setId(username);
-        for (String attribute: attributes) {
-            profile.addAttribute(attribute, result.get(attribute));
-        }
+        getProfileDefinition().convertAndAdd(profile, result);
         return profile;
     }
 
