@@ -1,20 +1,20 @@
 package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class defines the attributes of the Strava profile.
+ * This class is the Strava profile definition.
  *
  * @since 1.7.0
  * @author Adrian Papusoi
  */
-public class StravaAttributesDefinition extends AttributesDefinition {
+public class StravaProfileDefinition extends CommonProfileDefinition<StravaProfile> {
 
     public static final String ID = "id";
     public static final String RESOURCE_STATE = "resource_state";
@@ -37,15 +37,15 @@ public class StravaAttributesDefinition extends AttributesDefinition {
     // mutual_friend_count
     public static final String DATE_PREFERENCE = "date_preference";
     public static final String MEASUREMENT_PREFERENCE = "measurement_preference";
-    public static final String EMAIL = "email";
     // ftp
     public static final String CLUBS = "clubs";
     public static final String BIKES = "bikes";
     public static final String SHOES = "shoes";
 
-    public StravaAttributesDefinition() {
-        Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, PROFILE, CITY, STATE, COUNTRY,
-                DATE_PREFERENCE, MEASUREMENT_PREFERENCE, EMAIL }).forEach(a -> primary(a, Converters.STRING));
+    public StravaProfileDefinition() {
+        super(x -> new StravaProfile());
+        Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, CITY, STATE, COUNTRY,
+                DATE_PREFERENCE, MEASUREMENT_PREFERENCE }).forEach(a -> primary(a, Converters.STRING));
         primary(ID, Converters.LONG);
         primary(RESOURCE_STATE, Converters.INTEGER);
         primary(BADGE_TYPE_ID, Converters.INTEGER);
@@ -59,5 +59,6 @@ public class StravaAttributesDefinition extends AttributesDefinition {
         final JsonConverter multiGearConverter = new JsonConverter(List.class, new TypeReference<List<StravaGear>>() {});
         primary(BIKES, multiGearConverter);
         primary(SHOES, multiGearConverter);
+        primary(PROFILE, Converters.URL);
     }
 }

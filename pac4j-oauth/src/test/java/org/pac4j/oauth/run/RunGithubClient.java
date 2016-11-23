@@ -2,6 +2,7 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -9,6 +10,8 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.profile.github.GitHubPlan;
 import org.pac4j.oauth.profile.github.GitHubProfile;
+
+import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.*;
 
@@ -68,7 +71,7 @@ public final class RunGithubClient extends RunClient {
         assertEquals(0, profile.getCollaborators().intValue());
         assertNull(profile.getBio());
         assertEquals(0, profile.getTotalPrivateRepos().intValue());
-        assertEquals("2012-02-06T13:05:21Z", profile.getCreatedAt().toString());
+        assertEquals("2012-02-06T13:05:21Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getCreatedAt()));
         assertEquals(0, profile.getDiskUsage().intValue());
         assertEquals(0, profile.getOwnedPrivateRepos().intValue());
         final GitHubPlan plan = profile.getPlan();

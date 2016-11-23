@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.*;
 
@@ -16,13 +17,14 @@ import static org.junit.Assert.*;
  * @author Michael Remond
  * @since 1.5.1
  */
-public final class DefaultCasAuthorizationGeneratorTests {
+public final class DefaultCasAuthorizationGeneratorTests implements TestsConstants {
 
     @Test
     public void testNoAttribute() {
         AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
         Map<String, Object> attributes = new HashMap<>();
-        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
+        final CasProfile profile = new CasProfile();
+        profile.build(ID, attributes);
         generator.generate(profile);
         assertEquals(false, profile.isRemembered());
     }
@@ -32,7 +34,8 @@ public final class DefaultCasAuthorizationGeneratorTests {
         AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
-        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
+        final CasProfile profile = new CasProfile();
+        profile.build(ID, attributes);
         generator.generate(profile);
         assertEquals(false, profile.isRemembered());
     }
@@ -42,7 +45,8 @@ public final class DefaultCasAuthorizationGeneratorTests {
         AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
-        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
+        final CasProfile profile = new CasProfile();
+        profile.build(ID, attributes);
         generator.generate(profile);
         assertEquals(false, profile.isRemembered());
     }
@@ -52,7 +56,8 @@ public final class DefaultCasAuthorizationGeneratorTests {
         AuthorizationGenerator<CommonProfile> generator = new DefaultCasAuthorizationGenerator<>();
         Map<String, Object> attributes = new HashMap<>();
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
-        CommonProfile profile = ProfileHelper.buildProfile("org.pac4j.cas.profile.CasProfile#id", attributes);
+        final CasProfile profile = new CasProfile();
+        profile.build(ID, attributes);
         generator.generate(profile);
         assertEquals(true, profile.isRemembered());
     }

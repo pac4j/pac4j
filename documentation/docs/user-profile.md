@@ -20,80 +20,19 @@ The first user profile which must be considered is the [`CommonProfile`](https:/
 
 Each user profile must have a unique identifier. Thus, when building the user profile, the *pac4j* clients use for the profile identifier a value enforcing uniqueness from the identity provider.
 
-This works well accross the profiles provided from the same identity provider, though this can become a problem when using multiple identity providers. We could have a collision between the identifiers chosen from the identity provider. To avoid that issue, there is a "typed identifier" adding the profile name before the profile identifier.
-
-Notice that with *pac4j* v1.9, the typed identifier has changed and now uses the full class name as prefix.
+This works well accross the profiles provided from the same identity provider, though this can become a problem when using multiple identity providers.
+We could have a collision between the identifiers chosen from the identity provider. To avoid that issue, there is a "typed identifier" adding the profile class name before the profile identifier.
 
 **Example:**
 
 ```java
 profile.getId() // 00001
-profile.getOldTypedId() // FacebookProfile#00001 with pac4j v1.9.x / does not exist before
-profile.getTypedId() // org.pac4j.oauth.profile.facebook.FacebookProfile#00001 with pac4j v1.9.x / FacebookProfile#00001 before
+profile.getTypedId() // org.pac4j.oauth.profile.facebook.FacebookProfile#00001
 ```
 
 ## 2) Attributes
 
-User profiles have attributes, populated from the data retrieved from the identity provider.
-
-Any attribute name is accepted, though user profiles may have [`AttributesDefinition`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/AttributesDefinition.java) to:
-
-- separate attributes in primary ones and secondary ones to facilitate the parsing of all the attributes returned by the identity provider
-- define [`AttributeConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/AttributeConverter.java) associated with attributes names in order to transform simple strings in dates, enumerations...
-
-The `AttributesDefinition` used by the profile must be returned via the `getAttributesDefinition()` method.
-
-**Example:**
-
-```java
-public class FacebookProfile extends OAuth20Profile {
-
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new FacebookAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
-    ...
-}
-```
-
-```java
-public class FacebookAttributesDefinition extends AttributesDefinition {
-    
-    public static final String NAME = "name";
-    public static final String FIRST_NAME = "first_name";
-    public static final String MIDDLE_NAME = "middle_name";
-
-	...
-    
-    public FacebookAttributesDefinition() {
-        Arrays.stream(new String[] {
-            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, THIRD_PARTY_ID, BIO, EMAIL, POLITICAL, QUOTES,
-            RELIGION, WEBSITE
-        }).forEach(a -> primary(a, Converters.STRING));
-        primary(TIMEZONE, Converters.INTEGER);
-        primary(VERIFIED, Converters.BOOLEAN);
-        final JsonListConverter multiObjectConverter = new JsonListConverter(FacebookObject.class, FacebookObject[].class);
-        primary(GENDER, Converters.GENDER);
-        primary(LOCALE, Converters.LOCALE);
-        primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
-        primary(BIRTHDAY, new FormattedDateConverter("MM/dd/yyyy"));
-        primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());
-        primary(LANGUAGES, multiObjectConverter);
-
-        ...
-
-        secondary(FRIENDS, multiObjectConverter);
-        secondary(MOVIES, multiInfoConverter);
-        secondary(MUSIC, multiInfoConverter);
-        secondary(BOOKS, multiInfoConverter);
-    }
-}
-```
-
-Many attribute converters already exists: [`BooleanConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/BooleanConverter.java), [`ColorConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/ColorConverter.java)... Check the [org.pac4j.core.profile.converter](https://github.com/pac4j/pac4j/tree/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter) package.
+User profiles have attributes, populated from the data retrieved from the identity provider (after conversion).
 
 
 ## 3) Roles and permissions
@@ -126,15 +65,25 @@ The `CommonProfile` has the following methods:
 | `getUsername()` | `String` | The `username` attribute |
 | `getGender()` | [`Gender`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/Gender.java) | The `gender` attribute |
 | `getLocale()` | `Locale` | The `locale` attribute |
-| `getPictureUrl()` | `String` | The `picture_url` attribute |
-| `getProfileUrl()` | `String` | The `profile_url` attribute |
+| `getPictureUrl()` | `URI` | The `picture_url` attribute |
+| `getProfileUrl()` | `URI` | The `profile_url` attribute |
 | `getLocation()` | `String` | The `location` attribute |
 
 
-## 7) Profile subclassing
+## 7) Profile definition
+
+The profile class and attributes are defined via [`ProfileDefinition`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/definition/ProfileDefinition.java) implementations.
+
+The `setProfileFactory` method allows you to define the instance class to return for the user profile while the `primary` and `secondary` methods allow you to define attributes with their specific converters.
+
+Many attribute converters already exists: [`BooleanConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/BooleanConverter.java), [`ColorConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/ColorConverter.java)... Check the [org.pac4j.core.profile.converter](https://github.com/pac4j/pac4j/tree/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter) package.
+
+As a result, the `newProfile` method returns a new class instance while the `convertAndAdd` methods convert the attributes if there is an associated converter and adds them to the profile.
+
+
+## 8) Profile hierarchy
 
 In fact, most clients never return a `CommonProfile`, but specific profiles like the `FacebookProfile`, the `OidcProfile`... which:
 
-- have their specific attributes definition
 - (partially) override the common methods of the `CommonProfile` with specific implementations
 - add their specific getters for their specific attributes.

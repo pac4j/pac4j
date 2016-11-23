@@ -7,11 +7,11 @@ import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
-import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -29,7 +29,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends IndirectClientV2<TokenCredentials, CasProfile> {
+public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile> {
 
     private CasConfiguration configuration = new CasConfiguration();
 

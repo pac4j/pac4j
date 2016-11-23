@@ -3,9 +3,11 @@ package org.pac4j.stormpath.credentials.authenticator;
 import com.stormpath.sdk.group.GroupList;
 import com.stormpath.sdk.group.GroupMembershipList;
 import org.junit.Test;
+import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.stormpath.profile.StormpathProfile;
@@ -23,7 +25,8 @@ public final class StormpathAuthenticatorIT implements TestsConstants {
     @Test
     public void testInitKo() {
         final StormpathAuthenticator authenticator = new StormpathAuthenticator(VALUE, VALUE, VALUE);
-        TestsHelper.initShouldFail(authenticator, "An exception is caught trying to access Stormpath cloud. Please verify that your provided Stormpath <accessId>, <secretKey>, and <applicationId> are correct. Original Stormpath error: HTTP 401, Stormpath 401 (http://www.stormpath.com/docs/quickstart/connect): Authentication with a valid API Key is required.");
+        final TechnicalException exception = (TechnicalException) TestsHelper.expectException(() -> authenticator.init(MockWebContext.create()));
+        assertTrue(exception.getMessage().startsWith("An exception is caught trying to access Stormpath cloud. Please verify that your provided Stormpath <accessId>, <secretKey>, and <applicationId> are correct."));
     }
 
     @Test

@@ -1,7 +1,5 @@
 package org.pac4j.oauth.profile.generic;
 
-import org.pac4j.core.profile.AttributesDefinition;
-
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -11,21 +9,6 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @author aherrick
  * @since 1.9.2
  */
+@Deprecated
 public class GenericOAuth20Profile extends OAuth20Profile {
-
-    private transient AttributesDefinition attributes = new DefaultGenericAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return attributes;
-    }
-
-    /**
-     * Used to set a custom AttributesDefinition.
-     *
-     * @param attributes the attributes definition
-     */
-    public void setAttributesDefinition(AttributesDefinition attributes) {
-        this.attributes = attributes;
-    }
 }

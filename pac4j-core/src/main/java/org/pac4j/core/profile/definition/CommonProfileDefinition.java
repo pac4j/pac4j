@@ -1,15 +1,17 @@
-package org.pac4j.oauth.profile.generic;
+package org.pac4j.core.profile.definition;
 
-import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
 
+import java.util.function.Function;
+
 /**
- * Default attribute definition of the GenericOAuth20Profile
+ * Profile definition with the common attributes.
  *
- * @author aherrick
- * @since 1.9.2
+ * @author Jerome Leleu
+ * @since 2.0.0
  */
-public class DefaultGenericAttributesDefinition extends AttributesDefinition {
+public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDefinition<P> {
 
     public static final String EMAIL = "email";
     public static final String FIRST_NAME = "first_name";
@@ -21,7 +23,7 @@ public class DefaultGenericAttributesDefinition extends AttributesDefinition {
     public static final String PROFILE_URL = "profile_url";
     public static final String LOCATION = "location";
 
-    public DefaultGenericAttributesDefinition() {
+    public CommonProfileDefinition() {
         primary(EMAIL, Converters.STRING);
         primary(FIRST_NAME, Converters.STRING);
         primary(FAMILY_NAME, Converters.STRING);
@@ -30,6 +32,11 @@ public class DefaultGenericAttributesDefinition extends AttributesDefinition {
         primary(LOCALE, Converters.LOCALE);
         primary(PICTURE_URL, Converters.URL);
         primary(PROFILE_URL, Converters.URL);
-        primary(EMAIL, Converters.STRING);
+        primary(LOCATION, Converters.STRING);
+    }
+
+    public CommonProfileDefinition(final Function<Object[], P> profileFactory) {
+        this();
+        setProfileFactory(profileFactory);
     }
 }

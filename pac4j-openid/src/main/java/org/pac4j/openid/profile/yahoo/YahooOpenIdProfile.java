@@ -1,8 +1,8 @@
 package org.pac4j.openid.profile.yahoo;
 
+import java.net.URI;
 import java.util.Locale;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.openid.client.YahooOpenIdClient;
 import org.pac4j.openid.profile.OpenIdProfile;
 
@@ -17,20 +17,18 @@ public class YahooOpenIdProfile extends OpenIdProfile {
     
     private static final long serialVersionUID = 7866288887408897456L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new YahooOpenIdAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public Locale getLocale() {
-    	return (Locale) getAttribute(YahooOpenIdAttributesDefinition.LANGUAGE);
+    	return (Locale) getAttribute(YahooOpenIdProfileDefinition.LANGUAGE);
     }
     
     @Override
     public String getDisplayName() {
-    	return (String) getAttribute(YahooOpenIdAttributesDefinition.FULLNAME);
+    	return (String) getAttribute(YahooOpenIdProfileDefinition.FULLNAME);
+    }
+
+    @Override
+    public URI getPictureUrl() {
+        return (URI) getAttribute(YahooOpenIdProfileDefinition.IMAGE);
     }
 }

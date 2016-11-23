@@ -1,6 +1,5 @@
 package org.pac4j.oauth.profile.wordpress;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 import java.net.URI;
@@ -16,28 +15,21 @@ public class WordPressProfile extends OAuth20Profile {
     
     private static final long serialVersionUID = 6790248892408246089L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new WordPressAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(WordPressAttributesDefinition.AVATAR_URL);
+        return (URI) getAttribute(WordPressProfileDefinition.AVATAR_URL);
     }
     
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(WordPressAttributesDefinition.PROFILE_URL);
+        return (URI) getAttribute(WordPressProfileDefinition.PROFILE_URL);
     }
     
     public Integer getPrimaryBlog() {
-        return (Integer) getAttribute(WordPressAttributesDefinition.PRIMARY_BLOG);
+        return (Integer) getAttribute(WordPressProfileDefinition.PRIMARY_BLOG);
     }
     
     public WordPressLinks getLinks() {
-        return (WordPressLinks) getAttribute(WordPressAttributesDefinition.LINKS);
+        return (WordPressLinks) getAttribute(WordPressProfileDefinition.LINKS);
     }
 }

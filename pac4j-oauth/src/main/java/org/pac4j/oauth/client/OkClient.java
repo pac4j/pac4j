@@ -9,7 +9,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.ok.OkAttributesDefinition;
+import org.pac4j.oauth.profile.ok.OkProfileDefinition;
 import org.pac4j.oauth.profile.ok.OkProfile;
 
 import java.io.UnsupportedEncodingException;
@@ -43,6 +43,7 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("publicKey", this.publicKey);
         super.internalInit(context);
+        setProfileDefinition(new OkProfileDefinition());
     }
 
     @Override
@@ -74,12 +75,12 @@ public final class OkClient extends BaseOAuth20Client<OkProfile> {
 
     @Override
     protected OkProfile extractUserProfile(String body) throws HttpAction {
-        final OkProfile profile = new OkProfile();
+        final OkProfile profile = getProfileDefinition().newProfile();
         JsonNode userNode = JsonHelper.getFirstNode(body);
         if (userNode != null) {
-            profile.setId(JsonHelper.getElement(userNode, OkAttributesDefinition.UID));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(userNode, attribute));
+            profile.setId(JsonHelper.getElement(userNode, OkProfileDefinition.UID));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(userNode, attribute));
             }
         }
         return profile;

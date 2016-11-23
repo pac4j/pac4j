@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -19,13 +18,6 @@ public class Google2Profile extends OAuth20Profile {
 
     private static final long serialVersionUID = -7486869356444327783L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new Google2AttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     @Override
     public String getEmail() {
         final List<Google2Email> list = getEmails();
@@ -38,40 +30,40 @@ public class Google2Profile extends OAuth20Profile {
 
     @Override
     public String getFirstName() {
-        return (String) getAttribute(Google2AttributesDefinition.GIVEN_NAME);
+        return (String) getAttribute(Google2ProfileDefinition.GIVEN_NAME);
     }
 
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(Google2AttributesDefinition.FAMILY_NAME);
+        return (String) getAttribute(Google2ProfileDefinition.FAMILY_NAME);
     }
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(Google2AttributesDefinition.DISPLAY_NAME);
+        return (String) getAttribute(Google2ProfileDefinition.DISPLAY_NAME);
     }
 
     @Override
     public Locale getLocale() {
-        return (Locale) getAttribute(Google2AttributesDefinition.LANGUAGE);
+        return (Locale) getAttribute(Google2ProfileDefinition.LANGUAGE);
     }
 
     @Override
     public URI getPictureUrl() {
-        return (URI) getAttribute(Google2AttributesDefinition.PICTURE);
+        return (URI) getAttribute(Google2ProfileDefinition.PICTURE);
     }
 
     @Override
     public URI getProfileUrl() {
-        return (URI) getAttribute(Google2AttributesDefinition.URL);
+        return (URI) getAttribute(Google2ProfileDefinition.URL);
     }
 
     public Date getBirthday() {
-        return (Date) getAttribute(Google2AttributesDefinition.BIRTHDAY);
+        return (Date) getAttribute(Google2ProfileDefinition.BIRTHDAY);
     }
 
     @SuppressWarnings("unchecked")
     public List<Google2Email> getEmails() {
-        return (List<Google2Email>) getAttribute(Google2AttributesDefinition.EMAILS);
+        return (List<Google2Email>) getAttribute(Google2ProfileDefinition.EMAILS);
     }
 }

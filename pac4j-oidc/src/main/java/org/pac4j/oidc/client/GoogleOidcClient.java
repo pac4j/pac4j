@@ -3,6 +3,7 @@ package org.pac4j.oidc.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
+import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.profile.google.GoogleOidcProfile;
 
@@ -33,7 +34,6 @@ public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
     @Override
     protected void createProfileCreator() {
         final OidcProfileCreator<GoogleOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
-        profileCreator.setProfileFactory(GoogleOidcProfile::new);
-        setProfileCreator(profileCreator);
+        profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new GoogleOidcProfile()));
     }
 }

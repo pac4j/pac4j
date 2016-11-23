@@ -1,6 +1,5 @@
 package org.pac4j.oidc.profile.azuread;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oidc.profile.OidcProfile;
 
 /**
@@ -14,34 +13,27 @@ public class AzureAdProfile extends OidcProfile {
 
     private static final long serialVersionUID = -8659029290353954198L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new AzureAdAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     public String getIdp() {
-        return (String) getAttribute(AzureAdAttributesDefinition.IDP);
+        return (String) getAttribute(AzureAdProfileDefinition.IDP);
     }
 
     public String getOid() {
-        return (String) getAttribute(AzureAdAttributesDefinition.OID);
+        return (String) getAttribute(AzureAdProfileDefinition.OID);
     }
 
     public String getTid() {
-        return (String) getAttribute(AzureAdAttributesDefinition.TID);
+        return (String) getAttribute(AzureAdProfileDefinition.TID);
     }
 
     public String getVer() {
-        return (String) getAttribute(AzureAdAttributesDefinition.VER);
+        return (String) getAttribute(AzureAdProfileDefinition.VER);
     }
 
     public String getUniqueName() {
-        return (String) getAttribute(AzureAdAttributesDefinition.UNQIUE_NAME);
+        return (String) getAttribute(AzureAdProfileDefinition.UNQIUE_NAME);
     }
 
     public String getIpaddr() {
-        return (String) getAttribute(AzureAdAttributesDefinition.IPADDR);
+        return (String) getAttribute(AzureAdProfileDefinition.IPADDR);
     }
 }

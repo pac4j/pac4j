@@ -9,6 +9,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.orcid.OrcidProfile;
+import org.pac4j.oauth.profile.orcid.OrcidProfileDefinition;
 import org.pac4j.scribe.builder.api.OrcidApi20;
 import org.pac4j.scribe.model.OrcidToken;
 
@@ -31,9 +32,15 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
     }
 
     public OrcidClient(final String key, final String secret) {
+        this();
         setKey(key);
         setSecret(secret);
-        setTokenAsHeader(true);
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new OrcidProfileDefinition());
+        super.internalInit(context);
     }
 
     @Override
@@ -75,9 +82,9 @@ public class OrcidClient extends BaseOAuth20Client<OrcidProfile> {
 
     @Override
     protected OrcidProfile extractUserProfile(String body) throws HttpAction {
-        OrcidProfile profile = new OrcidProfile();
-        for(final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-            profile.addAttribute(attribute, CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
+        OrcidProfile profile = getProfileDefinition().newProfile();
+        for(final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+            getProfileDefinition().convertAndAdd(profile, attribute, CommonHelper.substringBetween(body, "<" + attribute + ">", "</" + attribute + ">"));
         }
         return profile;
     }

@@ -1,18 +1,18 @@
 package org.pac4j.oauth.profile.github;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 
 import java.util.Arrays;
 
 /**
- * This class defines the attributes of the GitHub profile.
+ * This class is the GitHub profile definition.
  * 
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubAttributesDefinition extends AttributesDefinition {
+public class GitHubProfileDefinition extends CommonProfileDefinition<GitHubProfile> {
     
     public static final String TYPE = "type";
     public static final String BLOG = "blog";
@@ -26,7 +26,6 @@ public class GitHubAttributesDefinition extends AttributesDefinition {
     public static final String FOLLOWERS = "followers";
     public static final String LOGIN = "login";
     public static final String COMPANY = "company";
-    public static final String EMAIL = "email";
     public static final String HIREABLE = "hireable";
     public static final String COLLABORATORS = "collaborators";
     public static final String HTML_URL = "html_url";
@@ -38,11 +37,11 @@ public class GitHubAttributesDefinition extends AttributesDefinition {
     public static final String DISK_USAGE = "disk_usage";
     public static final String PLAN = "plan";
     public static final String OWNED_PRIVATE_REPOS = "owned_private_repos";
-    public static final String LOCATION = "location";
-    
-    public GitHubAttributesDefinition() {
+
+    public GitHubProfileDefinition() {
+        super(x -> new GitHubProfile());
         Arrays.asList(new String[] {
-            URL, COMPANY, NAME, BLOG, LOGIN, EMAIL, LOCATION, TYPE, GRAVATAR_ID, AVATAR_URL, HTML_URL, BIO
+            URL, COMPANY, NAME, BLOG, LOGIN, LOCATION, TYPE, GRAVATAR_ID, BIO
         }).forEach(a -> primary(a, Converters.STRING));
         Arrays.asList(new String[] {
             FOLLOWING, PUBLIC_REPOS, PUBLIC_GISTS, DISK_USAGE, COLLABORATORS, OWNED_PRIVATE_REPOS, TOTAL_PRIVATE_REPOS,
@@ -51,6 +50,8 @@ public class GitHubAttributesDefinition extends AttributesDefinition {
         primary(HIREABLE, Converters.BOOLEAN);
         primary(CREATED_AT, Converters.DATE_TZ_RFC822);
         primary(UPDATED_AT, Converters.DATE_TZ_RFC822);
+        primary(AVATAR_URL, Converters.URL);
+        primary(HTML_URL, Converters.URL);
         primary(PLAN, new JsonConverter<>(GitHubPlan.class));
     }
 }

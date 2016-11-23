@@ -1,9 +1,9 @@
 package org.pac4j.oauth.profile.facebook;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.facebook.converter.FacebookRelationshipStatusConverter;
 
@@ -11,19 +11,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class defines the attributes of the Facebook profile.
+ * This class is the Facebook profile definition.
  *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class FacebookAttributesDefinition extends AttributesDefinition {
+public class FacebookProfileDefinition extends CommonProfileDefinition<FacebookProfile> {
 
     public static final String NAME = "name";
-    public static final String FIRST_NAME = "first_name";
     public static final String MIDDLE_NAME = "middle_name";
     public static final String LAST_NAME = "last_name";
-    public static final String GENDER = "gender";
-    public static final String LOCALE = "locale";
     public static final String LANGUAGES = "languages";
     public static final String LINK = "link";
     public static final String THIRD_PARTY_ID = "third_party_id";
@@ -33,10 +30,8 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String ABOUT = "about";
     public static final String BIRTHDAY = "birthday";
     public static final String EDUCATION = "education";
-    public static final String EMAIL = "email";
     public static final String HOMETOWN = "hometown";
     public static final String INTERESTED_IN = "interested_in";
-    public static final String LOCATION = "location";
     public static final String POLITICAL = "political";
     public static final String FAVORITE_ATHLETES = "favorite_athletes";
     public static final String FAVORITE_TEAMS = "favorite_teams";
@@ -57,18 +52,17 @@ public class FacebookAttributesDefinition extends AttributesDefinition {
     public static final String MUSIC_LISTENS = "music.listens";
     public static final String PICTURE = "picture";
 
-    public FacebookAttributesDefinition() {
+    public FacebookProfileDefinition() {
+        super(x -> new FacebookProfile());
         Arrays.stream(new String[] {
-            NAME, FIRST_NAME, MIDDLE_NAME, LAST_NAME, LINK, THIRD_PARTY_ID, ABOUT, EMAIL, POLITICAL, QUOTES,
-            RELIGION, WEBSITE
+            NAME, MIDDLE_NAME, LAST_NAME, THIRD_PARTY_ID, ABOUT, POLITICAL, QUOTES, RELIGION, WEBSITE
         }).forEach(a -> primary(a, Converters.STRING));
         primary(TIMEZONE, Converters.INTEGER);
         primary(VERIFIED, Converters.BOOLEAN);
+        primary(LINK, Converters.URL);
         final JsonConverter<FacebookObject> objectConverter = new JsonConverter<>(FacebookObject.class);
         final JsonConverter multiObjectConverter = new JsonConverter(List.class, new TypeReference<List<FacebookObject>>() {});
         final JsonConverter multiInfoConverter = new JsonConverter(List.class, new TypeReference<List<FacebookInfo>>() {});
-        primary(GENDER, Converters.GENDER);
-        primary(LOCALE, Converters.LOCALE);
         primary(UPDATED_TIME, Converters.DATE_TZ_GENERAL);
         primary(BIRTHDAY, new DateConverter("MM/dd/yyyy"));
         primary(RELATIONSHIP_STATUS, new FacebookRelationshipStatusConverter());

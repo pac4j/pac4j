@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,33 +42,36 @@ public final class ProfileHelper {
     }
 
     /**
-     * Build a profile from a typed id and a map of attributes.
-     * 
-     * @param typedId typed identifier
-     * @param attributes user attributes
-     * @return the user profile built
+     * Restore or build a profile.
+     *
+     * @param profileDefinition the profile definition
+     * @param typedId the typed identifier
+     * @param attributes the attributes
+     * @param parameters additional parameters for the profile definition
+     * @return the restored or built profile
      */
-    public static CommonProfile buildProfile(final String typedId, final Map<String, Object> attributes) {
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, final String typedId, final Map<String, Object> attributes, final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
         }
 
-        logger.info("Building user profile based on typedId {}", typedId);
-        try {
-            final String[] values = typedId.split(CommonProfile.SEPARATOR);
-            if (values != null && values.length >= 1) {
-                final String className = values[0];
-                if (CommonHelper.isNotBlank(className)) {
-                    final CommonProfile profile = buildUserProfileByClassCompleteName(className);
-                    profile.build(typedId, attributes);
-                    logger.debug("userProfile built: {}", profile);
-                    return profile;
-                }
+        logger.info("Building user profile based on typedId: {}", typedId);
+        final CommonProfile profile;
+        if (typedId.contains(CommonProfile.SEPARATOR)) {
+            final String className = CommonHelper.substringBefore(typedId, CommonProfile.SEPARATOR);
+            try {
+                profile = buildUserProfileByClassCompleteName(className);
+            } catch (final TechnicalException e) {
+                logger.error("Cannot build instance for class name: {}", className, e);
+                return null;
             }
-        } catch (final TechnicalException e) {
-            logger.error("Cannot build instance", e);
+            profile.addAttributes(attributes);
+        } else {
+            profile = profileDefinition.newProfile(parameters);
+            profileDefinition.convertAndAdd(profile, attributes);
         }
-        return null;
+        profile.setId(typedId);
+        return profile;
     }
 
     /**

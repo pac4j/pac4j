@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
+import org.pac4j.oauth.profile.windowslive.WindowsLiveProfileDefinition;
 import org.pac4j.scribe.builder.api.WindowsLiveApi20;
 
 /**
@@ -25,6 +27,12 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
     public WindowsLiveClient(final String key, final String secret) {
         setKey(key);
         setSecret(secret);
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new WindowsLiveProfileDefinition());
+        super.internalInit(context);
     }
 
     @Override
@@ -49,12 +57,12 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
 
     @Override
     protected WindowsLiveProfile extractUserProfile(final String body) throws HttpAction {
-        final WindowsLiveProfile profile = new WindowsLiveProfile();
+        final WindowsLiveProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
         }
         return profile;

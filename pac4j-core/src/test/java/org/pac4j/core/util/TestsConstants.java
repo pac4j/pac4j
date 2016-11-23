@@ -50,7 +50,6 @@ public interface TestsConstants {
 
     // urls
     String CALLBACK_URL = "http://myappli/callback";
-    String GOOGLE_URL = "http://www.google.com";
     String LOGIN_URL = "http://myserver/login";
     String PAC4J_BASE_URL = "http://www.pac4j.org/";
     String PAC4J_URL = PAC4J_BASE_URL + "test.html";
