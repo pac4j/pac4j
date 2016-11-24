@@ -39,8 +39,13 @@ public abstract class BaseOAuth20StateClient<U extends OAuth20Profile> extends B
         logger.debug("save sessionState: {}", state);
         // the state is held in a specific context.
         context.setSessionAttribute(getName() + STATE_PARAMETER, state);
+            
+//        return new OAuthConfig(this.getKey(), this.getSecret(), computeFinalCallbackUrl(context),
+//                SignatureType.Header, getOAuthScope(), null, this.getConnectTimeout(), this.getReadTimeout(), 
+//                hasOAuthGrantType() ? "authorization_code" : null, state, this.getResponseType());
         return new OAuthConfig(this.getKey(), this.getSecret(), computeFinalCallbackUrl(context),
-                SignatureType.Header, getOAuthScope(), null, this.getConnectTimeout(), this.getReadTimeout(), hasOAuthGrantType() ? "authorization_code" : null, state, this.getResponseType());
+                SignatureType.Header, getOAuthScope(), null, state, this.getResponseType(), null,
+                this.getConnectTimeout(), this.getReadTimeout(), null, null);        
     }
 
     @Override

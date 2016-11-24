@@ -4,6 +4,7 @@ import com.github.scribejava.core.builder.api.DefaultApi20;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
+import java.util.Map;
 
 /**
  * Fix url endpoints (waiting for the next Scribe release).
@@ -22,17 +23,21 @@ public class WindowsLiveApi20 extends DefaultApi20 {
     }
     
     @Override
-    public String getAuthorizationUrl(OAuthConfig config) {
+    public String getAuthorizationUrl(OAuthConfig config, Map<String, String> additionalParams) {
         Preconditions.checkValidUrl(config.getCallback(),
                                     "Must provide a valid url as callback. Live does not support OOB");
         
         // Append scope if present
-        if (config.hasScope()) {
+        if (config.getScope() != null) {
             return String.format(SCOPED_AUTHORIZE_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()),
                                  OAuthEncoder.encode(config.getScope()));
         } else {
             return String.format(AUTHORIZE_URL, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
-
+    
+    @Override
+    protected String getAuthorizationBaseUrl() {
+        return "https://login.live.com/oauth20_authorize.srf";
+    }  
 }

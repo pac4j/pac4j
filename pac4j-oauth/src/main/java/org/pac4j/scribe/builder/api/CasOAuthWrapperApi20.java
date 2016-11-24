@@ -8,6 +8,7 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
+import java.util.Map;
 
 /**
  * This class represents the OAuth API implementation for the CAS OAuth wrapper.
@@ -44,7 +45,7 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
     }
     
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config) {
+    public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
         if (implicitFlow) {
             return String.format(this.casServerUrl + "/authorize?" + "response_type=token&client_id=%s&redirect_uri=%s",
                     config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
@@ -53,6 +54,10 @@ public class CasOAuthWrapperApi20 extends DefaultApi20 {
                     config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
         }
     }
+    @Override
+    protected String getAuthorizationBaseUrl() {
+        return this.casServerUrl + "/authorize";
+    }    
     
     @Override
     public Verb getAccessTokenVerb() {

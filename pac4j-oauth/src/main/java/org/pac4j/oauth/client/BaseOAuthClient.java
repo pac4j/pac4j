@@ -9,6 +9,9 @@ import com.github.scribejava.core.model.SignatureType;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuthService;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
@@ -30,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthService, T extends Token> extends IndirectClient<OAuthCredentials, U> {
+public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthService<?>, T extends Token> extends IndirectClient<OAuthCredentials, U> {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthClient.class);
 
@@ -46,7 +49,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
-    private String responseType = null;
+    // Default response_type = "code"
+    private String responseType = "code";
+    
+    /* Map containing user defined parameters */
+    private Map<String, String> customParams = new HashMap<>();    
 
     @Override
     protected void internalInit(final WebContext context) {
@@ -64,8 +71,11 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @return the OAuth configuration
      */
     protected OAuthConfig buildOAuthConfig(final WebContext context) {
+            
         return new OAuthConfig(this.key, this.secret, computeFinalCallbackUrl(context),
-                SignatureType.Header, getOAuthScope(), null, this.connectTimeout, this.readTimeout, hasOAuthGrantType() ? "authorization_code" : null, null, this.responseType);
+                SignatureType.Header, getOAuthScope(), null, null, this.responseType, null,
+                this.connectTimeout, this.readTimeout, null, null);
+                //hasOAuthGrantType() ? "authorization_code" : null, null, this.responseType);
     }
 
     /**
@@ -178,6 +188,15 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
     protected abstract T getAccessToken(OAuthCredentials credentials) throws HttpAction;
 
     /**
+     * Get HTTP Method to request profile.
+     *
+     * @return http verb
+     */    
+    public Verb getProfileVerb() {
+        return Verb.GET;
+    }
+    
+    /**
      * Retrieve the user profile from the access token.
      *
      * @param accessToken the access token
@@ -185,7 +204,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected U retrieveUserProfileFromToken(final T accessToken) throws HttpAction {
-        final String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
+        final String body = sendRequestForData(accessToken, getProfileUrl(accessToken), getProfileVerb());
+        logger.info("UserProfile:"+body);
         if (body == null) {
             throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
         }
@@ -210,13 +230,32 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @return the user data response
      */
     protected String sendRequestForData(final T accessToken, final String dataUrl) {
+        return sendRequestForData(accessToken, dataUrl, Verb.GET);
+    }
+
+    /**
+     * Make a request to get the data of the authenticated user for the provider.
+     *
+     * @param accessToken the access token
+     * @param dataUrl     url of the data
+     * @param verb        method used to request data
+     * @return the user data response
+     */
+    protected String sendRequestForData(final T accessToken, final String dataUrl, Verb verb) {
         logger.debug("accessToken: {} / dataUrl: {}", accessToken, dataUrl);
         final long t0 = System.currentTimeMillis();
-        final OAuthRequest request = createOAuthRequest(dataUrl);
+        // J: Temporal, the verb should be configurable
+        final OAuthRequest request = createOAuthRequest(dataUrl, verb);
         signRequest(accessToken, request);
         final Response response = request.send();
         final int code = response.getCode();
-        final String body = response.getBody();
+        final String body;
+        try {
+            body = response.getBody();
+        } catch (IOException ex) {
+            final String message = "Error getting body:"+ex.getMessage();
+            throw new OAuthCredentialsException(message);
+        }
         final long t1 = System.currentTimeMillis();
         logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);
         logger.debug("response code: {} / response body: {}", code, body);
@@ -235,7 +274,18 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
      * @return the request
      */
     protected OAuthRequest createOAuthRequest(final String url) {
-        return new OAuthRequest(Verb.GET, url, this.service);
+        return createOAuthRequest(url, Verb.GET);
+    }
+
+    /**
+     * Create an OAuth request.
+     *
+     * @param url the url to call
+     * @param verb method used to create the request
+     * @return the request
+     */
+    protected OAuthRequest createOAuthRequest(final String url, Verb verb) {
+        return new OAuthRequest(verb, url, this.service);
     }
 
     /**
@@ -303,4 +353,12 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
     public void setResponseType(String responseType) {
         this.responseType = responseType;
     }
+
+    public Map<String, String> getCustomParams() {
+        return customParams;
+    }
+
+    public void setCustomParams(Map<String, String> customParams) {
+        this.customParams = customParams;
+    }   
 }
