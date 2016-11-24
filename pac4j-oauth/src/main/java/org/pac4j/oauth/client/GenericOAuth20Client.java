@@ -26,7 +26,6 @@ public class GenericOAuth20Client<U extends OAuth20Profile> extends BaseOAuth20C
     protected String authUrl = null;
     protected String tokenUrl = null;
     protected String profileUrl = null;
-    protected String erroUrl = null;
     private String profileNodePath = null;
     private String profileMethod = null;
 
@@ -162,13 +161,5 @@ public class GenericOAuth20Client<U extends OAuth20Profile> extends BaseOAuth20C
         } else {
             return Verb.GET;
         }
-    }
-
-    public String getErroUrl() {
-        return erroUrl;
-    }
-
-    public void setErroUrl(String erroUrl) {
-        this.erroUrl = erroUrl;
     }
 }

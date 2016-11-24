@@ -50,7 +50,9 @@ public class GenericApi20 extends DefaultApi20 {
         
         if (additionalParams != null && !additionalParams.isEmpty()) {
             for (Entry entry: additionalParams.entrySet()) {
-                url.append("&").append(entry.getKey()).append("=").append(OAuthEncoder.encode(entry.getValue().toString()));
+                if (entry.getValue() != null) {
+                    url.append("&").append(entry.getKey()).append("=").append(OAuthEncoder.encode(entry.getValue().toString()));
+                }
             }
         }
         

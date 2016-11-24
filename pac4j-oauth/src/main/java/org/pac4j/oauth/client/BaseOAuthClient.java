@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthService, T extends Token> extends IndirectClient<OAuthCredentials, U> {
+public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthService<?>, T extends Token> extends IndirectClient<OAuthCredentials, U> {
 
     protected static final Logger logger = LoggerFactory.getLogger(BaseOAuthClient.class);
 
@@ -49,7 +49,8 @@ public abstract class BaseOAuthClient<U extends OAuth20Profile, S extends OAuthS
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
-    private String responseType = null;
+    // Default response_type = "code"
+    private String responseType = "code";
     
     /* Map containing user defined parameters */
     private Map<String, String> customParams = new HashMap<>();    
