@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import java.io.IOException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.HttpAction;
@@ -123,13 +125,24 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
             final long t0 = System.currentTimeMillis();
             final Response response = request.send();
             final int code = response.getCode();
-            body = response.getBody();
+            try {
+                body = response.getBody();
+            } catch (IOException ex) {
+                final String message = "Error getting body:"+ex.getMessage();
+                throw new OAuthCredentialsException(message);
+            }
             final long t1 = System.currentTimeMillis();
             logger.debug("Request took: " + (t1 - t0) + " ms for: " + url);
             logger.debug("response code: {} / response body: {}", code, body);
             if (code == 200) {
                 logger.debug("Retrieve extended token from  {}", body);
-                final OAuth2AccessToken extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(body);
+                final OAuth2AccessToken extendedAccessToken;
+                try {
+                    extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(response);
+                } catch (IOException | OAuthException ex) {
+                    final String message = "Error extracting token:"+ex.getMessage();
+                    throw new OAuthCredentialsException(message);
+                }
                 logger.debug("Extended token: {}", extendedAccessToken);
                 addAccessTokenToProfile(profile, extendedAccessToken);
             } else {

@@ -6,6 +6,7 @@ import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.core.utils.OAuthEncoder;
+import java.io.IOException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
@@ -42,7 +43,13 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
 
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
-        final OAuth1RequestToken requestToken = this.service.getRequestToken();
+        final OAuth1RequestToken requestToken;
+        try {
+            requestToken = this.service.getRequestToken();
+        } catch (IOException ex) {
+            final String message = "Error getting token:"+ex.getMessage();
+            throw new OAuthCredentialsException(message);
+        }
         logger.debug("requestToken: {}", requestToken);
         // save requestToken in user session
         context.setSessionAttribute(getRequestTokenSessionAttributeName(), requestToken);
@@ -88,7 +95,13 @@ public abstract class BaseOAuth10Client<U extends OAuth10Profile> extends BaseOA
             final String message = "Token received: " + token + " is different from saved token: " + savedToken;
             throw new OAuthCredentialsException(message);
         }
-        final OAuth1Token accessToken = this.service.getAccessToken(tokenRequest, verifier);
+        final OAuth1Token accessToken;
+        try {
+            accessToken = this.service.getAccessToken(tokenRequest, verifier);
+        } catch (IOException ex) {
+            final String message = "Error getting token:"+ex.getMessage();
+            throw new OAuthCredentialsException(message);
+        }
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }

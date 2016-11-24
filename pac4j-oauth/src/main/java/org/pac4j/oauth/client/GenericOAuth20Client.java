@@ -3,6 +3,7 @@ package org.pac4j.oauth.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
@@ -25,6 +26,8 @@ public class GenericOAuth20Client<U extends OAuth20Profile> extends BaseOAuth20C
     protected String authUrl = null;
     protected String tokenUrl = null;
     protected String profileUrl = null;
+    private String profileNodePath = null;
+    private String profileMethod = null;
 
     protected String scope = null;
 
@@ -77,13 +80,24 @@ public class GenericOAuth20Client<U extends OAuth20Profile> extends BaseOAuth20C
     @Override
     protected U extractUserProfile(String body) {
         final U profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
+        final JsonNode json = JsonHelper.getFirstNode(body, getProfileNodePath());
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
             for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
                 getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
-        }
+            for (final String attribute : getProfileDefinition().getSecondaryAttributes()) {
+                String attrName = attribute;
+                String attrPath = attribute;
+                String[] parts = attribute.split("#");
+                if (parts.length > 0) {
+                    attrName = parts[0];
+                    attrPath = parts[1];
+                }
+                profile.addAttribute(attrName, JsonHelper.getElement(json, attrPath));
+            }            
+        }        
+        
         return (U) profile;
     }
 
@@ -113,14 +127,39 @@ public class GenericOAuth20Client<U extends OAuth20Profile> extends BaseOAuth20C
 
     public String getScope() {
         return scope;
-    }
+    }   
 
     public void setScope(String scope) {
         this.scope = scope;
     }
 
     @Override
-    protected String getOAuthScope() {
-        return scope;
+    public String getOAuthScope() {
+        return getScope();
+    }     
+    
+    public String getProfileNodePath() {
+        return profileNodePath;
+    }
+
+    public void setProfileNodePath(String profileNodePath) {
+        this.profileNodePath = profileNodePath;
+    }
+
+    public String getProfileMethod() {
+        return profileMethod;
+    }
+
+    public void setProfileMethod(String profileMethod) {
+        this.profileMethod = profileMethod;
+    }
+    
+    @Override
+    public Verb getProfileVerb() {
+        if ("POST".equalsIgnoreCase(profileMethod)) {
+            return Verb.POST;
+        } else {
+            return Verb.GET;
+        }
     }
 }
