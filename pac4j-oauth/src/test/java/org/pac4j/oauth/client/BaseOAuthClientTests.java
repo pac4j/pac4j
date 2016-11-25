@@ -21,7 +21,7 @@ public final class BaseOAuthClientTests implements TestsConstants {
 
     @Test
     public void testDefaultName10() {
-        final BaseOAuth10Client client = new YahooClient();
+        final OAuth10Client client = new YahooClient();
         assertEquals("YahooClient", client.getName());
     }
 

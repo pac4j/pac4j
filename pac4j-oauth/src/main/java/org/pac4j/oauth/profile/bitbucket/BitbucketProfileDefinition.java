@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
 import java.util.Arrays;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author Sebastian Sdorra
  * @since 1.5.1
  */
-public class BitbucketProfileDefinition extends OAuthProfileDefinition<BitbucketProfile, OAuth1Token> {
+public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<BitbucketProfile> {
 
     public static final String LAST_NAME = "last_name";
     public static final String IS_TEAM = "is_team";

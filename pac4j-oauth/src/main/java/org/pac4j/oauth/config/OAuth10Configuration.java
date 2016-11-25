@@ -11,8 +11,8 @@ import org.pac4j.oauth.profile.OAuth10Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10Configuration extends OAuthConfiguration<OAuth10Client, OAuth10aService, OAuth1Token, OAuth10Profile>
-{
+public class OAuth10Configuration extends OAuthConfiguration<OAuth10Client, OAuth10aService, OAuth1Token, OAuth10Profile> {
+
     public static final String OAUTH_TOKEN = "oauth_token";
 
     public static final String OAUTH_VERIFIER = "oauth_verifier";

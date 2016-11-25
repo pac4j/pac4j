@@ -1,12 +1,10 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.model.OAuth1RequestToken;
 import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.credentials.OAuth10Credentials;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public final class BaseOAuth10ClientTests implements TestsConstants {
 
-    private BaseOAuth10Client getClient() {
+    private OAuth10Client getClient() {
         final YahooClient client = new YahooClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
@@ -56,22 +54,5 @@ public final class BaseOAuth10ClientTests implements TestsConstants {
         } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
         }
-    }
-
-    @Test
-    public void testOk() throws HttpAction {
-        final OAuth10Credentials credentials = (OAuth10Credentials) getClient()
-                .getCredentials(MockWebContext
-                        .create()
-                        .addRequestParameter(BaseOAuth10Client.OAUTH_VERIFIER, VERIFIER)
-                        .addRequestParameter(BaseOAuth10Client.OAUTH_TOKEN, TOKEN)
-                        .addSessionAttribute(getClient().getName() + "#" + BaseOAuth10Client.REQUEST_TOKEN,
-                                new OAuth1RequestToken(TOKEN, SECRET)));
-        assertNotNull(credentials);
-        assertEquals(TOKEN, credentials.getToken());
-        assertEquals(VERIFIER, credentials.getVerifier());
-        final OAuth1RequestToken tokenRequest = (OAuth1RequestToken) credentials.getRequestToken();
-        assertEquals(TOKEN, tokenRequest.getToken());
-        assertEquals(SECRET, tokenRequest.getTokenSecret());
     }
 }

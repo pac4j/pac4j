@@ -1,8 +1,11 @@
 package org.pac4j.oauth.profile.twitter;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.oauth.profile.JsonHelper;
+import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -13,7 +16,7 @@ import java.util.Locale;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class TwitterProfileDefinition extends CommonProfileDefinition<TwitterProfile> {
+public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterProfile> {
     
     public static final String CONTRIBUTORS_ENABLED = "contributors_enabled";
     public static final String CREATED_AT = "created_at";
@@ -67,5 +70,23 @@ public class TwitterProfileDefinition extends CommonProfileDefinition<TwitterPro
                 PROFILE_SIDEBAR_FILL_COLOR, PROFILE_TEXT_COLOR}).forEach(a -> primary(a, Converters.COLOR));
         primary(LANG, Converters.LOCALE);
         primary(CREATED_AT, new DateConverter("EEE MMM dd HH:mm:ss Z yyyy", Locale.US));
+    }
+
+    @Override
+    public String getProfileUrl(final OAuth1Token accessToken) {
+        return "https://api.twitter.com/1.1/account/verify_credentials.json";
+    }
+
+    @Override
+    public TwitterProfile extractUserProfile(final String body) {
+        final TwitterProfile profile = newProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json != null) {
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : getPrimaryAttributes()) {
+                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+            }
+        }
+        return profile;
     }
 }
