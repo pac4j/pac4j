@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject implements CredentialsExtractor<C> {
+abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject implements CredentialsExtractor<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

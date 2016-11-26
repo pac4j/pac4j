@@ -30,7 +30,7 @@ import java.io.IOException;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration, T extends Token> extends InitializableWebObject implements ProfileCreator<C, U> {
+abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonProfile, O extends OAuthConfiguration, T extends Token> extends InitializableWebObject implements ProfileCreator<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

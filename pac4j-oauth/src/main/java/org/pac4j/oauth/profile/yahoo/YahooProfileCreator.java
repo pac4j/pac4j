@@ -7,7 +7,7 @@ import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
-import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
+import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
 /**
  * Specific profile creator for Yahoo.
@@ -24,7 +24,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
     @Override
     protected YahooProfile retrieveUserProfileFromToken(final OAuth1Token accessToken) throws HttpAction {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
-        final OAuthProfileDefinition<YahooProfile, OAuth1Token> profileDefinition = (OAuthProfileDefinition<YahooProfile, OAuth1Token>) configuration.getProfileDefinition();
+        final OAuth10ProfileDefinition<YahooProfile> profileDefinition = (OAuth10ProfileDefinition<YahooProfile>) configuration.getProfileDefinition();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken);
         String body = sendRequestForData(accessToken, profileUrl, profileDefinition.getProfileVerb());
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
