@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.converter.Converters;
+import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
@@ -32,7 +33,7 @@ public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<Bitbuck
     }
 
     @Override
-    public String getProfileUrl(final OAuth1Token token) {
+    public String getProfileUrl(final OAuth1Token token, final OAuth10Configuration configuration) {
         return "https://bitbucket.org/api/1.0/user/";
     }
 

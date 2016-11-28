@@ -72,7 +72,7 @@ public class OAuth10Credentials extends OAuthCredentials {
     public String toString() {
         return CommonHelper.toString(this.getClass(),
                 "requestToken", requestToken,
-                "token'", token,
+                "token", token,
                 "verifier'", verifier,
                 "clientName", getClientName(),
                 "accessToken", accessToken);

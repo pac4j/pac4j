@@ -23,8 +23,6 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
 
     @Override
     protected OAuth10Credentials getOAuthCredentials(final WebContext context) throws HttpAction, CredentialsException {
-        init(context);
-
         final String tokenParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_TOKEN);
         final String verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {

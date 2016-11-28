@@ -1,6 +1,7 @@
 package org.pac4j.oauth.profile.definition;
 
 import com.github.scribejava.core.model.OAuth1Token;
+import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.OAuth10Profile;
 
 import java.util.function.Function;
@@ -11,7 +12,7 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuth10ProfileDefinition<P extends OAuth10Profile> extends OAuthProfileDefinition<P, OAuth1Token> {
+public abstract class OAuth10ProfileDefinition<P extends OAuth10Profile> extends OAuthProfileDefinition<P, OAuth1Token, OAuth10Configuration> {
 
     public OAuth10ProfileDefinition() {
         super();

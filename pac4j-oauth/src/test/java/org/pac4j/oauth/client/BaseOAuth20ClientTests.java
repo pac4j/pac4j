@@ -52,7 +52,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testState() throws MalformedURLException, HttpAction {
-        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
+        FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("OK");
         URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
@@ -60,26 +60,8 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
     }
 
     @Test
-    public void testStateMatch() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
-        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
-        client.setCallbackUrl(CALLBACK_URL);
-        final MockWebContext mockWebContext = MockWebContext.create();
-        URL url = new URL(client.getRedirectAction(mockWebContext).getLocation());
-        final Map<String, String> stringMap = splitQuery(url);
-        assertNotNull(stringMap.get("state"));
-        try {
-            client.getCredentials(MockWebContext.create());
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("Missing state parameter"));
-        }
-        mockWebContext.addRequestParameter("state", stringMap.get("state"));
-        mockWebContext.addRequestParameter("code", "mockcode");
-        client.getCredentials(mockWebContext);
-    }
-
-    @Test
     public void testSetState() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
-        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
+        FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         client.setStateData("oldstate");
         final MockWebContext mockWebContext = MockWebContext.create();
@@ -93,7 +75,7 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
 
     @Test
     public void testStateRandom() throws MalformedURLException, HttpAction, UnsupportedEncodingException {
-        BaseOAuth20StateClient client = new FacebookClient(KEY, SECRET);
+        OAuth20Client client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         URL url = new URL(client.getRedirectAction(MockWebContext.create()).getLocation());
         final Map<String, String> stringMap = splitQuery(url);

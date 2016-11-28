@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
 
@@ -73,7 +74,7 @@ public class TwitterProfileDefinition extends OAuth10ProfileDefinition<TwitterPr
     }
 
     @Override
-    public String getProfileUrl(final OAuth1Token accessToken) {
+    public String getProfileUrl(final OAuth1Token accessToken, final OAuth10Configuration configuration) {
         return "https://api.twitter.com/1.1/account/verify_credentials.json";
     }
 

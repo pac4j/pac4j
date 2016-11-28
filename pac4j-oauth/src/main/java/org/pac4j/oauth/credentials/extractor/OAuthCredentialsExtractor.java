@@ -38,6 +38,8 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
 
     @Override
     public C extract(final WebContext context) throws HttpAction, CredentialsException {
+        init(context);
+
         final boolean hasBeenCancelled = (Boolean) configuration.getHasBeenCancelledFactory().apply(context);
         // check if the authentication has been cancelled
         if (hasBeenCancelled) {

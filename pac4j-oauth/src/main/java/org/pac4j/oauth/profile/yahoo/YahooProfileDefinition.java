@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
+import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
 import org.pac4j.oauth.profile.definition.OAuth10ProfileDefinition;
@@ -63,7 +64,7 @@ public class YahooProfileDefinition extends OAuth10ProfileDefinition<YahooProfil
     }
 
     @Override
-    public String getProfileUrl(final OAuth1Token accessToken) {
+    public String getProfileUrl(final OAuth1Token accessToken, final OAuth10Configuration configuration) {
         return "https://social.yahooapis.com/v1/me/guid?format=xml";
     }
 

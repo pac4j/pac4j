@@ -20,7 +20,7 @@ public class GenericApi20 extends DefaultApi20 {
     protected final String authUrl;
     protected final String tokenUrl;
 
-    public GenericApi20(String authUrl, String tokenUrl) {
+    public GenericApi20(final String authUrl, final String tokenUrl) {
         this.authUrl = authUrl;
         this.tokenUrl = tokenUrl;
     }

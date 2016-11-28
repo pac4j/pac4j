@@ -25,7 +25,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
     protected YahooProfile retrieveUserProfileFromToken(final OAuth1Token accessToken) throws HttpAction {
         // get the guid: https://developer.yahoo.com/social/rest_api_guide/introspective-guid-resource.html
         final OAuth10ProfileDefinition<YahooProfile> profileDefinition = (OAuth10ProfileDefinition<YahooProfile>) configuration.getProfileDefinition();
-        final String profileUrl = profileDefinition.getProfileUrl(accessToken);
+        final String profileUrl = profileDefinition.getProfileUrl(accessToken, this.configuration);
         String body = sendRequestForData(accessToken, profileUrl, profileDefinition.getProfileVerb());
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);

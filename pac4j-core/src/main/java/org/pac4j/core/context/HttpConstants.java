@@ -40,6 +40,8 @@ public interface HttpConstants {
 
     String BASIC_HEADER_PREFIX = "Basic ";
 
+    String BEARER_HEADER_PREFIX = "Bearer ";
+
     String DIGEST_HEADER_PREFIX = "Digest ";
 
     String AUTHENTICATE_HEADER = "WWW-Authenticate";

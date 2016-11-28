@@ -80,8 +80,8 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected U retrieveUserProfileFromToken(final T accessToken) throws HttpAction {
-        final OAuthProfileDefinition<U, T> profileDefinition = configuration.getProfileDefinition();
-        final String profileUrl = profileDefinition.getProfileUrl(accessToken);
+        final OAuthProfileDefinition<U, T, O> profileDefinition = configuration.getProfileDefinition();
+        final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         final String body = sendRequestForData(accessToken, profileUrl, profileDefinition.getProfileVerb());
         logger.info("UserProfile: " + body);
         if (body == null) {

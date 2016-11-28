@@ -27,13 +27,13 @@ public final class BaseOAuthClientTests implements TestsConstants {
 
     @Test
     public void testDefaultName20() {
-        final BaseOAuth20Client client = new FacebookClient();
+        final OAuth20Client client = new FacebookClient();
         assertEquals("FacebookClient", client.getName());
     }
 
     @Test
     public void testDefinedName() {
-        final BaseOAuth20Client client = new FacebookClient();
+        final OAuth20Client client = new FacebookClient();
         client.setName(TYPE);
         assertEquals(TYPE, client.getName());
     }
@@ -67,7 +67,7 @@ public final class BaseOAuthClientTests implements TestsConstants {
         }
     }
 
-    private BaseOAuthClient getClient() {
+    private OAuth20Client getClient() {
         final FacebookClient client = new FacebookClient(KEY, SECRET);
         client.setCallbackUrl(CALLBACK_URL);
         return client;
@@ -75,15 +75,15 @@ public final class BaseOAuthClientTests implements TestsConstants {
 
     @Test
     public void testMissingKey() {
-        final BaseOAuthClient client = (BaseOAuthClient) getClient();
+        final OAuth20Client client = getClient();
         client.setKey(null);
-        TestsHelper.initShouldFail(client, "key cannot be blank");
+        TestsHelper.expectException(() -> client.redirect(MockWebContext.create()), TechnicalException.class, "key cannot be blank");
     }
 
     @Test
     public void testMissingSecret() {
-        final BaseOAuthClient client = (BaseOAuthClient) getClient();
+        final OAuth20Client client = getClient();
         client.setSecret(null);
-        TestsHelper.initShouldFail(client, "secret cannot be blank");
+        TestsHelper.expectException(() -> client.redirect(MockWebContext.create()), TechnicalException.class, "secret cannot be blank");
     }
 }
