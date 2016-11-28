@@ -1,6 +1,5 @@
 package org.pac4j.openid.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
@@ -43,11 +42,6 @@ public class RunYahooOpenIdClient  extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(Kryo kryo) {
-        kryo.register(YahooOpenIdProfile.class);
-    }
-
-    @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final YahooOpenIdProfile profile = (YahooOpenIdProfile) userProfile;
         assertNotNull(profile);
@@ -57,7 +51,7 @@ public class RunYahooOpenIdClient  extends RunClient {
                 + "https://me.yahoo.com/a/" + id, profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), YahooOpenIdProfile.class));
         assertCommonProfile(userProfile, getLogin(), null, null, "Test ScribeUP", null,
-                Gender.UNSPECIFIED, Locale.FRANCE, null, null, null);
-        assertEquals(3, profile.getAttributes().size());
+                Gender.UNSPECIFIED, Locale.FRANCE, "https://s.yimg.com/dg/users/1DJGkdA6uAAECQWEo8AceAQ==.medium.png", null, null);
+        assertEquals(4, profile.getAttributes().size());
     }
 }

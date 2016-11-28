@@ -1,10 +1,11 @@
 package org.pac4j.oauth.profile.strava;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.profile.Gender;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -20,107 +21,95 @@ public class StravaProfile extends OAuth20Profile {
 
     private static final String STRAVA_PROFILE_BASE_URL = "http://www.strava.com/athletes/";
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new StravaAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     @Override
     public String getFirstName() {
-        return (String) getAttribute(StravaAttributesDefinition.FIRST_NAME);
+        return (String) getAttribute(StravaProfileDefinition.FIRST_NAME);
     }
 
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(StravaAttributesDefinition.LAST_NAME);
+        return (String) getAttribute(StravaProfileDefinition.LAST_NAME);
     }
 
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(StravaAttributesDefinition.FIRST_NAME) + " " + getAttribute(StravaAttributesDefinition.LAST_NAME);
+        return (String) getAttribute(StravaProfileDefinition.FIRST_NAME) + " " + getAttribute(StravaProfileDefinition.LAST_NAME);
     }
 
     @Override
-    public String getEmail() {
-        return (String) getAttribute(StravaAttributesDefinition.EMAIL);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(StravaProfileDefinition.PROFILE);
     }
 
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(StravaAttributesDefinition.PROFILE);
-    }
-
-    @Override
-    public String getProfileUrl() {
-        return STRAVA_PROFILE_BASE_URL + (String) getAttribute(StravaAttributesDefinition.ID);
+    public URI getProfileUrl() {
+        return CommonHelper.asURI(STRAVA_PROFILE_BASE_URL + (String) getAttribute(StravaProfileDefinition.ID));
     }
 
     @Override
     public String getLocation() {
-        return (String) getAttribute(StravaAttributesDefinition.CITY);
+        return (String) getAttribute(StravaProfileDefinition.CITY);
     }
 
     @Override
     public Gender getGender() {
-        return (Gender) getAttribute(StravaAttributesDefinition.SEX);
+        return (Gender) getAttribute(StravaProfileDefinition.SEX);
     }
 
     public Integer getResourceState() {
-        return (Integer) getAttribute(StravaAttributesDefinition.RESOURCE_STATE);
+        return (Integer) getAttribute(StravaProfileDefinition.RESOURCE_STATE);
     }
 
     public String getProfileMedium() {
-        return (String) getAttribute(StravaAttributesDefinition.PROFILE_MEDIUM);
+        return (String) getAttribute(StravaProfileDefinition.PROFILE_MEDIUM);
     }
 
     public String getState() {
-        return (String) getAttribute(StravaAttributesDefinition.STATE);
+        return (String) getAttribute(StravaProfileDefinition.STATE);
     }
 
     public String getCountry() {
-        return (String) getAttribute(StravaAttributesDefinition.COUNTRY);
+        return (String) getAttribute(StravaProfileDefinition.COUNTRY);
     }
 
     public Boolean isPremium() {
-        return (Boolean) getAttribute(StravaAttributesDefinition.PREMIUM);
+        return (Boolean) getAttribute(StravaProfileDefinition.PREMIUM);
     }
 
     public Date getCreatedAt() {
-        return (Date) getAttribute(StravaAttributesDefinition.CREATED_AT);
+        return (Date) getAttribute(StravaProfileDefinition.CREATED_AT);
     }
 
     public Date getUpdatedAt() {
-        return (Date) getAttribute(StravaAttributesDefinition.UPDATED_AT);
+        return (Date) getAttribute(StravaProfileDefinition.UPDATED_AT);
     }
 
     public Integer getFollowerCount() {
-        return (Integer) getAttribute(StravaAttributesDefinition.FOLLOWER_COUNT);
+        return (Integer) getAttribute(StravaProfileDefinition.FOLLOWER_COUNT);
     }
 
     public Integer getFriendCount() {
-        return (Integer) getAttribute(StravaAttributesDefinition.FRIEND_COUNT);
+        return (Integer) getAttribute(StravaProfileDefinition.FRIEND_COUNT);
     }
 
     public String getDatePreference() {
-        return (String) getAttribute(StravaAttributesDefinition.DATE_PREFERENCE);
+        return (String) getAttribute(StravaProfileDefinition.DATE_PREFERENCE);
     }
 
     public String getMeasurementPreference() {
-        return (String) getAttribute(StravaAttributesDefinition.MEASUREMENT_PREFERENCE);
+        return (String) getAttribute(StravaProfileDefinition.MEASUREMENT_PREFERENCE);
     }
 
     public List<StravaGear> getBikes() {
-        return (List<StravaGear>) getAttribute(StravaAttributesDefinition.BIKES);
+        return (List<StravaGear>) getAttribute(StravaProfileDefinition.BIKES);
     }
 
     public List<StravaGear> getShoes() {
-        return (List<StravaGear>) getAttribute(StravaAttributesDefinition.SHOES);
+        return (List<StravaGear>) getAttribute(StravaProfileDefinition.SHOES);
     }
 
     public List<StravaClub> getClubs() {
-        return (List<StravaClub>) getAttribute(StravaAttributesDefinition.CLUBS);
+        return (List<StravaClub>) getAttribute(StravaProfileDefinition.CLUBS);
     }
 
 }

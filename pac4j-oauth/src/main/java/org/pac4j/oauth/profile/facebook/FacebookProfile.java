@@ -1,9 +1,10 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
-import org.pac4j.core.profile.AttributesDefinition;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
 /**
@@ -15,170 +16,163 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  */
 @SuppressWarnings("unchecked")
 public class FacebookProfile extends OAuth20Profile {
-    
+
     private static final long serialVersionUID = 6339376303764855109L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new FacebookAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(FacebookAttributesDefinition.LAST_NAME);
-    }
-    
-    @Override
-    public String getDisplayName() {
-        return (String) getAttribute(FacebookAttributesDefinition.NAME);
+        return (String) getAttribute(FacebookProfileDefinition.LAST_NAME);
     }
 
     @Override
-    public String getPictureUrl() {
-        final FacebookPicture picture = (FacebookPicture) getAttribute(FacebookAttributesDefinition.PICTURE);
+    public String getDisplayName() {
+        return (String) getAttribute(FacebookProfileDefinition.NAME);
+    }
+
+    @Override
+    public URI getPictureUrl() {
+        final FacebookPicture picture = (FacebookPicture) getAttribute(FacebookProfileDefinition.PICTURE);
         if (picture != null) {
-            return picture.getUrl();
+            return CommonHelper.asURI(picture.getUrl());
         }
         return null;
     }
-    
+
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(FacebookAttributesDefinition.LINK);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(FacebookProfileDefinition.LINK);
     }
-    
+
     @Override
     public String getLocation() {
-        final FacebookObject location = (FacebookObject) getAttribute(FacebookAttributesDefinition.LOCATION);
+        final FacebookObject location = (FacebookObject) getAttribute(FacebookProfileDefinition.LOCATION);
         if (location != null) {
             return location.getName();
         }
         return null;
     }
-    
+
     public String getMiddleName() {
-        return (String) getAttribute(FacebookAttributesDefinition.MIDDLE_NAME);
+        return (String) getAttribute(FacebookProfileDefinition.MIDDLE_NAME);
     }
-    
+
     public List<FacebookObject> getLanguages() {
-        return (List<FacebookObject>) getAttribute(FacebookAttributesDefinition.LANGUAGES);
+        return (List<FacebookObject>) getAttribute(FacebookProfileDefinition.LANGUAGES);
     }
-    
+
     public String getThirdPartyId() {
-        return (String) getAttribute(FacebookAttributesDefinition.THIRD_PARTY_ID);
+        return (String) getAttribute(FacebookProfileDefinition.THIRD_PARTY_ID);
     }
-    
+
     public Integer getTimezone() {
-        return (Integer) getAttribute(FacebookAttributesDefinition.TIMEZONE);
+        return (Integer) getAttribute(FacebookProfileDefinition.TIMEZONE);
     }
-    
+
     public Date getUpdateTime() {
-        return (Date) getAttribute(FacebookAttributesDefinition.UPDATED_TIME);
+        return (Date) getAttribute(FacebookProfileDefinition.UPDATED_TIME);
     }
-    
+
     public Boolean getVerified() {
-        return (Boolean) getAttribute(FacebookAttributesDefinition.VERIFIED);
+        return (Boolean) getAttribute(FacebookProfileDefinition.VERIFIED);
     }
-    
-    public String getBio() {
-        return (String) getAttribute(FacebookAttributesDefinition.BIO);
+
+    public String getAbout() {
+        return (String) getAttribute(FacebookProfileDefinition.ABOUT);
     }
-    
+
     public Date getBirthday() {
-        return (Date) getAttribute(FacebookAttributesDefinition.BIRTHDAY);
+        return (Date) getAttribute(FacebookProfileDefinition.BIRTHDAY);
     }
-    
+
     public List<FacebookEducation> getEducation() {
-        return (List<FacebookEducation>) getAttribute(FacebookAttributesDefinition.EDUCATION);
+        return (List<FacebookEducation>) getAttribute(FacebookProfileDefinition.EDUCATION);
     }
-    
+
     public FacebookObject getHometown() {
-        return (FacebookObject) getAttribute(FacebookAttributesDefinition.HOMETOWN);
+        return (FacebookObject) getAttribute(FacebookProfileDefinition.HOMETOWN);
     }
-    
+
     public List<String> getInterestedIn() {
-        return (List<String>) getAttribute(FacebookAttributesDefinition.INTERESTED_IN);
+        return (List<String>) getAttribute(FacebookProfileDefinition.INTERESTED_IN);
     }
-    
+
     public FacebookObject getLocationObject() {
-        return (FacebookObject) getAttribute(FacebookAttributesDefinition.LOCATION);
+        return (FacebookObject) getAttribute(FacebookProfileDefinition.LOCATION);
     }
-    
+
     public String getPolitical() {
-        return (String) getAttribute(FacebookAttributesDefinition.POLITICAL);
+        return (String) getAttribute(FacebookProfileDefinition.POLITICAL);
     }
-    
+
     public List<FacebookObject> getFavoriteAthletes() {
-        return (List<FacebookObject>) getAttribute(FacebookAttributesDefinition.FAVORITE_ATHLETES);
+        return (List<FacebookObject>) getAttribute(FacebookProfileDefinition.FAVORITE_ATHLETES);
     }
-    
+
     public List<FacebookObject> getFavoriteTeams() {
-        return (List<FacebookObject>) getAttribute(FacebookAttributesDefinition.FAVORITE_TEAMS);
+        return (List<FacebookObject>) getAttribute(FacebookProfileDefinition.FAVORITE_TEAMS);
     }
-    
+
     public String getQuotes() {
-        return (String) getAttribute(FacebookAttributesDefinition.QUOTES);
+        return (String) getAttribute(FacebookProfileDefinition.QUOTES);
     }
-    
+
     public FacebookRelationshipStatus getRelationshipStatus() {
-        return (FacebookRelationshipStatus) getAttribute(FacebookAttributesDefinition.RELATIONSHIP_STATUS);
+        return (FacebookRelationshipStatus) getAttribute(FacebookProfileDefinition.RELATIONSHIP_STATUS);
     }
-    
+
     public String getReligion() {
-        return (String) getAttribute(FacebookAttributesDefinition.RELIGION);
+        return (String) getAttribute(FacebookProfileDefinition.RELIGION);
     }
-    
+
     public FacebookObject getSignificantOther() {
-        return (FacebookObject) getAttribute(FacebookAttributesDefinition.SIGNIFICANT_OTHER);
+        return (FacebookObject) getAttribute(FacebookProfileDefinition.SIGNIFICANT_OTHER);
     }
-    
+
     public String getWebsite() {
-        return (String) getAttribute(FacebookAttributesDefinition.WEBSITE);
+        return (String) getAttribute(FacebookProfileDefinition.WEBSITE);
     }
-    
+
     public List<FacebookWork> getWork() {
-        return (List<FacebookWork>) getAttribute(FacebookAttributesDefinition.WORK);
+        return (List<FacebookWork>) getAttribute(FacebookProfileDefinition.WORK);
     }
-    
+
     public List<FacebookObject> getFriends() {
-        return (List<FacebookObject>) getAttribute(FacebookAttributesDefinition.FRIENDS);
+        return (List<FacebookObject>) getAttribute(FacebookProfileDefinition.FRIENDS);
     }
-    
+
     public List<FacebookInfo> getMovies() {
-        return (List<FacebookInfo>) getAttribute(FacebookAttributesDefinition.MOVIES);
+        return (List<FacebookInfo>) getAttribute(FacebookProfileDefinition.MOVIES);
     }
-    
+
     public List<FacebookInfo> getMusic() {
-        return (List<FacebookInfo>) getAttribute(FacebookAttributesDefinition.MUSIC);
+        return (List<FacebookInfo>) getAttribute(FacebookProfileDefinition.MUSIC);
     }
-    
+
     public List<FacebookInfo> getBooks() {
-        return (List<FacebookInfo>) getAttribute(FacebookAttributesDefinition.BOOKS);
+        return (List<FacebookInfo>) getAttribute(FacebookProfileDefinition.BOOKS);
     }
-    
+
     public List<FacebookInfo> getLikes() {
-        return (List<FacebookInfo>) getAttribute(FacebookAttributesDefinition.LIKES);
+        return (List<FacebookInfo>) getAttribute(FacebookProfileDefinition.LIKES);
     }
-    
+
     public List<FacebookPhoto> getAlbums() {
-        return (List<FacebookPhoto>) getAttribute(FacebookAttributesDefinition.ALBUMS);
+        return (List<FacebookPhoto>) getAttribute(FacebookProfileDefinition.ALBUMS);
     }
-    
+
     public List<FacebookEvent> getEvents() {
-        return (List<FacebookEvent>) getAttribute(FacebookAttributesDefinition.EVENTS);
+        return (List<FacebookEvent>) getAttribute(FacebookProfileDefinition.EVENTS);
     }
-    
+
     public List<FacebookGroup> getGroups() {
-        return (List<FacebookGroup>) getAttribute(FacebookAttributesDefinition.GROUPS);
+        return (List<FacebookGroup>) getAttribute(FacebookProfileDefinition.GROUPS);
     }
-    
+
     public List<FacebookMusicListen> getMusicListens() {
-        return (List<FacebookMusicListen>) getAttribute(FacebookAttributesDefinition.MUSIC_LISTENS);
+        return (List<FacebookMusicListen>) getAttribute(FacebookProfileDefinition.MUSIC_LISTENS);
     }
-    
+
     public FacebookPicture getPicture() {
-        return (FacebookPicture) getAttribute(FacebookAttributesDefinition.PICTURE);
+        return (FacebookPicture) getAttribute(FacebookProfileDefinition.PICTURE);
     }
 }

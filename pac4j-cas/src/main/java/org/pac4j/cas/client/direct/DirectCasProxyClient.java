@@ -5,11 +5,11 @@ import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -26,7 +26,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, CasProfile> {
+public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, CommonProfile> {
 
     private CasConfiguration configuration;
 

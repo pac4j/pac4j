@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
- * (objects). The attributes definition is <code>null</code> (generic profile), it must be defined in subclasses. Additional concepts are the
- * "remember me" nature of the user profile and the associated roles, permissions and client name.
+ * (objects). Additional concepts are the "remember me" nature of the user profile and the associated roles, permissions and client name.
  * 
  * @author Jerome Leleu
  * @since 1.0.0
@@ -51,43 +50,15 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Return the attributes definition for this user profile. <code>null</code> for a (generic) user profile.
-     * 
-     * @return the attributes definition
-     */
-    public AttributesDefinition getAttributesDefinition() {
-        return null;
-    }
-
-    /**
-     * Add an attribute and perform conversion if necessary.
+     * Add an attribute.
      * 
      * @param key key of the attribute
      * @param value value of the attribute
      */
     public void addAttribute(final String key, Object value) {
         if (value != null) {
-            final AttributesDefinition definition = getAttributesDefinition();
-            // no attributes definition -> no conversion
-            if (definition == null) {
-                logger.debug("no conversion => key: {} / value: {} / {}",
-                        new Object[] { key, value, value.getClass() });
-                this.attributes.put(key, value);
-            } else {
-                value = definition.convert(key, value);
-                if (value != null) {
-                    // for OAuth: convert array as list
-                    Object value2;
-                    if (value instanceof Object[]) {
-                        value2 = new ArrayList(Arrays.asList((Object[]) value));
-                    } else {
-                        value2 = value;
-                    }
-                    logger.debug("converted to => key: {} / value: {} / {}",
-                            new Object[] { key, value2, value2.getClass() });
-                    this.attributes.put(key, value2);
-                }
-            }
+            logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
+            this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
         }
     }
 
@@ -123,12 +94,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("id", id);
 
         String sId = id.toString();
-        final String oldType = this.getClass().getSimpleName() + SEPARATOR;
         final String type = this.getClass().getName() + SEPARATOR;
         if (sId.startsWith(type)) {
             sId = sId.substring(type.length());
-        } else if (sId.startsWith(oldType)) {
-            sId = sId.substring(oldType.length());
         }
         logger.debug("identifier: {}", sId);
         this.id = sId;
@@ -154,12 +122,18 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     /**
-     * Get attributes as immutable map.
+     * Get all attributes as immutable map.
      * 
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
-        return Collections.unmodifiableMap(this.attributes);
+        final Map<String, Object> newAttributes = new HashMap<>();
+        for (Map.Entry<String, Object> entries : this.attributes.entrySet()) {
+            final String key = entries.getKey();
+            final Object value = getAttribute(key);
+            newAttributes.put(key, value);
+        }
+        return Collections.unmodifiableMap(newAttributes);
     }
 
     /**
@@ -169,7 +143,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the attribute with name
      */
     public Object getAttribute(final String name) {
-        return this.attributes.get(name);
+        return ProfileHelper.getInternalAttributeHandler().restore(this.attributes.get(name));
     }
 
     /**
@@ -179,8 +153,10 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return true/false
      */
     public boolean containsAttribute(final String name) {
+        CommonHelper.assertNotNull("name", name);
         return this.attributes.containsKey(name);
     }
+
     /**
      * Return the attribute with name.
      *
@@ -321,7 +297,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         this.id = (String) in.readObject();
         this.attributes = (Map) in.readObject();
-        this.isRemembered = (boolean) in.readBoolean();
+        this.isRemembered = in.readBoolean();
         this.roles = (Set) in.readObject();
         this.permissions = (Set) in.readObject();
     }

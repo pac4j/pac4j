@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -46,22 +45,18 @@ public final class RunDropboxClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(DropBoxProfile.class);
-    }
-
-    @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final DropBoxProfile profile = (DropBoxProfile) userProfile;
         assertEquals("75206624", profile.getId());
         assertEquals(DropBoxProfile.class.getName() + CommonProfile.SEPARATOR + "75206624", profile.getTypedId());
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), DropBoxProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
-        assertCommonProfile(userProfile, null, null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
+        assertCommonProfile(userProfile, getLogin(), null, null, "Test ScribeUP", null, Gender.UNSPECIFIED, Locale.FRENCH,
                 null, "https://db.tt/T0YkdWpF", null);
         assertEquals(0L, profile.getShared().longValue());
         assertEquals(1410412L, profile.getNormal().longValue());
         assertEquals(2147483648L, profile.getQuota().longValue());
-        assertEquals(7, profile.getAttributes().size());
+        assertEquals(true, profile.getEmailVerified());
+        assertEquals(10, profile.getAttributes().size());
     }
 }

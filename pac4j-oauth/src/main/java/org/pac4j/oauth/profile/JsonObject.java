@@ -3,14 +3,10 @@ package org.pac4j.oauth.profile;
 import java.io.Serializable;
 
 /**
- * Return an Object as a JSON string.
+ * Kept for backward compatibility with CAS to be able to "JSONstring" the attributes (old behavior).
  * 
- * @author Jerome Leleu
- * @since 1.9.0
+ * @deprecated in 2.0
  */
+@Deprecated
 public abstract class JsonObject implements Serializable {
-
-    public String toString() {
-        return JsonHelper.toJSONString(this);
-    }
 }

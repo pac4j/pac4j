@@ -2,8 +2,10 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 import com.github.scribejava.core.utils.OAuthEncoder;
+import java.io.IOException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
@@ -28,7 +30,7 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
     @Override
     protected String retrieveAuthorizationUrl(final WebContext context) throws HttpAction {
         // no request token for OAuth 2.0 -> no need to save it in the context
-        final String authorizationUrl = this.service.getAuthorizationUrl();
+        final String authorizationUrl = this.service.getAuthorizationUrl(getCustomParams());
         logger.debug("authorizationUrl: {}", authorizationUrl);
         return authorizationUrl;
     }
@@ -52,7 +54,13 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         // no request token saved in context and no token (OAuth v2.0)
         final String code = oAuth20Credentials.getCode();
         logger.debug("code: {}", code);
-        final OAuth2AccessToken accessToken = this.service.getAccessToken(code);
+        final OAuth2AccessToken accessToken;
+        try {
+            accessToken = this.service.getAccessToken(code);
+        } catch (IOException ex) {
+            final String message = "Error getting token:"+ex.getMessage();
+            throw new OAuthCredentialsException(message);
+        }
         logger.debug("accessToken: {}", accessToken);
         return accessToken;
     }
@@ -71,6 +79,9 @@ public abstract class BaseOAuth20Client<U extends OAuth20Profile> extends BaseOA
         this.service.signRequest(accessToken, request);
         if (this.isTokenAsHeader()) {
             request.addHeader("Authorization", "Bearer " + accessToken.getAccessToken());
+        }
+        if (Verb.POST.equals(request.getVerb())) {
+            request.addParameter("oauth_token", accessToken.getAccessToken());
         }
     }
 }

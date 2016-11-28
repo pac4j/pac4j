@@ -1,7 +1,5 @@
 package org.pac4j.oidc.run;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.nimbusds.oauth2.sdk.token.AccessTokenType;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -9,7 +7,6 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.oidc.client.AzureAdClient;
 import org.pac4j.oidc.config.OidcConfiguration;
-import org.pac4j.oidc.kryo.AccessTokenTypeSerializer;
 import org.pac4j.oidc.profile.azuread.AzureAdProfile;
 
 import static org.junit.Assert.*;
@@ -49,12 +46,6 @@ public class RunAzureAdClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(AzureAdProfile.class);
-        kryo.register(AccessTokenType.class, new AccessTokenTypeSerializer());
-    }
-
-    @Override
     protected void verifyProfile(final CommonProfile userProfile) {
         final AzureAdProfile profile = (AzureAdProfile) userProfile;
         assertEquals("alVNQ8eaO_Psdu7MIYRy5oGbqe5YD2BxKlDm3rwXseE", profile.getId());
@@ -82,6 +73,7 @@ public class RunAzureAdClient extends RunClient {
         assertNotNull(profile.getIssuedAt());
         assertNotNull(profile.getAttribute("sub"));
         assertNull(profile.getAttribute("pwd_exp"));
-        assertEquals(20, profile.getAttributes().size());
+        assertEquals("5", profile.getAttribute("platf"));
+        assertEquals(21, profile.getAttributes().size());
     }
 }

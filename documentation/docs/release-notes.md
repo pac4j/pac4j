@@ -5,6 +5,8 @@ title: Release notes&#58;
 
 **v2.0.0**:
 
+- User profiles are simple POJOs, the `AttributesDefinition` is replaced by the `ProfileDefinition`
+- CAS specificities (Kryo serialization, `toString` service ticket validation) are handled via the `InternalAttributeHandler`
 - Authenticators may throw the checked `CredentialsException`
 - Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
 

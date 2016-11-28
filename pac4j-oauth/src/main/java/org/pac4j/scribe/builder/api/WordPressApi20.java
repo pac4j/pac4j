@@ -5,6 +5,7 @@ import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.utils.OAuthEncoder;
 import com.github.scribejava.core.utils.Preconditions;
+import java.util.Map;
 
 /**
  * This class represents the OAuth API implementation for WordPress. It could be part of the Scribe library.
@@ -23,7 +24,7 @@ public final class WordPressApi20 extends DefaultApi20 {
     }
     
     @Override
-    public String getAuthorizationUrl(final OAuthConfig config) {
+    public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
         Preconditions.checkValidUrl(config.getCallback(),
                                     "Must provide a valid url as callback. WordPress does not support OOB");
         
@@ -35,4 +36,8 @@ public final class WordPressApi20 extends DefaultApi20 {
         return Verb.POST;
     }
 
+    @Override
+    protected String getAuthorizationBaseUrl() {
+        return BASE_URL+"authorize";
+    }      
 }

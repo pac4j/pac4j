@@ -27,6 +27,8 @@ public final class JsonHelper {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    private JsonHelper() {}
+
     /**
      * Return the first node of a JSON response.
      *
@@ -34,27 +36,24 @@ public final class JsonHelper {
      * @return the first node of the JSON response or null if exception is thrown
      */
     public static JsonNode getFirstNode(final String text) {
-        try {
-            return mapper.readValue(text, JsonNode.class);
-        } catch (final IOException e) {
-            logger.error("Cannot get first node", e);
-        }
-        return null;
+        return getFirstNode(text, null);
     }
 
     /**
-     * Return an Object from a JSON node.
+     * Return the first node of a JSON response.
      *
-     * @param node a JSON node
-     * @param clazz the class to cast to
-     * @param <T> the class to cast to
-     * @return the parsed object
-     */
-    public static <T extends Object> T getAsType(final JsonNode node, final Class<T> clazz) {
+     * @param text JSON text
+     * @param path path to find the first node
+     * @return the first node of the JSON response or null if exception is thrown
+     */    public static JsonNode getFirstNode(final String text, final String path) {
         try {
-            return mapper.treeToValue(node, clazz);
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+            if (path != null) {
+                node = (JsonNode) getElement(node, path);
+            }
+            return node;
         } catch (final IOException e) {
-            logger.error("Cannot get as type", e);
+            logger.error("Cannot get first node", e);
         }
         return null;
     }
@@ -71,7 +70,11 @@ public final class JsonHelper {
             JsonNode node = json;
             for (String nodeName : name.split("\\.")) {
                 if (node != null) {
-                    node = node.get(nodeName);
+                    if (nodeName.matches("\\d+")) {
+                        node = node.get(Integer.parseInt(nodeName));
+                    } else {
+                        node = node.get(nodeName);
+                    }
                 }
             }
             if (node != null) {
@@ -104,5 +107,9 @@ public final class JsonHelper {
             logger.error("Cannot to JSON string", e);
         }
         return null;
+    }
+
+    public static ObjectMapper getMapper() {
+        return mapper;
     }
 }

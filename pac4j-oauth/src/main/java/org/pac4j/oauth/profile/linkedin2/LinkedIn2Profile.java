@@ -1,8 +1,8 @@
 package org.pac4j.oauth.profile.linkedin2;
 
+import java.net.URI;
 import java.util.List;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
@@ -23,31 +23,24 @@ public class LinkedIn2Profile extends OAuth20Profile {
         return CommonHelper.substringBetween(url, "id=", "&authType=");
     }
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new LinkedIn2AttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-    
     @Override
     public String getFirstName() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.FIRST_NAME);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.FIRST_NAME);
     }
     
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.LAST_NAME);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.LAST_NAME);
     }
     
     @Override
     public String getDisplayName() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.FORMATTED_NAME);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.FORMATTED_NAME);
     }
     
     @Override
     public String getLocation() {
-        LinkedIn2Location location = (LinkedIn2Location) getAttribute(LinkedIn2AttributesDefinition.LOCATION);
+        LinkedIn2Location location = (LinkedIn2Location) getAttribute(LinkedIn2ProfileDefinition.LOCATION);
         if (location != null) {
             return location.getName();
         } else {
@@ -57,70 +50,70 @@ public class LinkedIn2Profile extends OAuth20Profile {
     
     @Override
     public String getEmail() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.EMAIL_ADDRESS);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.EMAIL_ADDRESS);
     }
     
     @Override
-    public String getPictureUrl() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.PICTURE_URL);
+    public URI getPictureUrl() {
+        return (URI) getAttribute(LinkedIn2ProfileDefinition.PICTURE_URL);
     }
     
     @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.PUBLIC_PROFILE_URL);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(LinkedIn2ProfileDefinition.PUBLIC_PROFILE_URL);
     }
     
     public LinkedIn2Location getCompleteLocation() {
-        return (LinkedIn2Location) getAttribute(LinkedIn2AttributesDefinition.LOCATION);
+        return (LinkedIn2Location) getAttribute(LinkedIn2ProfileDefinition.LOCATION);
     }
     
     public String getMaidenName() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.MAIDEN_NAME);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.MAIDEN_NAME);
     }
 
-    public String getPhoneticFirstName() { return (String) getAttribute(LinkedIn2AttributesDefinition.PHONETIC_FIRST_NAME); }
+    public String getPhoneticFirstName() { return (String) getAttribute(LinkedIn2ProfileDefinition.PHONETIC_FIRST_NAME); }
 
-    public String getPhoneticLastName() { return (String) getAttribute(LinkedIn2AttributesDefinition.PHONETIC_LAST_NAME); }
+    public String getPhoneticLastName() { return (String) getAttribute(LinkedIn2ProfileDefinition.PHONETIC_LAST_NAME); }
 
-    public String getFormattedPhoneticName() { return (String) getAttribute(LinkedIn2AttributesDefinition.FORMATTED_PHONETIC_NAME); }
+    public String getFormattedPhoneticName() { return (String) getAttribute(LinkedIn2ProfileDefinition.FORMATTED_PHONETIC_NAME); }
 
     public String getHeadline() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.HEADLINE);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.HEADLINE);
     }
     
     public String getIndustry() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.INDUSTRY);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.INDUSTRY);
     }
 
     public String getCurrentShare() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.CURRENT_SHARE);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.CURRENT_SHARE);
     }
     
     public Integer getNumConnections() {
-        return (Integer) getAttribute(LinkedIn2AttributesDefinition.NUM_CONNECTIONS);
+        return (Integer) getAttribute(LinkedIn2ProfileDefinition.NUM_CONNECTIONS);
     }
 
     public Boolean getNumConnectionsCapped() {
-        return (Boolean) getAttribute(LinkedIn2AttributesDefinition.NUM_CONNECTIONS_CAPPED);
+        return (Boolean) getAttribute(LinkedIn2ProfileDefinition.NUM_CONNECTIONS_CAPPED);
     }
     
     public String getSummary() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.SUMMARY);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.SUMMARY);
     }
     
     public String getSpecialties() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.SPECIALTIES);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.SPECIALTIES);
     }
     
     public List<LinkedIn2Position> getPositions() {
-        return (List<LinkedIn2Position>) getAttribute(LinkedIn2AttributesDefinition.POSITIONS);
+        return (List<LinkedIn2Position>) getAttribute(LinkedIn2ProfileDefinition.POSITIONS);
     }
     
     public String getSiteStandardProfileRequest() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.SITE_STANDARD_PROFILE_REQUEST);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.SITE_STANDARD_PROFILE_REQUEST);
     }
 
     public String getApiStandardProfileRequest() {
-        return (String) getAttribute(LinkedIn2AttributesDefinition.API_STANDARD_PROFILE_REQUEST);
+        return (String) getAttribute(LinkedIn2ProfileDefinition.API_STANDARD_PROFILE_REQUEST);
     }
 }

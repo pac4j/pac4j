@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
+import org.pac4j.oauth.profile.bitbucket.BitbucketProfileDefinition;
 import org.pac4j.scribe.builder.api.BitBucketApi;
 
 /**
@@ -28,6 +30,12 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
     }
 
     @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new BitbucketProfileDefinition());
+        super.internalInit(context);
+    }
+
+    @Override
     protected BaseApi<OAuth10aService> getApi() {
         return new BitBucketApi();
     }
@@ -39,13 +47,13 @@ public class BitbucketClient extends BaseOAuth10Client<BitbucketProfile> {
 
     @Override
     protected BitbucketProfile extractUserProfile(String body) throws HttpAction {
-        BitbucketProfile profile = new BitbucketProfile();
+        BitbucketProfile profile = getProfileDefinition().newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             json = (JsonNode) JsonHelper.getElement(json, "user");
             if (json != null) {
-                for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                    profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+                for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                    getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
                 }
             }
         }

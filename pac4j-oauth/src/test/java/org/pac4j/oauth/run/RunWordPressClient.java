@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -8,7 +7,6 @@ import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.WordPressClient;
-import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.wordpress.WordPressLinks;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 
@@ -43,11 +41,6 @@ public final class RunWordPressClient extends RunClient {
         wordPressClient.setSecret("xJBXMRVvKrvHqyvM6BpzkenJVMIdQrIWKjPJsezjGYu71y7sDgt8ibz6s9IFLqU8");
         wordPressClient.setCallbackUrl(PAC4J_URL);
         return wordPressClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(WindowsLiveProfile.class);
     }
 
     @Override

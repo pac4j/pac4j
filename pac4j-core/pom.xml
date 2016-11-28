@@ -22,12 +22,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo-shaded</artifactId>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <optional>true</optional>

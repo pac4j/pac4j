@@ -1,6 +1,5 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -43,11 +42,6 @@ public final class RunWindowsLiveClient extends RunClient {
         liveClient.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");
         liveClient.setCallbackUrl(PAC4J_URL);
         return liveClient;
-    }
-
-    @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(WindowsLiveProfile.class);
     }
 
     @Override

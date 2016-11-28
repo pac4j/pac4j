@@ -1,9 +1,8 @@
 package org.pac4j.oauth.profile.orcid;
 
-import org.pac4j.core.profile.AttributesDefinition;
 import org.pac4j.oauth.profile.OAuth20Profile;
 
-import java.util.Locale;
+import java.net.URI;
 
 /**
  * <p>This class is the user profile for ORCiD with appropriate getters.</p>
@@ -14,45 +13,33 @@ import java.util.Locale;
  */
 
 public class OrcidProfile extends OAuth20Profile {
+
     private static final long serialVersionUID = 7626472295622786149L;
 
-    private transient final static AttributesDefinition ATTRIBUTES_DEFINITION = new OrcidAttributesDefinition();
-
-    @Override
-    public AttributesDefinition getAttributesDefinition() {
-        return ATTRIBUTES_DEFINITION;
-    }
-
     public String getOrcid() {
-        return (String) getAttribute(OrcidAttributesDefinition.ORCID);
+        return (String) getAttribute(OrcidProfileDefinition.ORCID);
     }
 
     public boolean getClaimed() {
-        return (Boolean) getAttribute(OrcidAttributesDefinition.CLAIMED);
+        return (Boolean) getAttribute(OrcidProfileDefinition.CLAIMED);
     }
 
     public String getCreationMethod() {
-        return (String) getAttribute(OrcidAttributesDefinition.CREATION_METHOD);
+        return (String) getAttribute(OrcidProfileDefinition.CREATION_METHOD);
     }
 
     @Override
     public String getFirstName() {
-        return (String) getAttribute(OrcidAttributesDefinition.FIRST_NAME);
+        return (String) getAttribute(OrcidProfileDefinition.FIRST_NAME);
     }
 
     @Override
     public String getFamilyName() {
-        return (String) getAttribute(OrcidAttributesDefinition.FAMILY_NAME);
+        return (String) getAttribute(OrcidProfileDefinition.FAMILY_NAME);
     }
 
     @Override
-    public Locale getLocale() {
-        return (Locale) getAttribute(OrcidAttributesDefinition.LOCALE);
+    public URI getProfileUrl() {
+        return (URI) getAttribute(OrcidProfileDefinition.URI);
     }
-
-    @Override
-    public String getProfileUrl() {
-        return (String) getAttribute(OrcidAttributesDefinition.URI);
-    }
-
 }

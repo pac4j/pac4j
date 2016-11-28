@@ -16,6 +16,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
@@ -44,7 +46,7 @@ import com.nimbusds.jwt.SignedJWT;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class JwtAuthenticator implements Authenticator<TokenCredentials> {
+public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> implements Authenticator<TokenCredentials> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -66,6 +68,11 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
         setEncryptionConfiguration(encryptionConfiguration);
+    }
+
+    @Override
+    protected void internalInit(final WebContext context) {
+        setProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
     }
 
     /**
@@ -105,6 +112,7 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
 
     @Override
     public void validate(final TokenCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+        init(context);
         final String token = credentials.getToken();
 
         try {
@@ -163,7 +171,9 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
                             try {
                                 verified = config.verify(signedJWT);
                                 found = true;
-                                break;
+                                if (verified) {
+                                  break;
+                                }
                             } catch (final JOSEException e) {
                                 logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
                             }
@@ -193,9 +203,6 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
         if (subject == null) {
             throw new TechnicalException("JWT must contain a subject ('sub' claim)");
         }
-        if (!subject.contains(CommonProfile.SEPARATOR)) {
-            subject = JwtProfile.class.getName() + CommonProfile.SEPARATOR + subject;
-        }
 
         final Date expirationTime = claimSet.getExpirationTime();
         if (expirationTime != null) {
@@ -214,7 +221,8 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
 		final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
 
-        final CommonProfile profile = ProfileHelper.buildProfile(subject, attributes);
+        final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes);
+
         if (roles != null) {
             profile.addRoles(roles);
         }

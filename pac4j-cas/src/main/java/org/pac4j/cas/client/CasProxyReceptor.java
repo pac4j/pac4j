@@ -7,12 +7,12 @@ import org.jasig.cas.client.proxy.CleanUpTimerTask;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorage;
 import org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl;
 import org.jasig.cas.client.util.CommonUtils;
-import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, CasProfile> {
+public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, CommonProfile> {
     
     private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
     

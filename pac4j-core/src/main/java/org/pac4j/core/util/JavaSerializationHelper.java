@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +19,12 @@ public class JavaSerializationHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaSerializationHelper.class);
 
-    private List<String> trustedPackages = Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "org.joda.");
+    private List<String> trustedPackages;
+
+    public JavaSerializationHelper() {
+        trustedPackages = new ArrayList<>();
+        trustedPackages.addAll(Arrays.asList("java.", "javax.", "org.pac4j.", "com.github.scribejava.", "org.opensaml.", "com.nimbusds.", "org.joda.", "net.minidev.json."));
+    }
 
     /**
      * Serialize a Java object into a base64 String.

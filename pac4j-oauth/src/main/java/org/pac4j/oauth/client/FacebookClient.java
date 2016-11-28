@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthConstants;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import java.io.IOException;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.HttpAction;
@@ -16,7 +18,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.JsonHelper;
-import org.pac4j.oauth.profile.facebook.FacebookAttributesDefinition;
+import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
 import javax.crypto.Mac;
@@ -30,7 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
  * <p>The <i>scope</i> can be defined to require permissions from the user and retrieve fields from Facebook, by using the
  * {@link #setScope(String)} method.</p>
  * <p>By default, the following <i>fields</i> are requested to Facebook : id, name, first_name, middle_name, last_name, gender, locale,
- * languages, link, third_party_id, timezone, updated_time, verified, bio, birthday, education, email, hometown, interested_in,
+ * languages, link, third_party_id, timezone, updated_time, verified, about, birthday, education, email, hometown, interested_in,
  * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.</p>
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
  * <p>The number of results can be limited by using the {@link #setLimit(int)} method.</p>
@@ -45,17 +47,17 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
 
-    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.4/oauth/access_token?grant_type=fb_exchange_token";
+    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.8/oauth/access_token?grant_type=fb_exchange_token";
 
     private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
 
     private static final String APPSECRET_PARAMETER = "appsecret_proof";
 
-    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
+    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
 
     protected String fields = DEFAULT_FIELDS;
 
-    protected final static String BASE_URL = "https://graph.facebook.com/v2.4/me";
+    protected final static String BASE_URL = "https://graph.facebook.com/v2.8/me";
 
     public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
 
@@ -81,6 +83,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("fields", this.fields);
         super.internalInit(context);
+        setProfileDefinition(new FacebookProfileDefinition());
     }
 
     @Override
@@ -122,13 +125,24 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
             final long t0 = System.currentTimeMillis();
             final Response response = request.send();
             final int code = response.getCode();
-            body = response.getBody();
+            try {
+                body = response.getBody();
+            } catch (IOException ex) {
+                final String message = "Error getting body:"+ex.getMessage();
+                throw new OAuthCredentialsException(message);
+            }
             final long t1 = System.currentTimeMillis();
             logger.debug("Request took: " + (t1 - t0) + " ms for: " + url);
             logger.debug("response code: {} / response body: {}", code, body);
             if (code == 200) {
                 logger.debug("Retrieve extended token from  {}", body);
-                final OAuth2AccessToken extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(body);
+                final OAuth2AccessToken extendedAccessToken;
+                try {
+                    extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(response);
+                } catch (IOException | OAuthException ex) {
+                    final String message = "Error extracting token:"+ex.getMessage();
+                    throw new OAuthCredentialsException(message);
+                }
                 logger.debug("Extended token: {}", extendedAccessToken);
                 addAccessTokenToProfile(profile, extendedAccessToken);
             } else {
@@ -140,23 +154,23 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
 
     @Override
     protected FacebookProfile extractUserProfile(final String body) throws HttpAction {
-        final FacebookProfile profile = new FacebookProfile();
+        final FacebookProfile profile = getProfileDefinition().newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
             profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : profile.getAttributesDefinition().getPrimaryAttributes()) {
-                profile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
+                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
             }
-            extractData(profile, json, FacebookAttributesDefinition.FRIENDS);
-            extractData(profile, json, FacebookAttributesDefinition.MOVIES);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC);
-            extractData(profile, json, FacebookAttributesDefinition.BOOKS);
-            extractData(profile, json, FacebookAttributesDefinition.LIKES);
-            extractData(profile, json, FacebookAttributesDefinition.ALBUMS);
-            extractData(profile, json, FacebookAttributesDefinition.EVENTS);
-            extractData(profile, json, FacebookAttributesDefinition.GROUPS);
-            extractData(profile, json, FacebookAttributesDefinition.MUSIC_LISTENS);
-            extractData(profile, json, FacebookAttributesDefinition.PICTURE);
+            extractData(profile, json, FacebookProfileDefinition.FRIENDS);
+            extractData(profile, json, FacebookProfileDefinition.MOVIES);
+            extractData(profile, json, FacebookProfileDefinition.MUSIC);
+            extractData(profile, json, FacebookProfileDefinition.BOOKS);
+            extractData(profile, json, FacebookProfileDefinition.LIKES);
+            extractData(profile, json, FacebookProfileDefinition.ALBUMS);
+            extractData(profile, json, FacebookProfileDefinition.EVENTS);
+            extractData(profile, json, FacebookProfileDefinition.GROUPS);
+            extractData(profile, json, FacebookProfileDefinition.MUSIC_LISTENS);
+            extractData(profile, json, FacebookProfileDefinition.PICTURE);
         }
         return profile;
     }
@@ -164,7 +178,7 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
         final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
         if (data != null) {
-            profile.addAttribute(name, JsonHelper.getElement(data, "data"));
+            getProfileDefinition().convertAndAdd(profile, name, JsonHelper.getElement(data, "data"));
         }
     }
 

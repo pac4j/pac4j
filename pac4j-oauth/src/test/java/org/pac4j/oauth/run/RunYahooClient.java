@@ -1,8 +1,8 @@
 package org.pac4j.oauth.run;
 
-import com.esotericsoftware.kryo.Kryo;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -10,6 +10,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.YahooClient;
 import org.pac4j.oauth.profile.yahoo.*;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,16 +49,6 @@ public final class RunYahooClient extends RunClient {
     }
 
     @Override
-    protected void registerForKryo(final Kryo kryo) {
-        kryo.register(YahooProfile.class);
-        kryo.register(YahooDisclosure.class);
-        kryo.register(YahooInterest.class);
-        kryo.register(YahooImage.class);
-        kryo.register(YahooEmail.class);
-        kryo.register(YahooAddress.class);
-    }
-
-    @Override
     protected void verifyProfile(CommonProfile userProfile) {
         final YahooProfile profile = (YahooProfile) userProfile;
         assertEquals("PCSXZCYSWC6XUJNMZKRGWVPHNU", profile.getId());
@@ -73,7 +64,7 @@ public final class RunYahooClient extends RunClient {
         final List<YahooAddress> addresses = profile.getAddresses();
         assertEquals(2, addresses.size());
         final YahooAddress address = addresses.get(0);
-        assertEquals(1, address.getId().intValue());
+        assertEquals(3, address.getId().intValue());
         assertTrue(address.getCurrent());
         assertEquals(Locale.FRENCH, address.getCountry());
         assertEquals("", address.getState());
@@ -82,8 +73,8 @@ public final class RunYahooClient extends RunClient {
         assertEquals("", address.getStreet());
         assertEquals("HOME", address.getType());
         assertEquals(1976, profile.getBirthYear().intValue());
-        assertEquals("03/10", profile.getBirthdate().toString());
-        assertEquals("2012-02-06T12:46:43Z", profile.getCreated().toString());
+        assertEquals("03/10", new SimpleDateFormat("MM/dd").format(profile.getBirthdate()));
+        assertEquals("2012-02-06T12:46:43Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getCreated()));
         assertEquals(40, profile.getDisplayAge().intValue());
         final List<YahooDisclosure> disclosures = profile.getDisclosures();
         assertEquals(2, disclosures.size());
@@ -92,7 +83,7 @@ public final class RunYahooClient extends RunClient {
         assertEquals("bd", disclosure.getName());
         assertEquals("1", disclosure.getVersion());
         final List<YahooEmail> emails = profile.getEmails();
-        assertEquals(2, emails.size());
+        assertEquals(3, emails.size());
         final YahooEmail email = emails.get(1);
         assertEquals(1, email.getId().intValue());
         assertTrue(email.getPrimary());
@@ -110,9 +101,9 @@ public final class RunYahooClient extends RunClient {
         assertEquals("basic interest", interest.getDeclaredInterests().get(0));
         assertEquals("prfFavHobbies", interest.getInterestCategory());
         assertTrue(profile.getIsConnected());
-        assertEquals("2012-02-06T12:46:36Z", profile.getMemberSince().toString());
+        assertEquals("2012-02-06T12:46:36Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getMemberSince()));
         assertEquals("Europe/Paris", profile.getTimeZone());
-        assertEquals("2016-01-16T17:31:06Z", profile.getUpdated().toString());
+        assertEquals("2016-01-16T17:31:06Z", new SimpleDateFormat(Converters.DATE_TZ_RFC822_FORMAT).format(profile.getUpdated()));
         assertEquals("https://social.yahooapis.com/v1/user/PCSXZCYSWC6XUJNMZKRGWVPHNU/profile", profile.getUri());
         assertNotNull(profile.getAccessSecret());
         assertEquals("A", profile.getAgeCategory());

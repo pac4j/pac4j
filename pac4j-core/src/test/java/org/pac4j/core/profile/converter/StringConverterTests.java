@@ -1,6 +1,10 @@
 package org.pac4j.core.profile.converter;
 
 import org.junit.Test;
+import org.pac4j.core.util.TestsConstants;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -10,15 +14,18 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class StringConverterTests {
+public final class StringConverterTests implements TestsConstants {
     
     private final StringConverter converter = new StringConverter();
-    
-    private static final String VALUE = "value";
 
     @Test
     public void testNull() {
         assertNull(this.converter.convert(null));
+    }
+
+    @Test
+    public void testListNull() {
+        assertNull(this.converter.convert(new ArrayList<>()));
     }
 
     @Test
@@ -29,5 +36,10 @@ public final class StringConverterTests {
     @Test
     public void testString() {
         assertEquals(VALUE, this.converter.convert(VALUE));
+    }
+
+    @Test
+    public void testListString() {
+        assertEquals(VALUE, this.converter.convert(Arrays.asList(VALUE)));
     }
 }

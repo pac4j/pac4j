@@ -11,6 +11,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
+import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
 import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
 
 import java.util.Iterator;
@@ -44,6 +45,7 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
+        setProfileDefinition(new CasOAuthWrapperProfileDefinition());
         super.internalInit(context);
     }
 
@@ -64,10 +66,10 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     
     @Override
     protected CasOAuthWrapperProfile extractUserProfile(final String body) throws HttpAction {
-        final CasOAuthWrapperProfile userProfile = new CasOAuthWrapperProfile();
+        final CasOAuthWrapperProfile profile = getProfileDefinition().newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {
-            userProfile.setId(JsonHelper.getElement(json, "id"));
+            profile.setId(JsonHelper.getElement(json, "id"));
             json = json.get("attributes");
             if (json != null) {
                 // CAS <= v4.2
@@ -76,19 +78,19 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
                     while (nodes.hasNext()) {
                         json = nodes.next();
                         final String attribute = json.fieldNames().next();
-                        userProfile.addAttribute(attribute, JsonHelper.getElement(json, attribute));
+                        getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
                     }
                     // CAS v5
                 } else if (json instanceof ObjectNode) {
                     final Iterator<String> keys = json.fieldNames();
                     while (keys.hasNext()) {
                         final String key = keys.next();
-                        userProfile.addAttribute(key, JsonHelper.getElement(json, key));
+                        getProfileDefinition().convertAndAdd(profile, key, JsonHelper.getElement(json, key));
                     }
                 }
             }
         }
-        return userProfile;
+        return profile;
     }
     
     public String getCasOAuthUrl() {

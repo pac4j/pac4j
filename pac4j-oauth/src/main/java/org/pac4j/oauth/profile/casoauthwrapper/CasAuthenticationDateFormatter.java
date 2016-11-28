@@ -1,7 +1,8 @@
 package org.pac4j.oauth.profile.casoauthwrapper;
 
-import org.pac4j.core.profile.FormattedDate;
-import org.pac4j.core.profile.converter.FormattedDateConverter;
+import org.pac4j.core.profile.converter.DateConverter;
+
+import java.util.Date;
 
 /**
  * Date formatter for the CAS authentication date.
@@ -9,14 +10,14 @@ import org.pac4j.core.profile.converter.FormattedDateConverter;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class CasAuthenticationDateFormatter extends FormattedDateConverter {
+public class CasAuthenticationDateFormatter extends DateConverter {
 
     public CasAuthenticationDateFormatter() {
         super("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     }
 
     @Override
-    public FormattedDate convert(final Object attribute) {
+    public Date convert(final Object attribute) {
         Object a = attribute;
         if (a instanceof String) {
             String s = (String) a;
