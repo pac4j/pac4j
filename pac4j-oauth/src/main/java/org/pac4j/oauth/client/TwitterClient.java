@@ -32,7 +32,6 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
     
     @Override
     protected void internalInit(final WebContext context) {
-        configuration.setClient(this);
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {

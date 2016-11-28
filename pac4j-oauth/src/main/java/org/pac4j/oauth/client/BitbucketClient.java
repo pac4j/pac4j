@@ -25,7 +25,6 @@ public class BitbucketClient extends OAuth10Client<BitbucketProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        configuration.setClient(this);
         configuration.setApi(new BitBucketApi());
         configuration.setProfileDefinition(new BitbucketProfileDefinition());
         setConfiguration(configuration);

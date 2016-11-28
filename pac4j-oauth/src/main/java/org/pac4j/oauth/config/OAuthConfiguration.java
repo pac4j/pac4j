@@ -59,25 +59,26 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
         CommonHelper.assertNotNull("hasBeenCancelledFactory", hasBeenCancelledFactory);
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
 
-        this.service = buildService(context);
-    }
-
-    public S buildService(final WebContext context) {
-        return getApi().createService(buildOAuthConfig(context));
+        this.service = buildService(context, null);
     }
 
     /**
-     * Build an OAuth configuration.
+     * Build an OAuth service from the web context and with a state.
      *
      * @param context the web context
-     * @return the OAuth configuration
+     * @param state a given state
+     * @return the OAuth service
      */
-    protected OAuthConfig buildOAuthConfig(final WebContext context) {
+    public S buildService(final WebContext context, final String state) {
+        return getApi().createService(buildOAuthConfig(context, state));
+    }
+
+    protected OAuthConfig buildOAuthConfig(final WebContext context, final String state) {
 
         final String finalCallbackUrl = this.client.getCallbackUrlResolver().compute(this.client.getCallbackUrl(), context);
 
         return new OAuthConfig(this.key, this.secret, finalCallbackUrl, SignatureType.Header, this.scope,
-                null, null, this.responseType, null, this.connectTimeout, this.readTimeout,
+                null, state, this.responseType, null, this.connectTimeout, this.readTimeout,
                 null, null);
     }
 

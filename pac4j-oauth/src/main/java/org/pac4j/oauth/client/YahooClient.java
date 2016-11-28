@@ -26,7 +26,6 @@ public class YahooClient extends OAuth10Client<YahooProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        configuration.setClient(this);
         configuration.setApi(YahooApi.instance());
         configuration.setProfileDefinition(new YahooProfileDefinition());
         setConfiguration(configuration);

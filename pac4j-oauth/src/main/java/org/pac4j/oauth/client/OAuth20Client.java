@@ -3,39 +3,33 @@ package org.pac4j.oauth.client;
 import org.pac4j.core.client.IndirectClientV2;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.config.OAuth10Configuration;
-import org.pac4j.oauth.credentials.OAuth10Credentials;
-import org.pac4j.oauth.credentials.authenticator.OAuth10Authenticator;
-import org.pac4j.oauth.credentials.extractor.OAuth10CredentialsExtractor;
-import org.pac4j.oauth.profile.OAuth10Profile;
-import org.pac4j.oauth.profile.creator.OAuth10ProfileCreator;
-import org.pac4j.oauth.redirect.OAuth10RedirectActionBuilder;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.credentials.OAuth20Credentials;
+import org.pac4j.oauth.profile.OAuth20Profile;
+import org.pac4j.oauth.redirect.OAuth20RedirectActionBuilder;
 
 /**
- * The generic OAuth 1.0 client.
+ * The generic OAuth 2.0 client.
  *
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth10Client<U extends OAuth10Profile> extends IndirectClientV2<OAuth10Credentials, U> {
+public class OAuth20Client<U extends OAuth20Profile> extends IndirectClientV2<OAuth20Credentials, U> {
 
-    protected OAuth10Configuration configuration = new OAuth10Configuration();
+    protected OAuth20Configuration configuration = new OAuth20Configuration();
 
     @Override
     protected void internalInit(final WebContext context) {
         super.internalInit(context);
 
-        setRedirectActionBuilder(new OAuth10RedirectActionBuilder(configuration));
-        setCredentialsExtractor(new OAuth10CredentialsExtractor(configuration));
-        setAuthenticator(new OAuth10Authenticator(configuration));
-        setProfileCreator(new OAuth10ProfileCreator<>(configuration));
+        setRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration));
     }
 
-    public OAuth10Configuration getConfiguration() {
+    public OAuth20Configuration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(final OAuth10Configuration configuration) {
+    public void setConfiguration(final OAuth20Configuration configuration) {
         CommonHelper.assertNotNull("configuration", configuration);
         this.configuration = configuration;
         this.configuration.setClient(this);
