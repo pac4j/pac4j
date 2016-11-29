@@ -30,8 +30,7 @@ public class YahooProfileCreator extends OAuth10ProfileCreator<YahooProfile> {
         final String guid = CommonHelper.substringBetween(body, "<value>", "</value>");
         logger.debug("guid : {}", guid);
         if (CommonHelper.isBlank(guid)) {
-            final String message = "Cannot find guid from body : " + body;
-            throw new HttpCommunicationException(message);
+            throw new HttpCommunicationException("Cannot find guid from body : " + body);
         }
         body = sendRequestForData(accessToken, "https://social.yahooapis.com/v1/user/" + guid + "/profile?format=json", Verb.GET);
         final YahooProfile profile = (YahooProfile) configuration.getProfileDefinition().extractUserProfile(body);

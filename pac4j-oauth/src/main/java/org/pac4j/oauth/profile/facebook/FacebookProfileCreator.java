@@ -8,7 +8,6 @@ import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.config.OAuth20Configuration;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.creator.OAuth20ProfileCreator;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
@@ -52,8 +51,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
             try {
                 body = response.getBody();
             } catch (IOException ex) {
-                final String message = "Error getting body:"+ex.getMessage();
-                throw new OAuthCredentialsException(message);
+                throw new HttpCommunicationException("Error getting body:" + ex.getMessage());
             }
             final long t1 = System.currentTimeMillis();
             logger.debug("Request took: " + (t1 - t0) + " ms for: " + url);
@@ -64,8 +62,7 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
                 try {
                     extendedAccessToken = ((DefaultApi20) configuration.getApi()).getAccessTokenExtractor().extract(response);
                 } catch (IOException | OAuthException ex) {
-                    final String message = "Error extracting token:"+ex.getMessage();
-                    throw new OAuthCredentialsException(message);
+                    throw new HttpCommunicationException("Error extracting token: " + ex.getMessage());
                 }
                 logger.debug("Extended token: {}", extendedAccessToken);
                 addAccessTokenToProfile(profile, extendedAccessToken);

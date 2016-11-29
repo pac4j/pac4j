@@ -123,6 +123,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
      *
      * @param url the URL to which we're adding the proof
      * @param token the application token we pass back and forth
+     * @param configuration the current configuration
      * @return URL with the appsecret_proof parameter added
      */
     public String computeAppSecretProof(final String url, final OAuth2AccessToken token, final OAuth20Configuration configuration) {

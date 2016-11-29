@@ -5,12 +5,12 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oauth.config.OAuth10Configuration;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class OAuth10RedirectActionBuilder extends InitializableWebObject impleme
             try {
                 requestToken = this.configuration.getService().getRequestToken();
             } catch (IOException ex) {
-                throw new OAuthCredentialsException("Error getting token: " + ex.getMessage());
+                throw new HttpCommunicationException("Error getting token: " + ex.getMessage());
             }
             logger.debug("requestToken: {}", requestToken);
             // save requestToken in user session

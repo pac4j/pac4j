@@ -22,7 +22,7 @@ public class OAuth20Authenticator extends OAuthAuthenticator<OAuth20Credentials,
     }
 
     @Override
-    protected void retrieveAccessToken(final OAuthCredentials credentials) throws HttpAction {
+    protected void retrieveAccessToken(final OAuthCredentials credentials) throws HttpAction, OAuthCredentialsException {
         OAuth20Credentials oAuth20Credentials = (OAuth20Credentials) credentials;
         // no request token saved in context and no token (OAuth v2.0)
         final String code = oAuth20Credentials.getCode();

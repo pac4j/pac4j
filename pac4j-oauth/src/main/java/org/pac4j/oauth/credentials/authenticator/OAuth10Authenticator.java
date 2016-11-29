@@ -23,7 +23,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator<OAuth10Credentials,
     }
 
     @Override
-    protected void retrieveAccessToken(final OAuthCredentials credentials) throws HttpAction {
+    protected void retrieveAccessToken(final OAuthCredentials credentials) throws HttpAction, OAuthCredentialsException {
         OAuth10Credentials oAuth10Credentials = (OAuth10Credentials) credentials;
         final OAuth1RequestToken tokenRequest = oAuth10Credentials.getRequestToken();
         final String token = oAuth10Credentials.getToken();

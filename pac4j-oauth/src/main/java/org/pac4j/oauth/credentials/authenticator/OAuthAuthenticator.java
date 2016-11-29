@@ -10,6 +10,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
+import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +52,9 @@ abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthCon
      *
      * @param credentials credentials
      * @throws HttpAction whether an additional HTTP action is required
+     * @throws OAuthCredentialsException the credentials are invalid
      */
-    protected abstract void retrieveAccessToken(OAuthCredentials credentials) throws HttpAction;
+    protected abstract void retrieveAccessToken(OAuthCredentials credentials) throws HttpAction, OAuthCredentialsException;
 
     @Override
     public String toString() {

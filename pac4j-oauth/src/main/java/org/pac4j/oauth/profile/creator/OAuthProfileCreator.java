@@ -17,7 +17,6 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oauth.config.OAuthConfiguration;
 import org.pac4j.oauth.credentials.OAuthCredentials;
-import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +110,7 @@ abstract class OAuthProfileCreator<C extends OAuthCredentials, U extends CommonP
         try {
             body = response.getBody();
         } catch (final IOException ex) {
-            throw new OAuthCredentialsException("Error getting body: " + ex.getMessage());
+            throw new HttpCommunicationException("Error getting body: " + ex.getMessage());
         }
         final long t1 = System.currentTimeMillis();
         logger.debug("Request took: " + (t1 - t0) + " ms for: " + dataUrl);

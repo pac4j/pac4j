@@ -48,7 +48,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      *
      * @param body the response body
      * @return the returned profile
-     * @thorw HttpAction whether an extra HTTP action is required
+     * @throws HttpAction whether an extra HTTP action is required
      */
     public abstract P extractUserProfile(String body) throws HttpAction;
 }
