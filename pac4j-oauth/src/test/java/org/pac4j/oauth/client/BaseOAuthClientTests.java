@@ -7,7 +7,6 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.credentials.OAuthCredentials;
 
 import static org.junit.Assert.*;
 
@@ -39,18 +38,8 @@ public final class BaseOAuthClientTests implements TestsConstants {
     }
 
     @Test
-    public void testGetCredentialOK() throws HttpAction {
-        final BaseOAuthClient client = new GitHubClient();
-        client.setKey(KEY);
-        client.setSecret(SECRET);
-        client.setCallbackUrl(CALLBACK_URL);
-        assertTrue(client.getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE,
-                                                                                     FAKE_VALUE)) instanceof OAuthCredentials);
-    }
-
-    @Test
     public void testGetCredentialError() throws HttpAction {
-        final BaseOAuthClient client = new GitHubClient();
+        final OAuth20Client client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
         client.setCallbackUrl(CALLBACK_URL);

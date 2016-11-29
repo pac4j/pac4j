@@ -1,15 +1,9 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.GoogleApi20;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.google2.Google2Profile;
 import org.pac4j.oauth.profile.google2.Google2ProfileDefinition;
 
@@ -23,9 +17,7 @@ import org.pac4j.oauth.profile.google2.Google2ProfileDefinition;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
-
-    public static final String RESPONSE_TYPE_CODE = "code";
+public class Google2Client extends OAuth20Client<Google2Profile> {
 
     public enum Google2Scope {
         EMAIL,
@@ -39,14 +31,10 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
 
     protected Google2Scope scope = Google2Scope.EMAIL_AND_PROFILE;
 
-    protected String scopeValue;
-
     public Google2Client() {
-        setResponseType(RESPONSE_TYPE_CODE);
     }
 
     public Google2Client(final String key, final String secret) {
-        this();
         setKey(key);
         setSecret(secret);
     }
@@ -54,55 +42,30 @@ public class Google2Client extends BaseOAuth20StateClient<Google2Profile> {
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("scope", this.scope);
+        final String scopeValue;
         if (this.scope == Google2Scope.EMAIL) {
-            this.scopeValue = this.EMAIL_SCOPE;
+            scopeValue = this.EMAIL_SCOPE;
         } else if (this.scope == Google2Scope.PROFILE) {
-            this.scopeValue = this.PROFILE_SCOPE;
+            scopeValue = this.PROFILE_SCOPE;
         } else {
-            this.scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
+            scopeValue = this.PROFILE_SCOPE + " " + this.EMAIL_SCOPE;
         }
-        super.internalInit(context);
-        setProfileDefinition(new Google2ProfileDefinition());
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return GoogleApi20.instance();
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return this.scopeValue;
-    }
-
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return "https://www.googleapis.com/plus/v1/people/me";
-    }
-
-    @Override
-    protected Google2Profile extractUserProfile(final String body) throws HttpAction {
-        final Google2Profile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+        configuration.setApi(GoogleApi20.instance());
+        configuration.setProfileDefinition(new Google2ProfileDefinition());
+        configuration.setScope(scopeValue);
+        configuration.setWithState(true);
+        configuration.setHasBeenCancelledFactory(ctx -> {
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            // user has denied permissions
+            if ("access_denied".equals(error)) {
+                return true;
             }
-        }
-        return profile;
-    }
+            return false;
+        });
+        setConfiguration(configuration);
 
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
-        // user has denied permissions
-        if ("access_denied".equals(error)) {
-            return true;
-        }
-        return false;
+        super.internalInit(context);
     }
-
 
     public Google2Scope getScope() {
         return this.scope;

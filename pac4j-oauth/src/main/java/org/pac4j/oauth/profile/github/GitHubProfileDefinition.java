@@ -1,8 +1,13 @@
 package org.pac4j.oauth.profile.github;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
+import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.util.Arrays;
 
@@ -12,7 +17,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class GitHubProfileDefinition extends CommonProfileDefinition<GitHubProfile> {
+public class GitHubProfileDefinition extends OAuth20ProfileDefinition<GitHubProfile> {
     
     public static final String TYPE = "type";
     public static final String BLOG = "blog";
@@ -53,5 +58,23 @@ public class GitHubProfileDefinition extends CommonProfileDefinition<GitHubProfi
         primary(AVATAR_URL, Converters.URL);
         primary(HTML_URL, Converters.URL);
         primary(PLAN, new JsonConverter<>(GitHubPlan.class));
+    }
+
+    @Override
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+        return "https://api.github.com/user";
+    }
+
+    @Override
+    public GitHubProfile extractUserProfile(final String body) throws HttpAction {
+        final GitHubProfile profile = newProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json != null) {
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : getPrimaryAttributes()) {
+                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+            }
+        }
+        return profile;
     }
 }

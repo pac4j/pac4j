@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.dropbox;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -39,7 +40,7 @@ public class DropBoxProfileDefinition extends OAuth20ProfileDefinition<DropBoxPr
     }
 
     @Override
-    public DropBoxProfile extractUserProfile(final String body) {
+    public DropBoxProfile extractUserProfile(final String body) throws HttpAction {
         final DropBoxProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

@@ -24,6 +24,8 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
 
     public static final String OAUTH_TOKEN = "oauth_token";
 
+    public static final String RESPONSE_TYPE_CODE = "code";
+
     private C client;
 
     private String key;
@@ -36,8 +38,7 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
 
     private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
-    // Default response_type = "code"
-    private String responseType = "code";
+    private String responseType = RESPONSE_TYPE_CODE;
 
     private String scope;
 

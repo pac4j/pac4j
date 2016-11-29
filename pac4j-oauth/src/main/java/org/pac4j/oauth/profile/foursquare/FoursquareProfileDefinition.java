@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.foursquare;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
@@ -43,7 +44,7 @@ public class FoursquareProfileDefinition extends OAuth20ProfileDefinition<Foursq
     }
 
     @Override
-    public FoursquareProfile extractUserProfile(String body) {
+    public FoursquareProfile extractUserProfile(String body) throws HttpAction {
         FoursquareProfile profile = newProfile();
         JsonNode json = JsonHelper.getFirstNode(body);
         if (json == null) {

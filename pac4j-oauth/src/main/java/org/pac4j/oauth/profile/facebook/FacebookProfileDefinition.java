@@ -3,6 +3,7 @@ package org.pac4j.oauth.profile.facebook;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
@@ -138,7 +139,7 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
     }
 
     @Override
-    public FacebookProfile extractUserProfile(final String body) {
+    public FacebookProfile extractUserProfile(final String body) throws HttpAction {
         final FacebookProfile profile = newProfile();
         final JsonNode json = JsonHelper.getFirstNode(body);
         if (json != null) {

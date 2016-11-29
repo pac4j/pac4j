@@ -1,12 +1,6 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.strava.StravaProfileDefinition;
 import org.pac4j.oauth.profile.strava.StravaProfile;
 import org.pac4j.scribe.builder.api.StravaApi20;
@@ -20,7 +14,7 @@ import org.pac4j.scribe.builder.api.StravaApi20;
  * @author Adrian Papusoi
  * @since 1.7.0
  */
-public class StravaClient extends BaseOAuth20Client<StravaProfile> {
+public class StravaClient extends OAuth20Client<StravaProfile> {
 
     /**
      * comma delimited string of ‘view_private’ and/or ‘write’, leave blank for read-only permissions.
@@ -42,43 +36,19 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new StravaProfileDefinition());
+        configuration.setApi(new StravaApi20(approvalPrompt));
+        configuration.setProfileDefinition(new StravaProfileDefinition());
+        configuration.setScope(this.scope);
+        setConfiguration(configuration);
+
         super.internalInit(context);
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return new StravaApi20(approvalPrompt);
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return this.scope;
-    }
-
-    @Override
-    protected String getProfileUrl(OAuth2AccessToken accessToken) {
-        return "https://www.strava.com/api/v3/athlete";
-    }
-
-    @Override
-    protected StravaProfile extractUserProfile(String body) throws HttpAction {
-        final StravaProfile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, StravaProfileDefinition.ID));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-            }
-        }
-        return profile;
     }
 
     public String getApprovalPrompt() {
         return approvalPrompt;
     }
 
-    public void setApprovalPrompt(String approvalPrompt) {
+    public void setApprovalPrompt(final String approvalPrompt) {
         this.approvalPrompt = approvalPrompt;
     }
 
@@ -86,7 +56,7 @@ public class StravaClient extends BaseOAuth20Client<StravaProfile> {
         return scope;
     }
 
-    public void setScope(String scope) {
+    public void setScope(final String scope) {
         this.scope = scope;
     }
 }

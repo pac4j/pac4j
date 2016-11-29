@@ -5,7 +5,6 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
-import org.pac4j.oauth.credentials.OAuth20Credentials;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -24,7 +23,7 @@ import static org.junit.Assert.*;
  */
 public final class BaseOAuth20ClientTests implements TestsConstants {
 
-    private BaseOAuth20Client getClient() {
+    private OAuth20Client getClient() {
         final GitHubClient client = new GitHubClient();
         client.setKey(KEY);
         client.setSecret(SECRET);
@@ -40,14 +39,6 @@ public final class BaseOAuth20ClientTests implements TestsConstants {
         } catch (final TechnicalException e) {
             assertEquals("No credential found", e.getMessage());
         }
-    }
-
-    @Test
-    public void testOk() throws HttpAction {
-        final OAuth20Credentials oauthCredential = (OAuth20Credentials) getClient()
-                .getCredentials(MockWebContext.create().addRequestParameter(BaseOAuth20Client.OAUTH_CODE, CODE));
-        assertNotNull(oauthCredential);
-        assertEquals(CODE, oauthCredential.getCode());
     }
 
     @Test

@@ -1,14 +1,7 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.scribejava.apis.VkontakteApi;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.vk.VkProfile;
 import org.pac4j.oauth.profile.vk.VkProfileDefinition;
 
@@ -24,7 +17,7 @@ import org.pac4j.oauth.profile.vk.VkProfileDefinition;
  * @since 1.5
  *
  */
-public class VkClient extends BaseOAuth20Client<VkProfile> {
+public class VkClient extends OAuth20Client<VkProfile> {
 
 	public final static String DEFAULT_FIELDS = "sex,bdate,photo_50,photo_100,photo_200_orig,photo_200,photo_400_orig,photo_max,photo_max_orig,online,online_mobile,lists,domain,has_mobile,contacts,connections,site,education,can_post,can_see_all_posts,can_see_audio,can_write_private_message,status,common_count,relation,relatives";
 
@@ -33,8 +26,6 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 	public final static String DEFAULT_SCOPE = "PERMISSIONS";
 
 	protected String scope = DEFAULT_SCOPE;
-
-	protected final static String BASE_URL = "https://api.vk.com/method/users.get";
 
 	public VkClient() {
 	}
@@ -46,39 +37,12 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 
 	@Override
 	protected void internalInit(final WebContext context) {
-		setProfileDefinition(new VkProfileDefinition());
+		configuration.setApi(VkontakteApi.instance());
+		configuration.setProfileDefinition(new VkProfileDefinition());
+		configuration.setScope(this.scope);
+		setConfiguration(configuration);
+
 		super.internalInit(context);
-	}
-
-	@Override
-	protected BaseApi<OAuth20Service> getApi() {
-		return VkontakteApi.instance();
-	}
-
-	@Override
-	protected String getOAuthScope() {
-		return this.scope;
-	}
-
-	@Override
-	protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-		String url = BASE_URL + "?fields=" + this.fields;
-		return url;
-	}
-
-	@Override
-	protected VkProfile extractUserProfile(final String body) throws HttpAction {
-		final VkProfile profile = getProfileDefinition().newProfile();
-		JsonNode json = JsonHelper.getFirstNode(body);
-		if (json != null) {
-			ArrayNode array = (ArrayNode) json.get("response");
-			JsonNode userNode = array.get(0);
-			profile.setId(JsonHelper.getElement(userNode, "uid"));
-			for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-				getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(userNode, attribute));
-			}
-		}
-		return profile;
 	}
 
 	public String getScope() {
@@ -93,7 +57,7 @@ public class VkClient extends BaseOAuth20Client<VkProfile> {
 		return fields;
 	}
 
-	public void setFields(String fields) {
+	public void setFields(final String fields) {
 		this.fields = fields;
 	}
 }

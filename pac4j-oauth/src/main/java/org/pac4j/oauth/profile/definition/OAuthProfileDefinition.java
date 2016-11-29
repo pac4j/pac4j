@@ -2,6 +2,7 @@ package org.pac4j.oauth.profile.definition;
 
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.model.Verb;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.oauth.config.OAuthConfiguration;
@@ -47,6 +48,7 @@ public abstract class OAuthProfileDefinition<P extends CommonProfile, T extends 
      *
      * @param body the response body
      * @return the returned profile
+     * @thorw HttpAction whether an extra HTTP action is required
      */
-    public abstract P extractUserProfile(String body);
+    public abstract P extractUserProfile(String body) throws HttpAction;
 }
