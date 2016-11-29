@@ -50,10 +50,6 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
         setRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
         setCredentialsExtractor(new OidcExtractor(configuration, getName()));
         setAuthenticator(new OidcAuthenticator(configuration));
-        createProfileCreator();
-    }
-
-    protected void createProfileCreator() {
         setProfileCreator(new OidcProfileCreator<>(configuration));
     }
 
