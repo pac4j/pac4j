@@ -19,5 +19,5 @@ public interface RedirectActionBuilder {
      * @return the redirect action
      * @throws HttpAction requires a specific HTTP action if necessary
      */
-    RedirectAction redirect(final WebContext context) throws HttpAction;
+    RedirectAction redirect(WebContext context) throws HttpAction;
 }

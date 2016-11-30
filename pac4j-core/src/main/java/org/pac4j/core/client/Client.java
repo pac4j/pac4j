@@ -59,4 +59,14 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @throws HttpAction whether an additional HTTP action is required
      */
     U getUserProfile(C credentials, WebContext context) throws HttpAction;
+
+    /**
+     * Get the request to perform the logout at the identity provider level
+     * (given the current web context and authenticated user profile).
+     *
+     * @param context the web context
+     * @param profile the current profile
+     * @return the logout request
+     */
+    RedirectAction getLogoutRequest(WebContext context, U profile);
 }

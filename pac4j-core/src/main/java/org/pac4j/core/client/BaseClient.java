@@ -76,6 +76,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction;
 
+    @Override
+    public RedirectAction getLogoutRequest(final WebContext context, final U profile) {
+        return null;
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
@@ -123,6 +128,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName());
+        return CommonHelper.toString(this.getClass(), "name", getName(), "authorizationGenerators", authorizationGenerators);
     }
 }

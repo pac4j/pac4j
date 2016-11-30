@@ -57,6 +57,8 @@ public class CasConfiguration extends InitializableWebObject {
 
     private CallbackUrlResolver callbackUrlResolver;
 
+    private boolean supportFrontChannelLogout;
+
     public CasConfiguration() { }
 
     public CasConfiguration(final String loginUrl) {
@@ -292,11 +294,19 @@ public class CasConfiguration extends InitializableWebObject {
         }
     }
 
+    public boolean isSupportFrontChannelLogout() {
+        return supportFrontChannelLogout;
+    }
+
+    public void setSupportFrontChannelLogout(final boolean supportFrontChannelLogout) {
+        this.supportFrontChannelLogout = supportFrontChannelLogout;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance);
+                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "supportFrontChannelLogout", this.supportFrontChannelLogout);
     }
 }
