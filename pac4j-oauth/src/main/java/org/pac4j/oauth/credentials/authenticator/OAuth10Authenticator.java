@@ -3,6 +3,7 @@ package org.pac4j.oauth.credentials.authenticator;
 import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.credentials.OAuth10Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -45,8 +46,7 @@ public class OAuth10Authenticator extends OAuthAuthenticator<OAuth10Credentials,
         try {
             accessToken = this.configuration.getService().getAccessToken(tokenRequest, verifier);
         } catch (IOException ex) {
-            final String message = "Error getting token:"+ex.getMessage();
-            throw new OAuthCredentialsException(message);
+            throw new HttpCommunicationException("Error getting token:" + ex.getMessage());
         }
         logger.debug("accessToken: {}", accessToken);
         oAuth10Credentials.setAccessToken(accessToken);

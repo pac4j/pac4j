@@ -2,6 +2,7 @@ package org.pac4j.oauth.credentials.authenticator;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.HttpCommunicationException;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.credentials.OAuth20Credentials;
 import org.pac4j.oauth.credentials.OAuthCredentials;
@@ -31,8 +32,7 @@ public class OAuth20Authenticator extends OAuthAuthenticator<OAuth20Credentials,
         try {
             accessToken = this.configuration.getService().getAccessToken(code);
         } catch (IOException ex) {
-            final String message = "Error getting token:"+ex.getMessage();
-            throw new OAuthCredentialsException(message);
+            throw new HttpCommunicationException("Error getting token:" + ex.getMessage());
         }
         logger.debug("accessToken: {}", accessToken);
         oAuth20Credentials.setAccessToken(accessToken);
