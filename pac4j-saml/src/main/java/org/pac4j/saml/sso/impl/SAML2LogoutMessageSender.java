@@ -11,7 +11,7 @@ import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.crypto.SignatureSigningParametersProvider;
 import org.pac4j.saml.exceptions.SAMLException;
@@ -38,7 +38,6 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
 
     private final static Logger logger = LoggerFactory.getLogger(SAML2LogoutMessageSender.class);
 
-
     private final SignatureSigningParametersProvider signatureSigningParametersProvider;
     private final String destinationBindingType;
     private final boolean signErrorResponses;
@@ -62,7 +61,7 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
         final SPSSODescriptor spDescriptor = context.getSPSSODescriptor();
         final IDPSSODescriptor idpssoDescriptor = context.getIDPSSODescriptor();
 
-        final SingleSignOnService ssoService = context.getIDPSingleSignOnService(destinationBindingType);
+        final SingleLogoutService ssoLogoutService = context.getIDPSingleLogoutService(destinationBindingType);
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();
 
         final MessageEncoder encoder = getMessageEncoder(context);
@@ -77,7 +76,7 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
 
         outboundContext.setMessage(logoutRequest);
         outboundContext.getSAMLEndpointContext().setEndpoint(acsService);
-        outboundContext.getSAMLPeerEndpointContext().setEndpoint(ssoService);
+        outboundContext.getSAMLPeerEndpointContext().setEndpoint(ssoLogoutService);
 
         outboundContext.getSAMLPeerEntityContext().setRole(context.getSAMLPeerEntityContext().getRole());
         outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());

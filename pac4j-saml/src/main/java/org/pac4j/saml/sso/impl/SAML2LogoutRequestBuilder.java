@@ -1,5 +1,6 @@
 package org.pac4j.saml.sso.impl;
 
+import java.util.Optional;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -9,11 +10,14 @@ import org.opensaml.saml.common.messaging.context.SAMLSelfEntityContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.LogoutRequest;
+import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.SessionIndex;
-import org.opensaml.saml.saml2.core.impl.SessionIndexBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.UserProfile;
 import org.pac4j.saml.context.SAML2MessageContext;
+import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
 
@@ -46,7 +50,6 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
 	public LogoutRequest build(SAML2MessageContext context) {
         final SingleLogoutService ssoService = context.getIDPSingleLogoutService(this.bindingType);
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService();
-
         return buildLogoutRequest(context, assertionConsumerService, ssoService);
 	}
 
@@ -68,13 +71,19 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
 		request.setDestination(ssoService.getLocation());
 
 		// very very bad...
-		org.pac4j.core.context.WebContext ctx = context.getWebContext();
-		org.pac4j.core.profile.ProfileManager manager = new org.pac4j.core.profile.ProfileManager(ctx);
-		java.util.Optional<org.pac4j.core.profile.UserProfile> p = manager.get(true);
-		if(p.isPresent() && p.get() instanceof org.pac4j.saml.profile.SAML2Profile) {
-			final org.pac4j.saml.profile.SAML2Profile samlP = (org.pac4j.saml.profile.SAML2Profile) p.get();
+		ProfileManager manager = new ProfileManager(context.getWebContext());
+		Optional<UserProfile> p = manager.get(true);
+		if(p.isPresent() && p.get() instanceof SAML2Profile) {
+			final SAML2Profile samlP = (SAML2Profile) p.get();
+			// name id added (id of profile)
+			final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
+			final NameID nameId = nameIdBuilder.buildObject();
+			nameId.setValue(samlP.getId());
+			request.setNameID(nameId);
+			// session index added
 			final String sessIdx = (String) samlP.getAttribute("sessionindex");
-			SessionIndex sessionIdx = new SessionIndexBuilder().buildObject();
+			final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory.getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
+			final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
 			sessionIdx.setSessionIndex(sessIdx);
 			request.getSessionIndexes().add(sessionIdx);
 		}
