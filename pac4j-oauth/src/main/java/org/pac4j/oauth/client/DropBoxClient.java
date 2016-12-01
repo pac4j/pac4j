@@ -1,12 +1,6 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.pac4j.scribe.builder.api.DropboxApi20;
@@ -19,7 +13,7 @@ import org.pac4j.scribe.builder.api.DropboxApi20;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class DropBoxClient extends BaseOAuth20Client<DropBoxProfile> {
+public class DropBoxClient extends OAuth20Client<DropBoxProfile> {
     
     public DropBoxClient() {
     }
@@ -31,41 +25,11 @@ public class DropBoxClient extends BaseOAuth20Client<DropBoxProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new DropBoxProfileDefinition());
+        configuration.setApi(DropboxApi20.INSTANCE);
+        configuration.setProfileDefinition(new DropBoxProfileDefinition());
+        configuration.setHasGrantType(true);
+        setConfiguration(configuration);
+
         super.internalInit(context);
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return DropboxApi20.INSTANCE;
-    }
-
-    @Override
-    protected boolean hasOAuthGrantType() {
-        return true;
-    }
-
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken token) {
-        return "https://api.dropbox.com/1/account/info";
-    }
-
-    @Override
-    protected DropBoxProfile extractUserProfile(final String body) throws HttpAction {
-        final DropBoxProfile profile = getProfileDefinition().newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "uid"));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-            }
-            json = (JsonNode) JsonHelper.getElement(json, "quota_info");
-            if (json != null) {
-                for (final String attribute : getProfileDefinition().getSecondaryAttributes()) {
-                    getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-                }
-            }
-        }
-        return profile;
     }
 }

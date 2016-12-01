@@ -2,19 +2,22 @@ package org.pac4j.oauth.run;
 
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.Gender;
+import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.client.BitbucketClient;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfile;
 
 import static org.junit.Assert.*;
 
 /**
- * Run manually a test for the {@link BitbucketClient}.
+ * Run a manual test for the {@link BitbucketClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class RunBitbucketClient extends RunClient {
+public class RunBitbucketClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunBitbucketClient().run();
@@ -22,7 +25,7 @@ public final class RunBitbucketClient extends RunClient {
 
     @Override
     protected String getLogin() {
-        return "testscribeup";
+        return "testscribeup@gmail.com";
     }
 
     @Override
@@ -42,12 +45,12 @@ public final class RunBitbucketClient extends RunClient {
     @Override
     protected void verifyProfile(CommonProfile userProfile) {
         BitbucketProfile profile = (BitbucketProfile) userProfile;
-        assertEquals("testscribeup", profile.getUsername());
-        assertEquals("Test", profile.getFirstName());
-        assertEquals("Scribeup", profile.getFamilyName());
-        assertEquals("Test Scribeup", profile.getDisplayName());
+        assertEquals("testscribeup", profile.getId());
+        assertEquals(BitbucketProfile.class.getName() + CommonProfile.SEPARATOR + "testscribeup", profile.getTypedId());
+        assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), BitbucketProfile.class));
+        assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
+        assertCommonProfile(userProfile, null, "Test", "Scribeup", "Test Scribeup", "testscribeup", Gender.UNSPECIFIED, null,
+                "https://bitbucket.org/account/testscribeup/avatar/32/?ts=", "/1.0/users/testscribeup", null);
         assertFalse(profile.isTeam());
-        assertTrue(profile.getPictureUrl().toString().startsWith("https://bitbucket.org/account/testscribeup/avatar"));
-        assertEquals("/1.0/users/testscribeup", profile.getProfileUrl().toString());
     }
 }

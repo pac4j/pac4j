@@ -1,9 +1,14 @@
 package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
+import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +19,7 @@ import java.util.List;
  * @since 1.7.0
  * @author Adrian Papusoi
  */
-public class StravaProfileDefinition extends CommonProfileDefinition<StravaProfile> {
+public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProfile> {
 
     public static final String ID = "id";
     public static final String RESOURCE_STATE = "resource_state";
@@ -60,5 +65,23 @@ public class StravaProfileDefinition extends CommonProfileDefinition<StravaProfi
         primary(BIKES, multiGearConverter);
         primary(SHOES, multiGearConverter);
         primary(PROFILE, Converters.URL);
+    }
+
+    @Override
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+        return "https://www.strava.com/api/v3/athlete";
+    }
+
+    @Override
+    public StravaProfile extractUserProfile(String body) throws HttpAction {
+        final StravaProfile profile = newProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json != null) {
+            profile.setId(JsonHelper.getElement(json, StravaProfileDefinition.ID));
+            for (final String attribute : getPrimaryAttributes()) {
+                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+            }
+        }
+        return profile;
     }
 }

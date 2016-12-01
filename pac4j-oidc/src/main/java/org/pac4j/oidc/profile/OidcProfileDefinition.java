@@ -51,8 +51,10 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
 
     public OidcProfileDefinition() {
         super(x -> (P) new OidcProfile());
-        Arrays.stream(new String[] {NAME, GIVEN_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, PROFILE, PICTURE, WEBSITE,
+        Arrays.stream(new String[] {NAME, GIVEN_NAME, MIDDLE_NAME, NICKNAME, PREFERRED_USERNAME, WEBSITE,
                 PHONE_NUMBER, ZONEINFO, ID_TOKEN}).forEach(a -> primary(a, Converters.STRING));
+        primary(PROFILE, Converters.URL);
+        primary(PICTURE, Converters.URL);
         primary(EMAIL_VERIFIED, Converters.BOOLEAN);
         primary(PHONE_NUMBER_VERIFIED, Converters.BOOLEAN);
         primary(UPDATED_AT, new OidcLongTimeConverter());
