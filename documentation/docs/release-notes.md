@@ -5,6 +5,7 @@ title: Release notes&#58;
 
 **v2.0.0**:
 
+- Upgrade the OAuth support with Scribe v3.3 and rebuild all clients on the generic `OAuth10Client` and `OAuth20Client`
 - User profiles are simple POJOs, the `AttributesDefinition` is replaced by the `ProfileDefinition`
 - CAS specificities (Kryo serialization, `toString` service ticket validation) are handled via the `InternalAttributeHandler`
 - Authenticators may throw the checked `CredentialsException`

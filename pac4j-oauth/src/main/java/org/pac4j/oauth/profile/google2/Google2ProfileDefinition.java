@@ -1,10 +1,15 @@
 package org.pac4j.oauth.profile.google2;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
+import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.util.List;
 
@@ -14,7 +19,7 @@ import java.util.List;
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public class Google2ProfileDefinition extends CommonProfileDefinition<Google2Profile> {
+public class Google2ProfileDefinition extends OAuth20ProfileDefinition<Google2Profile> {
 
     public static final String DISPLAY_NAME = "displayName";
     public static final String GIVEN_NAME = "name.givenName";
@@ -35,5 +40,23 @@ public class Google2ProfileDefinition extends CommonProfileDefinition<Google2Pro
         primary(LANGUAGE, Converters.LOCALE);
         primary(BIRTHDAY, new DateConverter("yyyy-MM-dd"));
         primary(EMAILS, new JsonConverter(List.class, new TypeReference<List<Google2Email>>() {}));
+    }
+
+    @Override
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+        return "https://www.googleapis.com/plus/v1/people/me";
+    }
+
+    @Override
+    public Google2Profile extractUserProfile(final String body) throws HttpAction {
+        final Google2Profile profile = newProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json != null) {
+            profile.setId(JsonHelper.getElement(json, "id"));
+            for (final String attribute : getPrimaryAttributes()) {
+                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+            }
+        }
+        return profile;
     }
 }

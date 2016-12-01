@@ -27,13 +27,10 @@ public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
-
-        super.internalInit(context);
-    }
-
-    @Override
-    protected void createProfileCreator() {
         final OidcProfileCreator<GoogleOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
         profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new GoogleOidcProfile()));
+        setProfileCreator(profileCreator);
+
+        super.internalInit(context);
     }
 }

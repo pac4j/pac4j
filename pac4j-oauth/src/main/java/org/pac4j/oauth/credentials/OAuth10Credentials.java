@@ -1,6 +1,7 @@
 package org.pac4j.oauth.credentials;
 
 import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuth1Token;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -16,6 +17,8 @@ public class OAuth10Credentials extends OAuthCredentials {
     private String token;
 
     private String verifier;
+
+    private OAuth1Token accessToken;
 
     public OAuth10Credentials(OAuth1RequestToken requestToken, String token, String verifier, String clientName) {
         super(clientName);
@@ -34,6 +37,14 @@ public class OAuth10Credentials extends OAuthCredentials {
 
     public String getVerifier() {
         return this.verifier;
+    }
+
+    public OAuth1Token getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(final OAuth1Token accessToken) {
+        this.accessToken = accessToken;
     }
 
     @Override
@@ -61,8 +72,9 @@ public class OAuth10Credentials extends OAuthCredentials {
     public String toString() {
         return CommonHelper.toString(this.getClass(),
                 "requestToken", requestToken,
-                "token'", token,
+                "token", token,
                 "verifier'", verifier,
-                "clientName", getClientName());
+                "clientName", getClientName(),
+                "accessToken", accessToken);
     }
 }

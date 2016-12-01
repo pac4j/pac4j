@@ -1,37 +1,21 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.FacebookApi;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.exceptions.OAuthException;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.model.OAuthConstants;
-import com.github.scribejava.core.model.OAuthRequest;
-import com.github.scribejava.core.model.Response;
-import com.github.scribejava.core.oauth.OAuth20Service;
-import java.io.IOException;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpCommunicationException;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.JsonHelper;
+import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
 import org.pac4j.oauth.profile.facebook.FacebookProfileDefinition;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 /**
  * <p>This class is the OAuth client to authenticate users in Facebook.</p>
- * <p>By default, the following <i>scope</i> is requested to Facebook : user_likes, user_about_me, user_birthday, user_education_history,
+ * <p>By default, the following <i>scope</i> is requested to Facebook: user_likes, user_about_me, user_birthday, user_education_history,
  * email, user_hometown, user_relationship_details, user_location, user_religion_politics, user_relationships, user_website and
  * user_work_history.</p>
  * <p>The <i>scope</i> can be defined to require permissions from the user and retrieve fields from Facebook, by using the
  * {@link #setScope(String)} method.</p>
- * <p>By default, the following <i>fields</i> are requested to Facebook : id, name, first_name, middle_name, last_name, gender, locale,
+ * <p>By default, the following <i>fields</i> are requested to Facebook: id, name, first_name, middle_name, last_name, gender, locale,
  * languages, link, third_party_id, timezone, updated_time, verified, about, birthday, education, email, hometown, interested_in,
  * location, political, favorite_athletes, favorite_teams, quotes, relationship_status, religion, significant_other, website and work.</p>
  * <p>The <i>fields</i> can be defined and requested to Facebook, by using the {@link #setFields(String)} method.</p>
@@ -45,27 +29,17 @@ import javax.crypto.spec.SecretKeySpec;
  * @author Mehdi BEN HAJ ABBES
  * @since 1.0.0
  */
-public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
-
-    private static final String EXCHANGE_TOKEN_URL = "https://graph.facebook.com/v2.8/oauth/access_token?grant_type=fb_exchange_token";
-
-    private static final String EXCHANGE_TOKEN_PARAMETER = "fb_exchange_token";
-
-    private static final String APPSECRET_PARAMETER = "appsecret_proof";
+public class FacebookClient extends OAuth20Client<FacebookProfile> {
 
     public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
 
     protected String fields = DEFAULT_FIELDS;
 
-    protected final static String BASE_URL = "https://graph.facebook.com/v2.8/me";
-
     public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
 
     protected String scope = DEFAULT_SCOPE;
 
-    public final static int DEFAULT_LIMIT = 0;
-
-    protected int limit = DEFAULT_LIMIT;
+    protected int limit = FacebookProfileDefinition.DEFAULT_LIMIT;
 
     protected boolean requiresExtendedToken = false;
 
@@ -82,160 +56,40 @@ public class FacebookClient extends BaseOAuth20StateClient<FacebookProfile> {
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("fields", this.fields);
-        super.internalInit(context);
-        setProfileDefinition(new FacebookProfileDefinition());
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return FacebookApi.instance();
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return this.scope;
-    }
-
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        String url = BASE_URL + "?fields=" + this.fields;
-        if (this.limit > DEFAULT_LIMIT) {
-            url += "&limit=" + this.limit;
-        }
-        // possibly include the appsecret_proof parameter
-        if (this.useAppsecretProof) {
-            url = computeAppSecretProof(url, accessToken);
-        }
-        return url;
-    }
-
-    @Override
-    protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) throws HttpAction {
-        String body = sendRequestForData(accessToken, getProfileUrl(accessToken));
-        if (body == null) {
-            throw new HttpCommunicationException("Not data found for accessToken: " + accessToken);
-        }
-        final FacebookProfile profile = extractUserProfile(body);
-        addAccessTokenToProfile(profile, accessToken);
-        if (profile != null && this.requiresExtendedToken) {
-            String url = CommonHelper.addParameter(EXCHANGE_TOKEN_URL, OAuthConstants.CLIENT_ID, getKey());
-            url = CommonHelper.addParameter(url, OAuthConstants.CLIENT_SECRET, getSecret());
-            url = addExchangeToken(url, accessToken);
-            final OAuthRequest request = createOAuthRequest(url);
-            final long t0 = System.currentTimeMillis();
-            final Response response = request.send();
-            final int code = response.getCode();
-            try {
-                body = response.getBody();
-            } catch (IOException ex) {
-                final String message = "Error getting body:"+ex.getMessage();
-                throw new OAuthCredentialsException(message);
-            }
-            final long t1 = System.currentTimeMillis();
-            logger.debug("Request took: " + (t1 - t0) + " ms for: " + url);
-            logger.debug("response code: {} / response body: {}", code, body);
-            if (code == 200) {
-                logger.debug("Retrieve extended token from  {}", body);
-                final OAuth2AccessToken extendedAccessToken;
-                try {
-                    extendedAccessToken = ((DefaultApi20) getApi()).getAccessTokenExtractor().extract(response);
-                } catch (IOException | OAuthException ex) {
-                    final String message = "Error extracting token:"+ex.getMessage();
-                    throw new OAuthCredentialsException(message);
-                }
-                logger.debug("Extended token: {}", extendedAccessToken);
-                addAccessTokenToProfile(profile, extendedAccessToken);
+        configuration.setApi(FacebookApi.instance());
+        configuration.setProfileDefinition(new FacebookProfileDefinition());
+        configuration.setScope(scope);
+        configuration.setHasBeenCancelledFactory(ctx -> {
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            final String errorReason = ctx.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
+            // user has denied permissions
+            if ("access_denied".equals(error) && "user_denied".equals(errorReason)) {
+                return true;
             } else {
-                logger.error("Cannot get extended token: {} / {}", code, body);
+                return false;
             }
-        }
-        return profile;
+        });
+        configuration.setWithState(true);
+        setConfiguration(configuration);
+        setProfileCreator(new FacebookProfileCreator(configuration));
+
+        super.internalInit(context);
     }
 
-    @Override
-    protected FacebookProfile extractUserProfile(final String body) throws HttpAction {
-        final FacebookProfile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-            }
-            extractData(profile, json, FacebookProfileDefinition.FRIENDS);
-            extractData(profile, json, FacebookProfileDefinition.MOVIES);
-            extractData(profile, json, FacebookProfileDefinition.MUSIC);
-            extractData(profile, json, FacebookProfileDefinition.BOOKS);
-            extractData(profile, json, FacebookProfileDefinition.LIKES);
-            extractData(profile, json, FacebookProfileDefinition.ALBUMS);
-            extractData(profile, json, FacebookProfileDefinition.EVENTS);
-            extractData(profile, json, FacebookProfileDefinition.GROUPS);
-            extractData(profile, json, FacebookProfileDefinition.MUSIC_LISTENS);
-            extractData(profile, json, FacebookProfileDefinition.PICTURE);
-        }
-        return profile;
+    public void setStateData(final String stateData) {
+        configuration.setStateData(stateData);
     }
 
-    protected void extractData(final FacebookProfile profile, final JsonNode json, final String name) {
-        final JsonNode data = (JsonNode) JsonHelper.getElement(json, name);
-        if (data != null) {
-            getProfileDefinition().convertAndAdd(profile, name, JsonHelper.getElement(data, "data"));
-        }
+    public String getStateData() {
+        return configuration.getStateData();
     }
 
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
-        final String errorReason = context.getRequestParameter(OAuthCredentialsException.ERROR_REASON);
-        // user has denied permissions
-        if ("access_denied".equals(error) && "user_denied".equals(errorReason)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void setUseAppSecretProof(boolean useSecret) {
+    public void setUseAppSecretProof(final boolean useSecret) {
         this.useAppsecretProof = useSecret;
     }
 
     public boolean getUseAppSecretProof() {
         return this.useAppsecretProof;
-    }
-
-    /**
-     * The code in this method is based on this blog post: https://www.sammyk.me/the-single-most-important-way-to-make-your-facebook-app-more-secure
-     * and this answer: https://stackoverflow.com/questions/7124735/hmac-sha256-algorithm-for-signature-calculation
-     *
-     * @param url the URL to which we're adding the proof
-     * @param token the application token we pass back and forth
-     * @return URL with the appsecret_proof parameter added
-     */
-    protected String computeAppSecretProof(String url, OAuth2AccessToken token) {
-        try {
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(getSecret().getBytes("UTF-8"), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken().getBytes("UTF-8")));
-            url = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
-            return url;
-        } catch (final Exception e) {
-            throw new TechnicalException("Unable to compute appsecret_proof", e);
-        }
-    }
-
-    /**
-     * Adds the token to the URL in question. If we require appsecret_proof, then this method
-     * will also add the appsecret_proof parameter to the URL, as Facebook expects.
-     *
-     * @param url the URL to modify
-     * @param accessToken the token we're passing back and forth
-     * @return url with additional parameter(s)
-     */
-    protected String addExchangeToken(String url, OAuth2AccessToken accessToken) {
-        if (this.useAppsecretProof) {
-            url = computeAppSecretProof(url, accessToken);
-        }
-        return CommonHelper.addParameter(url, EXCHANGE_TOKEN_PARAMETER, accessToken.getAccessToken());
     }
 
     public String getScope() {

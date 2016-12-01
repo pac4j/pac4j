@@ -58,7 +58,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
         return casServerPrefixUrl;
     }
 
-    public void setCasServerPrefixUrl(String casServerPrefixUrl) {
+    public void setCasServerPrefixUrl(final String casServerPrefixUrl) {
         this.casServerPrefixUrl = casServerPrefixUrl;
     }
 
@@ -66,7 +66,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
         return usernameParameter;
     }
 
-    public void setUsernameParameter(String usernameParameter) {
+    public void setUsernameParameter(final String usernameParameter) {
         this.usernameParameter = usernameParameter;
     }
 
@@ -74,7 +74,7 @@ public class CasRestFormClient extends AbstractCasRestClient {
         return passwordParameter;
     }
 
-    public void setPasswordParameter(String passwordParameter) {
+    public void setPasswordParameter(final String passwordParameter) {
         this.passwordParameter = passwordParameter;
     }
 

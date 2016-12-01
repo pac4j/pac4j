@@ -1,15 +1,11 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.github.scribejava.core.builder.api.DefaultApi10a;
-import com.github.scribejava.core.model.OAuth1Token;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.twitter.TwitterProfile;
 import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
 
@@ -23,12 +19,11 @@ import org.pac4j.oauth.profile.twitter.TwitterProfileDefinition;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
+public class TwitterClient extends OAuth10Client<TwitterProfile> {
     
     private boolean alwaysConfirmAuthorization = false;
     
-    public TwitterClient() {
-    }
+    public TwitterClient() {}
     
     public TwitterClient(final String key, final String secret) {
         setKey(key);
@@ -37,12 +32,21 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
     
     @Override
     protected void internalInit(final WebContext context) {
+        configuration.setApi(getApi());
+        configuration.setProfileDefinition(new TwitterProfileDefinition());
+        configuration.setHasBeenCancelledFactory(ctx -> {
+            final String denied = ctx.getRequestParameter("denied");
+            if (CommonHelper.isNotBlank(denied)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        setConfiguration(configuration);
+
         super.internalInit(context);
-        this.service = new OAuth10aService((DefaultApi10a) getApi(), buildOAuthConfig(context));
-        setProfileDefinition(new TwitterProfileDefinition());
     }
 
-    @Override
     protected BaseApi<OAuth10aService> getApi() {
         final DefaultApi10a api;
         if (this.alwaysConfirmAuthorization == false) {
@@ -53,34 +57,6 @@ public class TwitterClient extends BaseOAuth10Client<TwitterProfile> {
         return api;
     }
 
-    @Override
-    protected String getProfileUrl(final OAuth1Token accessToken) {
-        return "https://api.twitter.com/1.1/account/verify_credentials.json";
-    }
-    
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        final String denied = context.getRequestParameter("denied");
-        if (CommonHelper.isNotBlank(denied)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    @Override
-    protected TwitterProfile extractUserProfile(final String body) throws HttpAction {
-        final TwitterProfile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-            }
-        }
-        return profile;
-    }
-    
     public boolean isAlwaysConfirmAuthorization() {
         return this.alwaysConfirmAuthorization;
     }

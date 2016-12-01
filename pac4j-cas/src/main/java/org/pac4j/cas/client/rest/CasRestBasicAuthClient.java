@@ -60,7 +60,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         return casServerPrefixUrl;
     }
 
-    public void setCasServerPrefixUrl(String casServerPrefixUrl) {
+    public void setCasServerPrefixUrl(final String casServerPrefixUrl) {
         this.casServerPrefixUrl = casServerPrefixUrl;
     }
 
@@ -68,7 +68,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         return headerName;
     }
 
-    public void setHeaderName(String headerName) {
+    public void setHeaderName(final String headerName) {
         this.headerName = headerName;
     }
 
@@ -76,7 +76,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
         return prefixHeader;
     }
 
-    public void setPrefixHeader(String prefixHeader) {
+    public void setPrefixHeader(final String prefixHeader) {
         this.prefixHeader = prefixHeader;
     }
 
