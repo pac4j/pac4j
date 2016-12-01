@@ -149,7 +149,8 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     protected void initSAMLLogoutProfileHandler() {
     	this.logoutProfileHandler = new SAML2LogoutProfileHandler(
     			new SAML2LogoutMessageSender(this.signatureSigningParametersProvider,
-                        null, false, this.configuration.isForceSignRedirectBindingAuthnRequest()),
+    					this.configuration.getDestinationBindingType(),
+    					false, this.configuration.isForceSignRedirectBindingAuthnRequest()),
     			new SAML2WebSSOMessageReceiver(this.logoutResponseValidator));
     }
 
@@ -180,7 +181,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
     
     protected void initSAMLLogoutObjectBuilder() {
-    	this.saml2LogoutObjectBuilder = new SAML2LogoutRequestBuilder(this.configuration.getComparisonType());
+    	this.saml2LogoutObjectBuilder = new SAML2LogoutRequestBuilder(this.configuration.getDestinationBindingType());
     }
 
     protected void initSAMLContextProvider(final MetadataResolver metadataManager) {
