@@ -52,12 +52,14 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     @Override
     public final HttpAction logoutRedirect(final WebContext context) {
         final RedirectAction action = getLogoutRedirectAction(context);
-        if (action.getType() == RedirectType.REDIRECT) {
-            return HttpAction.redirect("logout redirection via 302", context, action.getLocation());
-        } else {
-        	// if it is not a redirection, we don't care
-        	return null;
+        if(action != null) {
+            if (action.getType() == RedirectType.REDIRECT) {
+                return HttpAction.redirect("logout redirection via 302", context, action.getLocation());
+            } else {
+                return HttpAction.ok("logout redirection via 200", context, action.getContent());
+            }
         }
+        return null;
     }
 
     /**
