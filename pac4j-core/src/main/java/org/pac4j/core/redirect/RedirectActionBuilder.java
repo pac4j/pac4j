@@ -1,6 +1,5 @@
 package org.pac4j.core.redirect;
 
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 

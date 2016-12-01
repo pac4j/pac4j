@@ -1,5 +1,6 @@
-package org.pac4j.core.client;
+package org.pac4j.core.redirect;
 
+import org.pac4j.core.client.Client;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -25,19 +26,12 @@ public class RedirectAction {
 
     private String content;
 
-    private boolean followRedirections;
-
     private RedirectAction() {}
 
     public static RedirectAction redirect(final String location) {
-        return redirect(location, false);
-    }
-
-    public static RedirectAction redirect(final String location, final boolean followRedirections) {
         RedirectAction action = new RedirectAction();
         action.type = RedirectType.REDIRECT;
         action.location = location;
-        action.followRedirections = followRedirections;
         return action;
     }
 
@@ -60,12 +54,8 @@ public class RedirectAction {
         return this.content;
     }
 
-    public boolean isFollowRedirections() {
-        return this.followRedirections;
-    }
-
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "type", type, "location", location, "content", content, "followRedirections", followRedirections);
+        return CommonHelper.toString(this.getClass(), "type", type, "location", location, "content", content);
     }
 }

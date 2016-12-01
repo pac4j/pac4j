@@ -3,6 +3,7 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.LogoutRequest;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -68,5 +69,5 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param profile the current profile
      * @return the logout request
      */
-    RedirectAction getLogoutRequest(WebContext context, U profile);
+    LogoutRequest getLogoutRequest(WebContext context, U profile);
 }

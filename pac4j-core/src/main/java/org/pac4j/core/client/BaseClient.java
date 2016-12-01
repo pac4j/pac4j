@@ -8,6 +8,7 @@ import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.LogoutRequest;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -77,7 +78,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction;
 
     @Override
-    public RedirectAction getLogoutRequest(final WebContext context, final U profile) {
+    public LogoutRequest getLogoutRequest(final WebContext context, final U profile) {
         return null;
     }
 

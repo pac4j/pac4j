@@ -6,11 +6,13 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.LogoutRequest;
 import org.pac4j.core.logout.LogoutRequestBuilder;
 import org.pac4j.core.logout.NoLogoutRequestBuilder;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
@@ -70,7 +72,7 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
     }
 
     @Override
-    public RedirectAction getLogoutRequest(final WebContext context, final U profile) {
+    public LogoutRequest getLogoutRequest(final WebContext context, final U profile) {
         CommonHelper.assertNotNull("logoutRequestBuilder", this.logoutRequestBuilder);
 
         return logoutRequestBuilder.getLogoutRequest(context, profile);

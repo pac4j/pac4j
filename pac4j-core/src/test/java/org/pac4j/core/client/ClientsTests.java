@@ -10,6 +10,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.http.AjaxRequestResolver;
 import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 

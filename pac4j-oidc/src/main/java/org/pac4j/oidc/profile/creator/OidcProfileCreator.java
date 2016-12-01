@@ -22,6 +22,7 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -141,8 +142,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
             if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
                 final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), (BearerAccessToken) accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
-                userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
-                userInfoHttpRequest.setReadTimeout(configuration.getReadTimeout());
+                userInfoHttpRequest.setConnectTimeout(HttpUtils.getConnectTimeout());
+                userInfoHttpRequest.setReadTimeout(HttpUtils.getReadTimeout());
                 final HTTPResponse httpResponse = userInfoHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
                         httpResponse.getContent());

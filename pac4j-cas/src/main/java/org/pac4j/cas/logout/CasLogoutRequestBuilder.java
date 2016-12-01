@@ -1,7 +1,7 @@
 package org.pac4j.cas.logout;
 
 import org.pac4j.cas.config.CasConfiguration;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.logout.LogoutRequest;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.logout.LogoutRequestBuilder;
 import org.pac4j.core.profile.CommonProfile;
@@ -32,12 +32,12 @@ public class CasLogoutRequestBuilder extends InitializableWebObject implements L
     }
 
     @Override
-    public RedirectAction getLogoutRequest(final WebContext context, final CommonProfile profile) {
+    public LogoutRequest getLogoutRequest(final WebContext context, final CommonProfile profile) {
         init(context);
 
         final String logoutUrl = configuration.getCallbackUrlResolver().compute(configuration.getPrefixUrl() + "logout", context);
         logger.debug("logoutUrl: {}", logoutUrl);
-        return RedirectAction.redirect(logoutUrl, configuration.isSupportFrontChannelLogout());
+        return LogoutRequest.get(logoutUrl, configuration.isSupportFrontChannelLogout());
     }
 
     @Override

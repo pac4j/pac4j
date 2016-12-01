@@ -6,7 +6,7 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;
-import org.pac4j.cas.util.HttpUtils;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.client.DirectClientV2;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.TokenCredentials;

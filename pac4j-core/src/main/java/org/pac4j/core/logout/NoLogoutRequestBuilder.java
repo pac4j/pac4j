@@ -1,6 +1,5 @@
 package org.pac4j.core.logout;
 
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
@@ -15,7 +14,7 @@ public class NoLogoutRequestBuilder<U extends CommonProfile> implements LogoutRe
     public static final NoLogoutRequestBuilder INSTANCE = new NoLogoutRequestBuilder<>();
 
     @Override
-    public RedirectAction getLogoutRequest(final WebContext context, final U profile) {
+    public LogoutRequest getLogoutRequest(final WebContext context, final U profile) {
         return null;
     }
 }

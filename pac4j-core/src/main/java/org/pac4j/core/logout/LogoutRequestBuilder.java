@@ -1,6 +1,5 @@
 package org.pac4j.core.logout;
 
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
@@ -20,5 +19,5 @@ public interface LogoutRequestBuilder<U extends CommonProfile> {
      * @param profile the current profile
      * @return the logout request
      */
-    RedirectAction getLogoutRequest(WebContext context, U profile);
+    LogoutRequest getLogoutRequest(WebContext context, U profile);
 }
