@@ -1,5 +1,6 @@
 package org.pac4j.oauth.credentials;
 
+import com.github.scribejava.core.model.OAuth2AccessToken;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -11,6 +12,8 @@ import org.pac4j.core.util.CommonHelper;
 public class OAuth20Credentials extends OAuthCredentials {
 
     private String code;
+
+    private OAuth2AccessToken accessToken;
 
     /**
      * For OAuth2 Authorization Code Flow.
@@ -43,10 +46,19 @@ public class OAuth20Credentials extends OAuthCredentials {
         return code != null ? code.hashCode() : 0;
     }
 
+    public OAuth2AccessToken getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(final OAuth2AccessToken accessToken) {
+        this.accessToken = accessToken;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(),
-                "code='", code,
+                "code", code,
+                "accessToken", accessToken,
                 "clientName", getClientName());
     }
 }

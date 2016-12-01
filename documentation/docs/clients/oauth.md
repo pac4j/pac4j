@@ -23,30 +23,44 @@ You need to use the following module: `pac4j-oauth`.
 
 ### a) Generic clients
 
-You can use the [`GenericOAuth20Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/GenericOAuth20Client.java) or the [`GenericOAuth20StateClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/GenericOAuth20StateClient.java) clients to login with an OAuth 2.0 server. It returns a [`GenericOAuth20Profile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/generic/GenericOAuth20Profile.java).
+You can use the [`OAuth10Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/OAuth10Client.java) or the [`OAuth20Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/OAuth20Client.java) clients to login with an OAuth 1.0 or 2.0 server.
+In the latter case, you may use the [`GenericApi20`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/scribe/builder/api/GenericApi20.java).
 
-**Example:**
+**Example to simulate the `BitbucketClient`:**
 
 ```java
-GenericOAuth20Client client = new GenericOAuth20Client();
-client.setAttributesDefinition(new GitHubAttributesDefinition());
-client.setAuthUrl("https://github.com/login/oauth/authorize");
-client.setTokenUrl("https://github.com/login/oauth/access_token");
-client.setProfileUrl("https://api.github.com/user");
-client.setKey("62374f5573a89a8f9900");
-client.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
-client.setCallbackUrl("http://localhost:8080/callback");
-client.setScope("user");
+OAuth10Configuration config = new OAuth10Configuration();
+config.setKey("bjEt8BMpLwFDqZUvp6");
+config.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
+config.setApi(new BitBucketApi());
+config.setProfileDefinition(new BitbucketProfileDefinition());
+OAuth10Client client = new OAuth10Client();
+client.setCallbackUrl(PAC4J_BASE_URL);
+client.setConfiguration(config);
+```
+
+**Example to simulate the `GithubClient`:**
+
+```java
+OAuth20Configuration config = new OAuth20Configuration();
+config.setApi(GitHubApi.instance());
+config.setProfileDefinition(new GitHubProfileDefinition());
+config.setScope("user");
+config.setKey("62374f5573a89a8f9900");
+config.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");
+OAuth20Client client = new OAuth20Client();
+client.setConfiguration(config);
+client.setCallbackUrl(PAC4J_BASE_URL);
 ```
 
 ### b) Specific clients
 
-Many clients are available to login with many identity providers:
+By default, many clients are available to login with many identity providers:
 
 | Identity provider | Client | User profile |
 |-------------------|--------|---------|
 | [BitBucket](https://bitbucket.org) | [`BitbucketClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/BitbucketClient.java) | [`BitbucketProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/bitbucket/BitbucketProfile.java) |
-| [CAS server using OAuth protocol](https://apereo.github.io/cas/4.2.x/installation/OAuth-OpenId-Authentication.html) | [`CasOAuthWrapperClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/CasOAuthWrapperClient.java) | [`CasOAuthWrapperProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/casoauthwrapper/CasOAuthWrapperProfile.java) |
+| [a CAS server using the OAuth protocol](https://apereo.github.io/cas/4.2.x/installation/OAuth-OpenId-Authentication.html) | [`CasOAuthWrapperClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/CasOAuthWrapperClient.java) | [`CasOAuthWrapperProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/casoauthwrapper/CasOAuthWrapperProfile.java) |
 | [DropBox](https://www.dropbox.com) | [`DropBoxClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/DropBoxClient.java) | [`DropBoxProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/dropbox/DropBoxProfile.java) |
 | [Facebook](https://www.facebook.com/) | [`FacebookClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/FacebookClient.java) | [`FacebookProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/facebook/FacebookProfile.java) |
 | [Foursquare](https://www.foursquare.com) | [`FoursquareClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/client/FoursquareClient.java) | [`FoursquareProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/foursquare/FoursquareProfile.java) |

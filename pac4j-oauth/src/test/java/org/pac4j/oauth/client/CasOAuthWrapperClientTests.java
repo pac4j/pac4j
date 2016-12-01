@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
+import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
 
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
         client.setCasOAuthUrl(CALLBACK_URL);
         client.setCallbackUrl(CALLBACK_URL);
         client.init(MockWebContext.create());
-        final CasOAuthWrapperProfile profile = client.extractUserProfile(body);
+        final CasOAuthWrapperProfile profile = new CasOAuthWrapperProfileDefinition().extractUserProfile(body);
         assertEquals(ID, profile.getId());
         assertEquals(2, profile.getAttributes().size());
         assertEquals(VALUE, profile.getAttribute(KEY));
@@ -73,7 +74,7 @@ public final class CasOAuthWrapperClientTests implements TestsConstants {
         client.setCasOAuthUrl(CALLBACK_URL);
         client.setCallbackUrl(CALLBACK_URL);
         client.init(MockWebContext.create());
-        final CasOAuthWrapperProfile profile = client.extractUserProfile(body);
+        final CasOAuthWrapperProfile profile = new CasOAuthWrapperProfileDefinition().extractUserProfile(body);
         assertEquals(ID, profile.getId());
         assertEquals(2, profile.getAttributes().size());
         assertEquals(VALUE, profile.getAttribute(KEY));

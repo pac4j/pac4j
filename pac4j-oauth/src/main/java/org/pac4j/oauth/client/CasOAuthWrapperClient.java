@@ -1,20 +1,10 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
 import org.pac4j.scribe.builder.api.CasOAuthWrapperApi20;
-
-import java.util.Iterator;
 
 /**
  * <p>This class is the OAuth client to authenticate users on CAS servers using OAuth wrapper.</p>
@@ -25,7 +15,7 @@ import java.util.Iterator;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProfile> {
+public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile> {
     
     private String casOAuthUrl;
     
@@ -45,54 +35,14 @@ public class CasOAuthWrapperClient extends BaseOAuth20Client<CasOAuthWrapperProf
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("casOAuthUrl", this.casOAuthUrl);
-        setProfileDefinition(new CasOAuthWrapperProfileDefinition());
+        configuration.setApi(new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant, this.implicitFlow));
+        configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
+        configuration.setHasGrantType(true);
+        setConfiguration(configuration);
+
         super.internalInit(context);
     }
 
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return new CasOAuthWrapperApi20(this.casOAuthUrl, this.springSecurityCompliant, this.implicitFlow);
-    }
-
-    @Override
-    protected  boolean hasOAuthGrantType() {
-        return true;
-    }
-
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return this.casOAuthUrl + "/profile";
-    }
-    
-    @Override
-    protected CasOAuthWrapperProfile extractUserProfile(final String body) throws HttpAction {
-        final CasOAuthWrapperProfile profile = getProfileDefinition().newProfile();
-        JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
-            json = json.get("attributes");
-            if (json != null) {
-                // CAS <= v4.2
-                if (json instanceof ArrayNode) {
-                    final Iterator<JsonNode> nodes = json.iterator();
-                    while (nodes.hasNext()) {
-                        json = nodes.next();
-                        final String attribute = json.fieldNames().next();
-                        getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-                    }
-                    // CAS v5
-                } else if (json instanceof ObjectNode) {
-                    final Iterator<String> keys = json.fieldNames();
-                    while (keys.hasNext()) {
-                        final String key = keys.next();
-                        getProfileDefinition().convertAndAdd(profile, key, JsonHelper.getElement(json, key));
-                    }
-                }
-            }
-        }
-        return profile;
-    }
-    
     public String getCasOAuthUrl() {
         return this.casOAuthUrl;
     }

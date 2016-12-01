@@ -1,8 +1,14 @@
 package org.pac4j.oauth.profile.paypal;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.converter.JsonConverter;
+import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.util.Arrays;
 
@@ -12,7 +18,7 @@ import java.util.Arrays;
  * @author Jerome Leleu
  * @since 1.4.2
  */
-public class PayPalProfileDefinition extends CommonProfileDefinition<PayPalProfile> {
+public class PayPalProfileDefinition extends OAuth20ProfileDefinition<PayPalProfile> {
     
     public static final String ADDRESS = "address";
     public static final String LANGUAGE = "language";
@@ -25,5 +31,24 @@ public class PayPalProfileDefinition extends CommonProfileDefinition<PayPalProfi
         Arrays.stream(new String[] {ZONEINFO, NAME, GIVEN_NAME}).forEach(a -> primary(a, Converters.STRING));
         primary(ADDRESS, new JsonConverter<>(PayPalAddress.class));
         primary(LANGUAGE, Converters.LOCALE);
+    }
+
+    @Override
+    public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+        return "https://api.paypal.com/v1/identity/openidconnect/userinfo?schema=openid";
+    }
+
+    @Override
+    public PayPalProfile extractUserProfile(final String body) throws HttpAction {
+        final PayPalProfile profile = newProfile();
+        final JsonNode json = JsonHelper.getFirstNode(body);
+        if (json != null) {
+            final String userId = (String) JsonHelper.getElement(json, "user_id");
+            profile.setId(CommonHelper.substringAfter(userId, "/user/"));
+            for (final String attribute : getPrimaryAttributes()) {
+                convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
+            }
+        }
+        return profile;
     }
 }

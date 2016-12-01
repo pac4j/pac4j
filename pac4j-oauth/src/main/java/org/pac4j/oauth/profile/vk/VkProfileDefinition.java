@@ -1,8 +1,15 @@
 package org.pac4j.oauth.profile.vk;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.profile.converter.DateConverter;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
+import org.pac4j.oauth.client.VkClient;
+import org.pac4j.oauth.config.OAuth20Configuration;
+import org.pac4j.oauth.profile.JsonHelper;
+import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 import java.util.Arrays;
 
@@ -12,7 +19,7 @@ import java.util.Arrays;
  * @author indvdum (gotoindvdum[at]gmail[dot]com)
  * @since 1.5
  */
-public class VkProfileDefinition extends CommonProfileDefinition<VkProfile> {
+public class VkProfileDefinition extends OAuth20ProfileDefinition<VkProfile> {
 
 	public static final String LAST_NAME = "last_name";
 	public static final String SEX = "sex";
@@ -40,6 +47,8 @@ public class VkProfileDefinition extends CommonProfileDefinition<VkProfile> {
 	public static final String COMMON_COUNT = "common_count";
 	public static final String RELATION = "relation";
 
+	protected final static String BASE_URL = "https://api.vk.com/method/users.get";
+
 	public VkProfileDefinition() {
 		super(x -> new VkProfile());
 		Arrays.stream(new String[] {LAST_NAME, PHOTO_50, PHOTO_100, PHOTO_200_ORIG, PHOTO_200, PHOTO_400_ORIG,
@@ -50,5 +59,26 @@ public class VkProfileDefinition extends CommonProfileDefinition<VkProfile> {
 				.forEach(a -> primary(a, Converters.BOOLEAN));
 		primary(BIRTH_DATE, new DateConverter("dd.MM.yyyy"));
 		primary(SEX, Converters.GENDER);
+	}
+
+	@Override
+	public String getProfileUrl(final OAuth2AccessToken accessToken, final OAuth20Configuration configuration) {
+		final VkClient client = (VkClient) configuration.getClient();
+		return BASE_URL + "?fields=" + client.getFields();
+	}
+
+	@Override
+	public VkProfile extractUserProfile(final String body) throws HttpAction {
+		final VkProfile profile = newProfile();
+		JsonNode json = JsonHelper.getFirstNode(body);
+		if (json != null) {
+			ArrayNode array = (ArrayNode) json.get("response");
+			JsonNode userNode = array.get(0);
+			profile.setId(JsonHelper.getElement(userNode, "uid"));
+			for (final String attribute : getPrimaryAttributes()) {
+				convertAndAdd(profile, attribute, JsonHelper.getElement(userNode, attribute));
+			}
+		}
+		return profile;
 	}
 }

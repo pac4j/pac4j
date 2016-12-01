@@ -1,15 +1,9 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.LinkedInApi20;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2ProfileDefinition;
 import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 
@@ -23,7 +17,7 @@ import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
+public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
     
     public final static String DEFAULT_SCOPE = "r_fullprofile";
     
@@ -43,59 +37,25 @@ public class LinkedIn2Client extends BaseOAuth20StateClient<LinkedIn2Profile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
+        configuration.setApi(LinkedInApi20.instance());
+        configuration.setProfileDefinition(new LinkedIn2ProfileDefinition());
+        configuration.setScope(this.scope);
+        configuration.setWithState(true);
+        configuration.setHasBeenCancelledFactory(ctx -> {
+            final String error = ctx.getRequestParameter(OAuthCredentialsException.ERROR);
+            final String errorDescription = ctx.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
+            // user has denied permissions
+            if ("access_denied".equals(error)
+                    && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
+                    .equals(errorDescription))) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        setConfiguration(configuration);
+
         super.internalInit(context);
-        setProfileDefinition(new LinkedIn2ProfileDefinition());
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return LinkedInApi20.instance();
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return this.scope;
-    }
-
-    @Override
-    protected boolean hasBeenCancelled(final WebContext context) {
-        final String error = context.getRequestParameter(OAuthCredentialsException.ERROR);
-        final String errorDescription = context.getRequestParameter(OAuthCredentialsException.ERROR_DESCRIPTION);
-        // user has denied permissions
-        if ("access_denied".equals(error)
-            && ("the+user+denied+your+request".equals(errorDescription) || "the user denied your request"
-                .equals(errorDescription))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return "https://api.linkedin.com/v1/people/~:(" + this.fields + ")?format=json";
-    }
-    
-    @Override
-    protected LinkedIn2Profile extractUserProfile(final String body) throws HttpAction {
-        LinkedIn2Profile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        profile.setId(JsonHelper.getElement(json, "id"));
-        for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-            getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-        }
-        final Object positions = JsonHelper.getElement(json, LinkedIn2ProfileDefinition.POSITIONS);
-        if (positions != null && positions instanceof JsonNode) {
-            getProfileDefinition().convertAndAdd(profile, LinkedIn2ProfileDefinition.POSITIONS, JsonHelper.getElement((JsonNode) positions, "values"));
-        }
-        addUrl(profile, json, LinkedIn2ProfileDefinition.SITE_STANDARD_PROFILE_REQUEST);
-        addUrl(profile, json, LinkedIn2ProfileDefinition.API_STANDARD_PROFILE_REQUEST);
-        return profile;
-    }
-
-    private void addUrl(final LinkedIn2Profile profile, final JsonNode json, final String name) {
-        final String url = (String) JsonHelper.getElement(json, name + ".url");
-        getProfileDefinition().convertAndAdd(profile, name, url);
     }
 
     public String getScope() {
