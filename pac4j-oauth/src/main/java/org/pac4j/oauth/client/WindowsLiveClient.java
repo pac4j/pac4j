@@ -1,12 +1,6 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfileDefinition;
 import org.pac4j.scribe.builder.api.WindowsLiveApi20;
@@ -19,7 +13,7 @@ import org.pac4j.scribe.builder.api.WindowsLiveApi20;
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
+public class WindowsLiveClient extends OAuth20Client<WindowsLiveProfile> {
 
     public WindowsLiveClient() {
     }
@@ -31,40 +25,12 @@ public class WindowsLiveClient extends BaseOAuth20Client<WindowsLiveProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new WindowsLiveProfileDefinition());
+        configuration.setApi(new WindowsLiveApi20());
+        configuration.setProfileDefinition(new WindowsLiveProfileDefinition());
+        configuration.setScope("wl.basic");
+        configuration.setHasGrantType(true);
+        setConfiguration(configuration);
+
         super.internalInit(context);
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return new WindowsLiveApi20();
-    }
-
-    @Override
-    protected  boolean hasOAuthGrantType() {
-        return true;
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return "wl.basic";
-    }
-
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return "https://apis.live.net/v5.0/me";
-    }
-
-    @Override
-    protected WindowsLiveProfile extractUserProfile(final String body) throws HttpAction {
-        final WindowsLiveProfile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-            }
-        }
-        return profile;
     }
 }

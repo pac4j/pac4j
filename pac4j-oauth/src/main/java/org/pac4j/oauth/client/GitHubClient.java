@@ -1,13 +1,7 @@
 package org.pac4j.oauth.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.apis.GitHubApi;
-import com.github.scribejava.core.builder.api.BaseApi;
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.github.scribejava.core.oauth.OAuth20Service;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.oauth.profile.JsonHelper;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
 
@@ -21,7 +15,7 @@ import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
+public class GitHubClient extends OAuth20Client<GitHubProfile> {
 
     public final static String DEFAULT_SCOPE = "user";
 
@@ -37,36 +31,12 @@ public class GitHubClient extends BaseOAuth20Client<GitHubProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new GitHubProfileDefinition());
+        configuration.setApi(GitHubApi.instance());
+        configuration.setProfileDefinition(new GitHubProfileDefinition());
+        configuration.setScope(this.scope);
+        setConfiguration(configuration);
+
         super.internalInit(context);
-    }
-
-    @Override
-    protected BaseApi<OAuth20Service> getApi() {
-        return GitHubApi.instance();
-    }
-
-    @Override
-    protected String getOAuthScope() {
-        return this.scope;
-    }
-
-    @Override
-    protected String getProfileUrl(final OAuth2AccessToken accessToken) {
-        return "https://api.github.com/user";
-    }
-
-    @Override
-    protected GitHubProfile extractUserProfile(final String body) throws HttpAction {
-        final GitHubProfile profile = getProfileDefinition().newProfile();
-        final JsonNode json = JsonHelper.getFirstNode(body);
-        if (json != null) {
-            profile.setId(JsonHelper.getElement(json, "id"));
-            for (final String attribute : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, attribute, JsonHelper.getElement(json, attribute));
-            }
-        }
-        return profile;
     }
 
     public String getScope() {

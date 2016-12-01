@@ -57,7 +57,7 @@ public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, Commo
         return configuration;
     }
 
-    public void setConfiguration(CasConfiguration configuration) {
+    public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -65,7 +65,7 @@ public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, Commo
         return serviceUrl;
     }
 
-    public void setServiceUrl(String serviceUrl) {
+    public void setServiceUrl(final String serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
 

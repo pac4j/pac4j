@@ -132,6 +132,7 @@ public class YahooProfile extends OAuth10Profile {
         return (String) getAttribute(YahooProfileDefinition.URI);
     }
 
-    public String getAgeCategory() { return (String) getAttribute(YahooProfileDefinition.AGE_CATEGORY);
+    public String getAgeCategory() {
+        return (String) getAttribute(YahooProfileDefinition.AGE_CATEGORY);
     }
 }

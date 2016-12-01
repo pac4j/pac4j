@@ -95,7 +95,7 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CommonProf
         return configuration;
     }
 
-    public void setConfiguration(CasConfiguration configuration) {
+    public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
     }
 

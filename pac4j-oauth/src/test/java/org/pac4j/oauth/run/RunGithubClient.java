@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class RunGithubClient extends RunClient {
+public class RunGithubClient extends RunClient {
 
     public static void main(String[] args) throws Exception {
         new RunGithubClient().run();
