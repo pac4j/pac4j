@@ -16,13 +16,13 @@ import java.util.StringTokenizer;
  */
 public class FromAttributesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
 
-    private final Iterable<String> roleAttributes;
+    private final Collection<String> roleAttributes;
 
-    private final Iterable<String> permissionAttributes;
+    private final Collection<String> permissionAttributes;
 
     private String splitChar = ",";
 
-    public FromAttributesAuthorizationGenerator(final Iterable<String> roleAttributes, final Iterable<String> permissionAttributes) {
+    public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes, final Collection<String> permissionAttributes) {
         this.roleAttributes = roleAttributes;
         this.permissionAttributes = permissionAttributes;
     }
