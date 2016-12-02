@@ -25,7 +25,7 @@ import org.pac4j.saml.util.Configuration;
  * Build a SAML2 Logout Request
  * 
  * @author Matthieu Taggiasco
- * @since 1.9.2
+ * @since 2.0.0
  */
 
 public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutRequest> {

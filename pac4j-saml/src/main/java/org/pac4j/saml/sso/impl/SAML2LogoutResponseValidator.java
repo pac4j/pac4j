@@ -55,7 +55,7 @@ import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
  * Validator for SAML logout response
  * 
  * @author Matthieu Taggiasco
- * @since 1.9.2
+ * @since 2.0.0
  */
 
 public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {

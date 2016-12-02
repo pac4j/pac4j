@@ -11,7 +11,7 @@ import org.pac4j.saml.sso.SAML2ProfileHandler;
  * Handler capable of sending and receiving SAML logout messages
  * 
  * @author Matthieu Taggiasco
- * @since 1.9.2
+ * @since 2.0.0
  */
 
 public class SAML2LogoutProfileHandler implements SAML2ProfileHandler<LogoutRequest> {
