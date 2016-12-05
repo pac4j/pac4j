@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.FacebookApi;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.facebook.FacebookProfileCreator;
@@ -72,6 +73,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         configuration.setWithState(true);
         setConfiguration(configuration);
         setProfileCreator(new FacebookProfileCreator(configuration));
+        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.facebook.com/logout.php"));
 
         super.internalInit(context);
     }

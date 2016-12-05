@@ -14,11 +14,17 @@ import org.pac4j.core.redirect.RedirectAction;
  */
 public final class MockIndirectClient extends IndirectClient<Credentials, CommonProfile> {
 
-    private final RedirectAction redirectAction;
+    private RedirectAction redirectAction;
 
-    private final ReturnCredentials returnCredentials;
+    private ReturnCredentials returnCredentials;
 
-    private final CommonProfile profile;
+    private CommonProfile profile;
+
+    private RedirectAction logoutAction;
+
+    public MockIndirectClient(final String name) {
+        setName(name);
+    }
 
     public MockIndirectClient(final String name, final RedirectAction redirectAction, final Credentials credentials, final CommonProfile profile) {
         this(name, redirectAction, () -> credentials, profile);
@@ -48,6 +54,14 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
 
 	@Override
 	protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
-		return null;
+		return logoutAction;
 	}
+
+    public RedirectAction getLogoutAction() {
+        return logoutAction;
+    }
+
+    public void setLogoutAction(final RedirectAction logoutAction) {
+        this.logoutAction = logoutAction;
+    }
 }

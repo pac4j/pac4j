@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
@@ -10,6 +11,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 
@@ -37,6 +39,12 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
 
     private String logoutUrlPattern;
 
+    private Boolean localLogout;
+
+    private Boolean centralLogout;
+
+    private LinkedHashMap<String, CommonProfile> profiles;
+
     @Before
     public void setUp() {
         logic = new DefaultLogoutLogic<>();
@@ -46,10 +54,13 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         httpActionAdapter = (code, ctx) -> null;
         defaultUrl = null;
         logoutUrlPattern = null;
+        localLogout = null;
+        centralLogout = null;
+        profiles = new LinkedHashMap<>();
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern, null, null);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern, localLogout, centralLogout);
     }
 
     @Test
@@ -76,19 +87,72 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         TestsHelper.expectException(() -> call(), TechnicalException.class, "logoutUrlPattern cannot be blank");
     }
 
-    @Test
-    public void testLogout() {
-        final LinkedHashMap<String, CommonProfile> profiles = new LinkedHashMap<>();
-        profiles.put(NAME, new CommonProfile());
+    private void addProfilesToContext() {
         context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
         context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+    }
+
+    private LinkedHashMap<String, CommonProfile> getProfilesFromRequest() {
+        return (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
+    }
+
+    private LinkedHashMap<String, CommonProfile> getProfilesFromSession() {
+        return (LinkedHashMap<String, CommonProfile>) context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
+    }
+
+    private void expectedNProfiles(final int n) {
+        assertEquals(n, getProfilesFromRequest().size());
+        assertEquals(n, getProfilesFromSession().size());
+    }
+
+    @Test
+    public void testLogoutPerformed() {
+        profiles.put(NAME, new CommonProfile());
+        addProfilesToContext();
         call();
         assertEquals(204, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
-        final LinkedHashMap<String, CommonProfile> profiles2 = (LinkedHashMap<String, CommonProfile>) context.getRequestAttribute(Pac4jConstants.USER_PROFILES);
-        assertEquals(0, profiles2.size());
-        final LinkedHashMap<String, CommonProfile> profiles3 = (LinkedHashMap<String, CommonProfile>) context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
-        assertEquals(0, profiles3.size());
+        expectedNProfiles(0);
+    }
+
+    @Test
+    public void testLogoutNotPerformedBecauseLocalLogoutIsFalse() {
+        profiles.put(NAME, new CommonProfile());
+        addProfilesToContext();
+        localLogout = false;
+        call();
+        assertEquals(204, context.getResponseStatus());
+        assertEquals("", context.getResponseContent());
+        expectedNProfiles(1);
+    }
+
+    @Test
+    public void testLogoutPerformedBecauseLocalLogoutIsFalseButMultipleProfiles() {
+        profiles.put(NAME, new CommonProfile());
+        profiles.put(VALUE, new CommonProfile());
+        addProfilesToContext();
+        localLogout = false;
+        call();
+        assertEquals(204, context.getResponseStatus());
+        assertEquals("", context.getResponseContent());
+        expectedNProfiles(0);
+    }
+
+    @Test
+    public void testCentralLogout() {
+        final CommonProfile profile = new CommonProfile();
+        profile.setClientName(NAME);
+        final MockIndirectClient client = new MockIndirectClient(NAME);
+        client.setCallbackUrl(PAC4J_BASE_URL);
+        client.setLogoutAction(RedirectAction.redirect(CALLBACK_URL));
+        config.setClients(new Clients(client));
+        profiles.put(NAME, profile);
+        addProfilesToContext();
+        centralLogout = true;
+        call();
+        assertEquals(302, context.getResponseStatus());
+        assertEquals(CALLBACK_URL, context.getResponseLocation());
+        expectedNProfiles(0);
     }
 
     @Test

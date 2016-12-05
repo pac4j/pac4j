@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfileDefinition;
 import org.pac4j.oauth.profile.dropbox.DropBoxProfile;
 import org.pac4j.scribe.builder.api.DropboxApi20;
@@ -29,6 +30,7 @@ public class DropBoxClient extends OAuth20Client<DropBoxProfile> {
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
+        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.dropbox.com/logout"));
 
         super.internalInit(context);
     }

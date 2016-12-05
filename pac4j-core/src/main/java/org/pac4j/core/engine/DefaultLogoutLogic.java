@@ -93,8 +93,8 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
             action = HttpAction.ok("ok", context);
         }
 
-        // local logout
-        if (localLogout) {
+        // local logout if requested or multiple profiles
+        if (localLogout || profiles.size() > 1) {
             logger.debug("Performing application logout");
             manager.logout();
             postLogout(context);
