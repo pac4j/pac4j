@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
  * (objects). Additional concepts are the "remember me" nature of the user profile and the associated roles, permissions and client name.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -40,7 +40,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Build a profile from user identifier and attributes.
-     * 
+     *
      * @param id user identifier
      * @param attributes user attributes
      */
@@ -51,7 +51,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Add an attribute.
-     * 
+     *
      * @param key key of the attribute
      * @param value value of the attribute
      */
@@ -64,7 +64,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Add attributes.
-     * 
+     *
      * @param attributes use attributes
      */
     public void addAttributes(final Map<String, Object> attributes) {
@@ -87,7 +87,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Set the identifier and convert it if necessary.
-     * 
+     *
      * @param id user identifier
      */
     public void setId(final Object id) {
@@ -104,7 +104,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Get the user identifier. This identifier is unique for this provider but not necessarily through all providers.
-     * 
+     *
      * @return the user identifier
      */
     public String getId() {
@@ -114,7 +114,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     /**
      * Get the user identifier with a prefix which is the profile type (full class name with package).
      * This identifier is unique through all providers.
-     * 
+     *
      * @return the typed user identifier
      */
     public String getTypedId() {
@@ -123,7 +123,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Get all attributes as immutable map.
-     * 
+     *
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
@@ -138,7 +138,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Return the attribute with name.
-     * 
+     *
      * @param name attribute name
      * @return the attribute with name
      */
@@ -184,7 +184,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Add a role.
-     * 
+     *
      * @param role the role to add.
      */
     public void addRole(final String role) {
@@ -197,7 +197,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      *
      * @param roles the roles to add.
      */
-    public void addRoles(final List<String> roles) {
+    public void addRoles(final Collection<String> roles) {
         CommonHelper.assertNotNull("roles", roles);
         this.roles.addAll(roles);
     }
@@ -214,7 +214,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Add a permission.
-     * 
+     *
      * @param permission the permission to add.
      */
     public void addPermission(final String permission) {
@@ -222,29 +222,18 @@ public abstract class UserProfile implements Serializable, Externalizable {
         this.permissions.add(permission);
     }
 
-    /**
-     * Add permissions.
+     /** Add permissions.
      *
      * @param permissions the permissions to add.
      */
-    public void addPermissions(final List<String> permissions) {
-        CommonHelper.assertNotNull("permissions", permissions);
-        this.permissions.addAll(permissions);
-    }
-
-    /**
-     * Add permissions.
-     *
-     * @param permissions the permissions to add.
-     */
-    public void addPermissions(final Set<String> permissions) {
+    public void addPermissions(final Collection<String> permissions) {
         CommonHelper.assertNotNull("permissions", permissions);
         this.permissions.addAll(permissions);
     }
 
     /**
      * Define if this profile is remembered.
-     * 
+     *
      * @param rme whether the user is remembered.
      */
     public void setRemembered(final boolean rme) {
@@ -253,7 +242,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Get the roles of the user.
-     * 
+     *
      * @return the user roles.
      */
     public Set<String> getRoles() {
@@ -262,7 +251,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Get the permissions of the user.
-     * 
+     *
      * @return the user permissions.
      */
     public Set<String> getPermissions() {
@@ -271,7 +260,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Is the user remembered?
-     * 
+     *
      * @return whether the user is remembered.
      */
     public boolean isRemembered() {

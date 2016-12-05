@@ -3,7 +3,7 @@ package org.pac4j.core.authorization.generator;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Grant default roles and/or permissions to a user profile.
@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class DefaultRolesPermissionsAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
 
-    private final List<String> defaultRoles;
+    private final Collection<String> defaultRoles;
 
-    private final List<String> defaultPermissions;
+    private final Collection<String> defaultPermissions;
 
-    public DefaultRolesPermissionsAuthorizationGenerator(final List<String> defaultRoles, final List<String> defaultPermissions) {
+    public DefaultRolesPermissionsAuthorizationGenerator(final Collection<String> defaultRoles, final Collection<String> defaultPermissions) {
         this.defaultRoles = defaultRoles;
         this.defaultPermissions = defaultPermissions;
     }
