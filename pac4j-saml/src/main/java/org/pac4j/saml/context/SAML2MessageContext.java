@@ -16,6 +16,7 @@ import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SingleLogoutService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.pac4j.core.context.WebContext;
@@ -80,6 +81,17 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
         final SAMLMetadataContext peerContext = getSAMLPeerMetadataContext();
         final IDPSSODescriptor idpssoDescriptor = (IDPSSODescriptor) peerContext.getRoleDescriptor();
         return idpssoDescriptor;
+    }
+    
+    public final SingleLogoutService getIDPSingleLogoutService(final String binding) {
+    	final List<SingleLogoutService> services = getIDPSSODescriptor().getSingleLogoutServices();
+    	for (final SingleLogoutService service : services) {
+    		if(service.getBinding().equals(binding)) {
+    			return service;
+    		}
+    	}
+    	throw new SAMLException("Identity provider has no single logout service available for the selected profile"
+    	        + getIDPSSODescriptor());
     }
 
     public final SingleSignOnService getIDPSingleSignOnService(final String binding) {

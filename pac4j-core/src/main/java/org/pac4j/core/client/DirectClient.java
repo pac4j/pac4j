@@ -23,7 +23,11 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     @Override
     public final C getCredentials(final WebContext context) throws HttpAction {
         init(context);
-
         return retrieveCredentials(context);
+    }
+
+    @Override
+    public final HttpAction logoutRedirect(final WebContext context) {
+    	return null;
     }
 }

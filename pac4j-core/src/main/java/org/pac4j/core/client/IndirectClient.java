@@ -49,6 +49,19 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         }
     }
 
+    @Override
+    public final HttpAction logoutRedirect(final WebContext context) {
+        final RedirectAction action = getLogoutRedirectAction(context);
+        if(action != null) {
+            if (action.getType() == RedirectType.REDIRECT) {
+                return HttpAction.redirect("logout redirection via 302", context, action.getLocation());
+            } else {
+                return HttpAction.ok("logout redirection via 200", context, action.getContent());
+            }
+        }
+        return null;
+    }
+
     /**
      * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
      * {@link #redirect(WebContext)} should be generally called instead.</p>
@@ -77,6 +90,18 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         init(context);
         return retrieveRedirectAction(context);
     }
+    
+    /**
+     * <p>Get the redirectAction computed for the logout of this client. It should not be called be directly, the
+     * {@link #logoutRedirect(WebContext)} should be generally called instead.</p>
+     *
+     * @param context context
+     * @return the redirection action
+     */
+    public final RedirectAction getLogoutRedirectAction(final WebContext context) {
+        init(context);
+        return retrieveLogoutRedirectAction(context);
+    }
 
     /**
      * Retrieve the redirect action.
@@ -86,6 +111,16 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws HttpAction requires a specific HTTP action if necessary
      */
     protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction;
+
+    /**
+     * Retrieve the redirect action for the logout.
+     * 
+     * @param context the web context
+     * @return the redirection action
+     */
+    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context) {
+    	return null;
+    };
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
