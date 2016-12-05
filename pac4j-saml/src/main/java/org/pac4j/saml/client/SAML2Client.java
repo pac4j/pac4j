@@ -13,7 +13,7 @@ import org.opensaml.saml.saml2.core.Conditions;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -253,7 +253,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context) {
+    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final SAML2Profile currentProfile, final String targetUrl) {
         final SAML2MessageContext samlContext = this.contextProvider.buildContext(context);
         final String relayState = getStateParameter(context);
 

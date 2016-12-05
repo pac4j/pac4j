@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * Mock an indirect client.
@@ -46,7 +47,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
     }
 
 	@Override
-	protected RedirectAction retrieveLogoutRedirectAction(WebContext context) {
+	protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
 		return null;
 	}
 }

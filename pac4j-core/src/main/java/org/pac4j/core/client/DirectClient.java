@@ -5,6 +5,7 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * <p>This class is the default direct (stateless) implementation of an authentication client (whatever the mechanism).
@@ -27,7 +28,7 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     }
 
     @Override
-    public final HttpAction logoutRedirect(final WebContext context) {
+    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
     	return null;
     }
 }

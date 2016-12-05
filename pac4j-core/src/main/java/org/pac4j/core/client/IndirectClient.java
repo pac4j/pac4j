@@ -1,6 +1,5 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.client.RedirectAction.RedirectType;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -10,6 +9,7 @@ import org.pac4j.core.http.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.DefaultCallbackUrlResolver;
 import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 
 /**
@@ -42,24 +42,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     @Override
     public final HttpAction redirect(final WebContext context) throws HttpAction {
         final RedirectAction action = getRedirectAction(context);
-        if (action.getType() == RedirectType.REDIRECT) {
-            return HttpAction.redirect("redirection via 302", context, action.getLocation());
-        } else {
-            return HttpAction.ok("redirection via 200", context, action.getContent());
-        }
-    }
-
-    @Override
-    public final HttpAction logoutRedirect(final WebContext context) {
-        final RedirectAction action = getLogoutRedirectAction(context);
-        if(action != null) {
-            if (action.getType() == RedirectType.REDIRECT) {
-                return HttpAction.redirect("logout redirection via 302", context, action.getLocation());
-            } else {
-                return HttpAction.ok("logout redirection via 200", context, action.getContent());
-            }
-        }
-        return null;
+        return action.perform(context);
     }
 
     /**
@@ -90,18 +73,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         init(context);
         return retrieveRedirectAction(context);
     }
-    
-    /**
-     * <p>Get the redirectAction computed for the logout of this client. It should not be called be directly, the
-     * {@link #logoutRedirect(WebContext)} should be generally called instead.</p>
-     *
-     * @param context context
-     * @return the redirection action
-     */
-    public final RedirectAction getLogoutRedirectAction(final WebContext context) {
-        init(context);
-        return retrieveLogoutRedirectAction(context);
-    }
 
     /**
      * Retrieve the redirect action.
@@ -111,16 +82,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws HttpAction requires a specific HTTP action if necessary
      */
     protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction;
-
-    /**
-     * Retrieve the redirect action for the logout.
-     * 
-     * @param context the web context
-     * @return the redirection action
-     */
-    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context) {
-    	return null;
-    };
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
@@ -157,6 +118,24 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     public String computeFinalCallbackUrl(final WebContext context) {
         return callbackUrlResolver.compute(callbackUrl, context);
+    }
+
+    @Override
+    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        init(context);
+        return retrieveLogoutRedirectAction(context, currentProfile, targetUrl);
+    }
+
+    /**
+     * Retrieve the redirect action for the logout.
+     *
+     * @param context the web context
+     * @param currentProfile the current profile
+     * @param targetUrl the target URL post logout
+     * @return the redirection action
+     */
+    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        return null;
     }
 
     /**

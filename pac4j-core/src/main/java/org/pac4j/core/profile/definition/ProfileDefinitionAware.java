@@ -5,7 +5,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 
 /**
- * For classes that could set the profile definition.
+ * For classes that can set the profile definition.
  *
  * @author Jerome Leleu
  * @since 2.0.0
