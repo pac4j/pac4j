@@ -1,12 +1,14 @@
 package org.pac4j.core.authorization.generator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.profile.CommonProfile;
+
 
 import static org.junit.Assert.*;
 
@@ -17,16 +19,16 @@ import static org.junit.Assert.*;
  * @since 1.5.0
  */
 public final class FromAttributesAuthorizationGeneratorTests {
-    
-    private final static String ATTRIB1 = "attrib1";
-    private final static String VALUE1 = "info11,info12";
-    private final static String ATTRIB2 = "attrib2";
-    private final static String VALUE2 = "info21,info22";
-    private final static String ATTRIB3 = "attrib3";
-    private final static String ATTRIB4 = "attrib4";
-    private final static String ATTRIB5 = "attrib5";
-    private final static String[] ATTRIB_ARRAY = new String[]{"infoA1", "infoA2", "infoA3"};
-    private final static List<String> ATTRIB_LIST = new ArrayList<>();
+
+    private static final String ATTRIB1 = "attrib1";
+    private static final String VALUE1 = "info11,info12";
+    private static final String ATTRIB2 = "attrib2";
+    private static final String VALUE2 = "info21,info22";
+    private static final String ATTRIB3 = "attrib3";
+    private static final String ATTRIB4 = "attrib4";
+    private static final String ATTRIB5 = "attrib5";
+    private static final String[] ATTRIB_ARRAY = new String[]{"infoA1", "infoA2", "infoA3"};
+    private static final List<String> ATTRIB_LIST = new ArrayList<>();
 
     static {
         ATTRIB_LIST.add("infoL1");
@@ -46,8 +48,18 @@ public final class FromAttributesAuthorizationGeneratorTests {
     }
 
     @Test
+    public void testNoConfigWithCollections() {
+        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
+                new FromAttributesAuthorizationGenerator<>(new ArrayList<>(), new HashSet<>());
+        generator.generate(this.profile);
+        assertEquals(0, this.profile.getRoles().size());
+        assertEquals(0, this.profile.getPermissions().size());
+    }
+
+    @Test
     public void testNoConfig() {
-        final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<>(null, null);
+        final FromAttributesAuthorizationGenerator<CommonProfile> generator =
+                new FromAttributesAuthorizationGenerator<>((String[]) null, (String[]) null);
         generator.generate(this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
