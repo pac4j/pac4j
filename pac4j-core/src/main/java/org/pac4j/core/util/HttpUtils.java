@@ -1,6 +1,6 @@
-package org.pac4j.cas.util;
+package org.pac4j.core.util;
 
-import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.context.HttpConstants;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +16,10 @@ import java.net.URL;
  * @since 1.8.0
  */
 public final class HttpUtils {
+
+    private static int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
+
+    private static int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     private HttpUtils() {
     }
@@ -42,6 +46,8 @@ public final class HttpUtils {
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestMethod(requestMethod);
+        connection.setConnectTimeout(connectTimeout);
+        connection.setReadTimeout(readTimeout);
         return connection;
     }
 
@@ -53,5 +59,21 @@ public final class HttpUtils {
         if (connection != null) {
             connection.disconnect();
         }
+    }
+
+    public static int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public static void setConnectTimeout(final int connectTimeout) {
+        HttpUtils.connectTimeout = connectTimeout;
+    }
+
+    public static int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public static void setReadTimeout(final int readTimeout) {
+        HttpUtils.readTimeout = readTimeout;
     }
 }

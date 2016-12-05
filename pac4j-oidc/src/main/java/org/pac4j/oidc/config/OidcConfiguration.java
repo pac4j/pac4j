@@ -6,10 +6,10 @@ import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.InitializableWebObject;
 
 import java.io.IOException;
@@ -69,10 +69,6 @@ public class OidcConfiguration extends InitializableWebObject {
     /* max clock skew in seconds */
     private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
 
-    /* timeouts for token and userinfo requests */
-    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
-
     private ResourceRetriever resourceRetriever;
 
     private OIDCProviderMetadata providerMetadata;
@@ -94,7 +90,7 @@ public class OidcConfiguration extends InitializableWebObject {
 
         // default value
         if (resourceRetriever == null) {
-            resourceRetriever = new DefaultResourceRetriever(connectTimeout, readTimeout);
+            resourceRetriever = new DefaultResourceRetriever(HttpUtils.getConnectTimeout(), HttpUtils.getReadTimeout());
         }
         if (this.providerMetadata == null) {
             CommonHelper.assertNotBlank("discoveryURI", discoveryURI);
@@ -196,22 +192,6 @@ public class OidcConfiguration extends InitializableWebObject {
         this.maxClockSkew = maxClockSkew;
     }
 
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(final int readTimeout) {
-        this.readTimeout = readTimeout;
-    }
-
     public ResourceRetriever getResourceRetriever() {
         return resourceRetriever;
     }
@@ -248,9 +228,10 @@ public class OidcConfiguration extends InitializableWebObject {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientId", clientId, "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
-                "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm,
-                "maxClockSkew", maxClockSkew, "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
-                "callbackUrl", callbackUrl, "responseType", responseType, "responseMode", responseMode);
+        return CommonHelper.toString(this.getClass(), "clientId", clientId, "discoveryURI", discoveryURI, "scope", scope,
+                "customParams", customParams, "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce,
+                "preferredJwsAlgorithm", preferredJwsAlgorithm, "maxClockSkew", maxClockSkew,
+                "resourceRetriever", resourceRetriever, "callbackUrl", callbackUrl, "responseType", responseType,
+                "responseMode", responseMode);
     }
 }

@@ -1,8 +1,11 @@
-package org.pac4j.core.client;
+package org.pac4j.core.redirect;
+
+import org.pac4j.core.client.Client;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * Indicates the action when the {@link Client} requires a redirection to achieve user authentication. Valid redirection
- * type are :
+ * types are:
  * <ul>
  * <li>REDIRECT (HTTP 302)</li>
  * <li>SUCCESS (HTTP 200)</li>
@@ -23,9 +26,7 @@ public class RedirectAction {
 
     private String content;
 
-    private RedirectAction() {
-
-    }
+    private RedirectAction() {}
 
     public static RedirectAction redirect(final String location) {
         RedirectAction action = new RedirectAction();
@@ -55,6 +56,6 @@ public class RedirectAction {
 
     @Override
     public String toString() {
-        return "[type: " + type + ", location: " + location + ", content: " + content + "]";
+        return CommonHelper.toString(this.getClass(), "type", type, "location", location, "content", content);
     }
 }

@@ -2,6 +2,7 @@ package org.pac4j.core.engine;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
@@ -17,14 +18,14 @@ import java.util.LinkedHashMap;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests {@link DefaultApplicationLogoutLogic}.
+ * Tests {@link DefaultLogoutLogic}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class DefaultApplicationLogoutLogicTests implements TestsConstants {
+public final class DefaultLogoutLogicTests implements TestsConstants {
 
-    private ApplicationLogoutLogic<Object, WebContext> logic;
+    private LogoutLogic<Object, WebContext> logic;
 
     private MockWebContext context;
 
@@ -38,16 +39,17 @@ public final class DefaultApplicationLogoutLogicTests implements TestsConstants 
 
     @Before
     public void setUp() {
-        logic = new DefaultApplicationLogoutLogic<>();
+        logic = new DefaultLogoutLogic<>();
         context = MockWebContext.create();
         config = new Config();
+        config.setClients(new Clients());
         httpActionAdapter = (code, ctx) -> null;
         defaultUrl = null;
         logoutUrlPattern = null;
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern, null);
     }
 
     @Test

@@ -8,6 +8,7 @@ import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.LogoutRequest;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
@@ -76,6 +77,11 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
      */
     protected abstract U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction;
 
+    @Override
+    public LogoutRequest getLogoutRequest(final WebContext context, final U profile) {
+        return null;
+    }
+
     public void setName(final String name) {
         this.name = name;
     }
@@ -123,6 +129,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName());
+        return CommonHelper.toString(this.getClass(), "name", getName(), "authorizationGenerators", authorizationGenerators);
     }
 }

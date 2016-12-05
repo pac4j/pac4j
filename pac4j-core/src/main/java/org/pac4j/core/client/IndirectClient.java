@@ -1,6 +1,7 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.client.RedirectAction.RedirectType;
+import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction.RedirectType;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;

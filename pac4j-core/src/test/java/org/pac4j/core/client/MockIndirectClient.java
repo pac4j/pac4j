@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 
 /**
  * Mock an indirect client.

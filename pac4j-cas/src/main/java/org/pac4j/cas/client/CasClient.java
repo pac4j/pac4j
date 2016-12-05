@@ -1,14 +1,14 @@
 package org.pac4j.cas.client;
 
-import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.cas.logout.CasLogoutHandler;
+import org.pac4j.cas.logout.CasLogoutRequestBuilder;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
+import org.pac4j.cas.redirect.CasRedirectActionBuilder;
 import org.pac4j.core.client.IndirectClientV2;
-import org.pac4j.core.client.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.CommonProfile;
@@ -47,15 +47,10 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile>
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);
 
-        setRedirectActionBuilder(ctx -> {
-            final String loginUrl = configuration.getCallbackUrlResolver().compute(configuration.getLoginUrl(), context);
-            final String redirectionUrl = CommonUtils.constructRedirectUrl(loginUrl, CasConfiguration.SERVICE_PARAMETER,
-                    computeFinalCallbackUrl(ctx), configuration.isRenew(), configuration.isGateway());
-            logger.debug("redirectionUrl: {}", redirectionUrl);
-            return RedirectAction.redirect(redirectionUrl);
-        });
+        setRedirectActionBuilder(new CasRedirectActionBuilder(configuration, callbackUrl));
         setCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
         setAuthenticator(new CasAuthenticator(configuration, callbackUrl));
+        setLogoutRequestBuilder(new CasLogoutRequestBuilder(configuration));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -69,6 +64,10 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile>
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "configuration", this.configuration);
+        return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
+                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
+                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+                "logoutRequestBuilder", getLogoutRequestBuilder(), "configuration", this.configuration);
     }
 }

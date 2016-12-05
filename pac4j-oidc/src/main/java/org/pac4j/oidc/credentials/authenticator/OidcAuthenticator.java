@@ -13,6 +13,7 @@ import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -92,8 +93,8 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
                 final TokenRequest request = new TokenRequest(configuration.getProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
                         new AuthorizationCodeGrant(code, new URI(configuration.getCallbackUrl())));
                 HTTPRequest tokenHttpRequest = request.toHTTPRequest();
-                tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
-                tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());
+                tokenHttpRequest.setConnectTimeout(HttpUtils.getConnectTimeout());
+                tokenHttpRequest.setReadTimeout(HttpUtils.getReadTimeout());
 
                 final HTTPResponse httpResponse = tokenHttpRequest.send();
                 logger.debug("Token response: status={}, content={}", httpResponse.getStatusCode(),
