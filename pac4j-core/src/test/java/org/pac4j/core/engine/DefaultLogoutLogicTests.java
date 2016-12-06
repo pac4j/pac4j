@@ -144,14 +144,34 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profile.setClientName(NAME);
         final MockIndirectClient client = new MockIndirectClient(NAME);
         client.setCallbackUrl(PAC4J_BASE_URL);
-        client.setLogoutAction(RedirectAction.redirect(CALLBACK_URL));
+        client.setLogoutActionBuilder((ctx, p, targetUrl) -> RedirectAction.redirect(CALLBACK_URL + "?p=" + targetUrl));
         config.setClients(new Clients(client));
         profiles.put(NAME, profile);
         addProfilesToContext();
         centralLogout = true;
+        context.addRequestParameter(Pac4jConstants.URL, CALLBACK_URL);
+        logoutUrlPattern = ".*";
         call();
         assertEquals(302, context.getResponseStatus());
-        assertEquals(CALLBACK_URL, context.getResponseLocation());
+        assertEquals(CALLBACK_URL + "?p=" + CALLBACK_URL, context.getResponseLocation());
+        expectedNProfiles(0);
+    }
+
+    @Test
+    public void testCentralLogoutWithRelativeUrl() {
+        final CommonProfile profile = new CommonProfile();
+        profile.setClientName(NAME);
+        final MockIndirectClient client = new MockIndirectClient(NAME);
+        client.setCallbackUrl(PAC4J_BASE_URL);
+        client.setLogoutActionBuilder((ctx, p, targetUrl) -> RedirectAction.redirect(CALLBACK_URL + "?p=" + targetUrl));
+        config.setClients(new Clients(client));
+        profiles.put(NAME, profile);
+        addProfilesToContext();
+        centralLogout = true;
+        context.addRequestParameter(Pac4jConstants.URL, PATH);
+        call();
+        assertEquals(302, context.getResponseStatus());
+        assertEquals(CALLBACK_URL + "?p=null", context.getResponseLocation());
         expectedNProfiles(0);
     }
 

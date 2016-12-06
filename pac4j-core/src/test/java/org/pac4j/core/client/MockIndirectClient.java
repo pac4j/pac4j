@@ -3,6 +3,7 @@ package org.pac4j.core.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 
@@ -20,7 +21,7 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
 
     private CommonProfile profile;
 
-    private RedirectAction logoutAction;
+    private LogoutActionBuilder<CommonProfile> logoutActionBuilder;
 
     public MockIndirectClient(final String name) {
         setName(name);
@@ -54,14 +55,14 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
 
 	@Override
 	protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
-		return logoutAction;
+		return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
 	}
 
-    public RedirectAction getLogoutAction() {
-        return logoutAction;
+    public LogoutActionBuilder<CommonProfile> getLogoutActionBuilder() {
+        return logoutActionBuilder;
     }
 
-    public void setLogoutAction(final RedirectAction logoutAction) {
-        this.logoutAction = logoutAction;
+    public void setLogoutActionBuilder(final LogoutActionBuilder<CommonProfile> logoutActionBuilder) {
+        this.logoutActionBuilder = logoutActionBuilder;
     }
 }

@@ -3,6 +3,7 @@ package org.pac4j.core.engine;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
@@ -110,7 +111,13 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
                 if (clientName != null) {
                     final Client client = configClients.findClient(clientName);
                     if(client != null) {
-                        final RedirectAction logoutAction = client.getLogoutAction(context, profile, redirectUrl);
+                        final String targetUrl;
+                        if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) || redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS))) {
+                            targetUrl = redirectUrl;
+                        } else {
+                            targetUrl = null;
+                        }
+                        final RedirectAction logoutAction = client.getLogoutAction(context, profile, targetUrl);
                         logger.debug("Logout action: {}", logoutAction);
                         if (logoutAction != null) {
                             action = logoutAction.perform(context);
