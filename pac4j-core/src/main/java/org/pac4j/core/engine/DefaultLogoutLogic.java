@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 import java.util.List;
+
 import static org.pac4j.core.util.CommonHelper.*;
 
 /**
@@ -24,12 +25,12 @@ import static org.pac4j.core.util.CommonHelper.*;
  * <p>If the <code>localLogout</code> property is <code>true</code>, the pac4j profiles are removed from the web session
  * (and the web session is destroyed if the <code>killSession</code> property is <code>true</code>).</p>
  *
- *  <p>A post logout action is defined as the redirection to the <code>url</code> request parameter if it matches the <code>logoutUrlPattern</code>
+ *  <p>A post logout action is computed as the redirection to the <code>url</code> request parameter if it matches the <code>logoutUrlPattern</code>
  * or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
  *
  *  <p>If the <code>centralLogout</code> property is <code>true</code>, the user is redirected to the identity provider
- * for a central logout and optionally the post logout redirection is called.</p>
- * <p>If no central logout is defined, the post logout action is performed directly.</p>
+ * for a central logout and optionally the post logout redirection is called. If no central logout is defined,
+ * the post logout action is performed directly.</p>
  *
  * @author Jerome Leleu
  * @since 1.9.0

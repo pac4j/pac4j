@@ -62,4 +62,10 @@ public interface Pac4jConstants {
 
     /** Whether the session must be renewed after login. */
     String RENEW_SESSION = "renewSession";
+
+    /** Whether a local logout must be performed */
+    String LOCAL_LOGOUT = "localLogout";
+
+    /** Whether a central logout must be performed */
+    String CENTRAL_LOGOUT = "centralLogout";
 }
