@@ -1,6 +1,7 @@
 package org.pac4j.oidc.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.logout.GoogleLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
@@ -30,6 +31,7 @@ public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
         final OidcProfileCreator<GoogleOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
         profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new GoogleOidcProfile()));
         setProfileCreator(profileCreator);
+        setLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
         super.internalInit(context);
     }

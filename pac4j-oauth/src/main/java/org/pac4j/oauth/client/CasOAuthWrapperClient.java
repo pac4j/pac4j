@@ -1,7 +1,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfile;
 import org.pac4j.oauth.profile.casoauthwrapper.CasOAuthWrapperProfileDefinition;
@@ -46,17 +46,7 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> {
-            String logoutUrl = null;
-            if (CommonHelper.isNotBlank(casLogoutUrl)) {
-                logoutUrl = casLogoutUrl;
-                if (CommonHelper.isNotBlank(targetUrl)) {
-                    logoutUrl = CommonHelper.addParameter(logoutUrl, "service", targetUrl);
-                }
-            }
-            logger.debug("logoutUrl: {}", logoutUrl);
-            return RedirectAction.redirect(logoutUrl);
-        });
+        setLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
 
         super.internalInit(context);
     }

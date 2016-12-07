@@ -4,7 +4,7 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
 import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
-import org.pac4j.cas.logout.CasLogoutActionBuilder;
+import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.CasSingleSignOutHandler;
 import org.pac4j.cas.redirect.CasRedirectActionBuilder;
@@ -50,7 +50,7 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile>
         setRedirectActionBuilder(new CasRedirectActionBuilder(configuration, callbackUrl));
         setCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
         setAuthenticator(new CasAuthenticator(configuration, callbackUrl));
-        setLogoutActionBuilder(new CasLogoutActionBuilder(configuration));
+        setLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout", configuration.getPostLogoutUrlParameter()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 

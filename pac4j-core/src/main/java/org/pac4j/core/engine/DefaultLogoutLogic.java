@@ -30,8 +30,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  * or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
  *
  *  <p>If the <code>centralLogout</code> property is <code>true</code>, the user is redirected to the identity provider
- * for a central logout and optionally the post logout redirection is called. If no central logout is defined,
- * the post logout action is performed directly.</p>
+ * for a central logout and then optionally to the post logout redirection URL (if it's supported by the identity provider and if it's an absolute URL).
+ * If no central logout is defined, the post logout action is performed directly.</p>
  *
  * @author Jerome Leleu
  * @since 1.9.0
