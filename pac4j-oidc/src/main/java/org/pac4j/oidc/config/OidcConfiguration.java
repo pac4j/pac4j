@@ -83,6 +83,8 @@ public class OidcConfiguration extends InitializableWebObject {
 
     private String responseMode;
 
+    private String logoutUrl;
+
     @Override
     protected void internalInit(final WebContext context) {
         // checks
@@ -246,11 +248,19 @@ public class OidcConfiguration extends InitializableWebObject {
         this.responseMode = responseMode;
     }
 
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    public void setLogoutUrl(final String logoutUrl) {
+        this.logoutUrl = logoutUrl;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "clientId", clientId, "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
                 "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm,
                 "maxClockSkew", maxClockSkew, "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
-                "callbackUrl", callbackUrl, "responseType", responseType, "responseMode", responseMode);
+                "callbackUrl", callbackUrl, "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
     }
 }

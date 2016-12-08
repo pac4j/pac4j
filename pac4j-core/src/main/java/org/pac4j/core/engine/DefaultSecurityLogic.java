@@ -20,11 +20,11 @@ import org.pac4j.core.matching.DefaultMatchingChecker;
 import org.pac4j.core.matching.MatchingChecker;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.ProfileManagerFactoryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -46,7 +46,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLogic<R, C> {
+public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> implements SecurityLogic<R, C> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -55,8 +55,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
     private AuthorizationChecker authorizationChecker = new DefaultAuthorizationChecker();
 
     private MatchingChecker matchingChecker = new DefaultMatchingChecker();
-
-    private Function<C, ProfileManager> profileManagerFactory = context -> new ProfileManager(context);
 
     private boolean saveProfileInSession;
 
@@ -168,16 +166,6 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
-    }
-
-    /**
-     * Given a webcontext generate a profileManager for it.
-     * Can be overridden for custom profile manager implementations
-     * @param context the web context
-     * @return profile manager implementation built from the context
-     */
-    protected ProfileManager getProfileManager(final C context) {
-        return profileManagerFactory.apply(context);
     }
 
     /**
@@ -296,13 +284,5 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
 
     public void setSaveProfileInSession(final boolean saveProfileInSession) {
         this.saveProfileInSession = saveProfileInSession;
-    }
-
-    public Function<C, ProfileManager> getProfileManagerFactory() {
-        return profileManagerFactory;
-    }
-
-    public void setProfileManagerFactory(final Function<C, ProfileManager> factory) {
-        this.profileManagerFactory = factory;
     }
 }

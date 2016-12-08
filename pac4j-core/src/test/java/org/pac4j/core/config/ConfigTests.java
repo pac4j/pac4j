@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.MockIndirectClient;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;

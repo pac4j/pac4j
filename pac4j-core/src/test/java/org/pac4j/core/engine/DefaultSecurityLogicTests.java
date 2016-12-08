@@ -12,6 +12,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 

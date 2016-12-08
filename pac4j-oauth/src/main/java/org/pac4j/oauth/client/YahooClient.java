@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.YahooApi;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.yahoo.YahooProfile;
 import org.pac4j.oauth.profile.yahoo.YahooProfileCreator;
 import org.pac4j.oauth.profile.yahoo.YahooProfileDefinition;
@@ -30,6 +31,7 @@ public class YahooClient extends OAuth10Client<YahooProfile> {
         configuration.setProfileDefinition(new YahooProfileDefinition());
         setConfiguration(configuration);
         setProfileCreator(new YahooProfileCreator(configuration));
+        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("http://login.yahoo.com/config/login?logout=1"));
 
         super.internalInit(context);
     }

@@ -5,7 +5,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * This exception is thrown when an additional HTTP action (redirect, basic auth...) is required.
+ * The extra HTTP action, already performed on the web context.
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -16,7 +16,7 @@ public class HttpAction extends Exception {
     
     protected int code;
     
-    public HttpAction(final String message, final int code) {
+    private HttpAction(final String message, final int code) {
         super(message);
         this.code = code;
     }
@@ -120,7 +120,7 @@ public class HttpAction extends Exception {
         context.setResponseStatus(HttpConstants.FORBIDDEN);
         return new HttpAction(message, HttpConstants.FORBIDDEN);
     }
-    
+
     /**
      * Return the HTTP code.
      * 

@@ -5,12 +5,12 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.http.HttpActionAdapter;
 
 /**
- * Aplication logout logic.
+ * Logout logic for the application and the identity provider.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public interface ApplicationLogoutLogic<R, C extends WebContext> {
+public interface LogoutLogic<R, C extends WebContext> {
 
     /**
      * Perform the application logout logic.
@@ -20,8 +20,10 @@ public interface ApplicationLogoutLogic<R, C extends WebContext> {
      * @param httpActionAdapter the HTTP action adapter
      * @param defaultUrl the default url
      * @param logoutUrlPattern the logout url pattern
+     * @param localLogout whether a local logout is required
+     * @param centralLogout whether a central logout is required
      * @return the resulting action for logout
      */
     R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter,
-                       String defaultUrl, String logoutUrlPattern);
+                       String defaultUrl, String logoutUrlPattern, Boolean localLogout, Boolean centralLogout);
 }

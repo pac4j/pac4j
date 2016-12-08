@@ -186,9 +186,9 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "client", client, "key", key, "secret", secret,
-                "tokenAsHeader", tokenAsHeader, "connectTimeout", connectTimeout, "readTimeout", readTimeout,
-                "responseType", responseType, "scope", scope, "api", api, "hasGrantType", hasGrantType,
-                "service", service, "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition);
+        return CommonHelper.toString(this.getClass(), "key", key, "secret", secret, "tokenAsHeader", tokenAsHeader,
+                "connectTimeout", connectTimeout, "readTimeout", readTimeout, "responseType", responseType,
+                "scope", scope, "api", api, "hasGrantType", hasGrantType, "service", service,
+                "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition);
     }
 }

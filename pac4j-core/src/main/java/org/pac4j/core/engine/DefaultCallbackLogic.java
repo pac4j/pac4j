@@ -11,10 +11,9 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.profile.ProfileManagerFactoryAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.function.Function;
 
 import static org.pac4j.core.util.CommonHelper.*;
 
@@ -26,11 +25,9 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public class DefaultCallbackLogic<R, C extends WebContext> implements CallbackLogic<R, C> {
+public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManagerFactoryAware<C> implements CallbackLogic<R, C> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
-
-    private Function<C, ProfileManager> profileManagerFactory = context -> new ProfileManager(context);
 
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
@@ -113,23 +110,4 @@ public class DefaultCallbackLogic<R, C extends WebContext> implements CallbackLo
         logger.debug("redirectUrl: {}", redirectUrl);
         return HttpAction.redirect("redirect", context, redirectUrl);
     }
-
-    /**
-     * Given a webcontext generate a profileManager for it.
-     * Can be overridden for custom profile manager implementations
-     * @param context the web context
-     * @return profile manager implementation built from the context
-     */
-    protected ProfileManager getProfileManager(final C context) {
-        return profileManagerFactory.apply(context);
-    }
-
-    public Function<C, ProfileManager> getProfileManagerFactory() {
-        return profileManagerFactory;
-    }
-
-    public void setProfileManagerFactory(final Function<C, ProfileManager> factory) {
-        this.profileManagerFactory = factory;
-    }
-
 }

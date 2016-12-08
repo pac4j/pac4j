@@ -6,7 +6,7 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
-import static org.pac4j.core.client.RedirectAction.*;
+import static org.pac4j.core.redirect.RedirectAction.*;
 
 /**
  * Tests the {@link GaeUserServiceClient}.

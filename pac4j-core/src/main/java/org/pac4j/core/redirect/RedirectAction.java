@@ -1,8 +1,13 @@
-package org.pac4j.core.client;
+package org.pac4j.core.redirect;
+
+import org.pac4j.core.client.Client;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * Indicates the action when the {@link Client} requires a redirection to achieve user authentication. Valid redirection
- * type are :
+ * types are:
  * <ul>
  * <li>REDIRECT (HTTP 302)</li>
  * <li>SUCCESS (HTTP 200)</li>
@@ -41,6 +46,20 @@ public class RedirectAction {
         return action;
     }
 
+    /**
+     * Perform a {@link RedirectAction} on the web context.
+     *
+     * @param context the web context
+     * @return the performed {@link HttpAction}
+     */
+    public HttpAction perform(final WebContext context) {
+        if (type == RedirectAction.RedirectType.REDIRECT) {
+            return HttpAction.redirect("redirection via 302", context, location);
+        } else {
+            return HttpAction.ok("redirection via 200", context, content);
+        }
+    }
+
     public RedirectType getType() {
         return this.type;
     }
@@ -55,6 +74,6 @@ public class RedirectAction {
 
     @Override
     public String toString() {
-        return "[type: " + type + ", location: " + location + ", content: " + content + "]";
+        return CommonHelper.toString(this.getClass(), "type", type, "location", location, "content", content);
     }
 }

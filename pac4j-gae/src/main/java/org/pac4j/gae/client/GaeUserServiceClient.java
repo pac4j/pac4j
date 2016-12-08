@@ -1,7 +1,7 @@
 package org.pac4j.gae.client;
 
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;

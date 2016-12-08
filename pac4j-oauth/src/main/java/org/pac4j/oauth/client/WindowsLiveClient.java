@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfile;
 import org.pac4j.oauth.profile.windowslive.WindowsLiveProfileDefinition;
 import org.pac4j.scribe.builder.api.WindowsLiveApi20;
@@ -30,6 +31,7 @@ public class WindowsLiveClient extends OAuth20Client<WindowsLiveProfile> {
         configuration.setScope("wl.basic");
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
+        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://account.microsoft.com/auth/complete-signout"));
 
         super.internalInit(context);
     }
