@@ -7,6 +7,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.credentials.authenticator.OidcAuthenticator;
 import org.pac4j.oidc.credentials.extractor.OidcExtractor;
+import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
 import org.pac4j.oidc.profile.OidcProfile;
 
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
@@ -51,6 +52,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
         setCredentialsExtractor(new OidcExtractor(configuration, getName()));
         setAuthenticator(new OidcAuthenticator(configuration));
         setProfileCreator(new OidcProfileCreator<>(configuration));
+        setLogoutActionBuilder(new OidcLogoutActionBuilder<U>(configuration));
     }
 
     @Override
@@ -58,6 +60,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
                 "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
-                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", configuration);
+                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+                "logoutActionBuilder", getLogoutActionBuilder(), "configuration", configuration);
     }
 }

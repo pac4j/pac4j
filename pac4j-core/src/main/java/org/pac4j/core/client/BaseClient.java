@@ -123,6 +123,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "name", getName());
+        return CommonHelper.toString(this.getClass(), "name", getName(),
+                "authorizationGenerators", authorizationGenerators);
     }
 }

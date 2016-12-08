@@ -2,7 +2,7 @@ package org.pac4j.oauth.redirect;
 
 import com.github.scribejava.core.exceptions.OAuthException;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;

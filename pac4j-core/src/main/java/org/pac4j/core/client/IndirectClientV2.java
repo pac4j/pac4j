@@ -6,15 +6,18 @@ import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.logout.LogoutActionBuilder;
+import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * New indirect client type using the {@link RedirectActionBuilder}, {@link CredentialsExtractor}, {@link Authenticator}
- * and {@link ProfileCreator} concepts.
+ * New indirect client type using the {@link RedirectActionBuilder}, {@link CredentialsExtractor}, {@link Authenticator},
+ * {@link ProfileCreator} and {@link LogoutActionBuilder} concepts.
  * 
  * @author Jerome Leleu
  * @since 1.9.0
@@ -28,6 +31,8 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
     private Authenticator<C> authenticator;
 
     private ProfileCreator<C, U> profileCreator =  AuthenticatorProfileCreator.INSTANCE;
+
+    private LogoutActionBuilder<U> logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
     @Override
     protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
@@ -63,6 +68,13 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
+    }
+
+    @Override
+    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
+
+        return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
 
     public RedirectActionBuilder getRedirectActionBuilder() {
@@ -105,11 +117,22 @@ public abstract class IndirectClientV2<C extends Credentials, U extends CommonPr
         }
     }
 
+    public LogoutActionBuilder<U> getLogoutActionBuilder() {
+        return logoutActionBuilder;
+    }
+
+    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+        if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
+            this.logoutActionBuilder = logoutActionBuilder;
+        }
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
                 "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator);
+                "authenticator", this.authenticator, "profileCreator", this.profileCreator,
+                "logoutActionBuilder", this.logoutActionBuilder);
     }
 }

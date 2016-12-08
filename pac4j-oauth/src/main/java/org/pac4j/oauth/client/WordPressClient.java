@@ -1,6 +1,7 @@
 package org.pac4j.oauth.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.wordpress.WordPressProfileDefinition;
 import org.pac4j.oauth.profile.wordpress.WordPressProfile;
 import org.pac4j.scribe.builder.api.WordPressApi20;
@@ -30,6 +31,7 @@ public class WordPressClient extends OAuth20Client<WordPressProfile> {
         configuration.setHasGrantType(true);
         configuration.setTokenAsHeader(true);
         setConfiguration(configuration);
+        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://wordpress.com/wp-login.php?action=logout"));
 
         super.internalInit(context);
     }

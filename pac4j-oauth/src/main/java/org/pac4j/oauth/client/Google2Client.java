@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.GoogleApi20;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.logout.GoogleLogoutActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oauth.exception.OAuthCredentialsException;
 import org.pac4j.oauth.profile.google2.Google2Profile;
@@ -63,6 +64,7 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
             return false;
         });
         setConfiguration(configuration);
+        setLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
         super.internalInit(context);
     }

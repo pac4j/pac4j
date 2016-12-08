@@ -1,7 +1,7 @@
 package org.pac4j.http.client.indirect;
 
 import org.pac4j.core.client.IndirectClientV2;
-import org.pac4j.core.client.RedirectAction;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
