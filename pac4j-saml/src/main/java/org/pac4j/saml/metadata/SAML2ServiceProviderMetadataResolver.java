@@ -44,13 +44,14 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private final String callbackUrl;
     private final boolean forceSpMetadataGeneration;
     private boolean authnRequestSigned;
+    private boolean wantsAssertionsSigned;
 
     public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
                                                 final String callbackUrl,
                                                 @Nullable final String spEntityId,
                                                 final boolean forceSpMetadataGeneration,
                                                 final CredentialProvider credentialProvider) {
-        this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider, true);
+        this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider, true, true);
     }
 
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration,
@@ -58,7 +59,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                                                 final CredentialProvider credentialProvider) {
         this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl,
                 configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider,
-                configuration.isAuthnRequestSigned());
+                configuration.isAuthnRequestSigned(), configuration.getWantsAssertionsSigned());
     }
 
     private SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
@@ -67,8 +68,9 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                                                  @Nullable final String spEntityId,
                                                  final boolean forceSpMetadataGeneration,
                                                  final CredentialProvider credentialProvider,
-                                                 boolean authnRequestSigned) {
+                                                 boolean authnRequestSigned, boolean wantsAssertionsSigned) {
         this.authnRequestSigned = authnRequestSigned;
+        this.wantsAssertionsSigned = wantsAssertionsSigned;
 
         if (spMetadataResource != null) {
             this.spMetadataResource = spMetadataResource;
@@ -105,6 +107,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
 
         try {
             final SAML2MetadataGenerator metadataGenerator = new SAML2MetadataGenerator();
+            metadataGenerator.setWantAssertionSigned(this.wantsAssertionsSigned);
             metadataGenerator.setAuthnRequestSigned(this.authnRequestSigned);
 
             if (this.authnRequestSigned) {
