@@ -120,4 +120,8 @@ public abstract class ProfileDefinition<P extends CommonProfile> {
     public List<String> getSecondaryAttributes() {
         return this.secondaries;
     }
+
+    protected Map<String, AttributeConverter<? extends Object>> getConverters() {
+        return converters;
+    }
 }
