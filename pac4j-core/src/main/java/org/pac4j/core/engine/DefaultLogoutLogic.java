@@ -47,7 +47,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
                      final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
                      final Boolean inputCentralLogout) {
 
-        logger.debug("=== APP LOGOUT ===");
+        logger.debug("=== LOGOUT ===");
 
         // default values
         final String logoutUrlPattern;
