@@ -18,7 +18,6 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  * <p>The map of <code>profileAttributes</code> is intended to replate the primary/secondary attributes where
  * the key is the name of the attribute and the value is the path to obtain that attribute from the
  * json resopnse, starting from <code>firstNodePath</code></p>
- * <p>It is returned by the {@link org.pac4j.oauth.client.GenericOAuth2Client}.</p>
  *
  * @author Julio Arrebola
  */
