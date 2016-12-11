@@ -1,14 +1,11 @@
 package org.pac4j.oauth.client;
 
-import com.github.scribejava.core.builder.api.DefaultApi20;
-import com.github.scribejava.core.model.OAuthConfig;
-import com.github.scribejava.core.model.Verb;
-import com.github.scribejava.core.utils.OAuthEncoder;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.profile.generic.GenericOAuth20Profile;
+import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
+import org.pac4j.scribe.builder.api.GenericApi20;
 
 /**
  * <p>This class is a generic OAuth2 client to authenticate users in a standard OAuth2 server.</p>
@@ -17,7 +14,7 @@ import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
  *
  * @author Julio Arrebola
  */
-public class GenericOAuth20Client extends OAuth20Client<GenericOAuth20Profile> {
+public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
     private static final Logger LOG = Logger.getLogger(GenericOAuth20Client.class.getName());
 
@@ -37,9 +34,7 @@ public class GenericOAuth20Client extends OAuth20Client<GenericOAuth20Profile> {
 
         LOG.info("InternalInit");
 
-        GenericOAuth20Api genApi = new GenericOAuth20Api();
-        genApi.setAuthorizationBaseUrl(authUrl);
-        genApi.setAccessTokenEndpoint(tokenUrl);
+        GenericApi20 genApi = new GenericApi20(authUrl, tokenUrl);
         configuration.setApi(genApi);
 
         configuration.setCustomParams(customParams);
@@ -88,62 +83,5 @@ public class GenericOAuth20Client extends OAuth20Client<GenericOAuth20Profile> {
 
     public void setCustomParams(Map<String, String> customParamsMap) {
         this.customParams = customParamsMap;
-    }
-
-    private static class GenericOAuth20Api extends DefaultApi20 {
-
-        private final static String AUTHORIZATION_URL = "%s?response_type=code&client_id=%s&redirect_uri=%s";
-
-        private String accessTokenEndpoint;
-        private String authorizationBaseUrl;
-
-        @Override
-        public Verb getAccessTokenVerb() {
-            return Verb.POST;
-        }
-
-        @Override
-        public String getAccessTokenEndpoint() {
-            return this.accessTokenEndpoint;
-        }
-
-        @Override
-        protected String getAuthorizationBaseUrl() {
-            return this.authorizationBaseUrl;
-        }
-
-        @Override
-        public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
-
-            StringBuilder url = new StringBuilder(String.format(AUTHORIZATION_URL, getAuthorizationBaseUrl(),
-                    config.getApiKey(), OAuthEncoder.encode(config.getCallback())));
-
-            if (config.getScope() != null) {
-                url.append("&scope=").append(OAuthEncoder.encode(config.getScope()));
-            }
-
-            if (config.getState() != null) {
-                url.append("&state=").append(OAuthEncoder.encode(config.getState()));
-            }
-
-            if (additionalParams != null && !additionalParams.isEmpty()) {
-                for (Map.Entry entry : additionalParams.entrySet()) {
-                    if (entry.getValue() != null) {
-                        url.append("&").append(entry.getKey()).append("=").append(OAuthEncoder.encode(entry.getValue().toString()));
-                    }
-                }
-            }
-
-            return url.toString();
-        }
-
-        private void setAuthorizationBaseUrl(String authUrl) {
-            this.authorizationBaseUrl = authUrl;
-        }
-
-        protected void setAccessTokenEndpoint(String tokenUrl) {
-            this.accessTokenEndpoint = tokenUrl;
-        }
-
     }
 }

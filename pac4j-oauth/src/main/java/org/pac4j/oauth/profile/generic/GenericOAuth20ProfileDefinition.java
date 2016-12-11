@@ -10,6 +10,7 @@ import org.pac4j.core.profile.converter.AttributeConverter;
 import org.pac4j.core.profile.converter.StringConverter;
 import org.pac4j.oauth.config.OAuth20Configuration;
 import org.pac4j.oauth.profile.JsonHelper;
+import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
 
 /**
@@ -21,7 +22,7 @@ import org.pac4j.oauth.profile.definition.OAuth20ProfileDefinition;
  *
  * @author Julio Arrebola
  */
-public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<GenericOAuth20Profile> {
+public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OAuth20Profile> {
 
     
     private final Map<String,String> profileAttributes = new HashMap<>();
@@ -55,8 +56,8 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<Ge
     }
 
     @Override
-    public GenericOAuth20Profile extractUserProfile(String body) throws HttpAction {
-        final GenericOAuth20Profile profile = new GenericOAuth20Profile();
+    public OAuth20Profile extractUserProfile(String body) throws HttpAction {
+        final OAuth20Profile profile = new OAuth20Profile();
         final JsonNode json = JsonHelper.getFirstNode(body, getFirstNodePath());
         if (json != null) {
             for (final String attribute : getPrimaryAttributes()) {

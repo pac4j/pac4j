@@ -19,6 +19,7 @@ public class GenericApi20 extends DefaultApi20 {
 
     protected final String authUrl;
     protected final String tokenUrl;
+    protected Verb accessTokenVerb = Verb.POST;
 
     public GenericApi20(final String authUrl, final String tokenUrl) {
         this.authUrl = authUrl;
@@ -27,7 +28,11 @@ public class GenericApi20 extends DefaultApi20 {
 
     @Override
     public Verb getAccessTokenVerb() {
-        return Verb.POST;
+        return accessTokenVerb;
+    }
+    
+    public void setAccessTokenVerb(Verb verb) {
+        accessTokenVerb = verb;
     }
 
     @Override
