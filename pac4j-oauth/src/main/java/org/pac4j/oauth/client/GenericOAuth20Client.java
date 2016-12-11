@@ -10,7 +10,7 @@ import org.pac4j.scribe.builder.api.GenericApi20;
 /**
  * <p>This class is a generic OAuth2 client to authenticate users in a standard OAuth2 server.</p>
  * <p>All configuration parameters can be specified setting the corresponding attribute.</p>
- * <p>It returns a {@link org.pac4j.oauth.profile.generic.GenericOAuth20Profile}.</p>
+ * <p>It returns a {@link org.pac4j.oauth.profile.OAuth20Profile}.</p>
  *
  * @author Julio Arrebola
  */
