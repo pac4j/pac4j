@@ -94,6 +94,7 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
      * Add an attribute as a primary one and its converter.
      *
      * @param name name of the attribute
+     * @param tag json reference 
      * @param converter converter
      */
     public void profileAttribute(final String name, String tag, final AttributeConverter<? extends Object> converter) {
