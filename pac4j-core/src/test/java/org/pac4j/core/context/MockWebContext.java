@@ -1,5 +1,8 @@
 package org.pac4j.core.context;
 
+import org.pac4j.core.context.session.MockSessionStore;
+import org.pac4j.core.context.session.SessionStore;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -17,7 +20,7 @@ public final class MockWebContext implements WebContext {
 
     protected final Map<String, String> headers = new HashMap<>();
 
-    protected final Map<String, Object> session = new HashMap<>();
+    protected SessionStore sessionStore = new MockSessionStore();
 
     protected final Map<String, Object> attributes = new HashMap<>();
 
@@ -50,6 +53,16 @@ public final class MockWebContext implements WebContext {
     protected final Collection<Cookie> responseCookies = new LinkedHashSet<>();
 
     protected MockWebContext() {
+    }
+
+    @Override
+    public SessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    @Override
+    public void setSessionStore(final SessionStore sessionStore) {
+        this.sessionStore = sessionStore;
     }
 
     /**
@@ -138,21 +151,6 @@ public final class MockWebContext implements WebContext {
     @Override
     public String getRequestHeader(final String name) {
         return this.headers.get(name);
-    }
-
-    @Override
-    public void setSessionAttribute(final String name, final Object value) {
-        this.session.put(name, value);
-    }
-
-    @Override
-    public Object getSessionAttribute(final String name) {
-        return this.session.get(name);
-    }
-
-    @Override
-    public Object getSessionIdentifier() {
-        return hashCode();
     }
 
     @Override

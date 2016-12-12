@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link J2ERenewSessionCallbackLogic}.
+ * Tests {@link DefaultCallbackLogic}.
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -51,7 +51,7 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
 
     @Before
     public void setUp() {
-        logic = new J2ERenewSessionCallbackLogic();
+        logic = new DefaultCallbackLogic<>();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         context = new J2EContext(request, response);

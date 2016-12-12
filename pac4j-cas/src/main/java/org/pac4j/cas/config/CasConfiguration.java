@@ -3,10 +3,8 @@ package org.pac4j.cas.config;
 import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.logout.CasLogoutHandler;
-import org.pac4j.cas.logout.CasSingleSignOutHandler;
-import org.pac4j.cas.logout.NoLogoutHandler;
+import org.pac4j.cas.logout.DefaultCasLogoutHandler;
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.CallbackUrlResolver;
@@ -83,7 +81,7 @@ public class CasConfiguration extends InitializableWebObject {
 
         initializeClientConfiguration(context);
 
-        initializeLogoutHandler(context);
+        initializeLogoutHandler();
 
         if (this.protocol == CasProtocol.CAS10) {
             initializeCas10Protocol();
@@ -115,13 +113,9 @@ public class CasConfiguration extends InitializableWebObject {
         }
     }
 
-    private void initializeLogoutHandler(final WebContext context) {
+    private void initializeLogoutHandler() {
         if (this.logoutHandler == null) {
-            if (context instanceof J2EContext) {
-                this.logoutHandler = new CasSingleSignOutHandler();
-            } else {
-                this.logoutHandler = new NoLogoutHandler();
-            }
+            this.logoutHandler = new DefaultCasLogoutHandler();
         }
     }
 

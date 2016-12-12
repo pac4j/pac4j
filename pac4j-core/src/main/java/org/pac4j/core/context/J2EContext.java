@@ -23,7 +23,7 @@ public class J2EContext implements WebContext {
 
     private final HttpServletResponse response;
 
-    private final SessionStore<J2EContext> sessionStore;
+    private SessionStore<J2EContext> sessionStore;
 
     /**
      * Build a J2E context from the current HTTP request and response.
@@ -45,6 +45,16 @@ public class J2EContext implements WebContext {
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
         this.request = request;
         this.response = response;
+        setSessionStore(sessionStore);
+    }
+
+    @Override
+    public SessionStore getSessionStore() {
+        return this.sessionStore;
+    }
+
+    @Override
+    public void setSessionStore(final SessionStore sessionStore) {
         if (sessionStore == null) {
             this.sessionStore = new J2ESessionStore();
         } else {
@@ -78,26 +88,6 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public void setSessionAttribute(final String name, final Object value) {
-        sessionStore.set(this, name, value);
-    }
-
-    @Override
-    public Object getSessionAttribute(final String name) {
-        return sessionStore.get(this, name);
-    }
-
-    @Override
-    public Object getSessionIdentifier() {
-        return sessionStore.getOrCreateSessionId(this);
-    }
-
-    @Override
-    public void invalidationSession() {
-        sessionStore.invalidateSession(this);
-    }
-
-    @Override
     public String getRequestMethod() {
         return this.request.getMethod();
     }
@@ -123,10 +113,6 @@ public class J2EContext implements WebContext {
      */
     public HttpServletResponse getResponse() {
         return this.response;
-    }
-
-    public SessionStore<J2EContext> getSessionStore() {
-        return sessionStore;
     }
 
     @Override

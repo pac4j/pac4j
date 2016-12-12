@@ -1,5 +1,6 @@
 package org.pac4j.core.context;
 
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.util.Collection;
@@ -12,6 +13,24 @@ import java.util.Map;
  * @since 1.4.0
  */
 public interface WebContext {
+
+    /**
+     * Get the session store.
+     *
+     * @return the session store
+     */
+    default SessionStore getSessionStore() {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
+    /**
+     * Set the session store.
+     *
+     * @param sessionStore the session store
+     */
+    default void setSessionStore(SessionStore sessionStore) {
+        throw new UnsupportedOperationException("To be implemented");
+    }
 
     /**
      * Return a request parameter.
@@ -55,10 +74,12 @@ public interface WebContext {
     /**
      * Save an attribute in session.
      *
-     * @param name  name of the session attribute
+     * @param name name of the session attribute
      * @param value value of the session attribute
      */
-    void setSessionAttribute(String name, Object value);
+    default void setSessionAttribute(String name, Object value) {
+        getSessionStore().set(this, name, value);
+    }
 
     /**
      * Get an attribute from session.
@@ -66,20 +87,17 @@ public interface WebContext {
      * @param name name of the session attribute
      * @return the session attribute
      */
-    Object getSessionAttribute(String name);
+    default Object getSessionAttribute(String name) {
+        return getSessionStore().get(this, name);
+    }
 
     /**
      * Gets the session id for this context.
      *
      * @return the session identifier
      */
-    Object getSessionIdentifier();
-
-    /**
-     * Invalidate the whole session.
-     */
-    default void invalidationSession() {
-        throw new UnsupportedOperationException("To be implemented");
+    default Object getSessionIdentifier() {
+        return getSessionStore().getOrCreateSessionId(this);
     }
 
     /**

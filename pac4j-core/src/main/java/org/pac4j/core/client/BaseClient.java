@@ -88,6 +88,14 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return this.name;
     }
 
+    /**
+     * Notify of the web session renewal.
+     *
+     * @param oldSessionId the old session identifier
+     * @param context the web context
+     */
+    public void notifySessionRenewal(final String oldSessionId, final WebContext context) { }
+
     public List<AuthorizationGenerator<U>> getAuthorizationGenerators() {
         return this.authorizationGenerators;
     }

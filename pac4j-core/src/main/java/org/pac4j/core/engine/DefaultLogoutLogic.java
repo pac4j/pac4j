@@ -6,6 +6,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
@@ -40,12 +41,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    private boolean killSession;
-
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
-                     final Boolean inputCentralLogout) {
+                     final Boolean inputKillSession, final Boolean inputCentralLogout) {
 
         logger.debug("=== LOGOUT ===");
 
@@ -61,6 +60,12 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
             localLogout = true;
         } else {
             localLogout = inputLocalLogout;
+        }
+        final boolean killSession;
+        if (inputKillSession == null) {
+            killSession = false;
+        } else {
+            killSession = inputKillSession;
         }
         final boolean centralLogout;
         if (inputCentralLogout == null) {
@@ -99,7 +104,17 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         if (localLogout || profiles.size() > 1) {
             logger.debug("Performing application logout");
             manager.logout();
-            postLogout(context);
+            if (killSession) {
+                final SessionStore sessionStore = context.getSessionStore();
+                if (sessionStore == null) {
+                    logger.error("No session store available for this web context");
+                } else {
+                    final boolean removed = sessionStore.killSession(context);
+                    if (!removed) {
+                        logger.error("Unable to destroy the web session. The session store may not support this feature");
+                    }
+                }
+            }
         }
 
         // central logout
@@ -129,24 +144,5 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
-    }
-
-    /**
-     * Specific post logout action.
-     *
-     * @param context the web context
-     */
-    protected void postLogout(final C context) {
-        if (this.killSession) {
-            context.invalidationSession();
-        }
-    }
-
-    public boolean isKillSession() {
-        return killSession;
-    }
-
-    public void setKillSession(final boolean killSession) {
-        this.killSession = killSession;
     }
 }

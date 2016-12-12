@@ -66,6 +66,9 @@ public interface Pac4jConstants {
     /** Whether a local logout must be performed */
     String LOCAL_LOGOUT = "localLogout";
 
+    /** Whether we must kill the web session during the local logout */
+    String KILL_SESSION = "killSession";
+
     /** Whether a central logout must be performed */
     String CENTRAL_LOGOUT = "centralLogout";
 }
