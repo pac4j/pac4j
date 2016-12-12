@@ -27,21 +27,19 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
     private final Map<String,String> profileAttributes = new HashMap<>();
     
     String profileUrl = null;
-    String profileMethod = null;
+    Verb profileVerb = null;
     String firstNodePath = null;
     
-    public void setProfileMethod(String value) {
-        this.profileMethod = value;
+    public void setProfileVerb(final Verb value) {
+        this.profileVerb = value;
     }
 
     @Override
     public Verb getProfileVerb() {
-        if ("POST".equalsIgnoreCase(profileMethod)) {
-            return Verb.POST;
-        } else if ("GET".equalsIgnoreCase(profileMethod)) {
-            return Verb.GET;
+        if (profileVerb != null) {
+            return this.profileVerb;
         } else {
-            return super.getProfileVerb(); 
+            return super.getProfileVerb();
         }
     }
     
@@ -109,10 +107,7 @@ public class GenericOAuth20ProfileDefinition extends OAuth20ProfileDefinition<OA
         return firstNodePath;
     }
 
-    public void setFirstNodePath(String firstNodePath) {
+    public void setFirstNodePath(final String firstNodePath) {
         this.firstNodePath = firstNodePath;
     }
-    
-    
-
 }

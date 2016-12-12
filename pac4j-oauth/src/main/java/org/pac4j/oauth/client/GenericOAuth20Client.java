@@ -2,6 +2,8 @@ package org.pac4j.oauth.client;
 
 import java.util.Map;
 import java.util.logging.Logger;
+
+import com.github.scribejava.core.model.Verb;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oauth.profile.OAuth20Profile;
 import org.pac4j.oauth.profile.generic.GenericOAuth20ProfileDefinition;
@@ -22,7 +24,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
     private String tokenUrl;
     private String profileUrl;
     private String profilePath;
-    private String profileMethod;
+    private Verb profileVerb;
     private Map<String, String> profileAttrs;
     private Map<String, String> customParams;
 
@@ -43,7 +45,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         GenericOAuth20ProfileDefinition profileDefinition = new GenericOAuth20ProfileDefinition();
         profileDefinition.setFirstNodePath(profilePath);
-        profileDefinition.setProfileMethod(profileMethod);
+        profileDefinition.setProfileVerb(profileVerb);
         profileDefinition.setProfileUrl(profileUrl);
 
         if (profileAttrs != null) {
@@ -57,31 +59,31 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
         super.internalInit(context);
     }
 
-    public void setAuthUrl(String authUrl) {
+    public void setAuthUrl(final String authUrl) {
         this.authUrl = authUrl;
     }
 
-    public void setTokenUrl(String tokenUrl) {
+    public void setTokenUrl(final String tokenUrl) {
         this.tokenUrl = tokenUrl;
     }
 
-    public void setProfileUrl(String profileUrl) {
+    public void setProfileUrl(final String profileUrl) {
         this.profileUrl = profileUrl;
     }
 
-    public void setProfileNodePath(String profilePath) {
+    public void setProfileNodePath(final String profilePath) {
         this.profilePath = profilePath;
     }
 
-    public void setProfileMethod(String profileMethod) {
-        this.profileMethod = profileMethod;
+    public void setProfileVerb(final Verb profileVerb) {
+        this.profileVerb = profileVerb;
     }
 
-    public void setProfileAttrs(Map<String, String> profileAttrsMap) {
+    public void setProfileAttrs(final Map<String, String> profileAttrsMap) {
         this.profileAttrs = profileAttrsMap;
     }
 
-    public void setCustomParams(Map<String, String> customParamsMap) {
+    public void setCustomParams(final Map<String, String> customParamsMap) {
         this.customParams = customParamsMap;
     }
 }
