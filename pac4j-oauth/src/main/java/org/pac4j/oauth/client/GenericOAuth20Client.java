@@ -18,13 +18,13 @@ import org.pac4j.scribe.builder.api.GenericApi20;
  *   <li>authUrl : Server auth url</li>
  *   <li>tokeUrl : Server token url</li>
  *   <li>profileUrl : Server profile url</li>
- * <ul>
-* <p>These additiona custom parameters may be used:</p>
+ * </ul>
+ * <p>These additiona custom parameters may be used:</p>
  * <ul>
  *   <li>profilePath : Path to find profile in json response</li>
  *   <li>profileVerb : Http method used to request profile</li>
  *   <li>profileAttrs : Map of attribute name/json path for each profile attribute </li>
- * <ul>
+ * </ul>
  *
  * @author Julio Arrebola
  */
