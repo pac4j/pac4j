@@ -2,6 +2,7 @@ package org.pac4j.oauth.client;
 
 import com.github.scribejava.apis.GitHubApi;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.pac4j.oauth.profile.github.GitHubProfileDefinition;
 
@@ -35,6 +36,7 @@ public class GitHubClient extends OAuth20Client<GitHubProfile> {
         configuration.setProfileDefinition(new GitHubProfileDefinition());
         configuration.setScope(this.scope);
         setConfiguration(configuration);
+        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://github.com/logout"));
 
         super.internalInit(context);
     }

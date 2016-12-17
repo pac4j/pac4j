@@ -7,7 +7,7 @@ package org.pac4j.oauth.profile;
  * @author Jerome Leleu
  * @since 1.3.0
  */
-public abstract class OAuth10Profile extends OAuth20Profile {
+public class OAuth10Profile extends OAuth20Profile {
     
     private static final long serialVersionUID = 3407397824720340476L;
 

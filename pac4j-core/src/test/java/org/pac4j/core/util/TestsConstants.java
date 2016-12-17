@@ -2,12 +2,12 @@ package org.pac4j.core.util;
 
 /**
  * This class has all the constants for tests.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
 public interface TestsConstants {
-    
+
     // simple objects
     String ID = "id";
     String VALUE = "value";
@@ -22,7 +22,6 @@ public interface TestsConstants {
     String MAC_SECRET = "12345678901234567890123456789012";
     String TOKEN = "token";
     String VERIFIER = "verifier";
-    String CODE = "code";
     String NAME = "name";
     String SALT = "salt";
     String GOOD_USERNAME = "jle";
