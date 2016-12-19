@@ -158,11 +158,7 @@ public class OidcConfiguration extends InitializableWebObject {
     }
 
     public String getCustomParam(String name) {
-        if (customParams != null) {
-            return customParams.get(name);
-        } else {
-            return null;
-        }
+        return customParams.get(name);
     }
 
     public void setCustomParams(final Map<String, String> customParams) {

@@ -20,6 +20,8 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
  */
 public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile> {
 
+    private static final long serialVersionUID = -665205280702028258L;
+
     public KeycloakOidcClient() {
     }
 
@@ -38,7 +40,6 @@ public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile> {
         final OidcProfileCreator<KeycloakOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
         profileCreator.setProfileDefinition(new OidcProfileDefinition<>(x -> new KeycloakOidcProfile()));
         setProfileCreator(profileCreator);
-        //setLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
         super.internalInit(context);
     }
