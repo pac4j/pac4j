@@ -16,7 +16,6 @@
         <opensaml.version>3.2.0</opensaml.version>
         <joda-time.version>2.9.2</joda-time.version>
         <velocity.version>1.7</velocity.version>
-        <spring.extensions.version>5.1.1</spring.extensions.version>
         <cryptacular.version>1.1.0</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
         <java-support.version>7.1.1</java-support.version>
@@ -128,25 +127,8 @@
             <version>${velocity.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.shibboleth.ext</groupId>
-            <artifactId>spring-extensions</artifactId>
-            <version>${spring.extensions.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
