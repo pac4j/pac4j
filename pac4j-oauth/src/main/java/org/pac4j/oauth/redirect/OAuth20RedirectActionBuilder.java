@@ -53,7 +53,7 @@ public class OAuth20RedirectActionBuilder extends InitializableWebObject impleme
 
                 service = this.configuration.getService();
             }
-            final String authorizationUrl = service.getAuthorizationUrl(this.configuration.getCustomParams());
+            final String authorizationUrl = service.getAuthorizationUrl();
             logger.debug("authorizationUrl: {}", authorizationUrl);
             return RedirectAction.redirect(authorizationUrl);
 
