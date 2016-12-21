@@ -6,6 +6,7 @@ import org.pac4j.oauth.client.OAuth20Client;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.pac4j.core.util.CommonHelper;
 
 /**
  * The OAuh 2.0 configuration.
@@ -22,7 +23,7 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Client, OAut
     private static final String STATE_SESSION_PARAMETER = "#oauth20StateParameter";
 
     /* Map containing user defined parameters */
-    private Map<String, String> customParams = new HashMap<>();
+    private Map<String, Object> customParams = new HashMap<>();
 
     private boolean withState;
 
@@ -32,12 +33,21 @@ public class OAuth20Configuration extends OAuthConfiguration<OAuth20Client, OAut
         return getClient().getName() + STATE_SESSION_PARAMETER;
     }
 
-    public Map<String, String> getCustomParams() {
+    public Map<String, Object> getCustomParams() {
         return customParams;
     }
 
-    public void setCustomParams(final Map<String, String> customParams) {
+    public Object getCustomParam(String name) {
+        return customParams.get(name);
+    }
+
+    public void setCustomParams(final Map<String, Object> customParams) {
+        CommonHelper.assertNotNull("customParams", customParams);
         this.customParams = customParams;
+    }
+
+    public void addCustomParam(String name, Object value) {
+        this.customParams.put(name, value);
     }
 
     public boolean isWithState() {
