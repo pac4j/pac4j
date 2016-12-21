@@ -23,11 +23,6 @@ public final class ExcludedPathMatcher extends PathMatcher {
         setExcludePath(excludePath);
     }
 
-    @Override
-    public boolean matches(final WebContext context) {
-        return super.matches(context);
-    }
-
     public String getExcludePath() {
         return super.getExcludedPatterns().iterator().next().pattern();
     }
