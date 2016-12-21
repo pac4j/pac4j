@@ -11,4 +11,5 @@ import org.pac4j.oidc.profile.OidcProfile;
  */
 public class KeycloakOidcProfile extends OidcProfile {
 
+    private static final long serialVersionUID = 8895149078141040113L;
 }
