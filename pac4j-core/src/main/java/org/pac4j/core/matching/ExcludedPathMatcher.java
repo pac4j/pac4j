@@ -11,19 +11,16 @@ import java.util.regex.Pattern;
 /**
  * To match requests by excluding path.
  *
+ * @deprecated use {@link org.pac4j.core.matching.PathMatcher} instead.
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class ExcludedPathMatcher implements Matcher {
+@Deprecated
+public final class ExcludedPathMatcher extends PathMatcher {
 
     private final static Logger logger = LoggerFactory.getLogger(ExcludedPathMatcher.class);
 
-    private String excludePath;
-
-    private Pattern pattern;
-
-    public ExcludedPathMatcher() {
-    }
+    public ExcludedPathMatcher() {}
 
     public ExcludedPathMatcher(final String excludePath) {
         setExcludePath(excludePath);
@@ -31,28 +28,20 @@ public final class ExcludedPathMatcher implements Matcher {
 
     @Override
     public boolean matches(final WebContext context) {
-        if (pattern != null) {
-            final String path = context.getPath();
-            logger.debug("path to match: {}", path);
-            return !pattern.matcher(path).matches();
-        }
-        return true;
+        return super.matches(context);
     }
 
     public String getExcludePath() {
-        return excludePath;
+        return super.getExcludedPatterns().iterator().next().pattern();
     }
 
     public void setExcludePath(String excludePath) {
-        this.excludePath = excludePath;
-        if (CommonHelper.isNotBlank(excludePath)) {
-            logger.warn("Excluding paths is an advanced feature: be careful when defining your regular expression to avoid any security issue!");
-            if (!excludePath.startsWith("^") || !excludePath.endsWith("$")) {
-                final String msg = "Your regular expression: '" + excludePath + "' must start with a ^ and ends with a $ to define a full path matching";
-                logger.error(msg);
-                throw new TechnicalException(msg);
-            }
-            pattern = Pattern.compile(excludePath);
+        if (!super.getExcludedPatterns().isEmpty())
+        {
+            String msg = "ExcludedPathMatcher does not support excluding multiple paths. Use PathMatcher instead.";
+            logger.error(msg);
+            throw new TechnicalException(msg);
         }
+        super.addExcludedRegex(excludePath);
     }
 }
