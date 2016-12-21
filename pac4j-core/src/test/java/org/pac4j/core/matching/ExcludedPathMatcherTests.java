@@ -7,7 +7,8 @@ import org.pac4j.core.util.TestsHelper;
 
 import java.util.regex.PatternSyntaxException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link ExcludedPathMatcher}.
