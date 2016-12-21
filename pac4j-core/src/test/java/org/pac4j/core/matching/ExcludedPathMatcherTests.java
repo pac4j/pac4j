@@ -28,12 +28,12 @@ public final class ExcludedPathMatcherTests {
 
     @Test
     public void testMissingStartCharacterInRegexp() {
-        TestsHelper.expectException(() -> new ExcludedPathMatcher("/img/.*$"), TechnicalException.class, "Your regular expression: '/img/.*$' must start with a ^ and ends with a $ to define a full path matching");
+        TestsHelper.expectException(() -> new ExcludedPathMatcher("/img/.*$"), TechnicalException.class, "Your regular expression: '/img/.*$' must start with a ^ and end with a $ to define a full path matching");
     }
 
     @Test
     public void testMissingEndCharacterInRegexp() {
-        TestsHelper.expectException(() -> new ExcludedPathMatcher("^/img/.*"), TechnicalException.class, "Your regular expression: '^/img/.*' must start with a ^ and ends with a $ to define a full path matching");
+        TestsHelper.expectException(() -> new ExcludedPathMatcher("^/img/.*"), TechnicalException.class, "Your regular expression: '^/img/.*' must start with a ^ and end with a $ to define a full path matching");
     }
 
     @Test(expected = PatternSyntaxException.class)
