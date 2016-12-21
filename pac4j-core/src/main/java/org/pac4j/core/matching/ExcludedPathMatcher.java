@@ -1,6 +1,5 @@
 package org.pac4j.core.matching;
 
-import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
