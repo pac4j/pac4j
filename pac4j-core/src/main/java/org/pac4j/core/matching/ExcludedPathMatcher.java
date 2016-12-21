@@ -33,6 +33,6 @@ public final class ExcludedPathMatcher extends PathMatcher {
             logger.error(msg);
             throw new TechnicalException(msg);
         }
-        super.addExcludedRegex(excludePath);
+        super.excludeRegex(excludePath);
     }
 }

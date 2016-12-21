@@ -27,14 +27,14 @@ public class PathMatcherTests {
 
     @Test
     public void testFixedPath() {
-        final PathMatcher pathMatcher = new PathMatcher().addExcludedPath("/foo");
+        final PathMatcher pathMatcher = new PathMatcher().excludePath("/foo");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo")));
         assertTrue(pathMatcher.matches(MockWebContext.create().setPath("/foo/bar")));
     }
 
     @Test
     public void testBranch() {
-        final PathMatcher pathMatcher = new PathMatcher().addExcludedBranch("/foo");
+        final PathMatcher pathMatcher = new PathMatcher().excludeBranch("/foo");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo")));
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo/")));
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/foo/bar")));
@@ -42,29 +42,29 @@ public class PathMatcherTests {
 
     @Test
     public void testMissingStartCharacterInRegexp() {
-        TestsHelper.expectException(() -> new PathMatcher().addExcludedRegex("/img/.*$"), TechnicalException.class,
+        TestsHelper.expectException(() -> new PathMatcher().excludeRegex("/img/.*$"), TechnicalException.class,
                 "Your regular expression: '/img/.*$' must start with a ^ and end with a $ to define a full path matching");
     }
 
     @Test
     public void testMissingEndCharacterInRegexp() {
-        TestsHelper.expectException(() -> new PathMatcher().addExcludedRegex("^/img/.*"), TechnicalException.class, "Your regular expression: '^/img/.*' must start with a ^ and end with a $ to define a full path matching");
+        TestsHelper.expectException(() -> new PathMatcher().excludeRegex("^/img/.*"), TechnicalException.class, "Your regular expression: '^/img/.*' must start with a ^ and end with a $ to define a full path matching");
     }
 
     @Test(expected = PatternSyntaxException.class)
     public void testBadRegexp() {
-        new PathMatcher().addExcludedRegex("^/img/**$");
+        new PathMatcher().excludeRegex("^/img/**$");
     }
 
     @Test
     public void testNoPath() {
-        final PathMatcher pathMatcher = new PathMatcher().addExcludedRegex("^/$");
+        final PathMatcher pathMatcher = new PathMatcher().excludeRegex("^/$");
         assertFalse(pathMatcher.matches(MockWebContext.create().setPath("/")));
     }
 
     @Test
     public void testMatch() {
-        final PathMatcher matcher = new PathMatcher().addExcludedRegex("^/(img/.*|css/.*|page\\.html)$");
+        final PathMatcher matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
         assertTrue(matcher.matches(MockWebContext.create().setPath("/js/app.js")));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/")));
         assertTrue(matcher.matches(MockWebContext.create().setPath("/page.htm")));
@@ -72,7 +72,7 @@ public class PathMatcherTests {
 
     @Test
     public void testDontMatch() {
-        final PathMatcher matcher = new PathMatcher().addExcludedRegex("^/(img/.*|css/.*|page\\.html)$");
+        final PathMatcher matcher = new PathMatcher().excludeRegex("^/(img/.*|css/.*|page\\.html)$");
         assertFalse(matcher.matches(MockWebContext.create().setPath("/css/app.css")));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/img/")));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/page.html")));

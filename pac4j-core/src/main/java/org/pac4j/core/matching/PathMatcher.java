@@ -26,7 +26,7 @@ public class PathMatcher implements Matcher {
      *
      * @param path the path to be excluded
      */
-    public PathMatcher addExcludedPath(final String path) {
+    public PathMatcher excludePath(final String path) {
         validatePath(path);
         excludedPaths.add(path);
         return this;
@@ -37,7 +37,7 @@ public class PathMatcher implements Matcher {
      *
      * @param path the prefix for the paths to be excluded
      */
-    public PathMatcher addExcludedBranch(final String path) {
+    public PathMatcher excludeBranch(final String path) {
         validatePath(path);
         excludedPatterns.add(Pattern.compile("^" + path + "(/.*)?$"));
         return this;
@@ -48,7 +48,7 @@ public class PathMatcher implements Matcher {
      *
      * @param regex the regular expression matching the paths to be excluded
      */
-    public PathMatcher addExcludedRegex(final String regex) {
+    public PathMatcher excludeRegex(final String regex) {
         CommonHelper.assertNotBlank("regex", regex);
         logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression to avoid any security issues!");
 
