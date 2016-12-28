@@ -91,10 +91,12 @@ public class PathMatcher implements Matcher {
     }
 
     public void setExcludedPaths(Collection<String> paths) {
+        excludedPaths.clear();
         paths.forEach(path -> excludePath(path));
     }
 
     public void setExcludedPatterns(Collection<String> regularExpressions) {
+        excludedPatterns.clear();
         regularExpressions.forEach(regex -> excludeRegex(regex));
     }
 
