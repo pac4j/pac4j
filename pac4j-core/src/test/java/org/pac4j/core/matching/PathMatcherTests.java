@@ -5,6 +5,8 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsHelper;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import static org.junit.Assert.assertFalse;
@@ -76,5 +78,24 @@ public class PathMatcherTests {
         assertFalse(matcher.matches(MockWebContext.create().setPath("/css/app.css")));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/img/")));
         assertFalse(matcher.matches(MockWebContext.create().setPath("/page.html")));
+    }
+
+    @Test
+    public void testSetters() {
+        final Set<String> excludedPaths = new HashSet<>();
+        excludedPaths.add("/foo");
+        final Set<String> excludedRegexs = new HashSet<>();
+        excludedRegexs.add("^/(img/.*|css/.*|page\\.html)$");
+
+        final PathMatcher matcher = new PathMatcher();
+        matcher.setExcludedPaths(excludedPaths);
+        matcher.setExcludedPatterns(excludedRegexs);
+
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/foo")));
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/foo/"))); // because its a fixed path, not a regex
+
+        assertTrue(matcher.matches(MockWebContext.create().setPath("/error/500.html")));
+        assertFalse(matcher.matches(MockWebContext.create().setPath("/img/")));
+
     }
 }
