@@ -6,6 +6,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -87,6 +88,14 @@ public class PathMatcher implements Matcher {
 
     public Set<Pattern> getExcludedPatterns() {
         return excludedPatterns;
+    }
+
+    public void setExcludedPaths(Collection<String> paths) {
+        paths.forEach(path -> excludePath(path));
+    }
+
+    public void setExcludedPatterns(Collection<String> regularExpressions) {
+        regularExpressions.forEach(regex -> excludeRegex(regex));
     }
 
     private static void validatePath(String path) {
