@@ -15,7 +15,7 @@ A matcher can be defined by implementing the [`Matcher`](https://github.com/pac4
 
 A few default matchers are available (but you can of course develop yours):
 
-- the [`ExcludedPathMatcher`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/ExcludedPathMatcher.java) allows you to exclude some paths (defined as a regular expression) from the security checks
+- the [`PathMatcher`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/PathMatcher.java) allows you to exclude some paths from the security checks
 
 - the [`HeaderMatcher`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/matching/HeaderMatcher.java) allows you to check if a given header is `null` or matches a regular expression
 
