@@ -11,6 +11,7 @@ title: Release notes&#58;
 - CAS specificities (Kryo serialization, `toString` service ticket validation) are handled via the `InternalAttributeHandler`
 - Authenticators may throw the checked `CredentialsException`
 - Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
+- Added new matcher PathMatcher and deprecated ExcludedPathMatcher
 
 
 **v1.9.4**:
