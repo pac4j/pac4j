@@ -3,11 +3,11 @@ package org.pac4j.oidc.run;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
-import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfile;
 
 import static org.junit.Assert.*;
 import org.pac4j.oidc.client.KeycloakOidcClient;
+import org.pac4j.oidc.config.KeycloakOidcConfiguration;
 
 /**
  * Run a manual test for keycloak (http://www.keycloak.org/) 
@@ -51,12 +51,12 @@ public class RunKeycloakOidcClient extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final OidcConfiguration configuration = new OidcConfiguration();
+        final KeycloakOidcConfiguration configuration = new KeycloakOidcConfiguration();
 
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret(SECRET_VALUE);
-        configuration.addCustomParam("authUrl", AUTH_URL);
-        configuration.addCustomParam("realm", REALM_VALUE);
+        configuration.setBaseUri(AUTH_URL);
+        configuration.setRealm(REALM_VALUE);
         KeycloakOidcClient client = new KeycloakOidcClient(configuration);
         client.setCallbackUrl(CALLBACK_VALUE);
 
