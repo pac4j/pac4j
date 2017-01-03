@@ -25,7 +25,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * <p>Default logout logic:</p>
  *
  * <p>If the <code>localLogout</code> property is <code>true</code>, the pac4j profiles are removed from the web session
- * (and the web session is destroyed if the <code>killSession</code> property is <code>true</code>).</p>
+ * (and the web session is destroyed if the <code>destroySession</code> property is <code>true</code>).</p>
  *
  *  <p>A post logout action is computed as the redirection to the <code>url</code> request parameter if it matches the <code>logoutUrlPattern</code>
  * or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
@@ -44,7 +44,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
-                     final Boolean inputKillSession, final Boolean inputCentralLogout) {
+                     final Boolean inputDestroySession, final Boolean inputCentralLogout) {
 
         logger.debug("=== LOGOUT ===");
 
@@ -61,11 +61,11 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         } else {
             localLogout = inputLocalLogout;
         }
-        final boolean killSession;
-        if (inputKillSession == null) {
-            killSession = false;
+        final boolean destroySession;
+        if (inputDestroySession == null) {
+            destroySession = false;
         } else {
-            killSession = inputKillSession;
+            destroySession = inputDestroySession;
         }
         final boolean centralLogout;
         if (inputCentralLogout == null) {
@@ -104,12 +104,12 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         if (localLogout || profiles.size() > 1) {
             logger.debug("Performing application logout");
             manager.logout();
-            if (killSession) {
+            if (destroySession) {
                 final SessionStore sessionStore = context.getSessionStore();
                 if (sessionStore == null) {
                     logger.error("No session store available for this web context");
                 } else {
-                    final boolean removed = sessionStore.killSession(context);
+                    final boolean removed = sessionStore.destroySession(context);
                     if (!removed) {
                         logger.error("Unable to destroy the web session. The session store may not support this feature");
                     }

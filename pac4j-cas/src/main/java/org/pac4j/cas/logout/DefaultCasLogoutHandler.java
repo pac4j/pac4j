@@ -25,7 +25,7 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     private final Cache<String, Object> cache;
 
-    private boolean killSession;
+    private boolean destroySession;
 
     public DefaultCasLogoutHandler() {
         this(10000, 30, TimeUnit.MINUTES);
@@ -84,9 +84,9 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
         manager.logout();
         logger.debug("destroy the user profiles");
         // and optionally the web session
-        if (killSession) {
+        if (destroySession) {
             logger.debug("destroy the whole session");
-            final boolean invalidated = sessionStore.killSession(context);
+            final boolean invalidated = sessionStore.destroySession(context);
             if (!invalidated) {
                 logger.error("The session has not been invalidated for {} channel logout", channel);
             }
@@ -134,16 +134,16 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
         }
     }
 
-    public boolean isKillSession() {
-        return killSession;
+    public boolean isDestroySession() {
+        return destroySession;
     }
 
-    public void setKillSession(final boolean killSession) {
-        this.killSession = killSession;
+    public void setDestroySession(final boolean destroySession) {
+        this.destroySession = destroySession;
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "cache", cache, "killSession", killSession);
+        return CommonHelper.toString(this.getClass(), "cache", cache, "destroySession", destroySession);
     }
 }

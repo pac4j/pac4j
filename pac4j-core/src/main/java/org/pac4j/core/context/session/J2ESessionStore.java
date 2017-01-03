@@ -40,7 +40,7 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
     }
 
     @Override
-    public boolean killSession(final J2EContext context) {
+    public boolean destroySession(final J2EContext context) {
         getHttpSession(context).invalidate();
         return true;
     }

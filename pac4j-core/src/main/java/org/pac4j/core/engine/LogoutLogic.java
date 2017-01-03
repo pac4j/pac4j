@@ -21,10 +21,10 @@ public interface LogoutLogic<R, C extends WebContext> {
      * @param defaultUrl the default url
      * @param logoutUrlPattern the logout url pattern
      * @param localLogout whether a local logout is required
-     * @param killSession whether the web session must be destroyed
+     * @param destroySession whether the web session must be destroyed
      * @param centralLogout whether a central logout is required
      * @return the resulting action for logout
      */
     R perform(C context, Config config, HttpActionAdapter<R, C> httpActionAdapter, String defaultUrl,
-              String logoutUrlPattern, Boolean localLogout, Boolean killSession, Boolean centralLogout);
+              String logoutUrlPattern, Boolean localLogout, Boolean destroySession, Boolean centralLogout);
 }

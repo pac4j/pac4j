@@ -157,6 +157,10 @@ public class OidcConfiguration extends InitializableWebObject {
         return customParams;
     }
 
+    public String getCustomParam(String name) {
+        return customParams.get(name);
+    }
+
     public void setCustomParams(final Map<String, String> customParams) {
         CommonHelper.assertNotNull("customParams", customParams);
         this.customParams = customParams;

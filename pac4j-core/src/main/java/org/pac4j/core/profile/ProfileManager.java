@@ -129,7 +129,7 @@ public class ProfileManager<U extends CommonProfile> {
         remove(true);
         final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore != null) {
-            sessionStore.killPac4jSession(context);
+            sessionStore.destroyPac4jSession(context);
         }
     }
 

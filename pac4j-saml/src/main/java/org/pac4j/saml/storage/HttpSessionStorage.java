@@ -2,9 +2,9 @@ package org.pac4j.saml.storage;
 
 import org.opensaml.core.xml.XMLObject;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -51,7 +51,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
      * @param context context to load/store internalMessages from
      */
     public HttpSessionStorage(final WebContext context) {
-        Assert.notNull(context, "Context must be set");
+        CommonHelper.assertNotNull("context", context);
         this.context = context;
     }
 
@@ -136,7 +136,7 @@ public class HttpSessionStorage implements SAMLMessageStorage {
             synchronized (context) {
                 messages = (Hashtable<String, XMLObject>) context.getSessionAttribute(SAML_STORAGE_KEY);
                 if (messages == null) {
-                    messages = new Hashtable<String, XMLObject>();
+                    messages = new Hashtable<>();
                     updateSession(messages);
                 }
             }

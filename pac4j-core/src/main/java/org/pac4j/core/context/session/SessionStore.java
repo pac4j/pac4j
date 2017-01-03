@@ -37,23 +37,23 @@ public interface SessionStore<C extends WebContext> {
     void set(C context, String key, Object value);
 
     /**
-     * Kill the pac4j web session if ever a specific one has been created.
+     * Destroy the pac4j web session if ever a specific one has been created.
      *
      * @param context the web context
      * @return whether the pac4j session has been destroyed
      */
-    default boolean killPac4jSession(C context) {
+    default boolean destroyPac4jSession(C context) {
         // by default, no specific pac4j web session exists and its destruction is always "successful"
         return true;
     }
 
     /**
-     * Kill the web session.
+     * Destroy the web session.
      *
      * @param context the web context
      * @return whether the session has been destroyed
      */
-    default boolean killSession(C context) {
+    default boolean destroySession(C context) {
         // by default, the session has not been destroyed
         return false;
     }

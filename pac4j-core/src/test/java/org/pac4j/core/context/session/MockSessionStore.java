@@ -43,7 +43,7 @@ public class MockSessionStore implements SessionStore<MockWebContext> {
     }
 
     @Override
-    public boolean killSession(final MockWebContext context) {
+    public boolean destroySession(final MockWebContext context) {
         store.clear();
         id = null;
         return true;
