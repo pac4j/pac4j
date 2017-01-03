@@ -14,7 +14,7 @@ import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
  *   <li>baseUri : Base auth server url, e.g., https://keycloak.example.com/auth </li>
  *   <li>realm : keycloak realm</li>
  * </ul>
- * <p> As seen in {@link org.pac4j.oidc.run.RunKeycloakOidcClient}.</p>
+ * <p> As seen in test case org.pac4j.oidc.run.RunKeycloakOidcClient</p>
  *
  * @author Julio Arrebola
  * @since 2.0.0
