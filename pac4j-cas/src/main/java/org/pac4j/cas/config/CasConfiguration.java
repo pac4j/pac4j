@@ -4,6 +4,7 @@ import org.jasig.cas.client.validation.*;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.logout.DefaultCasLogoutHandler;
+import org.pac4j.cas.store.ProxyGrantingTicketStore;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
@@ -133,8 +134,7 @@ public class CasConfiguration extends InitializableWebObject {
         cas30ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
         if (this.proxyReceptor != null) {
             cas30ProxyTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
-            cas30ProxyTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
-                    .getProxyGrantingTicketStorage());
+            cas30ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         setTicketValidator(cas30ProxyTicketValidator);
     }
@@ -144,8 +144,7 @@ public class CasConfiguration extends InitializableWebObject {
         cas30ServiceTicketValidator.setEncoding(this.encoding);
         if (this.proxyReceptor != null) {
             cas30ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
-            cas30ServiceTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
-                    .getProxyGrantingTicketStorage());
+            cas30ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         setTicketValidator(cas30ServiceTicketValidator);
     }
@@ -157,8 +156,7 @@ public class CasConfiguration extends InitializableWebObject {
         cas20ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
         if (this.proxyReceptor != null) {
             cas20ProxyTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
-            cas20ProxyTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
-                    .getProxyGrantingTicketStorage());
+            cas20ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         setTicketValidator(cas20ProxyTicketValidator);
     }
@@ -168,8 +166,7 @@ public class CasConfiguration extends InitializableWebObject {
         cas20ServiceTicketValidator.setEncoding(this.encoding);
         if (this.proxyReceptor != null) {
             cas20ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
-            cas20ServiceTicketValidator.setProxyGrantingTicketStorage(this.proxyReceptor
-                    .getProxyGrantingTicketStorage());
+            cas20ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
         setTicketValidator(cas20ServiceTicketValidator);
     }

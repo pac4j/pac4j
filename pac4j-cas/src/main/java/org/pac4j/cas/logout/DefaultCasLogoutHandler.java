@@ -1,12 +1,12 @@
 package org.pac4j.cas.logout;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.jasig.cas.client.session.SingleSignOutHandler;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.store.GuavaStore;
+import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +23,15 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     protected static final Logger logger = LoggerFactory.getLogger(DefaultCasLogoutHandler.class);
 
-    private final Cache<String, Object> cache;
+    private Store<String, Object> store = new GuavaStore<>(10000, 30, TimeUnit.MINUTES);
 
     private boolean destroySession;
 
     public DefaultCasLogoutHandler() {
-        this(10000, 30, TimeUnit.MINUTES);
     }
 
-    public DefaultCasLogoutHandler(final long cacheSize, final long timeout, final TimeUnit timeUnit) {
-        this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize)
-                .expireAfterWrite(timeout, timeUnit).build();
+    public DefaultCasLogoutHandler(final Store<String, Object> store) {
+        this.store = store;
     }
 
     @Override
@@ -48,8 +46,8 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
             if (trackableSession != null) {
                 logger.debug("ticket: {} -> trackableSession: {}", ticket, trackableSession);
                 logger.debug("sessionId: {}", sessionId);
-                cache.put(ticket, trackableSession);
-                cache.put(sessionId, ticket);
+                store.set(ticket, trackableSession);
+                store.set(sessionId, ticket);
             } else {
                 logger.debug("No trackable session for the current session store: {}", sessionStore);
             }
@@ -58,7 +56,7 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     @Override
     public void destroySessionFront(final C context, final String ticket) {
-        cache.invalidate(ticket);
+        store.remove(ticket);
 
         final SessionStore sessionStore = context.getSessionStore();
         if (sessionStore == null) {
@@ -66,9 +64,9 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
         } else {
             final String currentSessionId = sessionStore.getOrCreateSessionId(context);
             logger.debug("currentSessionId: {}", currentSessionId);
-            final String sessionToTicket = (String) cache.getIfPresent(currentSessionId);
+            final String sessionToTicket = (String) store.get(currentSessionId);
             logger.debug("-> ticket: {}", ticket);
-            cache.invalidate(currentSessionId);
+            store.remove(currentSessionId);
 
             if (CommonHelper.areEquals(ticket, sessionToTicket)) {
                 destroy(context, sessionStore, "front");
@@ -95,12 +93,12 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     @Override
     public void destroySessionBack(final C context, final String ticket) {
-        final Object trackableSession = cache.getIfPresent(ticket);
+        final Object trackableSession = store.get(ticket);
         logger.debug("ticket: {} -> trackableSession: {}", ticket, trackableSession);
         if (trackableSession == null) {
             logger.error("No trackable session found for back channel logout. Either the session store does not support to track session or it has expired from the store and the store settings must be updated (expired data)");
         } else {
-            cache.invalidate(ticket);
+            store.remove(ticket);
 
             // renew context with the original session store
             final SessionStore sessionStore = context.getSessionStore();
@@ -113,7 +111,7 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
                     context.setSessionStore(newSessionStore);
                     final String sessionId = newSessionStore.getOrCreateSessionId(context);
                     logger.debug("remove sessionId: {}", sessionId);
-                    cache.invalidate(sessionId);
+                    store.remove(sessionId);
 
                     destroy(context, newSessionStore, "back");
                 } else {
@@ -125,13 +123,21 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     @Override
     public void renewSession(final String oldSessionId, final C context) {
-        final String ticket = (String) cache.getIfPresent(oldSessionId);
+        final String ticket = (String) store.get(oldSessionId);
         logger.debug("oldSessionId: {} -> ticket: {}", oldSessionId, ticket);
         if (ticket != null) {
-            cache.invalidate(ticket);
-            cache.invalidate(oldSessionId);
+            store.remove(ticket);
+            store.remove(oldSessionId);
             recordSession(context, ticket);
         }
+    }
+
+    public Store<String, Object> getStore() {
+        return store;
+    }
+
+    public void setStore(final Store<String, Object> store) {
+        this.store = store;
     }
 
     public boolean isDestroySession() {
@@ -144,6 +150,6 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "cache", cache, "destroySession", destroySession);
+        return CommonHelper.toString(this.getClass(), "store", store, "destroySession", destroySession);
     }
 }
