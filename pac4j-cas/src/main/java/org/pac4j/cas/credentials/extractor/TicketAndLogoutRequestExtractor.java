@@ -160,7 +160,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
         return configuration;
     }
 
-    public void setConfiguration(CasConfiguration configuration) {
+    public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -168,12 +168,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
         return clientName;
     }
 
-    public void setClientName(String clientName) {
+    public void setClientName(final String clientName) {
         this.clientName = clientName;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clientName", clientName);
     }
 }

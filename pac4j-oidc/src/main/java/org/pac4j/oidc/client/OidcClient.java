@@ -28,16 +28,16 @@ public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCred
 
     public OidcClient() { }
 
-    public OidcClient(final OidcConfiguration oidcConfiguration) {
-        this.configuration = oidcConfiguration;
+    public OidcClient(final OidcConfiguration configuration) {
+        setConfiguration(configuration);
     }
 
     public OidcConfiguration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(final OidcConfiguration oidcConfiguration) {
-        this.configuration = oidcConfiguration;
+    public void setConfiguration(final OidcConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override

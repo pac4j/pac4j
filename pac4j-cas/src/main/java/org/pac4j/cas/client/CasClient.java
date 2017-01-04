@@ -34,8 +34,8 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile>
 
     public CasClient() { }
 
-    public CasClient(final CasConfiguration casConfiguration) {
-        setConfiguration(casConfiguration);
+    public CasClient(final CasConfiguration configuration) {
+        setConfiguration(configuration);
     }
 
     @Override
