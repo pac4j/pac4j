@@ -189,7 +189,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createSourcesJar>true</createSourcesJar>
+                            <!-- <createSourcesJar>true</createSourcesJar> -->
                             <finalName>${project.artifactId}-${project.version}-all.jar</finalName>
                         </configuration>
                     </execution>
