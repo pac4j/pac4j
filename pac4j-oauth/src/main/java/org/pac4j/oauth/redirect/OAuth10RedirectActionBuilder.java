@@ -26,7 +26,7 @@ public class OAuth10RedirectActionBuilder extends InitializableWebObject impleme
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth10RedirectActionBuilder.class);
 
-    private final OAuth10Configuration configuration;
+    protected final OAuth10Configuration configuration;
 
     public OAuth10RedirectActionBuilder(final OAuth10Configuration configuration) {
         this.configuration = configuration;
