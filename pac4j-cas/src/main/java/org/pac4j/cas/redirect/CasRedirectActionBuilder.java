@@ -21,7 +21,7 @@ public class CasRedirectActionBuilder extends InitializableWebObject implements 
 
     private static final Logger logger = LoggerFactory.getLogger(CasRedirectActionBuilder.class);
 
-    private final CasConfiguration configuration;
+    protected final CasConfiguration configuration;
 
     private final String callbackUrl;
 
