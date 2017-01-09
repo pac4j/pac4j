@@ -23,7 +23,7 @@ public class OAuth20RedirectActionBuilder extends InitializableWebObject impleme
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth20RedirectActionBuilder.class);
 
-    private final OAuth20Configuration configuration;
+    protected final OAuth20Configuration configuration;
 
     public OAuth20RedirectActionBuilder(final OAuth20Configuration configuration) {
         this.configuration = configuration;
