@@ -27,6 +27,15 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
         return retrieveCredentials(context);
     }
 
+    /**
+     * Retrieve the credentials.
+     *
+     * @param context the web context
+     * @return the credentials
+     * @throws HttpAction whether an additional HTTP action is required
+     */
+    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
+
     @Override
     public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
     	return null;

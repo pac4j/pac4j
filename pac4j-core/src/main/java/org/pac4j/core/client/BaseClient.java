@@ -37,15 +37,6 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
 
     private List<AuthorizationGenerator<U>> authorizationGenerators = new ArrayList<>();
 
-    /**
-     * Retrieve the credentials.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
-
     @Override
     public final U getUserProfile(final C credentials, final WebContext context) throws HttpAction {
         init(context);
