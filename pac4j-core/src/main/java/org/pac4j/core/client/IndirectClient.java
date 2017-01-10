@@ -109,6 +109,15 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return credentials;
     }
 
+    /**
+     * Retrieve the credentials.
+     *
+     * @param context the web context
+     * @return the credentials
+     * @throws HttpAction whether an additional HTTP action is required
+     */
+    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
+
     private void cleanRequestedUrl(final WebContext context) {
         context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
     }
