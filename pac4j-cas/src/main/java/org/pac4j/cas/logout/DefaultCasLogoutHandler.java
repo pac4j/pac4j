@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * This class is the logout handler for the {@link CasClient}, inspired by the {@link SingleSignOutHandler} of the Apereo CAS client.
  *
  * @author Jerome Leleu
- * @since 1.4.0
+ * @since 2.0.0
  */
 public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutHandler<C> {
 

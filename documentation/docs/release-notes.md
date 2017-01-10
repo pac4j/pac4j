@@ -5,13 +5,16 @@ title: Release notes&#58;
 
 **v2.0.0**:
 
+- The session renewal is properly handled by clients (and especially CAS)
+- The `WebContext` directly relies on the `SessionStore` whose capabilities are upgraded to handle back-channel logout
+- Caches are backed via a `Store` component
 - The `LogoutLogic` (formerly `ApplicationLogoutLogic`) handles the application and identity provider logout
 - Upgrade the OAuth support with Scribe v3.3 and rebuild all clients on the generic `OAuth10Client` and `OAuth20Client`
 - User profiles are simple POJOs, the `AttributesDefinition` is replaced by the `ProfileDefinition`
 - CAS specificities (Kryo serialization, `toString` service ticket validation) are handled via the `InternalAttributeHandler`
 - Authenticators may throw the checked `CredentialsException`
 - Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
-- Added new matcher PathMatcher and deprecated ExcludedPathMatcher
+- Added new matcher `PathMatcher` and deprecated `ExcludedPathMatcher`
 
 
 **v1.9.4**:

@@ -70,7 +70,7 @@ public interface SessionStore<C extends WebContext> {
     }
 
     /**
-     * Renew the session store from a trackable session.
+     * Build a new session store from a trackable session.
      *
      * @param context the web context
      * @param trackableSession the trackable session

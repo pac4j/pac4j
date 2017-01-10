@@ -7,7 +7,7 @@ title: CAS
 
 1) using the **CAS login page** (for a web site): when accessing a protected web site, the user will be redirected to the CAS login page to enter his credentials before being granted access to the web site
 
-2) using **proxy tickets** (for a web service): if the user is already authenticated by CAS in the web application (use case 1), the web application can request a proxy ticket and use it to call the web service which is protected by CAS
+2) using **proxy tickets** (for a web service): if the user is already authenticated by CAS in the web application (use case1), the web application can request a proxy ticket and use it to call the web service which is protected by CAS
 
 3) using the **CAS REST API** (for a web service): a standalone / mobile application can call a web service by providing the CAS user credentials (these credentials will be directly checked via the CAS REST API).
 
@@ -86,9 +86,10 @@ So you must define in the CAS services registry the appropriate CAS service matc
 
 Read the [CAS documentation](https://apereo.github.io/cas/4.2.x/installation/Service-Management.html) for that.
 
+
 ### c) Proxy support
 
-For proxy support, the `CasProxyReceptor` class must be used, defined on the same or new callback url (via the [security configuration](config.html)) and declared in the `CasConfiguration`:
+For proxy support, the `CasProxyReceptor` component must be used, defined on the same or a new callback url (via the [security configuration](config.html)) and declared in the `CasConfiguration`:
 
 ```java
 CasProxyReceptor casProxy = new CasProxyReceptor(); 
@@ -104,19 +105,18 @@ CasProxyProfile casProxyProfile = (CasProxyProfile) casProfile;
 String proxyTicket = casProxyProfile.getProxyTicketFor(anotherCasServiceUrl);
 ```
 
+To correlate proxy information, the `CasProxyReceptor` uses an internal [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
+
+
 ### d) Logout configuration
 
-To handle CAS logout requests, by default (J2E web context), the `CasSingleSignOutHandler` is defined: it must be used in conjonction with the J2E `SingleSignOutHttpSessionListener` and the `renewSession` flag must be disabled in the "callback filter" in that case.
+To handle CAS logout requests, a [`DefaultCasLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/logout/DefaultCasLogoutHandler.java) is automatically created. Unless you specify your own implementation of the [`CasLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/logout/CasLogoutHandler.java) interface.
 
-**In the `web.xml` file:**
+The `DefaultCasLogoutHandler`:
+ 
+- relies on the capabilities of the `SessionStore` (`destroyPac4jSession`, `destroySession`, `getTrackableSession` and `buildFromTrackableSession`  methods)
+- stores data in a [`Store`](../store.html) that you can change via the `setStore` method (by default, Guava is used).
 
-```xml
-<listener>
-    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
-</listener>
-```
-
-Though, a specific [`CasLogoutHandler`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/logout/CasLogoutHandler.java) can be specified in other frameworks. 
 
 ### e) In a stateless way
 

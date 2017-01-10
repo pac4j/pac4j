@@ -69,7 +69,7 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     @Override
     protected void internalInit(final WebContext context) {
         if (this.store == null) {
-            this.store = new GuavaStore<T, CommonProfile>(cacheSize, timeout, timeUnit);
+            this.store = new GuavaStore<>(cacheSize, timeout, timeUnit);
         }
 
         if (delegate instanceof InitializableWebObject) {
