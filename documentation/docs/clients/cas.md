@@ -7,7 +7,7 @@ title: CAS
 
 1) using the **CAS login page** (for a web site): when accessing a protected web site, the user will be redirected to the CAS login page to enter his credentials before being granted access to the web site
 
-2) using **proxy tickets** (for a web service): if the user is already authenticated by CAS in the web application (use case1), the web application can request a proxy ticket and use it to call the web service which is protected by CAS
+2) using **proxy tickets** (for a web service): if the user is already authenticated by CAS in the web application (use case 1), the web application can request a proxy ticket and use it to call the web service which is protected by CAS
 
 3) using the **CAS REST API** (for a web service): a standalone / mobile application can call a web service by providing the CAS user credentials (these credentials will be directly checked via the CAS REST API).
 
