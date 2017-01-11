@@ -76,7 +76,7 @@ public class OidcExtractor extends InitializableWebObject implements Credentials
         if (state == null) {
             throw new TechnicalException("Missing state parameter");
         }
-        if (!state.equals(new State(context.getSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE)))) {
+        if (!state.equals(new State((String)context.getSessionAttribute(OidcConfiguration.STATE_SESSION_ATTRIBUTE)))) {
             throw new TechnicalException("State parameter is different from the one sent in authentication request. "
                     + "Session expired or possible threat of cross-site request forgery");
         }
