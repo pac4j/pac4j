@@ -104,9 +104,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
     protected void renewSession(final C context, final Config config) {
         final SessionStore<C> sessionStore = context.getSessionStore();
-        if (sessionStore == null) {
-            logger.error("No session store available for this web context");
-        } else {
+        if (sessionStore != null) {
             final String oldSessionId = sessionStore.getOrCreateSessionId(context);
             final boolean renewed = sessionStore.renewSession(context);
             if (renewed) {
@@ -123,6 +121,8 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
             } else {
                 logger.error("Unable to renew the session. The session store may not support this feature");
             }
+        } else {
+            logger.error("No session store available for this web context");
         }
     }
 
