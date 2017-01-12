@@ -4,8 +4,12 @@
         <Bug code="NP" />
     </Match>
     <Match>
-        <Class name="~.*CasSingleSignOutHandler"/>
-        <Bug code="RCN" />
+        <Class name="~.*DefaultCallbackLogic"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+    </Match>
+    <Match>
+        <Class name="~.*DefaultLogoutLogic"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
     </Match>
     <Match>
         <Class name="~.*SAML2Credentials"/>

@@ -23,6 +23,7 @@ You can use various `Authenticator` for many identity systems:
 - [Stormpath](authenticators/stormpath.html)
 - [IP address](authenticators/ip.html)
 
+
 ## 1) Deal with performance issues
 
 For direct HTTP clients, credentials are passed and validated for each request, which may lead to performance issues (too many calls to the underlying identity system). So the use of a cache is highly recommended.
@@ -35,7 +36,10 @@ This can be done using the [`LocalCachingAuthenticator`](https://github.com/pac4
 LocalCachingAuthenticator authent = new LocalCachingAuthenticator(new JwtAuthenticator(secret), 10000, 15, TimeUnit.MINUTES);
 ```
 
+By default, the `LocalCachingAuthenticator` uses Guava as its internal [`Store`](store.html) but you can provide your own store via the `setStore` method.
+
 <div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that this <code>LocalCachingAuthenticator</code> requires the additionnal <i>guava</i> dependency.</div>
+
 
 ## 2) `PasswordEncoder`
 
@@ -52,6 +56,7 @@ Two `PasswordEncoder` implementations are available:
 - a wrapper for the Apache Shiro [`PasswordService`](https://shiro.apache.org/static/1.3.1/apidocs/org/apache/shiro/authc/credential/PasswordService.html):  the [`ShiroPasswordEncoder`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/password/ShiroPasswordEncoder.java).
 
 <div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that the <code>SpringSecurityPasswordEncoder</code> requires the additionnal <i>spring-security-crypto</i> dependency and the <code>ShiroPasswordEncoder</code> the <i>shiro-core</i> dependency.</div>
+
 
 ## 3) `ProfileCreator`
 

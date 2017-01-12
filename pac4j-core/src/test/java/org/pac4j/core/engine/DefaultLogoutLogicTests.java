@@ -60,7 +60,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
     }
 
     private void call() {
-        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern, localLogout, centralLogout);
+        logic.perform(context, config, httpActionAdapter, defaultUrl, logoutUrlPattern, localLogout, null, centralLogout);
     }
 
     @Test

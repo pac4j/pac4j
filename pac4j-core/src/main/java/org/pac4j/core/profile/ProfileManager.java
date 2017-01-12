@@ -122,7 +122,7 @@ public class ProfileManager<U extends CommonProfile> {
     }
 
     /**
-     * Perform a logout by removing the current user profile(s) from the session as well.
+     * Perform a logout by removing the current user profile(s).
      */
     public void logout() {
         remove(true);

@@ -113,9 +113,4 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "callbackUrl", callbackUrl);
-    }
 }

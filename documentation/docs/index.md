@@ -17,16 +17,18 @@ title: <i class="fa fa-user" aria-hidden="true"></i> <i>pac4j</i> documentation 
 
 ### &#9656; [CORS](authorizers/web-authorizers.html#cors) - [CSRF](authorizers/web-authorizers.html#csrf) - [Security headers](authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
 
-## 4) [Security configuration](config.html)
+## 4) [Matchers](matchers.html)
 
-## 5) [User profile](user-profile.html)
+## 5) [Security configuration](config.html)
 
-## 6) [SessionStore](session-store.html) and [matchers](matchers.html)
+## 6) [User profile](user-profile.html)
 
-## 7) [Release notes](release-notes.html) / [Backward compatibility](backward-compatibility.html)
+## 7) [SessionStore](session-store.html) and [Store](store.html)
 
-## 8) [Authentication flows](authentication-flows.html) / [Big picture](big-picture.html)
+## 8) [Release notes](release-notes.html) / [Backward compatibility](backward-compatibility.html)
 
-## 9) [Customizations](customizations.html)
+## 9) [Authentication flows](authentication-flows.html) / [Big picture](big-picture.html)
 
-## 10) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.3/index.html)
+## 10) [Customizations](customizations.html)
+
+## 11) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.5/index.html)
