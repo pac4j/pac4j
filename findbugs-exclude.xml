@@ -4,7 +4,7 @@
         <Bug code="NP" />
     </Match>
     <Match>
-        <Class name="~.*CasSingleSignOutHandler"/>
+        <Class name="~.*DefaultCallbackLogic"/>
         <Bug code="RCN" />
     </Match>
     <Match>
