@@ -1,12 +1,12 @@
 package org.pac4j.core.credentials.authenticator;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.store.GuavaStore;
+import org.pac4j.core.store.Store;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
@@ -28,16 +28,21 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Authenticator<T> delegate;
-    private long cacheSize;
-    private long timeout;
+    private int cacheSize;
+    private int timeout;
     private TimeUnit timeUnit;
 
-    private Cache<T, CommonProfile> cache;
+    private Store<T, CommonProfile> store;
 
     public LocalCachingAuthenticator() {}
 
-    public LocalCachingAuthenticator(final Authenticator<T> delegate, final long cacheSize,
-                                     final long timeout, final TimeUnit timeUnit) {
+    public LocalCachingAuthenticator(final Authenticator<T> delegate, final Store<T, CommonProfile> store) {
+        this.delegate = delegate;
+        this.store = store;
+    }
+
+    public LocalCachingAuthenticator(final Authenticator<T> delegate, final int cacheSize,
+                                     final int timeout, final TimeUnit timeUnit) {
         this.delegate = delegate;
         this.cacheSize = cacheSize;
         this.timeout = timeout;
@@ -48,13 +53,13 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
     public void validate(final T credentials, final WebContext context) throws HttpAction, CredentialsException {
         init(context);
 
-        CommonProfile profile = this.cache.getIfPresent(credentials);
+        CommonProfile profile = this.store.get(credentials);
         if (profile == null) {
             logger.debug("No cached credentials found. Delegating authentication to {}...", delegate);
             delegate.validate(credentials, context);
             profile = credentials.getUserProfile();
             logger.debug("Caching credential. Using profile {}...", profile);
-            cache.put(credentials, profile);
+            store.set(credentials, profile);
         } else {
             credentials.setUserProfile(profile);
             logger.debug("Found cached credential. Using cached profile {}...", profile);
@@ -63,54 +68,45 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("delegate", this.delegate);
-        CommonHelper.assertTrue(cacheSize > 0, "cacheSize must be > 0");
-        CommonHelper.assertTrue(timeout > 0, "timeout must be > 0");
-        CommonHelper.assertNotNull("timeUnit", this.timeUnit);
+        if (this.store == null) {
+            this.store = new GuavaStore<>(cacheSize, timeout, timeUnit);
+        }
 
         if (delegate instanceof InitializableWebObject) {
             ((InitializableWebObject) delegate).init(context);
         }
-
-        this.cache = CacheBuilder.newBuilder().maximumSize(cacheSize)
-                .expireAfterWrite(timeout, timeUnit).build();
     }
 
 
     public void removeFromCache(final T credentials) {
-        this.cache.invalidate(credentials);
+        this.store.remove(credentials);
     }
 
     public boolean isCached(final T credentials) {
-        return this.cache.getIfPresent(credentials) != null;
-    }
-
-    public boolean clearCache() {
-        this.cache.invalidateAll();
-        return this.cache.asMap().isEmpty();
+        return this.store.get(credentials) != null;
     }
 
     public Authenticator<T> getDelegate() {
         return delegate;
     }
 
-    public void setDelegate(Authenticator<T> delegate) {
+    public void setDelegate(final Authenticator<T> delegate) {
         this.delegate = delegate;
     }
 
-    public long getCacheSize() {
+    public int getCacheSize() {
         return cacheSize;
     }
 
-    public void setCacheSize(long cacheSize) {
+    public void setCacheSize(final int cacheSize) {
         this.cacheSize = cacheSize;
     }
 
-    public long getTimeout() {
+    public int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(long timeout) {
+    public void setTimeout(final int timeout) {
         this.timeout = timeout;
     }
 
@@ -118,13 +114,20 @@ public class LocalCachingAuthenticator<T extends Credentials> extends Initializa
         return timeUnit;
     }
 
-    public void setTimeUnit(TimeUnit timeUnit) {
+    public void setTimeUnit(final TimeUnit timeUnit) {
         this.timeUnit = timeUnit;
+    }
+
+    public Store<T, CommonProfile> getStore() {
+        return store;
+    }
+
+    public void setStore(final Store<T, CommonProfile> store) {
+        this.store = store;
     }
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "delegate", this.delegate, "cacheSize", this.cacheSize,
-                "timeout", this.timeout, "timeUnit", this.timeUnit);
+        return CommonHelper.toString(this.getClass(), "delegate", this.delegate, "store", this.store);
     }
 }

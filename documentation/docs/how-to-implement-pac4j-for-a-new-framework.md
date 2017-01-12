@@ -3,7 +3,7 @@ layout: ddoc
 title: How to implement <i>pac4j</i> for a new framework / tool&#58;
 ---
 
-`pac4j` is an easy and powerful security engine. It comes with the appropriate concepts and components to be implemented in any framework / tooks.
+*pac4j* is an easy and powerful security engine. It comes with the appropriate concepts and components to be implemented in any framework / tools.
 
 
 ## 1) Dependency
@@ -38,11 +38,12 @@ To secure your Java web application, **the reference implementation is to create
 
 - one to **protect urls**
 - another one to **receive callbacks** for stateful authentication processes (indirect clients)
-- the last one **to perform application logout**.
+- the last one **to perform logout**.
 
 In your framework, you will need to create:
 
-1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for J2E environment where you can already use the existing `J2EContext`. Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session, to be able to choose the implementation used for the web session management
+1) a specific `EnvSpecificWebContext` implementing the [`WebContext`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/WebContext.java) interface except for J2E environment where you can already use the existing `J2EContext`.
+Your `EnvSpecificWebContext` should delegate to a [`SessionStore`](session-store.html) the calls regarding the web session management
 
 2) optionally a specific `EnvSpecificHttpActionAdapter` implementing the [`HttpActionAdapter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/HttpActionAdapter.java) if you need to turn actions performed on the web context into specific framework actions.
 
@@ -107,7 +108,8 @@ The logic to secure an url is defined by the `SecurityLogic` interface and its d
 
 ### B) Handle callback for indirect client
 
-The logic to handle callbacks is defined by the `CallbackLogic` interface and its default implementations: [`DefaultCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java) and [`J2ERenewSessionCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/J2ERenewSessionCallbackLogic.java). In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `CallbackLogic` class:
+The logic to handle callbacks is defined by the `CallbackLogic` interface and its default implementation: [`DefaultCallbackLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultCallbackLogic.java).
+In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `CallbackLogic` class:
 
 1) the credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in the web session.
 
@@ -146,15 +148,16 @@ The logic to handle callbacks is defined by the `CallbackLogic` interface and it
 ```
 
 
-### C) Application logout
+### C) Logout
 
-The logic to perform the application logout is defined by the `ApplicationLogoutLogic` interface and its default implementation: [`DefaultApplicationLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultApplicationLogoutLogic.java). In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `ApplicationLogoutLogic` class:
+The logic to perform the application / identity provider logout is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
+In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `LogoutLogic` class:
 
-1) after logout, the user is redirected to the url defined by the **url** request parameter if it matches the **logoutUrlPattern**
+1) If the `localLogout` property is true, the pac4j profiles are removed from the web session (and the web session is destroyed if the `destroySession` property is `true`)
 
-2) or the user is redirected to the **defaultUrl** if it is defined
+2) A post logout action is computed as the redirection to the url request parameter if it matches the `logoutUrlPattern` or to the `defaultUrl` if it is defined or as a blank page otherwise
 
-3) otherwise, a blank page is displayed.
+3) If the `centralLogout` property is `true`, the user is redirected to the identity provider for a central logout and then optionally to the post logout redirection URL (if it's supported by the identity provider and if it's an absolute URL). If no central logout is defined, the post logout action is performed directly.
 
 **Examples**:
 
@@ -165,13 +168,13 @@ The logic to perform the application logout is defined by the `ApplicationLogout
     protected void internalFilter(final HttpServletRequest request, final HttpServletResponse response,
                                            final FilterChain chain) throws IOException, ServletException {
 
-        assertNotNull("applicationLogoutLogic", applicationLogoutLogic);
+        assertNotNull("logoutLogic", logoutLogic);
 
         final Config config = getConfig();
         assertNotNull("config", config);
         final J2EContext context = new J2EContext(request, response, config.getSessionStore());
 
-        applicationLogoutLogic.perform(context, config, J2ENopHttpActionAdapter.INSTANCE, this.defaultUrl, this.logoutUrlPattern);
+        logoutLogic.perform(context, config, J2ENopHttpActionAdapter.INSTANCE, this.defaultUrl, this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout);
     }
 ```
 
@@ -180,10 +183,10 @@ The logic to perform the application logout is defined by the `ApplicationLogout
 ```java
     public Result logout() {
 
-        assertNotNull("applicationLogoutLogic", applicationLogoutLogic);
+        assertNotNull("logoutLogic", logoutLogic);
         assertNotNull("config", config);
         final PlayWebContext playWebContext = new PlayWebContext(ctx(), playSessionStore);
 
-        return applicationLogoutLogic.perform(playWebContext, config, config.getHttpActionAdapter(), this.defaultUrl, this.logoutUrlPattern);
+        return logoutLogic.perform(playWebContext, config, config.getHttpActionAdapter(), this.defaultUrl, this.logoutUrlPattern, this.localLogout, this.destroySession, this.centralLogout);
     }
 ```

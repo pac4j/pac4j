@@ -47,9 +47,4 @@ public class CasRedirectActionBuilder extends InitializableWebObject implements 
         logger.debug("redirectionUrl: {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);
     }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "callbackUrl", callbackUrl);
-    }
 }

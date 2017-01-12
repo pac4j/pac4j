@@ -2,6 +2,7 @@ package org.pac4j.cas.credentials.extractor;
 
 import org.jasig.cas.client.util.CommonUtils;
 import org.pac4j.cas.config.CasConfiguration;
+import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.core.context.ContextHelper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -49,13 +50,17 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
     }
 
     @Override
-    public TokenCredentials extract(WebContext context) throws HttpAction {
+    public TokenCredentials extract(final WebContext context) throws HttpAction {
         init(context);
+
+        final CasLogoutHandler logoutHandler = configuration.getLogoutHandler();
 
         // like the SingleSignOutFilter from the Apereo CAS client:
         if (isTokenRequest(context)) {
             final String ticket = context.getRequestParameter(CasConfiguration.TICKET_PARAMETER);
-            configuration.getLogoutHandler().recordSession(context, ticket);
+            if (logoutHandler != null) {
+                logoutHandler.recordSession(context, ticket);
+            }
             final TokenCredentials casCredentials = new TokenCredentials(ticket, clientName);
             logger.debug("casCredentials: {}", casCredentials);
             return casCredentials;
@@ -65,8 +70,8 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonUtils.isNotBlank(ticket)) {
-                configuration.getLogoutHandler().destroySessionBack(context, ticket);
+            if (CommonUtils.isNotBlank(ticket) && logoutHandler != null) {
+                logoutHandler.destroySessionBack(context, ticket);
             }
             final String message = "back logout request: no credential returned";
             logger.debug(message);
@@ -77,8 +82,8 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
             logger.trace("Logout request:\n{}", logoutMessage);
 
             final String ticket = CommonHelper.substringBetween(logoutMessage, CasConfiguration.SESSION_INDEX_TAG + ">", "</");
-            if (CommonUtils.isNotBlank(ticket)) {
-                configuration.getLogoutHandler().destroySessionFront(context, ticket);
+            if (CommonUtils.isNotBlank(ticket) && logoutHandler != null) {
+                logoutHandler.destroySessionFront(context, ticket);
             }
             logger.debug("front logout request: no credential returned");
             computeRedirectionToServerIfNecessary(context);
@@ -155,7 +160,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
         return configuration;
     }
 
-    public void setConfiguration(CasConfiguration configuration) {
+    public void setConfiguration(final CasConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -163,12 +168,7 @@ public class TicketAndLogoutRequestExtractor extends InitializableWebObject impl
         return clientName;
     }
 
-    public void setClientName(String clientName) {
+    public void setClientName(final String clientName) {
         this.clientName = clientName;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "clientName", clientName);
     }
 }
