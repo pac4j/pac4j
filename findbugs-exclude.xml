@@ -5,7 +5,11 @@
     </Match>
     <Match>
         <Class name="~.*DefaultCallbackLogic"/>
-        <Bug code="RCN" />
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+    </Match>
+    <Match>
+        <Class name="~.*DefaultLogoutLogic"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
     </Match>
     <Match>
         <Class name="~.*SAML2Credentials"/>

@@ -106,13 +106,13 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
             manager.logout();
             if (destroySession) {
                 final SessionStore sessionStore = context.getSessionStore();
-                if (sessionStore == null) {
-                    logger.error("No session store available for this web context");
-                } else {
+                if (sessionStore != null) {
                     final boolean removed = sessionStore.destroySession(context);
                     if (!removed) {
                         logger.error("Unable to destroy the web session. The session store may not support this feature");
                     }
+                } else {
+                    logger.error("No session store available for this web context");
                 }
             }
         }
