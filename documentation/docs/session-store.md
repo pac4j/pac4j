@@ -12,7 +12,6 @@ The `SessionStore` has the following methods:
 - `getOrCreateSessionId`: gets or creates the session identifier and initializes the session with it if necessary
 - ` get`: gets the attribute from the session
 - `set`: sets the attribute in the session
-- `destroyPac4jSession`: destroys the pac4j web session if ever a specific one has been created (generally, this is not the case)
 - `destroySession`: destroys the underlying web session
 - `getTrackableSession`: get the native session as a trackable object (for back-channel logout)
 - `buildFromTrackableSession`: builds a new session store from a trackable session (for back-channel logout)

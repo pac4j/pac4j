@@ -4,7 +4,6 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 
@@ -123,14 +122,10 @@ public class ProfileManager<U extends CommonProfile> {
     }
 
     /**
-     * Perform a logout by removing the current user profile(s) and the pac4j web session if it exists.
+     * Perform a logout by removing the current user profile(s).
      */
     public void logout() {
         remove(true);
-        final SessionStore sessionStore = context.getSessionStore();
-        if (sessionStore != null) {
-            sessionStore.destroyPac4jSession(context);
-        }
     }
 
     /**
