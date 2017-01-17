@@ -45,7 +45,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    public TokenCredentials getCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
             String currentUrl = context.getFullRequestURL();

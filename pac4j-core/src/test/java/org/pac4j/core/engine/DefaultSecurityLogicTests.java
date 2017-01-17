@@ -178,8 +178,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
         profile2.setId(VALUE);
-        final DirectClientV1 directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
-        final DirectClientV1 directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
+        final DirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
+        final DirectClient directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
         call();
@@ -194,7 +194,7 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
     public void testDirectClientThrowsRequiresHttpAction() throws Exception {
         final CommonProfile profile = new CommonProfile();
         profile.setId(NAME);
-        final DirectClientV1 directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status("bad request", 400, context); }, profile);
+        final DirectClient directClient = new MockDirectClient(NAME, () -> { throw HttpAction.status("bad request", 400, context); }, profile);
         config.setClients(new Clients(CALLBACK_URL, directClient));
         clients = NAME;
         call();
@@ -208,8 +208,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
         profile2.setId(VALUE);
-        final DirectClientV1 directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
-        final DirectClientV1 directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
+        final DirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
+        final DirectClient directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
         multiProfile = true;
@@ -228,8 +228,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
         profile2.setId(VALUE);
-        final DirectClientV1 directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
-        final DirectClientV1 directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
+        final DirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
+        final DirectClient directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME + "," + VALUE;
         context.addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);
@@ -248,8 +248,8 @@ public final class DefaultSecurityLogicTests implements TestsConstants {
         profile.setId(NAME);
         final CommonProfile profile2 = new CommonProfile();
         profile2.setId(VALUE);
-        final DirectClientV1 directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
-        final DirectClientV1 directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
+        final DirectClient directClient = new MockDirectClient(NAME, new MockCredentials(), profile);
+        final DirectClient directClient2 = new MockDirectClient(VALUE, new MockCredentials(), profile2);
         config.setClients(new Clients(CALLBACK_URL, directClient, directClient2));
         clients = NAME;
         context.addRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, VALUE);

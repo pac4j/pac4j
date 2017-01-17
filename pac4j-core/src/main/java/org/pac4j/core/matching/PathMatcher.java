@@ -26,6 +26,7 @@ public class PathMatcher implements Matcher {
      * Any path exactly matching this string will be excluded. Use this method if you are excluding a specific path.
      *
      * @param path the path to be excluded
+     * @return this path matcher
      */
     public PathMatcher excludePath(final String path) {
         validatePath(path);
@@ -37,6 +38,7 @@ public class PathMatcher implements Matcher {
      * Convenience method for excluding all paths starting with a prefix e.g. "/foo" would exclude "/foo", "/foo/bar", etc.
      *
      * @param path the prefix for the paths to be excluded
+     * @return this path matcher
      */
     public PathMatcher excludeBranch(final String path) {
         validatePath(path);
@@ -48,6 +50,7 @@ public class PathMatcher implements Matcher {
      * Any path matching this regex will be excluded.
      *
      * @param regex the regular expression matching the paths to be excluded
+     * @return this path matcher
      */
     public PathMatcher excludeRegex(final String regex) {
         CommonHelper.assertNotBlank("regex", regex);

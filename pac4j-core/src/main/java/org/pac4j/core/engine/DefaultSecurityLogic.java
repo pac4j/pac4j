@@ -4,7 +4,7 @@ import org.pac4j.core.authorization.checker.AuthorizationChecker;
 import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
-import org.pac4j.core.client.DirectClientV1;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.client.finder.ClientFinder;
@@ -105,7 +105,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
                     boolean updated = false;
                     // loop on all clients searching direct ones to perform authentication
                     for (final Client currentClient : currentClients) {
-                        if (currentClient instanceof DirectClientV1) {
+                        if (currentClient instanceof DirectClient) {
                             logger.debug("Performing authentication for direct client: {}", currentClient);
 
                             final Credentials credentials = currentClient.getCredentials(context);
@@ -113,7 +113,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
                             final CommonProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
                             if (profile != null) {
-                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClientV1) currentClient, profile);
+                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClient) currentClient, profile);
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                 manager.save(saveProfileInSession, profile, multiProfile);
                                 updated = true;
@@ -189,7 +189,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param profile the retrieved profile after login
      * @return whether we need to save the profile in session
      */
-    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClientV1 directClient, final CommonProfile profile) {
+    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, final CommonProfile profile) {
         return this.saveProfileInSession;
     }
 

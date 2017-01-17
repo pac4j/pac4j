@@ -4,20 +4,22 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.creator.ProfileCreator;
+import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * New direct client type using the {@link CredentialsExtractor}, {@link Authenticator} and {@link ProfileCreator} concepts.
+ * Direct client type using the {@link CredentialsExtractor}, {@link Authenticator} and {@link ProfileCreator} concepts.
  *
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends DirectClientV1<C, U> {
+public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
 
     private CredentialsExtractor<C> credentialsExtractor;
 
@@ -26,7 +28,13 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
     private ProfileCreator<C, U> profileCreator = AuthenticatorProfileCreator.INSTANCE;
 
     @Override
-    protected C retrieveCredentials(final WebContext context) throws HttpAction {
+    public final HttpAction redirect(final WebContext context) throws HttpAction {
+        throw new TechnicalException("direct clients do not support redirections");
+    }
+
+    @Override
+    public C getCredentials(final WebContext context) throws HttpAction {
+        init(context);
         CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
         CommonHelper.assertNotNull("authenticator", this.authenticator);
 
@@ -52,6 +60,11 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
         final U profile = this.profileCreator.create(credentials, context);
         logger.debug("profile: {}", profile);
         return profile;
+    }
+
+    @Override
+    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        return null;
     }
 
     public CredentialsExtractor<C> getCredentialsExtractor() {
