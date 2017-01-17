@@ -36,9 +36,7 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
     public static final String PARAM_PROXY_GRANTING_TICKET = "pgtId";
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("store", this.store);
 
         setRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });

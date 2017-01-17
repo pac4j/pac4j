@@ -45,7 +45,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    public TokenCredentials getCredentials(final WebContext context) throws HttpAction {
+    protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
             String currentUrl = context.getFullRequestURL();
@@ -80,7 +80,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
         configuration.init(context);

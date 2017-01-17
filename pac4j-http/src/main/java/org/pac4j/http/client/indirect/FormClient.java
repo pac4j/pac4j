@@ -59,9 +59,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
         this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);

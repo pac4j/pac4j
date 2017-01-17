@@ -87,9 +87,7 @@ public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> 
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", this.configuration);
 
         // First of all, initialize the configuration. It may dynamically load some properties, if it is not a static one.

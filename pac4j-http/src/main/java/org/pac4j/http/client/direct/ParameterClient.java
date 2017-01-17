@@ -40,7 +40,7 @@ public class ParameterClient extends DirectClient<TokenCredentials, CommonProfil
 
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
 
         setCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));

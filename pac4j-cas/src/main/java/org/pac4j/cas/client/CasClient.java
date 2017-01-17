@@ -39,9 +39,7 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);

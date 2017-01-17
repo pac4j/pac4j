@@ -42,7 +42,7 @@ public class DirectFormClient extends DirectClient<UsernamePasswordCredentials, 
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("usernameParameter", usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
 

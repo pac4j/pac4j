@@ -51,7 +51,7 @@ public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> 
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 

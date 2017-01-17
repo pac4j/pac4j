@@ -22,9 +22,7 @@ public class OAuth10Client<U extends OAuth10Profile> extends IndirectClient<OAut
     protected OAuth10Configuration configuration = new OAuth10Configuration();
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         setRedirectActionBuilder(new OAuth10RedirectActionBuilder(configuration));
         setCredentialsExtractor(new OAuth10CredentialsExtractor(configuration));
         setAuthenticator(new OAuth10Authenticator(configuration));

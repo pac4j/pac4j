@@ -28,14 +28,14 @@ public final class OkClient extends OAuth20Client<OkProfile> {
 
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("publicKey", this.publicKey);
         configuration.setApi(OdnoklassnikiApi.instance());
         configuration.setProfileDefinition(new OkProfileDefinition());
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     public String getPublicKey() {

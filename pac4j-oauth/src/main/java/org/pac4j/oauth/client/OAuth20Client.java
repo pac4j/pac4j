@@ -22,9 +22,7 @@ public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAut
     protected OAuth20Configuration configuration = new OAuth20Configuration();
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         setRedirectActionBuilder(new OAuth20RedirectActionBuilder(configuration));
         setCredentialsExtractor(new OAuth20CredentialsExtractor(configuration));
         setAuthenticator(new OAuth20Authenticator(configuration));

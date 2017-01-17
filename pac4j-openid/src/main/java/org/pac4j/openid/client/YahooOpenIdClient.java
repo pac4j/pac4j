@@ -24,9 +24,7 @@ public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials, YahooOp
     private ConsumerManager consumerManager;
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         this.consumerManager = new ConsumerManager();
         setRedirectActionBuilder(new YahooRedirectActionBuilder(this));
         setCredentialsExtractor(new YahooCredentialsExtractor(this));

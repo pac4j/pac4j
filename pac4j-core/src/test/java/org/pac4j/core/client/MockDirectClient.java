@@ -27,7 +27,7 @@ public final class MockDirectClient extends DirectClient<Credentials, CommonProf
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         setCredentialsExtractor(ctx -> returnCredentials.get());
         setAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
     }

@@ -26,7 +26,7 @@ public class CookieClient extends DirectClient<TokenCredentials, CommonProfile> 
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
         setCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));

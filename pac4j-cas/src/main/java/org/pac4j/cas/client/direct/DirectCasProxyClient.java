@@ -40,7 +40,7 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertNotBlank("serviceUrl", this.serviceUrl);
         // must be a CAS proxy protocol

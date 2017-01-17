@@ -36,13 +36,13 @@ public class VkClient extends OAuth20Client<VkProfile> {
 	}
 
 	@Override
-	protected void internalInit(final WebContext context) {
+	protected void clientInit(final WebContext context) {
 		configuration.setApi(VkontakteApi.instance());
 		configuration.setProfileDefinition(new VkProfileDefinition());
 		configuration.setScope(this.scope);
 		setConfiguration(configuration);
 
-		super.internalInit(context);
+		super.clientInit(context);
 	}
 
 	public String getScope() {

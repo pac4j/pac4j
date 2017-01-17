@@ -27,9 +27,7 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
 	protected String authDomain = null;
 
 	@Override
-    protected void internalInit(final WebContext context) {
-	    super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
 		service = UserServiceFactory.getUserService();
 		CommonHelper.assertNotNull("service", this.service);
 		setRedirectActionBuilder(ctx -> {

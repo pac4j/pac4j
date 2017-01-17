@@ -41,9 +41,7 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setCallbackUrl(computeFinalCallbackUrl(context));
         configuration.init(context);

@@ -20,7 +20,7 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials, An
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         setCredentialsExtractor(ctx -> AnonymousCredentials.INSTANCE);
         setAuthenticator((cred, ctx )-> {
             cred.setUserProfile(AnonymousProfile.INSTANCE);

@@ -28,7 +28,7 @@ public class IpClient extends DirectClient<TokenCredentials, CommonProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         setCredentialsExtractor(new IpExtractor(getName()));
     }
 }

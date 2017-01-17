@@ -2,10 +2,7 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.credentials.extractor.CredentialsExtractor;
-import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.AjaxRequestResolver;
 import org.pac4j.core.http.CallbackUrlResolver;
@@ -14,16 +11,14 @@ import org.pac4j.core.http.DefaultCallbackUrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
-import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * Indirect client type using the {@link RedirectActionBuilder}, {@link CredentialsExtractor}, {@link Authenticator},
- * {@link ProfileCreator} and {@link LogoutActionBuilder} concepts.
- * 
+ * Indirect client: the requested protected URL is saved, the user is redirected to the identity provider for login and
+ * back to the application after the sucessful authentication and finally to the originally requested URL.
+ *
  * @author Jerome Leleu
  * @since 1.9.0
  */
@@ -41,20 +36,31 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private RedirectActionBuilder redirectActionBuilder;
 
-    private CredentialsExtractor<C> credentialsExtractor;
-
-    private Authenticator<C> authenticator;
-
-    private ProfileCreator<C, U> profileCreator =  AuthenticatorProfileCreator.INSTANCE;
-
     private LogoutActionBuilder<U> logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected final void internalInit(final WebContext context) {
+        // check configuration
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
         CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
+
+        clientInit(context);
+
+        // ensures components have been properly initialized
+        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
+        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        CommonHelper.assertNotNull("profileCreator", getProfileCreator());
+        CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
     }
+
+    /**
+     * Initialize the client.
+     *
+     * @param context the web context
+     */
+    protected abstract void clientInit(WebContext context);
 
     @Override
     public final HttpAction redirect(final WebContext context) throws HttpAction {
@@ -74,7 +80,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      */
     public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
         init(context);
-
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
@@ -88,8 +93,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             cleanRequestedUrl(context);
             throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null);
         }
-
-        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
 
         return redirectActionBuilder.redirect(context);
     }
@@ -117,7 +120,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     @Override
     public final C getCredentials(final WebContext context) throws HttpAction {
         init(context);
-
         final C credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed
         if (credentials == null) {
@@ -128,47 +130,9 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return credentials;
     }
 
-    /**
-     * Retrieve the credentials.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected C retrieveCredentials(final WebContext context) throws HttpAction {
-        CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
-        CommonHelper.assertNotNull("authenticator", this.authenticator);
-
-        try {
-            final C credentials = this.credentialsExtractor.extract(context);
-            if (credentials == null) {
-                return null;
-            }
-            this.authenticator.validate(credentials, context);
-            return credentials;
-        } catch (CredentialsException e) {
-            logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
-            logger.debug("Failed to retrieve or validate credentials", e);
-
-            return null;
-        }
-    }
-
-    @Override
-    protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
-        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
-
-        final U profile = this.profileCreator.create(credentials, context);
-        logger.debug("profile: {}", profile);
-        return profile;
-    }
-
     @Override
     public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
         init(context);
-
-        CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
-
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
 
@@ -216,36 +180,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         }
     }
 
-    public CredentialsExtractor<C> getCredentialsExtractor() {
-        return credentialsExtractor;
-    }
-
-    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
-        if (this.credentialsExtractor == null) {
-            this.credentialsExtractor = credentialsExtractor;
-        }
-    }
-
-    public Authenticator<C> getAuthenticator() {
-        return authenticator;
-    }
-
-    public void setAuthenticator(final Authenticator<C> authenticator) {
-        if (this.authenticator == null) {
-            this.authenticator = authenticator;
-        }
-    }
-
-    public ProfileCreator<C, U> getProfileCreator() {
-        return profileCreator;
-    }
-
-    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
-        if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
-            this.profileCreator = profileCreator;
-        }
-    }
-
     public LogoutActionBuilder<U> getLogoutActionBuilder() {
         return logoutActionBuilder;
     }
@@ -261,8 +195,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
                 "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
                 "includeClientNameInCallbackUrl", this.includeClientNameInCallbackUrl,
-                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
-                "authenticator", this.authenticator, "profileCreator", this.profileCreator,
-                "logoutActionBuilder", this.logoutActionBuilder);
+                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", getCredentialsExtractor(),
+                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+                "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
     }
 }
