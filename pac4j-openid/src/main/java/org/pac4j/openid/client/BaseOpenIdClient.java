@@ -58,7 +58,7 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
      * 
      * @return the name of the attribute storing in session the discovery information
      */
-    protected String getDiscoveryInformationSessionAttributeName() {
+    public String getDiscoveryInformationSessionAttributeName() {
         return getName() + "#" + DISCOVERY_INFORMATION;
     }
 
@@ -166,5 +166,9 @@ public abstract class BaseOpenIdClient<U extends CommonProfile> extends Indirect
 
         final String message = "No verifiedId found";
         throw new TechnicalException(message);
+    }
+
+    public ConsumerManager getConsumerManager() {
+        return consumerManager;
     }
 }
