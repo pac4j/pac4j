@@ -3,7 +3,7 @@ package org.pac4j.cas.client;
 import java.util.concurrent.TimeUnit;
 
 import org.jasig.cas.client.util.CommonUtils;
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public final class CasProxyReceptor extends IndirectClientV2<TokenCredentials, CommonProfile> {
+public final class CasProxyReceptor extends IndirectClient<TokenCredentials, CommonProfile> {
     
     private static final Logger logger = LoggerFactory.getLogger(CasProxyReceptor.class);
 

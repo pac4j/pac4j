@@ -1,6 +1,6 @@
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
@@ -15,7 +15,7 @@ import org.pac4j.core.credentials.extractor.HeaderExtractor;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class HeaderClient extends DirectClientV2<TokenCredentials, CommonProfile> {
+public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> {
 
     private String headerName = "";
 

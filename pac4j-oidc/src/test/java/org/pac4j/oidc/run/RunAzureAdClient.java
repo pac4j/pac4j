@@ -1,6 +1,6 @@
 package org.pac4j.oidc.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -34,7 +34,7 @@ public class RunAzureAdClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("788339d7-1c44-4732-97c9-134cb201f01f");
         configuration.setSecret("we/31zi+JYa7zOugO4TbSw0hzn+hv2wmENO9AS3T84s=");

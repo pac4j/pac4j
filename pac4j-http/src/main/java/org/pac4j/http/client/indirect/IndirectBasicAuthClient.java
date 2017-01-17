@@ -1,6 +1,6 @@
 package org.pac4j.http.client.indirect;
 
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -21,7 +21,7 @@ import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
  * @author Jerome Leleu
  * @since 1.8.0
  */
-public class IndirectBasicAuthClient extends IndirectClientV2<UsernamePasswordCredentials, CommonProfile> {
+public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCredentials, CommonProfile> {
 
     private String realmName = "authentication required";
 

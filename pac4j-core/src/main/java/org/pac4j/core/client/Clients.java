@@ -88,8 +88,8 @@ public class Clients extends InitializableObject {
                 throw new TechnicalException("Duplicate name in clients: " + name);
             }
             names.add(lowerName);
-            if (client instanceof IndirectClient) {
-                updateCallbackUrlOfIndirectClient((IndirectClient) client);
+            if (client instanceof IndirectClientV1) {
+                updateCallbackUrlOfIndirectClient((IndirectClientV1) client);
             }
             final BaseClient baseClient = (BaseClient) client;
             if (!authorizationGenerators.isEmpty()) {
@@ -104,7 +104,7 @@ public class Clients extends InitializableObject {
      * 
      * @param indirectClient A client.
      */
-    protected void updateCallbackUrlOfIndirectClient(final IndirectClient indirectClient) {
+    protected void updateCallbackUrlOfIndirectClient(final IndirectClientV1 indirectClient) {
         String indirectClientCallbackUrl = indirectClient.getCallbackUrl();
         // no callback url defined for the client but a group callback one -> set it with the group callback url
         if (CommonHelper.isNotBlank(this.callbackUrl) && indirectClientCallbackUrl == null) {

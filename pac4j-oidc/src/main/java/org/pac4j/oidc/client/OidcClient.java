@@ -1,6 +1,6 @@
 package org.pac4j.oidc.client;
 
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -22,7 +22,7 @@ import org.pac4j.oidc.redirect.OidcRedirectActionBuilder;
  * @author Jerome Leleu
  * @since 1.7.0
  */
-public class OidcClient<U extends OidcProfile> extends IndirectClientV2<OidcCredentials, U> {
+public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCredentials, U> {
 
     private OidcConfiguration configuration = new OidcConfiguration();
 

@@ -11,7 +11,7 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class MockDirectClient extends DirectClient<Credentials, CommonProfile> {
+public final class MockDirectClient extends DirectClientV1<Credentials, CommonProfile> {
 
     private final ReturnCredentials returnCredentials;
 

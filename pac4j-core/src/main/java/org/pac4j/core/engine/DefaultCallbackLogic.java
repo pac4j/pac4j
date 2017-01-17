@@ -3,7 +3,7 @@ package org.pac4j.core.engine;
 import org.pac4j.core.client.BaseClient;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -71,7 +71,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
         final Client client = clients.findClient(context);
         logger.debug("client: {}", client);
         assertNotNull("client", client);
-        assertTrue(client instanceof IndirectClient, "only indirect clients are allowed on the callback url");
+        assertTrue(client instanceof IndirectClientV1, "only indirect clients are allowed on the callback url");
 
         HttpAction action;
         try {

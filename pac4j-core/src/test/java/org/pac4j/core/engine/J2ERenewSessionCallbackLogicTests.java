@@ -3,7 +3,7 @@ package org.pac4j.core.engine;
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.client.Clients;
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.client.MockDirectClient;
 import org.pac4j.core.client.MockIndirectClient;
 import org.pac4j.core.config.Config;
@@ -108,7 +108,7 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
         final String originalSessionId = request.getSession().getId();
         request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
+        final IndirectClientV1 indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
         final HttpSession session = request.getSession();
@@ -128,7 +128,7 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
         session.setAttribute(Pac4jConstants.REQUESTED_URL, PAC4J_URL);
         request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
+        final IndirectClientV1 indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         call();
         session = request.getSession();
@@ -146,7 +146,7 @@ public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
         final String originalSessionId = request.getSession().getId();
         request.setParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER, NAME);
         final CommonProfile profile = new CommonProfile();
-        final IndirectClient indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
+        final IndirectClientV1 indirectClient = new MockIndirectClient(NAME, null, new MockCredentials(), profile);
         config.setClients(new Clients(CALLBACK_URL, indirectClient));
         renewSession = false;
         call();

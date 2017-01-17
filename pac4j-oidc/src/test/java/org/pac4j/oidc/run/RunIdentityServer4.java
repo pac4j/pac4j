@@ -1,6 +1,6 @@
 package org.pac4j.oidc.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -56,7 +56,7 @@ public class RunIdentityServer4 extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("test");
         configuration.setSecret("secret");

@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -32,7 +32,7 @@ public final class RunStravaClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final StravaClient stravaClient = new StravaClient();
         stravaClient.setApprovalPrompt("force");
         stravaClient.setKey("3945");

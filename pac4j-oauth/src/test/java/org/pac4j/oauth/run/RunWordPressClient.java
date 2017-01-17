@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -35,7 +35,7 @@ public final class RunWordPressClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final WordPressClient wordPressClient = new WordPressClient();
         wordPressClient.setKey("209");
         wordPressClient.setSecret("xJBXMRVvKrvHqyvM6BpzkenJVMIdQrIWKjPJsezjGYu71y7sDgt8ibz6s9IFLqU8");

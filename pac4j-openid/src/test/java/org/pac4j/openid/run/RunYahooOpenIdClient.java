@@ -1,6 +1,6 @@
 package org.pac4j.openid.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -35,7 +35,7 @@ public class RunYahooOpenIdClient  extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final YahooOpenIdClient client = new YahooOpenIdClient();
         client.setCallbackUrl(PAC4J_BASE_URL);
         return client;

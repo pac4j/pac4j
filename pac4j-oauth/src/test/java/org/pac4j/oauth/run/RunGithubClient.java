@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.run.RunClient;
@@ -38,7 +38,7 @@ public class RunGithubClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final GitHubClient githubClient = new GitHubClient();
         githubClient.setKey("62374f5573a89a8f9900");
         githubClient.setSecret("01dd26d60447677ceb7399fb4c744f545bb86359");

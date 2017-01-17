@@ -1,6 +1,6 @@
 package org.pac4j.oidc.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.oidc.profile.OidcProfile;
@@ -50,7 +50,7 @@ public class RunKeycloakOidcClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final KeycloakOidcConfiguration configuration = new KeycloakOidcConfiguration();
 
         configuration.setClientId(CLIENT_ID);

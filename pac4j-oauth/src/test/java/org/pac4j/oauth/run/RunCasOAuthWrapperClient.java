@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
@@ -33,7 +33,7 @@ public final class RunCasOAuthWrapperClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final CasOAuthWrapperClient client = new CasOAuthWrapperClient();
         client.setKey("key");
         client.setSecret("secret");

@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -36,7 +36,7 @@ public final class RunWindowsLiveClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final WindowsLiveClient liveClient = new WindowsLiveClient();
         liveClient.setKey("00000000400BFE75");
         liveClient.setSecret("9yz0WtTIUQVV7HhBV2tccTziETOt4pRG");

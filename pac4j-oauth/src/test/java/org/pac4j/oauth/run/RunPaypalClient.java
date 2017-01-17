@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -37,7 +37,7 @@ public final class RunPaypalClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final PayPalClient payPalClient = new PayPalClient(
                 "ARQFlBAOdRsb1NhZlutHT_PORP2F-TQpU-Laz-osaBwAHUIBIdg-C8DEsTWY",
                 "EAMZPBBfYJGeCBHYkm30xqC-VZ1kePnWZzPLdXyzY43rh-q0OQUH5eucXI6R");

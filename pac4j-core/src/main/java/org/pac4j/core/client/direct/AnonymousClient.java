@@ -1,6 +1,6 @@
 package org.pac4j.core.client.direct;
 
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.AnonymousCredentials;
 import org.pac4j.core.profile.AnonymousProfile;
@@ -11,7 +11,7 @@ import org.pac4j.core.profile.AnonymousProfile;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class AnonymousClient extends DirectClientV2<AnonymousCredentials, AnonymousProfile> {
+public final class AnonymousClient extends DirectClient<AnonymousCredentials, AnonymousProfile> {
 
     public final static AnonymousClient INSTANCE = new AnonymousClient();
 

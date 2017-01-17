@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.run.RunClient;
@@ -41,7 +41,7 @@ public final class RunFacebookClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final FacebookClient facebookClient = new FacebookClient();
         facebookClient.setKey("1002857006444390");
         facebookClient.setSecret("c352c9668493d3f9ac3f0fa71f04c187");

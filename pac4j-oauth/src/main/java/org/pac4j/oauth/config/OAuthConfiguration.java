@@ -5,7 +5,7 @@ import com.github.scribejava.core.model.OAuthConfig;
 import com.github.scribejava.core.model.SignatureType;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
@@ -20,7 +20,7 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService<?>, T extends Token> extends InitializableWebObject {
+public class OAuthConfiguration<C extends IndirectClientV1, S extends OAuthService<?>, T extends Token> extends InitializableWebObject {
 
     public static final String OAUTH_TOKEN = "oauth_token";
 

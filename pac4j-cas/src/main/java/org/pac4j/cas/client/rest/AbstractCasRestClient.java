@@ -7,7 +7,7 @@ import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.util.HttpUtils;
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
@@ -31,7 +31,7 @@ import java.net.URL;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePasswordCredentials, CasRestProfile> {
+public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswordCredentials, CasRestProfile> {
 
     public void destroyTicketGrantingTicket(final CasRestProfile profile) {
         HttpURLConnection connection = null;

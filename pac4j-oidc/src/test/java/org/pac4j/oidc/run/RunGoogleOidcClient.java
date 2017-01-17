@@ -1,6 +1,6 @@
 package org.pac4j.oidc.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -36,7 +36,7 @@ public class RunGoogleOidcClient extends RunClient {
     }
 
     @Override
-    protected IndirectClient getClient() {
+    protected IndirectClientV1 getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("682158564078-ndcjc83kp5v7vudikqu1fudtkcs2odeb.apps.googleusercontent.com");
         configuration.setSecret("gLB2U7LPYBFTxqYtyG81AhLH");

@@ -1,6 +1,6 @@
 package org.pac4j.core.run;
 
-import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.client.IndirectClientV1;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
@@ -27,7 +27,7 @@ public abstract class RunClient implements TestsConstants {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public void run() throws Exception {
-        final IndirectClient client = getClient();
+        final IndirectClientV1 client = getClient();
         final MockWebContext context = MockWebContext.create();
         final String url = client.getRedirectAction(context).getLocation();
         logger.warn("Redirect to: \n{}", url);
@@ -63,7 +63,7 @@ public abstract class RunClient implements TestsConstants {
         return false;
     }
 
-    protected abstract IndirectClient getClient();
+    protected abstract IndirectClientV1 getClient();
 
     protected abstract void verifyProfile(final CommonProfile userProfile);
 

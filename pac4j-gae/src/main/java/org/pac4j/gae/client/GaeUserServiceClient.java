@@ -1,6 +1,6 @@
 package org.pac4j.gae.client;
 
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.definition.ProfileDefinition;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.WebContext;
@@ -19,7 +19,7 @@ import com.google.appengine.api.users.UserServiceFactory;
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public class GaeUserServiceClient extends IndirectClientV2<GaeUserCredentials, GaeUserServiceProfile> {
+public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, GaeUserServiceProfile> {
 
 	private static final ProfileDefinition<GaeUserServiceProfile> PROFILE_DEFINITION = new CommonProfileDefinition<>(x -> new GaeUserServiceProfile());
 

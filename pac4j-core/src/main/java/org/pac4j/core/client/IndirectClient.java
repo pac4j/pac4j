@@ -1,186 +1,138 @@
 package org.pac4j.core.client;
 
-import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.credentials.extractor.CredentialsExtractor;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.DefaultAjaxRequestResolver;
-import org.pac4j.core.http.DefaultCallbackUrlResolver;
-import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.logout.LogoutActionBuilder;
+import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
+import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * <p>This class is the default indirect (with redirection, stateful) implementation of an authentication client (whatever the mechanism).</p>
- * <p>The callback url is managed via the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods. The way the callback url
- * is finally computed is done by the {@link #callbackUrlResolver} which returns by default the provided {@link #callbackUrl}.</p>
- *
+ * New indirect client type using the {@link RedirectActionBuilder}, {@link CredentialsExtractor}, {@link Authenticator},
+ * {@link ProfileCreator} and {@link LogoutActionBuilder} concepts.
+ * 
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.9.0
  */
-public abstract class IndirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
+public abstract class IndirectClient<C extends Credentials, U extends CommonProfile> extends IndirectClientV1<C, U> {
 
-    public final static String ATTEMPTED_AUTHENTICATION_SUFFIX = "$attemptedAuthentication";
+    private RedirectActionBuilder redirectActionBuilder;
 
-    protected String callbackUrl;
+    private CredentialsExtractor<C> credentialsExtractor;
 
-    private boolean includeClientNameInCallbackUrl = true;
+    private Authenticator<C> authenticator;
 
-    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+    private ProfileCreator<C, U> profileCreator =  AuthenticatorProfileCreator.INSTANCE;
 
-    protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
+    private LogoutActionBuilder<U> logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
 
     @Override
-    protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
-        CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
+    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
+
+        return redirectActionBuilder.redirect(context);
     }
 
     @Override
-    public final HttpAction redirect(final WebContext context) throws HttpAction {
-        final RedirectAction action = getRedirectAction(context);
-        return action.perform(context);
-    }
+    protected C retrieveCredentials(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("credentialsExtractor", this.credentialsExtractor);
+        CommonHelper.assertNotNull("authenticator", this.authenticator);
 
-    /**
-     * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
-     * {@link #redirect(WebContext)} should be generally called instead.</p>
-     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is an AJAX one,
-     * an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
-     *
-     * @param context context
-     * @return the redirection action
-     * @throws HttpAction requires an additional HTTP action
-     */
-    public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
-        init(context);
+        try {
+            final C credentials = this.credentialsExtractor.extract(context);
+            if (credentials == null) {
+                return null;
+            }
+            this.authenticator.validate(credentials, context);
+            return credentials;
+        } catch (CredentialsException e) {
+            logger.info("Failed to retrieve or validate credentials: {}", e.getMessage());
+            logger.debug("Failed to retrieve or validate credentials", e);
 
-        // it's an AJAX request -> unauthorized (instead of a redirection)
-        if (ajaxRequestResolver.isAjax(context)) {
-            logger.info("AJAX request detected -> returning 401");
-            cleanRequestedUrl(context);
-            throw HttpAction.unauthorized("AJAX request -> 401", context, null);
+            return null;
         }
-        // authentication has already been tried -> unauthorized
-        final String attemptedAuth = (String) context.getSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX);
-        if (CommonHelper.isNotBlank(attemptedAuth)) {
-            cleanAttemptedAuthentication(context);
-            cleanRequestedUrl(context);
-            throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null);
-        }
-
-        return retrieveRedirectAction(context);
-    }
-
-    /**
-     * Retrieve the redirect action.
-     *
-     * @param context the web context
-     * @return the redirection action
-     * @throws HttpAction requires a specific HTTP action if necessary
-     */
-    protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction;
-
-    /**
-     * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
-     * <ul>
-     * <li>if the <code>CasClient</code> receives a logout request, it returns a 200 HTTP status code</li>
-     * <li>for the <code>IndirectBasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response (401 HTTP status
-     * code) is returned to request credentials through a popup.</li>
-     * </ul>
-     *
-     * @param context the current web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    @Override
-    public final C getCredentials(final WebContext context) throws HttpAction {
-        init(context);
-        final C credentials = retrieveCredentials(context);
-        // no credentials -> save this authentication has already been tried and failed
-        if (credentials == null) {
-            context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
-        } else {
-            cleanAttemptedAuthentication(context);
-        }
-        return credentials;
-    }
-
-    /**
-     * Retrieve the credentials.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
-
-    private void cleanRequestedUrl(final WebContext context) {
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
-    }
-
-    private void cleanAttemptedAuthentication(final WebContext context) {
-        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
-    }
-
-    public String computeFinalCallbackUrl(final WebContext context) {
-        return callbackUrlResolver.compute(callbackUrl, context);
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        init(context);
-        return retrieveLogoutRedirectAction(context, currentProfile, targetUrl);
+    protected U retrieveUserProfile(final C credentials, final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("profileCreator", this.profileCreator);
+
+        final U profile = this.profileCreator.create(credentials, context);
+        logger.debug("profile: {}", profile);
+        return profile;
     }
 
-    /**
-     * Retrieve the redirect action for the logout.
-     *
-     * @param context the web context
-     * @param currentProfile the current profile
-     * @param targetUrl the target URL post logout
-     * @return the redirection action
-     */
+    @Override
     protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        return null;
+        CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
+
+        return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
 
-    public boolean isIncludeClientNameInCallbackUrl() {
-        return this.includeClientNameInCallbackUrl;
+    public RedirectActionBuilder getRedirectActionBuilder() {
+        return redirectActionBuilder;
     }
 
-    public void setIncludeClientNameInCallbackUrl(final boolean includeClientNameInCallbackUrl) {
-        this.includeClientNameInCallbackUrl = includeClientNameInCallbackUrl;
+    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+        if (this.redirectActionBuilder == null) {
+            this.redirectActionBuilder = redirectActionBuilder;
+        }
     }
 
-    public void setCallbackUrl(final String callbackUrl) {
-        this.callbackUrl = callbackUrl;
+    public CredentialsExtractor<C> getCredentialsExtractor() {
+        return credentialsExtractor;
     }
 
-    public String getCallbackUrl() { return this.callbackUrl; }
-
-    public AjaxRequestResolver getAjaxRequestResolver() {
-        return ajaxRequestResolver;
+    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+        if (this.credentialsExtractor == null) {
+            this.credentialsExtractor = credentialsExtractor;
+        }
     }
 
-    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
-        this.ajaxRequestResolver = ajaxRequestResolver;
+    public Authenticator<C> getAuthenticator() {
+        return authenticator;
     }
 
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
+    public void setAuthenticator(final Authenticator<C> authenticator) {
+        if (this.authenticator == null) {
+            this.authenticator = authenticator;
+        }
     }
 
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
+    public ProfileCreator<C, U> getProfileCreator() {
+        return profileCreator;
+    }
+
+    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+        if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
+            this.profileCreator = profileCreator;
+        }
+    }
+
+    public LogoutActionBuilder<U> getLogoutActionBuilder() {
+        return logoutActionBuilder;
+    }
+
+    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+        if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
+            this.logoutActionBuilder = logoutActionBuilder;
+        }
     }
 
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver);
+                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", this.credentialsExtractor,
+                "authenticator", this.authenticator, "profileCreator", this.profileCreator,
+                "logoutActionBuilder", this.logoutActionBuilder);
     }
 }

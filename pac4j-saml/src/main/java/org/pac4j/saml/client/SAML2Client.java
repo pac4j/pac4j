@@ -7,7 +7,7 @@ import org.opensaml.saml.metadata.resolver.ChainingMetadataResolver;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Ruochao Zheng
  * @since 1.5.0
  */
-public class SAML2Client extends IndirectClientV2<SAML2Credentials, SAML2Profile> {
+public class SAML2Client extends IndirectClient<SAML2Credentials, SAML2Profile> {
 
     public static final String SAML_RELAY_STATE_ATTRIBUTE = "samlRelayState";
 
