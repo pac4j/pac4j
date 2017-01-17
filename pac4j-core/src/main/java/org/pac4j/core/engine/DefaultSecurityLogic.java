@@ -5,7 +5,7 @@ import org.pac4j.core.authorization.checker.DefaultAuthorizationChecker;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.client.DirectClient;
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.client.finder.ClientFinder;
 import org.pac4j.core.client.finder.DefaultClientFinder;
@@ -176,7 +176,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @return whether the profiles must be loaded from the web session
      */
     protected boolean loadProfilesFromSession(final C context, final List<Client> currentClients) {
-        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClientV1 || currentClients.get(0) instanceof AnonymousClient;
+        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient || currentClients.get(0) instanceof AnonymousClient;
     }
 
     /**
@@ -214,7 +214,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @return whether we must start a login process
      */
     protected boolean startAuthentication(final C context, final List<Client> currentClients) {
-        return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClientV1;
+        return isNotEmpty(currentClients) && currentClients.get(0) instanceof IndirectClient;
     }
 
     /**
@@ -239,7 +239,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @throws HttpAction whether an additional HTTP action is required
      */
     protected HttpAction redirectToIdentityProvider(final C context, final List<Client> currentClients) throws HttpAction {
-        final IndirectClientV1 currentClient = (IndirectClientV1) currentClients.get(0);
+        final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
         return currentClient.redirect(context);
     }
 

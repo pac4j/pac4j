@@ -65,7 +65,7 @@ public final class BaseClientTests implements TestsConstants {
         final MockIndirectClient client = new MockIndirectClient(TYPE, RedirectAction.redirect(LOGIN_URL), (Credentials) null, new CommonProfile());
         client.setCallbackUrl(CALLBACK_URL);
         final MockWebContext context = MockWebContext.create();
-        context.setSessionAttribute(client.getName() + IndirectClientV1.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
+        context.setSessionAttribute(client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX, "true");
         final HttpAction e = (HttpAction) TestsHelper.expectException(() -> client.redirect(context));
         assertEquals(401, e.getCode());
         assertEquals(401, context.getResponseStatus());
@@ -78,7 +78,7 @@ public final class BaseClientTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         client.getCredentials(context);
         assertEquals("true",
-                (String) context.getSessionAttribute(client.getName() + IndirectClientV1.ATTEMPTED_AUTHENTICATION_SUFFIX));
+                (String) context.getSessionAttribute(client.getName() + IndirectClient.ATTEMPTED_AUTHENTICATION_SUFFIX));
     }
 
     @Test

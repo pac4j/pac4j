@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.converter.Converters;
 import org.pac4j.core.run.RunClient;
@@ -39,7 +39,7 @@ public final class RunYahooClient extends RunClient {
     }
 
     @Override
-    protected IndirectClientV1 getClient() {
+    protected IndirectClient getClient() {
         final YahooClient yahooClient = new YahooClient();
         yahooClient
                 .setKey("dj0yJmk9djFiREdkbHc0dWdMJmQ9WVdrOVYwNHdkbnBWTkhFbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD03MQ--");

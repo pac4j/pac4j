@@ -1,6 +1,6 @@
 package org.pac4j.oidc.run;
 
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -36,7 +36,7 @@ public class RunOkta extends RunClient {
     }
 
     @Override
-    protected IndirectClientV1 getClient() {
+    protected IndirectClient getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("ZuxDX1Gw2Kvx4gFyDNWC");
         configuration.setSecret("77kjmDs94pA4UOVkeuYY7XyHnsDmSWoezrc3XZFU");

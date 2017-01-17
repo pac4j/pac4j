@@ -1,7 +1,7 @@
 package org.pac4j.oidc.run;
 
 import com.nimbusds.jose.JWSAlgorithm;
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.Gender;
 import org.pac4j.core.profile.ProfileHelper;
@@ -35,7 +35,7 @@ public class RunMitreIdOrg extends RunClient {
     }
 
     @Override
-    protected IndirectClientV1 getClient() {
+    protected IndirectClient getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId("acdf79d7-0129-4ba3-bc61-a52486cf82ff");
         configuration.setSecret("ALhlPK5ONNGojjZvEiIgyNEUfX1MbAlDXT1dM0-pVQSa-IID5QMq-lEhlawRqejPZ8c70LBqfKyFL79tefmPb7k");

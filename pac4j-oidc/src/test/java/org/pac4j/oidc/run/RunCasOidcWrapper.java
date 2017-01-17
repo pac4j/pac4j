@@ -1,6 +1,6 @@
 package org.pac4j.oidc.run;
 
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.oidc.client.OidcClient;
@@ -34,7 +34,7 @@ public class RunCasOidcWrapper extends RunClient {
     }
 
     @Override
-    protected IndirectClientV1 getClient() {
+    protected IndirectClient getClient() {
         final OidcConfiguration configuration = new OidcConfiguration();
         configuration.setClientId(CLIENT_ID);
         configuration.setSecret("secret");

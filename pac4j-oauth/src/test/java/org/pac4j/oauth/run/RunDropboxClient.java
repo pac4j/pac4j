@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.core.profile.Gender;
@@ -36,7 +36,7 @@ public final class RunDropboxClient extends RunClient {
     }
 
     @Override
-    protected IndirectClientV1 getClient() {
+    protected IndirectClient getClient() {
         final DropBoxClient dropBoxClient = new DropBoxClient();
         dropBoxClient.setKey("0194c6m79qll0ia");
         dropBoxClient.setSecret("a0ylze9a0bhsvxv");

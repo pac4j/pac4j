@@ -1,6 +1,6 @@
 package org.pac4j.oauth.run;
 
-import org.pac4j.core.client.IndirectClientV1;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.oauth.client.OAuth10Client;
 import org.pac4j.oauth.config.OAuth10Configuration;
 import org.pac4j.oauth.profile.bitbucket.BitbucketProfileDefinition;
@@ -19,7 +19,7 @@ public final class RunOAuth10Client extends RunBitbucketClient {
     }
 
     @Override
-    protected IndirectClientV1 getClient() {
+    protected IndirectClient getClient() {
         final OAuth10Configuration config = new OAuth10Configuration();
         config.setKey("bjEt8BMpLwFDqZUvp6");
         config.setSecret("NN6fVXRTcV2qYVejVLZqxBRqHgn3ygD4");
