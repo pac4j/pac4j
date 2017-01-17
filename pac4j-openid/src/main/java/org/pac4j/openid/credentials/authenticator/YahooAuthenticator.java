@@ -64,6 +64,7 @@ public class YahooAuthenticator implements Authenticator<OpenIdCredentials> {
                 profile.setId(verified.getIdentifier());
                 logger.debug("profile: {}", profile);
                 credentials.setUserProfile(profile);
+                return;
             }
         } catch (final OpenIDException e) {
             throw new TechnicalException("OpenID exception", e);
