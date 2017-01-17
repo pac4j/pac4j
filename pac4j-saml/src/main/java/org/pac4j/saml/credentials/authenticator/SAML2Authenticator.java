@@ -38,6 +38,8 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
 
     @Override
     public void validate(final SAML2Credentials credentials, final WebContext context) throws HttpAction, CredentialsException {
+        init(context);
+
         final SAML2Profile profile = getProfileDefinition().newProfile();
         profile.setId(credentials.getNameId().getValue());
         profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
