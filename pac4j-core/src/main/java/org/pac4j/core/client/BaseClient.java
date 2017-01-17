@@ -9,7 +9,6 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends ProfileDefinitionAware<U> implements Client<C, U> {
+public abstract class BaseClient<C extends Credentials, U extends CommonProfile> extends InitializableWebObject implements Client<C, U> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

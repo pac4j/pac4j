@@ -148,16 +148,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return null;
     }
 
-    /**
-     * Return the state parameter required by some security protocols like SAML or OAuth.
-     * 
-     * @param webContext web context
-     * @return the state
-     */
-    protected String getStateParameter(WebContext webContext) {
-        throw new UnsupportedOperationException("To be implemented in subclasses if required");
-    }
-
     public boolean isIncludeClientNameInCallbackUrl() {
         return this.includeClientNameInCallbackUrl;
     }
