@@ -32,7 +32,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
 
         LOG.info("InternalInit");
 
@@ -56,7 +56,7 @@ public class GenericOAuth20Client extends OAuth20Client<OAuth20Profile> {
 
         configuration.setProfileDefinition(profileDefinition);
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     public void setAuthUrl(final String authUrl) {

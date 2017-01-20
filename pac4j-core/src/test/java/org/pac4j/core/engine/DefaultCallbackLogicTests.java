@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  * @author Jerome Leleu
  * @since 1.9.0
  */
-public final class J2ERenewSessionCallbackLogicTests implements TestsConstants {
+public final class DefaultCallbackLogicTests implements TestsConstants {
 
     private CallbackLogic<Object, J2EContext> logic;
 

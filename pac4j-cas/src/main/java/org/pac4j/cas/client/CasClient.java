@@ -7,7 +7,7 @@ import org.pac4j.cas.credentials.extractor.TicketAndLogoutRequestExtractor;
 import org.pac4j.core.logout.CasLogoutActionBuilder;
 import org.pac4j.cas.logout.CasLogoutHandler;
 import org.pac4j.cas.redirect.CasRedirectActionBuilder;
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.profile.CommonProfile;
@@ -28,7 +28,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile> {
+public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
 
     private CasConfiguration configuration = new CasConfiguration();
 
@@ -39,9 +39,7 @@ public class CasClient extends IndirectClientV2<TokenCredentials, CommonProfile>
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);

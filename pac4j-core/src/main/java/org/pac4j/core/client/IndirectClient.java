@@ -5,20 +5,22 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.AjaxRequestResolver;
+import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.http.DefaultAjaxRequestResolver;
 import org.pac4j.core.http.DefaultCallbackUrlResolver;
-import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.logout.LogoutActionBuilder;
+import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 
 /**
- * <p>This class is the default indirect (with redirection, stateful) implementation of an authentication client (whatever the mechanism).</p>
- * <p>The callback url is managed via the {@link #setCallbackUrl(String)} and {@link #getCallbackUrl()} methods. The way the callback url
- * is finally computed is done by the {@link #callbackUrlResolver} which returns by default the provided {@link #callbackUrl}.</p>
+ * Indirect client: the requested protected URL is saved, the user is redirected to the identity provider for login and
+ * back to the application after the sucessful authentication and finally to the originally requested URL.
  *
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.9.0
  */
 public abstract class IndirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
 
@@ -28,16 +30,37 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private boolean includeClientNameInCallbackUrl = true;
 
-    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
-
     protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
 
+    private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
+
+    private RedirectActionBuilder redirectActionBuilder;
+
+    private LogoutActionBuilder<U> logoutActionBuilder = NoLogoutActionBuilder.INSTANCE;
+
     @Override
-    protected void internalInit(final WebContext context) {
+    protected final void internalInit(final WebContext context) {
+        // check configuration
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
         CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
         CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
+
+        clientInit(context);
+
+        // ensures components have been properly initialized
+        CommonHelper.assertNotNull("redirectActionBuilder", this.redirectActionBuilder);
+        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        CommonHelper.assertNotNull("profileCreator", getProfileCreator());
+        CommonHelper.assertNotNull("logoutActionBuilder", this.logoutActionBuilder);
     }
+
+    /**
+     * Initialize the client.
+     *
+     * @param context the web context
+     */
+    protected abstract void clientInit(WebContext context);
 
     @Override
     public final HttpAction redirect(final WebContext context) throws HttpAction {
@@ -57,7 +80,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      */
     public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
         init(context);
-
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
@@ -72,17 +94,16 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null);
         }
 
-        return retrieveRedirectAction(context);
+        return redirectActionBuilder.redirect(context);
     }
 
-    /**
-     * Retrieve the redirect action.
-     *
-     * @param context the web context
-     * @return the redirection action
-     * @throws HttpAction requires a specific HTTP action if necessary
-     */
-    protected abstract RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction;
+    private void cleanRequestedUrl(final WebContext context) {
+        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
+    }
+
+    private void cleanAttemptedAuthentication(final WebContext context) {
+        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+    }
 
     /**
      * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
@@ -109,53 +130,14 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return credentials;
     }
 
-    /**
-     * Retrieve the credentials.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
-
-    private void cleanRequestedUrl(final WebContext context) {
-        context.setSessionAttribute(Pac4jConstants.REQUESTED_URL, "");
-    }
-
-    private void cleanAttemptedAuthentication(final WebContext context) {
-        context.setSessionAttribute(getName() + ATTEMPTED_AUTHENTICATION_SUFFIX, "");
+    @Override
+    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+        init(context);
+        return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {
         return callbackUrlResolver.compute(callbackUrl, context);
-    }
-
-    @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        init(context);
-        return retrieveLogoutRedirectAction(context, currentProfile, targetUrl);
-    }
-
-    /**
-     * Retrieve the redirect action for the logout.
-     *
-     * @param context the web context
-     * @param currentProfile the current profile
-     * @param targetUrl the target URL post logout
-     * @return the redirection action
-     */
-    protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final U currentProfile, final String targetUrl) {
-        return null;
-    }
-
-    /**
-     * Return the state parameter required by some security protocols like SAML or OAuth.
-     * 
-     * @param webContext web context
-     * @return the state
-     */
-    protected String getStateParameter(WebContext webContext) {
-        throw new UnsupportedOperationException("To be implemented in subclasses if required");
     }
 
     public boolean isIncludeClientNameInCallbackUrl() {
@@ -172,14 +154,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     public String getCallbackUrl() { return this.callbackUrl; }
 
-    public AjaxRequestResolver getAjaxRequestResolver() {
-        return ajaxRequestResolver;
-    }
-
-    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
-        this.ajaxRequestResolver = ajaxRequestResolver;
-    }
-
     public CallbackUrlResolver getCallbackUrlResolver() {
         return callbackUrlResolver;
     }
@@ -188,9 +162,41 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         this.callbackUrlResolver = callbackUrlResolver;
     }
 
+    public AjaxRequestResolver getAjaxRequestResolver() {
+        return ajaxRequestResolver;
+    }
+
+    public void setAjaxRequestResolver(final AjaxRequestResolver ajaxRequestResolver) {
+        this.ajaxRequestResolver = ajaxRequestResolver;
+    }
+
+    public RedirectActionBuilder getRedirectActionBuilder() {
+        return redirectActionBuilder;
+    }
+
+    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+        if (this.redirectActionBuilder == null) {
+            this.redirectActionBuilder = redirectActionBuilder;
+        }
+    }
+
+    public LogoutActionBuilder<U> getLogoutActionBuilder() {
+        return logoutActionBuilder;
+    }
+
+    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+        if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
+            this.logoutActionBuilder = logoutActionBuilder;
+        }
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver);
+                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
+                "includeClientNameInCallbackUrl", this.includeClientNameInCallbackUrl,
+                "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", getCredentialsExtractor(),
+                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
+                "logoutActionBuilder", this.logoutActionBuilder, "authorizationGenerators", getAuthorizationGenerators());
     }
 }
