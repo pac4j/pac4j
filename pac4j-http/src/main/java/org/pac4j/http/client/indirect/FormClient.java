@@ -1,6 +1,6 @@
 package org.pac4j.http.client.indirect;
 
-import org.pac4j.core.client.IndirectClientV2;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
@@ -23,7 +23,7 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
  * @author Jerome Leleu
  * @since 1.4.0
  */
-public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, CommonProfile> {
+public class FormClient extends IndirectClient<UsernamePasswordCredentials, CommonProfile> {
 
     private String loginUrl;
 
@@ -59,9 +59,7 @@ public class FormClient extends IndirectClientV2<UsernamePasswordCredentials, Co
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
         this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);

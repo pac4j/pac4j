@@ -25,7 +25,7 @@ public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
         final OidcProfileCreator<GoogleOidcProfile> profileCreator = new OidcProfileCreator<>(getConfiguration());
@@ -33,6 +33,6 @@ public class GoogleOidcClient extends OidcClient<GoogleOidcProfile> {
         setProfileCreator(profileCreator);
         setLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 }

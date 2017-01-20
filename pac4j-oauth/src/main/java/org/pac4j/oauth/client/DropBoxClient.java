@@ -25,13 +25,13 @@ public class DropBoxClient extends OAuth20Client<DropBoxProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         configuration.setApi(DropboxApi20.INSTANCE);
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
         setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.dropbox.com/logout"));
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 }

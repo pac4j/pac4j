@@ -54,7 +54,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("fields", this.fields);
         configuration.setApi(FacebookApi.instance());
         configuration.setProfileDefinition(new FacebookProfileDefinition());
@@ -73,7 +73,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         setConfiguration(configuration);
         setProfileCreator(new FacebookProfileCreator(configuration));
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     public void setStateData(final String stateData) {

@@ -3,7 +3,6 @@ package org.pac4j.core.client.direct;
 import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.AnonymousCredentials;
-import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.AnonymousProfile;
 
 /**
@@ -21,15 +20,10 @@ public final class AnonymousClient extends DirectClient<AnonymousCredentials, An
     }
 
     @Override
-    protected void internalInit(final WebContext context) { }
-
-    @Override
-    public AnonymousCredentials retrieveCredentials(WebContext context) throws HttpAction {
-        return AnonymousCredentials.INSTANCE;
-    }
-
-    @Override
-    protected AnonymousProfile retrieveUserProfile(final AnonymousCredentials credentials, final WebContext context) throws HttpAction {
-        return AnonymousProfile.INSTANCE;
+    protected void clientInit(final WebContext context) {
+        setCredentialsExtractor(ctx -> AnonymousCredentials.INSTANCE);
+        setAuthenticator((cred, ctx )-> {
+            cred.setUserProfile(AnonymousProfile.INSTANCE);
+        });
     }
 }

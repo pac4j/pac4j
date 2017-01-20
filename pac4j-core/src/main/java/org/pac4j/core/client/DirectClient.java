@@ -1,20 +1,37 @@
 package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.redirect.RedirectAction;
+import org.pac4j.core.util.CommonHelper;
 
 /**
- * <p>This class is the default direct (stateless) implementation of an authentication client (whatever the mechanism).
- * In that case, redirecting does not make any sense.</p>
+ * Direct client: credentials are passed and authentication occurs for every HTTP request.
  *
  * @author Jerome Leleu
- * @since 1.8.0
+ * @since 1.9.0
  */
 public abstract class DirectClient<C extends Credentials, U extends CommonProfile> extends BaseClient<C, U> {
+
+    @Override
+    protected final void internalInit(final WebContext context) {
+        clientInit(context);
+
+        // ensures components have been properly initialized
+        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+        CommonHelper.assertNotNull("profileCreator", getProfileCreator());
+    }
+
+    /**
+     * Initialize the client.
+     *
+     * @param context the web context
+     */
+    protected abstract void clientInit(WebContext context);
 
     @Override
     public final HttpAction redirect(final WebContext context) throws HttpAction {
@@ -27,17 +44,8 @@ public abstract class DirectClient<C extends Credentials, U extends CommonProfil
         return retrieveCredentials(context);
     }
 
-    /**
-     * Retrieve the credentials.
-     *
-     * @param context the web context
-     * @return the credentials
-     * @throws HttpAction whether an additional HTTP action is required
-     */
-    protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
-
     @Override
     public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
-    	return null;
+        return null;
     }
 }

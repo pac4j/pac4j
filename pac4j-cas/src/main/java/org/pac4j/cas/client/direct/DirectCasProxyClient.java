@@ -5,7 +5,7 @@ import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.extractor.ParameterExtractor;
@@ -26,7 +26,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, CommonProfile> {
+public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonProfile> {
 
     private CasConfiguration configuration;
 
@@ -40,7 +40,7 @@ public class DirectCasProxyClient extends DirectClientV2<TokenCredentials, Commo
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertNotBlank("serviceUrl", this.serviceUrl);
         // must be a CAS proxy protocol

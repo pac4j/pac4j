@@ -25,7 +25,7 @@ public class WordPressClient extends OAuth20Client<WordPressProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         configuration.setApi(new WordPressApi20());
         configuration.setProfileDefinition(new WordPressProfileDefinition());
         configuration.setHasGrantType(true);
@@ -33,6 +33,6 @@ public class WordPressClient extends OAuth20Client<WordPressProfile> {
         setConfiguration(configuration);
         setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://wordpress.com/wp-login.php?action=logout"));
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 }

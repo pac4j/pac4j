@@ -29,7 +29,7 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         configuration.setApi(new OrcidApi20());
         configuration.setProfileDefinition(new OrcidProfileDefinition());
         configuration.setScope(this.scope);
@@ -47,7 +47,7 @@ public class OrcidClient extends OAuth20Client<OrcidProfile> {
         });
         setConfiguration(configuration);
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     public String getScope() {
