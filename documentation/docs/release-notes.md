@@ -5,7 +5,7 @@ title: Release notes&#58;
 
 **v2.0.0**:
 
-- All clients are built using sub-components (`RedirectActionBuilder`, `CredentialsExtractor` , `Authenticator`, `ProfileCreator` and `LogoutActionBuilder`)
+- All clients are built using sub-components (`RedirectActionBuilder`, `CredentialsExtractor` , `Authenticator`, `ProfileCreator` and `LogoutActionBuilder`): the `IndirectClientV2` and `DirectClientV2` are renamed as `IndirectClient` and `DirectClient` (and the existing `IndirectClient` and `DirectClient` components are removed)
 - The session renewal is properly handled by clients (and especially CAS)
 - The `WebContext` directly relies on the `SessionStore` whose capabilities are upgraded to handle back-channel logout
 - Caches are backed via a `Store` component
