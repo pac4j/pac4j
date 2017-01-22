@@ -44,6 +44,10 @@ The latest released version is the [![Maven Central](https://maven-badges.heroku
 
 Read the [documentation](http://www.pac4j.org/docs/index.html) for more information.
 
+## Third-party extensions
+
+There exist extensions to pac4j developed by third parties. The extensions provide features not available in the core pac4j distribution. At the moment, the following extension are known:
+- [IDC Extensions to PAC4J](https://github.com/jkacer/pac4j-extensions), developed internally by IDC and published as open source.
 
 ## Need help?
 
