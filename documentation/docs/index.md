@@ -31,4 +31,6 @@ title: <i class="fa fa-user" aria-hidden="true"></i> <i>pac4j</i> documentation 
 
 ## 10) [Customizations](customizations.html)
 
-## 11) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.5/index.html)
+## 11) [Third-party extensions](extensions.html)
+
+## 12) [Javadoc](http://www.pac4j.org/apidocs/pac4j/1.9.5/index.html)
