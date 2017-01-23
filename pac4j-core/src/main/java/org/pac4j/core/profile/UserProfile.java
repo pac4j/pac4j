@@ -280,6 +280,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         out.writeBoolean(this.isRemembered);
         out.writeObject(this.roles);
         out.writeObject(this.permissions);
+        out.writeObject(this.clientName);
     }
 
     @Override
@@ -289,6 +290,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         this.isRemembered = in.readBoolean();
         this.roles = (Set) in.readObject();
         this.permissions = (Set) in.readObject();
+        this.clientName = (String) in.readObject();
     }
 
     public void clearSensitiveData() {
