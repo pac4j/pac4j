@@ -78,7 +78,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @return the redirection action
      * @throws HttpAction requires an additional HTTP action
      */
-    public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
+    public RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
         init(context);
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
