@@ -80,6 +80,7 @@ public class CasConfiguration extends InitializableWebObject {
         if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl)) {
             throw new TechnicalException("loginUrl and prefixUrl cannot be both blank");
         }
+        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
 
         initializeClientConfiguration(context);
 
@@ -308,6 +309,6 @@ public class CasConfiguration extends InitializableWebObject {
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
                 "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter", this.postLogoutUrlParameter,
-                "defaultTicketValidator", this.defaultTicketValidator);
+                "defaultTicketValidator", this.defaultTicketValidator, "callbackUrlResolver", this.callbackUrlResolver);
     }
 }
