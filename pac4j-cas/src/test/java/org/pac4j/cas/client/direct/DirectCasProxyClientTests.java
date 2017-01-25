@@ -70,7 +70,7 @@ public final class DirectCasProxyClientTests implements TestsConstants {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
         configuration.setProtocol(CasProtocol.CAS30_PROXY);
-        configuration.setTicketValidator((ticket, service) -> {
+        configuration.setDefaultTicketValidator((ticket, service) -> {
             if (TICKET.equals(ticket) && CALLBACK_URL.equals(service)) {
                 return new AssertionImpl(TICKET);
             }

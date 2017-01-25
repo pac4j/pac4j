@@ -9,6 +9,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.http.DefaultCallbackUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 
@@ -50,11 +51,11 @@ public class CasConfiguration extends InitializableWebObject {
 
     private CasLogoutHandler logoutHandler;
 
-    private TicketValidator ticketValidator;
+    private TicketValidator defaultTicketValidator;
 
     private CasProxyReceptor proxyReceptor;
 
-    private CallbackUrlResolver callbackUrlResolver;
+    private CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
 
     private String postLogoutUrlParameter = SERVICE_PARAMETER;
 
@@ -83,20 +84,6 @@ public class CasConfiguration extends InitializableWebObject {
         initializeClientConfiguration(context);
 
         initializeLogoutHandler();
-
-        if (this.protocol == CasProtocol.CAS10) {
-            initializeCas10Protocol();
-        } else if (this.protocol == CasProtocol.CAS20) {
-            initializeCas20Protocol(context);
-        } else if (this.protocol == CasProtocol.CAS20_PROXY) {
-            initializeCas20ProxyProtocol(context);
-        } else if (this.protocol == CasProtocol.CAS30) {
-            initializeCas30Protocol(context);
-        } else if (this.protocol == CasProtocol.CAS30_PROXY) {
-            initializeCas30ProxyProtocol(context);
-        } else if (this.protocol == CasProtocol.SAML) {
-            initializeSAMLProtocol();
-        }
     }
 
     protected void initializeClientConfiguration(final WebContext context) {
@@ -108,27 +95,45 @@ public class CasConfiguration extends InitializableWebObject {
         } else if (CommonHelper.isBlank(this.loginUrl)) {
             this.loginUrl = this.prefixUrl + "login";
         }
-        if (callbackUrlResolver != null) {
-            this.prefixUrl = callbackUrlResolver.compute(this.prefixUrl, context);
-            this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
-        }
     }
 
-    private void initializeLogoutHandler() {
+    protected void initializeLogoutHandler() {
         if (this.logoutHandler == null) {
             this.logoutHandler = new DefaultCasLogoutHandler();
         }
     }
 
-    protected void initializeSAMLProtocol() {
-        final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(this.prefixUrl);
-        saml11TicketValidator.setTolerance(getTimeTolerance());
-        saml11TicketValidator.setEncoding(this.encoding);
-        setTicketValidator(saml11TicketValidator);
+    public TicketValidator retrieveTicketValidator(final WebContext context) {
+        if (this.defaultTicketValidator != null) {
+            return this.defaultTicketValidator;
+        } else {
+            if (this.protocol == CasProtocol.CAS10) {
+                return buildCas10TicketValidator(context);
+            } else if (this.protocol == CasProtocol.CAS20) {
+                return buildCas20TicketValidator(context);
+            } else if (this.protocol == CasProtocol.CAS20_PROXY) {
+                return buildCas20ProxyTicketValidator(context);
+            } else if (this.protocol == CasProtocol.CAS30) {
+                return buildCas30TicketValidator(context);
+            } else if (this.protocol == CasProtocol.CAS30_PROXY) {
+                return buildCas30ProxyTicketValidator(context);
+            } else if (this.protocol == CasProtocol.SAML) {
+                return buildSAMLTicketValidator(context);
+            } else {
+                throw new TechnicalException("Unable to initialize the TicketValidator for protocol: " + this.protocol);
+            }
+        }
     }
 
-    protected void initializeCas30ProxyProtocol(final WebContext context) {
-        final Cas30ProxyTicketValidator cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(this.prefixUrl);
+    protected TicketValidator buildSAMLTicketValidator(final WebContext context) {
+        final Saml11TicketValidator saml11TicketValidator = new Saml11TicketValidator(computeFinalPrefixUrl(context));
+        saml11TicketValidator.setTolerance(getTimeTolerance());
+        saml11TicketValidator.setEncoding(this.encoding);
+        return saml11TicketValidator;
+    }
+
+    protected TicketValidator buildCas30ProxyTicketValidator(final WebContext context) {
+        final Cas30ProxyTicketValidator cas30ProxyTicketValidator = new Cas30ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas30ProxyTicketValidator.setEncoding(this.encoding);
         cas30ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
         cas30ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
@@ -136,21 +141,21 @@ public class CasConfiguration extends InitializableWebObject {
             cas30ProxyTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas30ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
-        setTicketValidator(cas30ProxyTicketValidator);
+        return cas30ProxyTicketValidator;
     }
 
-    protected void initializeCas30Protocol(final WebContext context) {
-        final Cas30ServiceTicketValidator cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(this.prefixUrl);
+    protected TicketValidator buildCas30TicketValidator(final WebContext context) {
+        final Cas30ServiceTicketValidator cas30ServiceTicketValidator = new Cas30ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas30ServiceTicketValidator.setEncoding(this.encoding);
         if (this.proxyReceptor != null) {
             cas30ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas30ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
-        setTicketValidator(cas30ServiceTicketValidator);
+        return cas30ServiceTicketValidator;
     }
 
-    protected void initializeCas20ProxyProtocol(final WebContext context) {
-        final Cas20ProxyTicketValidator cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(this.prefixUrl);
+    protected TicketValidator buildCas20ProxyTicketValidator(final WebContext context) {
+        final Cas20ProxyTicketValidator cas20ProxyTicketValidator = new Cas20ProxyTicketValidator(computeFinalPrefixUrl(context));
         cas20ProxyTicketValidator.setEncoding(this.encoding);
         cas20ProxyTicketValidator.setAcceptAnyProxy(this.acceptAnyProxy);
         cas20ProxyTicketValidator.setAllowedProxyChains(this.allowedProxyChains);
@@ -158,23 +163,23 @@ public class CasConfiguration extends InitializableWebObject {
             cas20ProxyTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas20ProxyTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
-        setTicketValidator(cas20ProxyTicketValidator);
+        return cas20ProxyTicketValidator;
     }
 
-    protected void initializeCas20Protocol(final WebContext context) {
-        final Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(this.prefixUrl);
+    protected TicketValidator buildCas20TicketValidator(final WebContext context) {
+        final Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(computeFinalPrefixUrl(context));
         cas20ServiceTicketValidator.setEncoding(this.encoding);
         if (this.proxyReceptor != null) {
             cas20ServiceTicketValidator.setProxyCallbackUrl(this.proxyReceptor.computeFinalCallbackUrl(context));
             cas20ServiceTicketValidator.setProxyGrantingTicketStorage(new ProxyGrantingTicketStore(this.proxyReceptor.getStore()));
         }
-        setTicketValidator(cas20ServiceTicketValidator);
+        return cas20ServiceTicketValidator;
     }
 
-    protected void initializeCas10Protocol() {
-        final Cas10TicketValidator cas10TicketValidator = new Cas10TicketValidator(this.prefixUrl);
+    protected TicketValidator buildCas10TicketValidator(final WebContext context) {
+        final Cas10TicketValidator cas10TicketValidator = new Cas10TicketValidator(computeFinalPrefixUrl(context));
         cas10TicketValidator.setEncoding(this.encoding);
-        setTicketValidator(cas10TicketValidator);
+        return cas10TicketValidator;
     }
 
     public String getEncoding() {
@@ -183,6 +188,10 @@ public class CasConfiguration extends InitializableWebObject {
 
     public void setEncoding(final String encoding) {
         this.encoding = encoding;
+    }
+
+    public String computeFinalLoginUrl(final WebContext context) {
+        return callbackUrlResolver.compute(this.loginUrl, context);
     }
 
     public String getLoginUrl() {
@@ -195,6 +204,10 @@ public class CasConfiguration extends InitializableWebObject {
 
     public String getPrefixUrl() {
         return prefixUrl;
+    }
+
+    public String computeFinalPrefixUrl(final WebContext context) {
+        return callbackUrlResolver.compute(this.prefixUrl, context);
     }
 
     public void setPrefixUrl(final String prefixUrl) {
@@ -257,14 +270,12 @@ public class CasConfiguration extends InitializableWebObject {
         this.logoutHandler = logoutHandler;
     }
 
-    public TicketValidator getTicketValidator() {
-        return ticketValidator;
+    public TicketValidator getDefaultTicketValidator() {
+        return defaultTicketValidator;
     }
 
-    public void setTicketValidator(final TicketValidator ticketValidator) {
-        if (this.ticketValidator == null) {
-            this.ticketValidator = ticketValidator;
-        }
+    public void setDefaultTicketValidator(final TicketValidator defaultTicketValidator) {
+        this.defaultTicketValidator = defaultTicketValidator;
     }
 
     public CasProxyReceptor getProxyReceptor() {
@@ -280,9 +291,7 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        if (this.callbackUrlResolver == null) {
-            this.callbackUrlResolver = callbackUrlResolver;
-        }
+        this.callbackUrlResolver = callbackUrlResolver;
     }
 
     public String getPostLogoutUrlParameter() {
@@ -298,6 +307,7 @@ public class CasConfiguration extends InitializableWebObject {
         return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter", this.postLogoutUrlParameter);
+                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter", this.postLogoutUrlParameter,
+                "defaultTicketValidator", this.defaultTicketValidator);
     }
 }

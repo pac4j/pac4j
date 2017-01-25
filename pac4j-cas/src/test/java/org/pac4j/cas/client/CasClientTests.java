@@ -72,7 +72,7 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testInitCallbackUrlResolver() {
+    public void testCallbackUrlResolver() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setPrefixUrl(CAS);
         configuration.setLoginUrl(CAS + LOGIN);
@@ -80,8 +80,8 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CASBACK);
         casClient.setCallbackUrlResolver((callbackUrl, context) -> HOST + callbackUrl);
         casClient.init(null);
-        assertEquals(HOST + CAS + LOGIN, configuration.getLoginUrl());
-        assertEquals(HOST + CAS + "/", configuration.getPrefixUrl());
+        assertEquals(HOST + CAS + LOGIN, configuration.computeFinalLoginUrl(null));
+        assertEquals(HOST + CAS + "/", configuration.computeFinalPrefixUrl(null));
     }
 
     @Test
