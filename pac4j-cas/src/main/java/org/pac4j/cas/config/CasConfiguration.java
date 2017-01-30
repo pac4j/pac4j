@@ -37,6 +37,8 @@ public class CasConfiguration extends InitializableWebObject {
 
     private String prefixUrl;
 
+    private String restUrl;
+
     private long timeTolerance = 1000L;
 
     private CasProtocol protocol = CasProtocol.CAS30;
@@ -77,8 +79,8 @@ public class CasConfiguration extends InitializableWebObject {
 
     @Override
     protected void internalInit(final WebContext context) {
-        if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl)) {
-            throw new TechnicalException("loginUrl and prefixUrl cannot be both blank");
+        if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl) && CommonHelper.isBlank(this.restUrl)) {
+            throw new TechnicalException("loginUrl, prefixUrl and restUrl cannot be all blank");
         }
         CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
 
@@ -95,6 +97,13 @@ public class CasConfiguration extends InitializableWebObject {
             this.prefixUrl = this.loginUrl.replaceFirst("/login$", "/");
         } else if (CommonHelper.isBlank(this.loginUrl)) {
             this.loginUrl = this.prefixUrl + "login";
+        }
+        if (CommonHelper.isBlank(restUrl)) {
+            restUrl = prefixUrl;
+            if (!restUrl.endsWith("/")) {
+                restUrl += "/";
+            }
+            restUrl += "v1/tickets";
         }
     }
 
@@ -303,9 +312,21 @@ public class CasConfiguration extends InitializableWebObject {
         this.postLogoutUrlParameter = postLogoutUrlParameter;
     }
 
+    public String getRestUrl() {
+        return restUrl;
+    }
+
+    public void setRestUrl(final String restUrl) {
+        this.restUrl = restUrl;
+    }
+
+    public String computeFinalRestUrl(final WebContext context) {
+        return callbackUrlResolver.compute(this.restUrl, context);
+    }
+
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl,
+        return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
                 "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter", this.postLogoutUrlParameter,
