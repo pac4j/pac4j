@@ -110,7 +110,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         profiles.put(NAME, new CommonProfile());
         addProfilesToContext();
         call();
-        assertEquals(204, context.getResponseStatus());
+        assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
         expectedNProfiles(0);
     }
@@ -121,7 +121,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         addProfilesToContext();
         localLogout = false;
         call();
-        assertEquals(204, context.getResponseStatus());
+        assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
         expectedNProfiles(1);
     }
@@ -133,7 +133,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         addProfilesToContext();
         localLogout = false;
         call();
-        assertEquals(204, context.getResponseStatus());
+        assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
         expectedNProfiles(0);
     }
@@ -196,7 +196,7 @@ public final class DefaultLogoutLogicTests implements TestsConstants {
         context.addRequestParameter(Pac4jConstants.URL, PATH);
         logoutUrlPattern = VALUE;
         call();
-        assertEquals(204, context.getResponseStatus());
+        assertEquals(200, context.getResponseStatus());
         assertEquals("", context.getResponseContent());
     }
 
