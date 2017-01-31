@@ -4,6 +4,8 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.engine.ApplicationLogoutLogic;
+import org.pac4j.core.engine.CallbackLogic;
 import org.pac4j.core.engine.DefaultSecurityLogic;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.HttpActionAdapter;
@@ -33,6 +35,10 @@ public class Config {
     protected HttpActionAdapter httpActionAdapter;
 
     protected SecurityLogic securityLogic = new DefaultSecurityLogic<>();
+
+    protected CallbackLogic callbackLogic;
+
+    protected ApplicationLogoutLogic applicationLogoutLogic;
 
     public Config() {}
 
@@ -159,5 +165,21 @@ public class Config {
 
     public void setSecurityLogic(final SecurityLogic securityLogic) {
         this.securityLogic = securityLogic;
+    }
+
+    public CallbackLogic getCallbackLogic() {
+        return callbackLogic;
+    }
+
+    public void setCallbackLogic(final CallbackLogic callbackLogic) {
+        this.callbackLogic = callbackLogic;
+    }
+
+    public ApplicationLogoutLogic getApplicationLogoutLogic() {
+        return applicationLogoutLogic;
+    }
+
+    public void setApplicationLogoutLogic(final ApplicationLogoutLogic applicationLogoutLogic) {
+        this.applicationLogoutLogic = applicationLogoutLogic;
     }
 }
