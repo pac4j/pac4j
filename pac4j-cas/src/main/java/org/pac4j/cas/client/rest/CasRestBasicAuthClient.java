@@ -1,9 +1,9 @@
 package org.pac4j.cas.client.rest;
 
+import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.extractor.BasicAuthExtractor;
 import org.pac4j.core.util.CommonHelper;
 
@@ -15,32 +15,15 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class CasRestBasicAuthClient extends AbstractCasRestClient {
 
-    private String casServerPrefixUrl;
-
     private String headerName = HttpConstants.AUTHORIZATION_HEADER;
 
     private String prefixHeader = HttpConstants.BASIC_HEADER_PREFIX;
 
     public CasRestBasicAuthClient() {}
 
-    public CasRestBasicAuthClient(final String casServerPrefixUrl) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
-    }
-
-    public CasRestBasicAuthClient(final Authenticator authenticator) {
-        setAuthenticator(authenticator);
-    }
-
-    public CasRestBasicAuthClient(final String casServerPrefixUrl,
+    public CasRestBasicAuthClient(final CasConfiguration configuration,
                                   final String headerName, final String prefixHeader) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
-        this.headerName = headerName;
-        this.prefixHeader = prefixHeader;
-    }
-
-    public CasRestBasicAuthClient(final Authenticator authenticator,
-                                  final String headerName, final String prefixHeader) {
-        setAuthenticator(authenticator);
+        this.configuration = configuration;
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
     }
@@ -49,19 +32,11 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
+        CommonHelper.assertNotNull("configuration", this.configuration);
+        configuration.init(context);
 
         setCredentialsExtractor(new BasicAuthExtractor(this.headerName, this.prefixHeader, getName()));
-        if (CommonHelper.isNotBlank(this.casServerPrefixUrl)) {
-            setAuthenticator(new CasRestAuthenticator(this.casServerPrefixUrl));
-        }
-    }
-
-    public String getCasServerPrefixUrl() {
-        return casServerPrefixUrl;
-    }
-
-    public void setCasServerPrefixUrl(final String casServerPrefixUrl) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
+        setAuthenticator(new CasRestAuthenticator(this.configuration));
     }
 
     public String getHeaderName() {
@@ -83,7 +58,7 @@ public class CasRestBasicAuthClient extends AbstractCasRestClient {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "headerName", this.headerName,
-                "prefixHeader", this.prefixHeader, "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
-                "profileCreator", getProfileCreator());
+                "prefixHeader", this.prefixHeader, "configuration", configuration, "extractor", getCredentialsExtractor(),
+                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

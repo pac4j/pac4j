@@ -35,7 +35,7 @@ public final class CasClientTests implements TestsConstants {
     public void testMissingCasUrls() {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(casClient, "loginUrl and prefixUrl cannot be both blank");
+        TestsHelper.initShouldFail(casClient, "loginUrl, prefixUrl and restUrl cannot be all blank");
     }
 
     @Test
