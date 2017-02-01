@@ -65,6 +65,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
+    public JwtAuthenticator(final SignatureConfiguration signatureConfiguration) {
+        setSignatureConfiguration(signatureConfiguration);
+    }
+
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
         setEncryptionConfiguration(encryptionConfiguration);
