@@ -63,7 +63,7 @@ public final class DirectCasClientTests implements TestsConstants {
     public void testTicketExistsValidationOccurs() throws HttpAction {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setLoginUrl(LOGIN_URL);
-        configuration.setTicketValidator((ticket, service) -> {
+        configuration.setDefaultTicketValidator((ticket, service) -> {
             if (TICKET.equals(ticket) && CALLBACK_URL.equals(service)) {
                 return new AssertionImpl(TICKET);
             }

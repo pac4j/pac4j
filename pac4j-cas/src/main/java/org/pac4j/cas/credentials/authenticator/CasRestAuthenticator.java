@@ -1,7 +1,6 @@
 package org.pac4j.cas.credentials.authenticator;
 
-import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
-import org.jasig.cas.client.validation.TicketValidator;
+import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.util.HttpUtils;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.core.context.HttpConstants;
@@ -28,41 +27,18 @@ import java.net.URL;
  */
 public class CasRestAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
 
-    private String casServerPrefixUrl;
-    private String casRestUrl;
-
-    private TicketValidator ticketValidator;
+    private CasConfiguration configuration;
 
     public CasRestAuthenticator() {}
 
-    public CasRestAuthenticator(final String casServerPrefixUrl) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
-    }
-
-    public CasRestAuthenticator(final String casServerPrefixUrl, final String casRestUrl) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
-        this.casRestUrl = casRestUrl;
-    }
-
-    public CasRestAuthenticator(final String casServerPrefixUrl, final String casRestUrl, final TicketValidator ticketValidator) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
-        this.casRestUrl = casRestUrl;
-        this.ticketValidator = ticketValidator;
+    public CasRestAuthenticator(final CasConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
     protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotBlank("casServerPrefixUrl", this.casServerPrefixUrl);
-        if (CommonHelper.isBlank(casRestUrl)) {
-            casRestUrl = casServerPrefixUrl;
-            if (!casRestUrl.endsWith("/")) {
-                casRestUrl += "/";
-            }
-            casRestUrl += "v1/tickets";
-        }
-        if (this.ticketValidator == null) {
-            this.ticketValidator =  new Cas30ServiceTicketValidator(this.casServerPrefixUrl);
-        }
+        CommonHelper.assertNotNull("configuration", this.configuration);
+        configuration.init(context);
     }
 
     @Override
@@ -72,15 +48,15 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
         if (credentials == null || credentials.getPassword() == null || credentials.getUsername() == null) {
             throw new TechnicalException("Credentials are required");
         }
-        final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword());
+        final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), context);
         final CasRestProfile profile = new CasRestProfile(ticketGrantingTicketId, credentials.getUsername());
         credentials.setUserProfile(profile);
     }
 
-    private String requestTicketGrantingTicket(final String username, final String password) {
+    private String requestTicketGrantingTicket(final String username, final String password, final WebContext context) {
         HttpURLConnection connection = null;
         try {
-            connection = HttpUtils.openPostConnection(new URL(this.casRestUrl));
+            connection = HttpUtils.openPostConnection(new URL(this.configuration.computeFinalRestUrl(context)));
             final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
@@ -103,33 +79,11 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
         }
     }
 
-    public String getCasServerPrefixUrl() {
-        return casServerPrefixUrl;
+    public CasConfiguration getConfiguration() {
+        return configuration;
     }
 
-    public void setCasServerPrefixUrl(String casServerPrefixUrl) {
-        this.casServerPrefixUrl = casServerPrefixUrl;
-    }
-
-    public String getCasRestUrl() {
-        return casRestUrl;
-    }
-
-    public void setCasRestUrl(String casRestUrl) {
-        this.casRestUrl = casRestUrl;
-    }
-
-    public TicketValidator getTicketValidator() {
-        return ticketValidator;
-    }
-
-    public void setTicketValidator(TicketValidator ticketValidator) {
-        this.ticketValidator = ticketValidator;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "casServerPrefixUrl", this.casServerPrefixUrl,
-                "casRestUrl", this.casRestUrl, "ticketValidator", this.ticketValidator);
+    public void setConfiguration(final CasConfiguration configuration) {
+        this.configuration = configuration;
     }
 }
