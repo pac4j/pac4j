@@ -48,13 +48,9 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
-            String currentUrl = context.getFullRequestURL();
-            String loginUrl = configuration.getLoginUrl();
             final CallbackUrlResolver callbackUrlResolver = configuration.getCallbackUrlResolver();
-            if (callbackUrlResolver != null) {
-                currentUrl = callbackUrlResolver.compute(currentUrl, context);
-                loginUrl = callbackUrlResolver.compute(loginUrl, context);
-            }
+            String currentUrl = callbackUrlResolver.compute(context.getFullRequestURL(), context);
+            final String loginUrl = configuration.computeFinalLoginUrl(context);
 
             final TokenCredentials credentials = getCredentialsExtractor().extract(context);
             if (credentials == null) {

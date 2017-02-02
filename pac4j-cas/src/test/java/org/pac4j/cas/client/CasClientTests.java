@@ -35,7 +35,7 @@ public final class CasClientTests implements TestsConstants {
     public void testMissingCasUrls() {
         final CasClient casClient = new CasClient();
         casClient.setCallbackUrl(CALLBACK_URL);
-        TestsHelper.initShouldFail(casClient, "loginUrl and prefixUrl cannot be both blank");
+        TestsHelper.initShouldFail(casClient, "loginUrl, prefixUrl and restUrl cannot be all blank");
     }
 
     @Test
@@ -72,7 +72,7 @@ public final class CasClientTests implements TestsConstants {
     }
 
     @Test
-    public void testInitCallbackUrlResolver() {
+    public void testCallbackUrlResolver() {
         final CasConfiguration configuration = new CasConfiguration();
         configuration.setPrefixUrl(CAS);
         configuration.setLoginUrl(CAS + LOGIN);
@@ -80,8 +80,8 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CASBACK);
         casClient.setCallbackUrlResolver((callbackUrl, context) -> HOST + callbackUrl);
         casClient.init(null);
-        assertEquals(HOST + CAS + LOGIN, configuration.getLoginUrl());
-        assertEquals(HOST + CAS + "/", configuration.getPrefixUrl());
+        assertEquals(HOST + CAS + LOGIN, configuration.computeFinalLoginUrl(null));
+        assertEquals(HOST + CAS + "/", configuration.computeFinalPrefixUrl(null));
     }
 
     @Test
