@@ -23,6 +23,7 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.oauth.client.LinkedIn2Client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,11 @@ public class PropertiesConfigFactory implements ConfigFactory {
     public static final String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
     public static final String OIDC_CUSTOM_PARAM_VALUE2 = "oidc.customParamValue2";
 
+    public static final String LINKEDIN_ID = "linkedin.id";
+    public static final String LINKEDIN_SECRET = "linkedin.secret";
+    public static final String LINKEDIN_FIELDS = "linkedin.fields";
+    public static final String LINKEDIN_SCOPE = "linkedin.scope";
+
     private static final int MAX_NUM_CLIENTS = 10;
 
     private final String callbackUrl;
@@ -122,6 +128,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
         tryCreateGoogleClient(clients);
         tryCreateFoursquareClient(clients);
         tryCreateWindowsLiveClient(clients);
+        tryCreateLinkedInClient(clients);
         return new Config(callbackUrl, clients);
     }
 
@@ -319,6 +326,24 @@ public class PropertiesConfigFactory implements ConfigFactory {
                 }
                 clients.add(oidcClient);
             }
+        }
+    }
+
+    private void tryCreateLinkedInClient(final List<Client> clients) {
+        final String id = getProperty(LINKEDIN_ID);
+        final String secret = getProperty(LINKEDIN_SECRET);
+        final String scope = getProperty(LINKEDIN_SCOPE);
+        final String fields = getProperty(LINKEDIN_FIELDS);
+
+        if (CommonHelper.isNotBlank(id) && CommonHelper.isNotBlank(secret)) {
+            final LinkedIn2Client linkedInClient = new LinkedIn2Client(id, secret);
+            if (CommonHelper.isNotBlank(scope)) {
+                linkedInClient.setScope(scope);
+            }
+            if (CommonHelper.isNotBlank(fields)) {
+                linkedInClient.setFields(fields);
+            }
+            clients.add(linkedInClient);
         }
     }
 }
