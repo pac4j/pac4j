@@ -135,6 +135,12 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <scope>compile</scope>
+            <version>${spring.version}</version>
+        </dependency>
         <!-- for testing -->
         <dependency>
             <groupId>org.pac4j</groupId>

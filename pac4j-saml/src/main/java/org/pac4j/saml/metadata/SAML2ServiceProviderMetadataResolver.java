@@ -9,13 +9,13 @@ import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.WritableResource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.crypto.CredentialProvider;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.WritableResource;
 
 import javax.annotation.Nullable;
 import javax.xml.transform.OutputKeys;
@@ -46,24 +46,15 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
     private boolean authnRequestSigned;
     private boolean wantsAssertionsSigned;
 
-    public SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-                                                final String callbackUrl,
-                                                @Nullable final String spEntityId,
-                                                final boolean forceSpMetadataGeneration,
-                                                final CredentialProvider credentialProvider) {
-        this(spMetadataPath, null, callbackUrl, spEntityId, forceSpMetadataGeneration, credentialProvider, true, true);
-    }
-
     public SAML2ServiceProviderMetadataResolver(final SAML2ClientConfiguration configuration,
                                                 final String callbackUrl,
                                                 final CredentialProvider credentialProvider) {
-        this(configuration.getServiceProviderMetadataPath(), configuration.getServiceProviderMetadataResource(), callbackUrl,
+        this(configuration.getServiceProviderMetadataResource(), callbackUrl,
                 configuration.getServiceProviderEntityId(), configuration.isForceServiceProviderMetadataGeneration(), credentialProvider,
                 configuration.isAuthnRequestSigned(), configuration.getWantsAssertionsSigned());
     }
 
-    private SAML2ServiceProviderMetadataResolver(final String spMetadataPath,
-                                                 final WritableResource spMetadataResource,
+    private SAML2ServiceProviderMetadataResolver(final WritableResource spMetadataResource,
                                                  final String callbackUrl,
                                                  @Nullable final String spEntityId,
                                                  final boolean forceSpMetadataGeneration,
@@ -71,12 +62,7 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                                                  boolean authnRequestSigned, boolean wantsAssertionsSigned) {
         this.authnRequestSigned = authnRequestSigned;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
-
-        if (spMetadataResource != null) {
-            this.spMetadataResource = spMetadataResource;
-        } else {
-            this.spMetadataResource = (WritableResource) CommonHelper.getResource(spMetadataPath);
-        }
+        this.spMetadataResource = spMetadataResource;
         this.spEntityId = spEntityId;
         this.credentialProvider = credentialProvider;
         this.callbackUrl = callbackUrl;
@@ -132,10 +118,10 @@ public class SAML2ServiceProviderMetadataResolver implements SAML2MetadataResolv
                     logger.info("Writing sp metadata to {}", this.spMetadataResource.getFilename());
                     final File parent = spMetadataResource.getFile().getParentFile();
                     if (parent != null) {
-                        logger.info("Attempting to create directory structure for {}", parent.getCanonicalPath());
-                        if (!parent.mkdirs() || !spMetadataResource.exists()) {
-                            logger.warn("Could not construct the directory structure for SP metadata {}",
-                                    this.spMetadataResource.getFilename());
+                        logger.info("Attempting to create directory structure for: {}", parent.getCanonicalPath());
+                        if (!parent.exists() && !parent.mkdirs()) {
+                            logger.warn("Could not construct the directory structure for SP metadata: {}",
+                                    parent.getCanonicalPath());
                         }
                     }
                     final Transformer transformer = TransformerFactory.newInstance().newTransformer();

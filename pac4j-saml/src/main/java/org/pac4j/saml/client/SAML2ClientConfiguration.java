@@ -7,18 +7,20 @@ import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.io.Resource;
-import org.pac4j.core.io.WritableResource;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.storage.EmptyStorageFactory;
 import org.pac4j.saml.storage.SAMLMessageStorageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.*;
 
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -33,16 +35,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The {@link SAML2ClientConfiguration} is responsible for...
- * capturing client settings and passing them around.
+ * The {@link SAML2ClientConfiguration} is responsible for capturing client settings and passing them around.
  *
  * @author Misagh Moayyed
  * @since 1.7
  */
-public class SAML2ClientConfiguration implements Cloneable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
+public class SAML2ClientConfiguration extends InitializableObject {
 
-    private KeyStore keyStore;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
 
     private Resource keystoreResource;
 
@@ -78,9 +78,6 @@ public class SAML2ClientConfiguration implements Cloneable {
 
     private boolean authnRequestSigned = true;
 
-    public SAML2ClientConfiguration() {
-    }
-
     private Collection<String> blackListedSignatureSigningAlgorithms;
     private List<String> signatureAlgorithms;
     private List<String> signatureReferenceDigestMethods;
@@ -91,58 +88,46 @@ public class SAML2ClientConfiguration implements Cloneable {
 
     private String keyStoreType;
 
-    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword,
-                                    final String privateKeyPassword, final String identityProviderMetadataPath) {
-        this(null, null, null, null, keystorePath, keystorePassword, privateKeyPassword, null, identityProviderMetadataPath, null, null);
-    }
+    public SAML2ClientConfiguration() {}
 
-    public SAML2ClientConfiguration(final KeyStore keystore,
-                                    final String keyStoreAlias,
-                                    final String keyStoreType,
-                                    final String privateKeyPassword,
+    public SAML2ClientConfiguration(final Resource keystoreResource, final String keystorePassword, final String privateKeyPassword,
                                     final Resource identityProviderMetadataResource) {
-        this(keystore, keyStoreAlias, keyStoreType, null, null, null, privateKeyPassword,
-                identityProviderMetadataResource, null, null, null);
+        this(null, null, keystoreResource, keystorePassword, privateKeyPassword,
+                identityProviderMetadataResource, null, null);
     }
 
     public SAML2ClientConfiguration(final Resource keystoreResource, final String keyStoreAlias,
                                     final String keyStoreType, final String keystorePassword, final String privateKeyPassword,
                                     final Resource identityProviderMetadataResource) {
-        this(null, keyStoreAlias, keyStoreType, keystoreResource, null, keystorePassword, privateKeyPassword,
-                identityProviderMetadataResource, null, null, null);
+        this(keyStoreAlias, keyStoreType, keystoreResource, keystorePassword, privateKeyPassword,
+                identityProviderMetadataResource, null, null);
     }
 
-    private SAML2ClientConfiguration(final KeyStore keyStore, final String keyStoreAlias, final String keyStoreType,
-                                     final Resource keystoreResource, final String keystorePath, final String keystorePassword,
+    private SAML2ClientConfiguration(final String keyStoreAlias, final String keyStoreType,
+                                     final Resource keystoreResource, final String keystorePassword,
                                      final String privateKeyPassword, final Resource identityProviderMetadataResource,
-                                     final String identityProviderMetadataPath,
                                      final String identityProviderEntityId, final String serviceProviderEntityId) {
-        this.keyStore = keyStore;
         this.keyStoreAlias = keyStoreAlias;
         this.keyStoreType = keyStoreType;
         this.keystoreResource = keystoreResource;
-        if (this.keystoreResource == null) {
-            this.keystoreResource = CommonHelper.getResource(keystorePath);
-        }
         this.keystorePassword = keystorePassword;
         this.privateKeyPassword = privateKeyPassword;
-
-        if (this.keystoreResource == null || !this.keystoreResource.exists()) {
-            LOGGER.warn("Provided path to keystore does not exist. Creating one at {}", keystorePath);
-            createKeystore();
-        }
         this.identityProviderMetadataResource = identityProviderMetadataResource;
-        if (this.identityProviderMetadataResource == null) {
-            this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
-        }
         this.identityProviderEntityId = identityProviderEntityId;
         this.serviceProviderEntityId = serviceProviderEntityId;
+    }
 
+    @Override
+    protected void internalInit() {
+        CommonHelper.assertNotNull("keystoreResource", this.keystoreResource);
         CommonHelper.assertNotBlank("keystorePassword", this.keystorePassword);
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
-        CommonHelper.assertTrue(
-                this.identityProviderMetadataResource != null || CommonHelper.isNotBlank(identityProviderMetadataPath),
-                "Either identityProviderMetadataResource or identityProviderMetadataPath must be provided");
+        CommonHelper.assertNotNull("identityProviderMetadataResource", this.identityProviderMetadataResource);
+
+        if (this.keystoreResource instanceof WritableResource && !this.keystoreResource.exists()) {
+            LOGGER.warn("Provided keystoreResource does not exist. Creating one for: {}", this.keystoreResource);
+            createKeystore();
+        }
 
         final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
         this.blackListedSignatureSigningAlgorithms = new ArrayList<>(config.getBlacklistedAlgorithms());
@@ -150,15 +135,26 @@ public class SAML2ClientConfiguration implements Cloneable {
         this.signatureReferenceDigestMethods = new ArrayList<>(config.getSignatureReferenceDigestMethods());
         this.signatureReferenceDigestMethods.remove("http://www.w3.org/2001/04/xmlenc#sha512");
         this.signatureCanonicalizationAlgorithm = config.getSignatureCanonicalizationAlgorithm();
-
-    }
-
-    public void setIdentityProviderMetadataPath(final String identityProviderMetadataPath) {
-        this.identityProviderMetadataResource = CommonHelper.getResource(identityProviderMetadataPath);
     }
 
     public void setIdentityProviderMetadataResource(final Resource identityProviderMetadataResource) {
         this.identityProviderMetadataResource = identityProviderMetadataResource;
+    }
+
+    public void setIdentityProviderMetadataResourceFilepath(final String path) {
+        this.identityProviderMetadataResource = new FileSystemResource(path);
+    }
+
+    public void setIdentityProviderMetadataResourceClasspath(final String path) {
+        this.identityProviderMetadataResource = new ClassPathResource(path);
+    }
+
+    public void setIdentityProviderMetadataResourceUrl(final String url) {
+        try {
+            this.identityProviderMetadataResource = new UrlResource(url);
+        } catch (final MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     public void setIdentityProviderEntityId(final String identityProviderEntityId) {
@@ -167,10 +163,6 @@ public class SAML2ClientConfiguration implements Cloneable {
 
     public void setServiceProviderEntityId(final String serviceProviderEntityId) {
         this.serviceProviderEntityId = serviceProviderEntityId;
-    }
-
-    public void setKeystore(final KeyStore keyStore) {
-        this.keyStore = keyStore;
     }
 
     public void setKeystoreAlias(final String keyStoreAlias) {
@@ -185,8 +177,20 @@ public class SAML2ClientConfiguration implements Cloneable {
         this.keystoreResource = keystoreResource;
     }
 
-    public void setKeystorePath(final String keystorePath) {
-        this.keystoreResource = CommonHelper.getResource(keystorePath);
+    public void setKeystoreResourceFilepath(final String path) {
+        this.keystoreResource = new FileSystemResource(path);
+    }
+
+    public void setKeystoreResourceClasspath(final String path) {
+        this.keystoreResource = new ClassPathResource(path);
+    }
+
+    public void setKeystoreResourceUrl(final String url) {
+        try {
+            this.keystoreResource = new UrlResource(url);
+        } catch (final MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     public void setKeystorePassword(final String keystorePassword) {
@@ -271,28 +275,20 @@ public class SAML2ClientConfiguration implements Cloneable {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
     }
 
-    public void setServiceProviderMetadataPath(final String serviceProviderMetadataPath) {
-        this.serviceProviderMetadataResource = (WritableResource) CommonHelper.getResource(serviceProviderMetadataPath);
-    }
-
     public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
         this.serviceProviderMetadataResource = serviceProviderMetadataResource;
+    }
+
+    public void setServiceProviderMetadataResourceFilepath(final String path) {
+        this.serviceProviderMetadataResource = new FileSystemResource(path);
     }
 
     public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
         this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
     }
 
-    public String getIdentityProviderMetadataPath() {
-        return identityProviderMetadataResource.getFilename();
-    }
-
     public Resource getIdentityProviderMetadataResource() {
         return this.identityProviderMetadataResource;
-    }
-
-    public KeyStore getKeyStore() {
-        return keyStore;
     }
 
     public String getKeyStoreAlias() {
@@ -305,15 +301,6 @@ public class SAML2ClientConfiguration implements Cloneable {
 
     public Resource getKeystoreResource() {
         return keystoreResource;
-    }
-
-    public String getKeystorePath() {
-        // if keystore is specified you won't specify keystoreResource
-        if (keystoreResource != null) {
-            return keystoreResource.getFilename();
-        } else {
-            return null;
-        }
     }
 
     public String getKeystorePassword() {
@@ -334,13 +321,6 @@ public class SAML2ClientConfiguration implements Cloneable {
 
     public int getMaximumAuthenticationLifetime() {
         return maximumAuthenticationLifetime;
-    }
-
-    public String getServiceProviderMetadataPath() {
-        if (serviceProviderMetadataResource != null) {
-            return serviceProviderMetadataResource.getFilename();
-        }
-        return null;
     }
 
     public WritableResource getServiceProviderMetadataResource() {
@@ -400,15 +380,6 @@ public class SAML2ClientConfiguration implements Cloneable {
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
 
-    @Override
-    public SAML2ClientConfiguration clone() {
-        try {
-            return (SAML2ClientConfiguration) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public boolean isForceSignRedirectBindingAuthnRequest() {
         return forceSignRedirectBindingAuthnRequest;
     }
@@ -431,9 +402,8 @@ public class SAML2ClientConfiguration implements Cloneable {
 	 *            Web context to transport additional information to the configuration.
 	 */
     protected void init(final String clientName, final WebContext context) {
-    	// Intentionally left empty
+        init();
     }
-    
     
     private void createKeystore() {
         try {
@@ -476,7 +446,7 @@ public class SAML2ClientConfiguration implements Cloneable {
 
             ks.setKeyEntry(this.keyStoreAlias, signingKey, password, new Certificate[]{certificate});
 
-            try (FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {
+            try (final FileOutputStream fos = new FileOutputStream(this.keystoreResource.getFile().getCanonicalPath())) {
                 ks.store(fos, password);
                 fos.flush();
             }
@@ -484,8 +454,6 @@ public class SAML2ClientConfiguration implements Cloneable {
             LOGGER.info("Created keystore {} with key alias {} ",
                     keystoreResource.getFile().getCanonicalPath(),
                     ks.aliases().nextElement());
-
-            this.keyStore = ks;
         } catch (final Exception e) {
             throw new SAMLException("Could not create keystore", e);
         }

@@ -8,6 +8,7 @@ import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.redirect.RedirectActionBuilder;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.sso.impl.SAML2AuthnRequestBuilder;
@@ -28,11 +29,10 @@ public class SAML2RedirectActionBuilder implements RedirectActionBuilder {
     public SAML2RedirectActionBuilder(final SAML2Client client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
-        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(this.client.getConfiguration().isForceAuth(),
-                this.client.getConfiguration().getComparisonType(),
-                this.client.getConfiguration().getDestinationBindingType(),
-                this.client.getConfiguration().getAuthnContextClassRef(),
-                this.client.getConfiguration().getNameIdPolicyFormat());
+        final SAML2ClientConfiguration cfg = client.getConfiguration();
+        this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(cfg.isForceAuth(),
+                cfg.getComparisonType(), cfg.getDestinationBindingType(), cfg.getAuthnContextClassRef(),
+                cfg.getNameIdPolicyFormat());
     }
 
     @Override

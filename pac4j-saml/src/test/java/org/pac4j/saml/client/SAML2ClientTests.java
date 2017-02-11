@@ -2,12 +2,15 @@ package org.pac4j.saml.client;
 
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.Resource;
-import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.crypto.KeyStoreCredentialProvider;
 import org.pac4j.saml.util.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 import java.io.File;
+import java.net.MalformedURLException;
 
 import static org.junit.Assert.*;
 
@@ -25,31 +28,27 @@ public final class SAML2ClientTests {
 
     @Test
     public void testIdpMetadataParsing_fromFile() {
-        internalTestIdpMetadataParsing("resource:testshib-providers.xml");
+        internalTestIdpMetadataParsing(new ClassPathResource("testshib-providers.xml"));
     }
 
     @Test
-    public void testIdpMetadataParsing_fromUrl() {
-        internalTestIdpMetadataParsing("http://www.pac4j.org/testshib-providers.xml");
+    public void testIdpMetadataParsing_fromUrl() throws MalformedURLException {
+        internalTestIdpMetadataParsing(new UrlResource("http://www.pac4j.org/testshib-providers.xml"));
     }
 
     @Test
     public void testSaml2ConfigurationOfKeyStore() throws Exception {
-        final Resource rs = CommonHelper.getResource("testKeystore.jks");
+        final Resource rs = new FileSystemResource("testKeystore.jks");
         if (rs.exists() && !rs.getFile().delete()) {
             throw new TechnicalException("File could not be deleted");
         }
 
         final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("testKeystore.jks",
+                new SAML2ClientConfiguration(new FileSystemResource("testKeystore.jks"),
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",
-                        "resource:testshib-providers.xml");
-        assertNotNull(cfg.getKeyStore());
-        assertTrue(cfg.getKeyStore().size() == 1);
-        if (!rs.getFile().delete()) {
-            throw new TechnicalException("File could not be deleted");
-        }
+                        new ClassPathResource("testshib-providers.xml"));
+        cfg.init();
 
         final KeyStoreCredentialProvider p = new KeyStoreCredentialProvider(cfg);
         assertNotNull(p.getKeyInfoGenerator());
@@ -59,10 +58,9 @@ public final class SAML2ClientTests {
         assertNotNull(p.getCredential());
     }
 
-
-    private void internalTestIdpMetadataParsing(final String metadata) {
+    private void internalTestIdpMetadataParsing(final Resource resource) {
         final SAML2Client client = getClient();
-        client.getConfiguration().setIdentityProviderMetadataPath(metadata);
+        client.getConfiguration().setIdentityProviderMetadataResource(resource);
         client.init(null);
 
         client.getIdentityProviderMetadataResolver().resolve();
@@ -72,13 +70,13 @@ public final class SAML2ClientTests {
 
     protected SAML2Client getClient() {
         final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
                         "pac4j-demo-passwd",
                         "pac4j-demo-passwd",
-                        "resource:testshib-providers.xml");
+                        new ClassPathResource("testshib-providers.xml"));
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
 
         final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl("http://localhost:8080/something");

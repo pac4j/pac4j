@@ -132,8 +132,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
     /**
      * Build the WebSSO handler for sending and receiving SAML2 messages.
      *
-     * @param ctx             the ctx
-     * @param spssoDescriptor the spsso descriptor
+     * @param ctx the ctx
      * @return the encoder instance
      */
     private MessageEncoder getMessageEncoder(final SAML2MessageContext ctx) {

@@ -40,8 +40,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(CAS_PROTOCOL, CasProtocol.CAS20.toString());
         properties.put(SAML_KEYSTORE_PASSWORD, PASSWORD);
         properties.put(SAML_PRIVATE_KEY_PASSWORD, PASSWORD);
-        properties.put(SAML_KEYSTORE_PATH, PATH);
-        properties.put(SAML_IDENTITY_PROVIDER_METADATA_PATH, PATH);
+        properties.put(SAML_KEYSTORE_FILEPATH, PATH);
+        properties.put(SAML_IDENTITY_PROVIDER_METADATA_FILEPATH, PATH);
         properties.put(SAML_DESTINATION_BINDING_TYPE, SAMLConstants.SAML2_REDIRECT_BINDING_URI);
         properties.put(OIDC_ID, ID);
         properties.put(OIDC_SECRET, SECRET);
