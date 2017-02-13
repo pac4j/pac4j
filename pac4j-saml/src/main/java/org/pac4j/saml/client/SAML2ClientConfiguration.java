@@ -6,6 +6,7 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
@@ -43,6 +44,10 @@ import java.util.List;
 public class SAML2ClientConfiguration extends InitializableObject {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SAML2ClientConfiguration.class);
+
+    protected static final String RESOURCE_PREFIX = "resource:";
+    protected static final String CLASSPATH_PREFIX = "classpath:";
+    protected static final String FILE_PREFIX = "file:";
 
     private Resource keystoreResource;
 
@@ -90,6 +95,12 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public SAML2ClientConfiguration() {}
 
+    public SAML2ClientConfiguration(final String keystorePath, final String keystorePassword, final String privateKeyPassword,
+                                    final String identityProviderMetadataPath) {
+        this(null, null, mapPathToResource(keystorePath), keystorePassword, privateKeyPassword,
+                mapPathToResource(identityProviderMetadataPath), null, null);
+    }
+
     public SAML2ClientConfiguration(final Resource keystoreResource, final String keystorePassword, final String privateKeyPassword,
                                     final Resource identityProviderMetadataResource) {
         this(null, null, keystoreResource, keystorePassword, privateKeyPassword,
@@ -124,9 +135,13 @@ public class SAML2ClientConfiguration extends InitializableObject {
         CommonHelper.assertNotBlank("privateKeyPassword", this.privateKeyPassword);
         CommonHelper.assertNotNull("identityProviderMetadataResource", this.identityProviderMetadataResource);
 
-        if (this.keystoreResource instanceof WritableResource && !this.keystoreResource.exists()) {
-            LOGGER.warn("Provided keystoreResource does not exist. Creating one for: {}", this.keystoreResource);
-            createKeystore();
+        if (!this.keystoreResource.exists()) {
+            if (this.keystoreResource instanceof WritableResource) {
+                LOGGER.warn("Provided keystoreResource does not exist. Creating one for: {}", this.keystoreResource);
+                createKeystore();
+            } else {
+                throw new TechnicalException("Provided keystoreResource does not exist and cannot be created");
+            }
         }
 
         final BasicSignatureSigningConfiguration config = DefaultSecurityConfigurationBootstrap.buildDefaultSignatureSigningConfiguration();
@@ -150,19 +165,46 @@ public class SAML2ClientConfiguration extends InitializableObject {
     }
 
     public void setIdentityProviderMetadataResourceUrl(final String url) {
+        this.identityProviderMetadataResource = newUrlResource(url);
+    }
+
+    public void setIdentityProviderMetadataPath(final String path) {
+        this.identityProviderMetadataResource = mapPathToResource(path);
+    }
+
+    protected static UrlResource newUrlResource(final String url) {
         try {
-            this.identityProviderMetadataResource = new UrlResource(url);
+            return new UrlResource(url);
         } catch (final MalformedURLException e) {
             throw new TechnicalException(e);
         }
+    }
+
+    protected static Resource mapPathToResource(final String path) {
+        CommonHelper.assertNotBlank("path", path);
+        if (path.startsWith(RESOURCE_PREFIX)) {
+            return new ClassPathResource(path.substring(RESOURCE_PREFIX.length()));
+        } else if (path.startsWith(CLASSPATH_PREFIX)) {
+            return new ClassPathResource(path.substring(CLASSPATH_PREFIX.length()));
+        } else if (path.startsWith(HttpConstants.SCHEME_HTTP) || path.startsWith(HttpConstants.SCHEME_HTTPS)) {
+            return newUrlResource(path);
+        } else if (path.startsWith(FILE_PREFIX)) {
+            return new FileSystemResource(path.substring(FILE_PREFIX.length()));
+        } else {
+            return new FileSystemResource(path);
+        }
+    }
+
+    public Resource getIdentityProviderMetadataResource() {
+        return this.identityProviderMetadataResource;
     }
 
     public void setIdentityProviderEntityId(final String identityProviderEntityId) {
         this.identityProviderEntityId = identityProviderEntityId;
     }
 
-    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
-        this.serviceProviderEntityId = serviceProviderEntityId;
+    public String getIdentityProviderEntityId() {
+        return identityProviderEntityId;
     }
 
     public void setKeystoreAlias(final String keyStoreAlias) {
@@ -186,11 +228,11 @@ public class SAML2ClientConfiguration extends InitializableObject {
     }
 
     public void setKeystoreResourceUrl(final String url) {
-        try {
-            this.keystoreResource = new UrlResource(url);
-        } catch (final MalformedURLException e) {
-            throw new TechnicalException(e);
-        }
+        this.keystoreResource = newUrlResource(url);
+    }
+
+    public void setKeystorePath(final String path) {
+        this.keystoreResource = mapPathToResource(path);
     }
 
     public void setKeystorePassword(final String keystorePassword) {
@@ -199,96 +241,6 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setPrivateKeyPassword(final String privateKeyPassword) {
         this.privateKeyPassword = privateKeyPassword;
-    }
-
-    public void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
-        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
-    }
-
-    /**
-     * @return the forceAuth
-     */
-    public boolean isForceAuth() {
-        return forceAuth;
-    }
-
-    /**
-     * @param forceAuth the forceAuth to set
-     */
-    public void setForceAuth(final boolean forceAuth) {
-        this.forceAuth = forceAuth;
-    }
-
-    /**
-     * @return the comparisonType
-     */
-    public String getComparisonType() {
-        return comparisonType;
-    }
-
-    /**
-     * @param comparisonType the comparisonType to set
-     */
-    public void setComparisonType(final String comparisonType) {
-        this.comparisonType = comparisonType;
-    }
-
-    /**
-     * @return the destinationBindingType
-     */
-    public String getDestinationBindingType() {
-        return destinationBindingType;
-    }
-
-    /**
-     * @param destinationBindingType the destinationBindingType to set
-     */
-    public void setDestinationBindingType(final String destinationBindingType) {
-        this.destinationBindingType = destinationBindingType;
-    }
-
-    /**
-     * @return the authnContextClassRef
-     */
-    public String getAuthnContextClassRef() {
-        return authnContextClassRef;
-    }
-
-    /**
-     * @param authnContextClassRef the authnContextClassRef to set
-     */
-    public void setAuthnContextClassRef(final String authnContextClassRef) {
-        this.authnContextClassRef = authnContextClassRef;
-    }
-
-    /**
-     * @return the nameIdPolicyFormat
-     */
-    public String getNameIdPolicyFormat() {
-        return nameIdPolicyFormat;
-    }
-
-    /**
-     * @param nameIdPolicyFormat the nameIdPolicyFormat to set
-     */
-    public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
-        this.nameIdPolicyFormat = nameIdPolicyFormat;
-    }
-
-    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
-        this.serviceProviderMetadataResource = serviceProviderMetadataResource;
-    }
-
-    public void setServiceProviderMetadataResourceFilepath(final String path) {
-        this.serviceProviderMetadataResource = new FileSystemResource(path);
-    }
-
-    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
-        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
-    }
-
-    public Resource getIdentityProviderMetadataResource() {
-        return this.identityProviderMetadataResource;
     }
 
     public String getKeyStoreAlias() {
@@ -311,20 +263,85 @@ public class SAML2ClientConfiguration extends InitializableObject {
         return privateKeyPassword;
     }
 
-    public String getIdentityProviderEntityId() {
-        return identityProviderEntityId;
+    public void setServiceProviderMetadataResource(final WritableResource serviceProviderMetadataResource) {
+        this.serviceProviderMetadataResource = serviceProviderMetadataResource;
+    }
+
+    public void setServiceProviderMetadataResourceFilepath(final String path) {
+        this.serviceProviderMetadataResource = new FileSystemResource(path);
+    }
+
+    public void setServiceProviderMetadataPath(final String path) {
+        final Resource resource = mapPathToResource(path);
+        if (!(resource instanceof WritableResource)) {
+            throw new TechnicalException(path + " must be a writable resource");
+        } else {
+            this.serviceProviderMetadataResource = (WritableResource) resource;
+        }
+    }
+
+    public void setForceServiceProviderMetadataGeneration(final boolean forceServiceProviderMetadataGeneration) {
+        this.forceServiceProviderMetadataGeneration = forceServiceProviderMetadataGeneration;
+    }
+
+    public WritableResource getServiceProviderMetadataResource() {
+        return serviceProviderMetadataResource;
+    }
+
+    public void setServiceProviderEntityId(final String serviceProviderEntityId) {
+        this.serviceProviderEntityId = serviceProviderEntityId;
     }
 
     public String getServiceProviderEntityId() {
         return serviceProviderEntityId;
     }
 
+    public boolean isForceAuth() {
+        return forceAuth;
+    }
+
+    public void setForceAuth(final boolean forceAuth) {
+        this.forceAuth = forceAuth;
+    }
+
+    public String getComparisonType() {
+        return comparisonType;
+    }
+
+    public void setComparisonType(final String comparisonType) {
+        this.comparisonType = comparisonType;
+    }
+
+    public String getDestinationBindingType() {
+        return destinationBindingType;
+    }
+
+    public void setDestinationBindingType(final String destinationBindingType) {
+        this.destinationBindingType = destinationBindingType;
+    }
+
+    public String getAuthnContextClassRef() {
+        return authnContextClassRef;
+    }
+
+    public void setAuthnContextClassRef(final String authnContextClassRef) {
+        this.authnContextClassRef = authnContextClassRef;
+    }
+
+    public String getNameIdPolicyFormat() {
+        return nameIdPolicyFormat;
+    }
+
+    public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
+        this.nameIdPolicyFormat = nameIdPolicyFormat;
+    }
+
     public int getMaximumAuthenticationLifetime() {
         return maximumAuthenticationLifetime;
     }
 
-    public WritableResource getServiceProviderMetadataResource() {
-        return serviceProviderMetadataResource;
+    public void setMaximumAuthenticationLifetime(final int maximumAuthenticationLifetime) {
+        this.maximumAuthenticationLifetime = maximumAuthenticationLifetime;
     }
 
     public boolean isForceServiceProviderMetadataGeneration() {
@@ -338,7 +355,6 @@ public class SAML2ClientConfiguration extends InitializableObject {
     public void setSamlMessageStorageFactory(final SAMLMessageStorageFactory samlMessageStorageFactory) {
         this.samlMessageStorageFactory = samlMessageStorageFactory;
     }
-
 
     public Collection<String> getBlackListedSignatureSigningAlgorithms() {
         return blackListedSignatureSigningAlgorithms;
@@ -391,7 +407,6 @@ public class SAML2ClientConfiguration extends InitializableObject {
     public boolean isAuthnRequestSigned() {
         return authnRequestSigned;
     }
-    
     
 	/**
 	 * Initializes the configuration for a particular client.

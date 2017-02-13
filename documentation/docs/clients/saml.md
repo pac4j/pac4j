@@ -32,15 +32,15 @@ First, if you don't have one, you need to generate a keystore for all signature 
 keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
 ```
 
-Alternatively, you can also let pac4j create the keystore for you. If the keystore resource does not exist, *pac4j* will attempt to generate a keystore and produce the relevant key pairs inside it.
+Alternatively, you can also let pac4j create the keystore for you. If the keystore resource does not exist and is writable, *pac4j* will attempt to generate a keystore and produce the relevant key pairs inside it.
 
 Then, you must define a [`SAML2ClientConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2ClientConfiguration.java):
 
 ```java
-final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
-                                                "pac4j-demo-passwd",
-                                                "pac4j-demo-passwd",
-                                                new ClassPathResource("testshib-providers.xml"));
+SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
+                                        "pac4j-demo-passwd",
+                                        "pac4j-demo-passwd",
+                                        new ClassPathResource("testshib-providers.xml"));
 ```
 
 The first parameter (`keystoreResource`) is the keystore defined as a Spring resource using:
@@ -52,11 +52,26 @@ The second parameter (`keystorePassword`) is the value of the `-storepass` optio
 
 The fourth parameter (`identityProviderMetadataResource`) should point to your IdP metadata, assuming you can use the same kind of definition than for the keystore.
 
-Or you can also use the empty constructor and the appropriate setters:
-- the `setKeystoreResource`, `setKeystoreResourceFilepath`, `setKeystoreResourceClasspath` or `setKeystoreResourceUrl` methods to define the keystore
+Or you can also use the "prefix mechanism" to define the `Resource`:
+
+```java
+SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                                        "pac4j-demo-passwd",
+                                        "pac4j-demo-passwd",
+                                        "resource:testshib-providers.xml");
+```
+
+These are the available prefixes:
+
+- the `resource:` or the `classpath:` prefixes creates a `ClassPathResource` component
+- the `http:` or the `https:` prefixes creates a `UrlResource` component
+- the `file:` prefix or no prefix at all creates a `FileSystemResource` component.
+
+Or you can even use the empty constructor and the appropriate setters:
+- the `setKeystoreResource`, `setKeystoreResourceFilepath`, `setKeystoreResourceClasspath`, `setKeystoreResourceUrl` or `setKeystorePath` methods to define the keystore
 - the `setKeystorePassword` method to define the keystore password
 - the `setPrivateKeyPassword` method to set the private password of the keystore
-- the `setIdentityProviderMetadataResource`, `setIdentityProviderMetadataResourceFilepath`, `setIdentityProviderMetadataResourceClasspath` or `setIdentityProviderMetadataResourceUrl` methods to define the identity provider metadata.
+- the `setIdentityProviderMetadataResource`, `setIdentityProviderMetadataResourceFilepath`, `setIdentityProviderMetadataResourceClasspath`, `setIdentityProviderMetadataResourceUrl` or `setIdentityProviderMetadataPath` methods to define the identity provider metadata.
 
 Finally, you need to declare the `SAML2Client` based on the previous configuration:
 

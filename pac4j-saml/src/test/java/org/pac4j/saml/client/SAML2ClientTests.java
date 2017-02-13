@@ -44,6 +44,27 @@ public final class SAML2ClientTests {
         }
 
         final SAML2ClientConfiguration cfg =
+                new SAML2ClientConfiguration("testKeystore.jks",
+                        "pac4j-test-passwd",
+                        "pac4j-test-passwd",
+                        "resource:testshib-providers.xml");
+        cfg.init();
+
+        final KeyStoreCredentialProvider p = new KeyStoreCredentialProvider(cfg);
+        assertNotNull(p.getKeyInfoGenerator());
+        assertNotNull(p.getCredentialResolver());
+        assertNotNull(p.getKeyInfo());
+        assertNotNull(p.getKeyInfoCredentialResolver());
+        assertNotNull(p.getCredential());
+    }
+    @Test
+    public void testSaml2ConfigurationOfKeyStoreUsingResource() throws Exception {
+        final Resource rs = new FileSystemResource("testKeystore.jks");
+        if (rs.exists() && !rs.getFile().delete()) {
+            throw new TechnicalException("File could not be deleted");
+        }
+
+        final SAML2ClientConfiguration cfg =
                 new SAML2ClientConfiguration(new FileSystemResource("testKeystore.jks"),
                         "pac4j-test-passwd",
                         "pac4j-test-passwd",

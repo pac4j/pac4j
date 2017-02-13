@@ -71,15 +71,11 @@ public class PropertiesConfigFactory implements ConfigFactory {
 
     public static final String SAML_KEYSTORE_PASSWORD = "saml.keystorePassword";
     public static final String SAML_PRIVATE_KEY_PASSWORD = "saml.privateKeyPassword";
-    public static final String SAML_KEYSTORE_FILEPATH = "saml.keystoreFilepath";
-    public static final String SAML_KEYSTORE_CLASSPATH = "saml.keystoreClasspath";
-    public static final String SAML_KEYSTORE_URL = "saml.keystoreUrl";
-    public static final String SAML_IDENTITY_PROVIDER_METADATA_FILEPATH = "saml.identityProviderMetadataFilepath";
-    public static final String SAML_IDENTITY_PROVIDER_METADATA_CLASSPATH = "saml.identityProviderMetadataClasspath";
-    public static final String SAML_IDENTITY_PROVIDER_METADATA_URL = "saml.identityProviderMetadataUrl";
+    public static final String SAML_KEYSTORE_PATH = "saml.keystorePath";
+    public static final String SAML_IDENTITY_PROVIDER_METADATA_PATH = "saml.identityProviderMetadataPath";
     public static final String SAML_MAXIMUM_AUTHENTICATION_LIFETIME = "saml.maximumAuthenticationLifetime";
     public static final String SAML_SERVICE_PROVIDER_ENTITY_ID = "saml.serviceProviderEntityId";
-    public static final String SAML_SERVICE_PROVIDER_METADATA_FILEPATH = "saml.serviceProviderMetadataFilepath";
+    public static final String SAML_SERVICE_PROVIDER_METADATA_PATH = "saml.serviceProviderMetadataPath";
     public static final String SAML_DESTINATION_BINDING_TYPE = "saml.destinationBindingType";
 
     public static final String CAS_LOGIN_URL = "cas.loginUrl";
@@ -243,54 +239,25 @@ public class PropertiesConfigFactory implements ConfigFactory {
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
             final String keystorePassword = getProperty(SAML_KEYSTORE_PASSWORD.concat(i == 0 ? "" : "." + i));
             final String privateKeyPassword = getProperty(SAML_PRIVATE_KEY_PASSWORD.concat(i == 0 ? "" : "." + i));
-            final String keystoreFilepath = getProperty(SAML_KEYSTORE_FILEPATH.concat(i == 0 ? "" : "." + i));
-            final String keystoreClasspath = getProperty(SAML_KEYSTORE_CLASSPATH.concat(i == 0 ? "" : "." + i));
-            final String keystoreUrl = getProperty(SAML_KEYSTORE_URL.concat(i == 0 ? "" : "." + i));
-            final String identityProviderMetadataFilepath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_FILEPATH.concat(i == 0 ? "" : "." + i));
-            final String identityProviderMetadataClasspath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_CLASSPATH.concat(i == 0 ? "" : "." + i));
-            final String identityProviderMetadataUrl = getProperty(SAML_IDENTITY_PROVIDER_METADATA_URL.concat(i == 0 ? "" : "." + i));
+            final String keystorePath = getProperty(SAML_KEYSTORE_PATH.concat(i == 0 ? "" : "." + i));
+            final String ientityProviderMetadataPath = getProperty(SAML_IDENTITY_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
             final String maximumAuthenticationLifetime = getProperty(SAML_MAXIMUM_AUTHENTICATION_LIFETIME.concat(i == 0 ? "" : "." + i));
             final String serviceProviderEntityId = getProperty(SAML_SERVICE_PROVIDER_ENTITY_ID.concat(i == 0 ? "" : "." + i));
-            final String serviceProviderMetadataFilepath = getProperty(SAML_SERVICE_PROVIDER_METADATA_FILEPATH.concat(i == 0 ? "" : "." + i));
+            final String serviceProviderMetadataPath = getProperty(SAML_SERVICE_PROVIDER_METADATA_PATH.concat(i == 0 ? "" : "." + i));
             final String destinationBindingType = getProperty(SAML_DESTINATION_BINDING_TYPE.concat(i == 0 ? "" : "." + i));
 
-            final boolean hasKeystore = CommonHelper.isNotBlank(keystoreFilepath) || CommonHelper.isNotBlank(keystoreClasspath)
-                     || CommonHelper.isNotBlank(keystoreUrl);
-            final boolean hasIdentityProviderMetadata = CommonHelper.isNotBlank(identityProviderMetadataFilepath)
-                    || CommonHelper.isNotBlank(identityProviderMetadataClasspath)
-                    || CommonHelper.isNotBlank(identityProviderMetadataUrl);
-
             if (CommonHelper.isNotBlank(keystorePassword) && CommonHelper.isNotBlank(privateKeyPassword)
-                    && hasKeystore && hasIdentityProviderMetadata) {
-                final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration();
-                cfg.setKeystorePassword(keystorePassword);
-                cfg.setPrivateKeyPassword(privateKeyPassword);
-                if (CommonHelper.isNotBlank(keystoreFilepath)) {
-                    cfg.setKeystoreResourceFilepath(keystoreFilepath);
-                }
-                if (CommonHelper.isNotBlank(keystoreClasspath)) {
-                    cfg.setKeystoreResourceClasspath(keystoreClasspath);
-                }
-                if (CommonHelper.isNotBlank(keystoreUrl)) {
-                    cfg.setKeystoreResourceUrl(keystoreUrl);
-                }
-                if (CommonHelper.isNotBlank(identityProviderMetadataFilepath)) {
-                    cfg.setIdentityProviderMetadataResourceFilepath(identityProviderMetadataFilepath);
-                }
-                if (CommonHelper.isNotBlank(identityProviderMetadataClasspath)) {
-                    cfg.setIdentityProviderMetadataResourceClasspath(identityProviderMetadataClasspath);
-                }
-                if (CommonHelper.isNotBlank(identityProviderMetadataUrl)) {
-                    cfg.setIdentityProviderMetadataResourceUrl(identityProviderMetadataUrl);
-                }
+                    && CommonHelper.isNotBlank(keystorePath) && CommonHelper.isNotBlank(ientityProviderMetadataPath)) {
+                final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(keystorePath, keystorePassword,
+                        privateKeyPassword, ientityProviderMetadataPath);
                 if (CommonHelper.isNotBlank(maximumAuthenticationLifetime)) {
                     cfg.setMaximumAuthenticationLifetime(Integer.parseInt(maximumAuthenticationLifetime));
                 }
                 if (CommonHelper.isNotBlank(serviceProviderEntityId)) {
                     cfg.setServiceProviderEntityId(serviceProviderEntityId);
                 }
-                if (CommonHelper.isNotBlank(serviceProviderMetadataFilepath)) {
-                    cfg.setServiceProviderMetadataResourceFilepath(serviceProviderMetadataFilepath);
+                if (CommonHelper.isNotBlank(serviceProviderMetadataPath)) {
+                    cfg.setServiceProviderMetadataPath(serviceProviderMetadataPath);
                 }
                 if (CommonHelper.isNotBlank(destinationBindingType)) {
                     cfg.setDestinationBindingType(destinationBindingType);
