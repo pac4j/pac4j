@@ -70,7 +70,7 @@ public class StormpathAuthenticator extends ProfileDefinitionAware<StormpathProf
                     "<secretKey>, and <applicationId> are correct.", e);
         }
 
-        setProfileDefinition(new CommonProfileDefinition<>(x -> new StormpathProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new StormpathProfile()));
     }
 
     @Override

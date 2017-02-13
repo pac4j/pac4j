@@ -55,7 +55,7 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
             }
         });
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
 
         super.clientInit(context);
     }

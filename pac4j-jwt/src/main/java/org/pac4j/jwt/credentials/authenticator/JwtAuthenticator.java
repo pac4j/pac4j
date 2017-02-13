@@ -76,7 +76,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
     }
 
     /**

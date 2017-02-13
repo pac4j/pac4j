@@ -88,7 +88,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
         }
         this.idTokenValidator.setMaxClockSkew(configuration.getMaxClockSkew());
 
-        setProfileDefinition(new OidcProfileDefinition<U>());
+        defaultProfileDefinition(new OidcProfileDefinition<>());
     }
 
     protected IDTokenValidator createRSATokenValidator(final JWSAlgorithm jwsAlgorithm, final ClientID clientID) {

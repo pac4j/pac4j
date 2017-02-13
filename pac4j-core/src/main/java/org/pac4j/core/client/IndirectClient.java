@@ -174,7 +174,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return redirectActionBuilder;
     }
 
-    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+    protected void defaultRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
         if (this.redirectActionBuilder == null) {
             this.redirectActionBuilder = redirectActionBuilder;
         }
@@ -184,10 +184,18 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return logoutActionBuilder;
     }
 
-    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+    protected void defaultLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;
         }
+    }
+
+    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+        this.redirectActionBuilder = redirectActionBuilder;
+    }
+
+    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+        this.logoutActionBuilder = logoutActionBuilder;
     }
 
     @Override

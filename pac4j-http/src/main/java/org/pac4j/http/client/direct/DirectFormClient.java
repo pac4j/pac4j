@@ -25,20 +25,20 @@ public class DirectFormClient extends DirectClient<UsernamePasswordCredentials, 
     public DirectFormClient() {}
 
     public DirectFormClient(final Authenticator usernamePasswordAuthenticator) {
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public DirectFormClient(final String usernameParameter, final String passwordParameter,
                             final Authenticator usernamePasswordAuthenticator) {
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public DirectFormClient(final Authenticator usernamePasswordAuthenticator,
                             final ProfileCreator profileCreator) {
-        setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class DirectFormClient extends DirectClient<UsernamePasswordCredentials, 
         CommonHelper.assertNotBlank("usernameParameter", usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", passwordParameter);
 
-        setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
+        defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
     }
 
     public String getUsernameParameter() {

@@ -30,17 +30,17 @@ public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, Gae
     protected void clientInit(final WebContext context) {
 		service = UserServiceFactory.getUserService();
 		CommonHelper.assertNotNull("service", this.service);
-		setRedirectActionBuilder(ctx -> {
+		defaultRedirectActionBuilder(ctx -> {
 			final String destinationUrl = computeFinalCallbackUrl(ctx);
 			final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl) : service.createLoginURL(destinationUrl, authDomain);
 			return RedirectAction.redirect(loginUrl);
 		});
-		setCredentialsExtractor(ctx -> {
+		defaultCredentialsExtractor(ctx -> {
 			final GaeUserCredentials credentials = new GaeUserCredentials();
 			credentials.setUser(service.getCurrentUser());
 			return credentials;
 		});
-		setAuthenticator((credentials, ctx) -> {
+		defaultAuthenticator((credentials, ctx) -> {
 			final User user = credentials.getUser();
 			if (user != null) {
 				final GaeUserServiceProfile profile = PROFILE_DEFINITION.newProfile();

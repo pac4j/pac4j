@@ -30,8 +30,8 @@ public class YahooClient extends OAuth10Client<YahooProfile> {
         configuration.setApi(YahooApi.instance());
         configuration.setProfileDefinition(new YahooProfileDefinition());
         setConfiguration(configuration);
-        setProfileCreator(new YahooProfileCreator(configuration));
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("http://login.yahoo.com/config/login?logout=1"));
+        defaultProfileCreator(new YahooProfileCreator(configuration));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("http://login.yahoo.com/config/login?logout=1"));
 
         super.clientInit(context);
     }

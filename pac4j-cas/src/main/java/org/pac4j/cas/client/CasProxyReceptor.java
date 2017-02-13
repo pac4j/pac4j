@@ -39,8 +39,8 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("store", this.store);
 
-        setRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
-        setCredentialsExtractor(ctx -> {
+        defaultRedirectActionBuilder(ctx -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        defaultCredentialsExtractor(ctx -> {
             // like CommonUtils.readAndRespondToProxyReceptorRequest in CAS client
             final String proxyGrantingTicketIou = ctx.getRequestParameter(PARAM_PROXY_GRANTING_TICKET_IOU);
             logger.debug("proxyGrantingTicketIou: {}", proxyGrantingTicketIou);
@@ -61,7 +61,7 @@ public final class CasProxyReceptor extends IndirectClient<TokenCredentials, Com
             logger.debug(message);
             throw HttpAction.ok(message, ctx, "");
         });
-        setAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
+        defaultAuthenticator((credentials, ctx) -> { throw new TechnicalException("Not supported by the CAS proxy receptor"); });
     }
 
     public Store<String, String> getStore() {

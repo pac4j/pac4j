@@ -36,7 +36,7 @@ public class GitHubClient extends OAuth20Client<GitHubProfile> {
         configuration.setProfileDefinition(new GitHubProfileDefinition());
         configuration.setScope(this.scope);
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://github.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://github.com/logout"));
 
         super.clientInit(context);
     }

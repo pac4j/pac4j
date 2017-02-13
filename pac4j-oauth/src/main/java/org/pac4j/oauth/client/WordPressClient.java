@@ -31,7 +31,7 @@ public class WordPressClient extends OAuth20Client<WordPressProfile> {
         configuration.setHasGrantType(true);
         configuration.setTokenAsHeader(true);
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://wordpress.com/wp-login.php?action=logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://wordpress.com/wp-login.php?action=logout"));
 
         super.clientInit(context);
     }
