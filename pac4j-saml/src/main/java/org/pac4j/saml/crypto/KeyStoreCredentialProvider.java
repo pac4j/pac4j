@@ -1,4 +1,3 @@
-
 package org.pac4j.saml.crypto;
 
 import java.io.IOException;
@@ -22,12 +21,12 @@ import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
 import org.opensaml.xmlsec.signature.KeyInfo;
-import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 /**
  * Class responsible for loading a private key from a JKS keystore and returning the corresponding {@link Credential}
@@ -38,59 +37,44 @@ import org.slf4j.LoggerFactory;
  */
 public class KeyStoreCredentialProvider implements CredentialProvider {
 
-	private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
+    private static final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
 
-    private final Logger logger = LoggerFactory.getLogger(KeyStoreCredentialProvider.class);
+    private static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 
     private final CredentialResolver credentialResolver;
 
     private final String privateKey;
 
-    public KeyStoreCredentialProvider(final String name, final String storePasswd, final String privateKeyPasswd) {
-		this(null, null, DEFAULT_KEYSTORE_TYPE, null, name, storePasswd, privateKeyPasswd);
-    }
+	public KeyStoreCredentialProvider(final String keyStoreAlias, final String keyStoreType,
+                                      final Resource keyStoreResource, final String storePasswd, final String privateKeyPasswd) {
+        CommonHelper.assertNotNull("keyStoreResource", keyStoreResource);
+        CommonHelper.assertNotBlank("storePasswd", storePasswd);
+        CommonHelper.assertNotBlank("privateKeyPasswd", privateKeyPasswd);
 
-	public KeyStoreCredentialProvider(final KeyStore keyStore, final String keyStoreAlias, final String keyStoreType,
-			final Resource keyStoreResource, final String keyStorePath, final String storePasswd,
-			final String privateKeyPasswd) {
-		CommonHelper.assertTrue(keyStore != null || keyStoreResource != null || CommonHelper.isNotBlank(keyStorePath),
-				"Either keyStore, keyStoreResource or keyStorePath must be provided");
-
-		final KeyStore keyStoreToUse;
-		if (keyStore != null) {
-			keyStoreToUse = keyStore;
-		} else {
-			InputStream inputStream = null;
-			try {
-				if (keyStoreResource != null) {
-					inputStream = keyStoreResource.getInputStream();
-				} else {
-					inputStream = CommonHelper.getInputStreamFromName(keyStorePath);
-				}
-				keyStoreToUse = loadKeyStore(inputStream, storePasswd, keyStoreType);
-	        } catch (IOException e) {
-	        	throw new SAMLException("Error loading keystore", e);
-			} finally {
-	            if (inputStream != null) {
-	                try {
-	                    inputStream.close();
-	                } catch (final IOException e) {
-	                    this.logger.debug("Error closing input stream of keystore", e);
-	                }
-	            }
-	        }
-		}
-		this.privateKey = getPrivateKeyAlias(keyStoreToUse, keyStoreAlias);
-		final Map<String, String> passwords = new HashMap<String, String>();
-		passwords.put(this.privateKey, privateKeyPasswd);
-		this.credentialResolver = new KeyStoreCredentialResolver(keyStoreToUse, passwords);
+        InputStream inputStream = null;
+        try {
+            inputStream = keyStoreResource.getInputStream();
+            final KeyStore keyStore = loadKeyStore(inputStream, storePasswd, keyStoreType);
+            this.privateKey = getPrivateKeyAlias(keyStore, keyStoreAlias);
+            final Map<String, String> passwords = new HashMap<>();
+            passwords.put(this.privateKey, privateKeyPasswd);
+            this.credentialResolver = new KeyStoreCredentialResolver(keyStore, passwords);
+        } catch (final IOException e) {
+            throw new SAMLException("Error loading keystore", e);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (final IOException e) {
+                    this.logger.debug("Error closing input stream of keystore", e);
+                }
+            }
+        }
 	}
 
-	public KeyStoreCredentialProvider(SAML2ClientConfiguration configuration) {
-		this(configuration.getKeyStore(), configuration.getKeyStoreAlias(), 
-                (configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType()),
-				configuration.getKeystoreResource(), configuration.getKeystorePath(),
-				configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
+	public KeyStoreCredentialProvider(final SAML2ClientConfiguration configuration) {
+		this(configuration.getKeyStoreAlias(), configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType(),
+				configuration.getKeystoreResource(), configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
 	}
 
     @Override

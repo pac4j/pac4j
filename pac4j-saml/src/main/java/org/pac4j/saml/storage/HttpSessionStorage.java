@@ -6,9 +6,7 @@ import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Set;
 
 /**
  * Class implements storage of SAML messages and uses HttpSession as underlying dataStore. As the XMLObjects
@@ -99,14 +97,6 @@ public class HttpSessionStorage implements SAMLMessageStorage {
         updateSession(messages);
         return o;
 
-    }
-
-    /**
-     * @return all internalMessages currently stored in the storage
-     */
-    public Set<String> getAllMessages() {
-        final Hashtable<String, XMLObject> messages = getMessages();
-        return Collections.unmodifiableSet(messages.keySet());
     }
 
     /**

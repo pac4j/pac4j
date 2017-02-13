@@ -12,13 +12,13 @@ import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.exceptions.SAMLException;
 import org.pac4j.saml.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,25 +39,13 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
 
-    public SAML2IdentityProviderMetadataResolver(final String idpMetadataPath,
-                                                 @Nullable final String idpEntityId) {
-        this(null, idpMetadataPath, idpEntityId);
-    }
-
 	public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration) {
-		this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderMetadataPath(),
-				configuration.getIdentityProviderEntityId());
+		this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderEntityId());
 	}
 
-	public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, final String idpMetadataPath,
-			@Nullable final String idpEntityId) {
-		CommonHelper.assertTrue(idpMetadataResource != null || CommonHelper.isNotBlank(idpMetadataPath),
-				"Either IdpMetadataResource or idpMetadataPath must be provided");
-		if (idpMetadataResource != null) {
-			this.idpMetadataResource = idpMetadataResource;
-		} else {
-			this.idpMetadataResource = CommonHelper.getResource(idpMetadataPath);
-		}
+	public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, @Nullable final String idpEntityId) {
+	    CommonHelper.assertNotNull("idpMetadataResource", idpMetadataResource);
+		this.idpMetadataResource = idpMetadataResource;
 		this.idpEntityId = idpEntityId;
 	}
 
@@ -87,8 +75,7 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
                 idpMetadataProvider.setId(idpMetadataProvider.getClass().getCanonicalName());
                 idpMetadataProvider.initialize();
             } catch (final FileNotFoundException e) {
-                throw new TechnicalException("Error loading idp Metadata. The path must be a " + "valid https url, "
-                        + CommonHelper.INVALID_PATH_MESSAGE, e);
+                throw new TechnicalException("Error loading idp Metadata");
             }
 
             // If no idpEntityId declared, select first EntityDescriptor entityId as our IDP entityId
@@ -150,5 +137,4 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
             throw new SAMLException("Error initializing idpMetadataProvider", e);
         }
     }
-
 }

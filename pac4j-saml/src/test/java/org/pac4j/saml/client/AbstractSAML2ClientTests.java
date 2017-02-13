@@ -3,6 +3,8 @@ package org.pac4j.saml.client;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.saml.storage.HttpSessionStorageFactory;
 import org.pac4j.saml.util.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
@@ -22,15 +24,15 @@ public abstract class AbstractSAML2ClientTests implements TestsConstants {
 
     protected final SAML2Client getClient() {
         final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
                         "pac4j-demo-passwd",
                         "pac4j-demo-passwd",
-                        "resource:testshib-providers.xml");
+                        new ClassPathResource("testshib-providers.xml"));
 
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setDestinationBindingType(getDestinationBindingType());
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
+        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "sp-metadata.xml").getAbsolutePath()));
         cfg.setSamlMessageStorageFactory(new HttpSessionStorageFactory());
         final SAML2Client saml2Client = new SAML2Client(cfg);
         saml2Client.setCallbackUrl(getCallbackUrl());
