@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**pac4j 1.9.6**:
+- Added LinkedIn support in `PropertiesConfigFactory`
+- `CallbackLogic` and `ApplicationLogoutLogic` can be set at the `Config` level
+
 **pac4j 1.9.5**:
 
 - Various bug fixes
