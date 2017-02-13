@@ -12,8 +12,6 @@ public interface JwtClaims {
 
     String SUBJECT         = "sub";
 
-    String AUDIENCE        = "aud";
-
     String EXPIRATION_TIME = "exp";
 
     String NOT_BEFORE      = "nbf";

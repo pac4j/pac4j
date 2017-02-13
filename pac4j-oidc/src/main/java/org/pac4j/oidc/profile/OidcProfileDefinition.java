@@ -39,7 +39,6 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String ISSUER          = "iss";
     public static final String SUBJECT         = "sub";
-    public static final String AUDIENCE        = "aud";
     public static final String EXPIRATION_TIME = "exp";
     public static final String ISSUED_AT       = "iat";
     public static final String AUTH_TIME       = "auth_time";
