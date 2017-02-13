@@ -5,6 +5,8 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Map;
+
 /**
  * Indicates the action when the {@link Client} requires a redirection to achieve user authentication. Valid redirection
  * types are:
@@ -28,9 +30,7 @@ public class RedirectAction {
 
     private String content;
 
-    private RedirectAction() {
-
-    }
+    private RedirectAction() {}
 
     public static RedirectAction redirect(final String location) {
         RedirectAction action = new RedirectAction();
@@ -44,6 +44,31 @@ public class RedirectAction {
         action.type = RedirectType.SUCCESS;
         action.content = content;
         return action;
+    }
+
+    public static RedirectAction post(final String location, final Map<String, String> data) {
+        RedirectAction action = new RedirectAction();
+        action.type = RedirectType.SUCCESS;
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append("<html>\n");
+        buffer.append("<body>\n");
+        buffer.append("<form action=\"" + escapeHtml(location) + "\" name=\"f\" method=\"post\">\n");
+        if (data != null) {
+            for (final Map.Entry<String, String> entry : data.entrySet()) {
+                buffer.append("<input type='hidden' name=\"" + escapeHtml(entry.getKey()) + "\" value=\"" + entry.getValue() + "\" />\n");
+            }
+        }
+        buffer.append("<input value='POST' type='submit' />\n");
+        buffer.append("</form>\n");
+        buffer.append("<script type='text/javascript'>document.forms['f'].submit();</script>\n");
+        buffer.append("</body>\n");
+        buffer.append("</html>\n");
+        action.content = buffer.toString();
+        return action;
+    }
+
+    protected static String escapeHtml(final String s) {
+        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
     }
 
     /**
