@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +121,7 @@ public class MongoAuthenticator extends ProfileDefinitionAware<MongoProfile> imp
     protected MongoProfile createProfile(final String username, final String[] attributes, final Map<String, Object> result) {
         final MongoProfile profile = getProfileDefinition().newProfile();
         profile.setId(username);
+        result.keySet().retainAll(Arrays.asList(attributes));
         getProfileDefinition().convertAndAdd(profile, result);
         return profile;
     }

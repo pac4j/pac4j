@@ -109,7 +109,7 @@ public final class MongoAuthenticatorIT implements TestsConstants {
 
     @Test
     public void testGoodUsernameNoAttribute() throws HttpAction, CredentialsException {
-        final UsernamePasswordCredentials credentials =  login(GOOD_USERNAME, PASSWORD, "");
+        final UsernamePasswordCredentials credentials = login(GOOD_USERNAME, PASSWORD, "");
 
         final CommonProfile profile = credentials.getUserProfile();
         assertNotNull(profile);
