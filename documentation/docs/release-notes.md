@@ -18,7 +18,13 @@ title: Release notes&#58;
 - Added new matcher `PathMatcher` and deprecated `ExcludedPathMatcher`
 - Using Spring framework `Resource` components for SAML files / URLs
 
-**v1.9.5:**
+
+**v1.9.6**:
+
+- Added LinkedIn support in `PropertiesConfigFactory`
+- `CallbackLogic` and `ApplicationLogoutLogic` can be set at the `Config` level
+
+**v1.9.5**:
 
 - Various bug fixes
 
