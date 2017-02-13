@@ -26,38 +26,52 @@ You need to use the following module: `pac4j-saml`.
 The [`SAML2Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2Client.java) 
 must be used to login with a SAML 2 identity provider.
 
-First, optionally you need to generate a keystore for all signature and encryption operations:
+First, if you don't have one, you need to generate a keystore for all signature and encryption operations:
 
 ```bash
 keytool -genkeypair -alias pac4j-demo -keypass pac4j-demo-passwd -keystore samlKeystore.jks -storepass pac4j-demo-passwd -keyalg RSA -keysize 2048 -validity 3650
 ```
 
-Alternatively, you can also let pac4j create the keystore for you. If the keystore resource path does not exist, pac4j will attempt to 
-generate a keystore and produce the relevant key pairs inside it.
+Alternatively, you can also let pac4j create the keystore for you. If the keystore resource does not exist and is writable, *pac4j* will attempt to generate a keystore and produce the relevant key pairs inside it.
 
 Then, you must define a [`SAML2ClientConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-saml/src/main/java/org/pac4j/saml/client/SAML2ClientConfiguration.java):
 
 ```java
-SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks", 
-                                                            "pac4j-demo-passwd", "pac4j-demo-passwd", 
-                                                            "resource:testshib-providers.xml");
+SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
+                                        "pac4j-demo-passwd",
+                                        "pac4j-demo-passwd",
+                                        new ClassPathResource("testshib-providers.xml"));
 ```
 
-The first parameter (`keystorePath`) should point to your keystore:
+The first parameter (`keystoreResource`) is the keystore defined as a Spring resource using:
+- the `org.springframework.core.io.FileSystemResource` class for disk files
+- the `org.springframework.core.io.ClassPathResource` class for classpath files
+- the `org.springframework.core.io.UrlResource` class for URLs.
 
-- using the `resource:` prefix, the following file path will be searched in as a resources stream (`CommonHelper.class.getResourceAsStream`)
-- using the `classpath:` prefix, the following file path will be searched in as a resources stream (`Thread.currentThread().getContextClassLoader().getResourceAsStream`)
-- using `file:` prefix means the keystore is accessible on the following file path
-- it can also be an url (starting with `http:` or `https:`)
-- otherwise, it is considered to be a file path.
+The second parameter (`keystorePassword`) is the value of the `-storepass` option for the keystore generation while the third parameter (`privateKeyPassword`) is the value of the `-keypass` option.
 
-<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> With <code>pac4j-saml</code> v1.9.2, the <code>resource:</code> and <code>classpath:</code> prefixes are not usable for the <code>keystorePath</code> definition in CAS and Vertx. Use a relative or absolute path without any prefix</div>
+The fourth parameter (`identityProviderMetadataResource`) should point to your IdP metadata, assuming you can use the same kind of definition than for the keystore.
 
-The second parameter (`keystorePassword`) is the value of the `-storepass` option for the keystore generation while 
-the third parameter (`privateKeyPassword`) is the value of the `-keypass` option.
+Or you can also use the "prefix mechanism" to define the `Resource`:
 
-The fourth parameter (`identityProviderMetadataPath`) should point to your IdP metadata, assuming you 
-can use the same syntax than for the keystore.
+```java
+SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks",
+                                        "pac4j-demo-passwd",
+                                        "pac4j-demo-passwd",
+                                        "resource:testshib-providers.xml");
+```
+
+These are the available prefixes:
+
+- the `resource:` or the `classpath:` prefixes creates a `ClassPathResource` component
+- the `http:` or the `https:` prefixes creates a `UrlResource` component
+- the `file:` prefix or no prefix at all creates a `FileSystemResource` component.
+
+Or you can even use the empty constructor and the appropriate setters:
+- the `setKeystoreResource`, `setKeystoreResourceFilepath`, `setKeystoreResourceClasspath`, `setKeystoreResourceUrl` or `setKeystorePath` methods to define the keystore
+- the `setKeystorePassword` method to define the keystore password
+- the `setPrivateKeyPassword` method to set the private password of the keystore
+- the `setIdentityProviderMetadataResource`, `setIdentityProviderMetadataResourceFilepath`, `setIdentityProviderMetadataResourceClasspath`, `setIdentityProviderMetadataResourceUrl` or `setIdentityProviderMetadataPath` methods to define the identity provider metadata.
 
 Finally, you need to declare the `SAML2Client` based on the previous configuration:
 
@@ -69,14 +83,14 @@ After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/p
 
 ## 3) Additional configuration:
 
-Since *pac4j* v1.9.3, you can define the binding type via the `setDestinationBindingType` method:
+You can define the binding type via the `setDestinationBindingType` method:
 
 ```java
 cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
 // or cfg.setDestinationBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
 ```
 
-Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the `maximumAuthenticationLifetime parameter:
+Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the `maximumAuthenticationLifetime` parameter:
 
 ```java
 // lifetime in seconds
@@ -118,7 +132,7 @@ The IdP metadata will always be chosen in favor of the *pac4j* configuration, so
 
 You can generate the SP metadata in two ways:
 - either programmatically using the `SAML2Client`: `String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();`
-- or by defining the appropriate configuration: `cfg.setServiceProviderMetadataPath("/tmp/sp-metadata.xml");`
+- or by defining the appropriate configuration: `cfg.setServiceProviderMetadata(new FileSystemResource("/tmp/sp-metadata.xml"));`
 
 ## 4) ADFS subtilities
 
@@ -129,8 +143,6 @@ You must follow these rules to successfully authenticate using Microsoft ADFS 2.
 You must always specify an explicit Entity ID that does not contain any question mark. By default, *pac4j* uses the same 
 Entity ID as the AssertionConsumerService location, which contains the client's name as a parameter after a question mark. 
 Unfortunately ADFS does not work well with such IDs and starts an infinite redirection loop when A SAML message with such a message arrives.
-
-This property is supported since *pac4j* v1.6.0. Don't forget to change your metadata accordingly!
 
 ### b) Maximum authentication time
 

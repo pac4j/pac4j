@@ -30,3 +30,4 @@ documentation/_site/
 .fbExcludeFilterFile
 .pmd
 .pmdruleset.xml
+pac4j-saml/testKeystore.jks

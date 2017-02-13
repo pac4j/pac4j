@@ -2,18 +2,7 @@ package org.pac4j.core.util;
 
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.Resource;
-import org.pac4j.core.io.WritableResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.Collection;
@@ -26,17 +15,6 @@ import java.util.Date;
  * @since 1.4.0
  */
 public final class CommonHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommonHelper.class);
-
-    public static final String RESOURCE_PREFIX = "resource";
-    public static final String CLASSPATH_PREFIX = "classpath";
-
-    protected static final String FILE_PREFIX = "file:";
-
-    public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
-            + ":', '" + HttpConstants.SCHEME_HTTP + ":', '" + HttpConstants.SCHEME_HTTPS + ":' or it must be a physical readable non-empty local file "
-            + "at the path specified.";
 
     /**
      * Return if the String is not blank.
@@ -263,131 +241,6 @@ public final class CommonHelper {
         } else {
             return path;
         }
-    }
-
-    /**
-     * Returns an {@link InputStream} from given name depending on its format:
-     * - loads from the classloader of this class if name starts with "resource:" (add a slash a the beginning if absent)
-     * - loads from the classloader of the current thread if name starts with "classpath:"
-     * - loads from the given url if name starts with "http:" or "https:"
-     * - loads as {@link FileInputStream} otherwise
-     * <p>
-     * Caller is responsible for closing inputstream
-     *
-     * @param name name of the resource
-     * @return the input stream
-     */
-    public static InputStream getInputStreamFromName(String name) {
-        String path = name;
-        final String prefix = extractPrefix(name);
-        if (prefix != null) {
-            path = name.substring(prefix.length() + 1);
-        }
-        if (CommonHelper.isEmpty(prefix)) {
-            try {
-                return new FileInputStream(path);
-            } catch (FileNotFoundException e) {
-                throw new TechnicalException(e);
-            }
-        }
-
-        switch (prefix) {
-            case RESOURCE_PREFIX:
-                return CommonHelper.class.getResourceAsStream(startWithSlash(path));
-            case CLASSPATH_PREFIX:
-                return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-            case HttpConstants.SCHEME_HTTP:
-                logger.warn("file is retrieved from an insecure http endpoint [{}]", path);
-                return getInputStreamViaHttp(name);
-            case HttpConstants.SCHEME_HTTPS:
-                return getInputStreamViaHttp(name);
-            default:
-                throw new TechnicalException("prefix is not handled:" + prefix);
-        }
-
-    }
-
-    private static InputStream getInputStreamViaHttp(String name) {
-        URLConnection con = null;
-        try {
-            URL url = new URL(name);
-            con = url.openConnection();
-            return con.getInputStream();
-        } catch (IOException ex) {
-            // Close the HTTP connection (if applicable).
-            if (con instanceof HttpURLConnection) {
-                ((HttpURLConnection) con).disconnect();
-            }
-            throw new TechnicalException(ex);
-        }
-    }
-
-    public static Resource getResource(final String filePath) {
-        return new WritableResource() {
-
-            @Override
-            public File getFile() {
-                final String filename = getFilename();
-                if (filename != null) {
-                    return new File(filename);
-                }
-                logger.warn("This filePath: {} is not a file. Returning null in the getFile() method", filePath);
-                return null;
-            }
-
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return getInputStreamFromName(filePath);
-            }
-
-            @Override
-            public String getFilename() {
-                String filename = null;
-                final String prefix = extractPrefix(filePath);
-                if (prefix == null) {
-                    filename = filePath;
-                } else if (prefix.equals(RESOURCE_PREFIX) || prefix.equals(CLASSPATH_PREFIX)) {
-                    final String path = filePath.substring(prefix.length() + 1);
-                    final URL url;
-                    if (prefix.equals(RESOURCE_PREFIX)) {
-                        url = CommonHelper.class.getResource(startWithSlash(path));
-                    } else {
-                        url = Thread.currentThread().getContextClassLoader().getResource(path);
-                    }
-                    if (url == null || url.toString() == null) {
-                        throw new TechnicalException("Do not use the resource: or classpath: prefix for non-existing files. Use a direct path (relative or absolute, no prefix)");
-                    }
-                    final String sUrl = url.toString();
-                    // create filename from url if we know the prefix (we remove it)
-                    if (sUrl.startsWith(FILE_PREFIX)) {
-                        filename = sUrl.substring(FILE_PREFIX.length());
-                    } else {
-                        throw new TechnicalException("Unsupported resource format: " + sUrl + ". Use a relative or absolute path");
-                    }
-                }
-                logger.debug("filepath: {} -> filename: {}", filePath, filename);
-                return filename;
-            }
-
-            @Override
-            public boolean exists() {
-                final File f = getFile();
-                if (f != null) {
-                    return f.exists();
-                }
-                // if we get there, it means that this is not a file, so it's a URL and we assume it exists
-                return true;
-            }
-
-            @Override
-            public OutputStream getOutputStream() throws IOException {
-                final String filename = getFilename();
-                if (filename != null) {
-                    return new FileOutputStream(filePath);
-                }
-                return null;
-            }
-        };
     }
 
     /**

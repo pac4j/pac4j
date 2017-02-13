@@ -7,6 +7,7 @@ import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
@@ -34,12 +35,12 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
     public SAML2LogoutActionBuilder(final SAML2Client client) {
         CommonHelper.assertNotNull("client", client);
         this.client = client;
-        this.saml2LogoutObjectBuilder = new SAML2LogoutRequestBuilder(this.client.getConfiguration().getDestinationBindingType());
+        final SAML2ClientConfiguration cfg = client.getConfiguration();
+        this.saml2LogoutObjectBuilder = new SAML2LogoutRequestBuilder(cfg.getDestinationBindingType());
         this.logoutResponseValidator = new SAML2LogoutResponseValidator(this.client.getSignatureTrustEngineProvider());
         this.logoutProfileHandler = new SAML2LogoutProfileHandler(
                 new SAML2LogoutMessageSender(this.client.getSignatureSigningParametersProvider(),
-                        this.client.getConfiguration().getDestinationBindingType(),
-                        false, this.client.getConfiguration().isForceSignRedirectBindingAuthnRequest()),
+                        cfg.getDestinationBindingType(), false, cfg.isForceSignRedirectBindingAuthnRequest()),
                 new SAML2WebSSOMessageReceiver(this.logoutResponseValidator));
     }
 
