@@ -96,7 +96,7 @@ public interface WebContext {
      *
      * @return the session identifier
      */
-    default Object getSessionIdentifier() {
+    default String getSessionIdentifier() {
         return getSessionStore().getOrCreateSessionId(this);
     }
 
