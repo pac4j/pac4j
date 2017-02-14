@@ -1,5 +1,6 @@
 package org.pac4j.core.profile;
 
+import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 
@@ -13,16 +14,26 @@ import java.util.function.Function;
  */
 public class ProfileManagerFactoryAware<C extends WebContext> {
 
-    private Function<C, ProfileManager> profileManagerFactory = context -> new ProfileManager(context);
+    private final Function<C, ProfileManager> DEFAULT_PROFILE_MANAGER_FACTORY = ctx -> new ProfileManager(ctx);
+
+    private Function<C, ProfileManager> profileManagerFactory;
 
     /**
      * Given a webcontext generate a profileManager for it.
      * Can be overridden for custom profile manager implementations
      * @param context the web context
+     * @param config the configuration
      * @return profile manager implementation built from the context
      */
-    protected ProfileManager getProfileManager(final C context) {
-        return profileManagerFactory.apply(context);
+    protected ProfileManager getProfileManager(final C context, final Config config) {
+        final Function<C, ProfileManager> configProfileManagerFactory = (Function<C, ProfileManager>) config.getProfileManagerFactory();
+        if (configProfileManagerFactory != null) {
+            return configProfileManagerFactory.apply(context);
+        } else if (profileManagerFactory != null) {
+            return profileManagerFactory.apply(context);
+        } else {
+            return DEFAULT_PROFILE_MANAGER_FACTORY.apply(context);
+        }
     }
 
     public Function<C, ProfileManager> getProfileManagerFactory() {
