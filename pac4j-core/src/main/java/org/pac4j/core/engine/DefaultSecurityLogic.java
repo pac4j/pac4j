@@ -96,7 +96,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
                 final boolean loadProfilesFromSession = loadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
-                final ProfileManager manager = getProfileManager(context);
+                final ProfileManager manager = getProfileManager(context, config);
                 List<CommonProfile> profiles = manager.getAll(loadProfilesFromSession);
                 logger.debug("profiles: {}", profiles);
 
