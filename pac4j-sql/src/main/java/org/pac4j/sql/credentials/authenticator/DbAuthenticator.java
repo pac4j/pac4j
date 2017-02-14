@@ -67,7 +67,7 @@ public class DbAuthenticator extends ProfileDefinitionAware<DbProfile> implement
         CommonHelper.assertNotNull("passwordEncoder", this.passwordEncoder);
         CommonHelper.assertNotNull("dataSource", this.dataSource);
         CommonHelper.assertNotNull("attributes", this.attributes);
-        setProfileDefinition(new CommonProfileDefinition<>(x -> new DbProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new DbProfile()));
         this.dbi = new DBI(this.dataSource);
     }
 

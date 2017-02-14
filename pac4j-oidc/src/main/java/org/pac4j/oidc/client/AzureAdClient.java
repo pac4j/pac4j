@@ -40,7 +40,7 @@ public class AzureAdClient extends OidcClient<AzureAdProfile> {
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
-        setProfileCreator(new AzureAdProfileCreator(getConfiguration()));
+        defaultProfileCreator(new AzureAdProfileCreator(getConfiguration()));
 
         super.clientInit(context);
     }

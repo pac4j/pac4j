@@ -64,7 +64,7 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
             return false;
         });
         setConfiguration(configuration);
-        setLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
+        defaultLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
         super.clientInit(context);
     }

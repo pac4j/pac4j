@@ -163,7 +163,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return credentialsExtractor;
     }
 
-    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+    protected void defaultCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
         if (this.credentialsExtractor == null) {
             this.credentialsExtractor = credentialsExtractor;
         }
@@ -173,7 +173,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return authenticator;
     }
 
-    public void setAuthenticator(final Authenticator<C> authenticator) {
+    protected void defaultAuthenticator(final Authenticator<C> authenticator) {
         if (this.authenticator == null) {
             this.authenticator = authenticator;
         }
@@ -183,10 +183,22 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
         return profileCreator;
     }
 
-    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+    protected void defaultProfileCreator(final ProfileCreator<C, U> profileCreator) {
         if (this.profileCreator == null || this.profileCreator == AuthenticatorProfileCreator.INSTANCE) {
             this.profileCreator = profileCreator;
         }
+    }
+
+    public void setCredentialsExtractor(final CredentialsExtractor<C> credentialsExtractor) {
+        this.credentialsExtractor = credentialsExtractor;
+    }
+
+    public void setAuthenticator(final Authenticator<C> authenticator) {
+        this.authenticator = authenticator;
+    }
+
+    public void setProfileCreator(final ProfileCreator<C, U> profileCreator) {
+        this.profileCreator = profileCreator;
     }
 
     @Override

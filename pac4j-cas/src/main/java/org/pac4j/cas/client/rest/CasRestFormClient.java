@@ -34,8 +34,8 @@ public class CasRestFormClient extends AbstractCasRestClient {
         CommonHelper.assertNotNull("configuration", this.configuration);
         configuration.init(context);
 
-        setCredentialsExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter, getName()));
-        setAuthenticator(new CasRestAuthenticator(this.configuration));
+        defaultCredentialsExtractor(new FormExtractor(this.usernameParameter, this.passwordParameter, getName()));
+        defaultAuthenticator(new CasRestAuthenticator(this.configuration));
     }
 
     public String getUsernameParameter() {

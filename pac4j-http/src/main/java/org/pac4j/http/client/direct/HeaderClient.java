@@ -25,29 +25,29 @@ public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> 
 
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
-        setAuthenticator(tokenAuthenticator);
+        defaultAuthenticator(tokenAuthenticator);
     }
 
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
-        setAuthenticator(tokenAuthenticator);
+        defaultAuthenticator(tokenAuthenticator);
     }
 
     public HeaderClient(final String headerName, final Authenticator tokenAuthenticator,
                         final ProfileCreator profileCreator) {
         this.headerName = headerName;
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(tokenAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     public HeaderClient(final String headerName, final String prefixHeader,
                         final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
         this.headerName = headerName;
         this.prefixHeader = prefixHeader;
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(tokenAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class HeaderClient extends DirectClient<TokenCredentials, CommonProfile> 
         CommonHelper.assertNotBlank("headerName", this.headerName);
         CommonHelper.assertNotNull("prefixHeader", this.prefixHeader);
 
-        setCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
+        defaultCredentialsExtractor(new HeaderExtractor(this.headerName, this.prefixHeader, getName()));
     }
 
     public String getHeaderName() {

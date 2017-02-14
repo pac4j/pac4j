@@ -44,10 +44,10 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
         configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
         configuration.init(context);
 
-        setRedirectActionBuilder(new CasRedirectActionBuilder(configuration, callbackUrl));
-        setCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
-        setAuthenticator(new CasAuthenticator(configuration, callbackUrl));
-        setLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout", configuration.getPostLogoutUrlParameter()));
+        defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, callbackUrl));
+        defaultCredentialsExtractor(new TicketAndLogoutRequestExtractor(configuration, getName()));
+        defaultAuthenticator(new CasAuthenticator(configuration, callbackUrl));
+        defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(configuration.getPrefixUrl() + "logout", configuration.getPostLogoutUrlParameter()));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 

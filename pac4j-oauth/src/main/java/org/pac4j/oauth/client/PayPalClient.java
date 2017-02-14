@@ -41,7 +41,7 @@ public class PayPalClient extends OAuth20Client<PayPalProfile> {
         configuration.setHasGrantType(true);
         configuration.setTokenAsHeader(true);
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.paypal.com/myaccount/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.paypal.com/myaccount/logout"));
 
         super.clientInit(context);
     }

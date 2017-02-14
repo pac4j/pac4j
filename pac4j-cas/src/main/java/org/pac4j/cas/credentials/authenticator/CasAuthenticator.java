@@ -48,7 +48,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.init(context);
 
-        setProfileDefinition(new CasProfileDefinition());
+        defaultProfileDefinition(new CasProfileDefinition());
     }
 
     @Override

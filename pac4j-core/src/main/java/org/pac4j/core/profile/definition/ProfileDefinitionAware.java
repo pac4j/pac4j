@@ -21,6 +21,11 @@ public abstract class ProfileDefinitionAware<P extends CommonProfile> extends In
 
     public void setProfileDefinition(final ProfileDefinition<P> profileDefinition) {
         CommonHelper.assertNotNull("profileDefinition", profileDefinition);
+        this.profileDefinition = profileDefinition;
+    }
+
+    protected void defaultProfileDefinition(final ProfileDefinition<P> profileDefinition) {
+        CommonHelper.assertNotNull("profileDefinition", profileDefinition);
         if (this.profileDefinition == null) {
             this.profileDefinition = profileDefinition;
         }
