@@ -8,8 +8,8 @@ import org.pac4j.cas.store.ProxyGrantingTicketStore;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.CallbackUrlResolver;
-import org.pac4j.core.http.DefaultCallbackUrlResolver;
+import org.pac4j.core.http.UrlResolver;
+import org.pac4j.core.http.DefaultUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableWebObject;
 
@@ -57,7 +57,7 @@ public class CasConfiguration extends InitializableWebObject {
 
     private CasProxyReceptor proxyReceptor;
 
-    private CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
+    private UrlResolver urlResolver = new DefaultUrlResolver();
 
     private String postLogoutUrlParameter = SERVICE_PARAMETER;
 
@@ -82,7 +82,7 @@ public class CasConfiguration extends InitializableWebObject {
         if (CommonHelper.isBlank(this.loginUrl) && CommonHelper.isBlank(this.prefixUrl) && CommonHelper.isBlank(this.restUrl)) {
             throw new TechnicalException("loginUrl, prefixUrl and restUrl cannot be all blank");
         }
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
+        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
 
         initializeClientConfiguration(context);
 
@@ -201,7 +201,7 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     public String computeFinalLoginUrl(final WebContext context) {
-        return callbackUrlResolver.compute(this.loginUrl, context);
+        return urlResolver.compute(this.loginUrl, context);
     }
 
     public String getLoginUrl() {
@@ -217,7 +217,7 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     public String computeFinalPrefixUrl(final WebContext context) {
-        return callbackUrlResolver.compute(this.prefixUrl, context);
+        return urlResolver.compute(this.prefixUrl, context);
     }
 
     public void setPrefixUrl(final String prefixUrl) {
@@ -296,12 +296,8 @@ public class CasConfiguration extends InitializableWebObject {
         this.proxyReceptor = proxyReceptor;
     }
 
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
-    }
-
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
+    public String computeFinalUrl(final String url, final WebContext context) {
+        return urlResolver.compute(url, context);
     }
 
     public String getPostLogoutUrlParameter() {
@@ -321,7 +317,15 @@ public class CasConfiguration extends InitializableWebObject {
     }
 
     public String computeFinalRestUrl(final WebContext context) {
-        return callbackUrlResolver.compute(this.restUrl, context);
+        return urlResolver.compute(this.restUrl, context);
+    }
+
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
     }
 
     @Override
@@ -330,6 +334,6 @@ public class CasConfiguration extends InitializableWebObject {
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
                 "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter", this.postLogoutUrlParameter,
-                "defaultTicketValidator", this.defaultTicketValidator, "callbackUrlResolver", this.callbackUrlResolver);
+                "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver);
     }
 }

@@ -13,7 +13,6 @@ import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -48,8 +47,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
-            final CallbackUrlResolver callbackUrlResolver = configuration.getCallbackUrlResolver();
-            String currentUrl = callbackUrlResolver.compute(context.getFullRequestURL(), context);
+            String currentUrl = configuration.computeFinalUrl(context.getFullRequestURL(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
             final TokenCredentials credentials = getCredentialsExtractor().extract(context);
