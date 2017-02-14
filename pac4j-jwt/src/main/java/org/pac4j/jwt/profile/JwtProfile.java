@@ -4,6 +4,7 @@ import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.jwt.JwtClaims;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Represents a user profile based on a JWT.
@@ -23,8 +24,8 @@ public class JwtProfile extends CommonProfile {
         return (String) getAttribute(JwtClaims.ISSUER);
     }
 
-    public String getAudience() {
-        return (String) getAttribute(JwtClaims.AUDIENCE);
+    public List<String> getAudience() {
+        return retrieveAudience();
     }
 
     public Date getExpirationDate() {
