@@ -22,14 +22,14 @@ public class CookieClient extends DirectClient<TokenCredentials, CommonProfile> 
 
     public CookieClient(final String cookieName, final Authenticator cookieAuthenticator) {
         this.cookieName = cookieName;
-        setAuthenticator(cookieAuthenticator);
+        defaultAuthenticator(cookieAuthenticator);
     }
 
     @Override
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("cookieName", this.cookieName);
 
-        setCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));
+        defaultCredentialsExtractor(new CookieExtractor(this.cookieName, getName()));
     }
 
     public String getCookieName() {

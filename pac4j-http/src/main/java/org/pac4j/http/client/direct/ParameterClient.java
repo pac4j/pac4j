@@ -27,15 +27,15 @@ public class ParameterClient extends DirectClient<TokenCredentials, CommonProfil
 
     public ParameterClient(final String parameterName, final Authenticator tokenAuthenticator) {
         this.parameterName = parameterName;
-        setAuthenticator(tokenAuthenticator);
+        defaultAuthenticator(tokenAuthenticator);
     }
 
     public ParameterClient(final String parameterName,
                            final Authenticator tokenAuthenticator,
                            final ProfileCreator profileCreator) {
         this.parameterName = parameterName;
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(tokenAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
 
@@ -43,7 +43,7 @@ public class ParameterClient extends DirectClient<TokenCredentials, CommonProfil
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("parameterName", this.parameterName);
 
-        setCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
+        defaultCredentialsExtractor(new ParameterExtractor(this.parameterName, this.supportGetRequest, this.supportPostRequest, getName()));
     }
 
     public String getParameterName() {

@@ -139,7 +139,7 @@ public class OidcConfiguration extends InitializableWebObject {
         return discoveryURI;
     }
 
-    public void setDiscoveryURI(final String discoveryURI) {
+    public void defaultDiscoveryURI(final String discoveryURI) {
         if (this.discoveryURI == null) {
             this.discoveryURI = discoveryURI;
         }
@@ -222,10 +222,18 @@ public class OidcConfiguration extends InitializableWebObject {
         return resourceRetriever;
     }
 
-    public void setResourceRetriever(final ResourceRetriever resourceRetriever) {
+    public void defaultResourceRetriever(final ResourceRetriever resourceRetriever) {
         if (this.resourceRetriever == null) {
             this.resourceRetriever = resourceRetriever;
         }
+    }
+
+    public void setDiscoveryURI(final String discoveryURI) {
+        this.discoveryURI = discoveryURI;
+    }
+
+    public void setResourceRetriever(final ResourceRetriever resourceRetriever) {
+        this.resourceRetriever = resourceRetriever;
     }
 
     public String getCallbackUrl() {

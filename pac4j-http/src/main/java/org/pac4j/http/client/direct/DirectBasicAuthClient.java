@@ -19,17 +19,17 @@ public class DirectBasicAuthClient extends DirectClient<UsernamePasswordCredenti
     public DirectBasicAuthClient() {}
 
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator) {
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public DirectBasicAuthClient(final Authenticator usernamePasswordAuthenticator,
                                  final ProfileCreator profileCreator) {
-        setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
     protected void clientInit(final WebContext context) {
-        setCredentialsExtractor(new BasicAuthExtractor(getName()));
+        defaultCredentialsExtractor(new BasicAuthExtractor(getName()));
     }
 }

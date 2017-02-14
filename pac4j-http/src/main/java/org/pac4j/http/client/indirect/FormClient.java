@@ -40,7 +40,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
 
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
@@ -48,14 +48,14 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
         this.loginUrl = loginUrl;
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator,
                       final ProfileCreator profileCreator) {
         this.loginUrl = loginUrl;
-        setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
@@ -65,8 +65,8 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
 
-        setRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
-        setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
+        defaultRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
+        defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
     }
 
     @Override

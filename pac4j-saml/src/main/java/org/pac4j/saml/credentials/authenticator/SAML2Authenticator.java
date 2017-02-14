@@ -33,7 +33,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new CommonProfileDefinition<>(x -> new SAML2Profile()));
+        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new SAML2Profile()));
     }
 
     @Override
