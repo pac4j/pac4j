@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class RelativeCallbackUrlResolverTests {
+public final class RelativeUrlResolverTests {
 
     private final UrlResolver resolver = new RelativeUrlResolver();
 
