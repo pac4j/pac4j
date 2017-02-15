@@ -41,7 +41,7 @@ public class CasRedirectActionBuilder extends InitializableWebObject implements 
         init(context);
 
         final String computeLoginUrl = configuration.computeFinalLoginUrl(context);
-        final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(callbackUrl, context);
+        final String computedCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);
         final String redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, CasConfiguration.SERVICE_PARAMETER,
                 computedCallbackUrl, configuration.isRenew(), configuration.isGateway());
         logger.debug("redirectionUrl: {}", redirectionUrl);
