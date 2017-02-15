@@ -6,9 +6,9 @@ import org.pac4j.core.authorization.generator.AuthorizationGenerator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.http.DefaultAjaxRequestResolver;
-import org.pac4j.core.http.DefaultCallbackUrlResolver;
+import org.pac4j.core.http.DefaultUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 
@@ -40,7 +40,7 @@ public class Clients extends InitializableObject {
 
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
-    private CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
+    private UrlResolver urlResolver = new DefaultUrlResolver();
 
     private List<AuthorizationGenerator> authorizationGenerators = new ArrayList<>();
 
@@ -119,9 +119,9 @@ public class Clients extends InitializableObject {
         if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
             indirectClient.setAjaxRequestResolver(ajaxRequestResolver);
         }
-        final CallbackUrlResolver clientCallbackUrlResolver = indirectClient.getCallbackUrlResolver();
-        if (callbackUrlResolver != null && (clientCallbackUrlResolver == null || clientCallbackUrlResolver instanceof DefaultCallbackUrlResolver)) {
-            indirectClient.setCallbackUrlResolver(this.callbackUrlResolver);
+        final UrlResolver clientUrlResolver = indirectClient.getUrlResolver();
+        if (urlResolver != null && (clientUrlResolver == null || clientUrlResolver instanceof DefaultUrlResolver)) {
+            indirectClient.setUrlResolver(this.urlResolver);
         }
     }
 
@@ -234,12 +234,12 @@ public class Clients extends InitializableObject {
         this.ajaxRequestResolver = ajaxRequestResolver;
     }
 
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
     }
 
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
     }
 
     public List<AuthorizationGenerator> getAuthorizationGenerators() {
@@ -269,6 +269,6 @@ public class Clients extends InitializableObject {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
                 this.clientNameParameter, "clients", getClients(), "defaultClient", defaultClient, "ajaxRequestResolver", ajaxRequestResolver,
-                "callbackUrlResolver", callbackUrlResolver, "authorizationGenerators", authorizationGenerators);
+                "urlResolver", urlResolver, "authorizationGenerators", authorizationGenerators);
     }
 }

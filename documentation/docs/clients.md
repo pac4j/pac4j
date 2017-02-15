@@ -107,9 +107,9 @@ Config config = new Config(clients);
 
 In that case, the callback url of the `AzureAdClient` is `http://localhost:8080/callback`.
 
-In fact, the callback url is expected to be an absolute url and is passed "as is" (by the `DefaultCallbackUrlResolver`). Though, you can provide your own [`CallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/CallbackUrlResolver.java) to compute the appropriate callback url in a specific way (example: `client.setCallbackUrlResolver(myCallbackUrlResolver);`).
+In fact, the callback url is expected to be an absolute url and is passed "as is" (by the `DefaultUrlResolver`). Though, you can provide your own [`UrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/UrlResolver.java) to compute the appropriate callback url in a specific way (example: `client.setUrlResolver(myUrlResolver);`).
 
-The other existing implementation you can use, is the [`RelativeCallbackUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/RelativeCallbackUrlResolver.java) which turns any relative callback url into an absolute one by adding the scheme, server name and port before the relative callback url.
+The other existing implementation you can use, is the [`RelativeUrlResolver`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/http/RelativeUrlResolver.java) which turns any relative callback url into an absolute one by adding the scheme, server name and port before the relative callback url.
 
 
 ---

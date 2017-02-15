@@ -6,14 +6,14 @@ import org.pac4j.core.context.MockWebContext;
 import static org.junit.Assert.*;
 
 /**
- * Tests the {@link RelativeCallbackUrlResolver}.
+ * Tests the {@link RelativeUrlResolver}.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public final class RelativeCallbackUrlResolverTests {
+public final class RelativeUrlResolverTests {
 
-    private final CallbackUrlResolver resolver = new RelativeCallbackUrlResolver();
+    private final UrlResolver resolver = new RelativeUrlResolver();
 
     @Test
     public void testCompute_whenHostIsNotPresent() {

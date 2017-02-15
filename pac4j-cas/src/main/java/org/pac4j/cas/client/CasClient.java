@@ -41,7 +41,7 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     @Override
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", configuration);
-        configuration.setCallbackUrlResolver(this.getCallbackUrlResolver());
+        configuration.setUrlResolver(this.getUrlResolver());
         configuration.init(context);
 
         defaultRedirectActionBuilder(new CasRedirectActionBuilder(configuration, callbackUrl));
@@ -70,7 +70,7 @@ public class CasClient extends IndirectClient<TokenCredentials, CommonProfile> {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "urlResolver", this.urlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
                 "logoutActionBuilder", getLogoutActionBuilder(), "configuration", this.configuration);
