@@ -54,11 +54,10 @@ public class SAML2LogoutActionBuilder<U extends SAML2Profile> implements LogoutA
 
         final Pac4jSAMLResponse adapter = samlContext.getProfileRequestContextOutboundMessageTransportResponse();
         if (this.client.getConfiguration().getDestinationBindingType().equalsIgnoreCase(SAMLConstants.SAML2_POST_BINDING_URI)) {
-            final String location = adapter.getOutgoingContent();
-            return RedirectAction.post(location, null);
-        } else {
-            final String location = adapter.getRedirectUrl();
-            return RedirectAction.redirect(location);
+            final String content = adapter.getOutgoingContent();
+            return RedirectAction.success(content);
         }
+        final String location = adapter.getRedirectUrl();
+        return RedirectAction.redirect(location);
     }
 }
