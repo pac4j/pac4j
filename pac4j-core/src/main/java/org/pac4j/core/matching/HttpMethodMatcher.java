@@ -31,10 +31,10 @@ public class HttpMethodMatcher implements Matcher {
     @Override
     public boolean matches(final WebContext context) throws HttpAction {
         CommonHelper.assertNotNull("methods", methods);
-        final String requestMethod = context.getRequestMethod();
+        final HTTP_METHOD requestMethod = context.getRequestMethod();
 
         for (final HTTP_METHOD method : methods) {
-            if (method.name().equalsIgnoreCase(requestMethod)) {
+            if (method == requestMethod) {
                 return true;
             }
         }

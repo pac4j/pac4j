@@ -3,6 +3,8 @@ package org.pac4j.http.credentials;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.CommonHelper;
 
+import static org.pac4j.core.context.HttpConstants.*;
+
 /**
  * <p>This credentials is retrieved from a HTTP request.</p>
  * <p>A user profile can be attached with the credentials if it has been created by a {@link org.pac4j.core.credentials.authenticator.Authenticator}.
@@ -22,7 +24,7 @@ public class DigestCredentials extends TokenCredentials {
     private String nc;
     private String qop;
 
-    private String httpMethod;
+    private HTTP_METHOD httpMethod;
 
     /**
      * the token represents the client response attribute value in digest authorization header
@@ -38,7 +40,7 @@ public class DigestCredentials extends TokenCredentials {
      * @param nc nc
      * @param qop qop
      */
-    public DigestCredentials(final String token, final String httpMethod, final String clientName, final String username, final String realm,
+    public DigestCredentials(final String token, final HTTP_METHOD httpMethod, final String clientName, final String username, final String realm,
                              final String nonce, final String uri, final String cnonce, final String nc, final String qop) {
         super(token, clientName);
 
@@ -73,7 +75,7 @@ public class DigestCredentials extends TokenCredentials {
      * @throws IllegalArgumentException
      */
     private String generateDigest(boolean passwordAlreadyEncoded, String username,
-                                 String realm, String password, String httpMethod, String uri, String qop,
+                                 String realm, String password, HTTP_METHOD httpMethod, String uri, String qop,
                                  String nonce, String nc, String cnonce) throws IllegalArgumentException {
         String ha1;
         String a2 = httpMethod + ":" + uri;
