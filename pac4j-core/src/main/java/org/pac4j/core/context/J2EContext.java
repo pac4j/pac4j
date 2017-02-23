@@ -88,8 +88,8 @@ public class J2EContext implements WebContext {
     }
 
     @Override
-    public String getRequestMethod() {
-        return this.request.getMethod();
+    public HttpConstants.HTTP_METHOD getRequestMethod() {
+        return HttpConstants.HTTP_METHOD.valueOf(this.request.getMethod());
     }
 
     @Override
