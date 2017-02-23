@@ -35,7 +35,7 @@ public final class CommonHelper {
     public static final String RESOURCE_PREFIX = "resource";
     public static final String CLASSPATH_PREFIX = "classpath";
 
-    protected static final String FILE_PREFIX = "file:";
+    protected static final String FILE_PREFIX = "file";
 
     public static final String INVALID_PATH_MESSAGE = "begin with '" + RESOURCE_PREFIX + ":', '" + CLASSPATH_PREFIX
             + ":', '" + HttpConstants.SCHEME_HTTP + ":', '" + HttpConstants.SCHEME_HTTPS + ":' or it must be a physical readable non-empty local file "
@@ -287,11 +287,7 @@ public final class CommonHelper {
             path = name.substring(prefix.length() + 1);
         }
         if (CommonHelper.isEmpty(prefix)) {
-            try {
-                return new FileInputStream(path);
-            } catch (FileNotFoundException e) {
-                throw new TechnicalException(e);
-            }
+            return newFileInputStream(path);
         }
 
         switch (prefix) {
@@ -304,10 +300,19 @@ public final class CommonHelper {
                 return getInputStreamViaHttp(name);
             case HttpConstants.SCHEME_HTTPS:
                 return getInputStreamViaHttp(name);
+            case FILE_PREFIX:
+                return newFileInputStream(path);
             default:
                 throw new TechnicalException("prefix is not handled:" + prefix);
         }
+    }
 
+    private static FileInputStream newFileInputStream(final String name) {
+        try {
+            return new FileInputStream(name);
+        } catch (FileNotFoundException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     private static InputStream getInputStreamViaHttp(String name) {
@@ -362,8 +367,8 @@ public final class CommonHelper {
                     }
                     final String sUrl = url.toString();
                     // create filename from url if we know the prefix (we remove it)
-                    if (sUrl.startsWith(FILE_PREFIX)) {
-                        filename = sUrl.substring(FILE_PREFIX.length());
+                    if (sUrl.startsWith(FILE_PREFIX + ":")) {
+                        filename = sUrl.substring(FILE_PREFIX.length() + 1);
                     } else {
                         throw new TechnicalException("Unsupported resource format: " + sUrl + ". Use a relative or absolute path");
                     }
