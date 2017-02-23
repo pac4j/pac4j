@@ -71,7 +71,7 @@ public class FacebookClient extends OAuth20Client<FacebookProfile> {
         });
         configuration.setWithState(true);
         setConfiguration(configuration);
-        setProfileCreator(new FacebookProfileCreator(configuration));
+        defaultProfileCreator(new FacebookProfileCreator(configuration));
 
         super.clientInit(context);
     }

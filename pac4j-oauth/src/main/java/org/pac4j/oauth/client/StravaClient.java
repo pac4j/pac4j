@@ -41,7 +41,7 @@ public class StravaClient extends OAuth20Client<StravaProfile> {
         configuration.setProfileDefinition(new StravaProfileDefinition());
         configuration.setScope(this.scope);
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.strava.com/session"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.strava.com/session"));
 
         super.clientInit(context);
     }

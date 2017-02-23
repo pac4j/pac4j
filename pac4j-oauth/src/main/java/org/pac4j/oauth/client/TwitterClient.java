@@ -44,7 +44,7 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
             }
         });
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://twitter.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://twitter.com/logout"));
 
         super.clientInit(context);
     }

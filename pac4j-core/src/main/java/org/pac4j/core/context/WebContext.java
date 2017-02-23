@@ -19,18 +19,14 @@ public interface WebContext {
      *
      * @return the session store
      */
-    default SessionStore getSessionStore() {
-        throw new UnsupportedOperationException("To be implemented");
-    }
+    SessionStore getSessionStore();
 
     /**
      * Set the session store.
      *
      * @param sessionStore the session store
      */
-    default void setSessionStore(SessionStore sessionStore) {
-        throw new UnsupportedOperationException("To be implemented");
-    }
+    void setSessionStore(SessionStore sessionStore);
 
     /**
      * Return a request parameter.
@@ -105,7 +101,7 @@ public interface WebContext {
      *
      * @return the request method
      */
-    String getRequestMethod();
+    HttpConstants.HTTP_METHOD getRequestMethod();
 
     /**
      * Return the remote address.

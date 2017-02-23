@@ -19,16 +19,16 @@ public class IpClient extends DirectClient<TokenCredentials, CommonProfile> {
     public IpClient() {}
 
     public IpClient(final Authenticator tokenAuthenticator) {
-        setAuthenticator(tokenAuthenticator);
+        defaultAuthenticator(tokenAuthenticator);
     }
 
     public IpClient(final Authenticator tokenAuthenticator, final ProfileCreator profileCreator) {
-        setAuthenticator(tokenAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(tokenAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
     protected void clientInit(final WebContext context) {
-        setCredentialsExtractor(new IpExtractor(getName()));
+        defaultCredentialsExtractor(new IpExtractor(getName()));
     }
 }

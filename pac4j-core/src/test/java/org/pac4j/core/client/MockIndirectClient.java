@@ -36,9 +36,9 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
 
     @Override
     protected void clientInit(final WebContext context) {
-        setRedirectActionBuilder(ctx -> redirectAction);
-        setCredentialsExtractor(ctx -> returnCredentials.get());
-        setAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
-        setLogoutActionBuilder(getLogoutActionBuilder());
+        defaultRedirectActionBuilder(ctx -> redirectAction);
+        defaultCredentialsExtractor(ctx -> returnCredentials.get());
+        defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
+        defaultLogoutActionBuilder(getLogoutActionBuilder());
     }
 }

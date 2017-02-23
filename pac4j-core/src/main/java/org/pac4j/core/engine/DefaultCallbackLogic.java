@@ -94,7 +94,7 @@ public class DefaultCallbackLogic<R, C extends WebContext> extends ProfileManage
 
     protected void saveUserProfile(final C context, final Config config, final CommonProfile profile,
                                    final boolean multiProfile, final boolean renewSession) {
-        final ProfileManager manager = getProfileManager(context);
+        final ProfileManager manager = getProfileManager(context, config);
         if (profile != null) {
             manager.save(true, profile, multiProfile);
             if (renewSession) {

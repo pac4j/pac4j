@@ -5,9 +5,9 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.http.DefaultAjaxRequestResolver;
-import org.pac4j.core.http.DefaultCallbackUrlResolver;
+import org.pac4j.core.http.DefaultUrlResolver;
 import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.logout.NoLogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
@@ -30,7 +30,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     private boolean includeClientNameInCallbackUrl = true;
 
-    protected CallbackUrlResolver callbackUrlResolver = new DefaultCallbackUrlResolver();
+    protected UrlResolver urlResolver = new DefaultUrlResolver();
 
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
@@ -42,7 +42,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     protected final void internalInit(final WebContext context) {
         // check configuration
         CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
-        CommonHelper.assertNotNull("callbackUrlResolver", this.callbackUrlResolver);
+        CommonHelper.assertNotNull("urlResolver", this.urlResolver);
         CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
 
         clientInit(context);
@@ -137,7 +137,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     public String computeFinalCallbackUrl(final WebContext context) {
-        return callbackUrlResolver.compute(callbackUrl, context);
+        return urlResolver.compute(callbackUrl, context);
     }
 
     public boolean isIncludeClientNameInCallbackUrl() {
@@ -154,12 +154,32 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     public String getCallbackUrl() { return this.callbackUrl; }
 
-    public CallbackUrlResolver getCallbackUrlResolver() {
-        return callbackUrlResolver;
+    /**
+     * Use {@link #getUrlResolver()} instead.
+     *
+     * @return the URL resolver for the callback URL
+     */
+    @Deprecated
+    public UrlResolver getCallbackUrlResolver() {
+        return getUrlResolver();
     }
 
-    public void setCallbackUrlResolver(final CallbackUrlResolver callbackUrlResolver) {
-        this.callbackUrlResolver = callbackUrlResolver;
+    /**
+     * Use {@link #setUrlResolver(UrlResolver)} instead.
+     *
+     * @param callbackUrlResolver the URL resolver for the callback URL
+     */
+    @Deprecated
+    public void setCallbackUrlResolver(final UrlResolver callbackUrlResolver) {
+        setUrlResolver(callbackUrlResolver);
+    }
+
+    public UrlResolver getUrlResolver() {
+        return urlResolver;
+    }
+
+    public void setUrlResolver(final UrlResolver urlResolver) {
+        this.urlResolver = urlResolver;
     }
 
     public AjaxRequestResolver getAjaxRequestResolver() {
@@ -174,7 +194,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return redirectActionBuilder;
     }
 
-    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+    protected void defaultRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
         if (this.redirectActionBuilder == null) {
             this.redirectActionBuilder = redirectActionBuilder;
         }
@@ -184,16 +204,24 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
         return logoutActionBuilder;
     }
 
-    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+    protected void defaultLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
         if (this.logoutActionBuilder == null || this.logoutActionBuilder == NoLogoutActionBuilder.INSTANCE) {
             this.logoutActionBuilder = logoutActionBuilder;
         }
     }
 
+    public void setRedirectActionBuilder(final RedirectActionBuilder redirectActionBuilder) {
+        this.redirectActionBuilder = redirectActionBuilder;
+    }
+
+    public void setLogoutActionBuilder(final LogoutActionBuilder<U> logoutActionBuilder) {
+        this.logoutActionBuilder = logoutActionBuilder;
+    }
+
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
+                "urlResolver", this.urlResolver, "ajaxRequestResolver", this.ajaxRequestResolver,
                 "includeClientNameInCallbackUrl", this.includeClientNameInCallbackUrl,
                 "redirectActionBuilder", this.redirectActionBuilder, "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),

@@ -46,7 +46,7 @@ public class CasOAuthWrapperClient extends OAuth20Client<CasOAuthWrapperProfile>
         configuration.setProfileDefinition(new CasOAuthWrapperProfileDefinition());
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
-        setLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
+        defaultLogoutActionBuilder(new CasLogoutActionBuilder<>(casLogoutUrl, "service"));
 
         super.clientInit(context);
     }

@@ -30,7 +30,7 @@ public class DropBoxClient extends OAuth20Client<DropBoxProfile> {
         configuration.setProfileDefinition(new DropBoxProfileDefinition());
         configuration.setHasGrantType(true);
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.dropbox.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.dropbox.com/logout"));
 
         super.clientInit(context);
     }

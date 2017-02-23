@@ -5,16 +5,16 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 
 /**
- * The new callback url is computed from a relative callback url and the current server configuration.
+ * The new URL is computed from a relative URL and the current server configuration.
  *
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class RelativeCallbackUrlResolver implements CallbackUrlResolver {
+public class RelativeUrlResolver implements UrlResolver {
 
     @Override
-    public String compute(final String callbackUrl, WebContext context) {
-        if (context != null && callbackUrl != null && !callbackUrl.startsWith("http://") && !callbackUrl.startsWith("https://")) {
+    public String compute(final String url, WebContext context) {
+        if (context != null && url != null && !url.startsWith("http://") && !url.startsWith("https://")) {
             final StringBuilder sb = new StringBuilder();
 
             sb.append(context.getScheme()).append("://").append(context.getServerName());
@@ -25,11 +25,11 @@ public class RelativeCallbackUrlResolver implements CallbackUrlResolver {
                 sb.append(":").append(context.getServerPort());
             }
 
-            sb.append(callbackUrl.startsWith("/") ? callbackUrl : "/" + callbackUrl);
+            sb.append(url.startsWith("/") ? url : "/" + url);
 
             return sb.toString();
         }
 
-        return callbackUrl;
+        return url;
     }
 }

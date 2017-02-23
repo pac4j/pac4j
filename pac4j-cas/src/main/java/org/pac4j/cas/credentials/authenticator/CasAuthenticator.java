@@ -48,7 +48,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.init(context);
 
-        setProfileDefinition(new CasProfileDefinition());
+        defaultProfileDefinition(new CasProfileDefinition());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
         final String ticket = credentials.getToken();
         try {
-            final String finalCallbackUrl = configuration.getCallbackUrlResolver().compute(callbackUrl, context);
+            final String finalCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);
             final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);

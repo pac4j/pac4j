@@ -59,15 +59,6 @@ public final class JwtTests implements TestsConstants {
         assertToken(profile, token);
     }
 
-    @Test(expected = TechnicalException.class)
-    public void testGenerateAuthenticateIat() throws HttpAction, CredentialsException {
-        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET));
-        final FacebookProfile profile = createProfile();
-        profile.addAttribute(JwtClaims.ISSUED_AT, VALUE);
-        final String token = generator.generate(profile);
-        assertToken(profile, token);
-    }
-
     @Test
     public void testPlainJwt() throws HttpAction, CredentialsException {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
@@ -123,6 +114,18 @@ public final class JwtTests implements TestsConstants {
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
+    }
+
+    @Test
+    public void testDoubleGenerateAuthenticate() throws HttpAction, CredentialsException {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        final JwtAuthenticator authenticator = new JwtAuthenticator(new SecretSignatureConfiguration(MAC_SECRET), new SecretEncryptionConfiguration(MAC_SECRET));
+        final TokenCredentials credentials = new TokenCredentials(token, CLIENT_NAME);
+        authenticator.validate(credentials, null);
+        final FacebookProfile profile2 = (FacebookProfile) credentials.getUserProfile();
+        generator.generate(profile2);
     }
 
     @Test

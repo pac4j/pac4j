@@ -13,7 +13,6 @@ import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -48,8 +47,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
-            final CallbackUrlResolver callbackUrlResolver = configuration.getCallbackUrlResolver();
-            String currentUrl = callbackUrlResolver.compute(context.getFullRequestURL(), context);
+            String currentUrl = configuration.computeFinalUrl(context.getFullRequestURL(), context);
             final String loginUrl = configuration.computeFinalLoginUrl(context);
 
             final TokenCredentials credentials = getCredentialsExtractor().extract(context);
@@ -81,9 +79,9 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
         configuration.init(context);
 
-        setCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
+        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.setAuthenticator(new CasAuthenticator(configuration, "fake"));
+        super.defaultAuthenticator(new CasAuthenticator(configuration, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -96,7 +94,7 @@ public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfil
     }
 
     @Override
-    public void setAuthenticator(final Authenticator authenticator) {
+    protected void defaultAuthenticator(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is automatically created for each request");
     }
 

@@ -24,7 +24,7 @@ public final class MockWebContext implements WebContext {
 
     protected final Map<String, Object> attributes = new HashMap<>();
 
-    protected String method = "GET";
+    protected HttpConstants.HTTP_METHOD method = HttpConstants.HTTP_METHOD.GET;
 
     protected String serverName = "localhost";
 
@@ -127,7 +127,7 @@ public final class MockWebContext implements WebContext {
      * @param method request method
      * @return this mock web context
      */
-    public MockWebContext setRequestMethod(final String method) {
+    public MockWebContext setRequestMethod(final HttpConstants.HTTP_METHOD method) {
         this.method = method;
         return this;
     }
@@ -154,7 +154,7 @@ public final class MockWebContext implements WebContext {
     }
 
     @Override
-    public String getRequestMethod() {
+    public HttpConstants.HTTP_METHOD getRequestMethod() {
         return this.method;
     }
 

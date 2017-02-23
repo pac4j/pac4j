@@ -46,17 +46,17 @@ public class OidcClient<U extends OidcProfile> extends IndirectClient<OidcCreden
         configuration.setCallbackUrl(computeFinalCallbackUrl(context));
         configuration.init(context);
 
-        setRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
-        setCredentialsExtractor(new OidcExtractor(configuration, getName()));
-        setAuthenticator(new OidcAuthenticator(configuration));
-        setProfileCreator(new OidcProfileCreator<>(configuration));
-        setLogoutActionBuilder(new OidcLogoutActionBuilder<U>(configuration));
+        defaultRedirectActionBuilder(new OidcRedirectActionBuilder(configuration));
+        defaultCredentialsExtractor(new OidcExtractor(configuration, getName()));
+        defaultAuthenticator(new OidcAuthenticator(configuration));
+        defaultProfileCreator(new OidcProfileCreator<>(configuration));
+        defaultLogoutActionBuilder(new OidcLogoutActionBuilder<U>(configuration));
     }
 
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", this.callbackUrl,
-                "callbackUrlResolver", this.callbackUrlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
+                "urlResolver", this.urlResolver, "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(),
                 "logoutActionBuilder", getLogoutActionBuilder(), "configuration", configuration);

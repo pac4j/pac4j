@@ -83,14 +83,8 @@ public class OidcProfile extends CommonProfile {
         return (String) getAttribute(OidcProfileDefinition.ISSUER);
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getAudience() {
-        final Object audience = getAttribute(OidcProfileDefinition.AUDIENCE);
-        if (audience instanceof String) {
-            return Collections.singletonList((String) audience);
-        } else {
-            return (List<String>) audience;
-        }
+        return retrieveAudience();
     }
 
     public Date getExpirationDate() {

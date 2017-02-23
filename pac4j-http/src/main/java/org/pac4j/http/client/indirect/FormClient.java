@@ -40,7 +40,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
 
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator) {
         this.loginUrl = loginUrl;
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final String usernameParameter, final String passwordParameter,
@@ -48,25 +48,27 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
         this.loginUrl = loginUrl;
         this.usernameParameter = usernameParameter;
         this.passwordParameter = passwordParameter;
-        setAuthenticator(usernamePasswordAuthenticator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
     }
 
     public FormClient(final String loginUrl, final Authenticator usernamePasswordAuthenticator,
                       final ProfileCreator profileCreator) {
         this.loginUrl = loginUrl;
-        setAuthenticator(usernamePasswordAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(usernamePasswordAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
     protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("loginUrl", this.loginUrl);
-        this.loginUrl = callbackUrlResolver.compute(this.loginUrl, context);
         CommonHelper.assertNotBlank("usernameParameter", this.usernameParameter);
         CommonHelper.assertNotBlank("passwordParameter", this.passwordParameter);
 
-        setRedirectActionBuilder(webContext -> RedirectAction.redirect(this.loginUrl));
-        setCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
+        defaultRedirectActionBuilder(ctx -> {
+            final String finalLoginUrl = urlResolver.compute(this.loginUrl, ctx);
+            return RedirectAction.redirect(finalLoginUrl);
+        });
+        defaultCredentialsExtractor(new FormExtractor(usernameParameter, passwordParameter, getName()));
     }
 
     @Override
