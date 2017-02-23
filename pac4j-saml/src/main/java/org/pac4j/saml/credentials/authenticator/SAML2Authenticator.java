@@ -9,6 +9,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
+import org.pac4j.core.util.CommonHelper;
 import org.pac4j.saml.credentials.SAML2Credentials;
 import org.pac4j.saml.profile.SAML2Profile;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Authenticator for SAML 2.
+ * Authenticator for SAML 2.0
  *
  * @author Jerome Leleu
  * @since 2.0.0
@@ -46,13 +47,16 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         for (final Attribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
+            final String name = attribute.getName();
+            final String friendlyName = attribute.getFriendlyName();
+
             final List<String> values = new ArrayList<>();
             for (final XMLObject attributeValue : attribute.getAttributeValues()) {
                 final Element attributeValueElement = attributeValue.getDOM();
                 if (attributeValueElement != null) {
                     final String value = attributeValueElement.getTextContent();
-                    logger.debug("Adding attribute value {} for attribute {}", value,
-                            attribute.getFriendlyName());
+                    logger.debug("Adding attribute value {} for attribute {} / {}", value,
+                            name, friendlyName);
                     values.add(value);
                 } else {
                     logger.warn("Attribute value DOM element is null for {}", attribute);
@@ -60,9 +64,12 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
             }
 
             if (!values.isEmpty()) {
-                getProfileDefinition().convertAndAdd(profile, attribute.getName(), values);
+                getProfileDefinition().convertAndAdd(profile, name, values);
+                if (CommonHelper.isNotBlank(friendlyName)) {
+                    getProfileDefinition().convertAndAdd(profile, friendlyName, values);
+                }
             } else {
-                logger.debug("No attribute values found for {}", attribute.getName());
+                logger.debug("No attribute values found for {}", name);
             }
         }
 
