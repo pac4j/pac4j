@@ -66,7 +66,7 @@ public class RunAzureAdClient extends RunClient {
         assertNotNull(profile.getIssuer());
         assertEquals("788339d7-1c44-4732-97c9-134cb201f01f", profile.getAudience().get(0));
         assertEquals("live.com#" + getLogin(), profile.getUniqueName());
-        assertNotNull(profile.getNbf());
+        assertNotNull(profile.getNotBefore());
         assertEquals("live.com", profile.getIdp());
         assertNotNull(profile.getExpirationDate());
         assertNotNull(profile.getIpaddr());

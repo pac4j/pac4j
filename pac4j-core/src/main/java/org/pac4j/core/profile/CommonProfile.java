@@ -4,9 +4,6 @@ import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -112,24 +109,5 @@ public class CommonProfile extends UserProfile {
      */
     public String getLocation() {
         return (String) getAttribute(CommonProfileDefinition.LOCATION);
-    }
-
-    /**
-     * Retrieve the audience (for the JwtProfile and OidcProfile).
-     *
-     * @return the audience
-     */
-    @SuppressWarnings("unchecked")
-    protected List<String> retrieveAudience() {
-        final Object audience = getAttribute(CommonProfileDefinition.AUDIENCE);
-        if (audience instanceof String) {
-            return Collections.singletonList((String) audience);
-        } else if (audience instanceof String[]) {
-            return Arrays.asList((String[]) audience);
-        } else if (audience instanceof List) {
-            return (List<String>) audience;
-        } else {
-            return null;
-        }
     }
 }

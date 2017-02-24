@@ -91,7 +91,7 @@ public class RunIdentityServer4 extends RunClient {
         assertEquals("818727", profile.getId());
         assertNotNull(profile.getIdToken());
         assertEquals("test", profile.getAudience().get(0));
-        assertNotNull(profile.getNbf());
+        assertNotNull(profile.getNotBefore());
         assertEquals("idsvr", profile.getAttribute("idp"));
         assertNotNull(profile.getAuthTime());
         assertEquals("http://localhost:1941", profile.getIssuer());

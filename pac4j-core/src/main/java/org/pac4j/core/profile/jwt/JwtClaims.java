@@ -1,4 +1,4 @@
-package org.pac4j.jwt;
+package org.pac4j.core.profile.jwt;
 
 /**
  * JWT claims: https://tools.ietf.org/html/rfc7519#page-9
@@ -19,4 +19,6 @@ public interface JwtClaims {
     String ISSUED_AT       = "iat";
 
     String JWT_ID          = "jti";
+
+    String AUDIENCE        = "aud";
 }

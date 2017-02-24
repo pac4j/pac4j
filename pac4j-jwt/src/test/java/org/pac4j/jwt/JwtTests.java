@@ -6,6 +6,7 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.util.TestsHelper;

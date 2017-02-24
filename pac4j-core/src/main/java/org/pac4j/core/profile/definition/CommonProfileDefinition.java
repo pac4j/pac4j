@@ -22,7 +22,6 @@ public class CommonProfileDefinition<P extends CommonProfile> extends ProfileDef
     public static final String PICTURE_URL = "picture_url";
     public static final String PROFILE_URL = "profile_url";
     public static final String LOCATION = "location";
-    public static final String AUDIENCE = "aud";
 
     public CommonProfileDefinition() {
         primary(EMAIL, Converters.STRING);

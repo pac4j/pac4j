@@ -21,6 +21,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
+import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -167,7 +168,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
             for (final Map.Entry<String, Object> entry : idToken.getJWTClaimsSet().getClaims().entrySet()) {
                 final String key = entry.getKey();
                 final Object value = entry.getValue();
-                if (profile.getAttribute(key) == null) {
+                // it's not the subject and this attribute does not already exist, add it
+                if (!JwtClaims.SUBJECT.equals(key) && profile.getAttribute(key) == null) {
                     getProfileDefinition().convertAndAdd(profile, key, value);
                 }
             }
