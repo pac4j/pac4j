@@ -33,6 +33,9 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private String usernameAttribute = USERNAME;
+    private String passwordAttribute = PASSWORD;
+
     private PasswordEncoder passwordEncoder;
 
     private JavaSerializationHelper javaSerializationHelper = new JavaSerializationHelper();
@@ -45,13 +48,16 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected void internalInit(final WebContext context) {
         assertNotNull("passwordEncoder", passwordEncoder);
         assertNotNull("profileDefinition", getProfileDefinition());
+        assertNotNull("usernameAttribute", this.usernameAttribute);
+        assertNotNull("passwordAttribute", this.passwordAttribute);
+
         if (isNotBlank(attributes)) {
             attributeNames = attributes.split(",");
             for (final String attributeName : attributeNames) {
                 if (ID.equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
-                        USERNAME.equalsIgnoreCase(attributeName) || PASSWORD.equalsIgnoreCase(attributeName) ||
+                        getUsernameAttribute().equalsIgnoreCase(attributeName) || getPasswordAttribute().equalsIgnoreCase(attributeName) ||
                         SERIALIZED_PROFILE.equalsIgnoreCase(attributeName)) {
-                    throw new TechnicalException("The id, linkedid, username, password and serializedprofile attributes are not allowed");
+                    throw new TechnicalException("The id, linkedid, ''username'', ''password'' and serializedprofile attributes are not allowed");
                 }
             }
         } else {
@@ -109,15 +115,15 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      * @param password the password
      * @return the attributes
      */
-    protected final Map<String, Object> convertProfileAndPasswordToAttributes(final U profile, final String password) {
+    protected Map<String, Object> convertProfileAndPasswordToAttributes(final U profile, final String password) {
         final Map<String, Object> storageAttributes = new HashMap<>();
         storageAttributes.put(ID, profile.getId());
         storageAttributes.put(LINKEDID, profile.getLinkedId());
-        storageAttributes.put(USERNAME, profile.getUsername());
+        storageAttributes.put(getUsernameAttribute(), profile.getUsername());
         // if a password has been provided, encode it
         if (isNotBlank(password)) {
             final String encodedPassword = passwordEncoder.encode(password);
-            storageAttributes.put(PASSWORD, encodedPassword);
+            storageAttributes.put(getPasswordAttribute(), encodedPassword);
         }
         // legacy mode: save the defined attributes
         if (isLegacyMode()) {
@@ -158,8 +164,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
         assertNotBlank(ID, id);
 
-        final Map<String, Object> attributes = read(defineAttributesToRead(), ID, id);
-        return convertAttributesToProfile(attributes);
+        final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), ID, id);
+        return convertAttributesToProfile(listAttributes);
     }
 
     @Override
@@ -168,8 +174,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
         assertNotBlank(LINKEDID, linkedId);
 
-        final Map<String, Object> attributes = read(defineAttributesToRead(), LINKEDID, linkedId);
-        return convertAttributesToProfile(attributes);
+        final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), LINKEDID, linkedId);
+        return convertAttributesToProfile(listAttributes);
     }
 
     /**
@@ -183,7 +189,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         names.add(LINKEDID);
         // legacy mode: id + linkedid + username + attributes
         if (isLegacyMode()) {
-            names.add(USERNAME);
+            names.add(getUsernameAttribute());
             names.addAll(Arrays.asList(attributeNames));
         } else {
             // new beahviour (>= v2.0): id + linkedid + serializedprofile
@@ -193,15 +199,16 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     }
 
     /**
-     * Convert the map of attributes from the storage into a profile.
+     * Convert the list of map of attributes from the storage into a profile.
      *
-     * @param storageAttributes the attributes
+     * @param listStorageAttributes the list of map of attributes
      * @return the profile
      */
-    protected U convertAttributesToProfile(final Map<String, Object> storageAttributes) {
-        if (storageAttributes == null) {
+    protected U convertAttributesToProfile(final List<Map<String, Object>> listStorageAttributes) {
+        if (listStorageAttributes == null || listStorageAttributes.size() == 0) {
             return null;
         }
+        final Map<String, Object> storageAttributes = listStorageAttributes.get(0);
 
         final String linkedId = (String) storageAttributes.get(LINKEDID);
         // legacy mode: only read the defined attributes
@@ -210,7 +217,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             for (final String attributeName : attributeNames) {
                 getProfileDefinition().convertAndAdd(profile, attributeName, storageAttributes.get(attributeName));
             }
-            profile.setId((String) storageAttributes.get(USERNAME));
+            profile.setId(storageAttributes.get(getUsernameAttribute()));
             if (isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);
             }
@@ -230,14 +237,14 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     }
 
     /**
-     * Read the defined attributes in the storage for key=value query.
+     * Read the list of defined attributes in the storage for key=value query.
      *
      * @param names the attribute names to read
      * @param key the key for the query
      * @param value the value for the query
-     * @return the attributes
+     * @return the list of map of attributes
      */
-    protected abstract Map<String, Object> read(final List<String> names, final String key, final String value);
+    protected abstract List<Map<String, Object>> read(final List<String> names, final String key, final String value);
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
@@ -254,17 +261,20 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         attributesToRead.add(PASSWORD);
 
         try {
-            final Map<String, Object> attributes = read(attributesToRead, USERNAME, username);
-            if (attributes == null) {
+            final List<Map<String, Object>> listAttributes = read(attributesToRead, getUsernameAttribute(), username);
+            if (listAttributes == null || listAttributes.isEmpty()) {
                 throw new AccountNotFoundException("No account found for: " + username);
-            }
-            final String retrievedPassword = (String) attributes.get(PASSWORD);
-            // check password
-            if (!passwordEncoder.matches(password, retrievedPassword)) {
-                throw new BadCredentialsException("Bad credentials for: " + username);
+            } else if (listAttributes.size() > 1) {
+                throw new MultipleAccountsFoundException("Too many accounts found for: " + username);
             } else {
-                final U profile = convertAttributesToProfile(attributes);
-                credentials.setUserProfile(profile);
+                final String retrievedPassword = (String) listAttributes.get(0).get(getPasswordAttribute());
+                // check password
+                if (!passwordEncoder.matches(password, retrievedPassword)) {
+                    throw new BadCredentialsException("Bad credentials for: " + username);
+                } else {
+                    final U profile = convertAttributesToProfile(listAttributes);
+                    credentials.setUserProfile(profile);
+                }
             }
 
         } catch (final TechnicalException e) {
@@ -308,5 +318,21 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     public void setJavaSerializationHelper(final JavaSerializationHelper javaSerializationHelper) {
         this.javaSerializationHelper = javaSerializationHelper;
+    }
+
+    public String getUsernameAttribute() {
+        return usernameAttribute;
+    }
+
+    public void setUsernameAttribute(final String usernameAttribute) {
+        this.usernameAttribute = usernameAttribute;
+    }
+
+    public String getPasswordAttribute() {
+        return passwordAttribute;
+    }
+
+    public void setPasswordAttribute(final String passwordAttribute) {
+        this.passwordAttribute = passwordAttribute;
     }
 }

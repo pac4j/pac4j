@@ -2,7 +2,6 @@ package org.pac4j.sql.profile.service;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.password.PasswordEncoder;
-import org.pac4j.core.exception.MultipleAccountsFoundException;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.CommonHelper;
@@ -125,25 +124,18 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     }
 
     @Override
-    protected Map<String, Object> read(final List<String> names, final String key, final String value) {
+    protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         final String attributesList = buildAttributesList(names);
 
         final String query = "select " + attributesList + " from " + usersTable + " where " + key + " = :" + key;
         return query(query, key, value);
     }
 
-    protected Map<String, Object> query(final String query, final String key, final String value) {
+    protected List<Map<String, Object>> query(final String query, final String key, final String value) {
         Handle h = null;
         try {
             h = dbi.open();
-            final List<Map<String, Object>> results = h.createQuery(query).bind(key, value).list(2);
-            if (results == null || results.isEmpty()) {
-                return null;
-            } else if (results.size() > 1) {
-                throw new MultipleAccountsFoundException("Too many accounts found for: " + value);
-            } else {
-                return results.get(0);
-            }
+            return h.createQuery(query).bind(key, value).list(2);
         } finally {
             if (h != null) {
                 h.close();
@@ -184,6 +176,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
-                "attributes", getAttributes(), "profileDefinition", getProfileDefinition(), "usersTable", usersTable);
+                "attributes", getAttributes(), "profileDefinition", getProfileDefinition(), "usersTable", usersTable,
+                "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }
 }
