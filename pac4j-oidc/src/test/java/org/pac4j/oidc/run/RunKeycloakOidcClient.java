@@ -68,7 +68,7 @@ public class RunKeycloakOidcClient extends RunClient {
         final OidcProfile profile = (OidcProfile) userProfile;
         assertEquals(IDENTIFIER, profile.getId());
         assertNotNull(profile.getIdToken());
-        assertNotNull(profile.getNbf());
+        assertNotNull(profile.getNotBefore());
         assertEquals(ISSUER, profile.getIssuer());
         assertEquals(NAME_VALUE, profile.getDisplayName());
         assertNotNull(profile.getExpirationDate());
