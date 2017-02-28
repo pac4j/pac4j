@@ -51,7 +51,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     public void testNoConfigWithCollections() {
         final FromAttributesAuthorizationGenerator<CommonProfile> generator =
                 new FromAttributesAuthorizationGenerator<>(new ArrayList<>(), new HashSet<>());
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
     }
@@ -60,7 +60,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
     public void testNoConfig() {
         final FromAttributesAuthorizationGenerator<CommonProfile> generator =
                 new FromAttributesAuthorizationGenerator<>((String[]) null, (String[]) null);
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         assertEquals(0, this.profile.getPermissions().size());
     }
@@ -76,7 +76,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
                                                                                                                                       roleAttributes,
                                                                                                                                       permissionAttributes);
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
@@ -98,7 +98,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
                                                                                                                                       roleAttributes,
                                                                                                                                       permissionAttributes);
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         assertEquals(0, this.profile.getRoles().size());
         final Set<String> permissions = this.profile.getPermissions();
         assertEquals(2, permissions.size());
@@ -117,7 +117,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
         final FromAttributesAuthorizationGenerator<CommonProfile> generator = new FromAttributesAuthorizationGenerator<CommonProfile>(
                                                                                                                                       roleAttributes,
                                                                                                                                       permissionAttributes);
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.contains("info11"));
@@ -137,7 +137,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                                                                                                                                       roleAttributes,
                                                                                                                                       permissionAttributes);
         generator.setSplitChar("|");
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(1, roles.size());
         assertTrue(roles.contains(VALUE1));
@@ -159,7 +159,7 @@ public final class FromAttributesAuthorizationGeneratorTests {
                 roleAttributes,
                 permissionAttributes);
 
-        generator.generate(this.profile);
+        generator.generate(null, this.profile);
         final Set<String> roles = this.profile.getRoles();
         assertEquals(ATTRIB_ARRAY.length + ATTRIB_LIST.size(), roles.size());
         for(String value : ATTRIB_ARRAY) {

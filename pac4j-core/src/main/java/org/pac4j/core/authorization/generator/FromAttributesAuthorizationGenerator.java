@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
@@ -40,9 +41,11 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
         }
     }
 
-    public void generate(final U profile) {
+    @Override
+    public U generate(final WebContext context, final U profile) {
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
+        return profile;
     }
 
     private void generateAuth(final U profile, final Iterable<String> attributes, final boolean isRole) {
