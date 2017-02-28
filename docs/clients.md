@@ -55,16 +55,19 @@ To compute the appropriate roles and permissions of the authenticated user profi
 **Example:**
 
 ```java
-AuthorizationGenerator authGen = profile -> {
+AuthorizationGenerator authGen = (ctx, profile) -> {
   String roles = profile.getAttribute("roles");
   for (String role: roles.split(",")) {
     profile.addRole(role);
   }
+  return profile;
 };
 client.addAuthorizationGenerator(authGen);
 ```
 
-In fact, you can add as many authorization generators as you want using the `addAuthorizationGenerator` method or a list of authorization generators using the `setAuthorizationGenerators` method.
+And you can add as many authorization generators as you want using the `addAuthorizationGenerator` method or a list of authorization generators using the `setAuthorizationGenerators` method.
+
+In fact, the `AuthorizationGenerator` component can be used to do more than just computing roles and permissions, like defining the remember-me nature of a profile based on a remember-me checkbox of a form (see: [`RememberMeAuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/authorization/generator/RememberMeAuthorizationGenerator.java)).
 
 ---
 

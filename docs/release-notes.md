@@ -16,6 +16,7 @@ title: Release notes&#58;
 - Authenticators may throw the checked `CredentialsException`
 - Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
 - Added new matcher `PathMatcher` and deprecated `ExcludedPathMatcher`
+- The `AuthorizationGenerator` takes the `WebContext` as input and can return a new built profile
 - Using Spring framework `Resource` components for SAML files / URLs
 
 
