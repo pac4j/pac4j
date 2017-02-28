@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.*;
+import static org.pac4j.core.util.CommonHelper.assertNotNull;
 
 /**
  * The MongoDB profile service (which supersedes the Mongo authenticator).
@@ -58,6 +59,7 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
 
     @Override
     protected void internalInit(final WebContext context) {
+        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("mongoClient", this.mongoClient);
         CommonHelper.assertNotBlank("usersDatabase", this.usersDatabase);
         CommonHelper.assertNotBlank("usersCollection", this.usersCollection);

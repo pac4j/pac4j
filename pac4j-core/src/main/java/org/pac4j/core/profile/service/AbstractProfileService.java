@@ -42,11 +42,10 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     private String attributes;
 
-    private String[] attributeNames;
+    protected String[] attributeNames;
 
     @Override
     protected void internalInit(final WebContext context) {
-        assertNotNull("passwordEncoder", passwordEncoder);
         assertNotNull("profileDefinition", getProfileDefinition());
         assertNotBlank("usernameAttribute", this.usernameAttribute);
         assertNotBlank("passwordAttribute", this.passwordAttribute);
@@ -122,7 +121,13 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         storageAttributes.put(getUsernameAttribute(), profile.getUsername());
         // if a password has been provided, encode it
         if (isNotBlank(password)) {
-            final String encodedPassword = passwordEncoder.encode(password);
+            final String encodedPassword;
+            // encode password if we have a passwordEncoder (MongoDB, SQL but not for LDAP)
+            if (passwordEncoder != null) {
+                encodedPassword = passwordEncoder.encode(password);
+            } else {
+                encodedPassword = password;
+            }
             storageAttributes.put(getPasswordAttribute(), encodedPassword);
         }
         // legacy mode: save the defined attributes
