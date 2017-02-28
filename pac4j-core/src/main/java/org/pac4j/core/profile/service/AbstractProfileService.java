@@ -56,7 +56,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 if (ID.equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
                         getUsernameAttribute().equalsIgnoreCase(attributeName) || getPasswordAttribute().equalsIgnoreCase(attributeName) ||
                         SERIALIZED_PROFILE.equalsIgnoreCase(attributeName)) {
-                    throw new TechnicalException("The id, linkedid, ''username'', ''password'' and serializedprofile attributes are not allowed");
+                    throw new TechnicalException("The id, linkedid, getUsernameAttribute(), getPasswordAttribute() and serializedprofile attributes are not allowed");
                 }
             }
         } else {

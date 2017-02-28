@@ -42,17 +42,21 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     public LdapProfileService() {}
 
-    public LdapProfileService(final Connection connection, final Authenticator ldapAuthenticator, final String usersDn, final String uidAttribute) {
-        this.connection = connection;
+    public LdapProfileService(final Authenticator ldapAuthenticator) {
         this.ldapAuthenticator = ldapAuthenticator;
-        this.usersDn = usersDn;
-        this.uidAttribute = uidAttribute;
     }
 
     @Deprecated
     public LdapProfileService(final Authenticator ldapAuthenticator, final String attributes) {
         this.ldapAuthenticator = ldapAuthenticator;
         setAttributes(attributes);
+    }
+
+    public LdapProfileService(final Connection connection, final Authenticator ldapAuthenticator, final String usersDn, final String uidAttribute) {
+        this.connection = connection;
+        this.ldapAuthenticator = ldapAuthenticator;
+        this.usersDn = usersDn;
+        this.uidAttribute = uidAttribute;
     }
 
     @Override
@@ -97,8 +101,9 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         final AuthenticationResponse response;
         try {
             logger.debug("Attempting LDAP authentication for: {}", credentials);
+            final List<String> attributesToRead = defineAttributesToRead();
             final AuthenticationRequest request = new AuthenticationRequest(username, new org.ldaptive.Credential(credentials.getPassword()),
-                    (String[]) defineAttributesToRead().toArray());
+                    attributesToRead.toArray(new String[attributesToRead.size()]));
             response = this.ldapAuthenticator.authenticate(request);
         } catch (final LdapException e) {
             throw new TechnicalException("Unexpected LDAP error", e);
