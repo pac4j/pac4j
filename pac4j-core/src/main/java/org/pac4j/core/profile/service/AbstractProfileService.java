@@ -48,8 +48,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     protected void internalInit(final WebContext context) {
         assertNotNull("passwordEncoder", passwordEncoder);
         assertNotNull("profileDefinition", getProfileDefinition());
-        assertNotNull("usernameAttribute", this.usernameAttribute);
-        assertNotNull("passwordAttribute", this.passwordAttribute);
+        assertNotBlank("usernameAttribute", this.usernameAttribute);
+        assertNotBlank("passwordAttribute", this.passwordAttribute);
 
         if (isNotBlank(attributes)) {
             attributeNames = attributes.split(",");

@@ -115,6 +115,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         Handle h = null;
         try {
             h = dbi.open();
+            logger.debug("Execute query: {} and values: {}", query, args);
             h.execute(query, args);
         } finally {
             if (h != null) {
@@ -135,6 +136,7 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         Handle h = null;
         try {
             h = dbi.open();
+            logger.debug("Query: {} for key/value: {} / {}", query, key, value);
             return h.createQuery(query).bind(key, value).list(2);
         } finally {
             if (h != null) {
@@ -171,6 +173,10 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     public void setUsersTable(final String usersTable) {
         CommonHelper.assertNotBlank("usersTable", usersTable);
         this.usersTable = usersTable;
+    }
+
+    public DBI getDbi() {
+        return dbi;
     }
 
     @Override
