@@ -194,7 +194,7 @@ public final class ClientsTests implements TestsConstants {
     public void testDefineAjaxCallbackResolverAuthGenerator() {
         final AjaxRequestResolver ajaxRequestResolver = ctx -> false;
         final UrlResolver urlResolver = (url, ctx) -> url;
-        final AuthorizationGenerator authorizationGenerator = profile -> {};
+        final AuthorizationGenerator authorizationGenerator = (ctx, profile) -> profile;
         final MockIndirectClient facebookClient = newFacebookClient();
         final Clients clients = new Clients(CALLBACK_URL, facebookClient);
         clients.setAjaxRequestResolver(ajaxRequestResolver);

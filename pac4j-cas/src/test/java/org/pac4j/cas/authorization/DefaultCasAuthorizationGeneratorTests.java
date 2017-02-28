@@ -25,7 +25,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         Map<String, Object> attributes = new HashMap<>();
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(profile);
+        generator.generate(null, profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -36,7 +36,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "yes");
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(profile);
+        generator.generate(null, profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -47,7 +47,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "false");
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(profile);
+        generator.generate(null, profile);
         assertEquals(false, profile.isRemembered());
     }
 
@@ -58,7 +58,7 @@ public final class DefaultCasAuthorizationGeneratorTests implements TestsConstan
         attributes.put(DefaultCasAuthorizationGenerator.DEFAULT_REMEMBER_ME_ATTRIBUTE_NAME, "true");
         final CasProfile profile = new CasProfile();
         profile.build(ID, attributes);
-        generator.generate(profile);
+        generator.generate(null, profile);
         assertEquals(true, profile.isRemembered());
     }
 }

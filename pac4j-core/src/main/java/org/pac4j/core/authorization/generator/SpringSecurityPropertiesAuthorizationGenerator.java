@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -42,11 +43,12 @@ public final class SpringSecurityPropertiesAuthorizationGenerator<U extends Comm
     }
 
     @Override
-    public void generate(final U profile) {
+    public U generate(final WebContext context, final U profile) {
         final String id = profile.getId();
         final List<String> roles = rolesByUsers.get(id);
         if (roles != null && !roles.isEmpty()) {
             profile.addRoles(roles);
         }
+        return profile;
     }
 }
