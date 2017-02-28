@@ -2,6 +2,7 @@ package org.pac4j.cas.authorization;
 
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -27,9 +28,11 @@ public class DefaultCasAuthorizationGenerator<U extends CommonProfile> implement
         this.rememberMeAttributeName = rememberMeAttributeName;
     }
 
-    public void generate(U profile) {
+    @Override
+    public U generate(final WebContext context, final U profile) {
         String rememberMeValue = (String) profile.getAttribute(rememberMeAttributeName);
         boolean isRemembered = rememberMeValue != null && Boolean.parseBoolean(rememberMeValue);
         profile.setRemembered(isRemembered);
+        return profile;
     }
 }
