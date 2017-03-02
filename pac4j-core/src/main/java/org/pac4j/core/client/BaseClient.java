@@ -80,12 +80,12 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
             return null;
         }
 
-        final U profile = retrieveUserProfile(credentials, context);
+        U profile = retrieveUserProfile(credentials, context);
         if (profile != null) {
             profile.setClientName(getName());
             if (this.authorizationGenerators != null) {
                 for (AuthorizationGenerator<U> authorizationGenerator : this.authorizationGenerators) {
-                    authorizationGenerator.generate(profile);
+                    profile = authorizationGenerator.generate(context, profile);
                 }
             }
         }

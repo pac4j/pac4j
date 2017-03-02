@@ -31,7 +31,7 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     private void checkEmptyProfile(final DefaultRolesPermissionsAuthorizationGenerator generator) {
         final CommonProfile profile = new CommonProfile();
-        generator.generate(profile);
+        generator.generate(null, profile);
         assertEquals(0, profile.getRoles().size());
         assertEquals(0, profile.getPermissions().size());
     }
@@ -50,7 +50,7 @@ public final class DefaultRolesPermissionsAuthorizationGeneratorTests {
 
     private void checkProfile(final DefaultRolesPermissionsAuthorizationGenerator generator) {
         final CommonProfile profile = new CommonProfile();
-        generator.generate(profile);
+        generator.generate(null, profile);
         final Set<String> roles = profile.getRoles();
         assertEquals(2, roles.size());
         assertTrue(roles.containsAll(DEFAULT_ROLES_LIST));
