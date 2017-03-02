@@ -11,7 +11,7 @@ import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.ldap.profile.LdapProfile;
-import org.pac4j.ldap.test.tools.AuthenticatorGenerator;
+import org.pac4j.ldap.test.tools.LdapClient;
 import org.pac4j.ldap.test.tools.LdapServer;
 
 import java.util.Collection;
@@ -34,7 +34,7 @@ public final class LdapAuthenticatorTests implements TestsConstants {
     public void setUp() {
         ldapServer = new LdapServer();
         ldapServer.start();
-        authenticator = AuthenticatorGenerator.create();
+        authenticator = new LdapClient().getAuthenticator();
     }
 
     @After

@@ -1,9 +1,6 @@
 package org.pac4j.ldap.profile.service;
 
-import org.ldaptive.Connection;
-import org.ldaptive.LdapAttribute;
-import org.ldaptive.LdapEntry;
-import org.ldaptive.LdapException;
+import org.ldaptive.*;
 import org.ldaptive.auth.AuthenticationRequest;
 import org.ldaptive.auth.AuthenticationResponse;
 import org.ldaptive.auth.AuthenticationResultCode;
@@ -30,15 +27,11 @@ import java.util.Map;
  */
 public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
-    private static final String UID = "uid";
-
     private Authenticator ldapAuthenticator;
 
-    private Connection connection;
+    private ConnectionFactory connectionFactory;
 
     private String usersDn;
-
-    private String uidAttribute = UID;
 
     public LdapProfileService() {}
 
@@ -52,20 +45,26 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         setAttributes(attributes);
     }
 
-    public LdapProfileService(final Connection connection, final Authenticator ldapAuthenticator, final String usersDn, final String uidAttribute) {
-        this.connection = connection;
+    public LdapProfileService(final ConnectionFactory connectionFactory, final Authenticator ldapAuthenticator, final String usersDn) {
+        this.connectionFactory = connectionFactory;
         this.ldapAuthenticator = ldapAuthenticator;
         this.usersDn = usersDn;
-        this.uidAttribute = uidAttribute;
+    }
+
+    @Deprecated
+    public LdapProfileService(final ConnectionFactory connectionFactory, final Authenticator ldapAuthenticator, final String attributes, final String usersDn) {
+        this.connectionFactory = connectionFactory;
+        this.ldapAuthenticator = ldapAuthenticator;
+        setAttributes(attributes);
+        this.usersDn = usersDn;
     }
 
     @Override
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("ldapAuthenticator", ldapAuthenticator);
-        //CommonHelper.assertNotNull("connection", connection);
+        CommonHelper.assertNotNull("connectionFactory", connectionFactory);
         CommonHelper.assertNull("passwordEncoder", getPasswordEncoder());
-        //CommonHelper.assertNotBlank("usersDn", usersDn);
-        //CommonHelper.assertNotBlank("uidAttribute", uidAttribute);
+        CommonHelper.assertNotBlank("usersDn", usersDn);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new LdapProfile()));
 
         super.internalInit(context);
@@ -73,7 +72,37 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected void insert(final Map<String, Object> attributes) {
-        // TODO
+        final LdapEntry ldapEntry = new LdapEntry(getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn);
+        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+            final Object value = entry.getValue();
+            if (value != null) {
+                final String key = entry.getKey();
+                final LdapAttribute ldapAttribute;
+                if (value instanceof String) {
+                    ldapAttribute = new LdapAttribute(key, (String) value);
+                } else if (value instanceof List) {
+                    final List<String> list = (List<String>) value;
+                    ldapAttribute = new LdapAttribute(key, list.toArray(new String[list.size()]));
+                } else {
+                    ldapAttribute = new LdapAttribute(key, value.toString());
+                }
+                ldapEntry.addAttribute(ldapAttribute);
+            }
+        }
+
+        Connection connection = null;
+        try {
+            connection = connectionFactory.getConnection();
+            connection.open();
+            final AddOperation add = new AddOperation(connection);
+            add.execute(new AddRequest(ldapEntry.getDn(), ldapEntry.getAttributes()));
+        } catch (final LdapException e) {
+            throw new TechnicalException(e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     @Override
@@ -102,7 +131,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         try {
             logger.debug("Attempting LDAP authentication for: {}", credentials);
             final List<String> attributesToRead = defineAttributesToRead();
-            final AuthenticationRequest request = new AuthenticationRequest(username, new org.ldaptive.Credential(credentials.getPassword()),
+            final AuthenticationRequest request = new AuthenticationRequest(username, new Credential(credentials.getPassword()),
                     attributesToRead.toArray(new String[attributesToRead.size()]));
             response = this.ldapAuthenticator.authenticate(request);
         } catch (final LdapException e) {
@@ -134,12 +163,12 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         throw new BadCredentialsException("Invalid credentials for: " + username);
     }
 
-    public Connection getConnection() {
-        return connection;
+    public ConnectionFactory getConnectionFactory() {
+        return connectionFactory;
     }
 
-    public void setConnection(final Connection connection) {
-        this.connection = connection;
+    public void setConnectionFactory(final ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
     public String getUsersDn() {
@@ -158,17 +187,9 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         this.ldapAuthenticator = ldapAuthenticator;
     }
 
-    public String getUidAttribute() {
-        return uidAttribute;
-    }
-
-    public void setUidAttribute(final String uidAttribute) {
-        this.uidAttribute = uidAttribute;
-    }
-
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "connection", connection, "ldapAuthenticator", ldapAuthenticator, "usersDn", usersDn,
-                "uidAttribute", uidAttribute, "attributes", getAttributes(), "profileDefinition", getProfileDefinition());
+        return CommonHelper.toString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator, "usersDn", usersDn,
+                "idAttribute", getIdAttribute(), "attributes", getAttributes(), "profileDefinition", getProfileDefinition());
     }
 }

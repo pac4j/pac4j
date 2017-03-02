@@ -184,6 +184,6 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "dataSource", dataSource, "passwordEncoder", getPasswordEncoder(),
                 "attributes", getAttributes(), "profileDefinition", getProfileDefinition(), "usersTable", usersTable,
-                "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
+                "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }
 }

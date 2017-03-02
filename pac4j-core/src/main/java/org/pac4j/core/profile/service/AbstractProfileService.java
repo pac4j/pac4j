@@ -35,6 +35,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     private String usernameAttribute = USERNAME;
     private String passwordAttribute = PASSWORD;
+    private String idAttribute = ID;
 
     private PasswordEncoder passwordEncoder;
 
@@ -49,14 +50,15 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotNull("profileDefinition", getProfileDefinition());
         assertNotBlank("usernameAttribute", this.usernameAttribute);
         assertNotBlank("passwordAttribute", this.passwordAttribute);
+        assertNotBlank("idAttribute", this.idAttribute);
 
         if (isNotBlank(attributes)) {
             attributeNames = attributes.split(",");
             for (final String attributeName : attributeNames) {
-                if (ID.equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
+                if (getIdAttribute().equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
                         getUsernameAttribute().equalsIgnoreCase(attributeName) || getPasswordAttribute().equalsIgnoreCase(attributeName) ||
                         SERIALIZED_PROFILE.equalsIgnoreCase(attributeName)) {
-                    throw new TechnicalException("The id, linkedid, getUsernameAttribute(), getPasswordAttribute() and serializedprofile attributes are not allowed");
+                    throw new TechnicalException("The 'getIdAttribute()', linkedid, 'getUsernameAttribute()', 'getPasswordAttribute()' and serializedprofile attributes are not allowed");
                 }
             }
         } else {
@@ -116,7 +118,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      */
     protected Map<String, Object> convertProfileAndPasswordToAttributes(final U profile, final String password) {
         final Map<String, Object> storageAttributes = new HashMap<>();
-        storageAttributes.put(ID, profile.getId());
+        storageAttributes.put(getIdAttribute(), profile.getId());
         storageAttributes.put(LINKEDID, profile.getLinkedId());
         storageAttributes.put(getUsernameAttribute(), profile.getUsername());
         // if a password has been provided, encode it
@@ -167,9 +169,9 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
     public U findById(final String id) {
         init(null);
 
-        assertNotBlank(ID, id);
+        assertNotBlank(getIdAttribute(), id);
 
-        final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), ID, id);
+        final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), getIdAttribute(), id);
         return convertAttributesToProfile(listAttributes);
     }
 
@@ -190,14 +192,14 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      */
     protected List<String> defineAttributesToRead() {
         final List<String> names = new ArrayList<>();
-        names.add(ID);
+        names.add(getIdAttribute());
         names.add(LINKEDID);
-        // legacy mode: id + linkedid + username + attributes
+        // legacy mode: 'getIdAttribute()' + linkedid + username + attributes
         if (isLegacyMode()) {
             names.add(getUsernameAttribute());
             names.addAll(Arrays.asList(attributeNames));
         } else {
-            // new beahviour (>= v2.0): id + linkedid + serializedprofile
+            // new beahviour (>= v2.0): 'getIdAttribute()' + linkedid + serializedprofile
             names.add(SERIALIZED_PROFILE);
         }
         return names;
@@ -230,7 +232,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         } else {
             // new behaviour (>= v2.0): read the serialized profile
             final U profile = (U) javaSerializationHelper.unserializeFromBase64((String) storageAttributes.get(SERIALIZED_PROFILE));
-            final Object id = storageAttributes.get(ID);
+            final Object id = storageAttributes.get(getIdAttribute());
             if (isBlank(profile.getId()) && id != null) {
                 profile.setId(id);
             }
@@ -339,5 +341,13 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     public void setPasswordAttribute(final String passwordAttribute) {
         this.passwordAttribute = passwordAttribute;
+    }
+
+    public String getIdAttribute() {
+        return idAttribute;
+    }
+
+    public void setIdAttribute(final String idAttribute) {
+        this.idAttribute = idAttribute;
     }
 }
