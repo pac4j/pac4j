@@ -2,6 +2,7 @@ package org.pac4j.ldap.profile.service;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.auth.Authenticator;
@@ -11,13 +12,17 @@ import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.ldap.profile.LdapProfile;
 import org.pac4j.ldap.test.tools.LdapClient;
 import org.pac4j.ldap.test.tools.LdapServer;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -29,7 +34,11 @@ import static org.junit.Assert.*;
  */
 public final class LdapProfileServiceTests implements TestsConstants {
 
-    private static final String USERS_DN = ",ou=people,dc=ldaptive,dc=org";
+    private static final String LDAP_ID = "ldapid";
+    private static final String LDAP_LINKED_ID = "ldapLinkedId";
+    private static final String LDAP_PASS = "ldapPass";
+    private static final String LDAP_USER = "ldapUser";
+    private static final String LDAP_USER2 = "ldapUser2";
 
     private LdapServer ldapServer;
 
@@ -53,13 +62,13 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void testNullAuthenticator() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, null, USERS_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, null, LdapServer.BASE_PEOPLE_DN);
         TestsHelper.expectException(() -> ldapProfileService.init(null), TechnicalException.class, "ldapAuthenticator cannot be null");
     }
 
     @Test
     public void testNullConnectionFactory() {
-        final LdapProfileService ldapProfileService = new LdapProfileService(null, authenticator, USERS_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(null, authenticator, LdapServer.BASE_PEOPLE_DN);
         TestsHelper.expectException(() -> ldapProfileService.init(null), TechnicalException.class, "connectionFactory cannot be null");
     }
 
@@ -72,14 +81,14 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test(expected = BadCredentialsException.class)
     public void authentFailed() throws HttpAction, CredentialsException {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, USERS_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
     }
 
     @Test
     public void authentSuccessNoAttribute() throws HttpAction, CredentialsException {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "", USERS_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, "", LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
@@ -94,7 +103,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, USERS_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
@@ -110,7 +119,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
 
     @Test
     public void authentSuccessMultiAttribute() throws HttpAction, CredentialsException {
-        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + "," + LdapServer.ROLE, USERS_DN);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.SN + "," + LdapServer.ROLE, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setUsernameAttribute(LdapServer.CN);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME2, PASSWORD, CLIENT_NAME);
         ldapProfileService.validate(credentials, null);
@@ -126,5 +135,58 @@ public final class LdapProfileServiceTests implements TestsConstants {
         assertEquals(2, attributes.size());
         assertTrue(attributes.contains(LdapServer.ROLE1));
         assertTrue(attributes.contains(LdapServer.ROLE2));
+    }
+
+    @Test
+    @Ignore
+    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+        final LdapProfile profile = new LdapProfile();
+        profile.setId(LDAP_ID);
+        profile.setLinkedId(LDAP_LINKED_ID);
+        profile.addAttribute(USERNAME, LDAP_USER);
+        final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
+        ldapProfileService.setIdAttribute(LdapServer.CN);
+        ldapProfileService.setUsernameAttribute(LdapServer.SN);
+        // create
+        ldapProfileService.create(profile, LDAP_PASS);
+        // check credentials
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS, CLIENT_NAME);
+        ldapProfileService.validate(credentials, null);
+        final CommonProfile profile1 = credentials.getUserProfile();
+        assertNotNull(profile1);
+        // check data
+        final List<Map<String, Object>> results = getData(ldapProfileService, LDAP_ID);
+        assertEquals(1, results.size());
+        final Map<String, Object> result = results.get(0);
+        assertEquals(5, result.size());
+        assertEquals(LDAP_ID, result.get(ID));
+        assertEquals(LDAP_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
+        assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
+        assertEquals(LDAP_USER, result.get(USERNAME));
+        // findById
+        final LdapProfile profile2 = ldapProfileService.findById(LDAP_ID);
+        assertEquals(LDAP_ID, profile2.getId());
+        assertEquals(LDAP_LINKED_ID, profile2.getLinkedId());
+        assertEquals(LDAP_USER, profile2.getUsername());
+        assertEquals(1, profile2.getAttributes().size());
+        // update
+        profile.addAttribute(USERNAME, LDAP_USER2);
+        ldapProfileService.update(profile, null);
+        final List<Map<String, Object>> results2 = getData(ldapProfileService, LDAP_ID);
+        assertEquals(1, results2.size());
+        final Map<String, Object> result2 = results2.get(0);
+        assertEquals(5, result2.size());
+        assertEquals(LDAP_ID, result2.get(ID));
+        assertEquals(LDAP_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
+        assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
+        assertEquals(LDAP_USER2, result2.get(USERNAME));
+        // remove
+        ldapProfileService.remove(profile);
+        final List<Map<String, Object>> results3 = getData(ldapProfileService, LDAP_ID);
+        assertEquals(0, results3.size());
+    }
+
+    private List<Map<String, Object>> getData(final LdapProfileService ldapProfileService, final String id) {
+        return ldapProfileService.read(Arrays.asList(LdapServer.CN, LdapServer.SN, "id", "username", "linkedid", "password", "serializedprofile"), LdapServer.CN, id);
     }
 }

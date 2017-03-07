@@ -141,7 +141,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     }
 
     @Test
-    public void testCreateUpdateFindDelete() {
+    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
         final MongoProfile profile = new MongoProfile();
         profile.setId(MONGO_ID);
         profile.setLinkedId(MONGO_LINKEDID);
@@ -150,6 +150,11 @@ public final class MongoProfileServiceIT implements TestsConstants {
         mongoProfileService.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         // create
         mongoProfileService.create(profile, MONGO_PASS);
+        // check credentials
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(MONGO_USER, MONGO_PASS, CLIENT_NAME);
+        mongoProfileService.validate(credentials, null);
+        final CommonProfile profile1 = credentials.getUserProfile();
+        assertNotNull(profile1);
         // check data
         final List<Map<String, Object>> results = getData(mongoProfileService, MONGO_ID);
         assertEquals(1, results.size());

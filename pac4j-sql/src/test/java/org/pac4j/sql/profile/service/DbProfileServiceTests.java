@@ -98,7 +98,7 @@ public final class DbProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void testCreateUpdateFindDelete() {
+    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
         final DbProfile profile = new DbProfile();
         profile.setId(DB_ID);
         profile.setLinkedId(DB_LINKED_ID);
@@ -107,6 +107,11 @@ public final class DbProfileServiceTests implements TestsConstants {
         dbProfileService.setPasswordEncoder(DbServer.PASSWORD_ENCODER);
         // create
         dbProfileService.create(profile, DB_PASS);
+        // check credentials
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(DB_USER, DB_PASS, CLIENT_NAME);
+        dbProfileService.validate(credentials, null);
+        final CommonProfile profile1 = credentials.getUserProfile();
+        assertNotNull(profile1);
         // check data
         final List<Map<String, Object>> results = getData(DB_ID);
         assertEquals(1, results.size());

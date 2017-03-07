@@ -14,10 +14,7 @@ import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.ldap.profile.LdapProfile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The LDAP profile service (which supersedes the LDAP authenticator).
@@ -72,23 +69,8 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected void insert(final Map<String, Object> attributes) {
-        final LdapEntry ldapEntry = new LdapEntry(getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn);
-        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
-            final Object value = entry.getValue();
-            if (value != null) {
-                final String key = entry.getKey();
-                final LdapAttribute ldapAttribute;
-                if (value instanceof String) {
-                    ldapAttribute = new LdapAttribute(key, (String) value);
-                } else if (value instanceof List) {
-                    final List<String> list = (List<String>) value;
-                    ldapAttribute = new LdapAttribute(key, list.toArray(new String[list.size()]));
-                } else {
-                    ldapAttribute = new LdapAttribute(key, value.toString());
-                }
-                ldapEntry.addAttribute(ldapAttribute);
-            }
-        }
+        final LdapEntry ldapEntry = new LdapEntry(getEntryId(attributes));
+        ldapEntry.addAttributes(getLdapAttributes(attributes));
 
         Connection connection = null;
         try {
@@ -105,20 +87,109 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         }
     }
 
+    protected String getEntryId(final Map<String, Object> attributes) {
+        return getIdAttribute() + "=" + attributes.get(getIdAttribute()) + "," + usersDn;
+    }
+
+    protected List<LdapAttribute> getLdapAttributes(final Map<String, Object> attributes) {
+        final List<LdapAttribute> ldapAttributes = new ArrayList<>();
+        for (final Map.Entry<String, Object> entry : attributes.entrySet()) {
+            final Object value = entry.getValue();
+            if (value != null) {
+                final String key = entry.getKey();
+                final LdapAttribute ldapAttribute;
+                if (value instanceof String) {
+                    ldapAttribute = new LdapAttribute(key, (String) value);
+                } else if (value instanceof List) {
+                    final List<String> list = (List<String>) value;
+                    ldapAttribute = new LdapAttribute(key, list.toArray(new String[list.size()]));
+                } else {
+                    ldapAttribute = new LdapAttribute(key, value.toString());
+                }
+                ldapAttributes.add(ldapAttribute);
+            }
+        }
+        return ldapAttributes;
+    }
+
     @Override
     protected void update(final Map<String, Object> attributes) {
-        // TODO
+        final String password = (String) attributes.get(Pac4jConstants.PASSWORD);
+        if (CommonHelper.isNotBlank(password)) {
+            throw new TechnicalException("You cannot change the password via the LdapProfileService.update method");
+        }
+
+        Connection connection = null;
+        try {
+            connection = connectionFactory.getConnection();
+            connection.open();
+            final ModifyOperation modify = new ModifyOperation(connection);
+            final ModifyRequest modifyRequest = new ModifyRequest(getEntryId(attributes));
+            final List<AttributeModification> modifications = new ArrayList<>();
+            for (final LdapAttribute attribute : getLdapAttributes(attributes)) {
+                modifications.add(new AttributeModification(AttributeModificationType.REPLACE, attribute));
+            }
+            modifyRequest.setAttributeModifications(modifications.toArray(new AttributeModification[modifications.size()]));
+            modify.execute(modifyRequest);
+        } catch (final LdapException e) {
+            throw new TechnicalException(e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     @Override
     protected void deleteById(final String id) {
-        // TODO
+        Connection connection = null;
+        try {
+            connection = connectionFactory.getConnection();
+            connection.open();
+            final DeleteOperation delete = new DeleteOperation(connection);
+            delete.execute(new DeleteRequest(getIdAttribute() + "=" + id + "," + usersDn));
+        } catch (final LdapException e) {
+            throw new TechnicalException(e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
-        // TODO
-        return null;
+        final List<Map<String, Object>> listAttributes = new ArrayList<>();
+        Connection connection = null;
+        try {
+            connection = connectionFactory.getConnection();
+            connection.open();
+            final SearchOperation search = new SearchOperation(connection);
+            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value, names.toArray(new String[names.size()]))).getResult();
+            for (final LdapEntry entry : result.getEntries()) {
+                listAttributes.add(getAttributesFromEntry(entry));
+            }
+        } catch (final LdapException e) {
+            throw new TechnicalException(e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return listAttributes;
+    }
+
+    protected Map<String, Object> getAttributesFromEntry(final LdapEntry entry) {
+        final Map<String, Object> attributes = new HashMap<>();
+        for (final LdapAttribute attribute : entry.getAttributes()) {
+            final String name = attribute.getName();
+            if (attribute.size() > 1) {
+                attributes.put(name, attribute.getStringValues());
+            } else {
+                attributes.put(name, attribute.getStringValue());
+            }
+        }
+        return attributes;
     }
 
     @Override
@@ -140,18 +211,9 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         logger.debug("LDAP response: {}", response);
 
         if (response.getResult()) {
-            final Map<String, Object> attributes = new HashMap<>();
             final LdapEntry entry = response.getLdapEntry();
-            for (final LdapAttribute attribute : entry.getAttributes()) {
-                final String name = attribute.getName();
-                if (attribute.size() > 1) {
-                    attributes.put(name, attribute.getStringValues());
-                } else {
-                    attributes.put(name, attribute.getStringValue());
-                }
-            }
             final List<Map<String, Object>> listAttributes = new ArrayList<>();
-            listAttributes.add(attributes);
+            listAttributes.add(getAttributesFromEntry(entry));
             final LdapProfile profile = convertAttributesToProfile(listAttributes);
             credentials.setUserProfile(profile);
             return;
