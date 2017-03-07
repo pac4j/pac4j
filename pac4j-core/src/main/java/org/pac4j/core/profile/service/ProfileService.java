@@ -22,9 +22,9 @@ public interface ProfileService<U extends CommonProfile> {
      * Update a profile (with the associated password) in the storage.
      *
      * @param profile the profile
-     * @param password the optional password
+     * @param passwords the optional passwords
      */
-    void update(U profile, String password);
+    void update(U profile, String... passwords);
 
     /**
      * Rmove a profile in the storage.

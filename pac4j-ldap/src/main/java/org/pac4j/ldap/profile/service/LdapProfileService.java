@@ -19,6 +19,8 @@ import java.util.*;
 /**
  * The LDAP profile service (which supersedes the LDAP authenticator).
  *
+ * Notice that the binary attributes are not supported yet.
+ *
  * @author Jerome Leleu
  * @since 2.0.0
  */
@@ -214,7 +216,11 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             final LdapEntry entry = response.getLdapEntry();
             final List<Map<String, Object>> listAttributes = new ArrayList<>();
             listAttributes.add(getAttributesFromEntry(entry));
-            final LdapProfile profile = convertAttributesToProfile(listAttributes);
+            LdapProfile profile = convertAttributesToProfile(listAttributes);
+            if (profile == null) {
+                profile = getProfileDefinition().newProfile();
+                profile.setId(username);
+            }
             credentials.setUserProfile(profile);
             return;
         }

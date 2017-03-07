@@ -2,7 +2,6 @@ package org.pac4j.ldap.profile.service;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.auth.Authenticator;
@@ -37,6 +36,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
     private static final String LDAP_ID = "ldapid";
     private static final String LDAP_LINKED_ID = "ldapLinkedId";
     private static final String LDAP_PASS = "ldapPass";
+    private static final String LDAP_PASS2 = "ldapPass2";
     private static final String LDAP_USER = "ldapUser";
     private static final String LDAP_USER2 = "ldapUser2";
 
@@ -138,7 +138,6 @@ public final class LdapProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    @Ignore
     public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
         final LdapProfile profile = new LdapProfile();
         profile.setId(LDAP_ID);
@@ -147,6 +146,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final LdapProfileService ldapProfileService = new LdapProfileService(connectionFactory, authenticator, LdapServer.BASE_PEOPLE_DN);
         ldapProfileService.setIdAttribute(LdapServer.CN);
         ldapProfileService.setUsernameAttribute(LdapServer.SN);
+        ldapProfileService.setPasswordAttribute("userPassword");
         // create
         ldapProfileService.create(profile, LDAP_PASS);
         // check credentials
@@ -158,11 +158,11 @@ public final class LdapProfileServiceTests implements TestsConstants {
         final List<Map<String, Object>> results = getData(ldapProfileService, LDAP_ID);
         assertEquals(1, results.size());
         final Map<String, Object> result = results.get(0);
-        assertEquals(5, result.size());
-        assertEquals(LDAP_ID, result.get(ID));
+        assertEquals(4, result.size());
+        assertEquals(LDAP_ID, result.get(LdapServer.CN));
         assertEquals(LDAP_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
         assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
-        assertEquals(LDAP_USER, result.get(USERNAME));
+        assertEquals(LDAP_USER, result.get(LdapServer.SN));
         // findById
         final LdapProfile profile2 = ldapProfileService.findById(LDAP_ID);
         assertEquals(LDAP_ID, profile2.getId());
@@ -171,15 +171,20 @@ public final class LdapProfileServiceTests implements TestsConstants {
         assertEquals(1, profile2.getAttributes().size());
         // update
         profile.addAttribute(USERNAME, LDAP_USER2);
-        ldapProfileService.update(profile, null);
+        ldapProfileService.update(profile, LDAP_PASS2, LDAP_PASS);
         final List<Map<String, Object>> results2 = getData(ldapProfileService, LDAP_ID);
         assertEquals(1, results2.size());
         final Map<String, Object> result2 = results2.get(0);
-        assertEquals(5, result2.size());
-        assertEquals(LDAP_ID, result2.get(ID));
+        assertEquals(4, result2.size());
+        assertEquals(LDAP_ID, result2.get(LdapServer.CN));
         assertEquals(LDAP_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
-        assertEquals(LDAP_USER2, result2.get(USERNAME));
+        assertEquals(LDAP_USER2, result2.get(LdapServer.SN));
+        // check credentials
+        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(LDAP_ID, LDAP_PASS2, CLIENT_NAME);
+        ldapProfileService.validate(credentials2, null);
+        final CommonProfile profile3 = credentials.getUserProfile();
+        assertNotNull(profile3);
         // remove
         ldapProfileService.remove(profile);
         final List<Map<String, Object>> results3 = getData(ldapProfileService, LDAP_ID);
