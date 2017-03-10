@@ -171,7 +171,7 @@ public final class LdapProfileServiceTests implements TestsConstants {
         assertEquals(1, profile2.getAttributes().size());
         // update
         profile.addAttribute(USERNAME, LDAP_USER2);
-        ldapProfileService.update(profile, LDAP_PASS2, LDAP_PASS);
+        ldapProfileService.update(profile, LDAP_PASS2);
         final List<Map<String, Object>> results2 = getData(ldapProfileService, LDAP_ID);
         assertEquals(1, results2.size());
         final Map<String, Object> result2 = results2.get(0);

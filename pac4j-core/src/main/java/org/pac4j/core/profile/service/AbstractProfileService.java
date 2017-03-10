@@ -31,8 +31,6 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
 
     public static final String SERIALIZED_PROFILE = "serializedprofile";
 
-    private static final String LDAP_OLD_PASSWORD = "ldapOldPassword";
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String usernameAttribute = USERNAME;
@@ -77,30 +75,19 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank(ID, profile.getId());
         assertNotBlank(USERNAME, profile.getUsername());
 
-        final Map<String, Object> attributes = convertProfileAndPasswordToAttributes(profile, password, null);
+        final Map<String, Object> attributes = convertProfileAndPasswordToAttributes(profile, password);
         insert(attributes);
     }
 
     @Override
-    public void update(final U profile, final String... passwords) {
+    public void update(final U profile, final String password) {
         init(null);
 
         assertNotNull("profile", profile);
         assertNotBlank(ID, profile.getId());
         assertNotBlank(USERNAME, profile.getUsername());
 
-        String password = null;
-        String oldPassword = null;
-        if (passwords != null) {
-            final int len = passwords.length;
-            if (len >= 1) {
-                password = passwords[0];
-            }
-            if (len >= 2) {
-                oldPassword = passwords[1];
-            }
-        }
-        final Map<String, Object> attributes = convertProfileAndPasswordToAttributes(profile, password, oldPassword);
+        final Map<String, Object> attributes = convertProfileAndPasswordToAttributes(profile, password);
         update(attributes);
     }
 
@@ -127,10 +114,9 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      *
      * @param profile the profile
      * @param password the password
-     * @param oldPassword the old password (optional)
      * @return the attributes
      */
-    protected Map<String, Object> convertProfileAndPasswordToAttributes(final U profile, final String password, final String oldPassword) {
+    protected Map<String, Object> convertProfileAndPasswordToAttributes(final U profile, final String password) {
         final Map<String, Object> storageAttributes = new HashMap<>();
         storageAttributes.put(getIdAttribute(), profile.getId());
         storageAttributes.put(LINKEDID, profile.getLinkedId());
@@ -145,10 +131,6 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 encodedPassword = password;
             }
             storageAttributes.put(getPasswordAttribute(), encodedPassword);
-        }
-        // LDAP: if an old password has been provided, add it for the update use case
-        if (oldPassword != null) {
-            storageAttributes.put(LDAP_OLD_PASSWORD, oldPassword);
         }
         // legacy mode: save the defined attributes
         if (isLegacyMode()) {
