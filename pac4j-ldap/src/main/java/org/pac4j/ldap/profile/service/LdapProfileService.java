@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * The LDAP profile service (which supersedes the LDAP authenticator).
  *
- * Notice that the binary attributes are not supported yet.
+ * Notice that the binary attributes are not supported.
  *
  * @author Jerome Leleu
  * @since 2.0.0
