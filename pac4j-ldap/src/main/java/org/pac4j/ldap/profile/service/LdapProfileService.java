@@ -71,6 +71,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected void insert(final Map<String, Object> attributes) {
+        attributes.put("objectClass", "person");
         final LdapEntry ldapEntry = new LdapEntry(getEntryId(attributes));
         ldapEntry.addAttributes(getLdapAttributes(attributes));
 
@@ -116,11 +117,6 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     protected void update(final Map<String, Object> attributes) {
-        final String password = (String) attributes.get(Pac4jConstants.PASSWORD);
-        if (CommonHelper.isNotBlank(password)) {
-            throw new TechnicalException("You cannot change the password via the LdapProfileService.update method");
-        }
-
         Connection connection = null;
         try {
             connection = connectionFactory.getConnection();
@@ -216,11 +212,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             final LdapEntry entry = response.getLdapEntry();
             final List<Map<String, Object>> listAttributes = new ArrayList<>();
             listAttributes.add(getAttributesFromEntry(entry));
-            LdapProfile profile = convertAttributesToProfile(listAttributes);
-            if (profile == null) {
-                profile = getProfileDefinition().newProfile();
-                profile.setId(username);
-            }
+            final LdapProfile profile = convertAttributesToProfile(listAttributes);
             credentials.setUserProfile(profile);
             return;
         }

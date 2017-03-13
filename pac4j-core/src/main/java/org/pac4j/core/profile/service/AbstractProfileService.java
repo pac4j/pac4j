@@ -217,10 +217,6 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         }
         final Map<String, Object> storageAttributes = listStorageAttributes.get(0);
 
-        // LDAP bind returns no attributes
-        if (storageAttributes.size() == 0) {
-            return null;
-        }
         final String linkedId = (String) storageAttributes.get(LINKEDID);
         // legacy mode: only read the defined attributes
         if (isLegacyMode()) {
