@@ -1,7 +1,6 @@
 package org.pac4j.core.matching;
 
 import org.junit.Test;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -28,28 +27,28 @@ public final class HttpMethodMatcherTests implements TestsConstants {
     @Test
     public void testBadMethod() throws HttpAction {
         final HttpMethodMatcher matcher = new HttpMethodMatcher(HTTP_METHOD.GET);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST);
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
         assertFalse(matcher.matches(context));
     }
 
     @Test
     public void testGoodMethod() throws HttpAction {
         final HttpMethodMatcher matcher = new HttpMethodMatcher(HTTP_METHOD.POST);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST);
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
         assertTrue(matcher.matches(context));
     }
 
     @Test
     public void testBadMethod2() throws HttpAction {
         final HttpMethodMatcher matcher = new HttpMethodMatcher(HTTP_METHOD.GET, HTTP_METHOD.PUT);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST);
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
         assertFalse(matcher.matches(context));
     }
 
     @Test
     public void testGoodMethod2() throws HttpAction {
         final HttpMethodMatcher matcher = new HttpMethodMatcher(HTTP_METHOD.DELETE, HTTP_METHOD.POST);
-        final MockWebContext context = MockWebContext.create().setRequestMethod(HttpConstants.HTTP_METHOD.POST);
+        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
         assertTrue(matcher.matches(context));
     }
 }

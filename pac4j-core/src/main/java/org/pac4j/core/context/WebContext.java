@@ -101,7 +101,7 @@ public interface WebContext {
      *
      * @return the request method
      */
-    HttpConstants.HTTP_METHOD getRequestMethod();
+    String getRequestMethod();
 
     /**
      * Return the remote address.

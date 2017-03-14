@@ -1,6 +1,7 @@
 package org.pac4j.http.client.direct;
 
 import org.junit.Test;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -13,8 +14,6 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestDigestAuthenticat
 import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
 
 import static org.junit.Assert.assertEquals;
-
-import static org.pac4j.core.context.HttpConstants.*;
 
 /**
  * This class tests the {@link DirectDigestAuthClient} class.
@@ -33,7 +32,7 @@ public class DirectDigestAuthClientTests implements TestsConstants {
     @Test
     public void testMissingProfileCreator() {
         final DirectDigestAuthClient digestAuthClient = new DirectDigestAuthClient(new SimpleTestTokenAuthenticator(), null);
-        TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, HTTP_METHOD.POST, CLIENT_NAME, null, null, null, null, null, null, null),
+        TestsHelper.expectException(() -> digestAuthClient.getUserProfile(new DigestCredentials(TOKEN, "POST", CLIENT_NAME, null, null, null, null, null, null, null),
                 MockWebContext.create()), TechnicalException.class, "profileCreator cannot be null");
     }
 
@@ -48,9 +47,9 @@ public class DirectDigestAuthClientTests implements TestsConstants {
         final DirectDigestAuthClient client = new DirectDigestAuthClient(new SimpleTestDigestAuthenticator());
         client.setRealm(REALM);
         final MockWebContext context = MockWebContext.create();
-        context.addRequestHeader(AUTHORIZATION_HEADER,
+        context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER,
                 DIGEST_AUTHORIZATION_HEADER_VALUE);
-        context.setRequestMethod(HTTP_METHOD.GET);
+        context.setRequestMethod("GET");
 
         final DigestCredentials credentials = client.getCredentials(context);
 
