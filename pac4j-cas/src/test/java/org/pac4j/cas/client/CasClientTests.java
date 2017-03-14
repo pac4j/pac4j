@@ -15,8 +15,6 @@ import java.util.zip.Deflater;
 
 import static org.junit.Assert.*;
 
-import static org.pac4j.core.context.HttpConstants.*;
-
 /**
  * This class tests the {@link CasClient} class.
  * 
@@ -127,7 +125,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
         final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, LOGOUT_MESSAGE)
-            .setRequestMethod(HTTP_METHOD.POST);
+            .setRequestMethod("POST");
         TestsHelper.expectException(() -> casClient.getCredentials(context), HttpAction.class, "back logout request: no credential returned");
         assertEquals(200, context.getResponseStatus());
     }
@@ -135,7 +133,7 @@ public final class CasClientTests implements TestsConstants {
     private String deflateAndBase64(final String data) {
         try {
             final Deflater deflater = new Deflater();
-            deflater.setInput(data.getBytes(UTF8_ENCODING));
+            deflater.setInput(data.getBytes(HttpConstants.UTF8_ENCODING));
             deflater.finish();
             final byte[] buffer = new byte[data.length()];
             final int resultSize = deflater.deflate(buffer);
@@ -143,7 +141,7 @@ public final class CasClientTests implements TestsConstants {
             System.arraycopy(buffer, 0, output, 0, resultSize);
             return DatatypeConverter.printBase64Binary(output);
         } catch (final UnsupportedEncodingException e) {
-            throw new RuntimeException("Cannot find encoding:" + UTF8_ENCODING, e);
+            throw new RuntimeException("Cannot find encoding:" + HttpConstants.UTF8_ENCODING, e);
         }
     }
 
@@ -155,7 +153,7 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
         final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
-                .setRequestMethod(HTTP_METHOD.GET);
+                .setRequestMethod("GET");
         assertNull(casClient.getCredentials(context));
     }
 
@@ -167,9 +165,9 @@ public final class CasClientTests implements TestsConstants {
         casClient.setCallbackUrl(CALLBACK_URL);
         casClient.init(null);
         final MockWebContext context = MockWebContext.create().addRequestParameter(CasConfiguration.LOGOUT_REQUEST_PARAMETER, deflateAndBase64(LOGOUT_MESSAGE))
-                .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod(HttpConstants.HTTP_METHOD.GET);
+                .addRequestParameter(CasConfiguration.RELAY_STATE_PARAMETER, VALUE).setRequestMethod("GET");
         final HttpAction action = (HttpAction) TestsHelper.expectException(() -> casClient.getCredentials(context));
-        assertEquals(TEMP_REDIRECT, action.getCode());
+        assertEquals(HttpConstants.TEMP_REDIRECT, action.getCode());
         assertEquals("Force redirect to CAS server for front channel logout", action.getMessage());
     }
 
