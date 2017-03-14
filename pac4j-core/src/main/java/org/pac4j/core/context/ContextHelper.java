@@ -48,7 +48,7 @@ public final class ContextHelper implements HttpConstants {
      * @return whether it is a GET request
      */
     public static boolean isGet(final WebContext context) {
-        return HttpConstants.HTTP_METHOD.GET == context.getRequestMethod();
+        return HttpConstants.HTTP_METHOD.GET.name().equalsIgnoreCase(context.getRequestMethod());
     }
 
     /**
@@ -58,7 +58,7 @@ public final class ContextHelper implements HttpConstants {
      * @return whether it is a POST request
      */
     public static boolean isPost(final WebContext context) {
-        return HttpConstants.HTTP_METHOD.POST == context.getRequestMethod();
+        return HttpConstants.HTTP_METHOD.POST.name().equalsIgnoreCase(context.getRequestMethod());
     }
 
     /**

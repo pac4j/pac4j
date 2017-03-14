@@ -74,7 +74,7 @@ public class DigestAuthExtractor implements CredentialsExtractor<DigestCredentia
         String cnonce = valueMap.get("cnonce");
         String nc = valueMap.get("nc");
         String qop = valueMap.get("qop");
-        HttpConstants.HTTP_METHOD method = context.getRequestMethod();
+        String method = context.getRequestMethod();
 
         return new DigestCredentials(response, method, clientName, username, realm, nonce, uri, cnonce, nc, qop);
     }

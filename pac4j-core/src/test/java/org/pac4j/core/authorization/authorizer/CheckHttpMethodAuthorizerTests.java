@@ -32,12 +32,12 @@ public final class CheckHttpMethodAuthorizerTests {
     @Test
     public void testGoodHttpMethod() throws HttpAction {
         final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HTTP_METHOD.GET, HTTP_METHOD.POST);
-        assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HTTP_METHOD.GET), profiles));
+        assertTrue(authorizer.isAuthorized(MockWebContext.create().setRequestMethod("GET"), profiles));
     }
 
     @Test
     public void testBadHttpMethod() throws HttpAction {
         final CheckHttpMethodAuthorizer authorizer = new CheckHttpMethodAuthorizer(HTTP_METHOD.PUT);
-        assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod(HTTP_METHOD.DELETE), profiles));
+        assertFalse(authorizer.isAuthorized(MockWebContext.create().setRequestMethod("DELETE"), profiles));
     }
 }

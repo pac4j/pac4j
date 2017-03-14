@@ -2,7 +2,6 @@ package org.pac4j.saml.run;
 
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
@@ -70,6 +69,6 @@ public class RunTestshib extends RunClient {
     @Override
     protected void populateContextWithUrl(final MockWebContext context, String url) {
         super.populateContextWithUrl(context, url);
-        context.setRequestMethod(HttpConstants.HTTP_METHOD.POST);
+        context.setRequestMethod("POST");
     }
 }
