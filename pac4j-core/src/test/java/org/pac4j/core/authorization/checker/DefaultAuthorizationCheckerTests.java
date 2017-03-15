@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
+import static org.pac4j.core.context.HttpConstants.*;
+
 /**
  * Tests the {@link DefaultAuthorizationChecker}.
  *
@@ -160,7 +162,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testHsts() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        context.setScheme("HTTPS");
+        context.setScheme(SCHEME_HTTPS);
         checker.isAuthorized(context, profiles, "hsts", null);
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
     }
@@ -168,7 +170,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testHstsCaseTrim() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        context.setScheme("HTTPS");
+        context.setScheme(SCHEME_HTTPS);
         checker.isAuthorized(context, profiles, "  HSTS ", null);
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
     }
@@ -207,21 +209,21 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testAllowAjaxRequests() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         checker.isAuthorized(context, profiles, "allowAjaxRequests", null);
-        assertEquals("*", context.getResponseHeaders().get(HttpConstants.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER));
-        assertEquals("true", context.getResponseHeaders().get(HttpConstants.ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER));
-        final String methods = context.getResponseHeaders().get(HttpConstants.ACCESS_CONTROL_ALLOW_METHODS_HEADER);
+        assertEquals("*", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER));
+        assertEquals("true", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER));
+        final String methods = context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_METHODS_HEADER);
         final List<String> methodArray = Arrays.asList(methods.split(",")).stream().map(String::trim).collect(Collectors.toList());
-        assertTrue(methodArray.contains("POST"));
-        assertTrue(methodArray.contains("PUT"));
-        assertTrue(methodArray.contains("DELETE"));
-        assertTrue(methodArray.contains("OPTIONS"));
-        assertTrue(methodArray.contains("GET"));
+        assertTrue(methodArray.contains(HTTP_METHOD.POST.name()));
+        assertTrue(methodArray.contains(HTTP_METHOD.PUT.name()));
+        assertTrue(methodArray.contains(HTTP_METHOD.DELETE.name()));
+        assertTrue(methodArray.contains(HTTP_METHOD.OPTIONS.name()));
+        assertTrue(methodArray.contains(HTTP_METHOD.GET.name()));
     }
 
     @Test
     public void testSecurityHeaders() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        context.setScheme("HTTPS");
+        context.setScheme(SCHEME_HTTPS);
         checker.isAuthorized(context, profiles, "securityHeaders", null);
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
         assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
@@ -250,7 +252,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfPost() throws HttpAction {
-        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         assertFalse(checker.isAuthorized(context, profiles, "csrf", null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
@@ -258,7 +260,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfTokenPost() throws HttpAction {
-        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         assertTrue(checker.isAuthorized(context, profiles, "csrfToken", null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
@@ -266,7 +268,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfPostTokenParameter() throws HttpAction {
-        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
@@ -277,7 +279,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfCheckPost() throws HttpAction {
-        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         generator.get(context);
         assertFalse(checker.isAuthorized(context, profiles, "csrfCheck", null));
@@ -285,7 +287,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
 
     @Test
     public void testCsrfCheckPostTokenParameter() throws HttpAction {
-        final MockWebContext context = MockWebContext.create().setRequestMethod("post");
+        final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);

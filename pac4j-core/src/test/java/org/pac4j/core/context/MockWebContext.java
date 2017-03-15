@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+import static org.pac4j.core.context.HttpConstants.*;
+
 /**
  * This is a mocked web context to interact with request, response and session (for tests purpose).
  *
@@ -24,15 +26,15 @@ public final class MockWebContext implements WebContext {
 
     protected final Map<String, Object> attributes = new HashMap<>();
 
-    protected String method = "GET";
+    protected String method = HTTP_METHOD.GET.name();
 
     protected String serverName = "localhost";
 
-    protected String scheme = "http";
+    protected String scheme = SCHEME_HTTP;
 
     protected boolean secure = false;
 
-    protected int serverPort = 80;
+    protected int serverPort = DEFAULT_HTTP_PORT;
 
     protected String fullRequestURL = null;
 
@@ -265,7 +267,7 @@ public final class MockWebContext implements WebContext {
     }
 
     public String getResponseLocation() {
-        return this.responseHeaders.get(HttpConstants.LOCATION_HEADER);
+        return this.responseHeaders.get(LOCATION_HEADER);
     }
 
     public Map<String, String> getResponseHeaders() {

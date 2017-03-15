@@ -53,7 +53,7 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
     protected void doDecode() throws MessageDecodingException {
         final MessageContext messageContext = new MessageContext();
 
-        if(!"POST".equalsIgnoreCase(this.context.getRequestMethod())) {
+        if(!HttpConstants.HTTP_METHOD.POST.name().equalsIgnoreCase(this.context.getRequestMethod())) {
             throw new MessageDecodingException("This message decoder only supports the HTTP POST method");
         } else {
             final String relayState = this.context.getRequestParameter("RelayState");
