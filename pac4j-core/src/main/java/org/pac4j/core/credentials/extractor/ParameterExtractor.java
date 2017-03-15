@@ -6,6 +6,8 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
+import static org.pac4j.core.context.HttpConstants.*;
+
 /**
  * To extract a parameter value.
  *
@@ -37,9 +39,9 @@ public class ParameterExtractor implements CredentialsExtractor<TokenCredentials
     @Override
     public TokenCredentials extract(WebContext context) throws HttpAction, CredentialsException {
         final String method = context.getRequestMethod();
-        if ("GET".equals(method) && !supportGetRequest) {
+        if (HTTP_METHOD.GET.name().equalsIgnoreCase(method) && !supportGetRequest) {
             throw new CredentialsException("GET requests not supported");
-        } else if ("POST".equals(method) && !supportPostRequest) {
+        } else if (HTTP_METHOD.POST.name().equalsIgnoreCase(method) && !supportPostRequest) {
             throw new CredentialsException("POST requests not supported");
         }
 
