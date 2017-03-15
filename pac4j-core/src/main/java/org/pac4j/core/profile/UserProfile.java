@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
- * (objects). Additional concepts are the "remember me" nature of the user profile and the associated roles, permissions and client name.
+ * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, permissions, client name and linked identifier.
  *
  * @author Jerome Leleu
  * @since 1.0.0
@@ -37,6 +37,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
     private Set<String> permissions = new HashSet<>();
 
     private String clientName;
+
+    private String linkedId;
 
     /**
      * Build a profile from user identifier and attributes.
@@ -270,7 +272,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "id", this.id, "attributes", this.attributes, "roles",
-                this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered);
+                this.roles, "permissions", this.permissions, "isRemembered", this.isRemembered,
+                "clientName", this.clientName, "linkedId", this.linkedId);
     }
 
     @Override
@@ -281,6 +284,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         out.writeObject(this.roles);
         out.writeObject(this.permissions);
         out.writeObject(this.clientName);
+        out.writeObject(this.linkedId);
     }
 
     @Override
@@ -291,6 +295,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         this.roles = (Set) in.readObject();
         this.permissions = (Set) in.readObject();
         this.clientName = (String) in.readObject();
+        this.linkedId = (String) in.readObject();
     }
 
     public void clearSensitiveData() {
@@ -304,5 +309,14 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void setClientName(String clientName) {
         CommonHelper.assertNotNull("clientName", clientName);
         this.clientName = clientName;
+    }
+
+    public String getLinkedId() {
+        return linkedId;
+    }
+
+    public void setLinkedId(final String linkedId) {
+        CommonHelper.assertNotNull("linkedId", linkedId);
+        this.linkedId = linkedId;
     }
 }
