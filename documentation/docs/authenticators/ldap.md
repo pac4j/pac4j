@@ -3,7 +3,7 @@ layout: doc
 title: LDAP
 ---
 
-*pac4j* allows you to validate username / password on a LDAP.
+*pac4j* allows you to validate username/password and create, update and delete users on a LDAP.
 
 ## 1) Dependency
 
@@ -19,17 +19,16 @@ You need to use the following module: `pac4j-ldap`.
 </dependency>
 ```
 
-## 2) `LdapAuthenticator`
+## 2) `LdapProfileService`
 
-The [`LdapAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/credentials/authenticator/LdapAuthenticator.java) must be used for LDAP authentication.
+The [`LdapProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/service/LdapProfileService.java) supersedes the deprecated `LdapAuthenticator` to:
+                                                                                                                                                       
+- validate a username/password on a LDAP (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
+- create, update or delete a user in the LDAP.
 
-It can be defined for HTTP clients which deal with `UsernamePasswordCredentials`.
+It works with a [`LdapProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/LdapProfile.java).
 
-It is based on the great [Ldpative](http://www.ldaptive.org/) library and built from a `org.ldaptive.auth.Authenticator`.
-
-You can define the returned attributes from the LDAP via the `attributes` parameter in the constructor: `LdapAuthenticator(Authenticator ldaptiveAuthenticator, String attributes)` or in the setter: `setAttributes(String attributes)` of the `LdapAuthenticator`. The `attributes` parameter is a list of attributes names separated by commas like `cn,sn`.
-
-After a successful credentials validation, it "returns" a [`LdapProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-ldap/src/main/java/org/pac4j/ldap/profile/LdapProfile.java).
+It is based on the great [Ldpative](http://www.ldaptive.org/) library and built from a `org.ldaptive.ConnectionFactory` and a `org.ldaptive.auth.Authenticator`.
 
 **Example**:
 
@@ -66,5 +65,12 @@ Authenticator ldaptiveAuthenticator = new Authenticator();
 ldaptiveAuthenticator.setDnResolver(dnResolver);
 ldaptiveAuthenticator.setAuthenticationHandler(handler);
 // pac4j:
-LdapAuthenticator ldapAuthenticator = new LdapAuthenticator(ldaptiveAuthenticator);
+LdapProfileService ldapProfileService  = new LdapProfileService(connectionFactory, ldaptiveAuthenticator);
 ```
+
+The base users DN can be changed via the `setUsersDn` method. As well as the `id`, `username` and `password` LDAP attribute names using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods.
+
+The attributes of the user profile can be managed in the LDAP in two ways:
+
+- either each attribute is explicitly mapped in a specific LDAP attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
+- or the whole user profile is serialized and saved in the `serializedprofile` LDAP attribute.
