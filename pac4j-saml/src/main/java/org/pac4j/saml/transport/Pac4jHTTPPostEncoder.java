@@ -178,6 +178,7 @@ public class Pac4jHTTPPostEncoder extends AbstractMessageEncoder<SAMLObject> {
 
         try {
             String messageXML = SerializeSupport.nodeToString(domMessage);
+            log.trace("Output XML message: {}", messageXML);
             String encodedMessage = Base64Support.encode(messageXML.getBytes("UTF-8"), Base64Support.UNCHUNKED);
             if (outboundMessage instanceof RequestAbstractType) {
                 velocityContext.put("SAMLRequest", encodedMessage);
