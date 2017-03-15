@@ -3,7 +3,7 @@ layout: doc
 title: MongoDB
 ---
 
-*pac4j* allows you to validate username / password on a MongoDB collection.
+*pac4j* allows you to validate username/password and create, update and delete users on a MongoDB database.
 
 ## 1) Dependency
 
@@ -19,36 +19,30 @@ You need to use the following module: `pac4j-mongodb`.
 </dependency>
 ```
 
-## 2) `MongoAuthenticator`
+## 2) `MongoProfileService`
 
-The [`MongoAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/credentials/authenticator/MongoAuthenticator.java) validates username / password on a MongoDB database. It is built from a `com.mongodb.MongoClient`.
+The [`MongoProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/service/MongoProfileService.java) supersedes the deprecated `MongoAuthenticator` to:
+                                                                                                                                                                                                                                                                                                                 
+- validate a username/password on a MongoDB database (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
+- create, update or delete a user in the MongoDB database.
 
-It can be defined for HTTP clients which deal with `UsernamePasswordCredentials`.
+It works with a [`MongoProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/MongoProfile.java).
 
-After a successful credentials validation, it "returns" a [`MongoProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-mongo/src/main/java/org/pac4j/mongo/profile/MongoProfile.java).
+It is built from a `com.mongodb.MongoClient`.
 
 **Example:**
 
 ```java
 MongoClient mongoClient = new MongoClient(server, port);
-MongoAuthenticator authenticator = new MongoAuthenticator(mongoClient);
+MongoProfileService mongoProfileService = new MongoProfileService(mongoClient);
 ```
 
-The credentials validation is done on the `users` database in a `users` collection, but both can be changed via the `setUsersDatabase(String)` and `setUsersCollection(String)` methods.
+The users are managed in a `users` database in a `users` collection, but both can be changed via the `setUsersDatabase(String)` and `setUsersCollection(String)` methods.
+As well as the `id`, `username` and `password` attribute names using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods.
 
-The users in the collection are expected to have the following format:
+The attributes of the user profile can be managed in the MongoDB collection in two ways:
 
-```json
-{
-	"username": "jleleu",
-	"password": "4d81a960ee36c86d5ea1152d77084410b6596dd04cc29e2866ba9ea2c60e22f8",
-	"first_name": "Jérôme",
-	"last_name": "LELEU"
-} 
-```
+- either each attribute is explicitly saved in a specific attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
+- or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
-And the `username` and `password` attributes can be changed to other names via the `setUsernameAttribute(String)` and `setPasswordAttribute(String)` methods.
-
-The list of attributes can be defined as a list of attribute names separated by commas via the `setAttributes(String)`. In the previous example, it would be: `mongoAuthenticator.setattributes("first_name, last_name");`.
-
-This `MongoAuthenticator` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder).
+This `MongoProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the MongoDB database.

@@ -3,7 +3,7 @@ layout: doc
 title: Relational database
 ---
 
-*pac4j* allows you to validate username / password on a SQL database.
+*pac4j* allows you to validate username/password and create, update and delete users on a SQL database.
 
 ## 1) Dependency
 
@@ -19,35 +19,42 @@ You need to use the following module: `pac4j-sql`.
 </dependency>
 ```
 
-## 2) `DbAuthenticator`
+## 2) `DbProfileService`
 
-The [`DbAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-sql/src/main/java/org/pac4j/sql/credentials/authenticator/DbAuthenticator.java) validates username / password on a relational database. It is built from a `javax.sql.DataSource`.
+The [`DbProfileService`](https://github.com/pac4j/pac4j/blob/master/pac4j-sql/src/main/java/org/pac4j/sql/profile/service/DbProfileService.java) supersedes the deprecated `DbAuthenticator` to:
 
-It can be defined for HTTP clients which deal with `UsernamePasswordCredentials`.
+- validate a username/password on a relational database (it can be defined for HTTP clients which deal with `UsernamePasswordCredentials`)
+- create, update or delete a user in the database.
 
-After a successful credentials validation, it "returns" a [`DbProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-sql/src/main/java/org/pac4j/sql/profile/DbProfile.java).
+It works with a [`DbProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-sql/src/main/java/org/pac4j/sql/profile/DbProfile.java).
+
+It is built from a `javax.sql.DataSource`.
 
 **Example:**
 
 ```java
 DataSource dataSource = JdbcConnectionPool.create("jdbc:h2:mem:test", dbuser, dbpwd);
-DbAuthenticator authenticator = new DbAuthenticator(dataSource);
+DbProfileService dbProfileService = new DbProfileService(dataSource);
 ```
 
-The `users` table in the database must be created with the following script (for Oracle):
+The `users` table in the database must be created with the following script:
 
 ```sql
 CREATE TABLE users
 (
+  id varchar(255), 
   username varchar(255),
-  password varchar(255)
+  password varchar(255),
+  linkedid varchar(255),
+  serializedprofile varchar(10000)
 );
 ```
 
-To define attributes for the user profile, the appropriate columns must be added to the table (like `first_name` and `last_name`) and the `DbAuthenticator` must be configured accordingly with the `setAttributes(String attributes)` method (like `authenticator.setAttributes("firt_name,last_name");`).
+The name of the table in the database can be changed via the `setUsersTable` method. As well as the `id`, `username` and `password` columns using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods.
 
-In fact, you can even adapt to a new / existing structure for the `users` table by changing the query which is performed on the database, using the `setStartQuery` and `setEndQuery` methods.
+The attributes of the user profile can be managed in the database in two ways:
 
-The query is built as: `startQuery + "," + attributes + endQuery` and by default, `startQuery` is "select username, password" and `endQuery` is " from users where username = _username_;".
+- either each attribute is explicitly saved in a specific column and all these columns are defined as a list of column names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
+- or the whole user profile is serialized and saved in the `serializedprofile` column.
 
-This `DbAuthenticator` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder).
+This `DbProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the database.
