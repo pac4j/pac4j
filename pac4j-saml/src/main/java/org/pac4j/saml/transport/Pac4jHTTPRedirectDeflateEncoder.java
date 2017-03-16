@@ -123,6 +123,7 @@ public class Pac4jHTTPRedirectDeflateEncoder extends AbstractMessageEncoder<SAML
         log.debug("Deflating and Base64 encoding SAML message");
         try {
             String messageStr = SerializeSupport.nodeToString(marshallMessage(message));
+            log.trace("Output XML message: {}", messageStr);
 
             ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
             Deflater deflater = new Deflater(Deflater.DEFLATED, true);
