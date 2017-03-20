@@ -171,6 +171,10 @@ public class OidcConfiguration extends InitializableWebObject {
     public void setClientAuthenticationMethod(final ClientAuthenticationMethod clientAuthenticationMethod) {
         this.clientAuthenticationMethod = clientAuthenticationMethod;
     }
+    
+    public void setClientAuthenticationMethodAsString(String auth) {
+        this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
+    }
 
     public boolean isUseNonce() {
         return useNonce;
