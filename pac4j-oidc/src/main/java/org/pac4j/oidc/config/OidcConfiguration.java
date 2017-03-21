@@ -88,22 +88,22 @@ public class OidcConfiguration extends InitializableWebObject {
     @Override
     protected void internalInit(final WebContext context) {
         // checks
-        CommonHelper.assertNotBlank("clientId", clientId);
-        CommonHelper.assertNotBlank("secret", secret);
+        CommonHelper.assertNotBlank("clientId", getClientId());
+        CommonHelper.assertNotBlank("secret", getSecret());
         if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {
             throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
         }
 
         // default value
         if (getResourceRetriever() == null) {
-            setResourceRetriever(new DefaultResourceRetriever(connectTimeout, readTimeout));
+            setResourceRetriever(new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()));
         }
         if (this.getProviderMetadata() == null) {
-            CommonHelper.assertNotBlank("discoveryURI", discoveryURI);
+            CommonHelper.assertNotBlank("discoveryURI", getDiscoveryURI());
             try {
                 // Download OIDC metadata
-                this.setProviderMetadata(OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
-                        new URL(this.discoveryURI)).getContent()));
+                this.setProviderMetadata(OIDCProviderMetadata.parse(getResourceRetriever().retrieveResource(
+                        new URL(this.getDiscoveryURI())).getContent()));
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
