@@ -8,6 +8,8 @@ import org.ldaptive.auth.FormatDnResolver;
 import org.ldaptive.auth.PooledBindAuthenticationHandler;
 import org.ldaptive.pool.*;
 
+import java.time.Duration;
+
 /**
  * Basic LDAP client.
  *
@@ -25,8 +27,8 @@ public final class LdapClient {
         dnResolver.setFormat(LdapServer.CN + "=%s," + LdapServer.BASE_PEOPLE_DN);
 
         final ConnectionConfig connectionConfig = new ConnectionConfig();
-        connectionConfig.setConnectTimeout(500);
-        connectionConfig.setResponseTimeout(1000);
+        connectionConfig.setConnectTimeout(Duration.ofMillis(500));
+        connectionConfig.setResponseTimeout(Duration.ofMillis(1000));
         connectionConfig.setLdapUrl("ldap://localhost:" + LdapServer.PORT);
 
         connectionFactory = new DefaultConnectionFactory();
@@ -45,7 +47,7 @@ public final class LdapClient {
 
         final BlockingConnectionPool connectionPool = new BlockingConnectionPool();
         connectionPool.setPoolConfig(poolConfig);
-        connectionPool.setBlockWaitTime(1000);
+        connectionPool.setBlockWaitTime(Duration.ofMillis(1000));
         connectionPool.setValidator(searchValidator);
         connectionPool.setPruneStrategy(pruneStrategy);
         connectionPool.setConnectionFactory((DefaultConnectionFactory) connectionFactory);

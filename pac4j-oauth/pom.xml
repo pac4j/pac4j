@@ -14,7 +14,7 @@
 
 	<properties>
 		<scribe.version>3.3.0</scribe.version>
-		<jackson.version>2.6.5</jackson.version>
+		<jackson.version>2.8.7</jackson.version>
 	</properties>
 
 	<dependencies>

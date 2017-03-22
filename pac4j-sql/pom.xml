@@ -13,8 +13,8 @@
 	<name>pac4j for relational DB</name>
 
 	<properties>
-		<jdbi.version>2.77</jdbi.version>
-		<h2.version>1.4.192</h2.version>
+		<jdbi.version>2.78</jdbi.version>
+		<h2.version>1.4.194</h2.version>
 	</properties>
 
 	<dependencies>
