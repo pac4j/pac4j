@@ -13,8 +13,8 @@
 	<name>pac4j for LDAP</name>
 
 	<properties>
-		<ldaptive.version>1.1.0</ldaptive.version>
-		<unboundid.version>3.1.0</unboundid.version>
+		<ldaptive.version>1.2.1</ldaptive.version>
+		<unboundid.version>3.2.1</unboundid.version>
 	</properties>
 
 	<dependencies>
