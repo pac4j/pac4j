@@ -15,7 +15,7 @@ public class DefaultConfigFactory implements ConfigFactory {
     }
 
     @Override
-    public Config build() {
+    public Config build(final Object... parameters) {
         return config;
     }
 }
