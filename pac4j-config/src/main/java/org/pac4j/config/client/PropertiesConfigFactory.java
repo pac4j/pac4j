@@ -116,7 +116,7 @@ public class PropertiesConfigFactory implements ConfigFactory {
         return properties.get(name);
     }
 
-    public Config build() {
+    public Config build(final Object... parameters) {
         final List<Client> clients = new ArrayList<>();
         tryCreateFacebookClient(clients);
         tryCreateTwitterClient(clients);
