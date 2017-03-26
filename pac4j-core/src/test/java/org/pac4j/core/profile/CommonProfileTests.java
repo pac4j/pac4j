@@ -1,14 +1,14 @@
 package org.pac4j.core.profile;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.JavaSerializationHelper;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -140,6 +140,20 @@ public final class CommonProfileTests implements TestsConstants {
         final String s = helper.serializeToBase64(profile);
         final CommonProfile profile2 = (CommonProfile) helper.unserializeFromBase64(s);
         assertNotNull(profile2);
+    }
+
+    @Test(expected = TechnicalException.class)
+    public void testSetNullLinkedIdWhenAlreadySet() {
+        final CommonProfile profile = new CommonProfile();
+        profile.setLinkedId("dummyLinkecId");
+        profile.setLinkedId(null);
+    }
+
+    @Test
+    public void testSetNullLinkedIdWhenNotAlreadySet() {
+        final CommonProfile profile = new CommonProfile();
+        profile.setLinkedId(null);
+        assertNull(profile.getLinkedId());
     }
 
     @Test
