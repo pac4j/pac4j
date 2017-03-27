@@ -1,15 +1,11 @@
 package org.pac4j.core.profile;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.*;
-
 import org.pac4j.core.util.CommonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
@@ -316,7 +312,6 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     public void setLinkedId(final String linkedId) {
-        CommonHelper.assertNotNull("linkedId", linkedId);
         this.linkedId = linkedId;
     }
 }
