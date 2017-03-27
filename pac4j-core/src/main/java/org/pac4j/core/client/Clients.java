@@ -218,7 +218,15 @@ public class Clients extends InitializableObject {
         return this.clients;
     }
 
+    /**
+     * Set the default client (can be <code>null</code>). If not <code>null</code>, it must exist in the list of clients.
+     *
+     * @param defaultClient the default client to define
+     */
     public void setDefaultClient(final Client defaultClient) {
+        if (defaultClient != null && (this.clients == null || !this.clients.contains(defaultClient))) {
+            throw new TechnicalException("The default client must be defined in the list of clients");
+        }
         this.defaultClient = defaultClient;
     }
 
