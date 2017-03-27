@@ -312,10 +312,6 @@ public abstract class UserProfile implements Serializable, Externalizable {
     }
 
     public void setLinkedId(final String linkedId) {
-        if (this.linkedId != null) {
-            // Don't allow unsetting of already set linked id
-            CommonHelper.assertNotNull("linkedId", linkedId);
-        }
         this.linkedId = linkedId;
     }
 }

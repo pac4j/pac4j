@@ -142,11 +142,12 @@ public final class CommonProfileTests implements TestsConstants {
         assertNotNull(profile2);
     }
 
-    @Test(expected = TechnicalException.class)
+    @Test
     public void testSetNullLinkedIdWhenAlreadySet() {
         final CommonProfile profile = new CommonProfile();
         profile.setLinkedId("dummyLinkecId");
         profile.setLinkedId(null);
+        assertNull(profile.getLinkedId());
     }
 
     @Test
