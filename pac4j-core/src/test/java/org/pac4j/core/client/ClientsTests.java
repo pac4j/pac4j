@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
+import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.AjaxRequestResolver;
 import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
@@ -204,5 +206,30 @@ public final class ClientsTests implements TestsConstants {
         assertEquals(ajaxRequestResolver, facebookClient.getAjaxRequestResolver());
         assertEquals(urlResolver, facebookClient.getUrlResolver());
         assertEquals(authorizationGenerator, facebookClient.getAuthorizationGenerators().get(0));
+    }
+
+    @Test
+    public void testDefaultClientNullClients() {
+        final Clients clients = new Clients();
+        TestsHelper.expectException(() -> clients.setDefaultClient(new AnonymousClient()), TechnicalException.class, "The default client must be defined in the list of clients");
+    }
+
+    @Test
+    public void testNullClientNullClients() {
+        final Clients clients = new Clients();
+        clients.setDefaultClient(null);
+    }
+
+    @Test
+    public void testDefaultClientOneDifferentClient() {
+        final Clients clients = new Clients(new MockDirectClient(null, (Credentials) null, null));
+        TestsHelper.expectException(() -> clients.setDefaultClient(new AnonymousClient()), TechnicalException.class, "The default client must be defined in the list of clients");
+    }
+
+    @Test
+    public void testDefaultClientAlreadyInClients() {
+        final AnonymousClient client = new AnonymousClient();
+        final Clients clients = new Clients(client);
+        clients.setDefaultClient(client);
     }
 }
