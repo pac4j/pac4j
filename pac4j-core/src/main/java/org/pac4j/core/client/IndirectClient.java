@@ -60,6 +60,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws HttpAction requires an additional HTTP action
      */
     public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
+        init(context);
+
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (ajaxRequestResolver.isAjax(context)) {
             logger.info("AJAX request detected -> returning 401");
@@ -74,7 +76,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
             throw HttpAction.unauthorized("authentication already tried -> forbidden", context, null);
         }
 
-        init(context);
         return retrieveRedirectAction(context);
     }
 

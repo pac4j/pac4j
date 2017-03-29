@@ -152,7 +152,12 @@ public final class CommonHelperTests {
     public void testNoPrefix() {
     	assertNotNull(CommonHelper.getInputStreamFromName("src/test/resources/testFile.txt"));
     }
-    
+
+    @Test
+    public void testFilePrefix() {
+        assertNotNull(CommonHelper.getInputStreamFromName("file:src/test/resources/testFile.txt"));
+    }
+
     @Test
     public void testResourcePrefix() {
     	assertNotNull(CommonHelper.getInputStreamFromName("resource:/testFile.txt"));
@@ -171,6 +176,12 @@ public final class CommonHelperTests {
     @Test
     public void testHttpsPrefix() {
     	assertNotNull(CommonHelper.getInputStreamFromName("https://www.yahoo.com"));
+    }
+
+    @Test
+    public void testWindowsPath() {
+        final String file = "C:\\XYZ\\idp.xml";
+        TestsHelper.expectException(() -> CommonHelper.getInputStreamFromName(file), TechnicalException.class, "prefix is not handled:C");
     }
 
     @Test(expected = TechnicalException.class)
