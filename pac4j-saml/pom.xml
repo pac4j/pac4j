@@ -16,6 +16,9 @@
         <opensaml.version>3.2.0</opensaml.version>
         <joda-time.version>2.9.2</joda-time.version>
         <velocity.version>1.7</velocity.version>
+        <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
+        velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
+        <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.1.0</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
         <java-support.version>7.1.1</java-support.version>
@@ -125,6 +128,11 @@
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>${velocity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
