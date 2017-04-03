@@ -8,8 +8,6 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is a simple test authenticator: password must match username.
@@ -18,8 +16,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.4.0
  */
 public class SimpleTestUsernamePasswordAuthenticator implements Authenticator<UsernamePasswordCredentials> {
-
-    protected static final Logger logger = LoggerFactory.getLogger(SimpleTestUsernamePasswordAuthenticator.class);
 
     @Override
     public void validate(final UsernamePasswordCredentials credentials, final WebContext context) throws HttpAction, CredentialsException {
