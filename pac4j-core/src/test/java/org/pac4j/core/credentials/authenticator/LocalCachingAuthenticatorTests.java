@@ -119,18 +119,6 @@ public class LocalCachingAuthenticatorTests {
     }
 
     @Test
-    public void testValidateAndCacheAndClean() throws HttpAction, CredentialsException {
-        final LocalCachingAuthenticator authenticator = new
-                LocalCachingAuthenticator(this.delegate, 10, 2, TimeUnit.SECONDS);
-        authenticator.init(null);
-
-        authenticator.validate(this.credentials, null);
-        assertTrue(authenticator.isCached(this.credentials));
-        authenticator.clearCache();
-        assertFalse(authenticator.isCached(this.credentials));
-    }
-
-    @Test
     public void testValidateAndExpire() throws Exception {
         final LocalCachingAuthenticator authenticator = new
                 LocalCachingAuthenticator(this.delegate, 10, 500, TimeUnit.MILLISECONDS);

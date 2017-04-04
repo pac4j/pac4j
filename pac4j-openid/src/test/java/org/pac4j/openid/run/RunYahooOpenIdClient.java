@@ -31,7 +31,7 @@ public class RunYahooOpenIdClient  extends RunClient {
 
     @Override
     protected String getPassword() {
-        return "testpwdscribeup";
+        return "testpwdpac4j";
     }
 
     @Override

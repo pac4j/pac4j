@@ -11,6 +11,7 @@ When the user is successfully authenticated by *pac4j*, his data are retrieved f
 - permissions (`getPermissions()`)
 - a client name (`getClientName()`)
 - a remember-me nature (`isRemembered()`)
+- a linked identifier (`getLinkedId()`)
 
 In fact, the root class of the profiles hierarchy is the [`UserProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/UserProfile.java). Though, it's an abstract class which is never referenced and used directly.
 
@@ -87,3 +88,8 @@ In fact, most clients never return a `CommonProfile`, but specific profiles like
 
 - (partially) override the common methods of the `CommonProfile` with specific implementations
 - add their specific getters for their specific attributes.
+
+## 9) Linked identifier
+
+Each user profile may have a linked identifier, it's the identifier of another user profile. This way, both user profiles are linked and it allows you to authenticate via an account for a user
+and load the linked user defined in the first user, especially by using the [`LoadLinkedUserAuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/LoadLinkedUserAuthorizationGenerator.java).

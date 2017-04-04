@@ -1,6 +1,7 @@
 package org.pac4j.core.profile;
 
 import org.pac4j.core.context.Pac4jConstants;
+import org.pac4j.core.profile.definition.CommonProfileDefinition;
 
 import java.net.URI;
 import java.util.Locale;
@@ -21,7 +22,7 @@ public class CommonProfile extends UserProfile {
      * @return the email of the user
      */
     public String getEmail() {
-        return (String) getAttribute("email");
+        return (String) getAttribute(CommonProfileDefinition.EMAIL);
     }
 
     /**
@@ -30,7 +31,7 @@ public class CommonProfile extends UserProfile {
      * @return the first name of the user
      */
     public String getFirstName() {
-        return (String) getAttribute("first_name");
+        return (String) getAttribute(CommonProfileDefinition.FIRST_NAME);
     }
 
     /**
@@ -39,7 +40,7 @@ public class CommonProfile extends UserProfile {
      * @return the family name of the user
      */
     public String getFamilyName() {
-        return (String) getAttribute("family_name");
+        return (String) getAttribute(CommonProfileDefinition.FAMILY_NAME);
     }
 
     /**
@@ -48,7 +49,7 @@ public class CommonProfile extends UserProfile {
      * @return the displayed name of the user
      */
     public String getDisplayName() {
-        return (String) getAttribute("display_name");
+        return (String) getAttribute(CommonProfileDefinition.DISPLAY_NAME);
     }
 
     /**
@@ -66,7 +67,7 @@ public class CommonProfile extends UserProfile {
      * @return the gender of the user
      */
     public Gender getGender() {
-        final Gender gender = (Gender) getAttribute("gender");
+        final Gender gender = (Gender) getAttribute(CommonProfileDefinition.GENDER);
         if (gender == null) {
             return Gender.UNSPECIFIED;
         } else {
@@ -80,7 +81,7 @@ public class CommonProfile extends UserProfile {
      * @return the locale of the user
      */
     public Locale getLocale() {
-        return (Locale) getAttribute("locale");
+        return (Locale) getAttribute(CommonProfileDefinition.LOCALE);
     }
 
     /**
@@ -89,7 +90,7 @@ public class CommonProfile extends UserProfile {
      * @return the url of the picture of the user.
      */
     public URI getPictureUrl() {
-        return (URI) getAttribute("picture_url");
+        return (URI) getAttribute(CommonProfileDefinition.PICTURE_URL);
     }
 
     /**
@@ -98,7 +99,7 @@ public class CommonProfile extends UserProfile {
      * @return the url of the profile of the user.
      */
     public URI getProfileUrl() {
-        return (URI) getAttribute("profile_url");
+        return (URI) getAttribute(CommonProfileDefinition.PROFILE_URL);
     }
 
     /**
@@ -107,6 +108,6 @@ public class CommonProfile extends UserProfile {
      * @return the location of the user
      */
     public String getLocation() {
-        return (String) getAttribute("location");
+        return (String) getAttribute(CommonProfileDefinition.LOCATION);
     }
 }

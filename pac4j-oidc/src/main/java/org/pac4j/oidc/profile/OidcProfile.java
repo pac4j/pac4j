@@ -5,7 +5,7 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.jwt.AbstractJwtProfile;
 import org.pac4j.oidc.client.OidcClient;
 
 import java.net.URI;
@@ -19,7 +19,7 @@ import java.util.*;
  * @author Michael Remond
  * @version 1.7.0
  */
-public class OidcProfile extends CommonProfile {
+public class OidcProfile extends AbstractJwtProfile {
 
     private static final long serialVersionUID = -52855988661742374L;
 
@@ -77,32 +77,6 @@ public class OidcProfile extends CommonProfile {
 
     public Date getUpdatedAt() {
         return (Date) getAttribute(OidcProfileDefinition.UPDATED_AT);
-    }
-
-    public String getIssuer() {
-        return (String) getAttribute(OidcProfileDefinition.ISSUER);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<String> getAudience() {
-        final Object audience = getAttribute(OidcProfileDefinition.AUDIENCE);
-        if (audience instanceof String) {
-            return Collections.singletonList((String) audience);
-        } else {
-            return (List<String>) audience;
-        }
-    }
-
-    public Date getExpirationDate() {
-        return (Date) getAttribute(OidcProfileDefinition.EXPIRATION_TIME);
-    }
-
-    public Date getIssuedAt() {
-        return (Date) getAttribute(OidcProfileDefinition.ISSUED_AT);
-    }
-
-    public Date getNbf() {
-        return (Date) getAttribute(OidcProfileDefinition.NBF);
     }
 
     public Date getAuthTime() {

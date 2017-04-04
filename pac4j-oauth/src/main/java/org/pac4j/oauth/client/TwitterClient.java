@@ -32,7 +32,7 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
     }
     
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         configuration.setApi(getApi());
         configuration.setProfileDefinition(new TwitterProfileDefinition());
         configuration.setHasBeenCancelledFactory(ctx -> {
@@ -44,9 +44,9 @@ public class TwitterClient extends OAuth10Client<TwitterProfile> {
             }
         });
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://twitter.com/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://twitter.com/logout"));
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     protected BaseApi<OAuth10aService> getApi() {

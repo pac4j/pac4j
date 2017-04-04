@@ -21,7 +21,7 @@ public class CasRedirectActionBuilder extends InitializableWebObject implements 
 
     private static final Logger logger = LoggerFactory.getLogger(CasRedirectActionBuilder.class);
 
-    private final CasConfiguration configuration;
+    protected final CasConfiguration configuration;
 
     private final String callbackUrl;
 
@@ -40,16 +40,11 @@ public class CasRedirectActionBuilder extends InitializableWebObject implements 
     public RedirectAction redirect(final WebContext context) throws HttpAction {
         init(context);
 
-        final String computeLoginUrl = configuration.getCallbackUrlResolver().compute(configuration.getLoginUrl(), context);
-        final String computedCallbackUrl = configuration.getCallbackUrlResolver().compute(callbackUrl, context);
+        final String computeLoginUrl = configuration.computeFinalLoginUrl(context);
+        final String computedCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);
         final String redirectionUrl = CommonUtils.constructRedirectUrl(computeLoginUrl, CasConfiguration.SERVICE_PARAMETER,
                 computedCallbackUrl, configuration.isRenew(), configuration.isGateway());
         logger.debug("redirectionUrl: {}", redirectionUrl);
         return RedirectAction.redirect(redirectionUrl);
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "callbackUrl", callbackUrl);
     }
 }

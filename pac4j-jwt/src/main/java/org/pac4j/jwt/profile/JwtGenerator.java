@@ -5,13 +5,12 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.PlainJWT;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.jwt.JwtClaims;
+import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -98,7 +97,6 @@ public class JwtGenerator<U extends CommonProfile> {
     protected void verifyProfile(final U profile) {
         CommonHelper.assertNotNull("profile", profile);
         CommonHelper.assertNull("profile.sub", profile.getAttribute(JwtClaims.SUBJECT));
-        CommonHelper.assertNull("profile.iat", profile.getAttribute(JwtClaims.ISSUED_AT));
         CommonHelper.assertNull(INTERNAL_ROLES, profile.getAttribute(INTERNAL_ROLES));
         CommonHelper.assertNull(INTERNAL_PERMISSIONS, profile.getAttribute(INTERNAL_PERMISSIONS));
     }
@@ -106,8 +104,7 @@ public class JwtGenerator<U extends CommonProfile> {
     protected JWTClaimsSet buildJwtClaimsSet(final U profile) {
         // claims builder with subject and issue time
         final JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-                .subject(profile.getTypedId())
-                .issueTime(new Date());
+                .subject(profile.getTypedId());
 
         // add attributes
         final Map<String, Object> attributes = profile.getAttributes();

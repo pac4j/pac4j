@@ -10,7 +10,6 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
@@ -49,7 +48,7 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
         CommonHelper.assertNotNull("configuration", configuration);
         configuration.init(context);
 
-        setProfileDefinition(new CasProfileDefinition());
+        defaultProfileDefinition(new CasProfileDefinition());
     }
 
     @Override
@@ -58,12 +57,8 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
         final String ticket = credentials.getToken();
         try {
-            String finalCallbackUrl = callbackUrl;
-            final CallbackUrlResolver callbackUrlResolver = configuration.getCallbackUrlResolver();
-            if (callbackUrlResolver != null) {
-                finalCallbackUrl = callbackUrlResolver.compute(finalCallbackUrl, context);
-            }
-            final Assertion assertion = configuration.getTicketValidator().validate(ticket, finalCallbackUrl);
+            final String finalCallbackUrl = configuration.computeFinalUrl(callbackUrl, context);
+            final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket, finalCallbackUrl);
             final AttributePrincipal principal = assertion.getPrincipal();
             logger.debug("principal: {}", principal);
 
@@ -112,10 +107,5 @@ public class CasAuthenticator extends ProfileDefinitionAware<CommonProfile> impl
 
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "configuration", configuration, "callbackUrl", callbackUrl);
     }
 }

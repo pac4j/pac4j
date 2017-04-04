@@ -19,7 +19,7 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.profile.definition.CommonProfileDefinition;
 import org.pac4j.core.profile.definition.ProfileDefinitionAware;
 import org.pac4j.core.util.CommonHelper;
-import org.pac4j.jwt.JwtClaims;
+import org.pac4j.core.profile.jwt.JwtClaims;
 import org.pac4j.jwt.config.encryption.EncryptionConfiguration;
 import org.pac4j.jwt.config.signature.SignatureConfiguration;
 import org.pac4j.jwt.profile.JwtGenerator;
@@ -65,6 +65,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         this.encryptionConfigurations = encryptionConfigurations;
     }
 
+    public JwtAuthenticator(final SignatureConfiguration signatureConfiguration) {
+        setSignatureConfiguration(signatureConfiguration);
+    }
+
     public JwtAuthenticator(final SignatureConfiguration signatureConfiguration, final EncryptionConfiguration encryptionConfiguration) {
         setSignatureConfiguration(signatureConfiguration);
         setEncryptionConfiguration(encryptionConfiguration);
@@ -72,7 +76,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     protected void internalInit(final WebContext context) {
-        setProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
+        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
     }
 
     /**

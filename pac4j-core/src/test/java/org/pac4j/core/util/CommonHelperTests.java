@@ -148,31 +148,6 @@ public final class CommonHelperTests {
         assertFalse(CommonHelper.areEqualsIgnoreCaseAndTrim(NAME, VALUE));
     }
     
-    @Test
-    public void testNoPrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("src/test/resources/testFile.txt"));
-    }
-    
-    @Test
-    public void testResourcePrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("resource:/testFile.txt"));
-    }
-    
-    @Test
-    public void testClassPathPrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("classpath:testFile.txt"));
-    }
-    
-    @Test
-    public void testHttpPrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("http://www.yahoo.com"));
-    }
-    
-    @Test
-    public void testHttpsPrefix() {
-    	assertNotNull(CommonHelper.getInputStreamFromName("https://www.yahoo.com"));
-    }
-
     @Test(expected = TechnicalException.class)
     public void testAssertNotBlank_null() {
         String var = null;

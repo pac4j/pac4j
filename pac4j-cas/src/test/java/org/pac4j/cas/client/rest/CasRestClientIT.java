@@ -2,6 +2,7 @@ package org.pac4j.cas.client.rest;
 
 import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.junit.Test;
+import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.profile.CasProfile;
@@ -33,18 +34,25 @@ public final class CasRestClientIT implements TestsConstants {
     private final static String CAS_PREFIX_URL = "http://casserverpac4j.herokuapp.com/";
     private final static String USER = "jleleu";
 
+    private CasConfiguration getConfig() {
+        final CasConfiguration config = new CasConfiguration();
+        config.setPrefixUrl(CAS_PREFIX_URL);
+        return config;
+    }
+
     @Test
     public void testRestForm() throws HttpAction {
-        internalTestRestForm(new CasRestAuthenticator(CAS_PREFIX_URL));
+        internalTestRestForm(new CasRestAuthenticator(getConfig()));
     }
 
     @Test
     public void testRestFormWithCaching() throws HttpAction {
-        internalTestRestForm(new LocalCachingAuthenticator<>(new CasRestAuthenticator(CAS_PREFIX_URL), 100, 100, TimeUnit.SECONDS));
+        internalTestRestForm(new LocalCachingAuthenticator<>(new CasRestAuthenticator(getConfig()), 100, 100, TimeUnit.SECONDS));
     }
 
     private void internalTestRestForm(final Authenticator authenticator) throws HttpAction {
         final CasRestFormClient client = new CasRestFormClient();
+        client.setConfiguration(getConfig());
         client.setAuthenticator(authenticator);
 
         final MockWebContext context = MockWebContext.create();
@@ -56,8 +64,8 @@ public final class CasRestClientIT implements TestsConstants {
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
-        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
+        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
         assertNotNull(casProfile);
         assertEquals(USER, casProfile.getId());
         assertTrue(casProfile.getAttributes().size() > 0);
@@ -65,14 +73,14 @@ public final class CasRestClientIT implements TestsConstants {
 
     @Test
     public void testRestBasic() throws HttpAction, UnsupportedEncodingException {
-        internalTestRestBasic(new CasRestBasicAuthClient(CAS_PREFIX_URL, VALUE, NAME), 3);
+        internalTestRestBasic(new CasRestBasicAuthClient(getConfig(), VALUE, NAME), 3);
     }
 
     @Test
     public void testRestBasicWithCas20TicketValidator() throws HttpAction, UnsupportedEncodingException {
-        final CasRestAuthenticator authenticator = new CasRestAuthenticator(CAS_PREFIX_URL);
-        authenticator.setTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
-        internalTestRestBasic(new CasRestBasicAuthClient(authenticator, VALUE, NAME), 0);
+        final CasConfiguration config = getConfig();
+        config.setDefaultTicketValidator(new Cas20ServiceTicketValidator(CAS_PREFIX_URL));
+        internalTestRestBasic(new CasRestBasicAuthClient(config, VALUE, NAME), 0);
     }
 
     private void internalTestRestBasic(final CasRestBasicAuthClient client, int nbAttributes) throws HttpAction, UnsupportedEncodingException {
@@ -85,14 +93,14 @@ public final class CasRestClientIT implements TestsConstants {
         assertEquals(USER, profile.getId());
         assertNotNull(profile.getTicketGrantingTicketId());
 
-        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile);
-        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds);
+        final TokenCredentials casCreds = client.requestServiceTicket(PAC4J_BASE_URL, profile, context);
+        final CasProfile casProfile = client.validateServiceTicket(PAC4J_BASE_URL, casCreds, context);
         assertNotNull(casProfile);
         assertEquals(USER, casProfile.getId());
         assertEquals(nbAttributes, casProfile.getAttributes().size());
-        client.destroyTicketGrantingTicket(profile);
+        client.destroyTicketGrantingTicket(profile, context);
 
-        TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile), TechnicalException.class,
+        TestsHelper.expectException(() -> client.requestServiceTicket(PAC4J_BASE_URL, profile, context), TechnicalException.class,
                 "Service ticket request for `#CasRestProfile# | id: " + USER + " | attributes: {} | roles: [] | permissions: [] | isRemembered: false |` failed: (404) Not Found");
     }
 }

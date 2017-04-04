@@ -11,7 +11,8 @@ public interface ConfigFactory {
     /**
      * Build a configuration.
      *
+     * @param parameters the parameters to build the configuration
      * @return the built configuration
      */
-    Config build();
+    Config build(Object... parameters);
 }

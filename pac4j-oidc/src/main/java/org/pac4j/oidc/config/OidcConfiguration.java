@@ -88,23 +88,22 @@ public class OidcConfiguration extends InitializableWebObject {
     @Override
     protected void internalInit(final WebContext context) {
         // checks
-        CommonHelper.assertNotBlank("clientId", clientId);
-        CommonHelper.assertNotBlank("secret", secret);
-        if (this.discoveryURI == null && this.providerMetadata == null) {
+        CommonHelper.assertNotBlank("clientId", getClientId());
+        CommonHelper.assertNotBlank("secret", getSecret());
+        if (this.getDiscoveryURI() == null && this.getProviderMetadata() == null) {
             throw new TechnicalException("You must define either the discovery URL or directly the provider metadata");
         }
 
         // default value
-        if (resourceRetriever == null) {
-            resourceRetriever = new DefaultResourceRetriever(connectTimeout, readTimeout);
+        if (getResourceRetriever() == null) {
+            setResourceRetriever(new DefaultResourceRetriever(getConnectTimeout(),getReadTimeout()));
         }
-        if (this.providerMetadata == null) {
-            CommonHelper.assertNotBlank("discoveryURI", discoveryURI);
+        if (this.getProviderMetadata() == null) {
+            CommonHelper.assertNotBlank("discoveryURI", getDiscoveryURI());
             try {
                 // Download OIDC metadata
-                this.providerMetadata = OIDCProviderMetadata.parse(resourceRetriever.retrieveResource(
-                        new URL(this.discoveryURI)).getContent());
-
+                this.setProviderMetadata(OIDCProviderMetadata.parse(getResourceRetriever().retrieveResource(
+                        new URL(this.getDiscoveryURI())).getContent()));
             } catch (final IOException | ParseException e) {
                 throw new TechnicalException(e);
             }
@@ -139,7 +138,7 @@ public class OidcConfiguration extends InitializableWebObject {
         return discoveryURI;
     }
 
-    public void setDiscoveryURI(final String discoveryURI) {
+    public void defaultDiscoveryURI(final String discoveryURI) {
         if (this.discoveryURI == null) {
             this.discoveryURI = discoveryURI;
         }
@@ -157,6 +156,10 @@ public class OidcConfiguration extends InitializableWebObject {
         return customParams;
     }
 
+    public String getCustomParam(String name) {
+        return customParams.get(name);
+    }
+
     public void setCustomParams(final Map<String, String> customParams) {
         CommonHelper.assertNotNull("customParams", customParams);
         this.customParams = customParams;
@@ -172,6 +175,10 @@ public class OidcConfiguration extends InitializableWebObject {
 
     public void setClientAuthenticationMethod(final ClientAuthenticationMethod clientAuthenticationMethod) {
         this.clientAuthenticationMethod = clientAuthenticationMethod;
+    }
+
+    public void setClientAuthenticationMethodAsString(String auth) {
+        this.clientAuthenticationMethod = ClientAuthenticationMethod.parse(auth);
     }
 
     public boolean isUseNonce() {
@@ -218,10 +225,18 @@ public class OidcConfiguration extends InitializableWebObject {
         return resourceRetriever;
     }
 
-    public void setResourceRetriever(final ResourceRetriever resourceRetriever) {
+    public void defaultResourceRetriever(final ResourceRetriever resourceRetriever) {
         if (this.resourceRetriever == null) {
             this.resourceRetriever = resourceRetriever;
         }
+    }
+
+    public void setDiscoveryURI(final String discoveryURI) {
+        this.discoveryURI = discoveryURI;
+    }
+
+    public void setResourceRetriever(final ResourceRetriever resourceRetriever) {
+        this.resourceRetriever = resourceRetriever;
     }
 
     public String getCallbackUrl() {

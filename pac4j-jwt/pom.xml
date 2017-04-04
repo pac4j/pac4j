@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.pac4j</groupId>
 		<artifactId>pac4j</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.0.0-RC3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>pac4j-jwt</artifactId>
@@ -13,7 +13,7 @@
 	<name>pac4j for JWT</name>
 
 	<properties>
-		<bcprov.version>1.54</bcprov.version>
+		<bcprov.version>1.56</bcprov.version>
 	</properties>
 
 	<dependencies>

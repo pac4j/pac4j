@@ -6,6 +6,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
@@ -24,7 +25,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * <p>Default logout logic:</p>
  *
  * <p>If the <code>localLogout</code> property is <code>true</code>, the pac4j profiles are removed from the web session
- * (and the web session is destroyed if the <code>killSession</code> property is <code>true</code>).</p>
+ * (and the web session is destroyed if the <code>destroySession</code> property is <code>true</code>).</p>
  *
  *  <p>A post logout action is computed as the redirection to the <code>url</code> request parameter if it matches the <code>logoutUrlPattern</code>
  * or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
@@ -40,12 +41,10 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    private boolean killSession;
-
     @Override
     public R perform(final C context, final Config config, final HttpActionAdapter<R, C> httpActionAdapter,
                      final String defaultUrl, final String inputLogoutUrlPattern, final Boolean inputLocalLogout,
-                     final Boolean inputCentralLogout) {
+                     final Boolean inputDestroySession, final Boolean inputCentralLogout) {
 
         logger.debug("=== LOGOUT ===");
 
@@ -61,6 +60,12 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
             localLogout = true;
         } else {
             localLogout = inputLocalLogout;
+        }
+        final boolean destroySession;
+        if (inputDestroySession == null) {
+            destroySession = false;
+        } else {
+            destroySession = inputDestroySession;
         }
         final boolean centralLogout;
         if (inputCentralLogout == null) {
@@ -78,7 +83,7 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         assertNotNull("configClients", configClients);
 
         // logic
-        final ProfileManager manager = getProfileManager(context);
+        final ProfileManager manager = getProfileManager(context, config);
         final List<CommonProfile> profiles = manager.getAll(true);
 
         // compute redirection URL
@@ -99,7 +104,17 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         if (localLogout || profiles.size() > 1) {
             logger.debug("Performing application logout");
             manager.logout();
-            postLogout(context);
+            if (destroySession) {
+                final SessionStore sessionStore = context.getSessionStore();
+                if (sessionStore != null) {
+                    final boolean removed = sessionStore.destroySession(context);
+                    if (!removed) {
+                        logger.error("Unable to destroy the web session. The session store may not support this feature");
+                    }
+                } else {
+                    logger.error("No session store available for this web context");
+                }
+            }
         }
 
         // central logout
@@ -129,24 +144,5 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
         }
 
         return httpActionAdapter.adapt(action.getCode(), context);
-    }
-
-    /**
-     * Specific post logout action.
-     *
-     * @param context the web context
-     */
-    protected void postLogout(final C context) {
-        if (this.killSession) {
-            context.invalidationSession();
-        }
-    }
-
-    public boolean isKillSession() {
-        return killSession;
-    }
-
-    public void setKillSession(final boolean killSession) {
-        this.killSession = killSession;
     }
 }

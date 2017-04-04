@@ -41,7 +41,7 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("scope", this.scope);
         final String scopeValue;
         if (this.scope == Google2Scope.EMAIL) {
@@ -64,9 +64,9 @@ public class Google2Client extends OAuth20Client<Google2Profile> {
             return false;
         });
         setConfiguration(configuration);
-        setLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
+        defaultLogoutActionBuilder(new GoogleLogoutActionBuilder<>());
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     public Google2Scope getScope() {

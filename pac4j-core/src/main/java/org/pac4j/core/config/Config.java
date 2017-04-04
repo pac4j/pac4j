@@ -3,15 +3,20 @@ package org.pac4j.core.config;
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.Clients;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.engine.CallbackLogic;
+import org.pac4j.core.engine.LogoutLogic;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.http.HttpActionAdapter;
 import org.pac4j.core.matching.Matcher;
+import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * The default configuration with clients, authorizers and matchers.
@@ -32,6 +37,12 @@ public class Config {
     protected HttpActionAdapter httpActionAdapter;
 
     protected SecurityLogic securityLogic;
+
+    protected CallbackLogic callbackLogic;
+
+    protected LogoutLogic logoutLogic;
+
+    protected Function<WebContext, ProfileManager> profileManagerFactory;
 
     public Config() {}
 
@@ -158,5 +169,29 @@ public class Config {
 
     public void setSecurityLogic(final SecurityLogic securityLogic) {
         this.securityLogic = securityLogic;
+    }
+
+    public CallbackLogic getCallbackLogic() {
+        return callbackLogic;
+    }
+
+    public void setCallbackLogic(final CallbackLogic callbackLogic) {
+        this.callbackLogic = callbackLogic;
+    }
+
+    public LogoutLogic getLogoutLogic() {
+        return logoutLogic;
+    }
+
+    public void setLogoutLogic(final LogoutLogic logoutLogic) {
+        this.logoutLogic = logoutLogic;
+    }
+
+    public Function<WebContext, ProfileManager> getProfileManagerFactory() {
+        return profileManagerFactory;
+    }
+
+    public void setProfileManagerFactory(final Function<WebContext, ProfileManager> profileManagerFactory) {
+        this.profileManagerFactory = profileManagerFactory;
     }
 }

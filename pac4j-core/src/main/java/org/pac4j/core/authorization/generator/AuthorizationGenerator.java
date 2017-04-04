@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
@@ -12,8 +13,10 @@ public interface AuthorizationGenerator<U extends CommonProfile> {
 
     /**
      * Generate the authorization information from and for the user profile.
-     * 
+     *
+     * @param context the web context
      * @param profile the user profile for which to generate the authorization information.
+     * @return the updated profile or a new one
      */
-    void generate(U profile);
+    U generate(WebContext context, U profile);
 }

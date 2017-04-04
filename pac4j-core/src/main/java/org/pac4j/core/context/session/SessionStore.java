@@ -37,11 +37,35 @@ public interface SessionStore<C extends WebContext> {
     void set(C context, String key, Object value);
 
     /**
-     * Invalidate the whole session.
+     * Destroy the web session.
      *
      * @param context the web context
+     * @return whether the session has been destroyed
      */
-    default void invalidateSession(C context) {
-        throw new UnsupportedOperationException("To be implemented");
-    }
+    boolean destroySession(C context);
+
+    /**
+     * Get the native session as a trackable object.
+     *
+     * @param context the web context
+     * @return the trackable object or <code>null</code> if this is not supported
+     */
+    Object getTrackableSession(C context);
+
+    /**
+     * Build a new session store from a trackable session.
+     *
+     * @param context the web context
+     * @param trackableSession the trackable session
+     * @return the new session store or <code>null</code> if this is not supported
+     */
+    SessionStore<C> buildFromTrackableSession(C context, Object trackableSession);
+
+    /**
+     * Renew the native session by copying all data to a new one.
+     *
+     * @param context the web context
+     * @return whether the session store has renewed the session
+     */
+    boolean renewSession(C context);
 }

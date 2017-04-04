@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.pac4j</groupId>
         <artifactId>pac4j</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-RC3-SNAPSHOT</version>
     </parent>
 
     <artifactId>pac4j-saml</artifactId>
@@ -13,12 +13,15 @@
     <name>pac4j for SAML protocol</name>
 
     <properties>
-        <opensaml.version>3.2.0</opensaml.version>
+        <opensaml.version>3.3.0</opensaml.version>
         <joda-time.version>2.9.2</joda-time.version>
         <velocity.version>1.7</velocity.version>
+        <!-- The dependency to commons-collections 3.2.2 is explicitly made to replace 3.2.1 (vulnerable) used by
+        velocity 1.7. It can be removed as soon as velocity 1.7 is not used anymore-->
+        <commons-collections.version>3.2.2</commons-collections.version>
         <cryptacular.version>1.1.0</cryptacular.version>
         <xalan.version>2.7.2</xalan.version>
-        <java-support.version>7.1.1</java-support.version>
+        <java-support.version>7.3.0</java-support.version>
     </properties>
 
     <dependencies>
@@ -127,6 +130,11 @@
             <version>${velocity.version}</version>
         </dependency>
         <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
@@ -134,6 +142,12 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <scope>compile</scope>
+            <version>${spring.version}</version>
         </dependency>
         <!-- for testing -->
         <dependency>

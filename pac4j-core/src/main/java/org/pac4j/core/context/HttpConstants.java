@@ -12,8 +12,6 @@ public interface HttpConstants {
 
     int CREATED = 201;
 
-    int OK_NO_CONTENT = 204;
-
     int UNAUTHORIZED = 401;
 
     int FORBIDDEN = 403;
@@ -56,7 +54,7 @@ public interface HttpConstants {
 
     String AJAX_HEADER_NAME = "X-Requested-With";
 
-    enum HTTP_METHOD { GET, POST, HEAD, TRACE, PUT, DELETE, OPTIONS }
+    enum HTTP_METHOD { GET, POST, HEAD, TRACE, PUT, DELETE, OPTIONS, PATCH }
 
     String ACCESS_CONTROL_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
 

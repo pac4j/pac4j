@@ -2,12 +2,15 @@ package org.pac4j.saml.run;
 
 import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.client.IndirectClient;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.run.RunClient;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.profile.SAML2Profile;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
@@ -37,10 +40,11 @@ public class RunTestshib extends RunClient {
 
     @Override
     protected IndirectClient getClient() {
-        final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks", "pac4j-demo-passwd", "pac4j-demo-passwd", "resource:testshib-providers.xml");
+        final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration(new ClassPathResource("samlKeystore.jks"),
+                "pac4j-demo-passwd", "pac4j-demo-passwd", new ClassPathResource("testshib-providers.xml"));
         cfg.setMaximumAuthenticationLifetime(3600);
         cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        cfg.setServiceProviderMetadataPath(new File("target", "test-sp-metadata.xml").getAbsolutePath());
+        cfg.setServiceProviderMetadataResource(new FileSystemResource(new File("target", "test-sp-metadata.xml").getAbsolutePath()));
         cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
         final SAML2Client client = new SAML2Client(cfg);
         client.setCallbackUrl(PAC4J_URL);
@@ -66,6 +70,6 @@ public class RunTestshib extends RunClient {
     @Override
     protected void populateContextWithUrl(final MockWebContext context, String url) {
         super.populateContextWithUrl(context, url);
-        context.setRequestMethod("POST");
+        context.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
     }
 }

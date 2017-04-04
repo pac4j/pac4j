@@ -35,7 +35,7 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
     }
     
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotBlank("scope", this.scope);
         CommonHelper.assertNotBlank("fields", this.fields);
         configuration.setApi(LinkedInApi20.instance());
@@ -55,9 +55,9 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
             }
         });
         setConfiguration(configuration);
-        setLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
+        defaultLogoutActionBuilder((ctx, profile, targetUrl) -> RedirectAction.redirect("https://www.linkedin.com/uas/logout"));
 
-        super.internalInit(context);
+        super.clientInit(context);
     }
 
     public String getScope() {

@@ -1,71 +1,46 @@
 package org.pac4j.openid.client;
 
-import org.openid4java.message.AuthSuccess;
-import org.openid4java.message.MessageException;
-import org.openid4java.message.ax.AxMessage;
-import org.openid4java.message.ax.FetchRequest;
-import org.openid4java.message.ax.FetchResponse;
+import org.openid4java.consumer.ConsumerManager;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.profile.definition.CommonProfileDefinition;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.openid.profile.yahoo.YahooOpenIdProfileDefinition;
+import org.pac4j.openid.credentials.OpenIdCredentials;
+import org.pac4j.openid.credentials.authenticator.YahooAuthenticator;
+import org.pac4j.openid.credentials.extractor.YahooCredentialsExtractor;
 import org.pac4j.openid.profile.yahoo.YahooOpenIdProfile;
+import org.pac4j.openid.redirect.YahooRedirectActionBuilder;
 
 /**
  * <p>This class is the OpenID client to authenticate users with their yahoo account.</p>
  * <p>It returns a {@link org.pac4j.openid.profile.yahoo.YahooOpenIdProfile}.</p>
- * 
+ *
  * @see org.pac4j.openid.profile.yahoo.YahooOpenIdProfile
  * @author Patrice de Saint Steban
  * @since 1.6.0
  */
-public class YahooOpenIdClient extends BaseOpenIdClient<YahooOpenIdProfile> {
+public class YahooOpenIdClient extends IndirectClient<OpenIdCredentials, YahooOpenIdProfile> {
 
-    public static final String YAHOO_GENERIC_USER_IDENTIFIER = "https://me.yahoo.com";
+    public final static String DISCOVERY_INFORMATION = "discoveryInformation";
+
+    private ConsumerManager consumerManager;
 
     @Override
-    protected String getUser(final WebContext context) {
-        return YAHOO_GENERIC_USER_IDENTIFIER;
+    protected void clientInit(final WebContext context) {
+        this.consumerManager = new ConsumerManager();
+        defaultRedirectActionBuilder(new YahooRedirectActionBuilder(this));
+        defaultCredentialsExtractor(new YahooCredentialsExtractor(this));
+        defaultAuthenticator(new YahooAuthenticator(this));
     }
 
-    @Override
-    protected void internalInit(final WebContext context) {
-        super.internalInit(context);
-        setProfileDefinition(new YahooOpenIdProfileDefinition());
+    /**
+     * Return the name of the attribute storing in session the discovery information.
+     * 
+     * @return the name of the attribute storing in session the discovery information
+     */
+    public String getDiscoveryInformationSessionAttributeName() {
+        return getName() + "#" + DISCOVERY_INFORMATION;
     }
 
-    @Override
-    protected FetchRequest getFetchRequest() throws MessageException {
-        final FetchRequest fetchRequest = FetchRequest.createFetchRequest();
-		fetchRequest.addAttribute(CommonProfileDefinition.EMAIL,
-				"http://axschema.org/contact/email", true);
-		fetchRequest.addAttribute(YahooOpenIdProfileDefinition.FULLNAME,
-				"http://axschema.org/namePerson", true);
-		fetchRequest.addAttribute(YahooOpenIdProfileDefinition.LANGUAGE,
-				"http://axschema.org/pref/language", true);
-		fetchRequest.addAttribute(YahooOpenIdProfileDefinition.IMAGE,
-				"http://axschema.org/media/image/default", true);
-		
-		logger.debug("fetchRequest: {}", fetchRequest);
-        return fetchRequest;
-    }
-
-    @Override
-    protected YahooOpenIdProfile createProfile(final AuthSuccess authSuccess) throws MessageException, HttpAction {
-        final YahooOpenIdProfile profile = getProfileDefinition().newProfile();
-
-        if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
-            final FetchResponse fetchResp = (FetchResponse) authSuccess.getExtension(AxMessage.OPENID_NS_AX);
-            for (final String name : getProfileDefinition().getPrimaryAttributes()) {
-                getProfileDefinition().convertAndAdd(profile, name, fetchResp.getAttributeValue(name));
-            }
-        }
-        return profile;
-    }
-
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName());
+    public ConsumerManager getConsumerManager() {
+        return consumerManager;
     }
 }

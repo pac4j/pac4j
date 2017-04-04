@@ -1,6 +1,6 @@
 package org.pac4j.http.client.direct;
 
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.HttpAction;
@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
  * @author Mircea Carasel
  * @since 1.9.0
  */
-public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, CommonProfile> {
+public class DirectDigestAuthClient extends DirectClient<DigestCredentials, CommonProfile> {
 
     private String realm = "pac4jRealm";
 
@@ -29,18 +29,18 @@ public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, Co
     }
 
     public DirectDigestAuthClient(final Authenticator digestAuthenticator) {
-        setAuthenticator(digestAuthenticator);
+        defaultAuthenticator(digestAuthenticator);
     }
 
     public DirectDigestAuthClient(final Authenticator digestAuthenticator,
                                  final ProfileCreator profileCreator) {
-        setAuthenticator(digestAuthenticator);
-        setProfileCreator(profileCreator);
+        defaultAuthenticator(digestAuthenticator);
+        defaultProfileCreator(profileCreator);
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
-        setCredentialsExtractor(new DigestAuthExtractor(getName()));
+    protected void clientInit(final WebContext context) {
+        defaultCredentialsExtractor(new DigestAuthExtractor(getName()));
     }
 
     /** Per RFC 2617
@@ -49,7 +49,7 @@ public class DirectDigestAuthClient extends DirectClientV2<DigestCredentials, Co
      * a "401 Unauthorized" status code, and a WWW-Authenticate header
      */
     @Override
-    public DigestCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+    protected DigestCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         DigestCredentials credentials = super.retrieveCredentials(context);
         if (credentials == null) {
             String nonce = calculateNonce();

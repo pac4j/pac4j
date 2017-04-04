@@ -27,12 +27,10 @@ public class OidcRedirectActionBuilder extends InitializableWebObject implements
 
     private static final Logger logger = LoggerFactory.getLogger(OidcRedirectActionBuilder.class);
 
-    private OidcConfiguration configuration;
+    protected OidcConfiguration configuration;
 
     private Map<String, String> authParams;
-
-    public OidcRedirectActionBuilder() {}
-
+    
     public OidcRedirectActionBuilder(final OidcConfiguration configuration) {
         this.configuration = configuration;
     }

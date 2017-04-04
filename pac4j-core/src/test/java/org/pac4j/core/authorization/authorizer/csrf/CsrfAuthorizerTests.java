@@ -3,6 +3,7 @@ package org.pac4j.core.authorization.authorizer.csrf;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
@@ -67,7 +68,7 @@ public final class CsrfAuthorizerTests implements TestsConstants {
     @Test
     public void testNoTokenPostRequest() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addSessionAttribute(Pac4jConstants.CSRF_TOKEN, VALUE);
-        context.setRequestMethod("post");
+        context.setRequestMethod(HttpConstants.HTTP_METHOD.POST.name());
         Assert.assertFalse(authorizer.isAuthorized(context, null));
     }
 

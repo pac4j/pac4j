@@ -2,8 +2,6 @@ package org.pac4j.core.client;
 
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
-import org.pac4j.core.exception.HttpAction;
-import org.pac4j.core.logout.LogoutActionBuilder;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 
@@ -21,8 +19,6 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
 
     private CommonProfile profile;
 
-    private LogoutActionBuilder<CommonProfile> logoutActionBuilder;
-
     public MockIndirectClient(final String name) {
         setName(name);
     }
@@ -39,30 +35,10 @@ public final class MockIndirectClient extends IndirectClient<Credentials, Common
     }
 
     @Override
-    protected RedirectAction retrieveRedirectAction(final WebContext context) throws HttpAction {
-        return redirectAction;
-    }
-
-    @Override
-    protected Credentials retrieveCredentials(final WebContext context) throws HttpAction {
-        return returnCredentials.get();
-    }
-
-    @Override
-    protected CommonProfile retrieveUserProfile(final Credentials credentials, final WebContext context) throws HttpAction {
-        return profile;
-    }
-
-	@Override
-	protected RedirectAction retrieveLogoutRedirectAction(final WebContext context, final CommonProfile currentProfile, final String targetUrl) {
-		return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
-	}
-
-    public LogoutActionBuilder<CommonProfile> getLogoutActionBuilder() {
-        return logoutActionBuilder;
-    }
-
-    public void setLogoutActionBuilder(final LogoutActionBuilder<CommonProfile> logoutActionBuilder) {
-        this.logoutActionBuilder = logoutActionBuilder;
+    protected void clientInit(final WebContext context) {
+        defaultRedirectActionBuilder(ctx -> redirectAction);
+        defaultCredentialsExtractor(ctx -> returnCredentials.get());
+        defaultAuthenticator((cred, ctx) -> cred.setUserProfile(profile));
+        defaultLogoutActionBuilder(getLogoutActionBuilder());
     }
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.pac4j</groupId>
 		<artifactId>pac4j</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.0.0-RC3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>pac4j-oidc</artifactId>
@@ -13,7 +13,7 @@
 	<name>pac4j for OpenID Connect protocol</name>
 
 	<properties>
-		<oauth-oidc-sdk.version>5.15</oauth-oidc-sdk.version>
+		<oauth-oidc-sdk.version>5.24</oauth-oidc-sdk.version>
 	</properties>
 
 	<dependencies>

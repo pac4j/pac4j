@@ -1,5 +1,6 @@
 package org.pac4j.core.authorization.generator;
 
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
@@ -24,23 +25,25 @@ public class DefaultRolesPermissionsAuthorizationGenerator<U extends CommonProfi
 
     public DefaultRolesPermissionsAuthorizationGenerator(final String[] defaultRoles, final String[] defaultPermissions) {
         if (defaultRoles != null) {
-            this.defaultRoles = Arrays.<String>asList(defaultRoles);
+            this.defaultRoles = Arrays.asList(defaultRoles);
         } else {
             this.defaultRoles = null;
         }
         if (defaultPermissions != null) {
-            this.defaultPermissions = Arrays.<String>asList(defaultPermissions);
+            this.defaultPermissions = Arrays.asList(defaultPermissions);
         } else {
             this.defaultPermissions = null;
         }
     }
 
-    public void generate(final U profile) {
+    @Override
+    public U generate(final WebContext context, final U profile) {
         if (defaultRoles != null) {
             profile.addRoles(defaultRoles);
         }
         if (defaultPermissions != null) {
             profile.addPermissions(defaultPermissions);
         }
+        return profile;
     }
 }

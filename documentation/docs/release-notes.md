@@ -5,13 +5,31 @@ title: Release notes&#58;
 
 **v2.0.0**:
 
+- All clients are built using sub-components (`RedirectActionBuilder`, `CredentialsExtractor` , `Authenticator`, `ProfileCreator` and `LogoutActionBuilder`): the `IndirectClientV2` and `DirectClientV2` are renamed as `IndirectClient` and `DirectClient` (and the existing `IndirectClient` and `DirectClient` components are removed)
+- The  `LdapProfileService`, `DbProfileService` and `MongoProfileService` replace the deprecated `LDapAuthenticator`, `DbAuthenticator` and `MongoAuthenticator` to validate username/password and create, update or delete users in a LDAP, in a relational database and in a MongoDB database
+- A user profile can be linked to another user profile
 - The `LogoutLogic` (formerly `ApplicationLogoutLogic`) handles the application and identity provider logout
+- The `WebContext` directly relies on the `SessionStore` whose capabilities are upgraded to handle back-channel logout
+- The `AuthorizationGenerator` takes the `WebContext` as input and can return a new built profile
+- Using Spring framework `Resource` components for SAML files / URLs
+- The session renewal is properly handled by clients (and especially CAS)
+- Caches are backed via a `Store` component
 - Upgrade the OAuth support with Scribe v3.3 and rebuild all clients on the generic `OAuth10Client` and `OAuth20Client`
 - User profiles are simple POJOs, the `AttributesDefinition` is replaced by the `ProfileDefinition`
 - CAS specificities (Kryo serialization, `toString` service ticket validation) are handled via the `InternalAttributeHandler`
 - Authenticators may throw the checked `CredentialsException`
 - Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
+- Added new matcher `PathMatcher` and deprecated `ExcludedPathMatcher`
 
+
+**v1.9.6**:
+
+- Added LinkedIn support in `PropertiesConfigFactory`
+- `CallbackLogic` and `ApplicationLogoutLogic` can be set at the `Config` level
+
+**v1.9.5**:
+
+- Various bug fixes
 
 **v1.9.4**:
 

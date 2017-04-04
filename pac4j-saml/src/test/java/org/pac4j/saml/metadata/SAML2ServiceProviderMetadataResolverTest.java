@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.springframework.core.io.FileSystemResource;
 
 public class SAML2ServiceProviderMetadataResolverTest {
 
@@ -12,8 +13,8 @@ public class SAML2ServiceProviderMetadataResolverTest {
   @Before
   public void setUp() throws Exception {
     SAML2ClientConfiguration configuration = new SAML2ClientConfiguration();
-    configuration.setServiceProviderMetadataPath("target");
-    configuration.setServiceProviderMetadataPath("target/out.xml");
+    configuration.setServiceProviderMetadataResource(new FileSystemResource("target"));
+    configuration.setServiceProviderMetadataResource(new FileSystemResource("target/out.xml"));
     metadataResolver = new SAML2ServiceProviderMetadataResolver(configuration, "http://localhost", null);
   }
 

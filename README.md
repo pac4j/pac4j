@@ -30,7 +30,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Versions
 
-The version **2.0.0-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
+The version **2.0.0-RC3-SNAPSHOT** is under development. Maven artifacts are built via Travis: [![Build Status](https://travis-ci.org/pac4j/pac4j.png?branch=master)](https://travis-ci.org/pac4j/pac4j) and available in the [Sonatype snapshots repository](https://oss.sonatype.org/content/repositories/snapshots/org/pac4j).
 
 The source code can be cloned and locally built via Maven:
 
@@ -44,6 +44,10 @@ The latest released version is the [![Maven Central](https://maven-badges.heroku
 
 Read the [documentation](http://www.pac4j.org/docs/index.html) for more information.
 
+## Third-party extensions
+
+There exist extensions to pac4j developed by third parties. The extensions provide features not available in the core pac4j distribution. At the moment, the following extension are known:
+- [IDC Extensions to PAC4J](https://github.com/jkacer/pac4j-extensions), developed internally by IDC and published as open source.
 
 ## Need help?
 

@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.junit.Test;
 import org.pac4j.core.authorization.generator.AuthorizationGenerator;
+import org.pac4j.core.client.direct.AnonymousClient;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.Credentials;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.http.AjaxRequestResolver;
-import org.pac4j.core.http.CallbackUrlResolver;
+import org.pac4j.core.http.UrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.TestsConstants;
@@ -193,16 +195,41 @@ public final class ClientsTests implements TestsConstants {
     @Test
     public void testDefineAjaxCallbackResolverAuthGenerator() {
         final AjaxRequestResolver ajaxRequestResolver = ctx -> false;
-        final CallbackUrlResolver callbackUrlResolver = (url, ctx) -> url;
-        final AuthorizationGenerator authorizationGenerator = profile -> {};
+        final UrlResolver urlResolver = (url, ctx) -> url;
+        final AuthorizationGenerator authorizationGenerator = (ctx, profile) -> profile;
         final MockIndirectClient facebookClient = newFacebookClient();
         final Clients clients = new Clients(CALLBACK_URL, facebookClient);
         clients.setAjaxRequestResolver(ajaxRequestResolver);
-        clients.setCallbackUrlResolver(callbackUrlResolver);
+        clients.setUrlResolver(urlResolver);
         clients.addAuthorizationGenerator(authorizationGenerator);
         clients.init();
         assertEquals(ajaxRequestResolver, facebookClient.getAjaxRequestResolver());
-        assertEquals(callbackUrlResolver, facebookClient.getCallbackUrlResolver());
+        assertEquals(urlResolver, facebookClient.getUrlResolver());
         assertEquals(authorizationGenerator, facebookClient.getAuthorizationGenerators().get(0));
+    }
+
+    @Test
+    public void testDefaultClientNullClients() {
+        final Clients clients = new Clients();
+        TestsHelper.expectException(() -> clients.setDefaultClient(new AnonymousClient()), TechnicalException.class, "The default client must be defined in the list of clients");
+    }
+
+    @Test
+    public void testNullClientNullClients() {
+        final Clients clients = new Clients();
+        clients.setDefaultClient(null);
+    }
+
+    @Test
+    public void testDefaultClientOneDifferentClient() {
+        final Clients clients = new Clients(new MockDirectClient(null, (Credentials) null, null));
+        TestsHelper.expectException(() -> clients.setDefaultClient(new AnonymousClient()), TechnicalException.class, "The default client must be defined in the list of clients");
+    }
+
+    @Test
+    public void testDefaultClientAlreadyInClients() {
+        final AnonymousClient client = new AnonymousClient();
+        final Clients clients = new Clients(client);
+        clients.setDefaultClient(client);
     }
 }

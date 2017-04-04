@@ -1,6 +1,7 @@
 package org.pac4j.http.client.direct;
 
 import org.junit.Test;
+import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
@@ -57,7 +58,7 @@ public final class ParameterClientTests implements TestsConstants {
         client.setSupportPostRequest(SUPPORT_POST);
         final MockWebContext context = MockWebContext.create();
         context.addRequestParameter(PARAMETER_NAME, VALUE);
-        context.setRequestMethod("GET");
+        context.setRequestMethod(HttpConstants.HTTP_METHOD.GET.name());
         final TokenCredentials credentials = client.getCredentials(context);
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals(VALUE, profile.getId());

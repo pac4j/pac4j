@@ -16,9 +16,7 @@ public interface CasLogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param ticket the ticket
      */
-    default void recordSession(C context, String ticket) {
-        // do nothing by default
-    }
+    void recordSession(C context, String ticket);
 
     /**
      * Destroys the current web session for the given ticket for a front channel logout.
@@ -26,10 +24,7 @@ public interface CasLogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param ticket the ticket
      */
-    default void destroySessionFront(C context, String ticket) {
-        // use the back channel way
-        destroySessionBack(context, ticket);
-    }
+    void destroySessionFront(C context, String ticket);
 
     /**
      * Destroys the current web session for the given ticket for a back channel logout.
@@ -37,5 +32,13 @@ public interface CasLogoutHandler<C extends WebContext> {
      * @param context the web context
      * @param ticket the ticket
      */
-    default void destroySessionBack(C context, String ticket) {}
+    void destroySessionBack(C context, String ticket);
+
+    /**
+     * Renew the web session.
+     *
+     * @param oldSessionId the old session identifier
+     * @param context the web context
+     */
+    void renewSession(String oldSessionId, C context);
 }

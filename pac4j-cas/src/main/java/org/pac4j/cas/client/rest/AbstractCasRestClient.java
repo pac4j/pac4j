@@ -3,17 +3,16 @@ package org.pac4j.cas.client.rest;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.TicketValidationException;
-import org.pac4j.cas.credentials.authenticator.CasRestAuthenticator;
+import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.profile.CasProfile;
 import org.pac4j.cas.profile.CasRestProfile;
 import org.pac4j.cas.util.HttpUtils;
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.HttpConstants;
+import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
-import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.core.credentials.authenticator.LocalCachingAuthenticator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -31,12 +30,14 @@ import java.net.URL;
  * @author Misagh Moayyed
  * @since 1.8.0
  */
-public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePasswordCredentials, CasRestProfile> {
+public abstract class AbstractCasRestClient extends DirectClient<UsernamePasswordCredentials, CasRestProfile> {
 
-    public void destroyTicketGrantingTicket(final CasRestProfile profile) {
+    protected CasConfiguration configuration;
+
+    public void destroyTicketGrantingTicket(final CasRestProfile profile, final WebContext context) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
+            final URL endpointURL = new URL(configuration.computeFinalRestUrl(context));
             final URL deleteURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
             connection = HttpUtils.openDeleteConnection(deleteURL);
             final int responseCode = connection.getResponseCode();
@@ -51,10 +52,10 @@ public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePassw
         }
     }
 
-    public TokenCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile) {
+    public TokenCredentials requestServiceTicket(final String serviceURL, final CasRestProfile profile, final WebContext context) {
         HttpURLConnection connection = null;
         try {
-            final URL endpointURL = new URL(getCasRestAuthenticator().getCasRestUrl());
+            final URL endpointURL = new URL(configuration.computeFinalRestUrl(context));
             final URL ticketURL = new URL(endpointURL, endpointURL.getPath() + "/" + profile.getTicketGrantingTicketId());
 
             connection = HttpUtils.openPostConnection(ticketURL);
@@ -79,10 +80,9 @@ public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePassw
         }
     }
 
-    public CasProfile validateServiceTicket(final String serviceURL, final TokenCredentials ticket) {
+    public CasProfile validateServiceTicket(final String serviceURL, final TokenCredentials ticket, final WebContext context) {
         try {
-            final Assertion assertion = getCasRestAuthenticator().getTicketValidator()
-                    .validate(ticket.getToken(), serviceURL);
+            final Assertion assertion = configuration.retrieveTicketValidator(context).validate(ticket.getToken(), serviceURL);
             final AttributePrincipal principal = assertion.getPrincipal();
             final CasProfile casProfile = new CasProfile();
             casProfile.setId(principal.getName());
@@ -93,14 +93,11 @@ public abstract class AbstractCasRestClient extends DirectClientV2<UsernamePassw
         }
     }
 
-    public CasRestAuthenticator getCasRestAuthenticator() {
-        Authenticator authenticator = getAuthenticator();
-        if (authenticator instanceof LocalCachingAuthenticator) {
-            authenticator = ((LocalCachingAuthenticator) authenticator).getDelegate();
-        }
-        if (authenticator instanceof CasRestAuthenticator) {
-            return (CasRestAuthenticator) authenticator;
-        }
-        throw new TechnicalException("authenticator must be a CasRestAuthenticator (or via a LocalCachingAuthenticator)");
+    public CasConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(final CasConfiguration configuration) {
+        this.configuration = configuration;
     }
 }

@@ -5,7 +5,7 @@ import org.pac4j.cas.authorization.DefaultCasAuthorizationGenerator;
 import org.pac4j.cas.client.CasProxyReceptor;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.credentials.authenticator.CasAuthenticator;
-import org.pac4j.core.client.DirectClientV2;
+import org.pac4j.core.client.DirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -13,7 +13,6 @@ import org.pac4j.core.credentials.extractor.ParameterExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.http.CallbackUrlResolver;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.CommonHelper;
 
@@ -34,7 +33,7 @@ import org.pac4j.core.util.CommonHelper;
  * @author Jerome Leleu
  * @since 1.9.2
  */
-public class DirectCasClient extends DirectClientV2<TokenCredentials, CommonProfile> {
+public class DirectCasClient extends DirectClient<TokenCredentials, CommonProfile> {
 
     private CasConfiguration configuration;
 
@@ -48,13 +47,8 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CommonProf
     protected TokenCredentials retrieveCredentials(final WebContext context) throws HttpAction {
         init(context);
         try {
-            String currentUrl = context.getFullRequestURL();
-            String loginUrl = configuration.getLoginUrl();
-            final CallbackUrlResolver callbackUrlResolver = configuration.getCallbackUrlResolver();
-            if (callbackUrlResolver != null) {
-                currentUrl = callbackUrlResolver.compute(currentUrl, context);
-                loginUrl = callbackUrlResolver.compute(loginUrl, context);
-            }
+            String currentUrl = configuration.computeFinalUrl(context.getFullRequestURL(), context);
+            final String loginUrl = configuration.computeFinalLoginUrl(context);
 
             final TokenCredentials credentials = getCredentialsExtractor().extract(context);
             if (credentials == null) {
@@ -80,14 +74,14 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CommonProf
     }
 
     @Override
-    protected void internalInit(final WebContext context) {
+    protected void clientInit(final WebContext context) {
         CommonHelper.assertNotNull("configuration", this.configuration);
         CommonHelper.assertTrue(!configuration.isGateway(), "the DirectCasClient can not support gateway to avoid infinite loops");
         configuration.init(context);
 
-        setCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
+        defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));
         // only a fake one for the initialization as we will build a new one with the current url for each request
-        super.setAuthenticator(new CasAuthenticator(configuration, "fake"));
+        super.defaultAuthenticator(new CasAuthenticator(configuration, "fake"));
         addAuthorizationGenerator(new DefaultCasAuthorizationGenerator<>());
     }
 
@@ -100,7 +94,7 @@ public class DirectCasClient extends DirectClientV2<TokenCredentials, CommonProf
     }
 
     @Override
-    public void setAuthenticator(final Authenticator authenticator) {
+    protected void defaultAuthenticator(final Authenticator authenticator) {
         throw new TechnicalException("You can not set an Authenticator for the DirectCasClient at startup. A new CasAuthenticator is automatically created for each request");
     }
 

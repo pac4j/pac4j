@@ -26,8 +26,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
     public void testMissingStorage() {
         final CasProxyReceptor client = new CasProxyReceptor();
         client.setCallbackUrl(CALLBACK_URL);
-        client.setProxyGrantingTicketStorage(null);
-        TestsHelper.initShouldFail(client, "proxyGrantingTicketStorage cannot be null");
+        client.setStore(null);
+        TestsHelper.initShouldFail(client, "store cannot be null");
     }
 
     @Test

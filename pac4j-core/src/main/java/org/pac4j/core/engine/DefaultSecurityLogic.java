@@ -96,7 +96,7 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
 
                 final boolean loadProfilesFromSession = loadProfilesFromSession(context, currentClients);
                 logger.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
-                final ProfileManager manager = getProfileManager(context);
+                final ProfileManager manager = getProfileManager(context, config);
                 List<CommonProfile> profiles = manager.getAll(loadProfilesFromSession);
                 logger.debug("profiles: {}", profiles);
 
@@ -201,8 +201,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param profiles the current profiles
      * @param authorizers the authorizers
      * @return a forbidden error
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, final String authorizers) {
+    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, final String authorizers) throws HttpAction {
         return HttpAction.forbidden("forbidden", context);
     }
 
@@ -249,8 +250,9 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param context the web context
      * @param currentClients the current clients
      * @return an unauthorized error
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
+    protected HttpAction unauthorized(final C context, final List<Client> currentClients) throws HttpAction {
         return HttpAction.unauthorized("unauthorized", context, null);
     }
 

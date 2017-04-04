@@ -54,7 +54,7 @@ public class RunCasOidcWrapper extends RunClient {
         assertEquals(CLIENT_ID, profile.getAttribute("preferred_username"));
         assertNotNull(profile.getAccessToken());
         assertEquals(CLIENT_ID, profile.getAudience().get(0));
-        assertNotNull(profile.getNbf());
+        assertNotNull(profile.getNotBefore());
         assertNotNull(profile.getAuthTime());
         assertNotNull(profile.getAttribute("state"));
         assertNotNull(profile.getExpirationDate());
