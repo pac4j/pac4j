@@ -79,7 +79,7 @@ public class OidcProfileCreator<U extends OidcProfile> extends AbstractProfileCr
         // Init IDTokenVerifier
         if (jwsAlgorithm == null) {
             this.idTokenValidator = new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), _clientID);
-        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (jwsAlgorithm == JWSAlgorithm.HS256 || jwsAlgorithm == JWSAlgorithm.HS384 || jwsAlgorithm == JWSAlgorithm.HS512)) {
+        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) || JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
             this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
         } else {
             this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
