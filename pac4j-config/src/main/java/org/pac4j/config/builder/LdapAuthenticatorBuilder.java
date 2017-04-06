@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import org.ldaptive.pool.PooledConnectionFactoryManager;
 import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.QualityOfProtection;
 import org.ldaptive.sasl.SecurityStrength;
@@ -66,7 +67,10 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
             if (isNotBlank(type)) {
                 final LdapAuthenticationProperties ldapProp = buildLdapProperties(i);
                 final org.ldaptive.auth.Authenticator ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
+
                 final LdapAuthenticator authenticator = new LdapAuthenticator(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
+                final PooledConnectionFactoryManager pooledConnectionFactoryManager = (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
+                authenticator.setConnectionFactory(pooledConnectionFactoryManager.getConnectionFactory());
                 authenticators.put(concat("ldap", i), authenticator);
             }
         }
