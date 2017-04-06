@@ -75,7 +75,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     private LdapAuthenticationProperties buildLdapProperties(final int i) {
         final LdapAuthenticationProperties ldapProp = new LdapAuthenticationProperties();
         final String type = getProperty(LDAP_TYPE, i);
-        ldapProp.setType(LdapAuthenticationProperties.AuthenticationTypes.valueOf(type));
+        ldapProp.setType(LdapAuthenticationProperties.AuthenticationTypes.valueOf(type.toUpperCase()));
         ldapProp.setDnFormat(getProperty(LDAP_DN_FORMAT, i));
         if (containsProperty(LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD, i)) {
             ldapProp.setPrincipalAttributePassword(getProperty(LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD, i));
@@ -156,16 +156,16 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
             ldapProp.setSaslRealm(getProperty(LDAP_SASL_REALM, i));
         }
         if (containsProperty(LDAP_SASL_MECHANISM, i)) {
-            ldapProp.setSaslMechanism(Mechanism.valueOf(getProperty(LDAP_SASL_MECHANISM, i)));
+            ldapProp.setSaslMechanism(Mechanism.valueOf(getProperty(LDAP_SASL_MECHANISM, i).toUpperCase()));
         }
         if (containsProperty(LDAP_SASL_AUTHORIZATION_ID, i)) {
             ldapProp.setSaslAuthorizationId(getProperty(LDAP_SASL_AUTHORIZATION_ID, i));
         }
         if (containsProperty(LDAP_SASL_SECURITY_STRENGTH, i)) {
-            ldapProp.setSaslSecurityStrength(SecurityStrength.valueOf(getProperty(LDAP_SASL_SECURITY_STRENGTH, i)));
+            ldapProp.setSaslSecurityStrength(SecurityStrength.valueOf(getProperty(LDAP_SASL_SECURITY_STRENGTH, i).toUpperCase()));
         }
         if (containsProperty(LDAP_SASL_QUALITY_OF_PROTECTION, i)) {
-            ldapProp.setSaslQualityOfProtection(QualityOfProtection.valueOf(getProperty(LDAP_SASL_QUALITY_OF_PROTECTION, i)));
+            ldapProp.setSaslQualityOfProtection(QualityOfProtection.valueOf(getProperty(LDAP_SASL_QUALITY_OF_PROTECTION, i).toUpperCase()));
         }
         return ldapProp;
     }

@@ -57,10 +57,10 @@ public class IndirectClientBuilder extends AbstractBuilder {
     public static final String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
     public static final String OIDC_CUSTOM_PARAM_VALUE2 = "oidc.customParamValue2";
 
-    public static final String LOGINFORM_AUTHENTICATOR = "loginForm.authenticator";
-    public static final String LOGINFORM_LOGIN_URL = "loginForm.loginUrl";
-    public static final String LOGINFORM_USERNAME_PARAMETER = "loginForm.usernameParameter";
-    public static final String LOGINFORM_PASSWORD_PARAMETER = "loginForm.passwordParameter";
+    public static final String FORMCLIENT_AUTHENTICATOR = "formClient.authenticator";
+    public static final String FORMCLIENT_LOGIN_URL = "formClient.loginUrl";
+    public static final String FORMCLIENT_USERNAME_PARAMETER = "formClient.usernameParameter";
+    public static final String FORMCLIENT_PASSWORD_PARAMETER = "formClient.passwordParameter";
 
     public static final String INDIRECTBASICAUTH_AUTHENTICATOR = "indirectBasicAuth.authenticator";
     public static final String INDIRECTBASICAUTH_REALM_NAME = "indirectBasicAuth.realName";
@@ -189,17 +189,17 @@ public class IndirectClientBuilder extends AbstractBuilder {
 
     public void tryCreateLoginFormClient(final List<Client> clients, final Map<String, Authenticator> authenticators) {
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
-            final String loginUrl = getProperty(LOGINFORM_LOGIN_URL, i);
-            final String authenticator = getProperty(LOGINFORM_AUTHENTICATOR, i);
+            final String loginUrl = getProperty(FORMCLIENT_LOGIN_URL, i);
+            final String authenticator = getProperty(FORMCLIENT_AUTHENTICATOR, i);
             if (isNotBlank(loginUrl) && isNotBlank(authenticator)) {
                 final FormClient formClient = new FormClient();
                 formClient.setLoginUrl(loginUrl);
                 formClient.setAuthenticator(authenticators.get(authenticator));
-                if (containsProperty(LOGINFORM_USERNAME_PARAMETER, i)) {
-                    formClient.setUsernameParameter(getProperty(LOGINFORM_USERNAME_PARAMETER, i));
+                if (containsProperty(FORMCLIENT_USERNAME_PARAMETER, i)) {
+                    formClient.setUsernameParameter(getProperty(FORMCLIENT_USERNAME_PARAMETER, i));
                 }
-                if (containsProperty(LOGINFORM_PASSWORD_PARAMETER, i)) {
-                    formClient.setPasswordParameter(getProperty(LOGINFORM_PASSWORD_PARAMETER, i));
+                if (containsProperty(FORMCLIENT_PASSWORD_PARAMETER, i)) {
+                    formClient.setPasswordParameter(getProperty(FORMCLIENT_PASSWORD_PARAMETER, i));
                 }
                 if (i != 0) {
                     formClient.setName(concat(formClient.getName(), i));

@@ -67,8 +67,8 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
         properties.put(ANONYMOUS, "whatever the value");
 
-        properties.put(LOGINFORM_LOGIN_URL, CALLBACK_URL);
-        properties.put(LOGINFORM_AUTHENTICATOR, "testUsernamePassword");
+        properties.put(FORMCLIENT_LOGIN_URL, CALLBACK_URL);
+        properties.put(FORMCLIENT_AUTHENTICATOR, "testUsernamePassword");
 
         properties.put(INDIRECTBASICAUTH_AUTHENTICATOR.concat(".2"), "testUsernamePassword");
 
