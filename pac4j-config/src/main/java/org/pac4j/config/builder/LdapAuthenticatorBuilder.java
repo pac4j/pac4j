@@ -26,7 +26,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     public static final String LDAP_ATTRIBUTES = "ldap.principalAttributes";
     public static final String LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD = "ldap.principalAttributePassword";
     public static final String LDAP_SUBTREE_SEARCH = "ldap.subtreeSearch";
-    public static final String LDAP_BASE_DN = "ldap.baseDn";
+    public static final String LDAP_USERS_DN = "ldap.usersDn";
     public static final String LDAP_USER_FILTER = "ldap.userFilter";
     public static final String LDAP_ENHANCE_WITH_ENTRY_RESOLVER = "ldap.enhanceWithEntryResolver";
     public static final String LDAP_TRUST_CERTIFICATES = "ldap.trustCertificates";
@@ -71,6 +71,8 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
                 final LdapAuthenticator authenticator = new LdapAuthenticator(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
                 final PooledConnectionFactoryManager pooledConnectionFactoryManager = (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
                 authenticator.setConnectionFactory(pooledConnectionFactoryManager.getConnectionFactory());
+                authenticator.setUsersDn(getProperty(LDAP_USERS_DN, i));
+
                 authenticators.put(concat("ldap", i), authenticator);
             }
         }
@@ -87,7 +89,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
         if (containsProperty(LDAP_SUBTREE_SEARCH, i)) {
             ldapProp.setSubtreeSearch(getPropertyAsBoolean(LDAP_SUBTREE_SEARCH, i));
         }
-        ldapProp.setBaseDn(getProperty(LDAP_BASE_DN, i));
+        ldapProp.setBaseDn(getProperty(LDAP_USERS_DN, i));
         ldapProp.setUserFilter(getProperty(LDAP_USER_FILTER, i));
         if (containsProperty(LDAP_ENHANCE_WITH_ENTRY_RESOLVER, i)) {
             ldapProp.setEnhanceWithEntryResolver(getPropertyAsBoolean(LDAP_ENHANCE_WITH_ENTRY_RESOLVER, i));
