@@ -273,8 +273,8 @@ public class OidcConfiguration extends InitializableWebObject {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientId", clientId, "discoveryURI", discoveryURI, "scope", scope, "customParams", customParams,
-                "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm,
+        return CommonHelper.toString(this.getClass(), "clientId", clientId, "secret", "[protected]", "discoveryURI", discoveryURI, "scope", scope,
+                "customParams", customParams, "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm,
                 "maxClockSkew", maxClockSkew, "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
                 "callbackUrl", callbackUrl, "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
     }
