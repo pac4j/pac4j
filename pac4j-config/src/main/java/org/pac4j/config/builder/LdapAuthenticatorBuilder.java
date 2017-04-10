@@ -24,6 +24,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
     public static final String LDAP_TYPE = "ldap.type";
     public static final String LDAP_DN_FORMAT = "ldap.dnFormat";
     public static final String LDAP_ATTRIBUTES = "ldap.principalAttributes";
+    public static final String LDAP_PRINCIPAL_ATTRIBUTE_ID = "ldap.principalAttributeId";
     public static final String LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD = "ldap.principalAttributePassword";
     public static final String LDAP_SUBTREE_SEARCH = "ldap.subtreeSearch";
     public static final String LDAP_USERS_DN = "ldap.usersDn";
@@ -72,6 +73,12 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
                 final PooledConnectionFactoryManager pooledConnectionFactoryManager = (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
                 authenticator.setConnectionFactory(pooledConnectionFactoryManager.getConnectionFactory());
                 authenticator.setUsersDn(getProperty(LDAP_USERS_DN, i));
+                if (containsProperty(LDAP_PRINCIPAL_ATTRIBUTE_ID, i)) {
+                    authenticator.setUsernameAttribute(getProperty(LDAP_PRINCIPAL_ATTRIBUTE_ID, i));
+                }
+                if (containsProperty(LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD, i)) {
+                    authenticator.setPasswordAttribute(getProperty(LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD, i));
+                }
 
                 authenticators.put(concat("ldap", i), authenticator);
             }
