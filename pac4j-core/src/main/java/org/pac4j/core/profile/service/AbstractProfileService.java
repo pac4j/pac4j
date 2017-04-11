@@ -302,19 +302,19 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Deprecated
     public String getAttributes() {
         return attributes;
     }
 
     /**
-     * <p>With version 2.0 of pac4j, the profile can be saved and updated (and deleted) in the storage by serialization the profile.</p>
-     * <p>In previous versions, the profile was built from existing attributes. Defining this attribute with a list of attributes separated by commas (no aliasing)
-     * allows you to use different attributes of the storage instead of the <code>serializedprofile</code> one.</p>
+     * <p>Since version 2.0 of pac4j, the profile can be saved, updated and deleted in the storage
+     * by serializing the profile (in the <code>serializedprofile</code> attribute).</p>
+     * <p>In addition to what existed in previous versions, the profile was built from existing attributes.
+     * Setting this attribute with a list of attributes separated by commas (no aliasing) allows you
+     * to use different attributes of the storage instead of the <code>serializedprofile</code> attribute.</p>
      *
-     * @param attributes the atrributes
+     * @param attributes the attributes
      */
-    @Deprecated
     public void setAttributes(final String attributes) {
         this.attributes = attributes;
     }

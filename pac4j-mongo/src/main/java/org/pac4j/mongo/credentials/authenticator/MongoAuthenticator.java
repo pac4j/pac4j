@@ -20,12 +20,10 @@ public class MongoAuthenticator extends MongoProfileService {
         super(mongoClient);
     }
 
-    @Deprecated
     public MongoAuthenticator(final MongoClient mongoClient, final String attributes) {
         super(mongoClient, attributes);
     }
 
-    @Deprecated
     public MongoAuthenticator(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         super(mongoClient, attributes, passwordEncoder);
     }
