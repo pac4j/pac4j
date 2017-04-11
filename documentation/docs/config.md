@@ -48,7 +48,7 @@ In that case, you can define for **all** clients:
 ## 2) The `pac4j-config` module
 
 The `pac4j-config` module gathers all the *pac4j* facilities to define this `Config` object.
-Currently, there is only component which allows you to build the clients from a set of properties: the [`PropertiesConfigFactory`](https://github.com/pac4j/pac4j/blob/master/pac4j-config/src/main/java/org/pac4j/config/client/PropertiesConfigFactory.java).
+Currently, there is only one component which allows you to build the clients from a set of properties: the [`PropertiesConfigFactory`](https://github.com/pac4j/pac4j/blob/master/pac4j-config/src/main/java/org/pac4j/config/client/PropertiesConfigFactory.java).
 It is used by Dropwizard, CAS and Knox.
 
 **Example (YAML dropwizard configuration file):**
