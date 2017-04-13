@@ -9,6 +9,9 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
@@ -18,7 +21,9 @@ import org.pac4j.saml.client.SAML2Client;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.pac4j.config.client.PropertiesConfigFactory.*;
+import static org.pac4j.config.builder.OAuthBuilder.*;
+import static org.pac4j.config.builder.IndirectClientBuilder.*;
+import static org.pac4j.config.builder.DirectClientBuilder.*;
 import static org.junit.Assert.*;
 
 /**
@@ -60,14 +65,23 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(OIDC_ID.concat(".1"), ID);
         properties.put(OIDC_SECRET.concat(".1"), SECRET);
 
+        properties.put(ANONYMOUS, "whatever the value");
+
+        properties.put(FORMCLIENT_LOGIN_URL, CALLBACK_URL);
+        properties.put(FORMCLIENT_AUTHENTICATOR, "testUsernamePassword");
+
+        properties.put(INDIRECTBASICAUTH_AUTHENTICATOR.concat(".2"), "testUsernamePassword");
+
         final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
         final Config config = factory.build();
         final Clients clients = config.getClients();
-        assertEquals(7, clients.getClients().size());
+        assertEquals(10, clients.getClients().size());
 
         final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient");
         assertEquals(ID, fbClient.getKey());
         assertEquals(SECRET, fbClient.getSecret());
+
+        assertNotNull(clients.findClient("AnonymousClient"));
 
         final TwitterClient twClient = (TwitterClient) clients.findClient("TwitterClient");
         assertEquals(ID, twClient.getKey());
@@ -94,5 +108,13 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         assertEquals(SECRET, googleOidcClient.getConfiguration().getSecret());
         assertEquals("https://accounts.google.com/.well-known/openid-configuration", googleOidcClient.getConfiguration().getDiscoveryURI());
         assertEquals(CALLBACK_URL + "?client_name=GoogleOidcClient.1", googleOidcClient.getCallbackUrl());
+
+        final FormClient formClient = (FormClient) clients.findClient("FormClient");
+        assertEquals(CALLBACK_URL, formClient.getLoginUrl());
+        assertTrue(formClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
+
+        final IndirectBasicAuthClient indirectBasicAuthClient = (IndirectBasicAuthClient) clients.findClient("IndirectBasicAuthClient.2");
+        assertEquals("authentication required", indirectBasicAuthClient.getRealmName());
+        assertTrue(indirectBasicAuthClient.getAuthenticator() instanceof SimpleTestUsernamePasswordAuthenticator);
     }
 }

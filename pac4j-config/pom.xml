@@ -33,6 +33,14 @@
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-oidc</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.pac4j</groupId>
+			<artifactId>pac4j-ldap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.pac4j</groupId>
+			<artifactId>pac4j-http</artifactId>
+		</dependency>
         <!-- for testing -->
 		<dependency>
 			<groupId>org.pac4j</groupId>

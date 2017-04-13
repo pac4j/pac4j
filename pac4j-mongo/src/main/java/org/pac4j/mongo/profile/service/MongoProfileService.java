@@ -38,13 +38,11 @@ public class MongoProfileService extends AbstractProfileService<MongoProfile> {
         this.mongoClient = mongoClient;
     }
 
-    @Deprecated
     public MongoProfileService(final MongoClient mongoClient, final String attributes) {
         this.mongoClient = mongoClient;
         setAttributes(attributes);
     }
 
-    @Deprecated
     public MongoProfileService(final MongoClient mongoClient, final String attributes, final PasswordEncoder passwordEncoder) {
         this.mongoClient = mongoClient;
         setAttributes(attributes);
