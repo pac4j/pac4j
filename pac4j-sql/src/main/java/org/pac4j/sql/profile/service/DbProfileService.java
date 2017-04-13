@@ -34,13 +34,11 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
         this.dataSource = dataSource;
     }
 
-    @Deprecated
     public DbProfileService(final DataSource dataSource, final String attributes) {
         this.dataSource = dataSource;
         setAttributes(attributes);
     }
 
-    @Deprecated
     public DbProfileService(final DataSource dataSource, final String attributes, final PasswordEncoder passwordEncoder) {
         this.dataSource = dataSource;
         setAttributes(attributes);
