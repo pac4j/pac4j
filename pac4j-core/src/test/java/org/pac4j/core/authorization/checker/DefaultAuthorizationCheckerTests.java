@@ -163,7 +163,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testHsts() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         context.setScheme(SCHEME_HTTPS);
-        checker.isAuthorized(context, profiles, "hsts", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.HSTS, null);
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
     }
 
@@ -178,28 +178,28 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testNosniff() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        checker.isAuthorized(context, profiles, "nosniff", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.NOSNIFF, null);
         assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
     }
 
     @Test
     public void testNoframe() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        checker.isAuthorized(context, profiles, "noframe", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.NOFRAME, null);
         assertNotNull(context.getResponseHeaders().get("X-Frame-Options"));
     }
 
     @Test
     public void testXssprotection() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        checker.isAuthorized(context, profiles, "xssprotection", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.XSSPROTECTION, null);
         assertNotNull(context.getResponseHeaders().get("X-XSS-Protection"));
     }
 
     @Test
     public void testNocache() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        checker.isAuthorized(context, profiles, "nocache", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.NOCACHE, null);
         assertNotNull(context.getResponseHeaders().get("Cache-Control"));
         assertNotNull(context.getResponseHeaders().get("Pragma"));
         assertNotNull(context.getResponseHeaders().get("Expires"));
@@ -208,7 +208,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testAllowAjaxRequests() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        checker.isAuthorized(context, profiles, "allowAjaxRequests", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.ALLOW_AJAX_REQUESTS, null);
         assertEquals("*", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_ORIGIN_HEADER));
         assertEquals("true", context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_CREDENTIALS_HEADER));
         final String methods = context.getResponseHeaders().get(ACCESS_CONTROL_ALLOW_METHODS_HEADER);
@@ -224,7 +224,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     public void testSecurityHeaders() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
         context.setScheme(SCHEME_HTTPS);
-        checker.isAuthorized(context, profiles, "securityHeaders", null);
+        checker.isAuthorized(context, profiles, DefaultAuthorizers.SECURITYHEADERS, null);
         assertNotNull(context.getResponseHeaders().get("Strict-Transport-Security"));
         assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
         assertNotNull(context.getResponseHeaders().get("X-Content-Type-Options"));
@@ -237,7 +237,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testCsrf() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        assertTrue(checker.isAuthorized(context, profiles, "csrf", null));
+        assertTrue(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF, null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -245,7 +245,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testCsrfToken() throws HttpAction {
         final MockWebContext context = MockWebContext.create();
-        assertTrue(checker.isAuthorized(context, profiles, "csrfToken", null));
+        assertTrue(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF_TOKEN, null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -253,7 +253,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testCsrfPost() throws HttpAction {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
-        assertFalse(checker.isAuthorized(context, profiles, "csrf", null));
+        assertFalse(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF, null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -261,7 +261,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
     @Test
     public void testCsrfTokenPost() throws HttpAction {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
-        assertTrue(checker.isAuthorized(context, profiles, "csrfToken", null));
+        assertTrue(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF_TOKEN, null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -272,7 +272,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
-        assertTrue(checker.isAuthorized(context, profiles, "csrf", null));
+        assertTrue(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF, null));
         assertNotNull(context.getRequestAttribute(Pac4jConstants.CSRF_TOKEN));
         assertNotNull(ContextHelper.getCookie(context.getResponseCookies(), Pac4jConstants.CSRF_TOKEN));
     }
@@ -282,7 +282,7 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create().setRequestMethod(HTTP_METHOD.POST.name());
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         generator.get(context);
-        assertFalse(checker.isAuthorized(context, profiles, "csrfCheck", null));
+        assertFalse(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF_CHECK, null));
     }
 
     @Test
@@ -291,29 +291,29 @@ public final class DefaultAuthorizationCheckerTests implements TestsConstants {
         final DefaultCsrfTokenGenerator generator = new DefaultCsrfTokenGenerator();
         final String token = generator.get(context);
         context.addRequestParameter(Pac4jConstants.CSRF_TOKEN, token);
-        assertTrue(checker.isAuthorized(context, profiles, "csrfCheck", null));
+        assertTrue(checker.isAuthorized(context, profiles, DefaultAuthorizers.CSRF_CHECK, null));
     }
 
     @Test
     public void testIsAnonymous() throws HttpAction {
         profiles.clear();
         profiles.add(new AnonymousProfile());
-        assertTrue(checker.isAuthorized(null, profiles, "isAnonymous", null));
+        assertTrue(checker.isAuthorized(null, profiles, DefaultAuthorizers.IS_ANONYMOUS, null));
     }
 
     @Test
     public void testIsAuthenticated() throws HttpAction {
-        assertTrue(checker.isAuthorized(null, profiles, "isAuthenticated", null));
+        assertTrue(checker.isAuthorized(null, profiles, DefaultAuthorizers.IS_AUTHENTICATED, null));
     }
 
     @Test
     public void testIsFullyAuthenticated() throws HttpAction {
-        assertTrue(checker.isAuthorized(null, profiles, "isFullyAuthenticated", null));
+        assertTrue(checker.isAuthorized(null, profiles, DefaultAuthorizers.IS_FULLY_AUTHENTICATED, null));
     }
 
     @Test
     public void testIsRemembered() throws HttpAction {
         profile.setRemembered(true);
-        assertTrue(checker.isAuthorized(null, profiles, "isRemembered", null));
+        assertTrue(checker.isAuthorized(null, profiles, DefaultAuthorizers.IS_REMEMBERED, null));
     }
 }

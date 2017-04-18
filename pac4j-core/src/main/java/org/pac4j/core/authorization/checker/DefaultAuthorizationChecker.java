@@ -2,6 +2,7 @@ package org.pac4j.core.authorization.checker;
 
 import org.pac4j.core.authorization.authorizer.*;
 import org.pac4j.core.authorization.authorizer.csrf.*;
+import org.pac4j.core.context.DefaultAuthorizers;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.HttpAction;
@@ -59,38 +60,38 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
             final int nb = names.length;
             for (int i = 0; i < nb; i++) {
                 final String name = names[i].trim();
-                if ("hsts".equalsIgnoreCase(name)) {
+                if (DefaultAuthorizers.HSTS.equalsIgnoreCase(name)) {
                     authorizers.add(STRICT_TRANSPORT_SECURITY_HEADER);
-                } else if ("nosniff".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.NOSNIFF.equalsIgnoreCase(name)) {
                     authorizers.add(X_CONTENT_TYPE_OPTIONS_HEADER);
-                } else if ("noframe".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.NOFRAME.equalsIgnoreCase(name)) {
                     authorizers.add(X_FRAME_OPTIONS_HEADER);
-                } else if ("xssprotection".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.XSSPROTECTION.equalsIgnoreCase(name)) {
                     authorizers.add(XSS_PROTECTION_HEADER);
-                } else if ("nocache".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.NOCACHE.equalsIgnoreCase(name)) {
                     authorizers.add(CACHE_CONTROL_HEADER);
-                } else if ("securityheaders".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.SECURITYHEADERS.equalsIgnoreCase(name)) {
                     authorizers.add(CACHE_CONTROL_HEADER);
                     authorizers.add(X_CONTENT_TYPE_OPTIONS_HEADER);
                     authorizers.add(STRICT_TRANSPORT_SECURITY_HEADER);
                     authorizers.add(X_FRAME_OPTIONS_HEADER);
                     authorizers.add(XSS_PROTECTION_HEADER);
-                } else if ("csrfToken".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.CSRF_TOKEN.equalsIgnoreCase(name)) {
                     authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
-                } else if ("csrfCheck".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.CSRF_CHECK.equalsIgnoreCase(name)) {
                     authorizers.add(CSRF_AUTHORIZER);
-                } else if ("csrf".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.CSRF.equalsIgnoreCase(name)) {
                     authorizers.add(CSRF_TOKEN_GENERATOR_AUTHORIZER);
                     authorizers.add(CSRF_AUTHORIZER);
-                } else if ("allowAjaxRequests".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.ALLOW_AJAX_REQUESTS.equalsIgnoreCase(name)) {
                     authorizers.add(CORS_AUTHORIZER);
-                } else if ("isAnonymous".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.IS_ANONYMOUS.equalsIgnoreCase(name)) {
                     authorizers.add(IS_ANONYMOUS_AUTHORIZER);
-                } else if ("isAuthenticated".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.IS_AUTHENTICATED.equalsIgnoreCase(name)) {
                     authorizers.add(IS_AUTHENTICATED_AUTHORIZER);
-                } else if ("isFullyAuthenticated".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.IS_FULLY_AUTHENTICATED.equalsIgnoreCase(name)) {
                     authorizers.add(IS_FULLY_AUTHENTICATED_AUTHORIZER);
-                } else if ("isRemembered".equalsIgnoreCase(name)) {
+                } else if (DefaultAuthorizers.IS_REMEMBERED.equalsIgnoreCase(name)) {
                     authorizers.add(IS_REMEMBERED_AUTHORIZER);
                 } else {
                     // we must have authorizers
