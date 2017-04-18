@@ -1,6 +1,7 @@
 package org.pac4j.mongo.profile.service;
 
 import com.mongodb.MongoClient;
+import org.bson.types.ObjectId;
 import org.junit.*;
 import org.pac4j.core.exception.*;
 import org.pac4j.core.profile.CommonProfile;
@@ -142,10 +143,12 @@ public final class MongoProfileServiceIT implements TestsConstants {
 
     @Test
     public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+        final ObjectId objectId = new ObjectId();
         final MongoProfile profile = new MongoProfile();
         profile.setId(MONGO_ID);
         profile.setLinkedId(MONGO_LINKEDID);
         profile.addAttribute(USERNAME, MONGO_USER);
+        profile.addAttribute(FIRSTNAME, objectId);
         final MongoProfileService mongoProfileService = new MongoProfileService(getClient());
         mongoProfileService.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         // create
@@ -170,7 +173,8 @@ public final class MongoProfileServiceIT implements TestsConstants {
         assertEquals(MONGO_ID, profile2.getId());
         assertEquals(MONGO_LINKEDID, profile2.getLinkedId());
         assertEquals(MONGO_USER, profile2.getUsername());
-        assertEquals(1, profile2.getAttributes().size());
+        assertEquals(objectId, profile2.getAttribute(FIRSTNAME));
+        assertEquals(2, profile2.getAttributes().size());
         // update
         profile.setLinkedId(MONGO_LINKEDID2);
         mongoProfileService.update(profile, MONGO_PASS2);
