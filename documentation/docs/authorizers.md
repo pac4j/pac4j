@@ -36,3 +36,5 @@ Most *pac4j* implementations use *pac4j* logics and authorizers and thus the [`D
 - `isFullyAuthenticated` for the `IsFullyAuthenticatedAuthorizer` authorizer
 - `isRemembered` for the `IsRememberedAuthorizer` authorizer
 - `allowAjaxRequests` for a default configuration of the `CorsAuthorizer` authorizer with the `Access-Control-Allow-Origin` header set to `*`.
+
+These short names are defined as constants in [`DefaultAuthorizers`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/context/DefaultAuthorizers.java).
