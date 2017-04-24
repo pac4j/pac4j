@@ -2,6 +2,7 @@ package org.pac4j.jwt;
 
 import com.nimbusds.jose.EncryptionMethod;
 import org.junit.Test;
+import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
 
@@ -70,12 +71,20 @@ public final class JwtTests implements TestsConstants {
         assertToken(profile, token);
     }
 
-    @Test
-    public void testPlainJwt() throws HttpAction {
+    @Test(expected = CredentialsException.class)
+    public void testPlainJwtWithSignatureConfigurations() throws HttpAction {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
+    }
+
+    @Test
+    public void testPlainJwtWithoutSignatureConfigurations() throws HttpAction {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        assertToken(profile, token, new JwtAuthenticator());
     }
 
     @Test
