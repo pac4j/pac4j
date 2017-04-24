@@ -60,12 +60,20 @@ public final class JwtTests implements TestsConstants {
         assertToken(profile, token);
     }
 
-    @Test
-    public void testPlainJwt() throws HttpAction, CredentialsException {
+    @Test(expected = CredentialsException.class)
+    public void testPlainJwtWithSignatureConfigurations() throws HttpAction, CredentialsException {
         final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
         final FacebookProfile profile = createProfile();
         final String token = generator.generate(profile);
         assertToken(profile, token);
+    }
+
+    @Test
+    public void testPlainJwtWithoutSignatureConfigurations() throws HttpAction, CredentialsException {
+        final JwtGenerator<FacebookProfile> generator = new JwtGenerator<>();
+        final FacebookProfile profile = createProfile();
+        final String token = generator.generate(profile);
+        assertToken(profile, token, new JwtAuthenticator());
     }
 
     @Test
