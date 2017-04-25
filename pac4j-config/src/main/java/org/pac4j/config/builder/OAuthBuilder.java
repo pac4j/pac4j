@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 import org.pac4j.oauth.client.*;
 
@@ -14,39 +15,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuthBuilder extends AbstractBuilder {
-
-    public static final String FACEBOOK_ID = "facebook.id";
-    public static final String FACEBOOK_SECRET = "facebook.secret";
-    public static final String FACEBOOK_SCOPE = "facebook.scope";
-    public static final String FACEBOOK_FIELDS = "facebook.fields";
-
-    public static final String TWITTER_ID = "twitter.id";
-    public static final String TWITTER_SECRET = "twitter.secret";
-
-    public static final String GITHUB_ID = "github.id";
-    public static final String GITHUB_SECRET = "github.secret";
-
-    public static final String DROPBOX_ID = "dropbox.id";
-    public static final String DROPBOX_SECRET = "dropbox.secret";
-
-    public static final String WINDOWSLIVE_ID = "windowslive.id";
-    public static final String WINDOWSLIVE_SECRET = "windowslive.secret";
-
-    public static final String YAHOO_ID = "yahoo.id";
-    public static final String YAHOO_SECRET = "yahoo.secret";
-
-    public static final String LINKEDIN_ID = "linkedin.id";
-    public static final String LINKEDIN_SECRET = "linkedin.secret";
-    public static final String LINKEDIN_FIELDS = "linkedin.fields";
-    public static final String LINKEDIN_SCOPE = "linkedin.scope";
-
-    public static final String FOURSQUARE_ID = "foursquare.id";
-    public static final String FOURSQUARE_SECRET = "foursquare.secret";
-
-    public static final String GOOGLE_ID = "google.id";
-    public static final String GOOGLE_SECRET = "google.secret";
-    public static final String GOOGLE_SCOPE = "google.scope";
+public class OAuthBuilder extends AbstractBuilder implements PropertiesConstants {
 
     public OAuthBuilder(final Map<String, String> properties) {
         super(properties);

@@ -20,26 +20,32 @@
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-cas</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-saml</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-oauth</artifactId>
+			<optional>true</optional>
 		</dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-oidc</artifactId>
+			<optional>true</optional>
         </dependency>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-ldap</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.pac4j</groupId>
 			<artifactId>pac4j-http</artifactId>
+			<optional>true</optional>
 		</dependency>
         <!-- for testing -->
 		<dependency>

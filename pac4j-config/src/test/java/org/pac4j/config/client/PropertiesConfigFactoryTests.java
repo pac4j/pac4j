@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.pac4j.config.builder.OAuthBuilder.*;
-import static org.pac4j.config.builder.IndirectClientBuilder.*;
-import static org.pac4j.config.builder.DirectClientBuilder.*;
 import static org.junit.Assert.*;
 
 /**

@@ -4,6 +4,7 @@ import org.ldaptive.pool.PooledConnectionFactoryManager;
 import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.QualityOfProtection;
 import org.ldaptive.sasl.SecurityStrength;
+import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.config.ldaptive.LdapAuthenticationProperties;
 import org.pac4j.config.ldaptive.LdaptiveAuthenticatorBuilder;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -19,44 +20,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class LdapAuthenticatorBuilder extends AbstractBuilder {
-
-    public static final String LDAP_TYPE = "ldap.type";
-    public static final String LDAP_DN_FORMAT = "ldap.dnFormat";
-    public static final String LDAP_ATTRIBUTES = "ldap.principalAttributes";
-    public static final String LDAP_PRINCIPAL_ATTRIBUTE_ID = "ldap.principalAttributeId";
-    public static final String LDAP_PRINCIPAL_ATTRIBUTE_PASSWORD = "ldap.principalAttributePassword";
-    public static final String LDAP_SUBTREE_SEARCH = "ldap.subtreeSearch";
-    public static final String LDAP_USERS_DN = "ldap.usersDn";
-    public static final String LDAP_USER_FILTER = "ldap.userFilter";
-    public static final String LDAP_ENHANCE_WITH_ENTRY_RESOLVER = "ldap.enhanceWithEntryResolver";
-    public static final String LDAP_TRUST_CERTIFICATES = "ldap.trustCertificates";
-    public static final String LDAP_KEYSTORE = "ldap.keystore";
-    public static final String LDAP_KEYSTORE_PASSWORD = "ldap.keystorePassword";
-    public static final String LDAP_KEYSTORE_TYPE = "ldap.keystoreType";
-    public static final String LDAP_MIN_POOL_SIZE = "ldap.minPoolSize";
-    public static final String LDAP_MAX_POOL_SIZE = "ldap.maxPoolSize";
-    public static final String LDAP_POOL_PASSIVATOR = "ldap.poolPassivator";
-    public static final String LDAP_VALIDATE_ON_CHECKOUT = "ldap.validateOnCheckout";
-    public static final String LDAP_VALIDATE_PERIODICALLY = "ldap.validatePeriodically";
-    public static final String LDAP_VALIDATE_PERIOD = "ldap.validatePeriod";
-    public static final String LDAP_FAIL_FAST = "ldap.failFast";
-    public static final String LDAP_IDLE_TIME = "ldap.idleTime";
-    public static final String LDAP_PRUNE_PERIOD = "ldap.prunePeriod";
-    public static final String LDAP_BLOCK_WAIT_TIME = "ldap.blockWaitTime";
-    public static final String LDAP_URL = "ldap.url";
-    public static final String LDAP_USE_SSL = "ldap.useSsl";
-    public static final String LDAP_USE_START_TLS = "ldap.useStartTls";
-    public static final String LDAP_CONNECT_TIMEOUT = "ldap.connectTimeout";
-    public static final String LDAP_PROVIDER_CLASS = "ldap.providerClass";
-    public static final String LDAP_ALLOW_MULTIPLE_DNS = "ldap.allowMultipleDns";
-    public static final String LDAP_BIND_DN = "ldap.bindDn";
-    public static final String LDAP_BIND_CREDENTIAL = "ldap.bindCredential";
-    public static final String LDAP_SASL_REALM = "ldap.saslRealm";
-    public static final String LDAP_SASL_MECHANISM = "ldap.saslMechanism";
-    public static final String LDAP_SASL_AUTHORIZATION_ID = "ldap.saslAuthorizationId";
-    public static final String LDAP_SASL_SECURITY_STRENGTH = "ldap.saslSecurityStrength";
-    public static final String LDAP_SASL_QUALITY_OF_PROTECTION = "ldap.saslQualityOfProtection";
+public class LdapAuthenticatorBuilder extends AbstractBuilder implements PropertiesConstants {
 
     public LdapAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);
