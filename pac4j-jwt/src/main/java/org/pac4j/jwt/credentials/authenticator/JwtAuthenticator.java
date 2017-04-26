@@ -77,6 +77,10 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
     @Override
     protected void internalInit(final WebContext context) {
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new JwtProfile()));
+
+        if (signatureConfigurations.isEmpty()) {
+            logger.warn("No signature configurations have been defined: non-signed JWT will be accepted!");
+        }
     }
 
     /**
@@ -124,7 +128,11 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
             JWT jwt = JWTParser.parse(token);
 
 			if (jwt instanceof PlainJWT) {
-                logger.debug("JWT is not signed -> verified");
+			    if (signatureConfigurations.isEmpty()) {
+                    logger.debug("JWT is not signed and no signature configurations -> verified");
+                } else {
+                    throw new CredentialsException("A non-signed JWT cannot be accepted as signature configurations have been defined");
+                }
             } else {
 
                 SignedJWT signedJWT = null;
@@ -191,7 +199,6 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                     }
                 }
             }
-
 
           	createJwtProfile(credentials, jwt);
 
