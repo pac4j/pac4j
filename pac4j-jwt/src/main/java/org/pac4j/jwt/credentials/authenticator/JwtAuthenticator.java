@@ -118,7 +118,11 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
             JWT jwt = JWTParser.parse(token);
 
 			if (jwt instanceof PlainJWT) {
-                logger.debug("JWT is not signed -> verified");
+                if (signatureConfigurations.isEmpty()) {
+                    logger.debug("JWT is not signed and no signature configurations -> verified");
+                } else {
+                    throw new CredentialsException("A non-signed JWT cannot be accepted as signature configurations have been defined");
+                }
             } else {
 
                 SignedJWT signedJWT = null;
@@ -183,7 +187,6 @@ public class JwtAuthenticator implements Authenticator<TokenCredentials> {
                     }
                 }
             }
-
 
           	createJwtProfile(credentials, jwt);
 
