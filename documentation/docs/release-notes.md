@@ -21,6 +21,9 @@ title: Release notes&#58;
 - Only two `PasswordEncoder` wrappers are available: one for Spring Security Crypto, the other one for Shiro
 - Added new matcher `PathMatcher` and deprecated `ExcludedPathMatcher`
 
+**v1.9.7**:
+
+- Security fix on `JwtAuthenticator`
 
 **v1.9.6**:
 
