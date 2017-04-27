@@ -48,6 +48,11 @@ CREATE TABLE users
   linkedid varchar(255),
   serializedprofile varchar(10000)
 );
+
+ALTER TABLE users
+	ADD PRIMARY KEY (id),
+	ADD KEY username (username),
+	ADD KEY linkedid (linkedid);
 ```
 
 The name of the table in the database can be changed via the `setUsersTable` method. As well as the `id`, `username` and `password` columns using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods.
