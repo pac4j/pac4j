@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
  */
 public final class CouchProfileServiceTests implements TestsConstants {
 
-	private static final int PORT = 13598;
+	private static final int PORT = 5984;
 	private static final String COUCH_ID_FIELD = CouchProfileService.COUCH_ID;
 	private static final String COUCH_ID = "couchId";
 	private static final String COUCH_LINKED_ID = "couchLinkedId";

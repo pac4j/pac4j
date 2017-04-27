@@ -28,7 +28,7 @@ public final class CouchServer implements TestsConstants {
 	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
 
 	public CouchDbConnector start(final int port) {
-		String couchUrl = "http://localhost:13598/";
+		String couchUrl = "http://localhost:"+port+"/";
 		HttpClient httpClient;
 		CouchDbInstance dbInstance;
 		try {
