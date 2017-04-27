@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**pac4j 1.9.7**:
+
+- Security fix on `JwtAuthenticator`
+
 **pac4j 1.9.6**:
 
 - Added LinkedIn support in `PropertiesConfigFactory`
