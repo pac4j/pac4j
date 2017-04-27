@@ -32,9 +32,9 @@ import java.util.Map;
 public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
 	private CouchDbConnector couchDbConnector;
+	private ObjectMapper objectMapper;
 
 	public static final String COUCH_ID = "_id";
-	public ObjectMapper objectMapper;
 
 	public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes, final PasswordEncoder passwordEncoder) {
 		setIdAttribute(COUCH_ID);
