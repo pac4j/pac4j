@@ -15,7 +15,6 @@ import org.pac4j.couch.profile.CouchProfile;
 import org.pac4j.couch.test.tools.CouchServer;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

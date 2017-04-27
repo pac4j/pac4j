@@ -32,8 +32,6 @@ import java.util.Map;
 public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
     private CouchDbConnector couchDbConnector;
-
-    private String usersDatabase = "users";
     
     public static final String COUCH_ID = "_id";
     public static ObjectMapper objectMapper = new ObjectMapper();
@@ -70,7 +68,6 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
         CommonHelper.assertNotNull("couchDbConnector", this.couchDbConnector);
-        CommonHelper.assertNotBlank("usersDatabase", this.usersDatabase);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new CouchProfile()));
 
         super.internalInit(context);
@@ -114,23 +111,6 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 		}
     }
 
-    /*
-     * 
-     * {
-		  "_id": "_design/pac4j",
-		  "language": "javascript",
-		  "views": {
-		    "by_username": {
-		      "map": "function(doc) {\n    if (doc.username) emit(doc.username, doc);\n}"
-		    },
-		    "by_linkedid": {
-		      "map": "function(doc) {\n    if (doc.linkedid) emit(doc.linkedid, doc);\n}"
-		    }
-		  }
-		}
-     * 
-     */
-
     @Override
     protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
         logger.debug("Reading key / value: {} / {}", key, value);
@@ -154,6 +134,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 			}
         }
         else {
+        	// supposes a by_$key view in the design document, see documentation
 	        final ViewQuery query = new ViewQuery()
 	                .designDocId("_design/pac4j")
 	                .viewName("by_"+key)
@@ -183,14 +164,6 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
         return listAttributes;
     }
 
-    public String getUsersDatabase() {
-        return usersDatabase;
-    }
-
-    public void setUsersDatabase(final String usersDatabase) {
-        this.usersDatabase = usersDatabase;
-    }
-
     public CouchDbConnector getCouchDbConnector() {
         return couchDbConnector;
     }
@@ -202,7 +175,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
-                "usersDatabase", usersDatabase, "attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
+                "attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
                 "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
     }
 }

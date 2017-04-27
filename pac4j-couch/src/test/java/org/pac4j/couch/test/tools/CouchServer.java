@@ -10,15 +10,12 @@ import org.ektorp.impl.StdCouchDbInstance;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 import org.pac4j.core.util.TestsConstants;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pac4j.core.credentials.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Uses a local CouchDB server.
@@ -62,8 +59,5 @@ public final class CouchServer implements TestsConstants {
     }
 
     public void stop() {
-//        if (mongodExecutable != null) {
-//            mongodExecutable.stop();
-//        }
     }
 }
