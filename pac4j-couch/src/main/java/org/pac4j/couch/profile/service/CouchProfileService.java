@@ -31,58 +31,54 @@ import java.util.Map;
  */
 public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
-    private CouchDbConnector couchDbConnector;
-    
-    public static final String COUCH_ID = "_id";
-    public static ObjectMapper objectMapper = new ObjectMapper();
+	private CouchDbConnector couchDbConnector;
 
-    public CouchProfileService() {
-    	setIdAttribute(COUCH_ID);
-    }
+	public static final String COUCH_ID = "_id";
+	public ObjectMapper objectMapper;
 
-    public CouchProfileService(final CouchDbConnector couchDbConnector) {
-    	setIdAttribute(COUCH_ID);
-        this.couchDbConnector = couchDbConnector;
-    }
+	public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes, final PasswordEncoder passwordEncoder) {
+		setIdAttribute(COUCH_ID);
+		objectMapper = new ObjectMapper();
+		this.couchDbConnector = couchDbConnector;
+		setAttributes(attributes);
+		setPasswordEncoder(passwordEncoder);
+	}
 
-    public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes) {
-    	setIdAttribute(COUCH_ID);
-        this.couchDbConnector = couchDbConnector;
-        setAttributes(attributes);
-    }
+	public CouchProfileService() {
+		this(null, null, null);
+	}
 
-    public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes, final PasswordEncoder passwordEncoder) {
-    	setIdAttribute(COUCH_ID);
-        this.couchDbConnector = couchDbConnector;
-        setAttributes(attributes);
-        setPasswordEncoder(passwordEncoder);
-    }
+	public CouchProfileService(final CouchDbConnector couchDbConnector) {
+		this(couchDbConnector, null, null);
+	}
 
-    public CouchProfileService(final CouchDbConnector couchDbConnector, final PasswordEncoder passwordEncoder) {
-    	setIdAttribute(COUCH_ID);
-        this.couchDbConnector = couchDbConnector;
-        setPasswordEncoder(passwordEncoder);
-    }
+	public CouchProfileService(final CouchDbConnector couchDbConnector, final String attributes) {
+		this(couchDbConnector, attributes, null);
+	}
 
-    @Override
-    protected void internalInit(final WebContext context) {
-        CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
-        CommonHelper.assertNotNull("couchDbConnector", this.couchDbConnector);
-        defaultProfileDefinition(new CommonProfileDefinition<>(x -> new CouchProfile()));
+	public CouchProfileService(final CouchDbConnector couchDbConnector, final PasswordEncoder passwordEncoder) {
+		this(couchDbConnector, null, passwordEncoder);
+	}
 
-        super.internalInit(context);
-    }
+	@Override
+	protected void internalInit(final WebContext context) {
+		CommonHelper.assertNotNull("passwordEncoder", getPasswordEncoder());
+		CommonHelper.assertNotNull("couchDbConnector", this.couchDbConnector);
+		defaultProfileDefinition(new CommonProfileDefinition<>(x -> new CouchProfile()));
 
-    @Override
-    protected void insert(final Map<String, Object> attributes) {
-    	logger.debug("Insert doc: {}", attributes);
-    	couchDbConnector.create(attributes);
-    }
+		super.internalInit(context);
+	}
 
-    @Override
-    protected void update(final Map<String, Object> attributes) {
-    	try {
-    		final String id = (String) attributes.get(COUCH_ID);
+	@Override
+	protected void insert(final Map<String, Object> attributes) {
+		logger.debug("Insert doc: {}", attributes);
+		couchDbConnector.create(attributes);
+	}
+
+	@Override
+	protected void update(final Map<String, Object> attributes) {
+		try {
+			final String id = (String) attributes.get(COUCH_ID);
 			final InputStream oldDocStream = couchDbConnector.getAsStream(id);
 			final JsonNode oldDoc = objectMapper.readTree(oldDocStream);
 			final String rev = oldDoc.get("_rev").asText();
@@ -94,12 +90,12 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 		} catch (IOException e) {
 			logger.error("", e);
 		}
-    }
+	}
 
-    @Override
-    protected void deleteById(final String id) {
-        logger.debug("Delete id: {}", id);
-    	try {
+	@Override
+	protected void deleteById(final String id) {
+		logger.debug("Delete id: {}", id);
+		try {
 			final InputStream oldDocStream = couchDbConnector.getAsStream(id);
 			final JsonNode oldDoc = objectMapper.readTree(oldDocStream);
 			final String rev = oldDoc.get("_rev").asText();
@@ -109,73 +105,81 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 		} catch (IOException e) {
 			logger.error("", e);
 		}
-    }
+	}
 
-    @Override
-    protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
-        logger.debug("Reading key / value: {} / {}", key, value);
-        final List<Map<String, Object>> listAttributes = new ArrayList<>();
-        final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
-        if (key.equals(COUCH_ID)) {
+	@Override
+	protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
+		logger.debug("Reading key / value: {} / {}", key, value);
+		final List<Map<String, Object>> listAttributes = new ArrayList<>();
+		final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+		if (key.equals(COUCH_ID)) {
 			try {
 				final InputStream oldDocStream = couchDbConnector.getAsStream(value);
 				final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
-		        final Map<String, Object> newAttributes = new HashMap<>();
-		        for (final Map.Entry<String, Object> entry : res.entrySet()) {
-		            final String name = entry.getKey();
-		            if (names == null || names.contains(name)) {
-		                newAttributes.put(name, entry.getValue());
-		            }
-		        }
+				final Map<String, Object> newAttributes = new HashMap<>();
+				for (final Map.Entry<String, Object> entry : res.entrySet()) {
+					final String name = entry.getKey();
+					if (names == null || names.contains(name)) {
+						newAttributes.put(name, entry.getValue());
+					}
+				}
 				listAttributes.add(newAttributes);
 			} catch (DocumentNotFoundException e) {
 			} catch (IOException e) {
 				logger.error("", e);
 			}
-        }
-        else {
-        	// supposes a by_$key view in the design document, see documentation
-	        final ViewQuery query = new ViewQuery()
-	                .designDocId("_design/pac4j")
-	                .viewName("by_"+key)
-	                .key(value);
-	        final ViewResult result = couchDbConnector.queryView(query);
-	        for (ViewResult.Row row : result.getRows()) {
-	            final String stringValue = row.getValue();
-	            Map<String, Object> res = null;
+		}
+		else {
+			// supposes a by_$key view in the design document, see documentation
+			final ViewQuery query = new ViewQuery()
+					.designDocId("_design/pac4j")
+					.viewName("by_"+key)
+					.key(value);
+			final ViewResult result = couchDbConnector.queryView(query);
+			for (ViewResult.Row row : result.getRows()) {
+				final String stringValue = row.getValue();
+				Map<String, Object> res = null;
 				try {
 					res = objectMapper.readValue(stringValue, typeRef);
-			        final Map<String, Object> newAttributes = new HashMap<>();
-			        for (final Map.Entry<String, Object> entry : res.entrySet()) {
-			            final String name = entry.getKey();
-			            if (names == null || names.contains(name)) {
-			                newAttributes.put(name, entry.getValue());
-			            }
-			        }
+					final Map<String, Object> newAttributes = new HashMap<>();
+					for (final Map.Entry<String, Object> entry : res.entrySet()) {
+						final String name = entry.getKey();
+						if (names == null || names.contains(name)) {
+							newAttributes.put(name, entry.getValue());
+						}
+					}
 					listAttributes.add(newAttributes);
 				} catch (IOException e) {
 					logger.error("", e);
 				}
-	        }
-        }
-        
-        logger.debug("Found: {}", listAttributes);
+			}
+		}
 
-        return listAttributes;
-    }
+		logger.debug("Found: {}", listAttributes);
 
-    public CouchDbConnector getCouchDbConnector() {
-        return couchDbConnector;
-    }
+		return listAttributes;
+	}
 
-    public void setCouchDbConnector(final CouchDbConnector couchDbConnector) {
-        this.couchDbConnector = couchDbConnector;
-    }
+	public CouchDbConnector getCouchDbConnector() {
+		return couchDbConnector;
+	}
 
-    @Override
-    public String toString() {
-        return CommonHelper.toString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
-                "attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
-                "idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
-    }
+	public void setCouchDbConnector(final CouchDbConnector couchDbConnector) {
+		this.couchDbConnector = couchDbConnector;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return this.objectMapper;
+	}
+
+	public void setObjectMapper(final ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
+	@Override
+	public String toString() {
+		return CommonHelper.toString(this.getClass(), "couchDbConnector", couchDbConnector, "passwordEncoder", getPasswordEncoder(),
+				"attributes", getAttributes(), "profileDefinition", getProfileDefinition(),
+				"idAttribute", getIdAttribute(), "usernameAttribute", getUsernameAttribute(), "passwordAttribute", getPasswordAttribute());
+	}
 }

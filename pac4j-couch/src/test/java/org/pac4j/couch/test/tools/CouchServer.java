@@ -25,39 +25,37 @@ import java.net.MalformedURLException;
  */
 public final class CouchServer implements TestsConstants {
 
-    public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
+	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
 
-//    private MongodExecutable mongodExecutable;
-
-    public CouchDbConnector start(final int port) {
-    	String couchUrl = "http://localhost:13598/";
-    	HttpClient httpClient;
+	public CouchDbConnector start(final int port) {
+		String couchUrl = "http://localhost:13598/";
+		HttpClient httpClient;
 		CouchDbInstance dbInstance;
-        try {
+		try {
 			httpClient = new StdHttpClient.Builder()
-			        .url(couchUrl)
-			        .build();
+					.url(couchUrl)
+					.build();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
 		}
-        dbInstance = new StdCouchDbInstance(httpClient);
-        CouchDbConnector couchDbConnector = new StdCouchDbConnector("users", dbInstance);
-        couchDbConnector.createDatabaseIfNotExists();
-        
-        // uploading design doc:
-        String designDocString = "{\"_id\":\"_design/pac4j\",\"language\":\"javascript\",\"views\":{\"by_username\":{\"map\":\"function(doc){if (doc.username) emit(doc.username, doc);}\"},\"by_linkedid\":{\"map\":\"function(doc) {if (doc.linkedid) emit(doc.linkedid, doc);}\"}}}";
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
+		dbInstance = new StdCouchDbInstance(httpClient);
+		CouchDbConnector couchDbConnector = new StdCouchDbConnector("users", dbInstance);
+		couchDbConnector.createDatabaseIfNotExists();
+
+		// uploading design doc:
+		String designDocString = "{\"_id\":\"_design/pac4j\",\"language\":\"javascript\",\"views\":{\"by_username\":{\"map\":\"function(doc){if (doc.username) emit(doc.username, doc);}\"},\"by_linkedid\":{\"map\":\"function(doc) {if (doc.linkedid) emit(doc.linkedid, doc);}\"}}}";
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
 			couchDbConnector.create(objectMapper.readTree(designDocString));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
-        
-        return couchDbConnector;
-    }
 
-    public void stop() {
-    }
+		return couchDbConnector;
+	}
+
+	public void stop() {
+	}
 }

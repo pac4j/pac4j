@@ -29,31 +29,31 @@ import static org.junit.Assert.*;
  */
 public final class CouchProfileServiceTests implements TestsConstants {
 
-    private static final int PORT = 13598;
-    private static final String COUCH_ID_FIELD = CouchProfileService.COUCH_ID;
-    private static final String COUCH_ID = "couchId";
-    private static final String COUCH_LINKED_ID = "couchLinkedId";
-    private static final String COUCH_USER = "couchUser";
-    private static final String COUCH_USER2 = "couchUser2";
-    private static final String COUCH_PASS = "couchPass";
-    private static final String COUCH_PASS2 = "couchPass2";
-    private static final String IDPERSON1 = "idperson1";
-    private static final String IDPERSON2 = "idperson2";
-    private static final String IDPERSON3 = "idperson3";
-    
-    public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
-    public static CouchDbConnector couchDbConnector = null;
-    private static final CouchServer couchServer = new CouchServer();
+	private static final int PORT = 13598;
+	private static final String COUCH_ID_FIELD = CouchProfileService.COUCH_ID;
+	private static final String COUCH_ID = "couchId";
+	private static final String COUCH_LINKED_ID = "couchLinkedId";
+	private static final String COUCH_USER = "couchUser";
+	private static final String COUCH_USER2 = "couchUser2";
+	private static final String COUCH_PASS = "couchPass";
+	private static final String COUCH_PASS2 = "couchPass2";
+	private static final String IDPERSON1 = "idperson1";
+	private static final String IDPERSON2 = "idperson2";
+	private static final String IDPERSON3 = "idperson3";
+
+	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
+	public static CouchDbConnector couchDbConnector = null;
+	private static final CouchServer couchServer = new CouchServer();
 
 
-    @BeforeClass
-    public static void setUp() {
-        couchDbConnector = couchServer.start(PORT);
-        final String password = PASSWORD_ENCODER.encode(PASSWORD);
+	@BeforeClass
+	public static void setUp() {
+		couchDbConnector = couchServer.start(PORT);
+		final String password = PASSWORD_ENCODER.encode(PASSWORD);
 		final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
-        couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        // insert sample data
-        final Map<String, Object> properties1 = new HashMap<>();
+		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
+		// insert sample data
+		final Map<String, Object> properties1 = new HashMap<>();
 		properties1.put(USERNAME, GOOD_USERNAME);
 		properties1.put(FIRSTNAME, FIRSTNAME_VALUE);
 		CouchProfile couchProfile = new CouchProfile();
@@ -71,97 +71,97 @@ public final class CouchProfileServiceTests implements TestsConstants {
 		couchProfile = new CouchProfile();
 		couchProfile.build(IDPERSON3, properties3);
 		couchProfileService.create(couchProfile, PASSWORD);
-    }
+	}
 
-    @AfterClass
-    public static void tearDown() {
-        //couchServer.stop();
-    }
+	@AfterClass
+	public static void tearDown() {
+		//couchServer.stop();
+	}
 
-    @Test
-    public void testNullConnector() {
-        final CouchProfileService couchProfileService = new CouchProfileService(null);
-        couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        TestsHelper.expectException(() -> couchProfileService.init(null), TechnicalException.class, "couchDbConnector cannot be null");
-    }
+	@Test
+	public void testNullConnector() {
+		final CouchProfileService couchProfileService = new CouchProfileService(null);
+		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
+		TestsHelper.expectException(() -> couchProfileService.init(null), TechnicalException.class, "couchDbConnector cannot be null");
+	}
 
-    @Test(expected = AccountNotFoundException.class)
-    public void authentFailed() throws HttpAction, CredentialsException {
-        final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
-        couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
-        couchProfileService.validate(credentials, null);
-    }
+	@Test(expected = AccountNotFoundException.class)
+	public void authentFailed() throws HttpAction, CredentialsException {
+		final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
+		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
+		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(BAD_USERNAME, PASSWORD, CLIENT_NAME);
+		couchProfileService.validate(credentials, null);
+	}
 
-    @Test
-    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
-        final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
-        couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
-        couchProfileService.validate(credentials, null);
+	@Test
+	public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
+		final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
+		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
+		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+		couchProfileService.validate(credentials, null);
 
-        final CommonProfile profile = credentials.getUserProfile();
-        assertNotNull(profile);
-        assertTrue(profile instanceof CouchProfile);
-        final CouchProfile couchProfile = (CouchProfile) profile;
-        assertEquals(GOOD_USERNAME, couchProfile.getUsername());
-        assertEquals(2, couchProfile.getAttributes().size());
-        assertEquals(FIRSTNAME_VALUE, couchProfile.getAttribute(FIRSTNAME));
-    }
+		final CommonProfile profile = credentials.getUserProfile();
+		assertNotNull(profile);
+		assertTrue(profile instanceof CouchProfile);
+		final CouchProfile couchProfile = (CouchProfile) profile;
+		assertEquals(GOOD_USERNAME, couchProfile.getUsername());
+		assertEquals(2, couchProfile.getAttributes().size());
+		assertEquals(FIRSTNAME_VALUE, couchProfile.getAttribute(FIRSTNAME));
+	}
 
-    @Test
-    public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
-        final CouchProfile profile = new CouchProfile();
-        profile.setId(COUCH_ID);
-        profile.setLinkedId(COUCH_LINKED_ID);
-        profile.addAttribute(USERNAME, COUCH_USER);
-        final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
-        couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        // create
-        couchProfileService.create(profile, COUCH_PASS);
-        // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS, CLIENT_NAME);
-        couchProfileService.validate(credentials, null);
-        final CommonProfile profile1 = credentials.getUserProfile();
-        assertNotNull(profile1);
-        // check data
-        final List<Map<String, Object>> results = getData(couchProfileService, COUCH_ID);
-        assertEquals(1, results.size());
-        final Map<String, Object> result = results.get(0);
-        assertEquals(5, result.size());
-        assertEquals(COUCH_ID, result.get(COUCH_ID_FIELD));
-        assertEquals(COUCH_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
-        assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
-        assertEquals(COUCH_USER, result.get(USERNAME));
-        // findById
-        final CouchProfile profile2 = couchProfileService.findById(COUCH_ID);
-        assertEquals(COUCH_ID, profile2.getId());
-        assertEquals(COUCH_LINKED_ID, profile2.getLinkedId());
-        assertEquals(COUCH_USER, profile2.getUsername());
-        assertEquals(1, profile2.getAttributes().size());
-        // update
-        profile.addAttribute(USERNAME, COUCH_USER2);
-        couchProfileService.update(profile, COUCH_PASS2);
-        final List<Map<String, Object>> results2 = getData(couchProfileService, COUCH_ID);
-        assertEquals(1, results2.size());
-        final Map<String, Object> result2 = results2.get(0);
-        assertEquals(5, result2.size());
-        assertEquals(COUCH_ID, result2.get(COUCH_ID_FIELD));
-        assertEquals(COUCH_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
-        assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
-        assertEquals(COUCH_USER2, result2.get(USERNAME));
-        // check credentials
-        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2, CLIENT_NAME);
-        couchProfileService.validate(credentials2, null);
-        final CommonProfile profile3 = credentials.getUserProfile();
-        assertNotNull(profile3);
-        // remove
-        couchProfileService.remove(profile);
-        final List<Map<String, Object>> results3 = getData(couchProfileService, COUCH_ID);
-        assertEquals(0, results3.size());
-    }
+	@Test
+	public void testCreateUpdateFindDelete() throws HttpAction, CredentialsException {
+		final CouchProfile profile = new CouchProfile();
+		profile.setId(COUCH_ID);
+		profile.setLinkedId(COUCH_LINKED_ID);
+		profile.addAttribute(USERNAME, COUCH_USER);
+		final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
+		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
+		// create
+		couchProfileService.create(profile, COUCH_PASS);
+		// check credentials
+		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS, CLIENT_NAME);
+		couchProfileService.validate(credentials, null);
+		final CommonProfile profile1 = credentials.getUserProfile();
+		assertNotNull(profile1);
+		// check data
+		final List<Map<String, Object>> results = getData(couchProfileService, COUCH_ID);
+		assertEquals(1, results.size());
+		final Map<String, Object> result = results.get(0);
+		assertEquals(5, result.size());
+		assertEquals(COUCH_ID, result.get(COUCH_ID_FIELD));
+		assertEquals(COUCH_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
+		assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
+		assertEquals(COUCH_USER, result.get(USERNAME));
+		// findById
+		final CouchProfile profile2 = couchProfileService.findById(COUCH_ID);
+		assertEquals(COUCH_ID, profile2.getId());
+		assertEquals(COUCH_LINKED_ID, profile2.getLinkedId());
+		assertEquals(COUCH_USER, profile2.getUsername());
+		assertEquals(1, profile2.getAttributes().size());
+		// update
+		profile.addAttribute(USERNAME, COUCH_USER2);
+		couchProfileService.update(profile, COUCH_PASS2);
+		final List<Map<String, Object>> results2 = getData(couchProfileService, COUCH_ID);
+		assertEquals(1, results2.size());
+		final Map<String, Object> result2 = results2.get(0);
+		assertEquals(5, result2.size());
+		assertEquals(COUCH_ID, result2.get(COUCH_ID_FIELD));
+		assertEquals(COUCH_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
+		assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
+		assertEquals(COUCH_USER2, result2.get(USERNAME));
+		// check credentials
+		final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2, CLIENT_NAME);
+		couchProfileService.validate(credentials2, null);
+		final CommonProfile profile3 = credentials.getUserProfile();
+		assertNotNull(profile3);
+		// remove
+		couchProfileService.remove(profile);
+		final List<Map<String, Object>> results3 = getData(couchProfileService, COUCH_ID);
+		assertEquals(0, results3.size());
+	}
 
-    private List<Map<String, Object>> getData(final CouchProfileService couchProfileService, final String id) {
-        return couchProfileService.read(Arrays.asList(COUCH_ID_FIELD, "username", "linkedid", "password", "serializedprofile"), COUCH_ID_FIELD, id);
-    }
+	private List<Map<String, Object>> getData(final CouchProfileService couchProfileService, final String id) {
+		return couchProfileService.read(Arrays.asList(COUCH_ID_FIELD, "username", "linkedid", "password", "serializedprofile"), COUCH_ID_FIELD, id);
+	}
 }

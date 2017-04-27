@@ -56,7 +56,7 @@ The choice of the database name is irrelevant to `CouchProfileService`. The data
 }
 ```
 
-The `id`, `username` and `password` attribute names can be changed using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods. By default, the `id` attribute is CouchDB's `_id` attribute. If you change the `username` or `linkedid` attribute, please change the design document accordingly.
+The `id`, `username` and `password` attribute names can be changed using the `setIdAttribute`, `setUsernameAttribute` and `setPasswordAttribute` methods. By default, the `id` attribute is CouchDB's `_id` attribute. If you change the `username` or `linkedid` attribute, please change the design document accordingly. You can also get/set the ObjectMapper used to serialize the JSON data from CouchDB with `getObjectMapper()` and `setObjectMapper()`, the default one is a simple default one.
 
 The attributes of the user profile can be managed in the CouchDB collection in two ways:
 
