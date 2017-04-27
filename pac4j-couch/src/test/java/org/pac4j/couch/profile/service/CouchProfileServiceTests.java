@@ -72,7 +72,6 @@ public final class CouchProfileServiceTests implements TestsConstants {
 		couchProfile = new CouchProfile();
 		couchProfile.build(IDPERSON3, properties3);
 		couchProfileService.create(couchProfile, PASSWORD);
-		
     }
 
     @AfterClass
@@ -96,7 +95,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
     }
 
     @Test
-    public void authentSuccessNoAttribute() throws HttpAction, CredentialsException {
+    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
@@ -106,25 +105,9 @@ public final class CouchProfileServiceTests implements TestsConstants {
         assertNotNull(profile);
         assertTrue(profile instanceof CouchProfile);
         final CouchProfile couchProfile = (CouchProfile) profile;
-        assertEquals(GOOD_USERNAME, couchProfile.getId());
-        assertEquals(0, couchProfile.getAttributes().size());
-    }
-
-    @Test
-    public void authentSuccessSingleAttribute() throws HttpAction, CredentialsException {
-        final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
-        couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        couchProfileService.setUsernameAttribute(COUCH_ID_FIELD);
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
-        couchProfileService.validate(credentials, null);
-
-        final CommonProfile profile = credentials.getUserProfile();
-        assertNotNull(profile);
-        assertTrue(profile instanceof CouchProfile);
-        final CouchProfile ldapProfile = (CouchProfile) profile;
-        assertEquals(GOOD_USERNAME, ldapProfile.getId());
-        assertEquals(1, ldapProfile.getAttributes().size());
-        assertEquals(FIRSTNAME_VALUE, ldapProfile.getAttribute(USERNAME));
+        assertEquals(GOOD_USERNAME, couchProfile.getUsername());
+        assertEquals(2, couchProfile.getAttributes().size());
+        assertEquals(FIRSTNAME_VALUE, couchProfile.getAttribute(FIRSTNAME));
     }
 
     @Test
@@ -135,11 +118,10 @@ public final class CouchProfileServiceTests implements TestsConstants {
         profile.addAttribute(USERNAME, COUCH_USER);
         final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
         couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-        couchProfileService.setPasswordAttribute("userPassword");
         // create
         couchProfileService.create(profile, COUCH_PASS);
         // check credentials
-        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_ID, COUCH_PASS, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(COUCH_USER, COUCH_PASS, CLIENT_NAME);
         couchProfileService.validate(credentials, null);
         final CommonProfile profile1 = credentials.getUserProfile();
         assertNotNull(profile1);
@@ -147,7 +129,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
         final List<Map<String, Object>> results = getData(couchProfileService, COUCH_ID);
         assertEquals(1, results.size());
         final Map<String, Object> result = results.get(0);
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertEquals(COUCH_ID, result.get(COUCH_ID_FIELD));
         assertEquals(COUCH_LINKED_ID, result.get(AbstractProfileService.LINKEDID));
         assertNotNull(result.get(AbstractProfileService.SERIALIZED_PROFILE));
@@ -164,13 +146,13 @@ public final class CouchProfileServiceTests implements TestsConstants {
         final List<Map<String, Object>> results2 = getData(couchProfileService, COUCH_ID);
         assertEquals(1, results2.size());
         final Map<String, Object> result2 = results2.get(0);
-        assertEquals(4, result2.size());
+        assertEquals(5, result2.size());
         assertEquals(COUCH_ID, result2.get(COUCH_ID_FIELD));
         assertEquals(COUCH_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
         assertNotNull(result2.get(AbstractProfileService.SERIALIZED_PROFILE));
         assertEquals(COUCH_USER2, result2.get(USERNAME));
         // check credentials
-        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_ID, COUCH_PASS2, CLIENT_NAME);
+        final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2, CLIENT_NAME);
         couchProfileService.validate(credentials2, null);
         final CommonProfile profile3 = credentials.getUserProfile();
         assertNotNull(profile3);
