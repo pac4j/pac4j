@@ -3,11 +3,11 @@ package org.pac4j.couch.profile;
 import org.pac4j.core.profile.CommonProfile;
 
 /**
- * <p>The user profile returned from a MongoDB.</p>
+ * <p>The user profile returned from a CouchDB.</p>
  *
- * @see MongoAuthenticator
- * @author Jerome Leleu
- * @since 1.8.0
+ * @see CouchProfileService
+ * @author Elie Roux
+ * @since 2.0.0
  */
 public class CouchProfile extends CommonProfile {
 

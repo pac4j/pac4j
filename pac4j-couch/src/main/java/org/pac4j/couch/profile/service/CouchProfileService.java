@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The MongoDB profile service.
+ * The CouchDB profile service.
  *
  * @author Elie Roux
  * @since 2.0.0
@@ -88,7 +88,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 		} catch (DocumentNotFoundException e) {
 			couchDbConnector.create(attributes);
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error("Unexpected IO CouchDB Exception", e);
 		}
 	}
 
@@ -103,8 +103,19 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 		} catch (DocumentNotFoundException e) {
 			logger.debug("id {} is not in the database", id);
 		} catch (IOException e) {
-			logger.error("", e);
+			logger.error("Unexpected IO CouchDB Exception", e);
 		}
+	}
+
+	private Map<String, Object> populateAttributes(final Map<String, Object> rowAttributes, final List<String> names) {
+		final Map<String, Object> newAttributes = new HashMap<>();
+		for (final Map.Entry<String, Object> entry : rowAttributes.entrySet()) {
+			final String name = entry.getKey();
+			if (names == null || names.contains(name)) {
+				newAttributes.put(name, entry.getValue());
+			}
+		}
+		return newAttributes;
 	}
 
 	@Override
@@ -116,17 +127,11 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 			try {
 				final InputStream oldDocStream = couchDbConnector.getAsStream(value);
 				final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
-				final Map<String, Object> newAttributes = new HashMap<>();
-				for (final Map.Entry<String, Object> entry : res.entrySet()) {
-					final String name = entry.getKey();
-					if (names == null || names.contains(name)) {
-						newAttributes.put(name, entry.getValue());
-					}
-				}
-				listAttributes.add(newAttributes);
+				listAttributes.add(populateAttributes(res, names));
 			} catch (DocumentNotFoundException e) {
+				logger.debug("Document id {} not found", value);
 			} catch (IOException e) {
-				logger.error("", e);
+				logger.error("Unexpected IO CouchDB Exception", e);
 			}
 		}
 		else {
@@ -141,20 +146,12 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 				Map<String, Object> res = null;
 				try {
 					res = objectMapper.readValue(stringValue, typeRef);
-					final Map<String, Object> newAttributes = new HashMap<>();
-					for (final Map.Entry<String, Object> entry : res.entrySet()) {
-						final String name = entry.getKey();
-						if (names == null || names.contains(name)) {
-							newAttributes.put(name, entry.getValue());
-						}
-					}
-					listAttributes.add(newAttributes);
+					listAttributes.add(populateAttributes(res, names));
 				} catch (IOException e) {
-					logger.error("", e);
+					logger.error("Unexpected IO CouchDB Exception", e);
 				}
 			}
 		}
-
 		logger.debug("Found: {}", listAttributes);
 
 		return listAttributes;

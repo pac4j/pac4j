@@ -22,7 +22,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- * Tests the {@link MongoAuthenticator}.
+ * Tests the {@link CouchProfileService}.
  *
  * @author Elie Roux
  * @since 2.0.0
