@@ -74,7 +74,7 @@ public class SAML2WebSSOMessageSender implements SAML2MessageSender<AuthnRequest
         outboundContext.getSAMLPeerEntityContext().setEntityId(context.getSAMLPeerEntityContext().getEntityId());
         outboundContext.getSAMLProtocolContext().setProtocol(context.getSAMLProtocolContext().getProtocol());
         outboundContext.getSecurityParametersContext()
-                .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(spDescriptor));
+                .setSignatureSigningParameters(this.signatureSigningParametersProvider.build(idpssoDescriptor));
 
         if (relayState != null) {
             outboundContext.getSAMLBindingContext().setRelayState(relayState.toString());
