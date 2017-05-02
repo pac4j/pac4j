@@ -69,7 +69,7 @@ public final class RunFacebookClient extends RunClient {
         final List<FacebookObject> languages = profile.getLanguages();
         assertTrue(languages.get(0).getName().startsWith("Fr"));
         assertTrue(CommonHelper.isNotBlank(profile.getThirdPartyId()));
-        assertEquals(1, profile.getTimezone().intValue());
+        assertEquals(-5, profile.getTimezone().intValue());
         assertTrue(profile.getVerified());
         assertEquals("A propos de moi", profile.getAbout());
         assertEquals("03/10/1979", new SimpleDateFormat("MM/dd/yyyy").format(profile.getBirthday()));
@@ -86,7 +86,7 @@ public final class RunFacebookClient extends RunClient {
         assertEquals("New York, New York", profile.getLocationObject().getName());
         assertEquals("Sans Opinion (desc)", profile.getPolitical());
         final List<FacebookObject> favoriteAthletes = profile.getFavoriteAthletes();
-        assertEquals("Surfing", favoriteAthletes.get(0).getName());
+        assertEquals("Surfeuse", favoriteAthletes.get(0).getName());
         final List<FacebookObject> favoriteTeams = profile.getFavoriteTeams();
         assertEquals("Handball Féminin de France", favoriteTeams.get(0).getName());
         assertEquals("citation", profile.getQuotes());
