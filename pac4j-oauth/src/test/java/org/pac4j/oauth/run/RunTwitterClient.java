@@ -58,7 +58,7 @@ public final class RunTwitterClient extends RunClient {
         assertTrue(ProfileHelper.isTypedIdOf(profile.getTypedId(), TwitterProfile.class));
         assertTrue(CommonHelper.isNotBlank(profile.getAccessToken()));
         assertCommonProfile(userProfile, null, null, null, "test scribeUP", "testscribeUP", Gender.UNSPECIFIED,
-                Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_5_normal.png",
+                Locale.UK, ".twimg.com/sticky/default_profile_images/default_profile_normal.png",
                 "http://t.co/fNjYqp7wZ8", "New York");
         assertFalse(profile.getContributorsEnabled());
         assertEquals("Fri Feb 10 12:10:24 +0100 2012", new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US).format(profile.getCreatedAt()));
@@ -78,13 +78,13 @@ public final class RunTwitterClient extends RunClient {
         assertTrue(profile.getProfileBackgroundImageUrlHttps().toString().endsWith("/images/themes/theme1/bg.png"));
         assertFalse(profile.getProfileBackgroundTile());
         assertTrue(profile.getProfileImageUrlHttps().toString().endsWith(
-                "/sticky/default_profile_images/default_profile_5_normal.png"));
+                "/sticky/default_profile_images/default_profile_normal.png"));
         assertTrue(profile.getProfileUseBackgroundImage());
         assertTrue(profile.getProtected());
         assertNull(profile.getShowAllInlineMedia());
         assertEquals(0, profile.getStatusesCount().intValue());
         assertEquals("Amsterdam", profile.getTimeZone());
-        assertEquals(3600, profile.getUtcOffset().intValue());
+        assertEquals(7200, profile.getUtcOffset().intValue());
         assertFalse(profile.getVerified());
         assertNotNull(profile.getAccessSecret());
         assertEquals(37, profile.getAttributes().size());
