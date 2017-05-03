@@ -68,10 +68,10 @@ is decoded as:
 </table>
 <br/>
 
-For Java, there are several good JWT libraries, but I think the best one is the [Nimbus JOSE JWT](http://connect2id.com/products/nimbus-jose-jwt): it may not be the easiest one, but it really has everything you need for JWT support.
-You should especially read their [algorithm selection guide](http://connect2id.com/products/nimbus-jose-jwt/algorithm-selection-guide).
+For Java, there are several good JWT libraries, but I think the best one is the [Nimbus JOSE JWT](https://connect2id.com/products/nimbus-jose-jwt): it may not be the easiest one, but it really has everything you need for JWT support.
+You should especially read their [algorithm selection guide](https://connect2id.com/products/nimbus-jose-jwt/algorithm-selection-guide).
 
-Let’s take an example with [HMAC signature](http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac):
+Let’s take an example with [HMAC signature](https://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac):
 
 ```java
 JWTClaimsSet claimsSet = new JWTClaimsSet();
