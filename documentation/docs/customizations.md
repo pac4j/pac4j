@@ -32,7 +32,7 @@ Nonetheless, building a `Client` requires extra efforts. Notice that:
 - it is generally a good practice to create a new profile for a new client (whether this profile will have or not specific data) to be able to distinguish between all user profiles.
 The new user profile should certainly inherit from the base profile of the protocol support, like `OAuth20Profile`.
 At least, it must inherit from [`CommonProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/CommonProfile.java).
-The data returned by the identity provider may need to be converted (a single string into a Java enumeration for example) and for that, converters (classes extending [`AttributeConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/AttributeConverter.java)) are necessary. Both the converters and the returned user profile class must be defined in a [`ProfileDefinition`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/ProfileDefinition.java).
+The data returned by the identity provider may need to be converted (a single string into a Java enumeration for example) and for that, converters (classes extending [`AttributeConverter`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/converter/AttributeConverter.java)) are necessary. Both the converters and the returned user profile class must be defined in a [`ProfileDefinition`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/definition/ProfileDefinition.java).
 
 
 ### Changing the core flow:

@@ -45,4 +45,4 @@ The attributes of the user profile can be managed in the MongoDB collection in t
 - either each attribute is explicitly saved in a specific attribute and all these attributes are defined as a list of names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
 - or the whole user profile is serialized and saved in the `serializedprofile` attribute.
 
-This `MongoProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the MongoDB database.
+This `MongoProfileService` supports the use of a specific [`PasswordEncoder`](../authenticators.html#passwordencoder) to encode the passwords in the MongoDB database.
