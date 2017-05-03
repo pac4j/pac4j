@@ -31,7 +31,7 @@ It supports plain text, signed and / or encrypted JWT tokens. In all cases, the 
 
 ### &#9656; Signature
 
-To handle signed JWT, you must define one or more [`SignatureConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/SignatureConfiguration.java) with the `addSignatureConfiguration` method.
+To handle signed JWT, you must define one or more [`SignatureConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/signature/SignatureConfiguration.java) with the `addSignatureConfiguration` method.
 
 Three signature configurations are available: with secret (`SecretSignatureConfiguration`), using a RSA key pair (`RSASignatureConfiguration`) or using an elliptic-curve key pair (`ECSignatureConfiguration`).
 
@@ -39,7 +39,7 @@ To verify a signed JWT, the defined signature configurations will be tried succe
 
 ### &#9656; Encryption
 
-To handle encrypted JWT, you must define one or more [`EncryptionConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/EncryptionConfiguration.java) with the `addEncryptionConfiguration` method.
+To handle encrypted JWT, you must define one or more [`EncryptionConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/encryption/EncryptionConfiguration.java) with the `addEncryptionConfiguration` method.
 
 Like for signature configurations, three encryption configurations are available: with secret (`SecretEncryptionConfiguration`), using a RSA key pair (`RSAEncryptionConfiguration`) or using an elliptic-curve key pair (`ECEncryptionConfiguration`).
 

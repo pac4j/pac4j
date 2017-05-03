@@ -62,4 +62,4 @@ The attributes of the user profile can be managed in the database in two ways:
 - either each attribute is explicitly saved in a specific column and all these columns are defined as a list of column names separated by commas via the `setAttributes` method (it's the legacy mode already existing in version 1.9)
 - or the whole user profile is serialized and saved in the `serializedprofile` column.
 
-This `DbProfileService` supports the use of a specific [`PasswordEncoder`](authenticators.html#passwordencoder) to encode the passwords in the database.
+This `DbProfileService` supports the use of a specific [`PasswordEncoder`](../authenticators.html#passwordencoder) to encode the passwords in the database.

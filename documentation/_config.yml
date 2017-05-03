@@ -4,4 +4,3 @@ theme: minima
 kramdown:
   input: GFM
   syntax_highlighter: rouge
-  auto_ids: false
