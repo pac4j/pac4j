@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
  */
 public final class CouchProfileServiceTests implements TestsConstants {
 
-	private static final int PORT = 5984;
 	private static final String COUCH_ID_FIELD = CouchProfileService.COUCH_ID;
 	private static final String COUCH_ID = "couchId";
 	private static final String COUCH_LINKED_ID = "couchLinkedId";
@@ -48,7 +47,7 @@ public final class CouchProfileServiceTests implements TestsConstants {
 
 	@BeforeClass
 	public static void setUp() {
-		couchDbConnector = couchServer.start(PORT);
+		couchDbConnector = couchServer.start();
 		final String password = PASSWORD_ENCODER.encode(PASSWORD);
 		final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
 		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);

@@ -2,8 +2,6 @@ package org.pac4j.couch.test.tools;
 
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.ektorp.CouchDbConnector;
-import org.ektorp.CouchDbInstance;
-import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
 import org.ektorp.impl.StdCouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
@@ -12,10 +10,11 @@ import org.pac4j.core.util.TestsConstants;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import mcouch.core.InMemoryCouchDb;
+
 import org.pac4j.core.credentials.password.PasswordEncoder;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 /**
  * Uses a local CouchDB server.
@@ -27,20 +26,19 @@ public final class CouchServer implements TestsConstants {
 
 	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
 
-	public CouchDbConnector start(final int port) {
-		String couchUrl = "http://localhost:"+port+"/";
-		HttpClient httpClient;
-		CouchDbInstance dbInstance;
+	public CouchDbConnector start() {
+		InMemoryCouchDb couchDbClient = new InMemoryCouchDb();
+		couchDbClient.createDatabase("users");
+		StdHttpClient stdHttpClient = new StdHttpClient(couchDbClient);
+		StdCouchDbInstance stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
 		try {
-			httpClient = new StdHttpClient.Builder()
-					.url(couchUrl)
-					.build();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			stdCouchDbInstance = new StdCouchDbInstance(stdHttpClient);
+		} catch (Exception e1) {
+			e1.printStackTrace();
 			return null;
 		}
-		dbInstance = new StdCouchDbInstance(httpClient);
-		CouchDbConnector couchDbConnector = new StdCouchDbConnector("users", dbInstance);
+		StdCouchDbConnector couchDbConnector    = new StdCouchDbConnector("users", stdCouchDbInstance);
+
 		couchDbConnector.createDatabaseIfNotExists();
 
 		// uploading design doc:
