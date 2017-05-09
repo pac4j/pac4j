@@ -5,7 +5,7 @@ import org.pac4j.core.profile.CommonProfile;
 /**
  * <p>The user profile returned from a CouchDB.</p>
  *
- * @see CouchProfileService
+ * @see org.pac4j.couch.profile.service.CouchProfileService
  * @author Elie Roux
  * @since 2.0.0
  */
