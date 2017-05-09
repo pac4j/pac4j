@@ -41,13 +41,12 @@ public final class CouchProfileServiceTests implements TestsConstants {
 	private static final String IDPERSON3 = "idperson3";
 
 	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
-	public static CouchDbConnector couchDbConnector = null;
 	private static final CouchServer couchServer = new CouchServer();
+	private static final CouchDbConnector couchDbConnector = couchServer.start();
 
 
 	@BeforeClass
 	public static void setUp() {
-		couchDbConnector = couchServer.start();
 		final String password = PASSWORD_ENCODER.encode(PASSWORD);
 		final CouchProfileService couchProfileService = new CouchProfileService(couchDbConnector);
 		couchProfileService.setPasswordEncoder(PASSWORD_ENCODER);
