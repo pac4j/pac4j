@@ -59,15 +59,10 @@ public class OidcClientBuilder extends AbstractBuilder implements PropertiesCons
                 if (isNotBlank(clientAuthenticationMethod)) {
                     configuration.setClientAuthenticationMethod(ClientAuthenticationMethod.parse(clientAuthenticationMethod));
                 }
-                final String key1 = getProperty(OIDC_CUSTOM_PARAM_KEY1, i);
-                final String value1 = getProperty(OIDC_CUSTOM_PARAM_VALUE1, i);
-                if (isNotBlank(key1)) {
-                    configuration.addCustomParam(key1, value1);
-                }
-                final String key2 = getProperty(OIDC_CUSTOM_PARAM_KEY2, i);
-                final String value2 = getProperty(OIDC_CUSTOM_PARAM_VALUE2, i);
-                if (isNotBlank(key2)) {
-                    configuration.addCustomParam(key2, value2);
+                for (int j = 1; j <= MAX_NUM_CUSTOM_PROPERTIES; j++) {
+                    if (containsProperty(OIDC_CUSTOM_PARAM_KEY + j, i)) {
+                        configuration.addCustomParam(getProperty(OIDC_CUSTOM_PARAM_KEY + j, i), getProperty(OIDC_CUSTOM_PARAM_VALUE + j, i));
+                    }
                 }
 
                 final String type = getProperty(OIDC_TYPE, i);

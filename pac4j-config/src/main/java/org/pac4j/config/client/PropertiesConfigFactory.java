@@ -42,6 +42,11 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             final LdapAuthenticatorBuilder ldapAuthenticatorBuilder = new LdapAuthenticatorBuilder(properties);
             ldapAuthenticatorBuilder.tryBuildLdapAuthenticator(authenticators);
         }
+        // pac4j-sql dependency required
+        if (hasDbAuthenticator()) {
+            final DbAuthenticatorBuilder dbAuthenticatorBuilder = new DbAuthenticatorBuilder(properties);
+            dbAuthenticatorBuilder.tryBuildDbAuthenticator(authenticators);
+        }
         // pac4j-oauth dependency required
         if (hasOAuthClients()) {
             final OAuthBuilder oAuthBuilder = new OAuthBuilder(properties);
@@ -78,7 +83,6 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             final DirectClientBuilder directClientBuilder = new DirectClientBuilder(properties);
             directClientBuilder.tryCreateAnonymousClient(clients);
         }
-
         return new Config(callbackUrl, clients);
     }
 
@@ -86,6 +90,17 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
             final String type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean hasDbAuthenticator() {
+        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final String className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
+            final String jdbcUrl = getProperty(DB_JDBC_URL, i);
+            if (isNotBlank(className) || isNotBlank(jdbcUrl)) {
                 return true;
             }
         }
