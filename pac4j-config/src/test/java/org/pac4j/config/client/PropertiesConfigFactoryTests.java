@@ -8,6 +8,7 @@ import org.pac4j.cas.config.CasProtocol;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.http.client.indirect.FormClient;
@@ -88,7 +89,16 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
         properties.put(FORMCLIENT_LOGIN_URL.concat(".2"), PAC4J_BASE_URL);
         properties.put(FORMCLIENT_AUTHENTICATOR.concat(".2"), "ldap");
 
+        properties.put(SPRING_ENCODER_TYPE.concat(".4"), "standard");
+        properties.put(SPRING_ENCODER_STANDARD_SECRET.concat(".4"), SALT);
+
         properties.put(DB_JDBC_URL, "jdbc:h2:mem:test");
+        properties.put(DB_USERNAME, Pac4jConstants.USERNAME);
+        properties.put(DB_PASSWORD, Pac4jConstants.PASSWORD);
+        properties.put(DB_USERNAME_ATTRIBUTE, Pac4jConstants.USERNAME);
+        properties.put(DB_USER_PASSWORD_ATTRIBUTE, Pac4jConstants.PASSWORD);
+        properties.put(DB_ATTRIBUTES, FIRSTNAME);
+        properties.put(DB_PASSWORD_ENCODER, "encoder.spring.4");
 
         properties.put(INDIRECTBASICAUTH_AUTHENTICATOR.concat(".5"), "db");
 
@@ -155,9 +165,9 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             assertTrue(indirectBasicAuthClient2.getAuthenticator() instanceof DbProfileService);
             final DbProfileService dbAuthenticator = (DbProfileService) indirectBasicAuthClient2.getAuthenticator();
             assertNotNull(dbAuthenticator);
-            /*final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+            final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
             dbAuthenticator.validate(dbCredentials, MockWebContext.create());
-            assertNotNull(dbCredentials.getUserProfile());*/
+            assertNotNull(dbCredentials.getUserProfile());
 
         } finally {
             if (ldapServer != null) {

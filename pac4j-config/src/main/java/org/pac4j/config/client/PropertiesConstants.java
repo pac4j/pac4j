@@ -156,4 +156,25 @@ public interface PropertiesConstants {
     String DB_CUSTOM_PARAM_VALUE = "db.customParamValue";
     String DB_LOGIN_TIMEOUT = "db.loginTimeout";
     String DB_DATASOURCE_JNDI = "db.dataSourceJndi";
+    String DB_PASSWORD_ENCODER = "db.passwordEncoder";
+
+    String SPRING_ENCODER = "encoder.spring";
+    String SPRING_ENCODER_TYPE = "encoder.spring.type";
+    enum SpringEncoderType {BCRYPT, NOOP, PBKDF2, SCRYPT, STANDARD}
+    String SPRING_ENCODER_BCRYPT_LENGTH = "encoder.spring.bcrypt.length";
+    String SPRING_ENCODER_PBKDF2_SECRET = "encoder.spring.pbkdf2.secret";
+    String SPRING_ENCODER_PBKDF2_ITERATIONS = "encoder.spring.pbkdf2.iterations";
+    String SPRING_ENCODER_PBKDF2_HASH_WIDTH = "encoder.spring.pbkdf2.hashWidth";
+    String SPRING_ENCODER_SCRYPT_CPU_COST = "encoder.spring.scrypt.cpuCost";
+    String SPRING_ENCODER_SCRYPT_MEMORY_COST = "encoder.spring.scrypt.memoryCost";
+    String SPRING_ENCODER_SCRYPT_PARALLELIZATION = "encoder.spring.scrypt.parallelization";
+    String SPRING_ENCODER_SCRYPT_KEY_LENGTH = "encoder.spring.scrypt.keyLength";
+    String SPRING_ENCODER_SCRYPT_SALT_LENGTH = "encoder.spring.scrypt.saltLength";
+    String SPRING_ENCODER_STANDARD_SECRET = "encoder.spring.standard.secret";
+
+    String SHIRO_ENCODER = "encoder.shiro";
+    String SHIRO_ENCODER_GENERATE_PUBLIC_SALT = "encoder.shiro.generatePublicSalt";
+    String SHIRO_ENCODER_HASH_ALGORITHM_NAME = "encoder.shiro.hashAlgorithmName";
+    String SHIRO_ENCODER_HASH_ITERATIONS = "encoder.shiro.hashIterations";
+    String SHIRO_ENCODER_PRIVATE_SALT = "encoder.shiro.privateSalt";
 }

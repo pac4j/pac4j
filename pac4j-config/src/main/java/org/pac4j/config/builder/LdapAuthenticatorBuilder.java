@@ -27,7 +27,7 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder implements Propert
     }
 
     public void tryBuildLdapAuthenticator(final Map<String, Authenticator> authenticators) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             final String type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
                 final LdapAuthenticationProperties ldapProp = buildLdapProperties(i);

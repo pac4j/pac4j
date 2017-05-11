@@ -74,9 +74,7 @@ public class OidcClientBuilder extends AbstractBuilder implements PropertiesCons
                 } else {
                     oidcClient = new OidcClient(configuration);
                 }
-                if (i != 0) {
-                    oidcClient.setName(concat(oidcClient.getName(), i));
-                }
+                oidcClient.setName(concat(oidcClient.getName(), i));
                 clients.add(oidcClient);
             }
         }

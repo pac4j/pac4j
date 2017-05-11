@@ -42,9 +42,7 @@ public class IndirectHttpClientBuilder extends AbstractBuilder implements Proper
                 if (containsProperty(FORMCLIENT_PASSWORD_PARAMETER, i)) {
                     formClient.setPasswordParameter(getProperty(FORMCLIENT_PASSWORD_PARAMETER, i));
                 }
-                if (i != 0) {
-                    formClient.setName(concat(formClient.getName(), i));
-                }
+                formClient.setName(concat(formClient.getName(), i));
                 clients.add(formClient);
             }
         }
@@ -59,9 +57,7 @@ public class IndirectHttpClientBuilder extends AbstractBuilder implements Proper
                 if (containsProperty(INDIRECTBASICAUTH_REALM_NAME, i)) {
                     indirectBasicAuthClient.setRealmName(getProperty(INDIRECTBASICAUTH_REALM_NAME, i));
                 }
-                if (i != 0) {
-                    indirectBasicAuthClient.setName(concat(indirectBasicAuthClient.getName(), i));
-                }
+                indirectBasicAuthClient.setName(concat(indirectBasicAuthClient.getName(), i));
                 clients.add(indirectBasicAuthClient);
             }
         }

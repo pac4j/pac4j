@@ -34,9 +34,7 @@ public class CasClientBuilder extends AbstractBuilder implements PropertiesConst
                 if (isNotBlank(protocol)) {
                     configuration.setProtocol(CasProtocol.valueOf(protocol));
                 }
-                if (i != 0) {
-                    casClient.setName(concat(casClient.getName(), i));
-                }
+                casClient.setName(concat(casClient.getName(), i));
                 clients.add(casClient);
             }
         }

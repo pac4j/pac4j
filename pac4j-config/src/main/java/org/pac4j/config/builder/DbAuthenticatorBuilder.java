@@ -3,6 +3,7 @@ package org.pac4j.config.builder;
 import com.zaxxer.hikari.HikariDataSource;
 import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.sql.profile.service.DbProfileService;
 
@@ -22,8 +23,8 @@ public class DbAuthenticatorBuilder extends AbstractBuilder implements Propertie
         super(properties);
     }
 
-    public void tryBuildDbAuthenticator(final Map<String, Authenticator> authenticators) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+    public void tryBuildDbAuthenticator(final Map<String, Authenticator> authenticators, final Map<String, PasswordEncoder> encoders) {
+        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             if (containsProperty(DB_DATASOURCE_CLASS_NAME, i) || containsProperty(DB_JDBC_URL, i)) {
                 try {
                     final DataSource ds = buildDataSource(i);
@@ -42,6 +43,9 @@ public class DbAuthenticatorBuilder extends AbstractBuilder implements Propertie
                     }
                     if (containsProperty(DB_USERS_TABLE, i)) {
                         authenticator.setUsersTable(getProperty(DB_USERS_TABLE, i));
+                    }
+                    if (containsProperty(DB_PASSWORD_ENCODER, i)) {
+                        authenticator.setPasswordEncoder(encoders.get(getProperty(DB_PASSWORD_ENCODER, i)));
                     }
                     authenticators.put(concat("db", i), authenticator);
                 } catch (final SQLException e) {

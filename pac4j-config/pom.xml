@@ -57,6 +57,16 @@
             <artifactId>pac4j-sql</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- for testing -->
 		<dependency>
 			<groupId>org.pac4j</groupId>
@@ -89,11 +99,6 @@
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-sql</artifactId>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
