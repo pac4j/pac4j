@@ -27,7 +27,7 @@
 
     <div id="content" class="container">
 
-        <h1 class="text-center"><span class="alert alert-info">{{ page.title }}</span> <strong><a href="/docs/alldocs.html">(v{% if page.url contains '1.9.x' %}1.9{% else %}2.0{% endif %})</a></strong></h1><br />
+        <h1 class="text-center"><span class="alert alert-info">{{ page.title }}</span> <strong>{% if page.url contains '1.9.x' %}<a href="/1.9.x/docs/index.html">(v1.9)</a>{% else %}<a href="/docs/index.html">(v2.0)</a>{% endif %}</strong></h1><br />
 
 		  {{ content }}
 
