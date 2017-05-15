@@ -1,6 +1,6 @@
 ---
 layout: doc
-title: <i class="fa fa-user" aria-hidden="true"></i> <i>pac4j</i> documentation for all implementations&#58;
+title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/core documentation&#58;
 ---
 
 ## 1) [Main concepts and components](main-concepts-and-components.html) (start here)
