@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v2.1.0**:
+
+- Supports CouchDB for authentication and user management
+
 **v2.0.0**:
 
 - All clients are built using sub-components (`RedirectActionBuilder`, `CredentialsExtractor` , `Authenticator`, `ProfileCreator` and `LogoutActionBuilder`): the `IndirectClientV2` and `DirectClientV2` are renamed as `IndirectClient` and `DirectClient` (and the existing `IndirectClient` and `DirectClient` components are removed)
