@@ -1,6 +1,6 @@
 #!/bin/bash
 invokeDoc=false
-branchVersion="development"
+branchVersion="2.1.x"
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
   case "${TRAVIS_JOB_NUMBER}" in

@@ -11,12 +11,9 @@
           <li class="nav-item">
             <a class="nav-link" href="/implementations.html">IMPLEMENTATIONS</a>
           </li>
-            <li class="nav-item{% unless page.url contains '1.9.x' %} active{% endunless %}">
-                <a class="nav-link" href="/docs/index.html">2.0 DOCS</a>
+            <li class="nav-item active">
+                <a class="nav-link" href="/docs/alldocs.html">DOCUMENTATION</a>
             </li>
-          <li class="nav-item{% if page.url contains '1.9.x' %} active{% endif %}">
-            <a class="nav-link" href="/1.9.x/docs/index.html">OLD 1.9 DOCS</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link" href="/contributors.html">CONTRIBUTORS</a>
           </li>
@@ -30,7 +27,7 @@
 
     <div id="content" class="container">
 
-      <h1 class="text-center"><span class="alert alert-info">{{ page.title }}</span></h1><br />
+        <h1 class="text-center"><span class="alert alert-info">{{ page.title }}</span> <strong>{% if page.url contains '1.9.x' %}<a href="/1.9.x/docs/index.html">(v1.9)</a>{% elsif page.url contains '2.0.x' %}<a href="/2.0.x/docs/index.html">(v2.0)</a>{% else %}<a href="/docs/index.html">(v2.1)</a>{% endif %}</strong></h1><br />
 
 		  {{ content }}
 

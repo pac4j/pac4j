@@ -6,6 +6,7 @@ title: Release notes&#58;
 **v2.1.0**:
 
 - The password encoders and LDAP / SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
+- Supports CouchDB for authentication and user management
 
 **v2.0.0**:
 
