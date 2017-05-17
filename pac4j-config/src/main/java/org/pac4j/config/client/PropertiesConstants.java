@@ -66,9 +66,15 @@ public interface PropertiesConstants {
     String OIDC_PREFERRED_JWS_ALGORITHM = "oidc.preferredJwsAlgorithm";
     String OIDC_MAX_CLOCK_SKEW = "oidc.maxClockSkew";
     String OIDC_CLIENT_AUTHENTICATION_METHOD = "oidc.clientAuthenticationMethod";
+    String OIDC_CUSTOM_PARAM_KEY = "oidc.customParamKey";
+    String OIDC_CUSTOM_PARAM_VALUE = "oidc.customParamValue";
+    @Deprecated
     String OIDC_CUSTOM_PARAM_KEY1 = "oidc.customParamKey1";
+    @Deprecated
     String OIDC_CUSTOM_PARAM_VALUE1 = "oidc.customParamValue1";
+    @Deprecated
     String OIDC_CUSTOM_PARAM_KEY2 = "oidc.customParamKey2";
+    @Deprecated
     String OIDC_CUSTOM_PARAM_VALUE2 = "oidc.customParamValue2";
 
     String FORMCLIENT_AUTHENTICATOR = "formClient.authenticator";
@@ -117,4 +123,58 @@ public interface PropertiesConstants {
     String LDAP_SASL_AUTHORIZATION_ID = "ldap.saslAuthorizationId";
     String LDAP_SASL_SECURITY_STRENGTH = "ldap.saslSecurityStrength";
     String LDAP_SASL_QUALITY_OF_PROTECTION = "ldap.saslQualityOfProtection";
+
+    String DB_DATASOURCE_CLASS_NAME = "db.dataSourceClassName";
+    String DB_JDBC_URL = "db.jdbcUrl";
+    String DB_ATTRIBUTES = "db.userAttributes";
+    String DB_USER_ID_ATTRIBUTE = "db.userIdAttribute";
+    String DB_USERNAME_ATTRIBUTE = "db.usernameAttribute";
+    String DB_USER_PASSWORD_ATTRIBUTE = "db.userPasswordAttribute";
+    String DB_USERS_TABLE = "db.usersTable";
+    String DB_USERNAME = "db.username";
+    String DB_PASSWORD = "db.password";
+    String DB_AUTO_COMMIT = "db.autoCommit";
+    String DB_CONNECTION_TIMEOUT = "db.connectionTimeout";
+    String DB_IDLE_TIMEOUT = "db.idleTimeout";
+    String DB_MAX_LIFETIME = "db.maxLifetime";
+    String DB_CONNECTION_TEST_QUERY = "db.connectionTestQuery";
+    String DB_MINIMUM_IDLE = "db.minimumIdle";
+    String DB_MAXIMUM_POOL_SIZE = "db.maximumPoolSize";
+    String DB_POOL_NAME = "db.poolName";
+    String DB_INITIALIZATION_FAIL_TIMEOUT = "db.initializationFailTimeout";
+    String DB_ISOLATE_INTERNAL_QUERIES = "db.isolateInternalQueries";
+    String DB_ALLOW_POOL_SUSPENSION = "db.allowPoolSuspension";
+    String DB_READ_ONLY = "db.readOnly";
+    String DB_REGISTER_MBEANS = "db.registerMbeans";
+    String DB_CATALOG = "db.catalog";
+    String DB_CONNECTION_INIT_SQL = "db.connectionInitSql";
+    String DB_DRIVER_CLASS_NAME = "db.driverClassName";
+    String DB_TRANSACTION_ISOLATION = "db.transactionIsolation";
+    String DB_VALIDATION_TIMEOUT = "db.validationTimeout";
+    String DB_LEAK_DETECTION_THRESHOLD = "db.leakDetectionThreshold";
+    String DB_CUSTOM_PARAM_KEY = "db.customParamKey";
+    String DB_CUSTOM_PARAM_VALUE = "db.customParamValue";
+    String DB_LOGIN_TIMEOUT = "db.loginTimeout";
+    String DB_DATASOURCE_JNDI = "db.dataSourceJndi";
+    String DB_PASSWORD_ENCODER = "db.passwordEncoder";
+
+    String SPRING_ENCODER = "encoder.spring";
+    String SPRING_ENCODER_TYPE = "encoder.spring.type";
+    enum SpringEncoderType {BCRYPT, NOOP, PBKDF2, SCRYPT, STANDARD}
+    String SPRING_ENCODER_BCRYPT_LENGTH = "encoder.spring.bcrypt.length";
+    String SPRING_ENCODER_PBKDF2_SECRET = "encoder.spring.pbkdf2.secret";
+    String SPRING_ENCODER_PBKDF2_ITERATIONS = "encoder.spring.pbkdf2.iterations";
+    String SPRING_ENCODER_PBKDF2_HASH_WIDTH = "encoder.spring.pbkdf2.hashWidth";
+    String SPRING_ENCODER_SCRYPT_CPU_COST = "encoder.spring.scrypt.cpuCost";
+    String SPRING_ENCODER_SCRYPT_MEMORY_COST = "encoder.spring.scrypt.memoryCost";
+    String SPRING_ENCODER_SCRYPT_PARALLELIZATION = "encoder.spring.scrypt.parallelization";
+    String SPRING_ENCODER_SCRYPT_KEY_LENGTH = "encoder.spring.scrypt.keyLength";
+    String SPRING_ENCODER_SCRYPT_SALT_LENGTH = "encoder.spring.scrypt.saltLength";
+    String SPRING_ENCODER_STANDARD_SECRET = "encoder.spring.standard.secret";
+
+    String SHIRO_ENCODER = "encoder.shiro";
+    String SHIRO_ENCODER_GENERATE_PUBLIC_SALT = "encoder.shiro.generatePublicSalt";
+    String SHIRO_ENCODER_HASH_ALGORITHM_NAME = "encoder.shiro.hashAlgorithmName";
+    String SHIRO_ENCODER_HASH_ITERATIONS = "encoder.shiro.hashIterations";
+    String SHIRO_ENCODER_PRIVATE_SALT = "encoder.shiro.privateSalt";
 }

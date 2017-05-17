@@ -50,10 +50,7 @@ public class Saml2ClientBuilder extends AbstractBuilder implements PropertiesCon
                     cfg.setDestinationBindingType(destinationBindingType);
                 }
                 final SAML2Client saml2Client = new SAML2Client(cfg);
-
-                if (i != 0) {
-                    saml2Client.setName(concat(saml2Client.getName(), i));
-                }
+                saml2Client.setName(concat(saml2Client.getName(), i));
 
                 clients.add(saml2Client);
             }
