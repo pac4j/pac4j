@@ -232,7 +232,14 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             return profile;
         } else {
             // new behaviour (>= v2.0): read the serialized profile
-            final U profile = (U) javaSerializationHelper.unserializeFromBase64((String) storageAttributes.get(SERIALIZED_PROFILE));
+            final String serializedProfile = (String) storageAttributes.get(SERIALIZED_PROFILE);
+            if (serializedProfile == null) {
+                throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you want to retrieve");
+            }
+            final U profile = (U) javaSerializationHelper.unserializeFromBase64(serializedProfile);
+            if (profile == null) {
+                throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute names you want to retrieve");
+            }
             final Object id = storageAttributes.get(getIdAttribute());
             if (isBlank(profile.getId()) && id != null) {
                 profile.setId(id);

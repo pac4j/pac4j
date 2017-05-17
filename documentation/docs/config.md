@@ -9,6 +9,8 @@ In most `pac4j` implementations, the security configuration can be defined via a
 
 It gathers the required:
 
+- [PasswordEncoders](authenticators.html#passwordencoder)
+- [Authenticators](authenticators.html)
 - [Clients](clients.html)
 - [Authorizers](authorizers.html)
 - [Matchers](matchers.html)
@@ -83,32 +85,37 @@ pac4j:
     formClient.authenticator: ldap
 ```
 
-Here are the properties you can use to define the clients (and authenticators):
+Here are the properties you can use to define the clients (, password encoders and authenticators):
 
-| Property names | Usage |
-|---------------|--------
+| Available properties | Usage |
+|---------------|--------|
+| `encoder.spring.type` (`bcrypt`, `noop`, `pbkdf2`, `scrypt` or `standard`), `encoder.spring.bcrypt.length`, `encoder.spring.pbkdf2.secret`, `encoder.spring.pbkdf2.iterations`, `encoder.spring.pbkdf2.hashWidth`, `encoder.spring.scrypt.cpuCost`, `encoder.spring.scrypt.memoryCost`, `encoder.spring.scrypt.parallelization`, `encoder.spring.scrypt.keyLength`, `encoder.spring.scrypt.saltLength` and `encoder.spring.standard.secret` | To define a `SpringPasswordEncoder` based on the provided properties and named `encoder.spring` or `encoder.spring.N` |
+| `encoder.shiro` (if no specific properties are required), `encoder.shiro.generatePublicSalt`, `encoder.shiro.hashAlgorithmName`, `encoder.shiro.hashIterations` and `encoder.shiro.privateSalt` | To define a `ShiroPasswordEncoder` based on the provided properties and named `encoder.shiro` or `encoder.shiro.N` |
+| `ldap.type`, `ldap.dnFormat`, `ldap.principalAttributes`,`ldap.principalAttributeId`, `ldap.principalAttributePassword`, `ldap.subtreeSearch`, `ldap.usersDn`, `ldap.userFilter`, `ldap.enhanceWithEntryResolver`, `ldap.trustCertificates`, `ldap.keystore`, `ldap.keystorePassword`, `ldap.keystoreType`, `ldap.minPoolSize`, `ldap.maxPoolSize`, `ldap.poolPassivator`, `ldap.validateOnCheckout`, `ldap.validatePeriodically`, `ldap.validatePeriod`, `ldap.failFast`, `ldap.idleTime`, `ldap.prunePeriod`, `ldap.blockWaitTime`, `ldap.url`, `ldap.useSsl`, `ldap.useStartTls`, `ldap.connectTimeout`, `ldap.providerClass`, `ldap.allowMultipleDns`, `ldap.bindDn`, `ldap.bindCredential`, `ldap.saslRealm`, `ldap.saslMechanism`, `ldap.saslAuthorizationId`, `ldap.saslSecurityStrength` and `ldap.saslQualityOfProtection` | To define a `LdapAuthenticator` based on the provided properties and named `ldap` or `ldap.N` |
+| `db.dataSourceClassName`, `db.jdbcUrl`, `db.userAttributes`, `db.userIdAttribute`, `db.usernameAttribute`, `db.userPasswordAttribute`, `db.usersTable`, `db.username`, `db.password`, `db.autoCommit`, `db.connectionTimeout`, `db.idleTimeout`, `db.maxLifetime`, `db.connectionTestQuery`, `db.minimumIdle`, `db.maximumPoolSize`, `db.poolName`, `db.initializationFailTimeout`, `db.isolateInternalQueries`, `db.allowPoolSuspension`, `db.readOnly`, `db.registerMbeans`, `db.catalog`, `db.connectionInitSql`, `db.driverClassName`, `db.transactionIsolation`, `db.validationTimeout`, `db.leakDetectionThreshold`, `db.customParamKey`, `db.customParamValue`, `db.loginTimeout`, `db.dataSourceJndi` and `db.passwordEncoder` | To define a `DbAuthenticator` based on the provided properties and named `db` or `db.N` |
 | `anonymous` | To define the `AnonymousClient`, the value is ignored |
-| `saml.keystorePassword`, `saml.privateKeyPassword`, `saml.keystorePath`, `saml.identityProviderMetadataPath`, `saml.maximumAuthenticationLifetime`, `saml.serviceProviderEntityId`, `saml.serviceProviderMetadataPath`, `saml.destinationBindingType` | To define a `SAML2Client` |
-| `cas.loginUrl`, `cas.protocol` | To define a `CasClient` |
-| `oidc.type` (`google` or `azure`), `oidc.id`, `oidc.secret`, `oidc.scope`, `oidc.discoveryUri`, `oidc.useNonce`, `oidc.preferredJwsAlgorithm`, `oidc.maxClockSkew`, `oidc.clientAuthenticationMethod`, `oidc.customParamKey1`, `oidc.customParamValue1`, `oidc.customParamKey2`,`oidc.customParamValue2` | To define an OpenID connect client |
-| `formClient.authenticator`, `formClient.loginUrl`, `formClient.usernameParameter` `formClient.passwordParameter` | To define a `FormClient`|
-| `indirectBasicAuth.authenticator`, `indirectBasicAuth.realName` | To define an `IndirectBasicAuthClient`|
-| `ldap.type`, `ldap.dnFormat`, `ldap.principalAttributes`,`ldap.principalAttributeId`, `ldap.principalAttributePassword`, `ldap.subtreeSearch`, `ldap.usersDn`, `ldap.userFilter`, `ldap.enhanceWithEntryResolver`, `ldap.trustCertificates`, `ldap.keystore`, `ldap.keystorePassword`, `ldap.keystoreType`, `ldap.minPoolSize`, `ldap.maxPoolSize`, `ldap.poolPassivator`, `ldap.validateOnCheckout`, `ldap.validatePeriodically`, `ldap.validatePeriod`, `ldap.failFast`, `ldap.idleTime`, `ldap.prunePeriod`, `ldap.blockWaitTime`, `ldap.url`, `ldap.useSsl`, `ldap.useStartTls`, `ldap.connectTimeout`, `ldap.providerClass`, `ldap.allowMultipleDns`, `ldap.bindDn`, `ldap.bindCredential`, `ldap.saslRealm`, `ldap.saslMechanism`, `ldap.saslAuthorizationId`, `ldap.saslSecurityStrength`, `ldap.saslQualityOfProtection` | To define a `LdapAuthenticator` |
-| `facebook.id`, `facebook.secret`, `facebook.scope`, `facebook.fields` | To define a `FacebookClient` |
-| `twitter.id`, `twitter.secret` | To define a `TwitterClient` |
-| `github.id`, `github.secret` | To define a `GitHubClient` |
-| `dropbox.id`, `dropbox.secret` | To define a `DropBoxClient` |
-| `windowslive.id`, `windowslive.secret` | To define a `WindowsLiveClient` |
-| `yahoo.id`, `yahoo.secret` | To define a `YahooClient` |
-| `linkedin.id`, `linkedin.secret`, `linkedin.fields`, `linkedin.scope` | To define a `LinkedIn2Client` |
-| `foursquare.id`, `foursquare.secret` | To define a `FoursquareClient` |
-| `google.id`, `google.secret`, `google.scope` | To define a `Google2Client` |
+| `saml.keystorePassword`, `saml.privateKeyPassword`, `saml.keystorePath`, `saml.identityProviderMetadataPath`, `saml.maximumAuthenticationLifetime`, `saml.serviceProviderEntityId`, `saml.serviceProviderMetadataPath`, `saml.destinationBindingType` | To define a `SAML2Client` based on the provided properties |
+| `cas.loginUrl`, `cas.protocol` | To define a `CasClient` based on the provided properties |
+| `oidc.type` (`google` or `azure`), `oidc.id`, `oidc.secret`, `oidc.scope`, `oidc.discoveryUri`, `oidc.useNonce`, `oidc.preferredJwsAlgorithm`, `oidc.maxClockSkew`, `oidc.clientAuthenticationMethod`, `oidc.customParamKey1`, `oidc.customParamValue1`, `oidc.customParamKey2`,`oidc.customParamValue2` | To define an OpenID connect client based on the provided properties |
+| `formClient.authenticator`, `formClient.loginUrl`, `formClient.usernameParameter` `formClient.passwordParameter` | To define a `FormClient` based on the provided properties |
+| `indirectBasicAuth.authenticator`, `indirectBasicAuth.realName` | To define an `IndirectBasicAuthClient` based on the provided properties |
+| `facebook.id`, `facebook.secret`, `facebook.scope`, `facebook.fields` | To define a `FacebookClient` based on the provided properties |
+| `twitter.id`, `twitter.secret` | To define a `TwitterClient` based on the provided properties |
+| `github.id`, `github.secret` | To define a `GitHubClient` based on the provided properties |
+| `dropbox.id`, `dropbox.secret` | To define a `DropBoxClient` based on the provided properties |
+| `windowslive.id`, `windowslive.secret` | To define a `WindowsLiveClient` based on the provided properties |
+| `yahoo.id`, `yahoo.secret` | To define a `YahooClient` based on the provided properties |
+| `linkedin.id`, `linkedin.secret`, `linkedin.fields`, `linkedin.scope` | To define a `LinkedIn2Client` based on the provided properties |
+| `foursquare.id`, `foursquare.secret` | To define a `FoursquareClient` based on the provided properties |
+| `google.id`, `google.secret`, `google.scope` | To define a `Google2Client` based on the provided properties |
 {:.table-striped}
 
 <p />
 
 Notice that:
 
-- you can define multiple clients of the same type by adding a number at the end of the properties: `facebook.id.5`, `facebook.secret.5`...
+- you can define multiple clients of the same type by adding a number at the end of the properties: `cas.loginUrl.2`, `oidc.type.5`...
 
-- the `.authenticator` property must be the name of an `Authenticator` like `ldap` or `ldap.1` or the implicit values: `testUsernamePassword` or `testToken`.
+- the `.passwordEncoder` property must be set to the name of an already defined `PasswordEncoder` like `encoder.spring` or `encoder.shiro.3`
+
+- the `.authenticator` property must be set to the name of an already defined `Authenticator` like `ldap` or `db.1` or the implicit values: `testUsernamePassword` or `testToken`.

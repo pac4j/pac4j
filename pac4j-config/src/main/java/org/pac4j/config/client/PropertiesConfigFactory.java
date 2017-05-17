@@ -5,6 +5,7 @@ import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.credentials.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,11 +37,27 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
 
         final List<Client> clients = new ArrayList<>();
         final Map<String, Authenticator> authenticators = new HashMap<>();
+        final Map<String, PasswordEncoder> encoders = new HashMap<>();
 
+        // spring-security-crypto dependency required
+        if (hasSpringEncoder()) {
+            final SpringEncoderBuilder springEncoderBuilder = new SpringEncoderBuilder(properties);
+            springEncoderBuilder.tryCreatePasswordEncoder(encoders);
+        }
+        // shiro-core dependency required
+        if (hasShiroEncoder()) {
+            final ShiroEncoderBuilder shiroEncoderBuilder = new ShiroEncoderBuilder(properties);
+            shiroEncoderBuilder.tryCreatePasswordEncoder(encoders);
+        }
         // pac4j-ldap dependency required
         if (hasLdapAuthenticator()) {
             final LdapAuthenticatorBuilder ldapAuthenticatorBuilder = new LdapAuthenticatorBuilder(properties);
             ldapAuthenticatorBuilder.tryBuildLdapAuthenticator(authenticators);
+        }
+        // pac4j-sql dependency required
+        if (hasDbAuthenticator()) {
+            final DbAuthenticatorBuilder dbAuthenticatorBuilder = new DbAuthenticatorBuilder(properties);
+            dbAuthenticatorBuilder.tryBuildDbAuthenticator(authenticators, encoders);
         }
         // pac4j-oauth dependency required
         if (hasOAuthClients()) {
@@ -78,14 +95,45 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             final DirectClientBuilder directClientBuilder = new DirectClientBuilder(properties);
             directClientBuilder.tryCreateAnonymousClient(clients);
         }
-
         return new Config(callbackUrl, clients);
     }
 
+    protected boolean hasShiroEncoder() {
+        for (int i = 0; i <= MAX_NUM_ENCODERS; i++) {
+            if (isNotBlank(getProperty(SHIRO_ENCODER, i)) || containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
+                || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i) || containsProperty(SHIRO_ENCODER_HASH_ITERATIONS, i)
+                || containsProperty(SHIRO_ENCODER_PRIVATE_SALT, i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean hasSpringEncoder() {
+        for (int i = 0; i <= MAX_NUM_ENCODERS; i++) {
+            final String type = getProperty(SPRING_ENCODER_TYPE, i);
+            if (isNotBlank(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected boolean hasLdapAuthenticator() {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             final String type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean hasDbAuthenticator() {
+        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+            final String className = getProperty(DB_DATASOURCE_CLASS_NAME, i);
+            final String jdbcUrl = getProperty(DB_JDBC_URL, i);
+            if (isNotBlank(className) || isNotBlank(jdbcUrl)) {
                 return true;
             }
         }

@@ -11,6 +11,9 @@ import java.util.Map;
 public abstract class AbstractBuilder {
 
     protected static final int MAX_NUM_CLIENTS = 10;
+    protected static final int MAX_NUM_AUTHENTICATORS = 10;
+    protected static final int MAX_NUM_CUSTOM_PROPERTIES = 5;
+    protected static final int MAX_NUM_ENCODERS = 10;
 
     protected final Map<String, String> properties;
 

@@ -8,7 +8,7 @@ import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.config.ldaptive.LdapAuthenticationProperties;
 import org.pac4j.config.ldaptive.LdaptiveAuthenticatorBuilder;
 import org.pac4j.core.credentials.authenticator.Authenticator;
-import org.pac4j.ldap.profile.credentials.authenticator.LdapAuthenticator;
+import org.pac4j.ldap.profile.service.LdapProfileService;
 
 import java.util.Map;
 
@@ -27,13 +27,13 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder implements Propert
     }
 
     public void tryBuildLdapAuthenticator(final Map<String, Authenticator> authenticators) {
-        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
             final String type = getProperty(LDAP_TYPE, i);
             if (isNotBlank(type)) {
                 final LdapAuthenticationProperties ldapProp = buildLdapProperties(i);
                 final org.ldaptive.auth.Authenticator ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
 
-                final LdapAuthenticator authenticator = new LdapAuthenticator(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
+                final LdapProfileService authenticator = new LdapProfileService(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
                 final PooledConnectionFactoryManager pooledConnectionFactoryManager = (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
                 authenticator.setConnectionFactory(pooledConnectionFactoryManager.getConnectionFactory());
                 authenticator.setUsersDn(getProperty(LDAP_USERS_DN, i));
