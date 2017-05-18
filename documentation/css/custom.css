@@ -1,5 +1,6 @@
 body {
 	padding-bottom: 60px;
+    font-family: 'Droid Sans', sans-serif;
 }
 .navbar {
 	margin-bottom: 40px;
@@ -37,7 +38,7 @@ code {
 #content a:hover {
 	text-decoration: none !important;
 }
-img, table, th, td, .highlight { 
+img, table, th, td, .highlight {
    border:1px solid #BBBBBB;
 }
 th {
