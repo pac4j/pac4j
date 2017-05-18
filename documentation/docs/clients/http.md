@@ -5,7 +5,7 @@ title: HTTP
 
 *pac4j* allows you to login using HTTP mechanims (like basic auth or form posting).
 
-The HTTP clients require to define an [Authenticator](authenticators.html) to handle the credentials validation.
+The HTTP clients require to define an [Authenticator](../authenticators.html) to handle the credentials validation.
 
 ## 1) Dependency
 
