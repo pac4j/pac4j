@@ -264,6 +264,9 @@ public class OidcConfiguration extends InitializableWebObject {
     }
 
     public String getLogoutUrl() {
+        if(logoutUrl == null && getProviderMetadata().getEndSessionEndpointURI() != null) {
+            return getProviderMetadata().getEndSessionEndpointURI().toString();
+        }
         return logoutUrl;
     }
 
