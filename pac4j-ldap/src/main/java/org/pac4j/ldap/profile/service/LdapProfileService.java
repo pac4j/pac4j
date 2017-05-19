@@ -210,7 +210,7 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             final LdapEntry entry = response.getLdapEntry();
             final List<Map<String, Object>> listAttributes = new ArrayList<>();
             listAttributes.add(getAttributesFromEntry(entry));
-            final LdapProfile profile = convertAttributesToProfile(listAttributes);
+            final LdapProfile profile = convertAttributesToProfile(listAttributes, username);
             credentials.setUserProfile(profile);
             return;
         }

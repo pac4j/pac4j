@@ -172,7 +172,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank(getIdAttribute(), id);
 
         final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), getIdAttribute(), id);
-        return convertAttributesToProfile(listAttributes);
+        return convertAttributesToProfile(listAttributes, null);
     }
 
     @Override
@@ -182,7 +182,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         assertNotBlank(LINKEDID, linkedId);
 
         final List<Map<String, Object>> listAttributes = read(defineAttributesToRead(), LINKEDID, linkedId);
-        return convertAttributesToProfile(listAttributes);
+        return convertAttributesToProfile(listAttributes, null);
     }
 
     /**
@@ -209,9 +209,10 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
      * Convert the list of map of attributes from the storage into a profile.
      *
      * @param listStorageAttributes the list of map of attributes
+     * @param username the username used for login
      * @return the profile
      */
-    protected U convertAttributesToProfile(final List<Map<String, Object>> listStorageAttributes) {
+    protected U convertAttributesToProfile(final List<Map<String, Object>> listStorageAttributes, final String username) {
         if (listStorageAttributes == null || listStorageAttributes.size() == 0) {
             return null;
         }
@@ -225,7 +226,12 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             for (final String attributeName : attributeNames) {
                 getProfileDefinition().convertAndAdd(profile, attributeName, storageAttributes.get(attributeName));
             }
-            profile.setId(storageAttributes.get(getUsernameAttribute()));
+            final Object retrievedUsername = storageAttributes.get(getUsernameAttribute());
+            if (retrievedUsername != null) {
+                profile.setId(retrievedUsername);
+            } else {
+                profile.setId(username);
+            }
             if (isNotBlank(linkedId)) {
                 profile.setLinkedId(linkedId);
             }
@@ -287,7 +293,7 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 if (!passwordEncoder.matches(password, retrievedPassword)) {
                     throw new BadCredentialsException("Bad credentials for: " + username);
                 } else {
-                    final U profile = convertAttributesToProfile(listAttributes);
+                    final U profile = convertAttributesToProfile(listAttributes, null);
                     credentials.setUserProfile(profile);
                 }
             }
