@@ -218,7 +218,6 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
         }
         final Map<String, Object> storageAttributes = listStorageAttributes.get(0);
 
-        logger.debug("Attributes retrieved from the store: {}", storageAttributes);
         final String linkedId = (String) storageAttributes.get(LINKEDID);
         // legacy mode: only read the defined attributes
         if (isLegacyMode()) {
