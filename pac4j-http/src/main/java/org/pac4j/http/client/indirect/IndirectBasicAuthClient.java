@@ -60,15 +60,15 @@ public class IndirectBasicAuthClient extends IndirectClientV2<UsernamePasswordCr
             // retrieve credentials
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("credentials : {}", credentials);
-            
+
             if (credentials == null) {
-              throw HttpAction.unauthorized("Requires authentication", context, this.realmName);
+              throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
             }
-            
+
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw HttpAction.unauthorized("Requires authentication", context, this.realmName);
+            throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
         }
 
         return credentials;
