@@ -262,8 +262,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> implements SecurityLo
      * @param currentClients the current clients
      * @return an unauthorized error
      */
-    protected HttpAction unauthorized(final C context, final List<Client> currentClients) {
-        return HttpAction.unauthorized("unauthorized", context, null);
+    protected HttpAction unauthorized(final C context, final List<Client> currentClients) throws HttpAction {
+        return HttpAction.unauthorized("unauthorized", context, null, null);
     }
 
     public ClientFinder getClientFinder() {
