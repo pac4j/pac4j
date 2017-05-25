@@ -4,8 +4,7 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.exception.DeferredHttpAction;
-import org.pac4j.core.exception.DeferredHttpActionCallback;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.kerberos.credentials.KerberosCredentials;
 
 import java.nio.charset.StandardCharsets;
@@ -15,7 +14,7 @@ import java.util.Base64;
  * To extract Kerberos headers.
  *
  * @author Garry Boyce
- * @since 1.9.1
+ * @since 2.1.0
  */
 public class KerberosExtractor implements CredentialsExtractor<KerberosCredentials> {
     private final String clientName;
@@ -25,18 +24,10 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
     }
 
     @Override
-    public KerberosCredentials extract(WebContext context) {
+    public KerberosCredentials extract(WebContext context) throws CredentialsException, HttpAction {
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null) {
-            throw DeferredHttpAction.deferredHttpAction("Kerberos Header not found", new DeferredHttpActionCallback() {
-
-                @Override
-                public void execute(WebContext context) {
-                    // request additional information from browser
-                    context.setResponseHeader("WWW-Authenticate", "Negotiate");
-                    context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-                }
-            });
+            throw HttpAction.unauthorizedNegotiate("Kerberos Header not found", context);
         }
 
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {

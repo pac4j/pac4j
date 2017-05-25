@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.context.MockWebContext;
-import org.pac4j.core.exception.DeferredHttpAction;
+import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.util.TestsConstants;
@@ -64,7 +64,7 @@ public class KerberosClientTests implements TestsConstants {
         kerberosClient.init(null);
     }
 
-    @Test(expected = DeferredHttpAction.class)
+    @Test(expected = HttpAction.class)
     public void testMissingKerberosHeader() throws HttpAction {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -73,7 +73,7 @@ public class KerberosClientTests implements TestsConstants {
     }
 
     @Test
-    public void testAuthentication() throws HttpAction, UnsupportedEncodingException {
+    public void testAuthentication() throws HttpAction, UnsupportedEncodingException, BadCredentialsException {
         when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null, null, null));
         final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
         final MockWebContext context = MockWebContext.create();

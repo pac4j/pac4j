@@ -12,7 +12,7 @@ import java.util.Set;
  * Result of ticket validation
  *
  * @author Garry Boyce
- * @since 1.9.1
+ * @since 2.1.0
  */
 public class KerberosTicketValidation {
 

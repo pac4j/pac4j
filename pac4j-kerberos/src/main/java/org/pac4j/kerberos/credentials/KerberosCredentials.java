@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
  * Credentials containing the kerberos ticket.
  *
  * @author Garry Boyce
- * @since 1.9.1
+ * @since 2.1.0
  */
 public class KerberosCredentials extends Credentials {
     private byte[] kerberosTicket;

@@ -3,11 +3,11 @@ package org.pac4j.kerberos.credentials.authenticator;
 import org.ietf.jgss.*;
 import org.pac4j.core.exception.BadCredentialsException;
 import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.Resource;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosPrincipal;
@@ -15,8 +15,7 @@ import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
-import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -31,7 +30,7 @@ import java.util.Set;
  * is needed.
  *
  * @author Garry Boyce
- * @since 1.9.1
+ * @since 2.1.0
  * <p>
  * originally from spring-kerberos project
  */
@@ -45,7 +44,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public KerberosTicketValidation validateTicket(byte[] token) {
+    public KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException {
         try {
             return Subject.doAs(this.serviceSubject, new KerberosValidateAction(token));
         } catch (PrivilegedActionException e) {
@@ -59,7 +58,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
             CommonHelper.assertNotNull("keyTab must be specified", this.keyTabLocation);
 
-            String keyTabLocationAsString = new File(this.keyTabLocation.getFilename()).toURI().toURL().toExternalForm();
+            String keyTabLocationAsString = this.keyTabLocation.getURL().toExternalForm();
             // We need to remove the file prefix (if there is one), as it is not supported in Java 7 anymore.
             // As Java 6 accepts it with and without the prefix, we don't need to check for Java 7
             if (keyTabLocationAsString.startsWith("file:")) {
@@ -75,7 +74,8 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             this.serviceSubject = lc.getSubject();
         } catch (LoginException e) {
             throw new TechnicalException(e);
-        } catch (MalformedURLException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new TechnicalException(e);
         }
     }
