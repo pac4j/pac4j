@@ -60,3 +60,13 @@ p {
 .nav-link {
 	padding-right: 30px;
 }
+#home #engine {
+    margin-bottom: 40px;
+}
+#home #implem {
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+#home #authent, #home #authoriz {
+    line-height: 1.4;
+}
