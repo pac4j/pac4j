@@ -6,8 +6,8 @@ import org.pac4j.core.exception.HttpAction;
 
 public class DummyAuthenticator implements Authenticator<Credentials> {
 
-	@Override
-	public void validate(Credentials credentials) throws HttpAction {
-	}
+    @Override
+    public void validate(Credentials credentials) throws HttpAction {
+    }
 
 }

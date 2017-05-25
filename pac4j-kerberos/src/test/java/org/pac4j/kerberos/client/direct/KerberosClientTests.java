@@ -1,15 +1,5 @@
 package org.pac4j.kerberos.client.direct;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.pac4j.core.context.HttpConstants;
@@ -25,14 +15,22 @@ import org.pac4j.kerberos.credentials.authenticator.KerberosAuthenticator;
 import org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidation;
 import org.pac4j.kerberos.credentials.authenticator.KerberosTicketValidator;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 
 public class KerberosClientTests implements TestsConstants {
-	
+
     private KerberosAuthenticator kerberosAuthenticator;
     private KerberosTicketValidator krbValidator;
-    
-    private final static byte[] KERBEROS_TICKET =  Base64.getEncoder().encode("Test Kerberos".getBytes(StandardCharsets.UTF_8));
+
+    private final static byte[] KERBEROS_TICKET = Base64.getEncoder().encode("Test Kerberos".getBytes(StandardCharsets.UTF_8));
 
     @Before
     public void before() {
@@ -40,7 +38,7 @@ public class KerberosClientTests implements TestsConstants {
         this.kerberosAuthenticator = mock(KerberosAuthenticator.class);
         this.krbValidator = mock(KerberosTicketValidator.class);
     }
-    
+
     @Test
     public void testMissingKerberosAuthenticator() {
         final KerberosClient kerberosClient = new KerberosClient(null);
@@ -65,18 +63,18 @@ public class KerberosClientTests implements TestsConstants {
         final KerberosClient kerberosClient = new KerberosClient(kerberosAuthenticator);
         kerberosClient.init(null);
     }
-    
-    @Test(expected=DeferredHttpAction.class)
+
+    @Test(expected = DeferredHttpAction.class)
     public void testMissingKerberosHeader() throws HttpAction {
-		HttpServletRequest request = mock(HttpServletRequest.class);
-		HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
         final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
         client.getCredentials(new J2EContext(request, response));
     }
-    
+
     @Test
     public void testAuthentication() throws HttpAction, UnsupportedEncodingException {
-    	when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null,null,null));
+        when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null, null, null));
         final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
         final MockWebContext context = MockWebContext.create();
 
@@ -86,6 +84,6 @@ public class KerberosClientTests implements TestsConstants {
 
         final CommonProfile profile = client.getUserProfile(credentials, context);
         assertEquals("garry", profile.getId());
-    } 
+    }
 
 }

@@ -1,20 +1,20 @@
 package org.pac4j.kerberos.credentials;
 
-import java.nio.charset.StandardCharsets;
-
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.util.CommonHelper;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * Credentials containing the kerberos ticket.
- * 
+ *
  * @author Garry Boyce
  * @since 1.9.1
  */
 public class KerberosCredentials extends Credentials {
-    private byte[]            kerberosTicket;
+    private byte[] kerberosTicket;
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -4264156105410684508L;
 
@@ -26,10 +26,10 @@ public class KerberosCredentials extends Credentials {
     public byte[] getKerberosTicket() {
         return kerberosTicket.clone();
     }
-    
-	public String getKerberosTicketAsString() {
-		return getTicketAsString(kerberosTicket);
-	}
+
+    public String getKerberosTicketAsString() {
+        return getTicketAsString(kerberosTicket);
+    }
 
     @Override
     public String toString() {
@@ -54,10 +54,9 @@ public class KerberosCredentials extends Credentials {
         return kerberosTicket != null ? getTicketAsString(kerberosTicket).hashCode() : 0;
     }
 
-	private String getTicketAsString(byte[] kerberosTicket) {
-		return new String(kerberosTicket, StandardCharsets.UTF_8);
-	}
-	
+    private String getTicketAsString(byte[] kerberosTicket) {
+        return new String(kerberosTicket, StandardCharsets.UTF_8);
+    }
 
 
 }

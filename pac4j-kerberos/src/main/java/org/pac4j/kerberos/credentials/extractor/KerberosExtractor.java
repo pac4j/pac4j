@@ -1,15 +1,15 @@
 package org.pac4j.kerberos.credentials.extractor;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import org.pac4j.kerberos.credentials.KerberosCredentials;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.CredentialsException;
 import org.pac4j.core.exception.DeferredHttpAction;
 import org.pac4j.core.exception.DeferredHttpActionCallback;
+import org.pac4j.kerberos.credentials.KerberosCredentials;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * To extract Kerberos headers.
@@ -29,14 +29,14 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null) {
             throw DeferredHttpAction.deferredHttpAction("Kerberos Header not found", new DeferredHttpActionCallback() {
-				
-				@Override
-				public void execute(WebContext context) {
-					// request additional information from browser
-			        context.setResponseHeader("WWW-Authenticate", "Negotiate");
-			        context.setResponseStatus(HttpConstants.UNAUTHORIZED);
-				}
-			});
+
+                @Override
+                public void execute(WebContext context) {
+                    // request additional information from browser
+                    context.setResponseHeader("WWW-Authenticate", "Negotiate");
+                    context.setResponseStatus(HttpConstants.UNAUTHORIZED);
+                }
+            });
         }
 
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
@@ -44,7 +44,7 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
         }
 
         byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
-        byte[] kerberosTicket =  Base64.getDecoder().decode(base64Token);
+        byte[] kerberosTicket = Base64.getDecoder().decode(base64Token);
 
         return new KerberosCredentials(kerberosTicket, clientName);
 

@@ -1,5 +1,20 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
+import org.ietf.jgss.*;
+import org.pac4j.core.exception.BadCredentialsException;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.io.Resource;
+import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.InitializableObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.Subject;
+import javax.security.auth.kerberos.KerberosPrincipal;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.security.Principal;
@@ -9,26 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.security.auth.Subject;
-import javax.security.auth.kerberos.KerberosPrincipal;
-import javax.security.auth.login.AppConfigurationEntry;
-import javax.security.auth.login.Configuration;
-import javax.security.auth.login.LoginContext;
-import javax.security.auth.login.LoginException;
-
-import org.ietf.jgss.GSSContext;
-import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSException;
-import org.ietf.jgss.GSSManager;
-import org.ietf.jgss.GSSName;
-import org.pac4j.core.exception.BadCredentialsException;
-import org.pac4j.core.exception.TechnicalException;
-import org.pac4j.core.io.Resource;
-import org.pac4j.core.util.CommonHelper;
-import org.pac4j.core.util.InitializableObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Implementation of {@link KerberosTicketValidator} which uses the SUN JAAS
  * login module, which is included in the SUN JRE, it will not work with an IBM JRE.
@@ -37,8 +32,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Garry Boyce
  * @since 1.9.1
- * 
- *  originally from spring-kerberos project
+ * <p>
+ * originally from spring-kerberos project
  */
 public class SunJaasKerberosTicketValidator extends InitializableObject implements KerberosTicketValidator {
 
@@ -48,42 +43,41 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
     private boolean holdOnToGSSContext;
     private boolean debug = false;
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public KerberosTicketValidation validateTicket(byte[] token) {
         try {
             return Subject.doAs(this.serviceSubject, new KerberosValidateAction(token));
-        }
-        catch (PrivilegedActionException e) {
+        } catch (PrivilegedActionException e) {
             throw new BadCredentialsException("Kerberos validation not successful", e);
         }
     }
 
-	@Override
-	protected void internalInit() {
-		try {
-    	CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
-    	CommonHelper.assertNotNull("keyTab must be specified",this.keyTabLocation);
+    @Override
+    protected void internalInit() {
+        try {
+            CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
+            CommonHelper.assertNotNull("keyTab must be specified", this.keyTabLocation);
 
-        String keyTabLocationAsString = new File(this.keyTabLocation.getFilename()).toURI().toURL().toExternalForm();
-        // We need to remove the file prefix (if there is one), as it is not supported in Java 7 anymore.
-        // As Java 6 accepts it with and without the prefix, we don't need to check for Java 7
-        if (keyTabLocationAsString.startsWith("file:"))
-        {
-        	keyTabLocationAsString = keyTabLocationAsString.substring(5);
-        }
-        LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
+            String keyTabLocationAsString = new File(this.keyTabLocation.getFilename()).toURI().toURL().toExternalForm();
+            // We need to remove the file prefix (if there is one), as it is not supported in Java 7 anymore.
+            // As Java 6 accepts it with and without the prefix, we don't need to check for Java 7
+            if (keyTabLocationAsString.startsWith("file:")) {
+                keyTabLocationAsString = keyTabLocationAsString.substring(5);
+            }
+            LoginConfig loginConfig = new LoginConfig(keyTabLocationAsString, this.servicePrincipal,
                 this.debug);
-        Set<Principal> princ = new HashSet<Principal>(1);
-        princ.add(new KerberosPrincipal(this.servicePrincipal));
-        Subject sub = new Subject(false, princ, new HashSet<Object>(), new HashSet<Object>());
-        LoginContext lc = new LoginContext("", sub, null, loginConfig);
-        lc.login();
-        this.serviceSubject = lc.getSubject();
-		} catch (LoginException e) {
-			throw new TechnicalException(e);
-		} catch (MalformedURLException e) {
-			throw new TechnicalException(e);
-		}
+            Set<Principal> princ = new HashSet<Principal>(1);
+            princ.add(new KerberosPrincipal(this.servicePrincipal));
+            Subject sub = new Subject(false, princ, new HashSet<Object>(), new HashSet<Object>());
+            LoginContext lc = new LoginContext("", sub, null, loginConfig);
+            lc.login();
+            this.serviceSubject = lc.getSubject();
+        } catch (LoginException e) {
+            throw new TechnicalException(e);
+        } catch (MalformedURLException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     /**
@@ -104,7 +98,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
      * file is later on read by JAAS, we cannot guarantee that <code>classpath</code>
      * works in every environment, esp. not in Java EE application servers. You
      * should use <code>file:</code> there.
-     *
+     * <p>
      * This file also needs special protection, which is another reason to
      * not include it in the classpath but rather use <code>file:/etc/http.keytab</code>
      * for example.
@@ -149,25 +143,25 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
         @Override
         public KerberosTicketValidation run() throws Exception {
-			byte[] responseToken = new byte[0];
-			GSSName gssName = null;
-			GSSContext context = GSSManager.getInstance().createContext((GSSCredential) null);
-			boolean first = true;
-			while (!context.isEstablished()) {
-				if (first) {
-					kerberosTicket = tweakJdkRegression(kerberosTicket);
-				}
-				responseToken = context.acceptSecContext(kerberosTicket, 0, kerberosTicket.length);
-				gssName = context.getSrcName();
-				if (gssName == null) {
-					throw new BadCredentialsException("GSSContext name of the context initiator is null");
-				}
-				first = false;
-			}
-			if (!holdOnToGSSContext) {
-				context.dispose();
-			}
-			return new KerberosTicketValidation(gssName.toString(), servicePrincipal, responseToken, context);
+            byte[] responseToken = new byte[0];
+            GSSName gssName = null;
+            GSSContext context = GSSManager.getInstance().createContext((GSSCredential) null);
+            boolean first = true;
+            while (!context.isEstablished()) {
+                if (first) {
+                    kerberosTicket = tweakJdkRegression(kerberosTicket);
+                }
+                responseToken = context.acceptSecContext(kerberosTicket, 0, kerberosTicket.length);
+                gssName = context.getSrcName();
+                if (gssName == null) {
+                    throw new BadCredentialsException("GSSContext name of the context initiator is null");
+                }
+                first = false;
+            }
+            if (!holdOnToGSSContext) {
+                context.dispose();
+            }
+            return new KerberosTicketValidation(gssName.toString(), servicePrincipal, responseToken, context);
         }
     }
 
@@ -199,8 +193,8 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
             }
             options.put("isInitiator", "false");
 
-            return new AppConfigurationEntry[] { new AppConfigurationEntry("com.sun.security.auth.module.Krb5LoginModule",
-                    AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options), };
+            return new AppConfigurationEntry[]{new AppConfigurationEntry("com.sun.security.auth.module.Krb5LoginModule",
+                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, options),};
         }
 
     }
@@ -233,25 +227,25 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 //		0000: 06 09 2A 86 48 86 F7 12   01 02 02
 //		0000: 06 09 2A 86 48 82 F7 12   01 02 02
 
-		if (token == null || token.length < 48) {
-			return token;
-		}
+        if (token == null || token.length < 48) {
+            return token;
+        }
 
-		int[] toCheck = new int[] { 0x06, 0x09, 0x2A, 0x86, 0x48, 0x82, 0xF7, 0x12, 0x01, 0x02, 0x02, 0x06, 0x09, 0x2A,
-				0x86, 0x48, 0x86, 0xF7, 0x12, 0x01, 0x02, 0x02 };
+        int[] toCheck = new int[]{0x06, 0x09, 0x2A, 0x86, 0x48, 0x82, 0xF7, 0x12, 0x01, 0x02, 0x02, 0x06, 0x09, 0x2A,
+            0x86, 0x48, 0x86, 0xF7, 0x12, 0x01, 0x02, 0x02};
 
-		for (int i = 0; i < 22; i++) {
-			if ((byte) toCheck[i] != token[i + 24]) {
-				return token;
-			}
-		}
+        for (int i = 0; i < 22; i++) {
+            if ((byte) toCheck[i] != token[i + 24]) {
+                return token;
+            }
+        }
 
-		byte[] nt = new byte[token.length];
-		System.arraycopy(token, 0, nt, 0, 24);
-		System.arraycopy(token, 35, nt, 24, 11);
-		System.arraycopy(token, 24, nt, 35, 11);
-		System.arraycopy(token, 46, nt, 46, token.length - 24 - 11 - 11);
-		return nt;
+        byte[] nt = new byte[token.length];
+        System.arraycopy(token, 0, nt, 0, 24);
+        System.arraycopy(token, 35, nt, 24, 11);
+        System.arraycopy(token, 24, nt, 35, 11);
+        System.arraycopy(token, 46, nt, 46, token.length - 24 - 11 - 11);
+        return nt;
     }
 
 }

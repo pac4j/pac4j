@@ -1,9 +1,7 @@
 package org.pac4j.kerberos.credentials.authenticator;
 
-import java.util.HashMap;
-
-import org.pac4j.kerberos.credentials.KerberosCredentials;
-import org.pac4j.kerberos.profile.KerberosProfile;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileHelper;
 import org.pac4j.core.profile.UserProfile;
@@ -11,10 +9,12 @@ import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
 import org.pac4j.core.util.InitializableWebObject;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.kerberos.credentials.KerberosCredentials;
+import org.pac4j.kerberos.profile.KerberosProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 
 /**
  * Authenticator for Kerberos. It creates the user profile and stores it in the credentials
@@ -25,17 +25,17 @@ import org.slf4j.LoggerFactory;
  */
 public class KerberosAuthenticator extends InitializableWebObject implements Authenticator<KerberosCredentials> {
 
-    protected final Logger                logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private KerberosTicketValidator ticketValidator;
 
     public KerberosAuthenticator() {
-	}
+    }
 
-	/**
+    /**
      * Initializes the authenticator that will validate Kerberos tickets.
      *
-     * @param ticketValidator    The ticket validator used to validate the Kerberos ticket.
+     * @param ticketValidator The ticket validator used to validate the Kerberos ticket.
      * @since 1.9.1
      */
     public KerberosAuthenticator(KerberosTicketValidator ticketValidator) {
@@ -65,20 +65,20 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
         credentials.setUserProfile(profile);
     }
 
-	@Override
-	protected void internalInit(WebContext context) {
-		CommonHelper.assertNotNull("ticketValidator", this.ticketValidator);
+    @Override
+    protected void internalInit(WebContext context) {
+        CommonHelper.assertNotNull("ticketValidator", this.ticketValidator);
         if (this.ticketValidator instanceof InitializableObject) {
             ((InitializableObject) this.ticketValidator).init();
         }
-	}
+    }
 
-	public KerberosTicketValidator getTicketValidator() {
-		return ticketValidator;
-	}
+    public KerberosTicketValidator getTicketValidator() {
+        return ticketValidator;
+    }
 
-	public void setTicketValidator(KerberosTicketValidator ticketValidator) {
-		this.ticketValidator = ticketValidator;
-	}
+    public void setTicketValidator(KerberosTicketValidator ticketValidator) {
+        this.ticketValidator = ticketValidator;
+    }
 
 }

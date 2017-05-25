@@ -9,10 +9,10 @@ import org.pac4j.kerberos.client.direct.KerberosClient;
  * Ticket.
  *
  * @author Garry Boyce
- * @since 1.9.1
  * @see KerberosClient
- * 
+ * <p>
  * originally from spring-kerberos project
+ * @since 1.9.1
  */
 public interface KerberosTicketValidator {
 
