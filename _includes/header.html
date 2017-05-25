@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="/css/custom.css">
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/font-awesome.min.463.css">
-    <script src="/js/anchor.min.js"></script>
+    {% if page.url contains 'docs' %}
+      <script src="/js/anchor.min.js"></script>
+    {% endif %}
     <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
   </head>
   <body>
