@@ -16,16 +16,16 @@ import org.pac4j.kerberos.profile.KerberosProfile;
  * @author Garry Boyce
  * @since 2.1.0
  */
-public class KerberosClient extends DirectClient<KerberosCredentials, KerberosProfile> {
+public class DirectKerberosClient extends DirectClient<KerberosCredentials, KerberosProfile> {
 
-    public KerberosClient() {
+    public DirectKerberosClient() {
     }
 
-    public KerberosClient(final Authenticator authenticator) {
+    public DirectKerberosClient(final Authenticator authenticator) {
         setAuthenticator(authenticator);
     }
 
-    public KerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials, KerberosProfile> profileCreator) {
+    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials, KerberosProfile> profileCreator) {
         setAuthenticator(authenticator);
         setProfileCreator(profileCreator);
     }

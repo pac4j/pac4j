@@ -66,7 +66,7 @@ public class KerberosClientKerbyTests implements TestsConstants {
 
     @Test
     public void testAuthenticationWithRealTicket() throws Exception {
-        final KerberosClient client = setupKerberosClient();
+        final DirectKerberosClient client = setupKerberosClient();
         String spnegoWebTicket = SpnegoServiceTicketHelper.getGSSTicket(clientPrincipal, clientPassword, serviceName);
 
         // mock web request
@@ -80,13 +80,12 @@ public class KerberosClientKerbyTests implements TestsConstants {
         assertEquals(clientPrincipal, profile.getId());
     }
 
-    private KerberosClient setupKerberosClient() {
+    private DirectKerberosClient setupKerberosClient() {
         SunJaasKerberosTicketValidator validator = new SunJaasKerberosTicketValidator();
         validator.setServicePrincipal(servicePrincipal);
         validator.setKeyTabLocation(new FileSystemResource(serviceKeytabFile));
         validator.setDebug(true);
-        validator.reinit();
-        return new KerberosClient(new KerberosAuthenticator(validator));
+        return new DirectKerberosClient(new KerberosAuthenticator(validator));
     }
 
     private MockWebContext mockWebRequestContext(String spnegoWebTicket) {

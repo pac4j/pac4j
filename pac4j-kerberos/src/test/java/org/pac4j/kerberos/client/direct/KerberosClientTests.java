@@ -49,20 +49,20 @@ public class KerberosClientTests implements TestsConstants {
 
     @Test
     public void testMissingKerberosAuthenticator() {
-        final KerberosClient kerberosClient = new KerberosClient(null);
+        final DirectKerberosClient kerberosClient = new DirectKerberosClient(null);
         TestsHelper.initShouldFail(kerberosClient, "authenticator cannot be null");
     }
 
     @Test
     public void testMissingProfileCreator() {
-        final KerberosClient kerberosClient = new KerberosClient(kerberosAuthenticator);
+        final DirectKerberosClient kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
         kerberosClient.setProfileCreator(null);
         TestsHelper.initShouldFail(kerberosClient, "profileCreator cannot be null");
     }
 
     @Test
     public void testHasDefaultProfileCreator() {
-        final KerberosClient kerberosClient = new KerberosClient(kerberosAuthenticator);
+        final DirectKerberosClient kerberosClient = new DirectKerberosClient(kerberosAuthenticator);
         kerberosClient.init(null);
     }
 
@@ -70,14 +70,14 @@ public class KerberosClientTests implements TestsConstants {
     public void testMissingKerberosHeader() throws HttpAction {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
-        final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
+        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
         client.getCredentials(new J2EContext(request, response));
     }
 
     @Test
     public void testAuthentication() throws HttpAction, UnsupportedEncodingException, BadCredentialsException {
         when(krbValidator.validateTicket(any())).thenReturn(new KerberosTicketValidation("garry", null, null, null));
-        final KerberosClient client = new KerberosClient(new KerberosAuthenticator(krbValidator));
+        final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
         final MockWebContext context = MockWebContext.create();
 
         context.addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + new String(KERBEROS_TICKET, StandardCharsets.UTF_8));
