@@ -3,7 +3,8 @@ package org.pac4j.kerberos.client.direct;
 import org.apache.kerby.kerberos.kdc.impl.NettyKdcServerImpl;
 import org.apache.kerby.kerberos.kerb.KrbException;
 import org.apache.kerby.kerberos.kerb.server.SimpleKdcServer;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.context.HttpConstants;
@@ -21,9 +22,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * This tests both Direct and Indirect Kerberos clients.
@@ -45,21 +44,26 @@ import static org.junit.Assert.fail;
 public class KerberosClientsKerbyTests implements TestsConstants {
     private static SimpleKdcServer kerbyServer;
 
-    String clientPrincipal = "clientPrincipal@MYREALM.LT";
-    String clientPassword = "clientPrincipal";
+    static String clientPrincipal = "clientPrincipal@MYREALM.LT";
+    static String clientPassword = "clientPrincipal";
 
-    String servicePrincipal = "HTTP/lala.mydomain.de@MYREALM.LT"; // i.e. HTTP/full-qualified-domain-name@DOMAIN
-    String serviceName = "HTTP@lala.mydomain.de";
+    static String servicePrincipal = "HTTP/lala.mydomain.de@MYREALM.LT"; // i.e. HTTP/full-qualified-domain-name@DOMAIN
+    static String serviceName = "HTTP@lala.mydomain.de";
 
-    String serviceKeyTabFileName = "/tmp/testServiceKeyTabFile";
-    File serviceKeytabFile = new File(serviceKeyTabFileName);
+    static String serviceKeyTabFileName = "/tmp/testServiceKeyTabFile";
+    static File serviceKeytabFile = new File(serviceKeyTabFileName);
 
-    @Before
-    public void before() throws KrbException, IOException {
+    @BeforeClass
+    public static void beforeAll() throws KrbException, IOException {
         setupKerbyServer();
     }
 
-    private void setupKerbyServer() throws KrbException, IOException {
+    @AfterClass
+    public static void afterAll() throws KrbException {
+        kerbyServer.stop();
+    }
+
+    private static void setupKerbyServer() throws KrbException, IOException {
         kerbyServer = new SimpleKdcServer();
         kerbyServer.setKdcHost("localhost");
         kerbyServer.setKdcRealm("MYREALM.LT");
