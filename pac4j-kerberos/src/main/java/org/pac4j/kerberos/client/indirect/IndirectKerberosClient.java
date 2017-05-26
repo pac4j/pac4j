@@ -8,6 +8,8 @@ package org.pac4j.kerberos.client.indirect;
 import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.creator.ProfileCreator;
 import org.pac4j.core.redirect.RedirectAction;
 import org.pac4j.core.util.CommonHelper;
@@ -31,6 +33,28 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
     protected void clientInit(final WebContext context) {
         defaultRedirectActionBuilder(webContext ->  RedirectAction.redirect(computeFinalCallbackUrl(webContext)));
         defaultCredentialsExtractor(new KerberosExtractor(getName()));
+    }
+
+    @Override
+    protected KerberosCredentials retrieveCredentials(final WebContext context) throws HttpAction {
+        CommonHelper.assertNotNull("credentialsExtractor", getCredentialsExtractor());
+        CommonHelper.assertNotNull("authenticator", getAuthenticator());
+
+        final KerberosCredentials credentials;
+        try {
+            // retrieve credentials
+            credentials = getCredentialsExtractor().extract(context);
+            logger.debug("kerberos credentials : {}", credentials);
+            if (credentials == null) {
+                throw HttpAction.unauthorizedNegotiate("Kerberos Header not found", context);
+            }
+            // validate credentials
+            getAuthenticator().validate(credentials, context);
+        } catch (final CredentialsException e) {
+            throw HttpAction.unauthorizedNegotiate("Kerberos Header not found", context);
+        }
+
+        return credentials;
     }
 
     @Override

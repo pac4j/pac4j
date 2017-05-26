@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 
@@ -66,12 +67,13 @@ public class KerberosClientTests implements TestsConstants {
         kerberosClient.init(null);
     }
 
-    @Test(expected = HttpAction.class)
+    @Test
     public void testMissingKerberosHeader() throws HttpAction {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         final DirectKerberosClient client = new DirectKerberosClient(new KerberosAuthenticator(krbValidator));
-        client.getCredentials(new J2EContext(request, response));
+        KerberosCredentials credentials = client.getCredentials(new J2EContext(request, response));
+        assertNull(credentials);
     }
 
     @Test

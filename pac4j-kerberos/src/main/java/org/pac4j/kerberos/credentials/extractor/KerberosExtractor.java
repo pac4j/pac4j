@@ -27,11 +27,13 @@ public class KerberosExtractor implements CredentialsExtractor<KerberosCredentia
     public KerberosCredentials extract(WebContext context) throws CredentialsException, HttpAction {
         final String header = context.getRequestHeader(HttpConstants.AUTHORIZATION_HEADER);
         if (header == null) {
-            throw HttpAction.unauthorizedNegotiate("Kerberos Header not found", context);
+            return null;
         }
 
         if (!(header.startsWith("Negotiate ") || header.startsWith("Kerberos "))) {
-            throw new CredentialsException("Wrong prefix for header: " + HttpConstants.AUTHORIZATION_HEADER);
+            // "Authorization" header do not indicate Kerberos mechanism yet,
+            // so the extractor shouldn't throw an exception
+            return null;
         }
 
         byte[] base64Token = header.substring(header.indexOf(" ") + 1).getBytes(StandardCharsets.UTF_8);
