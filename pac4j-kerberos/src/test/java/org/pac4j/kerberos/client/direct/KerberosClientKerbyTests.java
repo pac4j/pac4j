@@ -17,6 +17,7 @@ import org.springframework.core.io.FileSystemResource;
 import java.io.File;
 import java.io.IOException;
 
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -62,6 +63,20 @@ public class KerberosClientKerbyTests implements TestsConstants {
         kerbyServer.getKadmin().exportKeytab(serviceKeytabFile, servicePrincipal);
         //System.out.println(new String(Files.readAllBytes(serviceKeytabFile.toPath())));
         kerbyServer.start();
+    }
+
+    @Test
+    public void testNoAuth() throws Exception {
+        // a request without "Authentication: (Negotiate|Kerberos) SomeToken" header, yields NULL credentials
+        assertNull(setupKerberosClient().getCredentials(MockWebContext.create()));
+    }
+
+    @Test
+    public void testIncorrectAuth() throws Exception {
+        // a request with an incorrect Kerberos token, yields NULL credentials also
+        final MockWebContext context = MockWebContext.create()
+            .addRequestHeader(HttpConstants.AUTHORIZATION_HEADER, "Negotiate " + "AAAbbAA123");
+        assertNull(setupKerberosClient().getCredentials(context));
     }
 
     @Test
