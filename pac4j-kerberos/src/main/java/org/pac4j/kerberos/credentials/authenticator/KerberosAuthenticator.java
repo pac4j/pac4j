@@ -40,6 +40,7 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
 
     @Override
     public void validate(KerberosCredentials credentials, WebContext context) throws CredentialsException {
+        init(context);
         logger.trace("Try to validate Kerberos Token:" + credentials.getKerberosTicketAsString());
         KerberosTicketValidation ticketValidation = this.ticketValidator.validateTicket(credentials.getKerberosTicket());
         logger.debug("Kerberos Token validated");
@@ -56,9 +57,6 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
     @Override
     protected void internalInit(WebContext context) {
         CommonHelper.assertNotNull("ticketValidator", this.ticketValidator);
-        if (this.ticketValidator instanceof InitializableObject) {
-            ((InitializableObject) this.ticketValidator).init();
-        }
     }
 
     public KerberosTicketValidator getTicketValidator() {

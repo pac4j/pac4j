@@ -45,6 +45,7 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
     @Override
     public KerberosTicketValidation validateTicket(byte[] token) throws BadCredentialsException {
+        init();
         try {
             return Subject.doAs(this.serviceSubject, new KerberosValidateAction(token));
         } catch (PrivilegedActionException e) {
@@ -54,6 +55,8 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
     @Override
     protected void internalInit() {
+        // P.S. this fn is called from init(), so if init() is not called explicitly,
+        // then internalInit() runs lazily during the first validateTicket() call
         try {
             CommonHelper.assertNotNull("servicePrincipal must be specified", this.servicePrincipal);
             CommonHelper.assertNotNull("keyTab must be specified", this.keyTabLocation);
