@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNotNull;
  * - checks that the ticket is correctly validated, and yields a correct client ID
  *
  * @author Vidmantas Zemleris, at Kensu.io
+ * @since 2.1.0
  */
 public class KerberosClientKerbyTests implements TestsConstants {
     private static SimpleKdcServer kerbyServer;
@@ -49,7 +50,7 @@ public class KerberosClientKerbyTests implements TestsConstants {
     private void setupKerbyServer() throws KrbException, IOException {
         kerbyServer = new SimpleKdcServer();
         kerbyServer.setKdcHost("localhost");
-        kerbyServer.setKdcRealm("MYREALM.LT"); // FIXME
+        kerbyServer.setKdcRealm("MYREALM.LT");
         kerbyServer.setAllowUdp(true);
         //kerbyServer.setWorkDir(new File(basedir + "/target"));
         kerbyServer.setInnerKdcImpl(new NettyKdcServerImpl(kerbyServer.getKdcSetting()));

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
  *
  * @author Colm O hEigeartaigh
  * @author Vidmantas Zemleris
+ * @since 2.1.0
  */
 class SpnegoServiceTicketHelper {
     /**

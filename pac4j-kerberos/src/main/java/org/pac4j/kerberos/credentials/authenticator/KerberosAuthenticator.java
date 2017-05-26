@@ -3,7 +3,6 @@ package org.pac4j.kerberos.credentials.authenticator;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.exception.CredentialsException;
-import org.pac4j.core.profile.UserProfile;
 import org.pac4j.core.profile.creator.AuthenticatorProfileCreator;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.InitializableObject;
@@ -52,12 +51,6 @@ public class KerberosAuthenticator extends InitializableWebObject implements Aut
         profile.setId(subject);
         profile.gssContext = ticketValidation.getGssContext();
         credentials.setUserProfile(profile);
-
-        // FIXME: which one do we prefer to use a profile ID? `KerberosProfile#garry vs garry` ?
-        if (!subject.contains(UserProfile.SEPARATOR)) {
-            subject = KerberosProfile.class.getSimpleName() + UserProfile.SEPARATOR + subject;
-        }
-        logger.debug("Succesfully validated, updated subject: " + subject);
     }
 
     @Override

@@ -25,6 +25,14 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 
+/**
+ *
+ * Tests the Kerberos client with mocked Kerberos authenticator/validator (i.e. no real tickets used)
+ *
+ * @author Garry Boyce
+ * @author Vidmantas Zemleris
+ * @since 2.1.0
+ */
 public class KerberosClientTests implements TestsConstants {
 
     private KerberosAuthenticator kerberosAuthenticator;
@@ -50,12 +58,6 @@ public class KerberosClientTests implements TestsConstants {
         final KerberosClient kerberosClient = new KerberosClient(kerberosAuthenticator);
         kerberosClient.setProfileCreator(null);
         TestsHelper.initShouldFail(kerberosClient, "profileCreator cannot be null");
-    }
-
-    @Test
-    public void testBadAuthenticatorType() {
-        final KerberosClient kerberosClient = new KerberosClient(new DummyAuthenticator());
-        TestsHelper.initShouldFail(kerberosClient, "Unsupported authenticator type: class org.pac4j.kerberos.client.direct.DummyAuthenticator");
     }
 
     @Test
