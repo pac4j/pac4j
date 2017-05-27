@@ -91,7 +91,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     		}
     	}
     	throw new SAMLException("Identity provider has no single logout service available for the selected profile"
-    	        + getIDPSSODescriptor());
+    	        + binding);
     }
 
     public final SingleSignOnService getIDPSingleSignOnService(final String binding) {
@@ -102,7 +102,7 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
             }
         }
         throw new SAMLException("Identity provider has no single sign on service available for the selected profile"
-                + getIDPSSODescriptor());
+                + binding);
     }
 
     public final AssertionConsumerService getSPAssertionConsumerService() {

@@ -169,3 +169,74 @@ ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter encountered an
 ```
 
 Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle's Java Download site.
+
+# Integration with various IdPs
+
+## SimpleSAMPphp
+
+SimpleSAMLphp is a commonly used IdP. To integrate PAC4J with SimpleSAMLphp use the following steps as a start. Let's assume a *standard* simpleSAMLphp install.
+
+### DemoConfigFactory.java
+
+```java
+final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks",
+ "pac4j-demo-passwd",
+ "pac4j-demo-passwd",
+ "resource:idp-metadata.xml"); //the id-metadata.xml contains IdP metadata, you will have to create this
+ cfg.setMaximumAuthenticationLifetime(3600);
+ cfg.setServiceProviderEntityId("test.pac4j"); //the entityId of you client (the SP), you will usualy change this
+ cfg.setServiceProviderMetadataPath(new File("sp-metadata.xml").getAbsolutePath()); //the metadata of the SP, no changes required usually
+ final SAML2Client saml2Client = new SAML2Client(cfg);
+ ```
+
+ ### SimpleSAMLphp config
+
+ Please note that pac4j requires the binding `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST` for both SingleSignOn and SingleLogout services while simpleSAMLphp is by default installed using only `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect`. It is required to add the bindings to the **metadata/saml20-idp-hosted.php** file:
+
+ ```php
+'SingleSignOnServiceBinding' => array('urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'),
+'SingleLogoutServiceBinding' => array('urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'),
+```
+
+It is also required to register the EntityID of your SP into the file **metadata/saml20-sp-remote.php**
+
+```php
+$metadata['test.pac4j'] = array(
+ 'AssertionConsumerService' => 'http://localhost:8080/callback?client_name=SAML2Client',
+...
+```
+
+ ### Metadata
+
+ SimpleSAMLphp exposes his IdP metadata on `http://idp-domain/simplesamlphp/saml2/idp/metadata.php?output=xhtml`. You can wrap this file in an additional `<md:EntitiesDescriptor ...` tag to generate the **idp-metadata.xml** file.
+
+ ```xml
+ <?xml version="1.0"?>
+<md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"> 
+	<md:EntityDescriptor entityID="http://idp-domain/simplesamlphp/saml2/idp/metadata.php">
+	  <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+	    <md:KeyDescriptor use="signing">
+	      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+	        <ds:X509Data>
+	          <ds:X509Certificate>MII...</ds:X509Certificate>
+	        </ds:X509Data>
+	      </ds:KeyInfo>
+	    </md:KeyDescriptor>
+	    <md:KeyDescriptor use="encryption">
+	      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+	        <ds:X509Data>
+	          <ds:X509Certificate>MII...</ds:X509Certificate>
+	        </ds:X509Data>
+	      </ds:KeyInfo>
+	    </md:KeyDescriptor>
+	    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://idp-domain/simplesamlphp/saml2/idp/SingleLogoutService.php"/>
+	    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://idp-domain/simplesamlphp/saml2/idp/SingleLogoutService.php"/>
+	    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+	    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://idp-domain/simplesamlphp/saml2/idp/SSOService.php"/>
+	    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://idp-domain/simplesamlphp/saml2/idp/SSOService.php"/>
+  	  </md:IDPSSODescriptor>
+	</md:EntityDescriptor>
+</md:EntitiesDescriptor>
+ ```
+
+
