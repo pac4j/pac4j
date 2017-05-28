@@ -40,7 +40,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final HttpAction redirect(final WebContext context) throws HttpAction {
+    public HttpAction redirect(final WebContext context) throws HttpAction {
         final RedirectAction action = getRedirectAction(context);
         if (action.getType() == RedirectType.REDIRECT) {
             return HttpAction.redirect("redirection via 302", context, action.getLocation());
@@ -59,7 +59,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @return the redirection action
      * @throws HttpAction requires an additional HTTP action
      */
-    public final RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
+    public RedirectAction getRedirectAction(final WebContext context) throws HttpAction {
         init(context);
         // it's an AJAX request -> unauthorized (with redirection url in header)
         if (ajaxRequestResolver.isAjax(context)) {
@@ -101,7 +101,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * @throws HttpAction whether an additional HTTP action is required
      */
     @Override
-    public final C getCredentials(final WebContext context) throws HttpAction {
+    public C getCredentials(final WebContext context) throws HttpAction {
         init(context);
         final C credentials = retrieveCredentials(context);
         // no credentials -> save this authentication has already been tried and failed

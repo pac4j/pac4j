@@ -46,7 +46,7 @@ public abstract class BaseClient<C extends Credentials, U extends CommonProfile>
     protected abstract C retrieveCredentials(final WebContext context) throws HttpAction;
 
     @Override
-    public final U getUserProfile(final C credentials, final WebContext context) throws HttpAction {
+    public U getUserProfile(final C credentials, final WebContext context) throws HttpAction {
         init(context);
         logger.debug("credentials : {}", credentials);
         if (credentials == null) {
