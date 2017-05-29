@@ -79,6 +79,19 @@ public class HttpAction extends Exception {
      * @param message message
      * @param context context
      * @param realmName realm name
+     * @return a basic auth popup credentials
+     */
+    @Deprecated
+    public static HttpAction unauthorized(final String message, final WebContext context, final String realmName) {
+      return unauthorized(message, context, realmName, null);
+    }
+
+    /**
+     * Build a basic auth popup credentials.
+     *
+     * @param message message
+     * @param context context
+     * @param realmName realm name
      * @param url url
      * @return a basic auth popup credentials
      */
