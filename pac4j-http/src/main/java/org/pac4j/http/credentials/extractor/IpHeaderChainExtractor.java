@@ -7,6 +7,8 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,11 +21,9 @@ import java.util.Objects;
  */
 public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredentials> {
 
-    private static final String[] EMPTY_ARRAY = {};
-
     private final String clientName;
 
-    private String[] alternateIpHeaders = EMPTY_ARRAY;
+    private List<String> alternateIpHeaders = Collections.emptyList();
 
     public IpHeaderChainExtractor(final String clientName) {
         this.clientName = clientName;
@@ -31,7 +31,7 @@ public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredent
 
     public TokenCredentials extract(WebContext context) throws HttpAction {
         final String ip;
-        if (alternateIpHeaders.length == 0) {
+        if (alternateIpHeaders.isEmpty()) {
             ip = context.getRemoteAddr();
         } else {
             ip = ipFromHeaders(context);
@@ -56,10 +56,10 @@ public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredent
     }
 
     /**
-     * @return Defined headers to search for IP
+     * @return Defined headers to search for IP as {@link Collections#unmodifiableList(List)}
      */
-    public String[] getAlternateIpHeaders() {
-        return alternateIpHeaders;
+    public List getAlternateIpHeaders() {
+        return Collections.unmodifiableList(this.alternateIpHeaders);
     }
 
     /**
@@ -68,7 +68,7 @@ public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredent
      */
     public void setAlternateIpHeader(final String... alternateIpHeaders) {
         Objects.requireNonNull(alternateIpHeaders, "Ip headers must be not null");
-        this.alternateIpHeaders = alternateIpHeaders;
+        this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
     @Override

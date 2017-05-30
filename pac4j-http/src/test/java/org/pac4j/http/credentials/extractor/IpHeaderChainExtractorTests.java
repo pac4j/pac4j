@@ -6,6 +6,8 @@ import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.TestsConstants;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -48,5 +50,18 @@ public final class IpHeaderChainExtractorTests implements TestsConstants {
         final MockWebContext context = MockWebContext.create();
         final TokenCredentials credentials = extractor.extract(context);
         assertNull(credentials);
+    }
+
+    @Test
+    public void testIpHeadersArrayClone() {
+        final IpHeaderChainExtractor ipExtractor = new IpHeaderChainExtractor(CLIENT_NAME);
+        ipExtractor.setAlternateIpHeader("foo", "bar");
+        assertEquals(
+            new ArrayList() {{
+                add("foo");
+                add("bar");
+            }}
+            , ipExtractor.getAlternateIpHeaders()
+        );
     }
 }
