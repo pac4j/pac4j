@@ -33,11 +33,18 @@ IpClient ipClient = new IpClient(new IpRegexpAuthenticator("10\\..*"));
 
 The IP address is retrieved via the `context.getRemoteAddr()` method. Though, on some infrastructure, the IP address is available in an HTTP header (like `X-Forwarded-For`). So you can define the HTTP header from which you preferably want to retrieve the IP address.
 
-**Example:**
+**Examples:**
 
 ```java
 IpClient ipClient = new IpClient(new IpRegexpAuthenticator("10\\..*"));
 IpExtractor ipHeaderExtractor = new IpExtractor(ipClient.getName());
 ipHeaderExtractor.setAlternateIpHeader("X-Forwarded-For");
 ipClient.setCredentialsExtractor(ipHeaderExtractor);
+```
+
+```java
+IpClient ipClient = new IpClient(new IpRegexpAuthenticator("10\\..*"));
+IpHeaderChainExtractor ipHeaderChainExtractor = new IpHeaderChainExtractor(ipClient.getName());
+ipHeaderChainExtractor.setAlternateIpHeaders("X-REAL-IP", "X-Forwarded-For");
+ipClient.setCredentialsExtractor(ipHeaderChainExtractor);
 ```

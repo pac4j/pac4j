@@ -34,7 +34,7 @@ public final class IpHeaderChainExtractorTests implements TestsConstants {
     public void testRetrieveIpFromHeader() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP);
         final IpHeaderChainExtractor ipExtractor = new IpHeaderChainExtractor(CLIENT_NAME);
-        ipExtractor.setAlternateIpHeader("fooBar", HEADER_NAME, "barFoo");
+        ipExtractor.setAlternateIpHeaders("fooBar", HEADER_NAME, "barFoo");
         final TokenCredentials credentials = ipExtractor.extract(context);
         assertEquals(GOOD_IP, credentials.getToken());
     }
@@ -42,7 +42,7 @@ public final class IpHeaderChainExtractorTests implements TestsConstants {
     @Test(expected = NullPointerException.class)
     public void testSetNullIpHeaderChain() throws HttpAction {
         final IpHeaderChainExtractor ipExtractor = new IpHeaderChainExtractor(CLIENT_NAME);
-        ipExtractor.setAlternateIpHeader(null);
+        ipExtractor.setAlternateIpHeaders(null);
     }
 
     @Test
@@ -55,7 +55,7 @@ public final class IpHeaderChainExtractorTests implements TestsConstants {
     @Test
     public void testIpHeadersArrayClone() {
         final IpHeaderChainExtractor ipExtractor = new IpHeaderChainExtractor(CLIENT_NAME);
-        ipExtractor.setAlternateIpHeader("foo", "bar");
+        ipExtractor.setAlternateIpHeaders("foo", "bar");
         assertEquals(
             new ArrayList() {{
                 add("foo");

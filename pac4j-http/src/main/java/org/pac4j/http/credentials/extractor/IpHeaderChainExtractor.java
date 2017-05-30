@@ -66,7 +66,7 @@ public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredent
      * @param alternateIpHeaders Sets alternate headers to search for IP.
      *                           The first match will be returned as specified for {@code enhanced for} iteration over arrays.
      */
-    public void setAlternateIpHeader(final String... alternateIpHeaders) {
+    public void setAlternateIpHeaders(final String... alternateIpHeaders) {
         Objects.requireNonNull(alternateIpHeaders, "Ip headers must be not null");
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
