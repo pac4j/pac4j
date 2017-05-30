@@ -11,6 +11,8 @@ import java.util.Objects;
 
 /**
  * To extract a remote IP address.
+ * Search for headers as defined in an array.
+ * The first match will be returned as specified for {@code enhanced for} iteration over arrays.
  *
  * @author Guilherme I F L Weizenmann
  * @since 2.1.0
@@ -53,10 +55,17 @@ public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredent
         return null;
     }
 
+    /**
+     * @return Defined headers to search for IP
+     */
     public String[] getAlternateIpHeaders() {
         return alternateIpHeaders;
     }
 
+    /**
+     * @param alternateIpHeaders Sets alternate headers to search for IP.
+     *                           The first match will be returned as specified for {@code enhanced for} iteration over arrays.
+     */
     public void setAlternateIpHeader(final String... alternateIpHeaders) {
         Objects.requireNonNull(alternateIpHeaders, "Ip headers must be not null");
         this.alternateIpHeaders = alternateIpHeaders;
