@@ -12,8 +12,8 @@ import java.util.Objects;
 /**
  * To extract a remote IP address.
  *
- * @author Jerome Leleu
- * @since 1.8.0
+ * @author Guilherme I F L Weizenmann
+ * @since 2.1.0
  */
 public class IpHeaderChainExtractor implements CredentialsExtractor<TokenCredentials> {
 

@@ -10,10 +10,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * This class tests the {@link IpExtractor}.
+ * This class tests the {@link IpHeaderChainExtractor}.
  *
- * @author Jerome Leleu
- * @since 1.8.0
+ * @author Guilherme I F L Weizenmann
+ * @since 2.1.0
  */
 public final class IpHeaderChainExtractorTests implements TestsConstants {
 
