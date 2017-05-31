@@ -12,6 +12,7 @@ A [`Client`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java
 - [HTTP protocol](clients/http.html)
 - [OpenID protocol](clients/openid.html)
 - [Google App Engine support](clients/google-app-engine.html)
+- [Kerberos (SPNEGO Negotiate) protocol](clients/kerberos.html)
 
 While most clients are self-sufficient, the HTTP clients require to define an [Authenticator](authenticators.html) to handle the credentials validation.
 
