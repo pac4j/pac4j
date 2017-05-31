@@ -3,7 +3,7 @@ layout: doc
 title: Release notes&#58;
 ---
 
-**pac4j 1.9.8**:
+**pac4j 1.9.9**:
 
 - In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
 
