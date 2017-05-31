@@ -24,7 +24,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     private List<String> alternateIpHeaders = Collections.emptyList();
 
-    private String proxyIp = "127.0.0.1";
+    private String proxyIp = "";
 
     public IpExtractor(final String clientName) {
         this.clientName = clientName;
@@ -36,14 +36,19 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     public TokenCredentials extract(WebContext context) throws HttpAction {
-        String ip = null;
+        final String ip;
         if (alternateIpHeaders.isEmpty()) {
             ip = context.getRemoteAddr();
         } else {
             String requestSourceIp = context.getRemoteAddr();
-            // if using proxy, check if the ip proxy is correct
-            if (!this.proxyIp.isEmpty() && this.proxyIp.equals(requestSourceIp)) {
+            if(this.proxyIp.isEmpty()){
                 ip = ipFromHeaders(context);
+            }
+            // if using proxy, check if the ip proxy is correct
+            else if (this.proxyIp.equals(requestSourceIp)) {
+                ip = ipFromHeaders(context);
+            } else {
+                ip = null;
             }
         }
 
@@ -102,7 +107,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
      * @since 2.1.0
      */
     public void setProxyIp(String proxyIp) {
-        this.proxyIp = proxyIp;
+        this.proxyIp = proxyIp == null ? "" : proxyIp;
     }
 
     /**

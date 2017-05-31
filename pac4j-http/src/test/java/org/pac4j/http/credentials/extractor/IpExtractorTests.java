@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 public final class IpExtractorTests implements TestsConstants {
 
     private final static String GOOD_IP = "goodIp";
+    @SuppressWarnings("PMD")
     private final static String LOCALHOST = "127.0.0.1";
 
     private static final IpExtractor extractor = new IpExtractor(CLIENT_NAME);
@@ -40,9 +41,10 @@ public final class IpExtractorTests implements TestsConstants {
     }
 
     @Test
-    public void testRetrieveIpFromHeader() throws HttpAction {
+    public void testRetrieveIpFromHeaderWithProxyIpCheck() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
+        ipExtractor.setProxyIp(LOCALHOST);
         // test for varargs
         ipExtractor.setAlternateIpHeaders("fooBar", HEADER_NAME, "barFoo");
         final TokenCredentials credentials = ipExtractor.extract(context);
