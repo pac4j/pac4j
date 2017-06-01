@@ -6,7 +6,10 @@ import org.pac4j.core.credentials.extractor.CredentialsExtractor;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.util.CommonHelper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * To extract a remote IP address.
@@ -41,7 +44,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
             ip = context.getRemoteAddr();
         } else {
             String requestSourceIp = context.getRemoteAddr();
-            if(this.proxyIp.isEmpty()){
+            if (this.proxyIp.isEmpty()) {
                 ip = ipFromHeaders(context);
             }
             // if using proxy, check if the ip proxy is correct
@@ -103,7 +106,8 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
     }
 
     /**
-     * @param proxyIp Set the IP to verify the proxy request source
+     * @param proxyIp Set the IP to verify the proxy request source.
+     *               Setting {@code null} or {@code ""} (empty string) disabled the proxy IP check.
      * @since 2.1.0
      */
     public void setProxyIp(String proxyIp) {
