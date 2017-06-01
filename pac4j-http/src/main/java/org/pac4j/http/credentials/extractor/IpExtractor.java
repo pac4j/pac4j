@@ -124,7 +124,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
      * @since 2.1.0
      */
     public void setAlternateIpHeaders(final String... alternateIpHeaders) {
-        Objects.requireNonNull(alternateIpHeaders, "Ip headers must be not null");
+        CommonHelper.assertNotNull("alternateIpHeaders", alternateIpHeaders);
         this.alternateIpHeaders = Arrays.asList(alternateIpHeaders);
     }
 
