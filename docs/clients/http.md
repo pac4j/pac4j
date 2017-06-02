@@ -35,11 +35,23 @@ You can use the following clients depending on what are the credentials and how 
 | IP address | [`IpClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-http/src/main/java/org/pac4j/http/client/direct/IpClient.java) (direct client) |
 {:.table-striped}
 
-**Example:**
+**Examples:**
 
 ```java
 // REST authentication with JWT token passed in the url as the "token" parameter
 ParameterClient parameterClient = new ParameterClient("token", new JwtAuthenticator(salt));
 parameterClient.setSupportGetRequest(true);
 parameterClient.setSupportPostRequest(false);
+
+// if the 'Authorization' header is passed with the 'Basic token' value
+HeaderClient client = new HeaderClient("Authorization", "Basic ", (credentials, ctx) -> {
+    String token = ((TokenCredentials) credentials).getToken();
+    // check the token and create a profile
+    if ("goodToken".equals(token)) {
+        CommonProfile profile = new CommonProfile();
+        profile.setId("myId");
+        // save in the credentials to be passed to the default AuthenticatorProfileCreator
+        credentials.setUserProfile(profile);
+    }
+});
 ```
