@@ -31,13 +31,14 @@ After a successful credentials validation, it "returns" an [`IpProfile`](https:/
 IpClient ipClient = new IpClient(new IpRegexpAuthenticator("10\\..*"));
 ```
 
-The IP address is retrieved via the `context.getRemoteAddr()` method. Though, on some infrastructure, the IP address is available in an HTTP header (like `X-Forwarded-For`). So you can define the HTTP header from which you preferably want to retrieve the IP address.
+The IP address is retrieved via the `context.getRemoteAddr()` method. Though, on some infrastructure, the IP address is available in an HTTP header (like `X-Forwarded-For` or `x-real-ip`). So you can define the HTTP headers (one or more) from which you preferably want to retrieve the IP address. You can set the proxy IP, so pac4j can check if the remote address of the request is from your proxy server before searching in headers.
 
-**Example:**
+**Examples:**
 
 ```java
 IpClient ipClient = new IpClient(new IpRegexpAuthenticator("10\\..*"));
 IpExtractor ipHeaderExtractor = new IpExtractor(ipClient.getName());
-ipHeaderExtractor.setAlternateIpHeader("X-Forwarded-For");
+ipHeaderExtractor.setAlternateIpHeaders("X-Forwarded-For", "x-real-ip");
+ipHeaderExtractor.setProxyIp("127.0.0.1");
 ipClient.setCredentialsExtractor(ipHeaderExtractor);
 ```
