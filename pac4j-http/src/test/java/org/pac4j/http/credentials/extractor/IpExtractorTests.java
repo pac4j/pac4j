@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.credentials.TokenCredentials;
 import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 
 import static org.junit.Assert.assertEquals;
@@ -68,7 +69,7 @@ public final class IpExtractorTests implements TestsConstants {
         assertEquals(GOOD_IP, credentials2.getToken());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = TechnicalException.class)
     public void testSetNullIpHeaderChain() throws HttpAction {
         final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
         ipExtractor.setAlternateIpHeaders(null);
