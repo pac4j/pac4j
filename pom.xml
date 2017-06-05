@@ -53,7 +53,6 @@
 		<module>pac4j-sql</module>
 		<module>pac4j-mongo</module>
 		<module>pac4j-couch</module>
-		<module>pac4j-stormpath</module>
 		<module>pac4j-kerberos</module>
 	</modules>
 
