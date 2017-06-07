@@ -100,13 +100,13 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
 
         CommonHelper.assertNotNull(ID, id);
         values.add(id);
-        final String query = "update " + usersTable + " set " + attributesList.toString() + " where id = :id";
+        final String query = "update " + usersTable + " set " + attributesList.toString() + " where " + getIdAttribute() + " = :id";
         execute(query, values.toArray());
     }
 
     @Override
     protected void deleteById(final String id) {
-        final String query = "delete from " + usersTable + " where id = :id";
+        final String query = "delete from " + usersTable + " where " + getIdAttribute() + " = :id";
         execute(query, id);
     }
 
