@@ -218,6 +218,7 @@ public final class CommonHelper {
      * @param name the name
      * @return the prefix
      */
+    @Deprecated
     protected static String extractPrefix(final String name) {
         String prefix = null;
         if (name != null) {
@@ -235,6 +236,7 @@ public final class CommonHelper {
      * @param path the path
      * @return the completed path
      */
+    @Deprecated
     protected static String startWithSlash(final String path) {
         if (!path.startsWith("/")) {
             return "/" + path;

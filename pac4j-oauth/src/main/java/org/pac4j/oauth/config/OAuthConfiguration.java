@@ -6,9 +6,9 @@ import com.github.scribejava.core.model.SignatureType;
 import com.github.scribejava.core.model.Token;
 import com.github.scribejava.core.oauth.OAuthService;
 import org.pac4j.core.client.IndirectClient;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.InitializableWebObject;
 import org.pac4j.oauth.profile.definition.OAuthProfileDefinition;
 
@@ -33,10 +33,6 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
     private String secret;
 
     private boolean tokenAsHeader;
-
-    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-
-    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     private String responseType = RESPONSE_TYPE_CODE;
 
@@ -77,10 +73,10 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
 
     protected OAuthConfig buildOAuthConfig(final WebContext context, final String state) {
 
-        final String finalCallbackUrl = this.client.getCallbackUrlResolver().compute(this.client.getCallbackUrl(), context);
+        final String finalCallbackUrl = this.client.getUrlResolver().compute(this.client.getCallbackUrl(), context);
 
         return new OAuthConfig(this.key, this.secret, finalCallbackUrl, SignatureType.Header, this.scope,
-                null, state, this.responseType, null, this.connectTimeout, this.readTimeout,
+                null, state, this.responseType, null, HttpUtils.getConnectTimeout(), HttpUtils.getReadTimeout(),
                 null, null);
     }
 
@@ -120,20 +116,24 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
         this.tokenAsHeader = tokenAsHeader;
     }
 
+    @Deprecated
     public int getConnectTimeout() {
-        return connectTimeout;
+        return HttpUtils.getConnectTimeout();
     }
 
+    @Deprecated
     public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
+        HttpUtils.setConnectTimeout(connectTimeout);
     }
 
+    @Deprecated
     public int getReadTimeout() {
-        return readTimeout;
+        return HttpUtils.getReadTimeout();
     }
 
+    @Deprecated
     public void setReadTimeout(final int readTimeout) {
-        this.readTimeout = readTimeout;
+        HttpUtils.setReadTimeout(readTimeout);
     }
 
     public String getResponseType() {
@@ -187,7 +187,7 @@ public class OAuthConfiguration<C extends IndirectClient, S extends OAuthService
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "key", key, "secret", "[protected]", "tokenAsHeader", tokenAsHeader,
-                "connectTimeout", connectTimeout, "readTimeout", readTimeout, "responseType", responseType,
+                "connectTimeout", HttpUtils.getConnectTimeout(), "readTimeout", HttpUtils.getReadTimeout(), "responseType", responseType,
                 "scope", scope, "api", api, "hasGrantType", hasGrantType, "service", service,
                 "hasBeenCancelledFactory", hasBeenCancelledFactory, "profileDefinition", profileDefinition);
     }

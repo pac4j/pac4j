@@ -1,17 +1,17 @@
-package org.pac4j.cas.util;
+package org.pac4j.core.util;
 
 import org.pac4j.core.context.HttpConstants;
-import org.pac4j.core.util.CommonHelper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 /**
- * This is {@link HttpUtils} that provides utility functions
- * to deal with opening connections, building error messages
- * and closing connections, etc.
+ * This class provides utility functions to deal with opening connections,
+ * building error messages and closing connections, etc.
  *
  * @author Misagh Moayyed
  * @since 1.8.0
@@ -35,24 +35,44 @@ public final class HttpUtils {
     }
 
     public static HttpURLConnection openPostConnection(final URL url) throws IOException {
-        return openConnection(url, "POST");
+        return openConnection(url, HttpConstants.HTTP_METHOD.POST.name(), null);
+    }
+
+    public static HttpURLConnection openPostConnection(final URL url, final Map<String, String> headers) throws IOException {
+        return openConnection(url, HttpConstants.HTTP_METHOD.POST.name(), headers);
     }
 
     public static HttpURLConnection openDeleteConnection(final URL url) throws IOException {
-        return openConnection(url, "DELETE");
+        return openConnection(url, HttpConstants.HTTP_METHOD.DELETE.name(), null);
     }
 
-    public static HttpURLConnection openConnection(final URL url, final String requestMethod) throws IOException {
+    protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers) throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestMethod(requestMethod);
         connection.setConnectTimeout(connectTimeout);
         connection.setReadTimeout(readTimeout);
+        if (headers != null) {
+            for (final Map.Entry<String, String> entry : headers.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
         return connection;
     }
 
-    public static String encodeQueryParam(final String paramName, final String paramValue) throws UnsupportedEncodingException {
+    public static String readBody(final HttpURLConnection connection) throws IOException {
+        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream()); final BufferedReader br = new BufferedReader(isr)) {
+            final StringBuilder sb = new StringBuilder();
+            String output;
+            while ((output = br.readLine()) != null) {
+                sb.append(output);
+            }
+            return sb.toString();
+        }
+    }
+
+    public static String encodeQueryParam(final String paramName, final String paramValue) {
         return CommonHelper.urlEncode(paramName) + "=" + CommonHelper.urlEncode(paramValue);
     }
 
