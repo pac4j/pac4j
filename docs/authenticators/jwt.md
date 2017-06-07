@@ -27,7 +27,7 @@ The [`JwtAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/sr
 
 It can be defined for HTTP clients which deal with `TokenCredentials`.
 
-It supports plain text, signed and / or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception.
+It supports plain text, signed and/or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception.
 
 ### &#9656; Signature
 
@@ -71,7 +71,7 @@ jwtAuthenticator.validate(new TokenCredentials(token, "myclient"));
 The `JwtAuthenticator` also offers two convenient methods to handle JWT:
 
 - `CommonProfile validateToken(final String token)` validates a token and directly returns a *pac4j* user profile
-- `Map<String, Object> validateTokenAndGetClaims(final String token)` validates a token and directly returns a set of claims / attributes, this method is completely agnostic from *pac4j* profiles.
+- `Map<String, Object> validateTokenAndGetClaims(final String token)` validates a token and directly returns a set of claims/attributes, this method is completely agnostic from *pac4j* profiles.
 
 
 ### &#9656; User profiles
@@ -82,7 +82,7 @@ The `JwtAuthenticator` also offers two convenient methods to handle JWT:
 
 ## 3) `JwtGenerator`
 
-To generate a plain text, signed and / or encrypted JWT, a `JwtGenerator` can be defined with a `SignatureConfiguration` or / and `EncryptionConfiguration`.
+To generate a plain text, signed and/or encrypted JWT, a `JwtGenerator` can be defined with a `SignatureConfiguration` or/and `EncryptionConfiguration`.
 
 **Example:**
 

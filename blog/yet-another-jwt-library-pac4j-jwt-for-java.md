@@ -27,13 +27,13 @@ td {
 </style>
 
 I'm the creator and leader of the [pac4j](http://www.pac4j.org) open source project.
-It's a security engine for Java which supports authentication / authorization and is available for many frameworks: J2E, Play, Vertx, Spring Security, Shiro and Ratpack to name only a few.
+It's a security engine for Java which supports authentication/authorization and is available for many frameworks: J2E, Play, Vertx, Spring Security, Shiro and Ratpack to name only a few.
 
 Regarding authentication, one very common use case now is to have a user authenticating via a browser (Facebook login for example) and then turn his identity into something usable for calling web services.
 This could be an opaque string, but it requires checking the value to get the identity user.
 So the best solution would be some self-sufficient information.
 
-It is here that [JWT](https://jwt.io) comes into play: a JSON Web Token is a JSON object which can be signed and / or encrypted and is encoded in base64 format.
+It is here that [JWT](https://jwt.io) comes into play: a JSON Web Token is a JSON object which can be signed and/or encrypted and is encoded in base64 format.
 It's an [industry standard](https://tools.ietf.org/html/rfc7519). Signature is used to ensure that the JWT has not been tampered. Encryption is used to hide the information held by the JWT.
 
 A JWT consists of three parts: a header, a payload and a signature. Here is an example taken from the [jwt.io](https://jwt.io) website.  
@@ -99,7 +99,7 @@ So we must generate JWTs from these profiles (it's done via the `JwtGenerator`) 
 We can also verify JWT created in other applications without using the `JwtGenerator` to address other use cases.
 
 Both the `JwtGenerator` and `JwtAuthenticator` are available in the `pac4j-jwt` module (groupId: `org.pac4j`).
-As we want to be able to handle more than just one encryption / signature use case in the `JwtAuthenticator`, we offer higher abstractions to configure signature and encryption: the `SignatureConfiguration` and the `EncryptionConfiguration` classes.
+As we want to be able to handle more than just one encryption/signature use case in the `JwtAuthenticator`, we offer higher abstractions to configure signature and encryption: the `SignatureConfiguration` and the `EncryptionConfiguration` classes.
 
 Inspired by the [pac4j JWT documentation](http://www.pac4j.org/docs/authenticators/jwt.html):
 

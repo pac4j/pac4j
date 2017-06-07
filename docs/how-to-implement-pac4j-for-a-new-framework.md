@@ -1,9 +1,9 @@
 ---
 layout: ddoc
-title: How to implement <i>pac4j</i> for a new framework / tool&#58;
+title: How to implement <i>pac4j</i> for a new framework/tool&#58;
 ---
 
-*pac4j* is an easy and powerful security engine. It comes with the appropriate concepts and components to be implemented in any framework / tools.
+*pac4j* is an easy and powerful security engine. It comes with the appropriate concepts and components to be implemented in any framework/tools.
 
 
 ## 1) Dependency
@@ -32,9 +32,9 @@ You can also add **matchers** to define whether the security must apply or not.
 
 ---
 
-## 3) "Filters / controllers"
+## 3) "Filters/controllers"
 
-To secure your Java web application, **the reference implementation is to create three "filters / controllers"**:
+To secure your Java web application, **the reference implementation is to create three "filters/controllers"**:
 
 - one to **protect urls**
 - another one to **receive callbacks** for stateful authentication processes (indirect clients)
@@ -150,7 +150,7 @@ In your framework, you must define the appropriate "controller" to reply to an H
 
 ### C) Logout
 
-The logic to perform the application / identity provider logout is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
+The logic to perform the application/identity provider logout is defined by the `LogoutLogic` interface and its default implementation: [`DefaultLogoutLogic`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/engine/DefaultLogoutLogic.java).
 In your framework, you must define the appropriate "controller" to reply to an HTTP request and delegate the call to the `LogoutLogic` class:
 
 1) If the `localLogout` property is true, the pac4j profiles are removed from the web session (and the web session is destroyed if the `destroySession` property is `true`)

@@ -13,7 +13,7 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 3) Authorization mechanisms: [Authorizers](authorizers.html)
 
-### &#9656; [Roles / permissions](authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
+### &#9656; [Roles/permissions](authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](authorizers/profile-authorizers.html#others)
 
 ### &#9656; [CORS](authorizers/web-authorizers.html#cors) - [CSRF](authorizers/web-authorizers.html#csrf) - [Security headers](authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](authorizers/web-authorizers.html#others)
 
@@ -25,9 +25,9 @@ title: <i class="fa fa-user" aria-hidden="true"></i> The <i>pac4j</i> engine/cor
 
 ## 7) [SessionStore](session-store.html) and [Store](store.html)
 
-## 8) [Release notes](release-notes.html) / [Backward compatibility](backward-compatibility.html)
+## 8) [Release notes](release-notes.html) - [Backward compatibility](backward-compatibility.html)
 
-## 9) [Authentication flows](authentication-flows.html) / [Big picture](big-picture.html)
+## 9) [Authentication flows](authentication-flows.html) - [Big picture](big-picture.html)
 
 ## 10) [Customizations](customizations.html)
 
