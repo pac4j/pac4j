@@ -10,18 +10,23 @@ import org.pac4j.core.profile.CommonProfile;
  * <p>Generate the authorization information by inspecting attributes.</p>
  * <p>The attributes containing the roles separated by the {@link #splitChar} property (can be set through {@link #setSplitChar(String)}) are
  * defined in the constructor. It's the same for the attributes containing the permissions.</p>
- * 
+ *
  * @author Jerome Leleu
  * @since 1.5.0
  */
 public class FromAttributesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
-    
-    private final String[] roleAttributes;
-    
-    private final String[] permissionAttributes;
-    
+
+    private String[] roleAttributes;
+
+    private String[] permissionAttributes;
+
     private String splitChar = ",";
-    
+
+    public FromAttributesAuthorizationGenerator() {
+        this.roleAttributes = new String[] {};
+        this.permissionAttributes = new String[] {};
+    }
+
     public FromAttributesAuthorizationGenerator(final String[] roleAttributes, final String[] permissionAttributes) {
         this.roleAttributes = copyArray(roleAttributes);
         this.permissionAttributes = copyArray(permissionAttributes);
@@ -39,7 +44,7 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
         generateAuth(profile, this.roleAttributes, true);
         generateAuth(profile, this.permissionAttributes, false);
     }
-    
+
     private void generateAuth(final U profile, final String[] attributes, final boolean isRole) {
         if (attributes != null) {
             for (final String attribute : attributes) {
@@ -77,8 +82,16 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
     public String getSplitChar() {
         return this.splitChar;
     }
-    
+
     public void setSplitChar(final String splitChar) {
         this.splitChar = splitChar;
+    }
+
+    public void setRoleAttributes(final String roleAttributesStr) {
+        this.roleAttributes = roleAttributesStr.split(this.splitChar);
+    }
+
+    public void setPermissionAttributes(final String permissionAttributesStr) {
+        this.permissionAttributes = permissionAttributesStr.split(this.splitChar);
     }
 }
