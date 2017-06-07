@@ -7,7 +7,7 @@ title: Release notes&#58;
 
 - Added Kerberos support
 - Removed Stormpath support
-- The password encoders and LDAP / SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
+- The password encoders and LDAP/SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
 - Supports CouchDB for authentication and user management
 - In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
 
@@ -19,7 +19,7 @@ title: Release notes&#58;
 - The `LogoutLogic` (formerly `ApplicationLogoutLogic`) handles the application and identity provider logout
 - The `WebContext` directly relies on the `SessionStore` whose capabilities are upgraded to handle back-channel logout
 - The `AuthorizationGenerator` takes the `WebContext` as input and can return a new built profile
-- Using Spring framework `Resource` components for SAML files / URLs
+- Using Spring framework `Resource` components for SAML files/URLs
 - The session renewal is properly handled by clients (and especially CAS)
 - Caches are backed via a `Store` component
 - Upgrade the OAuth support with Scribe v3.3 and rebuild all clients on the generic `OAuth10Client` and `OAuth20Client`
@@ -48,7 +48,7 @@ title: Release notes&#58;
 
 **v1.9.3**:
 
-- Bug fixes (`Authenticator` initialization, `resource:` / `classpath:` prefixes in the SAML support...)
+- Bug fixes (`Authenticator` initialization, `resource:`/`classpath:` prefixes in the SAML support...)
 - New `HeaderMatcher` and `HttpMethodMatcher`
 - The `Config` holds a `SecurityLogic`
 - The OpenID Connect configuration can be done without a discovery URL
@@ -80,7 +80,7 @@ title: Release notes&#58;
 - Any client can be built using the `RedirectActionBuilder`, `CredentialsExtractor`, `Authenticator` and `ProfileCreator` concepts (`DirectClientV2` and `IndirectClientV2`): to be re-used to build asynchronous clients
 - `CredentialsExtractor`, `Authenticator`, `ProfileCreator` and `Authorizer` can throw `HttpAction` (previously named `RequiresHttpAction`) to break the flow and handle custom use cases
 - Typed id are now defined using the full class name (with package): "org.pac4j.oauth.profile.facebook.FacebookProfile#id" instead of "FacebookProfile#id" (use the `getOldTypedId()` method to get the old value)
-- Comparisons for clients / authorizers names are case insensitive and trimmed
+- Comparisons for clients/authorizers names are case insensitive and trimmed
 - Most integration tests have been replaced by manual tests (RunXXX classes)
 - Updated OpenID Connect support (`GoogleOidClient` and `AzureAdClient`)
 

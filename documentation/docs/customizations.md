@@ -6,7 +6,7 @@ title: Customizations&#58;
 *pac4j* comes with a huge set of components for various needs, so before any customization, you should carefully read the [Clients](clients.html), [Authenticators](authenticators.html) and [Authorizers](authorizers.html) pages to check what is already provided.
 
 
-### Customizing the authentication / authorization components:
+### Customizing the authentication/authorization components:
 
 Be sure to clearly understand what the roles of the different components are:
 
@@ -27,7 +27,7 @@ Nonetheless, building a `Client` requires extra efforts. Notice that:
 
 - all clients should implement the `IndirectClient` interface and define the appropriate `RedirectActionBuilder`, `CredentialsExtractor`, `Authenticator` and `ProfileCreator` (and optional `LogoutActionBuilder`)
 
-- it may require to create a new [`Credentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java) type (if it is not a simple string designed by the `TokenCredentials` or a username / password designed by the `UsernamePasswordCredentials`). These new credentials may inherit from the base credentials of the supported protocol (like `OAuthCredentials`)
+- it may require to create a new [`Credentials`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/credentials/Credentials.java) type (if it is not a simple string designed by the `TokenCredentials` or a username/password designed by the `UsernamePasswordCredentials`). These new credentials may inherit from the base credentials of the supported protocol (like `OAuthCredentials`)
 
 - it is generally a good practice to create a new profile for a new client (whether this profile will have or not specific data) to be able to distinguish between all user profiles.
 The new user profile should certainly inherit from the base profile of the protocol support, like `OAuth20Profile`.
@@ -61,7 +61,7 @@ public class ExampleAuthorizer implements Authorizer<CommonProfile> {
 
 *pac4j* implementations heavily rely on the `WebContext` and `SessionStore` to deal with the HTTP request, response and session. The default implementations of theses component may be override or replaced.
 
-As well as the default `ProfileManager` (used to save / restore the profile) or `GuavaStore` (to save data in cache).
+As well as the default `ProfileManager` (used to save/restore the profile) or `GuavaStore` (to save data in cache).
 
 
 In all cases, there is nothing better than taking a look at the existing components as examples. Don't hesitate to ask any question on the [pac4j-dev mailing list](https://groups.google.com/forum/?fromgroups#!forum/pac4j-dev).

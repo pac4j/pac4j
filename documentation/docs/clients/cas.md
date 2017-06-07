@@ -9,7 +9,7 @@ title: CAS
 
 2) using **proxy tickets** (for a web service): if the user is already authenticated by CAS in the web application (use case 1), the web application can request a proxy ticket and use it to call the web service which is protected by CAS
 
-3) using the **CAS REST API** (for a web service): a standalone / mobile application can call a web service by providing the CAS user credentials (these credentials will be directly checked via the CAS REST API).
+3) using the **CAS REST API** (for a web service): a standalone/mobile application can call a web service by providing the CAS user credentials (these credentials will be directly checked via the CAS REST API).
 
 It supports all CAS protocol versions (v1.0, v2.0 and v3.0).
 
@@ -45,13 +45,13 @@ The CAS configuration must be defined in a [`CasConfiguration`](https://github.c
 CasClient casClient = new CasClient(new CasConfiguration("https://mycasserver/login"));
 ```
 
-The `https://mycasserver/login` url is the login url of your CAS server.
+`https://mycasserver/login` is the login URL of your CAS server.
 
-After a sucessful login with a CAS server, a [`CasProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/profile/CasProfile.java) is returned.
+After a successful login with a CAS server, a [`CasProfile`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/profile/CasProfile.java) is returned.
 
-If an authentication delegation occured in CAS and no proxy configuration is defined, the returned profile will be the original profile after the authentication delegation.
+If an authentication delegation occurred in CAS and no proxy configuration is defined, the returned profile will be the original profile after the authentication delegation.
 
-The `CasConfiguration` can be built with the CAS login url and / or with the CAS prefix url (when different urls are required):
+The `CasConfiguration` can be built with the CAS login URL and/or with the CAS prefix URL (when different URLs are required):
 
 ```java
 CasConfiguration config = new CasConfiguration();
@@ -81,16 +81,16 @@ You can also set various parameters:
 
 ### b) CAS configuration
 
-Assuming your callback url is `http://localhost:8080/callback`, the CAS server will be called via `https://mycasserver/login?service=http://localhost:8080/callback?client_name=CasClient`.
+Assuming your callback URL is `http://localhost:8080/callback`, the CAS server will be called via `https://mycasserver/login?service=http://localhost:8080/callback?client_name=CasClient`.
 
-So you must define in the CAS services registry the appropriate CAS service matching this url: `http://localhost:8080/callback?client_name=CasClient` and with the appropriate configuration: which attributes to return? Does it support proxies?
+So you must define in the CAS services registry the appropriate CAS service matching this URL: `http://localhost:8080/callback?client_name=CasClient` and with the appropriate configuration: which attributes to return? Does it support proxies?
 
-Read the [CAS documentation](https://apereo.github.io/cas/4.2.x/installation/Service-Management.html) for that.
+Read the [CAS documentation](https://apereo.github.io/cas/5.0.x/installation/Service-Management.html) for that.
 
 
 ### c) Proxy support
 
-For proxy support, the `CasProxyReceptor` component must be used, defined on the same or a new callback url (via the [security configuration](config.html)) and declared in the `CasConfiguration`:
+For proxy support, the `CasProxyReceptor` component must be used, defined on the same or a new callback URL (via the [security configuration](../config.html)) and declared in the `CasConfiguration`:
 
 ```java
 CasProxyReceptor casProxy = new CasProxyReceptor(); 
@@ -141,13 +141,13 @@ config.setProtocol(CasProtocol.CAS30_PROXY);
 DirectCasProxyClient directCasProxyClient = new DirectCasProxyClient(config, "http://localhost:8080/webservices");
 ```
 
-After generating a proxy ticket (like `PT-1`), the web service will be called on a url similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`. 
+After generating a proxy ticket (like `PT-1`), the web service will be called on a URL similar to: `http://localhost:8080/webservices/myoperation?ticket=PT-1`. 
 
-The `DirectCasProxyClient` will validate the proxy ticket and the service url (defined in the constructor: `http://localhost:8080/webservices`) on the CAS server to get the identity of the user.
+The `DirectCasProxyClient` will validate the proxy ticket and the service URL (defined in the constructor: `http://localhost:8080/webservices`) on the CAS server to get the identity of the user.
 
-This requires to define the appropriate CAS service (matching the `http://localhost:8080/webservices` url) on the CAS server side.
+This requires to define the appropriate CAS service (matching the `http://localhost:8080/webservices` URL) on the CAS server side.
 
-This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasAuthenticator.java). See how to [deal with performance issues](authenticators.html#deal-with-performance-issues).
+This `DirectCasProxyClient` internally relies on the [`CasAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasAuthenticator.java). See how to [deal with performance issues](../authenticators.html#deal-with-performance-issues).
 
 ---
 
@@ -157,7 +157,7 @@ The CAS server can be called via a [REST API](https://apereo.github.io/cas/5.0.x
 
 The [`CasRestFormClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestFormClient.java) and [`CasRestBasicAuthClient`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/client/rest/CasRestBasicAuthClient.java) are direct clients which can be used to interact with the REST API of a CAS server:
 
-- if the username / password of the user are sent via basic authentication, the `CasRestBasicAuthClient` will get them and validate them via the CAS REST API
+- if the username/password of the user are sent via basic authentication, the `CasRestBasicAuthClient` will get them and validate them via the CAS REST API
 - if the credentials are sent via form parameters, the `CasRestFormClient` will receive them and validate them via the CAS REST API.
 
 **Example:**
@@ -167,9 +167,9 @@ CasConfiguration casConfig = new CasConfiguration("https://mycasserver/login");
 CasRestFormClient casRestClient = new CasRestFormClient(casConfig);
 ```
 
-These direct clients internally rely on the [`CasRestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasRestAuthenticator.java). See how to [deal with performance issues](authenticators.html#deal-with-performance-issues).
+These direct clients internally rely on the [`CasRestAuthenticator`](https://github.com/pac4j/pac4j/blob/master/pac4j-cas/src/main/java/org/pac4j/cas/credentials/authenticator/CasRestAuthenticator.java). See how to [deal with performance issues](../authenticators.html#deal-with-performance-issues).
 
-After a successful authentication via the `CasRestBasicAuthClient` / `CasRestFormClient`, a `CasRestProfile` will be created.
+After a successful authentication via the `CasRestBasicAuthClient`/`CasRestFormClient`, a `CasRestProfile` will be created.
 
 This profile has no attributes as it was built by validating the CAS credentials on the REST API. You must request a service ticket and validate it to get a `CasProfile` with attributes (as the default protocol used is CAS v3.0).
 
