@@ -4,6 +4,7 @@ import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.CommonProfile;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
@@ -17,11 +18,16 @@ import java.util.StringTokenizer;
  */
 public class FromAttributesAuthorizationGenerator<U extends CommonProfile> implements AuthorizationGenerator<U> {
 
-    private final Collection<String> roleAttributes;
+    private Collection<String> roleAttributes;
 
-    private final Collection<String> permissionAttributes;
+    private Collection<String> permissionAttributes;
 
     private String splitChar = ",";
+
+    public FromAttributesAuthorizationGenerator() {
+        this.roleAttributes = new ArrayList();
+        this.permissionAttributes = new ArrayList();
+    }
 
     public FromAttributesAuthorizationGenerator(final Collection<String> roleAttributes, final Collection<String> permissionAttributes) {
         this.roleAttributes = roleAttributes;
@@ -91,5 +97,13 @@ public class FromAttributesAuthorizationGenerator<U extends CommonProfile> imple
 
     public void setSplitChar(final String splitChar) {
         this.splitChar = splitChar;
+    }
+
+    public void setRoleAttributes(final String roleAttributesStr) {
+        this.roleAttributes = Arrays.asList(roleAttributesStr.split(splitChar));
+    }
+
+    public void setPermissionAttributes(final String permissionAttributesStr) {
+        this.permissionAttributes = Arrays.asList(permissionAttributesStr.split(splitChar));
     }
 }
