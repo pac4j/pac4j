@@ -4,7 +4,7 @@
 
 ### `pac4j` is an easy and powerful security engine for Java to authenticate users, get their profiles and manage authorizations in order to secure web applications.
 
-It provides a comprehensive set of [**concepts and components**](http://www.pac4j.org/docs/main-concepts-and-components.html). It is based on Java 8 and available under the Apache 2 license. It is **available for most frameworks / tools** and **supports most authentication / authorization mechanisms**.
+It provides a comprehensive set of [**concepts and components**](http://www.pac4j.org/docs/main-concepts-and-components.html). It is based on Java 8 and available under the Apache 2 license. It is **available for most frameworks/tools** and **supports most authentication/authorization mechanisms**.
 
 ## Available implementations (*Get started by clicking on your framework*):
 
@@ -22,7 +22,7 @@ It provides a comprehensive set of [**concepts and components**](http://www.pac4
 
 ## Authorization mechanisms:
 
-[Roles / permissions](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous / remember-me / (fully) authenticated](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
+[Roles/permissions](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#roles--permissions) - [Anonymous/remember-me/(fully) authenticated](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#authentication-levels) - [Profile type, attribute](http://www.pac4j.org/docs/authorizers/profile-authorizers.html#others)
 
 [CORS](http://www.pac4j.org/docs/authorizers/web-authorizers.html#cors) - [CSRF](http://www.pac4j.org/docs/authorizers/web-authorizers.html#csrf) - [Security headers](http://www.pac4j.org/docs/authorizers/web-authorizers.html#security-headers) - [IP address, HTTP method](http://www.pac4j.org/docs/authorizers/web-authorizers.html#others)
 

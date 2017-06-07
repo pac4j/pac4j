@@ -21,7 +21,7 @@ title: Release notes (older versions)&#58;
 - New DirectFormClient
 - Improved CAS support: callbackUrlResolver applies on CAS prefix url + the LocalCachingAuthenticator can be used with the CasRest*Client
 - The `RelativeCallbackUrlResolver` properly handles HTTPS requests
-- Roles / permissions are kept through JWT
+- Roles/permissions are kept through JWT
 
 **pac4j 1.8.5**:
 

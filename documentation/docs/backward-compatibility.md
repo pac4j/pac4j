@@ -10,8 +10,8 @@ Since version 2, the `pac4j` project has adopted the [semver](http://semver.org/
 Given a version X.Y.Z:
 
 - when X changes, it's a major version with breaking changes (example: 2.x, 3.x, and so on)
-- when Y changes, it's a minor version with no compilation / runtime breaking changes (for example, you can upgrade from 2.5.2 to 2.7.0 without any worry)
-- when Z changes, it's a bug fix(es) version with no compilation / runtime breaking change (no upgrade issue either).
+- when Y changes, it's a minor version with no compilation/runtime breaking changes (for example, you can upgrade from 2.5.2 to 2.7.0 without any worry)
+- when Z changes, it's a bug fix(es) version with no compilation/runtime breaking change (no upgrade issue either).
 
 Generally, *pac4j* implementations will adopt the semver versioning when upgrading to `pac4j` version 2, if they don't already have.
 

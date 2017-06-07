@@ -90,7 +90,7 @@ cfg.setDestinationBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
 // or cfg.setDestinationBindingType(SAMLConstants.SAML2_POST_BINDING_URI);
 ```
 
-Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behaviour, set the `maximumAuthenticationLifetime` parameter:
+Once you have an authenticated web session on the Identity Provider, usually it won't prompt you again to enter your credentials and it will automatically generate a new assertion for you. By default, the SAML client will accept assertions based on a previous authentication for one hour. If you want to change this behavior, set the `maximumAuthenticationLifetime` parameter:
 
 ```java
 // lifetime in seconds
@@ -136,18 +136,18 @@ You can generate the SP metadata in two ways:
 
 ## 4) ADFS subtilities
 
-You must follow these rules to successfully authenticate using Microsoft ADFS 2.0 / 3.0.
+You must follow these rules to successfully authenticate using Microsoft ADFS 2.0/3.0.
 
 ### a) Entity ID
 
 You must always specify an explicit Entity ID that does not contain any question mark. By default, *pac4j* uses the same 
 Entity ID as the AssertionConsumerService location, which contains the client's name as a parameter after a question mark. 
-Unfortunately ADFS does not work well with such IDs and starts an infinite redirection loop when A SAML message with such a message arrives.
+Unfortunately, ADFS does not work well with such IDs and starts an infinite redirection loop when A SAML message with such a message arrives.
 
 ### b) Maximum authentication time
 
 *pac4j* has the default maximum time set to 1 hour while ADFS has it set to 8 hours. Therefore it can happen that ADFS 
-sends an assertion which is still valid on ADFS side but evaluated as invalid on *pac4j* side.
+sends an assertion which is still valid on ADFS side but evaluated as invalid on the *pac4j* side.
 
 You can see the following error message: `org.pac4j.saml.exceptions.SAMLException: Authentication issue instant is too old or in the future`
 
@@ -187,13 +187,13 @@ final SAML2ClientConfiguration cfg = new SAML2ClientConfiguration("resource:saml
  cfg.setServiceProviderEntityId("test.pac4j"); //the entityId of you client (the SP), you will usualy change this
  cfg.setServiceProviderMetadataPath(new File("sp-metadata.xml").getAbsolutePath()); //the metadata of the SP, no changes required usually
  final SAML2Client saml2Client = new SAML2Client(cfg);
- ```
+```
 
- ### SimpleSAMLphp config
+### SimpleSAMLphp config
 
- Please note that pac4j requires the binding `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST` for both SingleSignOn and SingleLogout services while simpleSAMLphp is by default installed using only `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect`. It is required to add the bindings to the **metadata/saml20-idp-hosted.php** file:
+Please note that pac4j requires the binding `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST` for both SingleSignOn and SingleLogout services while simpleSAMLphp is by default installed using only `urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect`. It is required to add the bindings to the **metadata/saml20-idp-hosted.php** file:
 
- ```php
+```php
 'SingleSignOnServiceBinding' => array('urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'),
 'SingleLogoutServiceBinding' => array('urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect', 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST'),
 ```
@@ -206,11 +206,11 @@ $metadata['test.pac4j'] = array(
 ...
 ```
 
- ### Metadata
+### Metadata
 
- SimpleSAMLphp exposes his IdP metadata on `http://idp-domain/simplesamlphp/saml2/idp/metadata.php?output=xhtml`. You can wrap this file in an additional `<md:EntitiesDescriptor ...` tag to generate the **idp-metadata.xml** file.
+SimpleSAMLphp exposes his IdP metadata on `http://idp-domain/simplesamlphp/saml2/idp/metadata.php?output=xhtml`. You can wrap this file in an additional `<md:EntitiesDescriptor ...` tag to generate the **idp-metadata.xml** file.
 
- ```xml
+```xml
  <?xml version="1.0"?>
 <md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"> 
 	<md:EntityDescriptor entityID="http://idp-domain/simplesamlphp/saml2/idp/metadata.php">
@@ -237,6 +237,4 @@ $metadata['test.pac4j'] = array(
   	  </md:IDPSSODescriptor>
 	</md:EntityDescriptor>
 </md:EntitiesDescriptor>
- ```
-
-
+```
