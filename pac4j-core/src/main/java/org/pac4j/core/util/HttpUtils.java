@@ -62,7 +62,7 @@ public final class HttpUtils {
     }
 
     public static String readBody(final HttpURLConnection connection) throws IOException {
-        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream()); final BufferedReader br = new BufferedReader(isr)) {
+        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream(), "UTF-8"); final BufferedReader br = new BufferedReader(isr)) {
             final StringBuilder sb = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null) {

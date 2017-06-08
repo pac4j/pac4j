@@ -14,7 +14,6 @@
 
 	<properties>
 		<scribe.version>3.3.0</scribe.version>
-		<jackson.version>2.8.7</jackson.version>
 	</properties>
 
 	<dependencies>
@@ -34,7 +33,6 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

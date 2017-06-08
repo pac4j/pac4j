@@ -1,0 +1,72 @@
+package org.pac4j.http.credentials.authenticator;
+
+import fi.iki.elonen.NanoHTTPD;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.pac4j.core.context.MockWebContext;
+import org.pac4j.core.credentials.UsernamePasswordCredentials;
+import org.pac4j.core.exception.CredentialsException;
+import org.pac4j.core.exception.HttpAction;
+import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.TestsConstants;
+import org.pac4j.core.util.TestsHelper;
+import org.pac4j.http.profile.RestProfile;
+import org.pac4j.http.test.tools.NanoResponse;
+import org.pac4j.http.test.tools.WebServer;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+
+/**
+ * Tests {@link RestAuthenticator}.
+ *
+ * @author Jerome Leleu
+ * @since 2.1.0
+ */
+public final class RestAuthenticatorIT implements TestsConstants {
+
+    private static final int PORT = 8088;
+
+    @BeforeClass
+    public static void setUp() {
+        final NanoResponse profileResponse = new NanoResponse(NanoHTTPD.Response.Status.OK, "application/json", "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }");
+        final NanoResponse notFoundResponse = new NanoResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found");
+        final NanoResponse parsingErrorResponse = new NanoResponse(NanoHTTPD.Response.Status.OK, "plain/text", "bad");
+        final Map<String, NanoResponse> responses = new HashMap<>();
+        responses.put("ok", profileResponse);
+        responses.put("notfound", notFoundResponse);
+        responses.put("pe", parsingErrorResponse);
+        final WebServer webServer = new WebServer(PORT, responses);
+        webServer.start();
+    }
+
+    @Test
+    public void testProfileOk() throws HttpAction, CredentialsException {
+        final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=ok");
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        authenticator.validate(credentials, MockWebContext.create());
+        final RestProfile profile = (RestProfile) credentials.getUserProfile();
+        assertNotNull(profile);
+        assertEquals(ID, profile.getId());
+        assertEquals(1, profile.getRoles().size());
+        assertEquals(ROLE, profile.getRoles().iterator().next());
+    }
+
+    @Test
+    public void testNotFound() throws HttpAction, CredentialsException {
+        final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=notfound");
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        authenticator.validate(credentials, MockWebContext.create());
+        final RestProfile profile = (RestProfile) credentials.getUserProfile();
+        assertNull(profile);
+    }
+
+    @Test
+    public void testParsingError() throws HttpAction, CredentialsException {
+        final RestAuthenticator authenticator = new RestAuthenticator("http://localhost:" + PORT + "?r=pe");
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create()), TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting ('true', 'false' or 'null')\n at [Source: bad; line: 1, column: 7]");
+    }
+}
