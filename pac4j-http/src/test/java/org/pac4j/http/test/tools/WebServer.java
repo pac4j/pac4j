@@ -4,6 +4,7 @@ import fi.iki.elonen.NanoHTTPD;
 import org.pac4j.core.exception.TechnicalException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,11 +16,15 @@ import java.util.Map;
  */
 public class WebServer extends NanoHTTPD {
 
-    private final Map<String, NanoResponse> responses;
+    private Map<String, ServerResponse> responses = new HashMap<>();
 
-    public WebServer(final int port, final Map<String, NanoResponse> responses) {
+    public WebServer(final int port) {
         super(port);
-        this.responses = responses;
+    }
+
+    public WebServer defineResponse(final String key, final ServerResponse response) {
+        responses.put(key, response);
+        return this;
     }
 
     public void start() {
@@ -37,7 +42,7 @@ public class WebServer extends NanoHTTPD {
         if (parameterList != null && parameterList.size() > 0) {
             r = parameterList.get(0);
         }
-        final NanoResponse response = responses.get(r);
+        final ServerResponse response = responses.get(r);
         if (response != null) {
             return newFixedLengthResponse(response.getStatus(), response.getMimeType(), response.getBody());
         } else {

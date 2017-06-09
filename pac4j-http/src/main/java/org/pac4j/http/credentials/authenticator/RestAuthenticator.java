@@ -69,6 +69,37 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
             return;
         }
 
+        final String body = callRestApi(username, password);
+        logger.debug("body: {}", body);
+        if (body != null) {
+            buildProfile(credentials, body);
+        }
+    }
+
+    protected void buildProfile(final UsernamePasswordCredentials credentials, final String body) throws HttpAction, CredentialsException {
+        final RestProfile profileClass = getProfileDefinition().newProfile();
+        final RestProfile profile;
+        try {
+            profile = mapper.readValue(body, profileClass.getClass());
+        } catch (final IOException e) {
+            throw new TechnicalException(e);
+        }
+        logger.debug("profile: {}", profile);
+        credentials.setUserProfile(profile);
+    }
+
+    /**
+     * Return the body from the REST API, passing the username/pasword auth.
+     * To be overridden using another HTTP client if necessary.
+     *
+     * @param username the username
+     * @param password the password
+     * @return the response body
+     * @throws HttpAction whether an extra HTTP action is required
+     * @throws CredentialsException whether an authentication error occurs
+     */
+    protected String callRestApi(final String username, final String password) throws HttpAction, CredentialsException {
+
         final String basicAuth;
         try {
             basicAuth = Base64.getEncoder().encodeToString((username + ":" + password).getBytes("UTF-8"));
@@ -85,13 +116,9 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
             int code = connection.getResponseCode();
             if (code != 200) {
                 logger.error("Failed response: {}", HttpUtils.buildHttpErrorMessage(connection));
+                return null;
             } else {
-                final String body = HttpUtils.readBody(connection);
-                logger.debug("body: {}", body);
-                final RestProfile profileClass = getProfileDefinition().newProfile();
-                final RestProfile profile = mapper.readValue(body, profileClass.getClass());
-                logger.debug("profile: {}", profile);
-                credentials.setUserProfile(profile);
+                return HttpUtils.readBody(connection);
             }
         } catch (final IOException e) {
             throw new TechnicalException(e);

@@ -3,12 +3,12 @@ package org.pac4j.http.test.tools;
 import fi.iki.elonen.NanoHTTPD;
 
 /**
- * An HTTP response.
+ * A server response.
  *
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class NanoResponse {
+public class ServerResponse {
 
     private final NanoHTTPD.Response.IStatus status;
 
@@ -16,7 +16,7 @@ public class NanoResponse {
 
     private final String body;
 
-    public NanoResponse(final NanoHTTPD.Response.IStatus status, final String mimeType, final String body) {
+    public ServerResponse(final NanoHTTPD.Response.IStatus status, final String mimeType, final String body) {
         this.status = status;
         this.mimeType = mimeType;
         this.body = body;

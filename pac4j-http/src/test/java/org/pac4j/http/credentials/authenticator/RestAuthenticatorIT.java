@@ -11,11 +11,8 @@ import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.util.TestsHelper;
 import org.pac4j.http.profile.RestProfile;
-import org.pac4j.http.test.tools.NanoResponse;
+import org.pac4j.http.test.tools.ServerResponse;
 import org.pac4j.http.test.tools.WebServer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -31,14 +28,10 @@ public final class RestAuthenticatorIT implements TestsConstants {
 
     @BeforeClass
     public static void setUp() {
-        final NanoResponse profileResponse = new NanoResponse(NanoHTTPD.Response.Status.OK, "application/json", "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }");
-        final NanoResponse notFoundResponse = new NanoResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found");
-        final NanoResponse parsingErrorResponse = new NanoResponse(NanoHTTPD.Response.Status.OK, "plain/text", "bad");
-        final Map<String, NanoResponse> responses = new HashMap<>();
-        responses.put("ok", profileResponse);
-        responses.put("notfound", notFoundResponse);
-        responses.put("pe", parsingErrorResponse);
-        final WebServer webServer = new WebServer(PORT, responses);
+        final WebServer webServer = new WebServer(PORT)
+            .defineResponse("ok", new ServerResponse(NanoHTTPD.Response.Status.OK, "application/json", "{ 'id': '" + ID + "', roles: [\"" + ROLE + "\"] }"))
+            .defineResponse("notfound", new ServerResponse(NanoHTTPD.Response.Status.NOT_FOUND, "plain/text", "Not found"))
+            .defineResponse("pe", new ServerResponse(NanoHTTPD.Response.Status.OK, "plain/text", "bad"));
         webServer.start();
     }
 

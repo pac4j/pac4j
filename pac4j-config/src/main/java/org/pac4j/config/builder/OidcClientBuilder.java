@@ -2,7 +2,6 @@ package org.pac4j.config.builder;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 import org.pac4j.oidc.client.AzureAdClient;
 import org.pac4j.oidc.client.GoogleOidcClient;
@@ -20,7 +19,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OidcClientBuilder extends AbstractBuilder implements PropertiesConstants {
+public class OidcClientBuilder extends AbstractBuilder {
 
     public OidcClientBuilder(final Map<String, String> properties) {
         super(properties);

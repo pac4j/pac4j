@@ -20,7 +20,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFactory, PropertiesConstants {
+public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFactory {
 
     private final String callbackUrl;
 
@@ -88,12 +88,16 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
             oidcClientBuilder.tryCreateOidcClient(clients);
         }
         // pac4j-http dependency required
-        if (hasHttpClients()) {
+        if (hasHttpAuthenticatorsOrClients()) {
+            final RestAuthenticatorBuilder restAuthenticatorBuilder = new RestAuthenticatorBuilder(properties);
+            restAuthenticatorBuilder.tryBuildRestAuthenticator(authenticators);
+
             final IndirectHttpClientBuilder indirectHttpClientBuilder = new IndirectHttpClientBuilder(properties, authenticators);
             indirectHttpClientBuilder.tryCreateLoginFormClient(clients);
             indirectHttpClientBuilder.tryCreateIndirectBasciAuthClient(clients);
-            final DirectClientBuilder directClientBuilder = new DirectClientBuilder(properties);
+            final DirectClientBuilder directClientBuilder = new DirectClientBuilder(properties, authenticators);
             directClientBuilder.tryCreateAnonymousClient(clients);
+            directClientBuilder.tryCreateDirectBasciAuthClient(clients);
         }
         return new Config(callbackUrl, clients);
     }
@@ -201,15 +205,23 @@ public class PropertiesConfigFactory extends AbstractBuilder implements ConfigFa
         return false;
     }
 
-    protected boolean hasHttpClients() {
+    protected boolean hasHttpAuthenticatorsOrClients() {
         if (isNotBlank(getProperty(ANONYMOUS))) {
             return true;
+        }
+        for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
+            if (isNotBlank(getProperty(REST_URL, i))) {
+                return true;
+            }
         }
         for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
             if (isNotBlank(getProperty(FORMCLIENT_LOGIN_URL, i)) && isNotBlank(getProperty(FORMCLIENT_AUTHENTICATOR, i))) {
                 return true;
             }
             if (isNotBlank(getProperty(INDIRECTBASICAUTH_AUTHENTICATOR, i))) {
+                return true;
+            }
+            if (isNotBlank(getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i))) {
                 return true;
             }
         }
