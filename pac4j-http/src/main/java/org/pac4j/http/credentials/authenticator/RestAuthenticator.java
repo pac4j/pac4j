@@ -36,13 +36,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
 
     private static final Logger logger = LoggerFactory.getLogger(RestAuthenticator.class);
 
-    private static ObjectMapper mapper;
-
-    static {
-        mapper = new ObjectMapper();
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-    }
+    private ObjectMapper mapper;
 
     private String url;
 
@@ -56,6 +50,11 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
     protected void internalInit(final WebContext context) {
         CommonHelper.assertNotBlank("url", url);
         defaultProfileDefinition(new CommonProfileDefinition<>(x -> new RestProfile()));
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        }
     }
 
     @Override
@@ -65,7 +64,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
         if (CommonHelper.isBlank(username) || CommonHelper.isBlank(password)) {
-            logger.error("Empty username or password");
+            logger.info("Empty username or password");
             return;
         }
 
@@ -114,11 +113,15 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
         try {
             connection = HttpUtils.openPostConnection(new URL(url), headers);
             int code = connection.getResponseCode();
-            if (code != 200) {
-                logger.error("Failed response: {}", HttpUtils.buildHttpErrorMessage(connection));
+            if (code == 200) {
+                logger.debug("Authentication success for username: {}", username);
+                return HttpUtils.readBody(connection);
+            } else if (code == 401 || code == 403) {
+                logger.info("Authentication failure: {}", HttpUtils.buildHttpErrorMessage(connection));
                 return null;
             } else {
-                return HttpUtils.readBody(connection);
+                logger.warn("Unexpected error: {}", HttpUtils.buildHttpErrorMessage(connection));
+                return null;
             }
         } catch (final IOException e) {
             throw new TechnicalException(e);
@@ -135,8 +138,16 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
         this.url = url;
     }
 
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
+    public void setMapper(final ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "url", url);
+        return CommonHelper.toString(this.getClass(), "url", url, "mapper", mapper);
     }
 }

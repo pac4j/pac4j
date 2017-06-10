@@ -213,39 +213,6 @@ public final class CommonHelper {
     }
 
     /**
-     * Extract the prefix of the name.
-     *
-     * @param name the name
-     * @return the prefix
-     */
-    @Deprecated
-    protected static String extractPrefix(final String name) {
-        String prefix = null;
-        if (name != null) {
-            int prefixEnd = name.indexOf(":");
-            if (prefixEnd != -1) {
-                prefix = name.substring(0, prefixEnd);
-            }
-        }
-        return prefix;
-    }
-
-    /**
-     * Add a slash at the beginning of a path if missing.
-     *
-     * @param path the path
-     * @return the completed path
-     */
-    @Deprecated
-    protected static String startWithSlash(final String path) {
-        if (!path.startsWith("/")) {
-            return "/" + path;
-        } else {
-            return path;
-        }
-    }
-
-    /**
      * Return a random string of a certain size.
      *
      * @param size the size
