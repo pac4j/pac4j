@@ -29,11 +29,13 @@ It can be defined for HTTP clients which deal with `TokenCredentials`.
 
 It supports plain text, signed and/or encrypted JWT tokens. In all cases, the `JwtAuthenticator` requires the JWT to have a subject (`sub` claim) unless it will throw an exception.
 
+<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that for security reasons, plain text JWT tokens will be accepted ONLY if no signature configuration is defined. If one or more signature configurations are defined, the JWT tokens are expected to be signed accordingly.</div>
+
 ### &#9656; Signature
 
 To handle signed JWT, you must define one or more [`SignatureConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/signature/SignatureConfiguration.java) with the `addSignatureConfiguration` method.
 
-Three signature configurations are available: with secret (`SecretSignatureConfiguration`), using a RSA key pair (`RSASignatureConfiguration`) or using an elliptic-curve key pair (`ECSignatureConfiguration`).
+Three signature configurations are available: with a secret (`SecretSignatureConfiguration`), using an RSA key pair (`RSASignatureConfiguration`) or using an elliptic-curve key pair (`ECSignatureConfiguration`).
 
 To verify a signed JWT, the defined signature configurations will be tried successfully (if the algorithm of the JWT matches the one supported by the signature configuration).
 
@@ -41,7 +43,7 @@ To verify a signed JWT, the defined signature configurations will be tried succe
 
 To handle encrypted JWT, you must define one or more [`EncryptionConfiguration`](https://github.com/pac4j/pac4j/blob/master/pac4j-jwt/src/main/java/org/pac4j/jwt/config/encryption/EncryptionConfiguration.java) with the `addEncryptionConfiguration` method.
 
-Like for signature configurations, three encryption configurations are available: with secret (`SecretEncryptionConfiguration`), using a RSA key pair (`RSAEncryptionConfiguration`) or using an elliptic-curve key pair (`ECEncryptionConfiguration`).
+Like for signature configurations, three encryption configurations are available: with a secret (`SecretEncryptionConfiguration`), using an RSA key pair (`RSAEncryptionConfiguration`) or using an elliptic-curve key pair (`ECEncryptionConfiguration`).
 
 To decrypt an encrypted JWT, the defined encryption configurations will be tried successfully (if the algorithm of the JWT matches the one supported by the encryption configuration).
 
@@ -93,7 +95,7 @@ String token = generator.generate(facebookProfile);
 
 ## 4) JWK
 
-If you configuration is available as a JSON JWK, you can use the methods of the [`JWKHelper`](https://github.com/pac4j/pac4j/tree/master/pac4j-jwt/src/main/java/org/pac4j/jwt/util/JWKHelper.java) to:
+If your configuration is available as a JSON JWK, you can use the methods of the [`JWKHelper`](https://github.com/pac4j/pac4j/tree/master/pac4j-jwt/src/main/java/org/pac4j/jwt/util/JWKHelper.java) to:
 
 - retrieve the secret from the JSON using the `buildSecretFromJwk` method
 - build the RSA key from the JSON using the `buildRSAKeyPairFromJwk` method

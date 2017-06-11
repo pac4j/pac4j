@@ -22,6 +22,12 @@ public class PathMatcher implements Matcher {
     private final Set<String> excludedPaths = new HashSet<>();
     private final Set<Pattern> excludedPatterns = new HashSet<>();
 
+    public PathMatcher() {}
+
+    public PathMatcher(final String regexpPath) {
+        excludeRegex(regexpPath);
+    }
+
     /**
      * Any path exactly matching this string will be excluded. Use this method if you are excluding a specific path.
      *
