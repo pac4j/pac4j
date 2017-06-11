@@ -117,10 +117,10 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
                 logger.debug("Authentication success for username: {}", username);
                 return HttpUtils.readBody(connection);
             } else if (code == 401 || code == 403) {
-                logger.info("Authentication failure: {}", HttpUtils.buildHttpErrorMessage(connection));
+                logger.info("Authentication failure for username: {} -> {}", username, HttpUtils.buildHttpErrorMessage(connection));
                 return null;
             } else {
-                logger.warn("Unexpected error: {}", HttpUtils.buildHttpErrorMessage(connection));
+                logger.warn("Unexpected error for username: {} -> {}", username, HttpUtils.buildHttpErrorMessage(connection));
                 return null;
             }
         } catch (final IOException e) {
