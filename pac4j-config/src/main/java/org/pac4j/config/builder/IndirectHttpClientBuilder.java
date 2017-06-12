@@ -1,12 +1,9 @@
 package org.pac4j.config.builder;
 
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 
 import java.util.List;
 import java.util.Map;
@@ -19,13 +16,10 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class IndirectHttpClientBuilder extends AbstractBuilder implements PropertiesConstants {
-
-    private final Map<String, Authenticator> authenticators;
+public class IndirectHttpClientBuilder extends AbstractBuilder {
 
     public IndirectHttpClientBuilder(final Map<String, String> properties, final Map<String, Authenticator> authenticators) {
-        super(properties);
-        this.authenticators = authenticators;
+        super(properties, authenticators);
     }
 
     public void tryCreateLoginFormClient(final List<Client> clients) {
@@ -60,16 +54,6 @@ public class IndirectHttpClientBuilder extends AbstractBuilder implements Proper
                 indirectBasicAuthClient.setName(concat(indirectBasicAuthClient.getName(), i));
                 clients.add(indirectBasicAuthClient);
             }
-        }
-    }
-
-    protected Authenticator getAuthenticator(final String name) {
-        if (AUTHENTICATOR_TEST_TOKEN.equals(name)) {
-            return new SimpleTestTokenAuthenticator();
-        } else if (AUTHENTICATOR_TEST_USERNAME_PASSWORD.equals(name)) {
-            return new SimpleTestUsernamePasswordAuthenticator();
-        } else {
-            return authenticators.get(name);
         }
     }
 }

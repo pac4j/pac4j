@@ -71,6 +71,7 @@
         <unboundid.version>3.2.1</unboundid.version>
         <h2.version>1.4.194</h2.version>
 		<java.version>1.8</java.version>
+        <jackson.version>2.8.7</jackson.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -152,6 +153,11 @@
 				<artifactId>nimbus-jose-jwt</artifactId>
 				<version>${nimbus-jose-jwt.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 			<!-- for testing -->
 			<dependency>
 				<groupId>org.pac4j</groupId>

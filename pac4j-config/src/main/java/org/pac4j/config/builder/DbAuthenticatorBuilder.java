@@ -1,7 +1,6 @@
 package org.pac4j.config.builder;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.credentials.authenticator.Authenticator;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
@@ -17,7 +16,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class DbAuthenticatorBuilder extends AbstractBuilder implements PropertiesConstants {
+public class DbAuthenticatorBuilder extends AbstractBuilder {
 
     public DbAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);

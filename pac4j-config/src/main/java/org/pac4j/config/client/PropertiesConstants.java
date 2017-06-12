@@ -87,6 +87,8 @@ public interface PropertiesConstants {
 
     String ANONYMOUS = "anonymous";
 
+    String DIRECTBASICAUTH_AUTHENTICATOR = "directBasicAuth.authenticator";
+
     String LDAP_TYPE = "ldap.type";
     String LDAP_DN_FORMAT = "ldap.dnFormat";
     String LDAP_ATTRIBUTES = "ldap.principalAttributes";
@@ -157,6 +159,8 @@ public interface PropertiesConstants {
     String DB_LOGIN_TIMEOUT = "db.loginTimeout";
     String DB_DATASOURCE_JNDI = "db.dataSourceJndi";
     String DB_PASSWORD_ENCODER = "db.passwordEncoder";
+
+    String REST_URL = "rest.url";
 
     String SPRING_ENCODER = "encoder.spring";
     String SPRING_ENCODER_TYPE = "encoder.spring.type";

@@ -1,6 +1,5 @@
 package org.pac4j.config.builder;
 
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.credentials.password.SpringSecurityPasswordEncoder;
 import org.pac4j.core.exception.TechnicalException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,7 +19,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class SpringEncoderBuilder extends AbstractBuilder implements PropertiesConstants {
+public class SpringEncoderBuilder extends AbstractBuilder {
 
     public SpringEncoderBuilder(final Map<String, String> properties) {
         super(properties);

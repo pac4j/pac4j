@@ -11,8 +11,10 @@ import org.pac4j.core.context.MockWebContext;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.util.TestsConstants;
+import org.pac4j.http.client.direct.DirectBasicAuthClient;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
+import org.pac4j.http.credentials.authenticator.RestAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.pac4j.ldap.profile.service.LdapProfileService;
 import org.pac4j.ldap.test.tools.LdapServer;
@@ -102,6 +104,9 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
 
         properties.put(INDIRECTBASICAUTH_AUTHENTICATOR.concat(".5"), "db");
 
+        properties.put(REST_URL.concat(".3"), PAC4J_BASE_URL);
+        properties.put(DIRECTBASICAUTH_AUTHENTICATOR.concat(".7"), "rest.3");
+
         LdapServer ldapServer = null;
         try {
             ldapServer = new LdapServer();
@@ -111,7 +116,7 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             final PropertiesConfigFactory factory = new PropertiesConfigFactory(CALLBACK_URL, properties);
             final Config config = factory.build();
             final Clients clients = config.getClients();
-            assertEquals(12, clients.getClients().size());
+            assertEquals(13, clients.getClients().size());
 
             final FacebookClient fbClient = (FacebookClient) clients.findClient("FacebookClient");
             assertEquals(ID, fbClient.getKey());
@@ -168,6 +173,11 @@ public final class PropertiesConfigFactoryTests implements TestsConstants {
             final UsernamePasswordCredentials dbCredentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
             dbAuthenticator.validate(dbCredentials, MockWebContext.create());
             assertNotNull(dbCredentials.getUserProfile());
+
+            final DirectBasicAuthClient directBasicAuthClient = (DirectBasicAuthClient) clients.findClient("DirectBasicAuthClient.7");
+            assertNotNull(directBasicAuthClient);
+            final RestAuthenticator restAuthenticator = (RestAuthenticator) directBasicAuthClient.getAuthenticator();
+            assertEquals(PAC4J_BASE_URL, restAuthenticator.getUrl());
 
         } finally {
             if (ldapServer != null) {

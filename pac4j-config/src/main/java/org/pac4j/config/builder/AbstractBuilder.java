@@ -1,5 +1,11 @@
 package org.pac4j.config.builder;
 
+import org.pac4j.config.client.PropertiesConstants;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestTokenAuthenticator;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
+
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -8,7 +14,7 @@ import java.util.Map;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class AbstractBuilder {
+public abstract class AbstractBuilder implements PropertiesConstants {
 
     protected static final int MAX_NUM_CLIENTS = 10;
     protected static final int MAX_NUM_AUTHENTICATORS = 10;
@@ -17,8 +23,16 @@ public abstract class AbstractBuilder {
 
     protected final Map<String, String> properties;
 
+    protected final Map<String, Authenticator> authenticators;
+
     protected AbstractBuilder(final Map<String, String> properties) {
         this.properties = properties;
+        this.authenticators = new HashMap<>();
+    }
+
+    protected AbstractBuilder(final Map<String, String> properties, final Map<String, Authenticator> authenticators) {
+        this.properties = properties;
+        this.authenticators = authenticators;
     }
 
     protected String concat(final String value, int num) {
@@ -47,5 +61,15 @@ public abstract class AbstractBuilder {
 
     protected long getPropertyAsLong(final String name, final int num) {
         return Long.parseLong(getProperty(name, num));
+    }
+
+    protected Authenticator getAuthenticator(final String name) {
+        if (AUTHENTICATOR_TEST_TOKEN.equals(name)) {
+            return new SimpleTestTokenAuthenticator();
+        } else if (AUTHENTICATOR_TEST_USERNAME_PASSWORD.equals(name)) {
+            return new SimpleTestUsernamePasswordAuthenticator();
+        } else {
+            return authenticators.get(name);
+        }
     }
 }
