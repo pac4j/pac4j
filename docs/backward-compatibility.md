@@ -15,6 +15,9 @@ Given a version X.Y.Z:
 
 Generally, *pac4j* implementations will adopt the semver versioning when upgrading to `pac4j` version 2, if they don't already have.
 
+<div class="alert alert-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Notice that, while <code>pac4j-*</code> modules are backward compatible, you should always add the <code>pac4j-core</code> dependency in the same version as the upgraded <code>pac4j-*</code> dependency.</div>
+
+
 ## 2) Maintenance
 
 Two stable and released streams of `pac4j` are maintained at the same time.
