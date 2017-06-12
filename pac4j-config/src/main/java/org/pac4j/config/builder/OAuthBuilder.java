@@ -1,6 +1,5 @@
 package org.pac4j.config.builder;
 
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 import org.pac4j.oauth.client.*;
 
@@ -15,7 +14,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuthBuilder extends AbstractBuilder implements PropertiesConstants {
+public class OAuthBuilder extends AbstractBuilder {
 
     public OAuthBuilder(final Map<String, String> properties) {
         super(properties);

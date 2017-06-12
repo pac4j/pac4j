@@ -3,7 +3,6 @@ package org.pac4j.config.builder;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class CasClientBuilder extends AbstractBuilder implements PropertiesConstants {
+public class CasClientBuilder extends AbstractBuilder {
 
     public CasClientBuilder(final Map<String, String> properties) {
         super(properties);

@@ -3,7 +3,6 @@ package org.pac4j.config.builder;
 import org.apache.shiro.authc.credential.DefaultPasswordService;
 import org.apache.shiro.crypto.hash.DefaultHashService;
 import org.apache.shiro.util.ByteSource;
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.credentials.password.ShiroPasswordEncoder;
 
@@ -17,7 +16,7 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.1.0
  */
-public class ShiroEncoderBuilder extends AbstractBuilder implements PropertiesConstants {
+public class ShiroEncoderBuilder extends AbstractBuilder {
 
     public ShiroEncoderBuilder(final Map<String, String> properties) {
         super(properties);

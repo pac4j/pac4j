@@ -6,10 +6,10 @@ import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.auth.*;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
-import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import org.pac4j.core.util.HttpUtils;
 import org.pac4j.core.util.InitializableWebObject;
 
 import java.io.IOException;
@@ -68,10 +68,6 @@ public class OidcConfiguration extends InitializableWebObject {
 
     /* max clock skew in seconds */
     private int maxClockSkew = DEFAULT_MAX_CLOCK_SKEW;
-
-    /* timeouts for token and userinfo requests */
-    private int connectTimeout = HttpConstants.DEFAULT_CONNECT_TIMEOUT;
-    private int readTimeout = HttpConstants.DEFAULT_READ_TIMEOUT;
 
     private ResourceRetriever resourceRetriever;
 
@@ -205,20 +201,24 @@ public class OidcConfiguration extends InitializableWebObject {
         this.maxClockSkew = maxClockSkew;
     }
 
+    @Deprecated
     public int getConnectTimeout() {
-        return connectTimeout;
+        return HttpUtils.getConnectTimeout();
     }
 
+    @Deprecated
     public void setConnectTimeout(final int connectTimeout) {
-        this.connectTimeout = connectTimeout;
+        HttpUtils.setConnectTimeout(connectTimeout);
     }
 
+    @Deprecated
     public int getReadTimeout() {
-        return readTimeout;
+        return HttpUtils.getReadTimeout();
     }
 
+    @Deprecated
     public void setReadTimeout(final int readTimeout) {
-        this.readTimeout = readTimeout;
+        HttpUtils.setReadTimeout(readTimeout);
     }
 
     public ResourceRetriever getResourceRetriever() {
@@ -278,7 +278,7 @@ public class OidcConfiguration extends InitializableWebObject {
     public String toString() {
         return CommonHelper.toString(this.getClass(), "clientId", clientId, "secret", "[protected]", "discoveryURI", discoveryURI, "scope", scope,
                 "customParams", customParams, "clientAuthenticationMethod", clientAuthenticationMethod, "useNonce", useNonce, "preferredJwsAlgorithm", preferredJwsAlgorithm,
-                "maxClockSkew", maxClockSkew, "connectTimeout", connectTimeout, "readTimeout", readTimeout, "resourceRetriever", resourceRetriever,
+                "maxClockSkew", maxClockSkew, "connectTimeout", HttpUtils.getConnectTimeout(), "readTimeout", HttpUtils.getReadTimeout(), "resourceRetriever", resourceRetriever,
                 "callbackUrl", callbackUrl, "responseType", responseType, "responseMode", responseMode, "logoutUrl", logoutUrl);
     }
 }

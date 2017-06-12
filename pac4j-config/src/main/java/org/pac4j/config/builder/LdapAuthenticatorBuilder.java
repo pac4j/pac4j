@@ -4,7 +4,6 @@ import org.ldaptive.pool.PooledConnectionFactoryManager;
 import org.ldaptive.sasl.Mechanism;
 import org.ldaptive.sasl.QualityOfProtection;
 import org.ldaptive.sasl.SecurityStrength;
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.config.ldaptive.LdapAuthenticationProperties;
 import org.pac4j.config.ldaptive.LdaptiveAuthenticatorBuilder;
 import org.pac4j.core.credentials.authenticator.Authenticator;
@@ -20,7 +19,7 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class LdapAuthenticatorBuilder extends AbstractBuilder implements PropertiesConstants {
+public class LdapAuthenticatorBuilder extends AbstractBuilder {
 
     public LdapAuthenticatorBuilder(final Map<String, String> properties) {
         super(properties);

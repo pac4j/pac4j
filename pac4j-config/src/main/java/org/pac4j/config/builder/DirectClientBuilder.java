@@ -1,8 +1,9 @@
 package org.pac4j.config.builder;
 
-import org.pac4j.config.client.PropertiesConstants;
 import org.pac4j.core.client.Client;
 import org.pac4j.core.client.direct.AnonymousClient;
+import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.http.client.direct.DirectBasicAuthClient;
 
 import java.util.List;
 import java.util.Map;
@@ -15,16 +16,28 @@ import static org.pac4j.core.util.CommonHelper.isNotBlank;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class DirectClientBuilder extends AbstractBuilder implements PropertiesConstants {
+public class DirectClientBuilder extends AbstractBuilder {
 
-    public DirectClientBuilder(final Map<String, String> properties) {
-        super(properties);
+    public DirectClientBuilder(final Map<String, String> properties, final Map<String, Authenticator> authenticators) {
+        super(properties, authenticators);
     }
 
     public void tryCreateAnonymousClient(final List<Client> clients) {
         final String anonymous = getProperty(ANONYMOUS);
         if (isNotBlank(anonymous)) {
             clients.add(new AnonymousClient());
+        }
+    }
+
+    public void tryCreateDirectBasciAuthClient(final List<Client> clients) {
+        for (int i = 0; i <= MAX_NUM_CLIENTS; i++) {
+            final String authenticator = getProperty(DIRECTBASICAUTH_AUTHENTICATOR, i);
+            if (isNotBlank(authenticator)) {
+                final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient();
+                directBasicAuthClient.setAuthenticator(getAuthenticator(authenticator));
+                directBasicAuthClient.setName(concat(directBasicAuthClient.getName(), i));
+                clients.add(directBasicAuthClient);
+            }
         }
     }
 }
