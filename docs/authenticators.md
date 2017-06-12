@@ -14,7 +14,7 @@ This `Authenticator` interface has only one method: `void validate(C credentials
 
 The [`HttpAction`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/exception/HttpAction.java) allows you to interrupt the credentials validation and trigger a specific HTTP action (like a temporary redirection).
 
-You can use various `Authenticator` for many identity mechanisms:
+You can use various `Authenticator` for many identity systems:
 
 - [LDAP](authenticators/ldap.html)
 - [SQL](authenticators/sql.html)
@@ -22,7 +22,6 @@ You can use various `Authenticator` for many identity mechanisms:
 - [MongoDB](authenticators/mongodb.html)
 - [CouchDB](authenticators/couchdb.html)
 - [IP address](authenticators/ip.html)
-- [REST API](authenticators/rest.html)
 
 
 ## 1) Deal with performance issues

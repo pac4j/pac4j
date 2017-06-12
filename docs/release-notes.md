@@ -9,7 +9,6 @@ title: Release notes&#58;
 - Removed Stormpath support
 - The password encoders and LDAP/SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
 - Supports CouchDB for authentication and user management
-- REST API `Authenticator`
 - In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
 
 **v2.0.0**:
