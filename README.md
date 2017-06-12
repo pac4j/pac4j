@@ -51,6 +51,7 @@ There exist extensions to pac4j developed by third parties. The extensions provi
 
 ## Need help?
 
-If you have any question, please use the following mailing lists:
+If you have any question, please use the [pac4j mailing lists](http://www.pac4j.org/mailing-lists.html):
+
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
 - [pac4j developers](https://groups.google.com/forum/?hl=en#!forum/pac4j-dev)
