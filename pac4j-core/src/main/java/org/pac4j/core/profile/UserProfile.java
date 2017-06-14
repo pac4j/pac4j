@@ -302,8 +302,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         return clientName;
     }
 
-    public void setClientName(String clientName) {
-        CommonHelper.assertNotNull("clientName", clientName);
+    public void setClientName(final String clientName) {
         this.clientName = clientName;
     }
 

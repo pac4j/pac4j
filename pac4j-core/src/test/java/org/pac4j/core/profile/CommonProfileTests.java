@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  * This class tests the {@link CommonProfile} class.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
@@ -101,12 +101,6 @@ public final class CommonProfileTests implements TestsConstants {
     public void testNullId() {
         final CommonProfile profile = new CommonProfile();
         TestsHelper.expectException(() -> profile.setId(null), TechnicalException.class, "id cannot be null");
-    }
-
-    @Test
-    public void testNullClientName() {
-        final CommonProfile profile = new CommonProfile();
-        TestsHelper.expectException(() -> profile.setClientName(null), TechnicalException.class, "clientName cannot be null");
     }
 
     @Test
