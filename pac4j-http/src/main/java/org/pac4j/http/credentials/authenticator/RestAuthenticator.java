@@ -1,6 +1,7 @@
 package org.pac4j.http.credentials.authenticator;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
@@ -54,6 +55,7 @@ public class RestAuthenticator extends ProfileDefinitionAware<RestProfile> imple
             mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         }
     }
 
