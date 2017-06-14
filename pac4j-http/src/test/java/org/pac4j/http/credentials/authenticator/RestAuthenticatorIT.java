@@ -62,4 +62,11 @@ public final class RestAuthenticatorIT implements TestsConstants {
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         TestsHelper.expectException(() -> authenticator.validate(credentials, MockWebContext.create()), TechnicalException.class, "com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'bad': was expecting ('true', 'false' or 'null')\n at [Source: bad; line: 1, column: 7]");
     }
+
+    @Test
+    public void testHttps() throws HttpAction, CredentialsException {
+        final RestAuthenticator authenticator = new RestAuthenticator("https://www.google.com");
+        final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
+        authenticator.validate(credentials, MockWebContext.create());
+    }
 }
