@@ -22,12 +22,12 @@ Each client has a name which is by default the class name (like `FacebookClient`
 
 Understand the main features:
 
-- [Direct vs indirect clients](#direct-vs-indirect-clients)
-- [Compute roles and permissions](#compute-roles-and-permissions)
-- [The callback URL](#the-callback-url)
-- [Profile definition](#profile-definition)
-- [AJAX requests](#ajax-requests)
-- [The `Client` methods](#the-client-methods)
+- [Direct vs indirect clients](#1-direct-vs-indirect-clients)
+- [Compute roles and permissions](#2-compute-roles-and-permissions)
+- [The callback URL](#3-the-callback-url)
+- [Profile definition](#4-profile-definition)
+- [AJAX requests](#5-ajax-requests)
+- [The `Client` methods](#6-the-client-methods)
 
 
 ---
