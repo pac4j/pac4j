@@ -36,7 +36,11 @@ public class J2ESessionStore implements SessionStore<J2EContext> {
 
     @Override
     public void set(final J2EContext context, final String key, final Object value) {
-        getHttpSession(context).setAttribute(key, value);
+        if (value == null) {
+            getHttpSession(context).removeAttribute(key);
+        } else {
+            getHttpSession(context).setAttribute(key, value);
+        }
     }
 
     @Override
