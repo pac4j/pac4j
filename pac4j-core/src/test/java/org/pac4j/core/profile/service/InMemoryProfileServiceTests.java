@@ -35,7 +35,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 	private static final String IDPERSON3 = "idperson3";
 
 	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
-	public final static InMemoryProfileService<CommonProfile> inMemoryProfileService = new InMemoryProfileService<CommonProfile>(CommonProfile.class);
+	public final static InMemoryProfileService<CommonProfile> inMemoryProfileService = new InMemoryProfileService<CommonProfile>(x -> new CommonProfile());
 	static {
 		inMemoryProfileService.setPasswordEncoder(PASSWORD_ENCODER);
 	}
