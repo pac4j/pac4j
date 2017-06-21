@@ -35,14 +35,13 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 	private static final String IDPERSON3 = "idperson3";
 
 	public final static PasswordEncoder PASSWORD_ENCODER = new ShiroPasswordEncoder(new DefaultPasswordService());
-	public final static InMemoryProfileService<CommonProfile> inMemoryProfileService = new InMemoryProfileService<CommonProfile>(x -> new CommonProfile());
-	static {
+	public InMemoryProfileService<CommonProfile> inMemoryProfileService;
+
+
+	@Before
+	public void setUp() {
+		inMemoryProfileService = new InMemoryProfileService<CommonProfile>(x -> new CommonProfile());
 		inMemoryProfileService.setPasswordEncoder(PASSWORD_ENCODER);
-	}
-
-
-	@BeforeClass
-	public static void setUp() {
 		final String password = PASSWORD_ENCODER.encode(PASSWORD);
 		// insert sample data
 		final Map<String, Object> properties1 = new HashMap<>();
@@ -132,7 +131,7 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 		assertEquals(0, results3.size());
 	}
 
-	private static List<Map<String, Object>> getData(final String id) {
+	private List<Map<String, Object>> getData(final String id) {
 		return inMemoryProfileService.read(Arrays.asList("id", "username", "linkedid", "password", "serializedprofile"), "id", id);
 	}
 }

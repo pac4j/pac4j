@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * In-memory profile service.
@@ -70,18 +71,18 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
 	@Override
 	protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
 		logger.debug("Reading key / value: {} / {}", key, value);
-		final List<Map<String, Object>> listAttributes = new ArrayList<>();
+		final List<Map<String, Object>> listAttributes;
 		if (key.equals(getIdAttribute())) {
+			listAttributes = new ArrayList<>();
 			final Map<String,Object> profile = profiles.get(value);
 			if (profile != null) {
 				listAttributes.add(populateAttributes(profile, names));
 			}
 		} else {
-			for (Map<String,Object> profile : profiles.values()) {
-				if (profile.get(key).equals(value)) {
-					listAttributes.add(populateAttributes(profile, names));
-				}
-			}
+			listAttributes = profiles.entrySet().stream()
+					.filter(p -> p.getValue().get(key).equals(value))
+					.map(p -> populateAttributes(p.getValue(), names))
+					.collect(Collectors.toList());
 		}
 		logger.debug("Found: {}", listAttributes);
 		return listAttributes;
