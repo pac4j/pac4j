@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * In-memory profile service.
  *
  * @author Elie Roux
- * @since 2.0.0
+ * @since 2.1.0
  */
 
 public class InMemoryProfileService<U extends CommonProfile> extends AbstractProfileService<U>  {
