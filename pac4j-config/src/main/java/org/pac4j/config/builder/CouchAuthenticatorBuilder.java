@@ -1,5 +1,6 @@
 package org.pac4j.config.builder;
 
+import java.net.MalformedURLException;
 import java.util.Map;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
@@ -28,7 +29,7 @@ public class CouchAuthenticatorBuilder  extends AbstractBuilder {
 
     public void tryBuildDbAuthenticator(final Map<String, Authenticator> authenticators, final Map<String, PasswordEncoder> encoders) {
         for (int i = 0; i <= MAX_NUM_AUTHENTICATORS; i++) {
-            if (containsProperty(COUCH_URL, i) || containsProperty(COUCH_DATABASENAME, i)) {
+            if (containsProperty(COUCH_URL, i) && containsProperty(COUCH_DATABASENAME, i)) {
                 final Builder httpClientBuilder = new StdHttpClient.Builder();
                 if (containsProperty(COUCH_USERNAME, i)) {
                     httpClientBuilder.username(getProperty(COUCH_USERNAME, i));
@@ -36,17 +37,14 @@ public class CouchAuthenticatorBuilder  extends AbstractBuilder {
                 if (containsProperty(COUCH_PASSWORD, i)) {
                     httpClientBuilder.password(getProperty(COUCH_PASSWORD, i));
                 }
-                if (containsProperty(COUCH_URL, i)) {
-                    httpClientBuilder.password(getProperty(COUCH_URL, i));
-                } else {
-                    throw new TechnicalException("missing "+COUCH_URL+" property in CouchDB configuration");
+                try {
+                    httpClientBuilder.url(getProperty(COUCH_URL, i));
+                } catch (MalformedURLException e) {
+                    throw new TechnicalException(e);
                 }
+                final String databaseName = getProperty(COUCH_DATABASENAME, i);
                 final HttpClient httpClient = httpClientBuilder.build();
                 final CouchDbInstance dbInstance = new StdCouchDbInstance(httpClient);
-                if (!containsProperty(COUCH_DATABASENAME, i)) {
-                    throw new TechnicalException("missing "+COUCH_DATABASENAME+" property in CouchDB configuration");
-                } 
-                final String databaseName = getProperty(COUCH_DATABASENAME, i);
                 if (!dbInstance.checkIfDbExists(databaseName)) {
                     throw new TechnicalException("Database "+databaseName+" does not exist, please create it with the appropriate design doc, see http://www.pac4j.org/docs/authenticators/couchdb.html");
                 }
