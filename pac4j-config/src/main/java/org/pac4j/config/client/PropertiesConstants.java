@@ -159,7 +159,7 @@ public interface PropertiesConstants {
     String DB_LOGIN_TIMEOUT = "db.loginTimeout";
     String DB_DATASOURCE_JNDI = "db.dataSourceJndi";
     String DB_PASSWORD_ENCODER = "db.passwordEncoder";
-    
+
     String COUCH_URL = "couch.url";
     String COUCH_USERNAME = "couch.username";
     String COUCH_PASSWORD = "couch.password";
