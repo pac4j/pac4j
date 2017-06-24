@@ -115,9 +115,20 @@ public final class CommonHelper {
      *
      * @param name  name if the string
      * @param value value of the string
+     * @param msg an expanatory message
+     */
+    public static void assertNotBlank(final String name, final String value, final String msg) {
+        assertTrue(!isBlank(value), name + " cannot be blank" + (msg != null ? ": " + msg : ""));
+    }
+
+    /**
+     * Verify that a String is not blank otherwise throw a {@link TechnicalException}.
+     *
+     * @param name  name if the string
+     * @param value value of the string
      */
     public static void assertNotBlank(final String name, final String value) {
-        assertTrue(!isBlank(value), name + " cannot be blank");
+        assertNotBlank(name, value, null);
     }
 
     /**
