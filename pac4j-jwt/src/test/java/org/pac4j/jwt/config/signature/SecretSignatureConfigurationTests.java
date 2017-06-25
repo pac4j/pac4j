@@ -26,7 +26,7 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
     @Test
     public void testMissingSecret() {
         final SecretSignatureConfiguration config = new SecretSignatureConfiguration();
-        TestsHelper.expectException(config::init, TechnicalException.class, "secret cannot be blank");
+        TestsHelper.expectException(config::init, TechnicalException.class, "secret cannot be null");
     }
 
     @Test

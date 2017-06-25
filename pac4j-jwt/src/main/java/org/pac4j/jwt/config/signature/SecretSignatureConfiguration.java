@@ -7,6 +7,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * HMac signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac
@@ -16,18 +17,26 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class SecretSignatureConfiguration extends AbstractSignatureConfiguration {
 
-    private String secret;
+    private byte[] secret;
 
     public SecretSignatureConfiguration() {
         algorithm = JWSAlgorithm.HS256;
     }
 
     public SecretSignatureConfiguration(final String secret) {
+        this(secret.getBytes(UTF_8));
+    }
+
+    public SecretSignatureConfiguration(final byte[] secret) {
         this();
         this.secret = secret;
     }
 
     public SecretSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
+        this(secret.getBytes(UTF_8),algorithm);
+    }
+
+    public SecretSignatureConfiguration(final byte[] secret, final JWSAlgorithm algorithm) {
         this.secret = secret;
         this.algorithm = algorithm;
     }
@@ -35,7 +44,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("algorithm", algorithm);
-        CommonHelper.assertNotBlank("secret", secret);
+        CommonHelper.assertNotNull("secret", secret);
 
         if (!supports(this.algorithm)) {
             throw new TechnicalException("Only the HS256, HS384 and HS512 algorithms are supported for HMac signature");
@@ -70,11 +79,11 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     }
 
     public String getSecret() {
-        return secret;
+        return new String(secret,UTF_8);
     }
 
     public void setSecret(final String secret) {
-        this.secret = secret;
+        this.secret = secret.getBytes(UTF_8);
     }
 
     @Override

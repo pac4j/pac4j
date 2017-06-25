@@ -8,7 +8,7 @@ import com.nimbusds.jose.crypto.DirectEncrypter;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
-import java.io.UnsupportedEncodingException;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Secret encryption configuration.
@@ -18,22 +18,30 @@ import java.io.UnsupportedEncodingException;
  */
 public class SecretEncryptionConfiguration extends AbstractEncryptionConfiguration {
 
-    private String secret;
+    private byte[] secret;
 
     public SecretEncryptionConfiguration() {
         algorithm = JWEAlgorithm.DIR;
         method = EncryptionMethod.A256GCM;
     }
 
-    public SecretEncryptionConfiguration(final String secret) {
+    public SecretEncryptionConfiguration(final byte[] secret){
         this();
         this.secret = secret;
     }
 
-    public SecretEncryptionConfiguration(final String secret, final JWEAlgorithm algorithm, final EncryptionMethod method) {
+    public SecretEncryptionConfiguration(final String secret) {
+        this(secret.getBytes(UTF_8));
+    }
+
+    public SecretEncryptionConfiguration(final byte[] secret, final JWEAlgorithm algorithm, final EncryptionMethod method) {
         this.secret = secret;
         this.algorithm = algorithm;
         this.method = method;
+    }
+
+    public SecretEncryptionConfiguration(final String secret, final JWEAlgorithm algorithm, final EncryptionMethod method) {
+        this(secret.getBytes(UTF_8), algorithm, method);
     }
 
     @Override
@@ -48,7 +56,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
 
     @Override
     protected void internalInit() {
-        CommonHelper.assertNotBlank("secret", secret);
+        CommonHelper.assertNotNull("secret", secret);
         CommonHelper.assertNotNull("algorithm", algorithm);
         CommonHelper.assertNotNull("method", method);
 
@@ -61,11 +69,11 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     protected JWEEncrypter buildEncrypter() {
         try {
             if (DirectDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)) {
-                return new DirectEncrypter(this.secret.getBytes("UTF-8"));
+                return new DirectEncrypter(this.secret);
             } else {
-                return new AESEncrypter(this.secret.getBytes("UTF-8"));
+                return new AESEncrypter(this.secret);
             }
-        } catch (final UnsupportedEncodingException | KeyLengthException e) {
+        } catch (final KeyLengthException e) {
             throw new TechnicalException(e);
         }
     }
@@ -74,21 +82,21 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     protected JWEDecrypter buildDecrypter() {
         try {
             if (DirectDecrypter.SUPPORTED_ALGORITHMS.contains(algorithm)) {
-                return new DirectDecrypter(this.secret.getBytes("UTF-8"));
+                return new DirectDecrypter(this.secret);
             } else {
-                return new AESDecrypter(this.secret.getBytes("UTF-8"));
+                return new AESDecrypter(this.secret);
             }
-        } catch (final UnsupportedEncodingException | KeyLengthException e) {
+        } catch (final KeyLengthException e) {
             throw new TechnicalException(e);
         }
     }
 
     public String getSecret() {
-        return secret;
+        return new String(secret,UTF_8);
     }
 
     public void setSecret(final String secret) {
-        this.secret = secret;
+        this.secret = secret.getBytes(UTF_8);
     }
 
     @Override

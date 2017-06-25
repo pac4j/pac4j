@@ -29,7 +29,7 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
     @Test
     public void testMissingSecret() {
         final SecretEncryptionConfiguration config = new SecretEncryptionConfiguration();
-        TestsHelper.expectException(config::init, TechnicalException.class, "secret cannot be blank");
+        TestsHelper.expectException(config::init, TechnicalException.class, "secret cannot be null");
     }
 
     @Test
