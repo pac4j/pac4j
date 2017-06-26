@@ -41,7 +41,8 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     @Override
     protected final void internalInit(final WebContext context) {
         // check configuration
-        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl);
+        CommonHelper.assertNotBlank("callbackUrl", this.callbackUrl,
+                "set it up either on this IndirectClient or the global Config");
         CommonHelper.assertNotNull("urlResolver", this.urlResolver);
         CommonHelper.assertNotNull("ajaxRequestResolver", this.ajaxRequestResolver);
 
