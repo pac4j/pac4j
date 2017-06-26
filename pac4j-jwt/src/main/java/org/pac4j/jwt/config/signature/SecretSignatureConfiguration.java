@@ -7,6 +7,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+
+import java.util.Arrays;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -29,7 +32,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
 
     public SecretSignatureConfiguration(final byte[] secret) {
         this();
-        this.secret = secret;
+        this.secret = Arrays.copyOf(secret,secret.length);
     }
 
     public SecretSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
@@ -37,7 +40,7 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     }
 
     public SecretSignatureConfiguration(final byte[] secret, final JWSAlgorithm algorithm) {
-        this.secret = secret;
+        this.secret = Arrays.copyOf(secret,secret.length);
         this.algorithm = algorithm;
     }
 

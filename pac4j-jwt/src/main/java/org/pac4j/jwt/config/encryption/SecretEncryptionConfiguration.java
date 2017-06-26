@@ -8,6 +8,8 @@ import com.nimbusds.jose.crypto.DirectEncrypter;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
+import java.util.Arrays;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -27,7 +29,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
 
     public SecretEncryptionConfiguration(final byte[] secret){
         this();
-        this.secret = secret;
+        this.secret = Arrays.copyOf(secret, secret.length);
     }
 
     public SecretEncryptionConfiguration(final String secret) {
@@ -35,7 +37,7 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
     }
 
     public SecretEncryptionConfiguration(final byte[] secret, final JWEAlgorithm algorithm, final EncryptionMethod method) {
-        this.secret = secret;
+        this.secret = Arrays.copyOf(secret,secret.length);
         this.algorithm = algorithm;
         this.method = method;
     }
