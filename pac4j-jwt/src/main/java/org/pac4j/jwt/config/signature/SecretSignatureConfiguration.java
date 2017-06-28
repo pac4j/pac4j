@@ -3,6 +3,7 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
@@ -87,6 +88,23 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
 
     public void setSecret(final String secret) {
         this.secret = secret.getBytes(UTF_8);
+    }
+
+    public byte[] getSecretBytes() {
+        return  Arrays.copyOf(secret,secret.length);
+    }
+
+    public void setSecretBytes(final byte[] secretBytes) {
+        this.secret = Arrays.copyOf(secretBytes,secretBytes.length);
+    }
+
+
+    public String getSecretBase64() {
+        return Base64.encode(secret).toString();
+    }
+
+    public void setSecretBase64(final String secret) {
+        this.secret = new Base64(secret).decode();
     }
 
     @Override

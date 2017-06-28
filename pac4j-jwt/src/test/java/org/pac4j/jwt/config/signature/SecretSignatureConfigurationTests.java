@@ -3,6 +3,7 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.junit.Test;
@@ -12,8 +13,12 @@ import org.pac4j.core.util.TestsHelper;
 import org.pac4j.jwt.util.JWKHelper;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
+import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link SecretSignatureConfiguration}.
@@ -54,4 +59,43 @@ public final class SecretSignatureConfigurationTests implements TestsConstants {
         final SignedJWT signedJwt = config.sign(claims);
         assertTrue(config.verify(signedJwt));
     }
+
+    @Test
+    public void testGetSecretInitializedWithByteArray(){
+        byte[] rndBytes = new byte[32];
+        new SecureRandom().nextBytes(rndBytes);
+        String secret = new String(rndBytes,UTF_8);
+        assertEquals(new SecretSignatureConfiguration(rndBytes).getSecret(),secret);
+    }
+
+    @Test
+    public void testSecretBase64(){
+        byte[] rndBytes = new byte[32];
+        new SecureRandom().nextBytes(rndBytes);
+        SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration();
+        String base64Secret = Base64.encode(rndBytes).toString();
+        secretSignatureConfiguration.setSecretBase64(base64Secret);
+        assertEquals(base64Secret,secretSignatureConfiguration.getSecretBase64());
+    }
+
+    @Test
+    public void testSecretBytes(){
+        byte[] rndBytes = new byte[32];
+        new SecureRandom().nextBytes(rndBytes);
+        SecretSignatureConfiguration secretSignatureConfiguration = new SecretSignatureConfiguration();
+        String base64Secret = Base64.encode(rndBytes).toString();
+        secretSignatureConfiguration.setSecretBytes(rndBytes);
+        assertEquals(base64Secret,secretSignatureConfiguration.getSecretBase64());
+        Arrays.equals(secretSignatureConfiguration.getSecretBytes(),rndBytes);
+    }
+
+    @Test
+    public void testSignVerifyBase64() throws JOSEException {
+        SecretSignatureConfiguration config = new SecretSignatureConfiguration();
+        config.setSecretBase64(BASE64_512_BIT_SIG_SECRET);
+        final JWTClaimsSet claims = new JWTClaimsSet.Builder().subject(VALUE).build();
+        final SignedJWT signedJwt = config.sign(claims);
+        assertTrue(config.verify(signedJwt));
+    }
+
 }

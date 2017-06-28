@@ -3,6 +3,7 @@ package org.pac4j.jwt.config.encryption;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEAlgorithm;
+import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.*;
 import org.junit.Test;
 import org.pac4j.core.exception.TechnicalException;
@@ -66,6 +67,40 @@ public final class SecretEncryptionConfigurationTests implements TestsConstants 
     @Test
     public void testEncryptDecryptPlainJWT() throws ParseException, JOSEException {
         final SecretEncryptionConfiguration config = new SecretEncryptionConfiguration(MAC_SECRET);
+        config.setAlgorithm(JWEAlgorithm.A256GCMKW);
+        config.setMethod(EncryptionMethod.A128GCM);
+
+        final JWT jwt = new PlainJWT(buildClaims());
+        final String token = config.encrypt(jwt);
+        final EncryptedJWT encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
+        config.decrypt(encryptedJwt);
+        final JWT jwt2 = encryptedJwt;
+        assertEquals(VALUE, jwt2.getJWTClaimsSet().getSubject());
+    }
+
+
+    @Test
+    public void testEncryptDecryptPlainJWTBase64Secret() throws ParseException, JOSEException {
+        final SecretEncryptionConfiguration config = new SecretEncryptionConfiguration();
+        config.setSecretBase64(BASE64_256_BIT_ENC_SECRET);
+
+        config.setAlgorithm(JWEAlgorithm.A256GCMKW);
+        config.setMethod(EncryptionMethod.A128GCM);
+
+        final JWT jwt = new PlainJWT(buildClaims());
+        final String token = config.encrypt(jwt);
+        final EncryptedJWT encryptedJwt = (EncryptedJWT) JWTParser.parse(token);
+        config.decrypt(encryptedJwt);
+        final JWT jwt2 = encryptedJwt;
+        assertEquals(VALUE, jwt2.getJWTClaimsSet().getSubject());
+    }
+
+
+    @Test
+    public void testEncryptDecryptPlainJWTBytesSecret() throws ParseException, JOSEException {
+        final SecretEncryptionConfiguration config = new SecretEncryptionConfiguration();
+        config.setSecretBytes(new Base64(BASE64_256_BIT_ENC_SECRET).decode());
+
         config.setAlgorithm(JWEAlgorithm.A256GCMKW);
         config.setMethod(EncryptionMethod.A128GCM);
 

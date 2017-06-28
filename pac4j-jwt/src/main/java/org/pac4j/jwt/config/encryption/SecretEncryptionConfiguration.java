@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.AESDecrypter;
 import com.nimbusds.jose.crypto.AESEncrypter;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
+import com.nimbusds.jose.util.Base64;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
 
@@ -99,6 +100,22 @@ public class SecretEncryptionConfiguration extends AbstractEncryptionConfigurati
 
     public void setSecret(final String secret) {
         this.secret = secret.getBytes(UTF_8);
+    }
+
+    public byte[] getSecretBytes() {
+        return  Arrays.copyOf(secret,secret.length);
+    }
+
+    public void setSecretBytes(final byte[] secretBytes) {
+        this.secret = Arrays.copyOf(secretBytes,secretBytes.length);
+    }
+
+    public String getSecretBase64() {
+        return Base64.encode(secret).toString();
+    }
+
+    public void setSecretBase64(final String secret) {
+        this.secret = new Base64(secret).decode();
     }
 
     @Override
