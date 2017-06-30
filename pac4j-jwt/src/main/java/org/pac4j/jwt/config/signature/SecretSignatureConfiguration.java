@@ -3,10 +3,15 @@ package org.pac4j.jwt.config.signature;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.util.CommonHelper;
+
+import java.util.Arrays;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * HMac signature configuration: http://connect2id.com/products/nimbus-jose-jwt/examples/jwt-with-hmac
@@ -16,26 +21,34 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class SecretSignatureConfiguration extends AbstractSignatureConfiguration {
 
-    private String secret;
+    private byte[] secret;
 
     public SecretSignatureConfiguration() {
         algorithm = JWSAlgorithm.HS256;
     }
 
     public SecretSignatureConfiguration(final String secret) {
+        this(secret.getBytes(UTF_8));
+    }
+
+    public SecretSignatureConfiguration(final byte[] secret) {
         this();
-        this.secret = secret;
+        this.secret = Arrays.copyOf(secret,secret.length);
     }
 
     public SecretSignatureConfiguration(final String secret, final JWSAlgorithm algorithm) {
-        this.secret = secret;
+        this(secret.getBytes(UTF_8),algorithm);
+    }
+
+    public SecretSignatureConfiguration(final byte[] secret, final JWSAlgorithm algorithm) {
+        this.secret = Arrays.copyOf(secret,secret.length);
         this.algorithm = algorithm;
     }
 
     @Override
     protected void internalInit() {
         CommonHelper.assertNotNull("algorithm", algorithm);
-        CommonHelper.assertNotBlank("secret", secret);
+        CommonHelper.assertNotNull("secret", secret);
 
         if (!supports(this.algorithm)) {
             throw new TechnicalException("Only the HS256, HS384 and HS512 algorithms are supported for HMac signature");
@@ -70,11 +83,28 @@ public class SecretSignatureConfiguration extends AbstractSignatureConfiguration
     }
 
     public String getSecret() {
-        return secret;
+        return new String(secret,UTF_8);
     }
 
     public void setSecret(final String secret) {
-        this.secret = secret;
+        this.secret = secret.getBytes(UTF_8);
+    }
+
+    public byte[] getSecretBytes() {
+        return  Arrays.copyOf(secret,secret.length);
+    }
+
+    public void setSecretBytes(final byte[] secretBytes) {
+        this.secret = Arrays.copyOf(secretBytes,secretBytes.length);
+    }
+
+
+    public String getSecretBase64() {
+        return Base64.encode(secret).toString();
+    }
+
+    public void setSecretBase64(final String secret) {
+        this.secret = new Base64(secret).decode();
     }
 
     @Override
