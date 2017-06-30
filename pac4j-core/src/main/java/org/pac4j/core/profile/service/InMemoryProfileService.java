@@ -80,7 +80,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
             }
         } else {
             listAttributes = profiles.entrySet().stream()
-                    .filter(p -> p.getValue().get(key).equals(value))
+                    .filter(p -> p.getValue().get(key) != null && p.getValue().get(key).equals(value))
                     .map(p -> populateAttributes(p.getValue(), names))
                     .collect(Collectors.toList());
         }
