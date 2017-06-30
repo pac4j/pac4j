@@ -20,6 +20,8 @@ public interface TestsConstants {
     String FAKE_VALUE = "fakeValue";
     String SECRET = "secret";
     String MAC_SECRET = "12345678901234567890123456789012";
+    String BASE64_256_BIT_ENC_SECRET = "MvwjfoJ4LocaE_7n2Y-M7-X7Cq75dbzsuHWNB8XOQvo";
+    String BASE64_512_BIT_SIG_SECRET = "4pqomdEAl6l4aLJzR52fhHY01_sG1V60y7Vc3gAUTrvrkc4moALkPAe8rwe4-EJ2sVnZx8INO4oONJhH7BERGQ";
     String TOKEN = "token";
     String VERIFIER = "verifier";
     String NAME = "name";
