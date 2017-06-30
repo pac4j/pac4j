@@ -19,7 +19,8 @@ public final class CasProxyReceptorTests implements TestsConstants {
     @Test
     public void testMissingCallbackUrl() {
         final CasProxyReceptor client = new CasProxyReceptor();
-        TestsHelper.initShouldFail(client, "callbackUrl cannot be blank");
+        TestsHelper.initShouldFail(client,
+                "callbackUrl cannot be blank: set it up either on this IndirectClient or the global Config");
     }
 
     @Test
