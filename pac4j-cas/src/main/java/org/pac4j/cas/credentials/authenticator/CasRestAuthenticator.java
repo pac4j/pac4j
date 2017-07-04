@@ -21,8 +21,6 @@ import org.pac4j.core.util.InitializableWebObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
-
 /**
  * This is a specific Authenticator to deal with the CAS REST API.
  *
@@ -55,13 +53,10 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             throw new TechnicalException("Credentials are required");
         }
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), context);
-		if (Strings.isNullOrEmpty(ticketGrantingTicketId)) {
-			credentials.setUserProfile(null);
-		} else {
-			final CasRestProfile profile = new CasRestProfile(ticketGrantingTicketId,
-					credentials.getUsername());
-			credentials.setUserProfile(profile);
-		}
+		CommonHelper.assertNotNull("ticketGrantingTicket", ticketGrantingTicketId);
+		final CasRestProfile profile = new CasRestProfile(ticketGrantingTicketId,
+				credentials.getUsername());
+		credentials.setUserProfile(profile);
     }
 
     private String requestTicketGrantingTicket(final String username, final String password, final WebContext context) {
