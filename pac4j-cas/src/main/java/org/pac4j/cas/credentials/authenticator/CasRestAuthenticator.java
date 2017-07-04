@@ -53,10 +53,10 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             throw new TechnicalException("Credentials are required");
         }
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), context);
-		CommonHelper.assertNotBlank("ticketGrantingTicket", ticketGrantingTicketId);
-		final CasRestProfile profile = new CasRestProfile(ticketGrantingTicketId,
-				credentials.getUsername());
-		credentials.setUserProfile(profile);
+		if (CommonHelper.isNotBlank(ticketGrantingTicketId)) {
+			credentials.setUserProfile(new CasRestProfile(ticketGrantingTicketId,
+					credentials.getUsername()));
+		}
     }
 
     private String requestTicketGrantingTicket(final String username, final String password, final WebContext context) {
