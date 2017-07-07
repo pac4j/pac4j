@@ -1,6 +1,7 @@
 package org.pac4j.oidc.client;
 
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.http.RelativeUrlResolver;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.client.azuread.AzureAdResourceRetriever;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -17,12 +18,12 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  * Azure AD v2.0. Replace {@code tenantid} with the ID of the tenant to authenticate against. To
  * find this ID, fill in your tenant's domain name. Your tenant ID is the UUID in
  * {@code authorization_endpoint}.
- *
+ * <p>
  * For authentication against an unknown (or dynamic tenant), use {@code common} as ID.
  * Authentication against the common endpoint results in a ID token with a {@code issuer} different
  * from the {@code issuer} mentioned in the discovery data. This class uses to special validator
  * to correctly validate the issuer returned by Azure AD.
- *
+ * <p>
  * More information at: https://msdn.microsoft.com/en-us/library/azure/dn645541.aspx
  *
  * @author Emond Papegaaij
@@ -30,7 +31,8 @@ import org.pac4j.oidc.profile.azuread.AzureAdProfileCreator;
  */
 public class AzureAdClient extends OidcClient<AzureAdProfile> {
 
-    public AzureAdClient() {}
+    public AzureAdClient() {
+    }
 
     public AzureAdClient(final OidcConfiguration configuration) {
         super(configuration);
@@ -44,7 +46,20 @@ public class AzureAdClient extends OidcClient<AzureAdProfile> {
         CommonHelper.assertNotNull("configuration", getConfiguration());
         getConfiguration().setResourceRetriever(new AzureAdResourceRetriever());
         defaultProfileCreator(new AzureAdProfileCreator(getConfiguration()));
-
+        setUrlResolver(new AzureAdClientUrlResolver("/cas/delegatedAuthn/oidc/" + getName()));
         super.clientInit(context);
+    }
+
+    private static class AzureAdClientUrlResolver extends RelativeUrlResolver {
+        private final String contextPath;
+
+        AzureAdClientUrlResolver(String contextPath) {
+            this.contextPath = contextPath;
+        }
+
+        @Override
+        public String compute(String url, WebContext context) {
+            return super.compute(contextPath, context);
+        }
     }
 }
