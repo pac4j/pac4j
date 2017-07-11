@@ -33,6 +33,7 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
 	private CouchDbConnector couchDbConnector;
 	private ObjectMapper objectMapper;
+	private static final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
 
 	public static final String COUCH_ID = "_id";
 
@@ -77,16 +78,15 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 
 	@Override
 	protected void update(final Map<String, Object> attributes) {
+	    final String id = (String) attributes.get(COUCH_ID);
 		try {
-			final String id = (String) attributes.get(COUCH_ID);
 			final InputStream oldDocStream = couchDbConnector.getAsStream(id);
-			final JsonNode oldDoc = objectMapper.readTree(oldDocStream);
-			final String rev = oldDoc.get("_rev").asText();
-			attributes.put("_rev", rev);
-			couchDbConnector.update(attributes);
+			final Map<String, Object> res = objectMapper.readValue(oldDocStream, typeRef);
+			res.putAll(attributes);
+			couchDbConnector.update(res);
 			logger.debug("Updating id: {} with attributes: {}", id, attributes);
 		} catch (DocumentNotFoundException e) {
-			couchDbConnector.create(attributes);
+		    logger.debug("not updating id: {} (not in the database) with attributes: {}", id);
 		} catch (IOException e) {
 			logger.error("Unexpected IO CouchDB Exception", e);
 		}
@@ -122,7 +122,6 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
 	protected List<Map<String, Object>> read(final List<String> names, final String key, final String value) {
 		logger.debug("Reading key / value: {} / {}", key, value);
 		final List<Map<String, Object>> listAttributes = new ArrayList<>();
-		final TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
 		if (key.equals(COUCH_ID)) {
 			try {
 				final InputStream oldDocStream = couchDbConnector.getAsStream(value);
