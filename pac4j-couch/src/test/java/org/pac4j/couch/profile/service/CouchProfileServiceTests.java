@@ -137,12 +137,12 @@ public final class CouchProfileServiceTests implements TestsConstants {
 		assertEquals(COUCH_LINKED_ID, profile2.getLinkedId());
 		assertEquals(COUCH_USER, profile2.getUsername());
 		assertEquals(1, profile2.getAttributes().size());
-		// update
+		// update with password
 		profile.addAttribute(USERNAME, COUCH_USER2);
 		couchProfileService.update(profile, COUCH_PASS2);
-		final List<Map<String, Object>> results2 = getData(couchProfileService, COUCH_ID);
+		List<Map<String, Object>> results2 = getData(couchProfileService, COUCH_ID);
 		assertEquals(1, results2.size());
-		final Map<String, Object> result2 = results2.get(0);
+		Map<String, Object> result2 = results2.get(0);
 		assertEquals(5, result2.size());
 		assertEquals(COUCH_ID, result2.get(COUCH_ID_FIELD));
 		assertEquals(COUCH_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
@@ -151,8 +151,19 @@ public final class CouchProfileServiceTests implements TestsConstants {
 		// check credentials
 		final UsernamePasswordCredentials credentials2 = new UsernamePasswordCredentials(COUCH_USER2, COUCH_PASS2, CLIENT_NAME);
 		couchProfileService.validate(credentials2, null);
-		final CommonProfile profile3 = credentials.getUserProfile();
+		CommonProfile profile3 = credentials.getUserProfile();
 		assertNotNull(profile3);
+        // update with no password update
+        couchProfileService.update(profile, null);
+        results2 = getData(couchProfileService, COUCH_ID);
+        assertEquals(1, results2.size());
+        result2 = results2.get(0);
+        assertEquals(5, result2.size());
+        assertEquals(COUCH_USER2, result2.get(USERNAME));
+        // check credentials
+        couchProfileService.validate(credentials2, null);
+        profile3 = credentials.getUserProfile();
+        assertNotNull(profile3);
 		// remove
 		couchProfileService.remove(profile);
 		final List<Map<String, Object>> results3 = getData(couchProfileService, COUCH_ID);
