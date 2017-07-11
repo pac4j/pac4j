@@ -32,7 +32,7 @@ public class SAML2RedirectActionBuilder implements RedirectActionBuilder {
         final SAML2ClientConfiguration cfg = client.getConfiguration();
         this.saml2ObjectBuilder = new SAML2AuthnRequestBuilder(cfg.isForceAuth(),
                 cfg.getComparisonType(), cfg.getDestinationBindingType(), cfg.getAuthnContextClassRef(),
-                cfg.getNameIdPolicyFormat());
+                cfg.getNameIdPolicyFormat(), cfg.isPassive());
     }
 
     @Override
