@@ -109,12 +109,12 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 		assertEquals(TEST_LINKED_ID, profile2.getLinkedId());
 		assertEquals(TEST_USER, profile2.getUsername());
 		assertEquals(1, profile2.getAttributes().size());
-		// update
+		// update with password
 		profile.addAttribute(USERNAME, TEST_USER2);
 		inMemoryProfileService.update(profile, TEST_PASS2);
-		final List<Map<String, Object>> results2 = getData(TEST_ID);
+		List<Map<String, Object>> results2 = getData(TEST_ID);
 		assertEquals(1, results2.size());
-		final Map<String, Object> result2 = results2.get(0);
+		Map<String, Object> result2 = results2.get(0);
 		assertEquals(5, result2.size());
 		assertEquals(TEST_ID, result2.get("id"));
 		assertEquals(TEST_LINKED_ID, result2.get(AbstractProfileService.LINKEDID));
@@ -125,6 +125,17 @@ public final class InMemoryProfileServiceTests implements TestsConstants {
 		inMemoryProfileService.validate(credentials2, null);
 		final CommonProfile profile3 = credentials.getUserProfile();
 		assertNotNull(profile3);
+        // update with no password update
+        inMemoryProfileService.update(profile, null);
+        results2 = getData(TEST_ID);
+        assertEquals(1, results2.size());
+        result2 = results2.get(0);
+        assertEquals(5, result2.size());
+        assertEquals(TEST_USER2, result2.get(USERNAME));
+        // check credentials
+        inMemoryProfileService.validate(credentials2, null);
+        final CommonProfile profile4 = credentials.getUserProfile();
+        assertNotNull(profile4);
 		// remove
 		inMemoryProfileService.remove(profile);
 		final List<Map<String, Object>> results3 = getData(TEST_ID);
