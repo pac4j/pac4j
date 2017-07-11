@@ -24,20 +24,26 @@ public class SAML2Credentials extends Credentials {
     private List<Attribute> attributes;
     
     private Conditions conditions;
+    
+    private String issuerId;
+    
+    private List<String> authnContexts;
 
-    public SAML2Credentials(final NameID nameId, final List<Attribute> attributes, final Conditions conditions,
-                            final String clientName, final String sessionIndex) {
+    public SAML2Credentials(final NameID nameId, final String issuerId, final List<Attribute> attributes, final Conditions conditions,
+                            final String clientName, final String sessionIndex, final List<String> authnContexts) {
         this.nameId = nameId;
+        this.issuerId = issuerId;
         this.sessionIndex = sessionIndex;
         this.attributes = attributes;
         this.conditions = conditions;
+        this.authnContexts = authnContexts;
         setClientName(clientName);
     }
 
     public final NameID getNameId() {
         return this.nameId;
     }
-
+    
     public final String getSessionIndex() {
     	return this.sessionIndex;
     }
@@ -77,4 +83,12 @@ public class SAML2Credentials extends Credentials {
     public final String toString() {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + ", sessionIndex=" + this.sessionIndex + "]";
     }
+
+	public String getIssuerId() {
+		return issuerId;
+	}
+
+	public List<String> getAuthnContexts() {
+		return authnContexts;
+	}
 }
