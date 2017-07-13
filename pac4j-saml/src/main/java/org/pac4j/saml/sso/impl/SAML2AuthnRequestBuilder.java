@@ -34,6 +34,7 @@ import org.pac4j.saml.util.Configuration;
 public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest> {
 
     private final boolean forceAuth;
+    private final boolean passive;
 
     private final AuthnContextComparisonTypeEnumeration comparisonType;
 
@@ -50,19 +51,22 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     /**
      * Instantiates a new Saml 2 authn request builder.
      *
-     * @param forceAuth the force auth
-     * @param comparisonType the comparison type
-     * @param bindingType the binding type
+     * @param forceAuth            the force auth
+     * @param comparisonType       the comparison type
+     * @param bindingType          the binding type
      * @param authnContextClassRef the authn context class ref
-     * @param nameIdPolicyFormat the name id policy format
+     * @param nameIdPolicyFormat   the name id policy format
+     * @param passive              the passive
      */
     public SAML2AuthnRequestBuilder(final boolean forceAuth, final String comparisonType, final String bindingType,
-                                    final String authnContextClassRef, final String nameIdPolicyFormat) {
+                                    final String authnContextClassRef, final String nameIdPolicyFormat,
+                                    final boolean passive) {
         this.forceAuth = forceAuth;
         this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
         this.bindingType = bindingType;
         this.authnContextClassRef = authnContextClassRef;
         this.nameIdPolicyFormat = nameIdPolicyFormat;
+        this.passive = passive;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         request.setIssuer(getIssuer(selfContext.getEntityId()));
         request.setIssueInstant(DateTime.now().plusSeconds(this.issueInstantSkewSeconds));
         request.setVersion(SAMLVersion.VERSION_20);
-        request.setIsPassive(false);
+        request.setIsPassive(this.passive);
         request.setForceAuthn(this.forceAuth);
         request.setProviderName("pac4j-saml");
 
