@@ -3,6 +3,7 @@ package org.pac4j.oidc.client;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.oidc.config.KeycloakOidcConfiguration;
+import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.OidcProfileDefinition;
 import org.pac4j.oidc.profile.creator.OidcProfileCreator;
 import org.pac4j.oidc.profile.keycloak.KeycloakOidcProfile;
@@ -24,7 +25,7 @@ public class KeycloakOidcClient extends OidcClient<KeycloakOidcProfile> {
     public KeycloakOidcClient() {
     }
 
-    public KeycloakOidcClient(final KeycloakOidcConfiguration configuration) {
+    public KeycloakOidcClient(final OidcConfiguration configuration) {
         super(configuration);
     }
 
