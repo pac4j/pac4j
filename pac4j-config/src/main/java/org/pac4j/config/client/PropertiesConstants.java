@@ -160,6 +160,12 @@ public interface PropertiesConstants {
     String DB_DATASOURCE_JNDI = "db.dataSourceJndi";
     String DB_PASSWORD_ENCODER = "db.passwordEncoder";
 
+    String COUCH_URL = "couch.url";
+    String COUCH_USERNAME = "couch.username";
+    String COUCH_PASSWORD = "couch.password";
+    String COUCH_DATABASENAME = "couch.databaseName";
+    String COUCH_PASSWORD_ENCODER = "couch.passwordEncoder";
+
     String REST_URL = "rest.url";
 
     String SPRING_ENCODER = "encoder.spring";
