@@ -83,6 +83,13 @@ After a successful authentication, a [`SAML2Profile`](https://github.com/pac4j/p
 
 ## 3) Additional configuration:
 
+You can control aspects of the authentication request such as forced and/or passive authentication as such:
+
+```java
+cfg.setForceAuth(true);
+cfg.setPassive(true);
+```
+
 You can define the binding type via the `setDestinationBindingType` method:
 
 ```java
