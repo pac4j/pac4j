@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<module name="Checker">
+  <module name="FileLength"/>
+  <module name="UniqueProperties"/>
+  <module name="Translation"/>
+  <module name="TreeWalker">
+    <module name="MissingOverride">
+      <property name="javaFiveCompatibility" value="true"/>
+    </module>
+    <module name="StringLiteralEquality"/>
+    <module name="JavadocVariable">
+      <property name="scope" value="public"/>
+      <property name="excludeScope" value="public"/>
+    </module>
+    <module name="ParenPad">
+      <property name="tokens" value="METHOD_DEF, SUPER_CTOR_CALL,   EXPR, QUESTION, CTOR_DEF, LITERAL_CATCH, LITERAL_NEW, ANNOTATION_FIELD_DEF, LITERAL_FOR, LITERAL_IF, CTOR_CALL, LITERAL_SWITCH, RESOURCE_SPECIFICATION, ANNOTATION, LITERAL_SYNCHRONIZED"/>
+    </module>
+    <module name="UnnecessaryParentheses">
+      <property name="tokens" value="BOR_ASSIGN, STAR_ASSIGN, MINUS_ASSIGN, LITERAL_FALSE, BAND_ASSIGN, NUM_LONG, DIV_ASSIGN, NUM_DOUBLE, EXPR, IDENT, MOD_ASSIGN, STRING_LITERAL, SR_ASSIGN, SL_ASSIGN, LITERAL_NULL, LITERAL_TRUE, NUM_INT, NUM_FLOAT, PLUS_ASSIGN, BXOR_ASSIGN, BSR_ASSIGN"/>
+    </module>
+    <module name="OuterTypeFilename"/>
+    <module name="NoLineWrap"/>
+    <module name="MutableException"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="RightCurly">
+      <property name="tokens" value="INSTANCE_INIT, LITERAL_CATCH, LITERAL_TRY, LITERAL_FINALLY"/>
+    </module>
+    <module name="RedundantModifier">
+      <property name="tokens" value="INTERFACE_DEF, ANNOTATION_FIELD_DEF, VARIABLE_DEF, ENUM_DEF, CLASS_DEF"/>
+    </module>
+    <module name="NoFinalizer"/>
+    <module name="EmptyLineSeparator">
+      <property name="allowNoEmptyLineBetweenFields" value="true"/>
+      <property name="tokens" value="INTERFACE_DEF, PACKAGE_DEF, INSTANCE_INIT, CTOR_DEF, STATIC_INIT"/>
+    </module>
+    <module name="InterfaceTypeParameterName"/>
+    <module name="LeftCurly">
+      <property name="tokens" value="INTERFACE_DEF, LITERAL_FOR, ENUM_DEF, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_TRY, ANNOTATION_DEF, LITERAL_SWITCH, STATIC_INIT, CLASS_DEF, LITERAL_SYNCHRONIZED"/>
+    </module>
+    <module name="CovariantEquals"/>
+    <module name="NestedForDepth"/>
+    <module name="OuterTypeNumber"/>
+    <module name="AbstractClassName">
+      <property name="ignoreName" value="true"/>
+    </module>
+    <module name="ConstantName">
+      <property name="applyToProtected" value="false"/>
+      <property name="applyToPrivate" value="false"/>
+    </module>
+    <module name="MethodCount"/>
+    <module name="IllegalImport"/>
+    <module name="ThrowsCount"/>
+    <module name="MethodLength"/>
+    <module name="NoWhitespaceAfter">
+      <property name="tokens" value="LNOT, INC, DOT, UNARY_MINUS, ARRAY_DECLARATOR, DEC, UNARY_PLUS, BNOT"/>
+    </module>
+    <module name="NoWhitespaceBefore"/>
+    <module name="InnerAssignment"/>
+    <module name="ParameterName"/>
+    <module name="OneTopLevelClass"/>
+    <module name="NeedBraces">
+      <property name="allowSingleLineStatement" value="true"/>
+      <property name="tokens" value="LITERAL_FOR, LAMBDA"/>
+    </module>
+    <module name="AvoidEscapedUnicodeCharacters"/>
+    <module name="IllegalInstantiation"/>
+    <module name="AnnotationLocation"/>
+    <module name="AnonInnerLength"/>
+    <module name="LocalFinalVariableName">
+      <property name="tokens" value="PARAMETER_DEF"/>
+    </module>
+    <module name="AvoidStarImport">
+      <property name="allowClassImports" value="true"/>
+      <property name="allowStaticMemberImports" value="true"/>
+    </module>
+    <module name="ReturnCount">
+      <property name="max" value="5"/>
+      <property name="tokens" value="LAMBDA"/>
+    </module>
+    <module name="ClassTypeParameterName"/>
+    <module name="TypecastParenPad"/>
+    <module name="EmptyForInitializerPad"/>
+    <module name="SeparatorWrap">
+      <property name="tokens" value="SEMI, RBRACK, COMMA, ARRAY_DECLARATOR, ELLIPSIS"/>
+    </module>
+    <module name="SuperFinalize"/>
+    <module name="MagicNumber">
+      <property name="ignoreHashCodeMethod" value="true"/>
+      <property name="ignoreFieldDeclaration" value="true"/>
+      <property name="tokens" value="NUM_DOUBLE, NUM_FLOAT"/>
+    </module>
+    <module name="JavadocMethod">
+      <property name="minLineCount" value="2"/>
+      <property name="scope" value="public"/>
+      <property name="excludeScope" value="public"/>
+    </module>
+    <module name="WhitespaceAfter">
+      <property name="tokens" value="SEMI"/>
+    </module>
+    <module name="MissingSwitchDefault"/>
+    <module name="AbbreviationAsWordInName">
+      <property name="allowedAbbreviationLength" value="5"/>
+      <property name="tokens" value="INTERFACE_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF, PARAMETER_DEF, ANNOTATION_DEF, CLASS_DEF"/>
+    </module>
+    <module name="PackageDeclaration"/>
+    <module name="StaticVariableName"/>
+    <module name="VariableDeclarationUsageDistance">
+      <property name="allowedDistance" value="4"/>
+    </module>
+    <module name="EmptyForIteratorPad"/>
+    <module name="DescendantToken"/>
+    <module name="BooleanExpressionComplexity">
+      <property name="max" value="7"/>
+    </module>
+    <module name="SuppressWarnings"/>
+    <module name="MethodParamPad">
+      <property name="tokens" value="METHOD_CALL, CTOR_DEF, SUPER_CTOR_CALL"/>
+    </module>
+    <module name="EqualsHashCode"/>
+    <module name="RedundantImport"/>
+    <module name="EmptyBlock"/>
+    <module name="WriteTag">
+      <property name="tokens" value="INTERFACE_DEF, ANNOTATION_FIELD_DEF, ANNOTATION_DEF"/>
+    </module>
+    <module name="JavadocStyle">
+      <property name="scope" value="public"/>
+      <property name="excludeScope" value="public"/>
+    </module>
+    <module name="MethodTypeParameterName"/>
+    <module name="FallThrough"/>
+    <module name="JavadocType">
+      <property name="scope" value="public"/>
+      <property name="excludeScope" value="public"/>
+    </module>
+    <module name="EmptyStatement"/>
+    <module name="IllegalTokenText"/>
+    <module name="AnnotationUseStyle"/>
+    <module name="PackageAnnotation"/>
+    <module name="EmptyCatchBlock"/>
+    <module name="PackageName"/>
+    <module name="MemberName">
+      <property name="applyToPrivate" value="false"/>
+    </module>
+    <module name="UpperEll"/>
+    <module name="NestedTryDepth"/>
+    <module name="DefaultComesLast"/>
+    <module name="AvoidNestedBlocks"/>
+    <module name="TypeName">
+      <property name="applyToPackage" value="false"/>
+    </module>
+    <module name="ImportOrder">
+      <property name="ordered" value="false"/>
+    </module>
+    <module name="SuperClone"/>
+    <module name="IllegalToken"/>
+    <module name="CyclomaticComplexity">
+      <property name="max" value="20"/>
+      <property name="tokens" value="LOR, LAND, LITERAL_CASE, QUESTION, LITERAL_FOR, LITERAL_CATCH, LITERAL_SWITCH"/>
+    </module>
+    <module name="MethodName">
+      <property name="applyToPublic" value="false"/>
+    </module>
+    <module name="EqualsAvoidNull"/>
+    <module name="ExecutableStatementCount">
+      <property name="max" value="50"/>
+      <property name="tokens" value="STATIC_INIT, CTOR_DEF, INSTANCE_INIT"/>
+    </module>
+    <module name="ModifiedControlVariable"/>
+    <module name="NoClone"/>
+    <module name="OperatorWrap">
+      <property name="tokens" value="STAR, BOR_ASSIGN, STAR_ASSIGN, MINUS_ASSIGN, BOR, EQUAL, BAND_ASSIGN, DIV_ASSIGN, DIV, MINUS, BXOR, QUESTION, LE, BSR, LT, COLON, GT, SL, BAND, GE, NOT_EQUAL, LITERAL_INSTANCEOF, MOD_ASSIGN, SR_ASSIGN, SR, TYPE_EXTENSION_AND, SL_ASSIGN, PLUS_ASSIGN, BXOR_ASSIGN, BSR_ASSIGN, MOD"/>
+    </module>
+  </module>
+</module>
