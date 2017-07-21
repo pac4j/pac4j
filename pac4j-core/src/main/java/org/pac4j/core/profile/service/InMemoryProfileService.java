@@ -55,7 +55,7 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         if (profile != null) {
             profile.putAll(attributes);
         } else {
-            insert(attributes);
+            profiles.put(id, attributes);
         }
     }
 
