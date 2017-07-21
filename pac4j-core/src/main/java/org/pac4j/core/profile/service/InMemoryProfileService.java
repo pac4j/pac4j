@@ -51,7 +51,12 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
     protected void update(final Map<String, Object> attributes) {
         final String id = (String) attributes.get(getIdAttribute());
         logger.debug("Updating id: {} with attributes: {}", id, attributes);
-        profiles.put(id, attributes);
+        final Map<String,Object> profile = profiles.get(id);
+        if (profile != null) {
+            profile.putAll(attributes);
+        } else {
+            profiles.put(id, attributes);
+        }
     }
 
     @Override
