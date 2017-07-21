@@ -54,6 +54,8 @@ public class InMemoryProfileService<U extends CommonProfile> extends AbstractPro
         final Map<String,Object> profile = profiles.get(id);
         if (profile != null) {
             profile.putAll(attributes);
+        } else {
+            insert(attributes);
         }
     }
 
