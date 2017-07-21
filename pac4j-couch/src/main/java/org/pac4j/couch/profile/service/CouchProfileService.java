@@ -86,7 +86,8 @@ public class CouchProfileService extends AbstractProfileService<CouchProfile> {
             couchDbConnector.update(res);
             logger.debug("Updating id: {} with attributes: {}", id, attributes);
         } catch (DocumentNotFoundException e) {
-            logger.debug("not updating id: {} (not in the database) with attributes: {}", id);
+            logger.debug("Insert doc (not found by update(): {}", attributes);
+            couchDbConnector.create(attributes);
         } catch (IOException e) {
             logger.error("Unexpected IO CouchDB Exception", e);
         }
