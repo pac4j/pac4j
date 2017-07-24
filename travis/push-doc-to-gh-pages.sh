@@ -14,6 +14,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; th
   esac
 fi
 
+echo -e "invokeDoc: $invokeDoc\n"
+
 echo -e "Starting with project documentation...\n"
 
 if [ "$invokeDoc" == true ]; then
