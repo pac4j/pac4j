@@ -11,6 +11,7 @@ title: Release notes&#58;
 - Supports CouchDB for authentication and user management
 - REST API `Authenticator`
 - In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
+- Allow passive authentication for SAML
 
 **v2.0.0**:
 
