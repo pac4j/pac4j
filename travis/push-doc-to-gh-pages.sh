@@ -1,6 +1,8 @@
 #!/bin/bash
 invokeDoc=false
-branchVersion="2.1.x"
+
+echo -e "TRAVIS_PULL_REQUEST: $TRAVIS_PULL_REQUEST\n"
+echo -e "TRAVIS_BRANCH: $TRAVIS_BRANCH\n"
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
   case "${TRAVIS_JOB_NUMBER}" in
@@ -9,6 +11,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; th
         invokeDoc=true;;
   esac
 fi
+
+echo -e "invokeDoc: $invokeDoc\n"
 
 echo -e "Starting with project documentation...\n"
 
@@ -27,11 +31,27 @@ if [ "$invokeDoc" == true ]; then
 
   cd gh-pages
 
-  echo -e "Staring to move project documentation over...\n"
+  echo -e "Starting to move project documentation over...\n"
 
-  echo -e "Copying new docs from $HOME/docs-latest over to gh-pages...\n"
-  cp -Rf $HOME/docs-latest/* .
-  echo -e "Copied project documentation...\n"
+  if [ "$TRAVIS_BRANCH" == "master" ]; then
+
+    echo -e "Copying new docs from $HOME/docs-latest over to gh-pages...\n"
+    cp -Rf $HOME/docs-latest/* .
+    echo -e "Copied project documentation...\n"
+
+  else
+
+    echo -e "Removing previous documentation from $TRAVIS_BRANCH...\n"
+    git rm -rf ./"$TRAVIS_BRANCH" > /dev/null
+
+    echo -e "Creating $TRAVIS_BRANCH directory...\n"
+    test -d "./$TRAVIS_BRANCH" || mkdir -m777 -v "./$TRAVIS_BRANCH"
+
+    echo -e "Copying new docs from $HOME/docs-latest over to $TRAVIS_BRANCH...\n"
+    cp -Rf $HOME/docs-latest/* "./$TRAVIS_BRANCH"
+    echo -e "Copied project documentation...\n"
+
+  fi
 
   echo -e "Adding changes to the git index...\n"
   git add -f . > /dev/null

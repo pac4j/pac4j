@@ -64,6 +64,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private int maximumAuthenticationLifetime;
 
     private boolean forceAuth = false;
+    private boolean passive = false;
 
     private boolean forceSignRedirectBindingAuthnRequest;
 
@@ -294,6 +295,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public String getServiceProviderEntityId() {
         return serviceProviderEntityId;
+    }
+
+    public boolean isPassive() {
+        return passive;
+    }
+
+    public void setPassive(final boolean passive) {
+        this.passive = passive;
     }
 
     public boolean isForceAuth() {

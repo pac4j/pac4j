@@ -12,6 +12,7 @@ title: Release notes&#58;
 - REST API `Authenticator`
 - In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error 
 - Added capability to add authentication-related attributes to the user profile with specific attributes added to the SAML client
+- Allow passive authentication for SAML
 
 **v2.0.0**:
 
