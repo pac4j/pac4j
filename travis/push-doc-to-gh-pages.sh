@@ -4,7 +4,7 @@ invokeDoc=false
 echo -e "TRAVIS_PULL_REQUEST: $TRAVIS_PULL_REQUEST\n"
 echo -e "TRAVIS_BRANCH: $TRAVIS_BRANCH\n"
 
-if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
+if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" != "gh-pages" ]; then
   case "${TRAVIS_JOB_NUMBER}" in
        *\.1)
         echo -e "Invoking auto-doc deployment for Travis job ${TRAVIS_JOB_NUMBER}"
