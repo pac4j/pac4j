@@ -23,6 +23,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
     private String id;
 
     private Map<String, Object> attributes = new HashMap<>();
+    
+    private Map<String, Object> authenticationAttributes = new HashMap<>();
 
     public transient static final String SEPARATOR = "#";
 
@@ -46,20 +48,48 @@ public abstract class UserProfile implements Serializable, Externalizable {
         setId(id);
         addAttributes(attributes);
     }
-
+    
     /**
+     * Build a profile from user identifier, attributes, and authentication attributes.
+     * 
+     * @param id user identifier
+     * @param attributes user attributes
+     * @param authenticationAttributes authentication attributes
+     */
+    public void build(final Object id, final Map<String, Object> attributes, final Map<String, Object> authenticationAttributes ) {
+    	build(id, attributes);
+    	addAuthenticationAttributes(authenticationAttributes);
+    }
+
+    private void addAttributeToMap(final Map<String, Object> map, final String key, Object value)
+    {
+        if (value != null) {
+            logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
+            map.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
+        }    	
+    }
+
+	/**
      * Add an attribute.
      *
      * @param key key of the attribute
      * @param value value of the attribute
      */
     public void addAttribute(final String key, Object value) {
-        if (value != null) {
-            logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
-            this.attributes.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
-        }
+    		addAttributeToMap(this.attributes, key, value);
     }
-
+    
+    /**
+     * Add an authentication-related attribute
+     * 
+     * @param key
+     * @param value
+     */
+    public void addAuthenticationAttribute(final String key, Object value) {
+    	addAttributeToMap(this.authenticationAttributes, key, value);
+    }
+    
+    
     /**
      * Add attributes.
      *
@@ -72,15 +102,37 @@ public abstract class UserProfile implements Serializable, Externalizable {
             }
         }
     }
-
+    
     /**
-     * Remove an attribute byt its key.
+     * Add authentication attributes.
+     * 
+     * @param attributeMap the authentication attributes
+     */
+    public void addAuthenticationAttributes(Map<String, Object> attributeMap) {
+        if (attributeMap != null) {
+            for (final Map.Entry<String, Object> entry : attributeMap.entrySet()) {
+                addAuthenticationAttribute(entry.getKey(), entry.getValue());
+            }
+        }
+	}
+    /**
+     * Remove an attribute by its key.
      *
      * @param key the key
      */
     public void removeAttribute(final String key) {
         CommonHelper.assertNotNull("key", key);
         attributes.remove(key);
+    }
+    
+    /**
+     * Remove an authentication attribute by its key
+     * 
+     * @param key the key
+     */
+    public void removeAuthenticationAttribute(final String key) {
+        CommonHelper.assertNotNull("key", key);
+        authenticationAttributes.remove(key);    
     }
 
     /**
@@ -125,16 +177,29 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the immutable attributes
      */
     public Map<String, Object> getAttributes() {
-        final Map<String, Object> newAttributes = new HashMap<>();
-        for (Map.Entry<String, Object> entries : this.attributes.entrySet()) {
-            final String key = entries.getKey();
-            final Object value = getAttribute(key);
-            newAttributes.put(key, value);
-        }
-        return Collections.unmodifiableMap(newAttributes);
+        return getImmutableAttributeMap(this.attributes);
     }
 
     /**
+     * Get all authentication attributes as an immutable map
+     * 
+     * @return the immutable authentication attributes
+     */
+    public Map<String, Object> getAuthenticationAttributes() {
+    	return getImmutableAttributeMap(this.authenticationAttributes);
+    }
+ 
+    private Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
+        final Map<String, Object> newAttributes = new HashMap<>();
+        for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
+            final String key = entries.getKey();
+            final Object value = ProfileHelper.getInternalAttributeHandler().restore(attributeMap.get(key));
+            newAttributes.put(key, value);
+        }
+        return Collections.unmodifiableMap(newAttributes);
+	}
+
+	/**
      * Return the attribute with name.
      *
      * @param name attribute name
@@ -142,6 +207,16 @@ public abstract class UserProfile implements Serializable, Externalizable {
      */
     public Object getAttribute(final String name) {
         return ProfileHelper.getInternalAttributeHandler().restore(this.attributes.get(name));
+    }
+    
+	/**
+     * Return the authentication attribute with name.
+     *
+     * @param name authentication attribute name
+     * @return the authentication attribute with name
+     */
+    public Object getAuthenticationAttribute(final String name) {
+        return ProfileHelper.getInternalAttributeHandler().restore(this.authenticationAttributes.get(name));
     }
 
     /**
@@ -154,7 +229,18 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("name", name);
         return this.attributes.containsKey(name);
     }
-
+    
+    /**
+     * Check to see if profile contains attribute name.
+     *
+     * @param name the name
+     * @return true/false
+     */
+    public boolean containsAuthenicationAttribute(final String name) {
+        CommonHelper.assertNotNull("name", name);
+        return this.authenticationAttributes.containsKey(name);
+    }
+    
     /**
      * Return the attribute with name.
      *
@@ -166,6 +252,24 @@ public abstract class UserProfile implements Serializable, Externalizable {
      */
     public <T> T getAttribute(final String name, final Class<T> clazz) {
         final Object attribute = getAttribute(name);
+        return getAttributeByType(name, clazz, attribute);
+    }
+    
+    /**
+     * Return authentication attribute with name
+     * 
+     * @param name Name of authentication attribute
+     * @param clazz The class of the authentication attribute
+     * @param <T> The type of the authentication attribute
+     * @return the named attribute
+     */
+    public <T> T getAuthenticationAttribute(final String name, final Class<T> clazz)
+    {
+    	final Object attribute = getAuthenticationAttribute(name);
+    	return getAttributeByType(name, clazz, attribute);
+    }
+
+    private <T> T getAttributeByType(String name, Class<T> clazz, Object attribute) {
 
         if (attribute == null) {
             return null;
@@ -178,9 +282,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
         }
 
         return (T) attribute;
-    }
+	}
 
-    /**
+	/**
      * Add a role.
      *
      * @param role the role to add.
@@ -276,6 +380,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeObject(this.id);
         out.writeObject(this.attributes);
+        out.writeObject(this.authenticationAttributes);
         out.writeBoolean(this.isRemembered);
         out.writeObject(this.roles);
         out.writeObject(this.permissions);
@@ -287,6 +392,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         this.id = (String) in.readObject();
         this.attributes = (Map) in.readObject();
+        this.authenticationAttributes = (Map) in.readObject();
         this.isRemembered = in.readBoolean();
         this.roles = (Set) in.readObject();
         this.permissions = (Set) in.readObject();

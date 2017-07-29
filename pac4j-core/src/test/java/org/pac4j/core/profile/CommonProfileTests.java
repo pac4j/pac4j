@@ -43,6 +43,15 @@ public final class CommonProfileTests implements TestsConstants {
     }
 
     @Test
+    public void testAddAuthenticationAttribute() {
+        final CommonProfile userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAuthenticationAttributes().size());
+        userProfile.addAuthenticationAttribute(KEY, VALUE);
+        assertEquals(1, userProfile.getAuthenticationAttributes().size());
+        assertEquals(VALUE, userProfile.getAuthenticationAttributes().get(KEY));
+    }
+    
+    @Test
     public void testAddAttributes() {
         final Map<String, Object> attributes = new HashMap<>();
         attributes.put(KEY, VALUE);
@@ -52,12 +61,33 @@ public final class CommonProfileTests implements TestsConstants {
         assertEquals(1, userProfile.getAttributes().size());
         assertEquals(VALUE, userProfile.getAttributes().get(KEY));
     }
-
+    
+    @Test
+    public void testAddAuthenticationAttributes() {
+        final Map<String, Object> attributes = new HashMap<>();
+        attributes.put(KEY, VALUE);
+        final CommonProfile userProfile = new CommonProfile();
+        assertEquals(0, userProfile.getAuthenticationAttributes().size());
+        userProfile.addAuthenticationAttributes(attributes);
+        assertEquals(1, userProfile.getAuthenticationAttributes().size());
+        assertEquals(VALUE, userProfile.getAuthenticationAttributes().get(KEY));
+    }
+    
     @Test
     public void testUnsafeAddAttribute() {
         final CommonProfile userProfile = new CommonProfile();
         try {
             userProfile.getAttributes().put(KEY, VALUE);
+            fail();
+        } catch (final UnsupportedOperationException e) {
+            assertNull(e.getMessage());
+        }
+    }
+    @Test
+    public void testUnsafeAddAuthenticationAttribute() {
+        final CommonProfile userProfile = new CommonProfile();
+        try {
+            userProfile.getAuthenticationAttributes().put(KEY, VALUE);
             fail();
         } catch (final UnsupportedOperationException e) {
             assertNull(e.getMessage());

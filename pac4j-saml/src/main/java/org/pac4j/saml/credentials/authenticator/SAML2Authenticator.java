@@ -30,6 +30,8 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
     public static final String SAML_CONDITION_NOT_BEFORE_ATTRIBUTE = "notBefore";
     public static final String SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE = "notOnOrAfter";
     public static final String SESSION_INDEX = "sessionindex";
+    public static final String ISSUER_ID = "issuerId";
+    public static final String AUTHN_CONTEXT = "authnContext";
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -44,6 +46,7 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
         final SAML2Profile profile = getProfileDefinition().newProfile();
         profile.setId(credentials.getNameId().getValue());
         profile.addAttribute(SESSION_INDEX, credentials.getSessionIndex());
+        
         for (final Attribute attribute : credentials.getAttributes()) {
             logger.debug("Processing profile attribute {}", attribute);
 
@@ -73,11 +76,17 @@ public class SAML2Authenticator extends ProfileDefinitionAware<SAML2Profile> imp
             }
         }
 
+        // Add in issuerID and authnContexts
+        profile.addAuthenticationAttribute(ISSUER_ID, credentials.getIssuerId());
+        profile.addAuthenticationAttribute(AUTHN_CONTEXT, credentials.getAuthnContexts());
         // Retrieve conditions attributes
+        // Adding them to both the "regular" and authentication attributes so we don't break anyone currently using it.
         Conditions conditions = credentials.getConditions();
         if (conditions != null) {
             profile.addAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());
+            profile.addAuthenticationAttribute(SAML_CONDITION_NOT_BEFORE_ATTRIBUTE, conditions.getNotBefore());
             profile.addAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE, conditions.getNotOnOrAfter());
+            profile.addAuthenticationAttribute(SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE, conditions.getNotOnOrAfter());
         }
 
         credentials.setUserProfile(profile);
