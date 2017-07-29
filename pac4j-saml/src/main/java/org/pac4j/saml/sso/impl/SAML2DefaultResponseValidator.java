@@ -145,6 +145,14 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         final Assertion subjectAssertion = context.getSubjectAssertion();
 
         final String sessionIndex = getSessionIndex(subjectAssertion);
+        
+        final String issuerEntityId = subjectAssertion.getIssuer().getValue();
+        List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
+        List<String> authnContexts = new ArrayList<String>();
+        for(AuthnStatement authnStatement : authnStatements) {
+        	authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+        }
+        
 
         final List<Attribute> attributes = new ArrayList<Attribute>();
         for (final AttributeStatement attributeStatement : subjectAssertion.getAttributeStatements()) {
@@ -165,8 +173,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                 }
             }
         }
-        return new SAML2Credentials(nameId, attributes, subjectAssertion.getConditions(),
-                SAML2Client.class.getSimpleName(), sessionIndex);
+        return new SAML2Credentials(nameId, issuerEntityId, attributes, subjectAssertion.getConditions(),
+                SAML2Client.class.getSimpleName(), sessionIndex, authnContexts);
     }
 
     /**

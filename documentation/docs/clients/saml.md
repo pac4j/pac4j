@@ -141,7 +141,18 @@ You can generate the SP metadata in two ways:
 - either programmatically using the `SAML2Client`: `String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();`
 - or by defining the appropriate configuration: `cfg.setServiceProviderMetadata(new FileSystemResource("/tmp/sp-metadata.xml"));`
 
-## 4) ADFS subtilities
+
+## 4) Authentication Attributes
+
+The following authentication attributes are populated by this client:
+
+- The entityID of the IdP (`getAuthenticationAttribute("issuerId")` or `SAML2Profile.getIssuerId()`)
+- The authentication method(s) asserted by the IdP (`getAuthenticationAttribute("authnContext")` or `SAML2Profile.getAuthnContexts()`)
+- The NotBefore SAML Condition (`getAuthenticationAttribute("notBefore")` or `SAML2Profile.getNotBefore()`)
+- The NotOnOrAfter SAML Condition (`getAuthenticationAttribute("notOnOrAfter")` or `SAML2Profile.getNotOnOrAfter()`)
+
+
+## 5) ADFS subtilities
 
 You must follow these rules to successfully authenticate using Microsoft ADFS 2.0/3.0.
 
@@ -176,6 +187,7 @@ ERROR [org.opensaml.saml2.encryption.Decrypter] - <SAML Decrypter encountered an
 ```
 
 Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files can be downloaded from Oracle's Java Download site.
+
 
 # Integration with various IdPs
 

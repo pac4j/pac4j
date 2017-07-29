@@ -6,7 +6,8 @@ title: User profile
 When the user is successfully authenticated by *pac4j*, his data are retrieved from the identity provider and a user profile is built. His profile has:
 
 - an identifier (`getId()`)
-- attributes (`getAttributes()`, (`getAttribute(name)`)
+- attributes (`getAttributes()`, `getAttribute(name)`) 
+- authentication-related attributes (`getAuthenticationAttributes()`, `getAuthenticationAttribute(name)`) 
 - roles (`getRoles()`)
 - permissions (`getPermissions()`)
 - a client name (`getClientName()`)
@@ -35,25 +36,31 @@ profile.getTypedId() // org.pac4j.oauth.profile.facebook.FacebookProfile#00001
 
 User profiles have attributes, populated from the data retrieved from the identity provider (after conversion).
 
+## 3) Authentication-related attributes
 
-## 3) Roles and permissions
+Some identity providers will include attributes related to the authentication itself, such as authentication method,
+time period for which the authentication is valid, or metadata about the identity provider.  These attributes are stored
+seperately from the user's attributes.
+
+
+## 4) Roles and permissions
 
 Roles and permissions can be added to the user profile via the `addRole(role)`, `addRoles(roles)`, `addPermission(permission)` and `addPermissions(permissions)` methods.
 
 They are generally computed in an [`AuthorizationGenerator`](clients.html#compute-roles-and-permissions).
 
 
-## 4) Client name
+## 5) Client name
 
 During the login process, the name of the client is saved into the user profile via the `setClientName(name)` method and can be retrieved later on via the `getClientName()` method.
 
 
-## 5) Remember-me
+## 6) Remember-me
 
 A user profile can be defined as remember-me as opposed to fully authenticated via the `setRemembered(boolean)` method. The `isRemembered()` method returns if the user profile is remembered.
 
 
-## 6) Common methods of the `CommonProfile`
+## 7) Common methods of the `CommonProfile`
 
 The `CommonProfile` has the following methods:
 
@@ -71,7 +78,7 @@ The `CommonProfile` has the following methods:
 | `getLocation()` | `String` | The `location` attribute |
 
 
-## 7) Profile definition
+## 8) Profile definition
 
 The profile class and attributes are defined via [`ProfileDefinition`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/profile/definition/ProfileDefinition.java) implementations.
 
@@ -82,14 +89,15 @@ Many attribute converters already exists: [`BooleanConverter`](https://github.co
 As a result, the `newProfile` method returns a new class instance while the `convertAndAdd` methods convert the attributes if there is an associated converter and adds them to the profile.
 
 
-## 8) Profile hierarchy
+## 9) Profile hierarchy
 
 In fact, most clients never return a `CommonProfile`, but specific profiles like the `FacebookProfile`, the `OidcProfile`... which:
 
 - (partially) override the common methods of the `CommonProfile` with specific implementations
 - add their specific getters for their specific attributes.
 
-## 9) Linked identifier
+
+## 10) Linked identifier
 
 Each user profile may have a linked identifier, it's the identifier of another user profile. This way, both user profiles are linked and it allows you to authenticate via an account for a user
 and load the linked user defined in the first user, especially by using the [`LoadLinkedUserAuthorizationGenerator`](https://github.com/pac4j/pac4j/blob/master/pac4j-core/src/main/java/org/pac4j/core/authorization/generator/LoadLinkedUserAuthorizationGenerator.java).

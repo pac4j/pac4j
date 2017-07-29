@@ -1,5 +1,7 @@
 package org.pac4j.saml.profile;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.saml.client.SAML2Client;
@@ -19,14 +21,22 @@ public class SAML2Profile extends CommonProfile {
     private static final long serialVersionUID = -7811733390277407623L;
     
     public DateTime getNotBefore() {
-        return (DateTime) getAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
+        return (DateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_BEFORE_ATTRIBUTE);
     }
     
     public DateTime getNotOnOrAfter() {
-        return (DateTime) getAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
+        return (DateTime) getAuthenticationAttribute(SAML2Authenticator.SAML_CONDITION_NOT_ON_OR_AFTER_ATTRIBUTE);
     }
 
     public String getSessionIndex() {
-        return (String) getAttribute(SAML2Authenticator.SESSION_INDEX);
+        return (String) getAuthenticationAttribute(SAML2Authenticator.SESSION_INDEX);
+    }
+    
+    public String getIssuerEntityID() {
+    	return (String) getAuthenticationAttribute(SAML2Authenticator.ISSUER_ID);
+    }
+    
+    public List<String> getAuthnContexts() {
+    	return (List<String>) getAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT);
     }
 }

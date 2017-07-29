@@ -3,6 +3,10 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v2.2.0**:
+
+- Added capability to add authentication-related attributes to the user profile with specific attributes added to the SAML client
+
 **v2.1.0**:
 
 - Added Kerberos support
@@ -10,7 +14,8 @@ title: Release notes&#58;
 - The password encoders and LDAP/SQL authenticators can be defined via properties through the `PropertiesConfigFactory`
 - Supports CouchDB for authentication and user management
 - REST API `Authenticator`
-- In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error
+- In case of an unauthorized AJAX request, the redirection URL to the identity server is added as the `Location` header to the 401 error 
+- Allow passive authentication for SAML
 
 **v2.0.0**:
 
