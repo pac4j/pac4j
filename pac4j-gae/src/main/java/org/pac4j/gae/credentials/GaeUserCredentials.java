@@ -13,40 +13,40 @@ import org.pac4j.core.util.CommonHelper;
  */
 public class GaeUserCredentials extends Credentials {
 
-	private static final long serialVersionUID = -135519596194113906L;
-	
-	private User user;
+    private static final long serialVersionUID = -135519596194113906L;
 
-	public GaeUserCredentials() {
-		setClientName("GaeUserClient");
-	}
-	
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public User getUser() {
-		return user;
-	}
+    private User user;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    public GaeUserCredentials() {
+        setClientName("GaeUserClient");
+    }
 
-		final GaeUserCredentials that = (GaeUserCredentials) o;
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-		return !(user != null ? !user.equals(that.user) : that.user != null);
+    public User getUser() {
+        return user;
+    }
 
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	@Override
-	public int hashCode() {
-		return user != null ? user.hashCode() : 0;
-	}
+        final GaeUserCredentials that = (GaeUserCredentials) o;
 
-	@Override
-	public String toString() {
-		return CommonHelper.toString(this.getClass(), "user", this.user);
-	}
+        return !(user != null ? !user.equals(that.user) : that.user != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return user != null ? user.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return CommonHelper.toString(this.getClass(), "user", this.user);
+    }
 }

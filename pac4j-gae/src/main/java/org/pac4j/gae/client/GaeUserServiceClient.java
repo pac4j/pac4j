@@ -21,49 +21,51 @@ import com.google.appengine.api.users.UserServiceFactory;
  */
 public class GaeUserServiceClient extends IndirectClient<GaeUserCredentials, GaeUserServiceProfile> {
 
-	private static final ProfileDefinition<GaeUserServiceProfile> PROFILE_DEFINITION = new CommonProfileDefinition<>(x -> new GaeUserServiceProfile());
+    private static final ProfileDefinition<GaeUserServiceProfile> PROFILE_DEFINITION
+        = new CommonProfileDefinition<>(x -> new GaeUserServiceProfile());
 
-	protected UserService service;
-	protected String authDomain = null;
+    protected UserService service;
+    protected String authDomain = null;
 
-	@Override
+    @Override
     protected void clientInit(final WebContext context) {
-		service = UserServiceFactory.getUserService();
-		CommonHelper.assertNotNull("service", this.service);
-		defaultRedirectActionBuilder(ctx -> {
-			final String destinationUrl = computeFinalCallbackUrl(ctx);
-			final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl) : service.createLoginURL(destinationUrl, authDomain);
-			return RedirectAction.redirect(loginUrl);
-		});
-		defaultCredentialsExtractor(ctx -> {
-			final GaeUserCredentials credentials = new GaeUserCredentials();
-			credentials.setUser(service.getCurrentUser());
-			return credentials;
-		});
-		defaultAuthenticator((credentials, ctx) -> {
-			final User user = credentials.getUser();
-			if (user != null) {
-				final GaeUserServiceProfile profile = PROFILE_DEFINITION.newProfile();
-				profile.setId(user.getEmail());
-				PROFILE_DEFINITION.convertAndAdd(profile, CommonProfileDefinition.EMAIL, user.getEmail());
-				PROFILE_DEFINITION.convertAndAdd(profile, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());
-				if (service.isUserAdmin()) {
-					profile.addRole(GaeUserServiceProfile.PAC4J_GAE_GLOBAL_ADMIN_ROLE);
-				}
-				credentials.setUserProfile(profile);
-			}
-		});
-	}
+        service = UserServiceFactory.getUserService();
+        CommonHelper.assertNotNull("service", this.service);
+        defaultRedirectActionBuilder(ctx -> {
+            final String destinationUrl = computeFinalCallbackUrl(ctx);
+            final String loginUrl = authDomain == null ?  service.createLoginURL(destinationUrl)
+                : service.createLoginURL(destinationUrl, authDomain);
+            return RedirectAction.redirect(loginUrl);
+        });
+        defaultCredentialsExtractor(ctx -> {
+            final GaeUserCredentials credentials = new GaeUserCredentials();
+            credentials.setUser(service.getCurrentUser());
+            return credentials;
+        });
+        defaultAuthenticator((credentials, ctx) -> {
+            final User user = credentials.getUser();
+            if (user != null) {
+                final GaeUserServiceProfile profile = PROFILE_DEFINITION.newProfile();
+                profile.setId(user.getEmail());
+                PROFILE_DEFINITION.convertAndAdd(profile, CommonProfileDefinition.EMAIL, user.getEmail());
+                PROFILE_DEFINITION.convertAndAdd(profile, CommonProfileDefinition.DISPLAY_NAME, user.getNickname());
+                if (service.isUserAdmin()) {
+                    profile.addRole(GaeUserServiceProfile.PAC4J_GAE_GLOBAL_ADMIN_ROLE);
+                }
+                credentials.setUserProfile(profile);
+            }
+        });
+    }
 
-	/**
-	 * Set the authDomain for connect to google apps for domain with the UserService
-	 * @param authDomain the authentication domain
-	 */
-	public void setAuthDomain(final String authDomain) {
-		this.authDomain = authDomain;
-	}
-	
-	public String getAuthDomain() {
-		return authDomain;
-	}
+    /**
+     * Set the authDomain for connect to google apps for domain with the UserService
+     * @param authDomain the authentication domain
+     */
+    public void setAuthDomain(final String authDomain) {
+        this.authDomain = authDomain;
+    }
+
+    public String getAuthDomain() {
+        return authDomain;
+    }
 }

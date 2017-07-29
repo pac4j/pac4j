@@ -15,5 +15,5 @@ public class GaeUserServiceProfile extends CommonProfile {
 
     private static final long serialVersionUID = 7866288887408897456L;
 
-	public final static String PAC4J_GAE_GLOBAL_ADMIN_ROLE = "GLOBAL_ADMIN";
+    public final static String PAC4J_GAE_GLOBAL_ADMIN_ROLE = "GLOBAL_ADMIN";
 }
