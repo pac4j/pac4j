@@ -16,9 +16,9 @@ import org.pac4j.core.credentials.UsernamePasswordCredentials;
 
 /**
  * <p>This class is the client to authenticate users through HTTP form.</p>
- * <p>The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is redirected to
- * this login form. The username and password inputs must be posted on the callback url. Their names can be defined by using the
- * {@link #setUsernameParameter(String)} and {@link #setPasswordParameter(String)} methods.</p>
+ * <p>The login url of the form must be defined through the {@link #setLoginUrl(String)} method. For authentication, the user is
+ * redirected to this login form. The username and password inputs must be posted on the callback url. Their names can be defined by using
+ * the {@link #setUsernameParameter(String)} and {@link #setPasswordParameter(String)} methods.</p>
  *
  * @author Jerome Leleu
  * @since 1.4.0
@@ -83,18 +83,21 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
             credentials = getCredentialsExtractor().extract(context);
             logger.debug("usernamePasswordCredentials: {}", credentials);
             if (credentials == null) {
-                throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error", MISSING_FIELD_ERROR);
+                throw handleInvalidCredentials(context, username, "Username and password cannot be blank -> return to the form with error",
+                    MISSING_FIELD_ERROR);
             }
             // validate credentials
             getAuthenticator().validate(credentials, context);
         } catch (final CredentialsException e) {
-            throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error", computeErrorMessage(e));
+            throw handleInvalidCredentials(context, username, "Credentials validation fails -> return to the form with error",
+                computeErrorMessage(e));
         }
 
         return credentials;
     }
 
-    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage) throws HttpAction {
+    protected HttpAction handleInvalidCredentials(final WebContext context, final String username, String message, String errorMessage)
+        throws HttpAction {
         // it's an AJAX request -> unauthorized (instead of a redirection)
         if (getAjaxRequestResolver().isAjax(context)) {
             final String msg = "AJAX request detected -> returning 401";
@@ -147,7 +150,7 @@ public class FormClient extends IndirectClient<UsernamePasswordCredentials, Comm
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "name", getName(), "loginUrl",
                 this.loginUrl, "usernameParameter", this.usernameParameter, "passwordParameter", this.passwordParameter,
-                "redirectActionBuilder", getRedirectActionBuilder(), "extractor", getCredentialsExtractor(), "authenticator", getAuthenticator(),
-                "profileCreator", getProfileCreator());
+                "redirectActionBuilder", getRedirectActionBuilder(), "extractor", getCredentialsExtractor(),
+                "authenticator", getAuthenticator(), "profileCreator", getProfileCreator());
     }
 }

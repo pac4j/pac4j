@@ -91,9 +91,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
         if (alternateIpHeader == null) {
             this.alternateIpHeaders = Collections.emptyList();
         } else {
-            this.alternateIpHeaders = new LinkedList<String>() {{
-                add(alternateIpHeader);
-            }};
+            this.alternateIpHeaders = new LinkedList<String>() {{ add(alternateIpHeader); }};
         }
     }
 
@@ -134,6 +132,7 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "clientName", this.clientName, "alternateIpHeaders", Arrays.asList(this.alternateIpHeaders));
+        return CommonHelper.toString(this.getClass(), "clientName", this.clientName,
+            "alternateIpHeaders", Arrays.asList(this.alternateIpHeaders));
     }
 }
