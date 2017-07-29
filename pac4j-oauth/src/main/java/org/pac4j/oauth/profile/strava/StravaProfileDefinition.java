@@ -49,8 +49,8 @@ public class StravaProfileDefinition extends OAuth20ProfileDefinition<StravaProf
 
     public StravaProfileDefinition() {
         super(x -> new StravaProfile());
-        Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, CITY, STATE, COUNTRY,
-                DATE_PREFERENCE, MEASUREMENT_PREFERENCE }).forEach(a -> primary(a, Converters.STRING));
+        Arrays.stream(new String[] {FIRST_NAME, LAST_NAME, PROFILE_MEDIUM, CITY, STATE, COUNTRY,
+                DATE_PREFERENCE, MEASUREMENT_PREFERENCE}).forEach(a -> primary(a, Converters.STRING));
         primary(ID, Converters.LONG);
         primary(RESOURCE_STATE, Converters.INTEGER);
         primary(BADGE_TYPE_ID, Converters.INTEGER);

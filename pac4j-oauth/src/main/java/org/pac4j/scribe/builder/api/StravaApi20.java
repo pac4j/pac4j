@@ -19,7 +19,8 @@ public final class StravaApi20 extends DefaultApi20 {
     /**
      * Strava authorization URL
      */
-    private static final String AUTHORIZE_URL = "https://www.strava.com/oauth/authorize?approval_prompt=%s&response_type=code&client_id=%s&redirect_uri=%s";
+    private static final String AUTHORIZE_URL = "https://www.strava.com/oauth/authorize?approval_prompt=%s&response_type=code" 
+        + "&client_id=%s&redirect_uri=%s";
 
     private static final String SCOPED_AUTHORIZE_URL = AUTHORIZE_URL + "&scope=%s";
 

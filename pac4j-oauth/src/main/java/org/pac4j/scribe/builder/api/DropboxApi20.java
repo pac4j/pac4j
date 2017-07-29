@@ -26,7 +26,8 @@ public class DropboxApi20 extends DefaultApi20 {
 
     @Override
     public String getAuthorizationUrl(OAuthConfig oAuthConfig, Map<String, String> additionalParams) {
-        return String.format(AUTH_URL + "?client_id=%s&response_type=code&redirect_uri=%s", oAuthConfig.getApiKey(), OAuthEncoder.encode(oAuthConfig.getCallback()));
+        return String.format(AUTH_URL + "?client_id=%s&response_type=code&redirect_uri=%s", oAuthConfig.getApiKey(), 
+            OAuthEncoder.encode(oAuthConfig.getCallback()));
     }
     @Override
     protected String getAuthorizationBaseUrl() {

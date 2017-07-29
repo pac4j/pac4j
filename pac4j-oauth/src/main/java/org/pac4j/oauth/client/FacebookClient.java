@@ -31,11 +31,14 @@ import org.pac4j.oauth.profile.facebook.FacebookProfile;
  */
 public class FacebookClient extends OAuth20Client<FacebookProfile> {
 
-    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
+    public final static String DEFAULT_FIELDS = "id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id," 
+        + "timezone,updated_time,verified,about,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,"
+        + "favorite_teams,quotes,relationship_status,religion,significant_other,website,work";
 
     protected String fields = DEFAULT_FIELDS;
 
-    public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
+    public final static String DEFAULT_SCOPE = "user_likes,user_about_me,user_birthday,user_education_history,email,user_hometown,"
+        + "user_relationship_details,user_location,user_religion_politics,user_relationships,user_website,user_work_history";
 
     protected String scope = DEFAULT_SCOPE;
 
