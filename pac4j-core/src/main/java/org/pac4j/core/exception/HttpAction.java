@@ -82,7 +82,7 @@ public class HttpAction extends Exception {
      * @return a basic auth popup credentials
      */
     public static HttpAction unauthorized(final String message, final WebContext context, final String realmName) {
-      return unauthorized(message, context, realmName, null);
+        return unauthorized(message, context, realmName, null);
     }
 
     /**
@@ -99,7 +99,7 @@ public class HttpAction extends Exception {
             context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Basic realm=\"" + realmName + "\"");
         }
         if (CommonHelper.isNotBlank(url)) {
-          context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
+            context.setResponseHeader(HttpConstants.LOCATION_HEADER, url);
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new HttpAction(message, HttpConstants.UNAUTHORIZED);
@@ -115,9 +115,11 @@ public class HttpAction extends Exception {
      * @param nonce nonce
      * @return a digest auth popup credentials
      */
-    public static HttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, final String nonce) {
+    public static HttpAction unauthorizedDigest(final String message, final WebContext context, final String realmName, final String qop, 
+                                                final String nonce) {
         if (CommonHelper.isNotBlank(realmName)) {
-            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\"" + qop + "\", nonce=\"" + nonce + "\"");
+            context.setResponseHeader(HttpConstants.AUTHENTICATE_HEADER, "Digest realm=\"" + realmName + "\", qop=\"" 
+                + qop + "\", nonce=\"" + nonce + "\"");
         }
         context.setResponseStatus(HttpConstants.UNAUTHORIZED);
         return new HttpAction(message, HttpConstants.UNAUTHORIZED);

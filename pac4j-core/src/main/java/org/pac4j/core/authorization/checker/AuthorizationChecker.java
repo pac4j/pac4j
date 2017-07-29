@@ -26,5 +26,6 @@ public interface AuthorizationChecker {
      * @return whether the user is authorized.
      * @throws HttpAction whether an additional HTTP action is required
      */
-    boolean isAuthorized(WebContext context, List<CommonProfile> profiles, String authorizerNames, Map<String, Authorizer> authorizersMap) throws HttpAction;
+    boolean isAuthorized(WebContext context, List<CommonProfile> profiles, String authorizerNames, Map<String, Authorizer> authorizersMap)
+        throws HttpAction;
 }

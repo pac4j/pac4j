@@ -36,7 +36,7 @@ public class Clients extends InitializableObject {
 
     private String callbackUrl = null;
 
-	private Client defaultClient;
+    private Client defaultClient;
 
     private AjaxRequestResolver ajaxRequestResolver = new DefaultAjaxRequestResolver();
 
@@ -111,12 +111,16 @@ public class Clients extends InitializableObject {
             indirectClient.setCallbackUrl(this.callbackUrl);
             indirectClientCallbackUrl = this.callbackUrl;
         }
-        // if the "client_name" parameter is not already part of the client callback url, add it unless the client has indicated to not include it.
-        if (indirectClient.isIncludeClientNameInCallbackUrl() && indirectClientCallbackUrl != null && !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
-            indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, indirectClient.getName()));
+        // if the "client_name" parameter is not already part of the client callback url, 
+        // add it unless the client has indicated to not include it.
+        if (indirectClient.isIncludeClientNameInCallbackUrl() && indirectClientCallbackUrl != null && 
+            !indirectClientCallbackUrl.contains(this.clientNameParameter + "=")) {
+            indirectClient.setCallbackUrl(CommonHelper.addParameter(indirectClientCallbackUrl, this.clientNameParameter, 
+                indirectClient.getName()));
         }
         final AjaxRequestResolver clientAjaxRequestResolver = indirectClient.getAjaxRequestResolver();
-        if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
+        if (ajaxRequestResolver != null && (clientAjaxRequestResolver == null || 
+            clientAjaxRequestResolver instanceof DefaultAjaxRequestResolver)) {
             indirectClient.setAjaxRequestResolver(ajaxRequestResolver);
         }
         final UrlResolver clientUrlResolver = indirectClient.getUrlResolver();
@@ -135,9 +139,9 @@ public class Clients extends InitializableObject {
     public Client findClient(final WebContext context) {
         init();
         final String name = context.getRequestParameter(this.clientNameParameter);
-		if (name == null && defaultClient != null) {
-			return defaultClient;
-		}
+        if (name == null && defaultClient != null) {
+            return defaultClient;
+        }
         CommonHelper.assertNotBlank("name", name);
         return findClient(name);
     }
@@ -170,11 +174,11 @@ public class Clients extends InitializableObject {
     public <C extends Client> C findClient(final Class<C> clazz) {
         init();
         if (clazz != null) {
-          for (final Client client : getClients()) {
-            if (clazz.isAssignableFrom(client.getClass())) {
-                return (C) client;
+            for (final Client client : getClients()) {
+                if (clazz.isAssignableFrom(client.getClass())) {
+                    return (C) client;
+                }
             }
-          }
         }
         final String message = "No client found for class: " + clazz;
         throw new TechnicalException(message);
@@ -276,7 +280,8 @@ public class Clients extends InitializableObject {
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "callbackUrl", this.callbackUrl, "clientNameParameter",
-                this.clientNameParameter, "clients", getClients(), "defaultClient", defaultClient, "ajaxRequestResolver", ajaxRequestResolver,
+                this.clientNameParameter, "clients", getClients(), "defaultClient", defaultClient, 
+                "ajaxRequestResolver", ajaxRequestResolver,
                 "urlResolver", urlResolver, "authorizationGenerators", authorizationGenerators);
     }
 }

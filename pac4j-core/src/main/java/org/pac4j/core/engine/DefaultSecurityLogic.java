@@ -31,8 +31,8 @@ import static org.pac4j.core.util.CommonHelper.*;
 /**
  * <p>Default security logic:</p>
  *
- * <p>If the HTTP request matches the <code>matchers</code> configuration (or no <code>matchers</code> are defined), the security is applied.
- * Otherwise, the user is automatically granted access.</p>
+ * <p>If the HTTP request matches the <code>matchers</code> configuration (or no <code>matchers</code> are defined), 
+ * the security is applied. Otherwise, the user is automatically granted access.</p>
  *
  * <p>First, if the user is not authenticated (no profile) and if some clients have been defined in the <code>clients</code> parameter,
  * a login is tried for the direct clients.</p>
@@ -59,8 +59,10 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
     private boolean saveProfileInSession;
 
     @Override
-    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, final HttpActionAdapter<R, C> httpActionAdapter,
-                     final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, final Object... parameters) {
+    public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter, 
+                     final HttpActionAdapter<R, C> httpActionAdapter,
+                     final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile, 
+                     final Object... parameters) {
 
         logger.debug("=== SECURITY ===");
 
@@ -113,7 +115,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
                             final CommonProfile profile = currentClient.getUserProfile(credentials, context);
                             logger.debug("profile: {}", profile);
                             if (profile != null) {
-                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClient) currentClient, profile);
+                                final boolean saveProfileInSession = saveProfileInSession(context, currentClients, (DirectClient) 
+                                    currentClient, profile);
                                 logger.debug("saveProfileInSession: {} / multiProfile: {}", saveProfileInSession, multiProfile);
                                 manager.save(saveProfileInSession, profile, multiProfile);
                                 updated = true;
@@ -169,19 +172,21 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
     }
 
     /**
-     * Load the profiles from the web context if no clients are defined or if the first client is an indirect one or the {@link AnonymousClient}.
+     * Load the profiles from the web context if no clients are defined or if the first client is an indirect one 
+     * or the {@link AnonymousClient}.
      *
      * @param context the web context
      * @param currentClients the current clients
      * @return whether the profiles must be loaded from the web session
      */
     protected boolean loadProfilesFromSession(final C context, final List<Client> currentClients) {
-        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient || currentClients.get(0) instanceof AnonymousClient;
+        return isEmpty(currentClients) || currentClients.get(0) instanceof IndirectClient || 
+            currentClients.get(0) instanceof AnonymousClient;
     }
 
     /**
-     * Whether we need to save the profile in session after the authentication of direct client(s). <code>false</code> by default as direct clients profiles
-     * are not meant to be saved in the web session.
+     * Whether we need to save the profile in session after the authentication of direct client(s). <code>false</code> 
+     * by default as direct clients profiles are not meant to be saved in the web session.
      *
      * @param context the web context
      * @param currentClients the current clients
@@ -189,7 +194,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @param profile the retrieved profile after login
      * @return whether we need to save the profile in session
      */
-    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, final CommonProfile profile) {
+    protected boolean saveProfileInSession(final C context, final List<Client> currentClients, final DirectClient directClient, 
+                                           final CommonProfile profile) {
         return this.saveProfileInSession;
     }
 
@@ -203,7 +209,8 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
      * @return a forbidden error
      * @throws HttpAction whether an additional HTTP action is required
      */
-    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, final String authorizers) throws HttpAction {
+    protected HttpAction forbidden(final C context, final List<Client> currentClients, final List<CommonProfile> profiles, 
+                                   final String authorizers) throws HttpAction {
         return HttpAction.forbidden("forbidden", context);
     }
 
@@ -288,3 +295,4 @@ public class DefaultSecurityLogic<R, C extends WebContext> extends ProfileManage
         this.saveProfileInSession = saveProfileInSession;
     }
 }
+

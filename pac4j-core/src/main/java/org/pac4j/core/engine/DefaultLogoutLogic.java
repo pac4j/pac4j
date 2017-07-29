@@ -27,12 +27,12 @@ import static org.pac4j.core.util.CommonHelper.*;
  * <p>If the <code>localLogout</code> property is <code>true</code>, the pac4j profiles are removed from the web session
  * (and the web session is destroyed if the <code>destroySession</code> property is <code>true</code>).</p>
  *
- *  <p>A post logout action is computed as the redirection to the <code>url</code> request parameter if it matches the <code>logoutUrlPattern</code>
- * or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
+ * <p>A post logout action is computed as the redirection to the <code>url</code> request parameter if it matches the 
+ * <code>logoutUrlPattern</code> or to the <code>defaultUrl</code> if it is defined or as a blank page otherwise.</p>
  *
- *  <p>If the <code>centralLogout</code> property is <code>true</code>, the user is redirected to the identity provider
- * for a central logout and then optionally to the post logout redirection URL (if it's supported by the identity provider and if it's an absolute URL).
- * If no central logout is defined, the post logout action is performed directly.</p>
+ * <p>If the <code>centralLogout</code> property is <code>true</code>, the user is redirected to the identity provider
+ * for a central logout and then optionally to the post logout redirection URL (if it's supported by the identity provider and if it's an
+ * absolute URL). If no central logout is defined, the post logout action is performed directly.</p>
  *
  * @author Jerome Leleu
  * @since 1.9.0
@@ -127,7 +127,8 @@ public class DefaultLogoutLogic<R, C extends WebContext> extends ProfileManagerF
                     final Client client = configClients.findClient(clientName);
                     if(client != null) {
                         final String targetUrl;
-                        if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) || redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS))) {
+                        if (redirectUrl != null && (redirectUrl.startsWith(HttpConstants.SCHEME_HTTP) || 
+                            redirectUrl.startsWith(HttpConstants.SCHEME_HTTPS))) {
                             targetUrl = redirectUrl;
                         } else {
                             targetUrl = null;

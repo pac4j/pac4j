@@ -32,7 +32,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     final static XSSProtectionHeader XSS_PROTECTION_HEADER = new XSSProtectionHeader();
     final static CacheControlHeader CACHE_CONTROL_HEADER = new CacheControlHeader();
     final static CsrfAuthorizer CSRF_AUTHORIZER = new CsrfAuthorizer();
-    final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
+    final static CsrfTokenGeneratorAuthorizer CSRF_TOKEN_GENERATOR_AUTHORIZER 
+        = new CsrfTokenGeneratorAuthorizer(new DefaultCsrfTokenGenerator());
     final static CorsAuthorizer CORS_AUTHORIZER = new CorsAuthorizer();
     final static IsAnonymousAuthorizer IS_ANONYMOUS_AUTHORIZER = new IsAnonymousAuthorizer();
     final static IsAuthenticatedAuthorizer IS_AUTHENTICATED_AUTHORIZER =new IsAuthenticatedAuthorizer();
@@ -52,7 +53,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
     }
 
     @Override
-    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, final Map<String, Authorizer> authorizersMap) throws HttpAction {
+    public boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final String authorizerNames, 
+        final Map<String, Authorizer> authorizersMap) throws HttpAction {
         final List<Authorizer> authorizers = new ArrayList<>();
         // if we have an authorizer name (which may be a list of authorizer names)
         if (isNotBlank(authorizerNames)) {
@@ -112,7 +114,8 @@ public class DefaultAuthorizationChecker implements AuthorizationChecker {
         return isAuthorized(context, profiles, authorizers);
     }
 
-    protected boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) throws HttpAction {
+    protected boolean isAuthorized(final WebContext context, final List<CommonProfile> profiles, final List<Authorizer> authorizers) 
+        throws HttpAction {
         // authorizations check comes after authentication and profile must not be null nor empty
         assertTrue(isNotEmpty(profiles), "profiles must not be null or empty");
         if (isNotEmpty(authorizers)) {

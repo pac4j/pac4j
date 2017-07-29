@@ -23,7 +23,8 @@ import static org.pac4j.core.util.CommonHelper.*;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U> implements ProfileService<U>, Authenticator<UsernamePasswordCredentials> {
+public abstract class AbstractProfileService<U extends CommonProfile> extends ProfileDefinitionAware<U> 
+        implements ProfileService<U>, Authenticator<UsernamePasswordCredentials> {
 
     public static final String ID = "id";
 
@@ -58,7 +59,8 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
                 if (getIdAttribute().equalsIgnoreCase(attributeName) || LINKEDID.equalsIgnoreCase(attributeName) ||
                         getUsernameAttribute().equalsIgnoreCase(attributeName) || getPasswordAttribute().equalsIgnoreCase(attributeName) ||
                         SERIALIZED_PROFILE.equalsIgnoreCase(attributeName)) {
-                    throw new TechnicalException("The 'getIdAttribute()', linkedid, 'getUsernameAttribute()', 'getPasswordAttribute()' and serializedprofile attributes are not allowed");
+                    throw new TechnicalException("The 'getIdAttribute()', linkedid, 'getUsernameAttribute()', 'getPasswordAttribute()' " +
+                        "and serializedprofile attributes are not allowed");
                 }
             }
         } else {
@@ -239,11 +241,13 @@ public abstract class AbstractProfileService<U extends CommonProfile> extends Pr
             // new behaviour (>= v2.0): read the serialized profile
             final String serializedProfile = (String) storageAttributes.get(SERIALIZED_PROFILE);
             if (serializedProfile == null) {
-                throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you want to retrieve");
+                throw new TechnicalException("No serialized profile found. You should certainly define the explicit attribute names you " +
+                    "want to retrieve");
             }
             final U profile = (U) javaSerializationHelper.unserializeFromBase64(serializedProfile);
             if (profile == null) {
-                throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute names you want to retrieve");
+                throw new TechnicalException("No deserialized profile available. You should certainly define the explicit attribute " + 
+                    "names you want to retrieve");
             }
             final Object id = storageAttributes.get(getIdAttribute());
             if (isBlank(profile.getId()) && id != null) {

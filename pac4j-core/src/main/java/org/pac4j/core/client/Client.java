@@ -17,8 +17,8 @@ import org.pac4j.core.redirect.RedirectAction;
  * on the provided credentials.</p>
  * <p>Clients can be "direct": in that case, credentials are provided along with the HTTP request and validated by the application.</p>
  * <p>The {@link #redirect(WebContext)} method is not used, the {@link #getCredentials(WebContext)} method is used to retrieve
- * and validate the credentials provided and the {@link #getUserProfile(Credentials, WebContext)} method is called to get the user profile from
- * the appropriate system.</p>
+ * and validate the credentials provided and the {@link #getUserProfile(Credentials, WebContext)} method is called to get the user profile 
+ * from the appropriate system.</p>
  * 
  * @author Jerome Leleu
  * @since 1.4.0
@@ -42,7 +42,8 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
     HttpAction redirect(WebContext context) throws HttpAction;
 
     /**
-     * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at this step.</p>
+     * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at 
+     * this step.</p>
      * <p>In some cases, a {@link HttpAction} may be thrown instead.</p>
      *
      * @param context the current web context
