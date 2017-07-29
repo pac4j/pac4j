@@ -24,7 +24,8 @@ public class IndirectKerberosClient extends IndirectClient<KerberosCredentials, 
         defaultAuthenticator(authenticator);
     }
 
-    public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials, KerberosProfile> profileCreator) {
+    public IndirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials,
+        KerberosProfile> profileCreator) {
         defaultAuthenticator(authenticator);
         defaultProfileCreator(profileCreator);
     }
