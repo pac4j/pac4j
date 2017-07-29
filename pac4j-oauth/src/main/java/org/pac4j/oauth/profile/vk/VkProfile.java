@@ -172,5 +172,4 @@ public class VkProfile extends OAuth20Profile {
     public Integer getRelation() {
         return (Integer) getAttribute(VkProfileDefinition.RELATION);
     }
-
 }

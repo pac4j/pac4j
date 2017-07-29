@@ -71,7 +71,8 @@ public class DbProfileService extends AbstractProfileService<DbProfile> {
             values.add(entry.getValue());
         }
 
-        final String query = "insert into " + usersTable + " (" + buildAttributesList(names) + ") values (" + buildAttributesList(questionMarks) + ")";
+        final String query = "insert into " + usersTable + " (" + buildAttributesList(names) + ") values ("
+            + buildAttributesList(questionMarks) + ")";
         execute(query, values.toArray());
     }
 
