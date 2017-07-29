@@ -89,8 +89,8 @@ public class OidcAuthenticator extends InitializableWebObject implements Authent
         if (code != null) {
             try {
                 // Token request
-                final TokenRequest request = new TokenRequest(configuration.getProviderMetadata().getTokenEndpointURI(), this.clientAuthentication,
-                        new AuthorizationCodeGrant(code, new URI(configuration.getCallbackUrl())));
+                final TokenRequest request = new TokenRequest(configuration.getProviderMetadata().getTokenEndpointURI(),
+                        this.clientAuthentication, new AuthorizationCodeGrant(code, new URI(configuration.getCallbackUrl())));
                 HTTPRequest tokenHttpRequest = request.toHTTPRequest();
                 tokenHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
                 tokenHttpRequest.setReadTimeout(configuration.getReadTimeout());

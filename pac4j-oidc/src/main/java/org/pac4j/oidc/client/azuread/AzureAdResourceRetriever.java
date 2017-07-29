@@ -15,7 +15,7 @@ import com.nimbusds.jose.util.ResourceRetriever;
  */
 public class AzureAdResourceRetriever extends DefaultResourceRetriever implements ResourceRetriever {
     @Override
-	public Resource retrieveResource(final URL url) throws IOException {
+    public Resource retrieveResource(final URL url) throws IOException {
         final Resource ret = super.retrieveResource(url);
         return new Resource(ret.getContent().replace("{tenantid}", "%7Btenantid%7D"), ret.getContentType());
     }
