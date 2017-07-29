@@ -288,3 +288,4 @@ public abstract class AbstractLdapProperties {
         return saslMutualAuth;
     }
 }
+

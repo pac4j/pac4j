@@ -41,7 +41,8 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                 } else if (SpringEncoderType.PBKDF2.toString().equalsIgnoreCase(type)) {
                     if (containsProperty(SPRING_ENCODER_PBKDF2_SECRET, i)) {
                         final String secret = getProperty(SPRING_ENCODER_PBKDF2_SECRET, i);
-                        if (containsProperty(SPRING_ENCODER_PBKDF2_ITERATIONS, i) && containsProperty(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i)) {
+                        if (containsProperty(SPRING_ENCODER_PBKDF2_ITERATIONS, i)
+                            && containsProperty(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i)) {
                             encoder = new Pbkdf2PasswordEncoder(secret, getPropertyAsInteger(SPRING_ENCODER_PBKDF2_ITERATIONS, i),
                                 getPropertyAsInteger(SPRING_ENCODER_PBKDF2_HASH_WIDTH, i));
                         } else {
@@ -52,11 +53,14 @@ public class SpringEncoderBuilder extends AbstractBuilder {
                     }
                 } else if (SpringEncoderType.SCRYPT.toString().equalsIgnoreCase(type)) {
                     if (containsProperty(SPRING_ENCODER_SCRYPT_CPU_COST, i) && containsProperty(SPRING_ENCODER_SCRYPT_MEMORY_COST, i)
-                        && containsProperty(SPRING_ENCODER_SCRYPT_PARALLELIZATION, i) && containsProperty(SPRING_ENCODER_SCRYPT_KEY_LENGTH, i)
+                        && containsProperty(SPRING_ENCODER_SCRYPT_PARALLELIZATION, i)
+                        && containsProperty(SPRING_ENCODER_SCRYPT_KEY_LENGTH, i)
                         && containsProperty(SPRING_ENCODER_SCRYPT_SALT_LENGTH, i)) {
                         encoder = new SCryptPasswordEncoder(getPropertyAsInteger(SPRING_ENCODER_SCRYPT_CPU_COST, i),
-                            getPropertyAsInteger(SPRING_ENCODER_SCRYPT_MEMORY_COST, i), getPropertyAsInteger(SPRING_ENCODER_SCRYPT_PARALLELIZATION, i),
-                            getPropertyAsInteger(SPRING_ENCODER_SCRYPT_KEY_LENGTH, i), getPropertyAsInteger(SPRING_ENCODER_SCRYPT_SALT_LENGTH, i));
+                            getPropertyAsInteger(SPRING_ENCODER_SCRYPT_MEMORY_COST, i),
+                                getPropertyAsInteger(SPRING_ENCODER_SCRYPT_PARALLELIZATION, i),
+                            getPropertyAsInteger(SPRING_ENCODER_SCRYPT_KEY_LENGTH, i),
+                                getPropertyAsInteger(SPRING_ENCODER_SCRYPT_SALT_LENGTH, i));
                     } else {
                         encoder = new SCryptPasswordEncoder();
                     }
