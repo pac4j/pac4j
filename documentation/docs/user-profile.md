@@ -6,7 +6,8 @@ title: User profile
 When the user is successfully authenticated by *pac4j*, his data are retrieved from the identity provider and a user profile is built. His profile has:
 
 - an identifier (`getId()`)
-- attributes (`getAttributes()`, (`getAttribute(name)`)
+- attributes (`getAttributes()`, (`getAttribute(name)`) 
+- authentication-related attributes ('getAuthenticationAttributes()', ('getAuthenticationAttributes(
 - roles (`getRoles()`)
 - permissions (`getPermissions()`)
 - a client name (`getClientName()`)
@@ -34,6 +35,12 @@ profile.getTypedId() // org.pac4j.oauth.profile.facebook.FacebookProfile#00001
 ## 2) Attributes
 
 User profiles have attributes, populated from the data retrieved from the identity provider (after conversion).
+
+## 2) Authentication-related attributes
+
+Some identity providers will include attributes related to the authentication itself, such as authentication method,
+time period for which the authentication is valid, or metadata about the identity provider.  These attributes are stored
+seperately from the user's attributes.
 
 
 ## 3) Roles and permissions
