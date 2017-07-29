@@ -49,7 +49,8 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
         this.usersDn = usersDn;
     }
 
-    public LdapProfileService(final ConnectionFactory connectionFactory, final Authenticator ldapAuthenticator, final String attributes, final String usersDn) {
+    public LdapProfileService(final ConnectionFactory connectionFactory, final Authenticator ldapAuthenticator, final String attributes,
+        final String usersDn) {
         this.connectionFactory = connectionFactory;
         this.ldapAuthenticator = ldapAuthenticator;
         setAttributes(attributes);
@@ -161,7 +162,8 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
             connection = connectionFactory.getConnection();
             connection.open();
             final SearchOperation search = new SearchOperation(connection);
-            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value, names.toArray(new String[names.size()]))).getResult();
+            final SearchResult result = search.execute(new SearchRequest(usersDn,key + "=" + value, 
+                names.toArray(new String[names.size()]))).getResult();
             for (final LdapEntry entry : result.getEntries()) {
                 listAttributes.add(getAttributesFromEntry(entry));
             }
@@ -247,7 +249,8 @@ public class LdapProfileService extends AbstractProfileService<LdapProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator, "usersDn", usersDn,
-                "idAttribute", getIdAttribute(), "attributes", getAttributes(), "profileDefinition", getProfileDefinition());
+        return CommonHelper.toString(this.getClass(), "connectionFactory", connectionFactory, "ldapAuthenticator", ldapAuthenticator, 
+                "usersDn", usersDn, "idAttribute", getIdAttribute(), "attributes", getAttributes(), 
+                "profileDefinition", getProfileDefinition());
     }
 }
