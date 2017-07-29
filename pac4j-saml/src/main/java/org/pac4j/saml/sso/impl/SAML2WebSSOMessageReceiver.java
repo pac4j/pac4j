@@ -53,7 +53,8 @@ public class SAML2WebSSOMessageReceiver implements SAML2MessageReceiver {
         decodedCtx.getSAMLBindingContext().setBindingDescriptor(bindingContext.getBindingDescriptor());
         decodedCtx.getSAMLBindingContext().setBindingUri(bindingContext.getBindingUri());
         decodedCtx.getSAMLBindingContext().setHasBindingSignature(bindingContext.hasBindingSignature());
-        decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext.isIntendedDestinationEndpointURIRequired());
+        decodedCtx.getSAMLBindingContext().setIntendedDestinationEndpointURIRequired(bindingContext
+            .isIntendedDestinationEndpointURIRequired());
         decodedCtx.getSAMLBindingContext().setRelayState(bindingContext.getRelayState());
 
         final AssertionConsumerService acsService = context.getSPAssertionConsumerService();

@@ -417,14 +417,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
         return authnRequestSigned;
     }
     
-	/**
-	 * Initializes the configuration for a particular client.
-	 * 
-	 * @param clientName
-	 *            Name of the client. The configuration can use the value or not.
-	 * @param context
-	 *            Web context to transport additional information to the configuration.
-	 */
+    /**
+     * Initializes the configuration for a particular client.
+     * 
+     * @param clientName
+     *            Name of the client. The configuration can use the value or not.
+     * @param context
+     *            Web context to transport additional information to the configuration.
+     */
     protected void init(final String clientName, final WebContext context) {
         init();
     }
