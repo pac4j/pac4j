@@ -12,7 +12,8 @@ import java.util.function.Function;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public abstract class OAuth10ProfileDefinition<P extends OAuth10Profile> extends OAuthProfileDefinition<P, OAuth1Token, OAuth10Configuration> {
+public abstract class OAuth10ProfileDefinition<P extends OAuth10Profile>
+    extends OAuthProfileDefinition<P, OAuth1Token, OAuth10Configuration> {
 
     public OAuth10ProfileDefinition() {
         super();

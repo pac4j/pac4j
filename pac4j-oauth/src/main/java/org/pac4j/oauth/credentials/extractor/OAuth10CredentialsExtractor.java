@@ -27,7 +27,8 @@ public class OAuth10CredentialsExtractor extends OAuthCredentialsExtractor<OAuth
         final String verifierParameter = context.getRequestParameter(OAuth10Configuration.OAUTH_VERIFIER);
         if (tokenParameter != null && verifierParameter != null) {
             // get request token from session
-            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) context.getSessionAttribute(configuration.getRequestTokenSessionAttributeName());
+            final OAuth1RequestToken tokenSession = (OAuth1RequestToken) context
+                .getSessionAttribute(configuration.getRequestTokenSessionAttributeName());
             logger.debug("tokenRequest: {}", tokenSession);
             final String token = OAuthEncoder.decode(tokenParameter);
             final String verifier = OAuthEncoder.decode(verifierParameter);

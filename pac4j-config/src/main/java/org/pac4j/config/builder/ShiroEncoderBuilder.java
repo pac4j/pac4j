@@ -25,7 +25,8 @@ public class ShiroEncoderBuilder extends AbstractBuilder {
     public void tryCreatePasswordEncoder(final Map<String, PasswordEncoder> encoders) {
         for (int i = 0; i <= MAX_NUM_ENCODERS; i++) {
             final String exists = getProperty(SHIRO_ENCODER, i);
-            final boolean hasProperty =  containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i) || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i)
+            final boolean hasProperty =  containsProperty(SHIRO_ENCODER_GENERATE_PUBLIC_SALT, i)
+                || containsProperty(SHIRO_ENCODER_HASH_ALGORITHM_NAME, i)
                 || containsProperty(SHIRO_ENCODER_HASH_ITERATIONS, i) || containsProperty(SHIRO_ENCODER_PRIVATE_SALT, i);
             if (isNotBlank(exists) || hasProperty) {
 

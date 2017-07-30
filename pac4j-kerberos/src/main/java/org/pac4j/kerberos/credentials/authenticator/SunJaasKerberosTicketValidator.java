@@ -204,10 +204,10 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 
     private static byte[] tweakJdkRegression(byte[] token) throws GSSException {
 
-//    	Due to regression in 8u40/8u45 described in
-//    	https://bugs.openjdk.java.net/browse/JDK-8078439
-//    	try to tweak token package if it looks like it has
-//    	OID's in wrong order
+//      Due to regression in 8u40/8u45 described in
+//      https://bugs.openjdk.java.net/browse/JDK-8078439
+//      try to tweak token package if it looks like it has
+//      OID's in wrong order
 //
 //      0000: 60 82 06 5C 06 06 2B 06   01 05 05 02 A0 82 06 50
 //      0010: 30 82 06 4C A0 30 30 2E  |06 09 2A 86 48 82 F7 12
@@ -215,20 +215,20 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
 //      0030: 2B 06 01 04 01 82 37 02   02 1E 06 0A 2B 06 01 04
 //      0040: 01 82 37 02 02 0A A2 82   06 16 04 82 06 12 60 82
 //
-//    	In above package first token is in position 24 and second
-//    	in 35 with both having size 11.
+//      In above package first token is in position 24 and second
+//      in 35 with both having size 11.
 //
-//    	We simple check if we have these two in this order and swap
+//      We simple check if we have these two in this order and swap
 //
-//    	Below code would create two arrays, lets just create that
-//    	manually because it doesn't change
+//      Below code would create two arrays, lets just create that
+//      manually because it doesn't change
 //      Oid GSS_KRB5_MECH_OID = new Oid("1.2.840.113554.1.2.2");
 //      Oid MS_KRB5_MECH_OID = new Oid("1.2.840.48018.1.2.2");
-//		byte[] der1 = GSS_KRB5_MECH_OID.getDER();
-//		byte[] der2 = MS_KRB5_MECH_OID.getDER();
+//      byte[] der1 = GSS_KRB5_MECH_OID.getDER();
+//      byte[] der2 = MS_KRB5_MECH_OID.getDER();
 
-//		0000: 06 09 2A 86 48 86 F7 12   01 02 02
-//		0000: 06 09 2A 86 48 82 F7 12   01 02 02
+//      0000: 06 09 2A 86 48 86 F7 12   01 02 02
+//      0000: 06 09 2A 86 48 82 F7 12   01 02 02
 
         if (token == null || token.length < 48) {
             return token;
@@ -250,5 +250,4 @@ public class SunJaasKerberosTicketValidator extends InitializableObject implemen
         System.arraycopy(token, 46, nt, 46, token.length - 24 - 11 - 11);
         return nt;
     }
-
 }

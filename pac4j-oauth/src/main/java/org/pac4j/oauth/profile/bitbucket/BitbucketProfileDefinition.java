@@ -26,7 +26,7 @@ public class BitbucketProfileDefinition extends OAuth10ProfileDefinition<Bitbuck
 
     public BitbucketProfileDefinition() {
         super(x -> new BitbucketProfile());
-        Arrays.stream(new String[] { Pac4jConstants.USERNAME, LAST_NAME })
+        Arrays.stream(new String[] {Pac4jConstants.USERNAME, LAST_NAME})
                 .forEach(a -> primary(a, Converters.STRING));
         primary(IS_TEAM, Converters.BOOLEAN);
         primary(AVATAR, Converters.URL);

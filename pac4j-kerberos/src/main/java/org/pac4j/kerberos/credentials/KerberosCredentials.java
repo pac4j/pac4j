@@ -45,8 +45,8 @@ public class KerberosCredentials extends Credentials {
 
         KerberosCredentials that = (KerberosCredentials) o;
 
-        return !(kerberosTicket != null ? !getTicketAsString(kerberosTicket).equals(getTicketAsString(that.kerberosTicket)) : that.kerberosTicket != null);
-
+        return !(kerberosTicket != null ? !getTicketAsString(kerberosTicket).equals(getTicketAsString(that.kerberosTicket))
+            : that.kerberosTicket != null);
     }
 
     @Override

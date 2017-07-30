@@ -136,6 +136,7 @@ public class JwtGenerator<U extends CommonProfile> {
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "signatureConfiguration", signatureConfiguration, "encryptionConfiguration", encryptionConfiguration);
+        return CommonHelper.toString(this.getClass(), "signatureConfiguration", signatureConfiguration,
+            "encryptionConfiguration", encryptionConfiguration);
     }
 }

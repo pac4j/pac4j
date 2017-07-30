@@ -84,14 +84,14 @@ public class SAML2MessageContext extends MessageContext<SAMLObject> {
     }
     
     public final SingleLogoutService getIDPSingleLogoutService(final String binding) {
-    	final List<SingleLogoutService> services = getIDPSSODescriptor().getSingleLogoutServices();
-    	for (final SingleLogoutService service : services) {
-    		if(service.getBinding().equals(binding)) {
-    			return service;
-    		}
-    	}
-    	throw new SAMLException("Identity provider has no single logout service available for the selected profile"
-    	        + binding);
+        final List<SingleLogoutService> services = getIDPSSODescriptor().getSingleLogoutServices();
+        for (final SingleLogoutService service : services) {
+            if (service.getBinding().equals(binding)) {
+                return service;
+            }
+        }
+        throw new SAMLException("Identity provider has no single logout service available for the selected profile"
+            + binding);
     }
 
     public final SingleSignOnService getIDPSingleSignOnService(final String binding) {

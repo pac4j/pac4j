@@ -89,7 +89,7 @@ public class GitHubProfile extends OAuth20Profile {
     }
 
     public Date getUpdatedAt() {
-      return (Date) getAttribute(GitHubProfileDefinition.UPDATED_AT);
+        return (Date) getAttribute(GitHubProfileDefinition.UPDATED_AT);
     }
 
     public String getType() {

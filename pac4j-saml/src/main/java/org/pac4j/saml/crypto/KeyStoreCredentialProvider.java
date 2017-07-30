@@ -45,7 +45,7 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
 
     private final String privateKey;
 
-	public KeyStoreCredentialProvider(final String keyStoreAlias, final String keyStoreType,
+    public KeyStoreCredentialProvider(final String keyStoreAlias, final String keyStoreType,
                                       final Resource keyStoreResource, final String storePasswd, final String privateKeyPasswd) {
         CommonHelper.assertNotNull("keyStoreResource", keyStoreResource);
         CommonHelper.assertNotBlank("storePasswd", storePasswd);
@@ -70,12 +70,13 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
                 }
             }
         }
-	}
+    }
 
-	public KeyStoreCredentialProvider(final SAML2ClientConfiguration configuration) {
-		this(configuration.getKeyStoreAlias(), configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType(),
-				configuration.getKeystoreResource(), configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
-	}
+    public KeyStoreCredentialProvider(final SAML2ClientConfiguration configuration) {
+        this(configuration.getKeyStoreAlias(), 
+            configuration.getKeyStoreType() == null ? DEFAULT_KEYSTORE_TYPE : configuration.getKeyStoreType(),
+            configuration.getKeystoreResource(), configuration.getKeystorePassword(), configuration.getPrivateKeyPassword());
+    }
 
     @Override
     public KeyInfo getKeyInfo() {
@@ -132,15 +133,15 @@ public class KeyStoreCredentialProvider implements CredentialProvider {
         }
     }
 
-	private String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
+    private String getPrivateKeyAlias(final KeyStore keyStore, final String keyStoreAlias) {
         try {
             final Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-	            final String currentAlias = aliases.nextElement();
-				if (keyStoreAlias == null || currentAlias.equalsIgnoreCase(keyStoreAlias)) {
-					return currentAlias;
-				}
-			}
+            while (aliases.hasMoreElements()) {
+                final String currentAlias = aliases.nextElement();
+                if (keyStoreAlias == null || currentAlias.equalsIgnoreCase(keyStoreAlias)) {
+                    return currentAlias;
+                }
+            }
 
             throw new SAMLException("Keystore has no private keys");
 

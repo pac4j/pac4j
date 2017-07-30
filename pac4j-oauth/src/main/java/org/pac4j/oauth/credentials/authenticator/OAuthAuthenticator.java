@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject implements Authenticator<C> {
+abstract class OAuthAuthenticator<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject
+    implements Authenticator<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

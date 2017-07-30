@@ -43,7 +43,8 @@ public class GenericApi20 extends DefaultApi20 {
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {
         
-        StringBuilder url = new StringBuilder(String.format(AUTHORIZATION_URL, authUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback())));
+        StringBuilder url = new StringBuilder(String.format(AUTHORIZATION_URL, authUrl, config.getApiKey(), 
+            OAuthEncoder.encode(config.getCallback())));
                 
         if (config.getScope() != null) {
             url.append("&scope=").append(OAuthEncoder.encode(config.getScope()));            

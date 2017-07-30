@@ -64,7 +64,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
         // check algorithms
         final List<JWSAlgorithm> metadataAlgorithms = configuration.getProviderMetadata().getIDTokenJWSAlgs();
-        CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms), "There must at least one JWS algorithm supported on the OpenID Connect provider side");
+        CommonHelper.assertTrue(CommonHelper.isNotEmpty(metadataAlgorithms),
+            "There must at least one JWS algorithm supported on the OpenID Connect provider side");
         JWSAlgorithm jwsAlgorithm;
         final JWSAlgorithm preferredAlgorithm = configuration.getPreferredJwsAlgorithm();
         if (metadataAlgorithms.contains(preferredAlgorithm)) {
@@ -82,7 +83,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
         // Init IDTokenVerifier
         if (jwsAlgorithm == null) {
             this.idTokenValidator = new IDTokenValidator(configuration.getProviderMetadata().getIssuer(), _clientID);
-        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) || JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
+        } else if (CommonHelper.isNotBlank(configuration.getSecret()) && (JWSAlgorithm.HS256.equals(jwsAlgorithm) || 
+            JWSAlgorithm.HS384.equals(jwsAlgorithm) || JWSAlgorithm.HS512.equals(jwsAlgorithm))) {
             this.idTokenValidator = createHMACTokenValidator(jwsAlgorithm, _clientID, _secret);
         } else {
             this.idTokenValidator = createRSATokenValidator(jwsAlgorithm, _clientID);
@@ -140,7 +142,8 @@ public class OidcProfileCreator<U extends OidcProfile> extends ProfileDefinition
 
             // User Info request
             if (configuration.getProviderMetadata().getUserInfoEndpointURI() != null && accessToken != null) {
-                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(), (BearerAccessToken) accessToken);
+                final UserInfoRequest userInfoRequest = new UserInfoRequest(configuration.getProviderMetadata().getUserInfoEndpointURI(),
+                    (BearerAccessToken) accessToken);
                 final HTTPRequest userInfoHttpRequest = userInfoRequest.toHTTPRequest();
                 userInfoHttpRequest.setConnectTimeout(configuration.getConnectTimeout());
                 userInfoHttpRequest.setReadTimeout(configuration.getReadTimeout());

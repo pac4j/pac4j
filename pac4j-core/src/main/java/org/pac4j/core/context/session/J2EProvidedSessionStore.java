@@ -25,3 +25,4 @@ class J2EProvidedSessionStore extends J2ESessionStore {
         return session;
     }
 }
+

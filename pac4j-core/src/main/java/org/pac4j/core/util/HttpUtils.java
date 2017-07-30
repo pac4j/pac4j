@@ -46,7 +46,8 @@ public final class HttpUtils {
         return openConnection(url, HttpConstants.HTTP_METHOD.DELETE.name(), null);
     }
 
-    protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers) throws IOException {
+    protected static HttpURLConnection openConnection(final URL url, final String requestMethod, final Map<String, String> headers) 
+        throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -62,7 +63,8 @@ public final class HttpUtils {
     }
 
     public static String readBody(final HttpURLConnection connection) throws IOException {
-        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream(), "UTF-8"); final BufferedReader br = new BufferedReader(isr)) {
+        try (final InputStreamReader isr = new InputStreamReader(connection.getInputStream(), "UTF-8"); 
+            final BufferedReader br = new BufferedReader(isr)) {
             final StringBuilder sb = new StringBuilder();
             String output;
             while ((output = br.readLine()) != null) {

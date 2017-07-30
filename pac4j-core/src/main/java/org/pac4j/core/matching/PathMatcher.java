@@ -60,10 +60,12 @@ public class PathMatcher implements Matcher {
      */
     public PathMatcher excludeRegex(final String regex) {
         CommonHelper.assertNotBlank("regex", regex);
-        logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression to avoid any security issues!");
+        logger.warn("Excluding paths with regexes is an advanced feature: be careful when defining your regular expression " + 
+                "to avoid any security issues!");
 
         if (!regex.startsWith("^") || !regex.endsWith("$")) {
-            throw new TechnicalException("Your regular expression: '" + regex + "' must start with a ^ and end with a $ to define a full path matching");
+            throw new TechnicalException("Your regular expression: '" + regex + "' must start with a ^ and end with a $ " + 
+                "to define a full path matching");
         }
 
         excludedPatterns.add(Pattern.compile(regex));

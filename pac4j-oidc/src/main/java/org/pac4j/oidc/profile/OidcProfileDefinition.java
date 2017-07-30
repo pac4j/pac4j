@@ -71,7 +71,8 @@ public class OidcProfileDefinition<P extends OidcProfile> extends CommonProfileD
         });
         // TODO: birthdate, address
         Arrays.stream(new String[] {JwtClaims.SUBJECT, JwtClaims.ISSUER, NONCE, ACR, AZP}).forEach(a -> primary(a, Converters.STRING));
-        Arrays.stream(new String[] {JwtClaims.EXPIRATION_TIME, JwtClaims.ISSUED_AT, JwtClaims.NOT_BEFORE}).forEach(a -> primary(a, Converters.DATE_TZ_GENERAL));
+        Arrays.stream(new String[] {JwtClaims.EXPIRATION_TIME, JwtClaims.ISSUED_AT, JwtClaims.NOT_BEFORE})
+            .forEach(a -> primary(a, Converters.DATE_TZ_GENERAL));
         primary(AUTH_TIME, new OidcLongTimeConverter());
     }
 

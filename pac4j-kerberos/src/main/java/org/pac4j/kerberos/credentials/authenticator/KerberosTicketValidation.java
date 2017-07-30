@@ -49,5 +49,4 @@ public class KerberosTicketValidation {
         princs.add(new KerberosPrincipal(servicePrincipal));
         return new Subject(false, princs, new HashSet<Object>(), new HashSet<Object>());
     }
-
 }

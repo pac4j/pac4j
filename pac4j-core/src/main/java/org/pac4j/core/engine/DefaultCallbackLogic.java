@@ -24,8 +24,8 @@ import static org.pac4j.core.util.CommonHelper.*;
 
 /**
  * <p>Default callback logic:</p>
- * <p>The credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in the web session.
- * Finally, the user is redirected back to the originally requested url (or to the <code>defaultUrl</code>).</p>
+ * <p>The credentials are extracted from the current request to fetch the user profile (from the identity provider) which is then saved in
+ * the web session. Finally, the user is redirected back to the originally requested url (or to the <code>defaultUrl</code>).</p>
  *
  * @author Jerome Leleu
  * @since 1.9.0

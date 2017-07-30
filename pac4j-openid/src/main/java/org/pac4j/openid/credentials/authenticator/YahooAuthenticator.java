@@ -51,8 +51,8 @@ public class YahooAuthenticator implements Authenticator<OpenIdCredentials> {
 
         try {
             // verify the response
-            final VerificationResult verification = this.client.getConsumerManager().verify(this.client.computeFinalCallbackUrl(context), parameterList,
-                    discoveryInformation);
+            final VerificationResult verification = this.client.getConsumerManager().verify(this.client.computeFinalCallbackUrl(context), 
+                    parameterList, discoveryInformation);
 
             // examine the verification result and extract the verified identifier
             final Identifier verified = verification.getVerifiedId();

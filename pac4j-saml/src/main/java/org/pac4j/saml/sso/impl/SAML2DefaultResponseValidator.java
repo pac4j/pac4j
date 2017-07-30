@@ -77,7 +77,10 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
 
     private final static Logger logger = LoggerFactory.getLogger(SAML2DefaultResponseValidator.class);
 
-    /** The default maximum authentication lifetime, in seconds. Used for {@link #maximumAuthenticationLifetime} if a meaningless (&lt;=0) value is passed to the constructor. */
+    /** 
+     * The default maximum authentication lifetime, in seconds. Used for {@link #maximumAuthenticationLifetime} if a meaningless (&lt;=0)
+     * value is passed to the constructor. 
+     */
     private static final int DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME = 3600;
 
     /* maximum skew in seconds between SP and IDP clocks */
@@ -108,7 +111,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                                          final URIComparator uriComparator) {
         this.signatureTrustEngineProvider = engine;
         this.decrypter = decrypter;
-        this.maximumAuthenticationLifetime = (maximumAuthenticationLifetime > 0 ? maximumAuthenticationLifetime : DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME);
+        this.maximumAuthenticationLifetime = (maximumAuthenticationLifetime > 0 ? 
+            maximumAuthenticationLifetime : DEFAULT_MAXIMUM_AUTHENTICATION_LIFETIME);
         this.uriComparator = uriComparator;
         this.wantsAssertionsSigned = wantsAssertionsSigned;
     }
@@ -150,7 +154,7 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
         List<String> authnContexts = new ArrayList<String>();
         for(AuthnStatement authnStatement : authnStatements) {
-        	authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
+            authnContexts.add(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
         }
         
 
@@ -185,11 +189,11 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
      */
     private final String getSessionIndex(Assertion subjectAssertion) {
         List<AuthnStatement> authnStatements = subjectAssertion.getAuthnStatements();
-        if(authnStatements != null && authnStatements.size() > 0) {
-        	AuthnStatement statement = authnStatements.get(0);
-        	if(statement != null) {
-        		return statement.getSessionIndex();
-        	}
+        if (authnStatements != null && authnStatements.size() > 0) {
+            AuthnStatement statement = authnStatements.get(0);
+            if (statement != null) {
+                return statement.getSessionIndex();
+            }
         }
         return null;
     }
@@ -231,7 +235,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         if (messageStorage != null && response.getInResponseTo() != null) {
             final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
             if (xmlObject == null) {
-                throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " + response.getInResponseTo());
+                throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " 
+                    + response.getInResponseTo());
             } else if (xmlObject instanceof AuthnRequest) {
                 request = (AuthnRequest) xmlObject;
             } else {
@@ -246,13 +251,12 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         if (response.getIssuer() != null) {
             validateIssuer(response.getIssuer(), context);
         }
-
-
     }
 
     protected void verifyRequest(final AuthnRequest request, final SAML2MessageContext context) {
         // Verify endpoint requested in the original request
-        final AssertionConsumerService assertionConsumerService = (AssertionConsumerService) context.getSAMLEndpointContext().getEndpoint();
+        final AssertionConsumerService assertionConsumerService = (AssertionConsumerService) context.getSAMLEndpointContext()
+            .getEndpoint();
         if (request.getAssertionConsumerServiceIndex() != null) {
             if (!request.getAssertionConsumerServiceIndex().equals(assertionConsumerService.getIndex())) {
                 logger.warn("Response was received at a different endpoint index than was requested");
@@ -444,7 +448,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         }
 
         for (final SubjectConfirmation confirmation : subject.getSubjectConfirmations()) {
-            if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod()) && isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
+            if (SubjectConfirmation.METHOD_BEARER.equals(confirmation.getMethod()) && 
+                isValidBearerSubjectConfirmationData(confirmation.getSubjectConfirmationData(), context)) {
                 NameID nameIDFromConfirmation = confirmation.getNameID();
                 final BaseID baseIDFromConfirmation = confirmation.getBaseID();
                 final EncryptedID encryptedIDFromConfirmation = confirmation.getEncryptedID();
@@ -463,7 +468,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                     samlIDFound = true;
                 }
                 if (!samlIDFound) {
-                    logger.warn("Could not find any Subject NameID/BaseID/EncryptedID, neither directly in the Subject nor in any Subject Confirmation.");
+                    logger.warn("Could not find any Subject NameID/BaseID/EncryptedID, neither directly in the Subject nor in any Subject "
+                        + "Confirmation.");
                 }
                 return;
             }
@@ -547,7 +553,8 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
                 final URI recipientUri = new URI(data.getRecipient());
                 final URI appEndpointUri = new URI(endpoint.getLocation());
                 if (!UriUtils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
-                    logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. SP ACS URL from context: {}", recipientUri, appEndpointUri);
+                    logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. " 
+                        + "SP ACS URL from context: {}", recipientUri, appEndpointUri);
                     return false;
                 }
             }
@@ -702,10 +709,11 @@ public class SAML2DefaultResponseValidator implements SAML2ResponseValidator {
         final DateTime before =  DateTime.now().plusSeconds(acceptedSkew);
         final DateTime after =  DateTime.now().minusSeconds(acceptedSkew + interval);
         boolean isDateValid = issueInstant.isBefore(before) && issueInstant.isAfter(after);
-		if (!isDateValid) {
-			logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstant.getZone()), after.toDateTime(issueInstant.getZone()), issueInstant);
-		}
-	    return isDateValid;
+        if (!isDateValid) {
+            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstant.getZone()), 
+                after.toDateTime(issueInstant.getZone()), issueInstant);
+        }
+        return isDateValid;
     }
 
     private boolean isIssueInstantValid(final DateTime issueInstant) {
