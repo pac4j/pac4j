@@ -11,8 +11,8 @@ import org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile;
 /**
  * <p>This class is the OAuth client to authenticate users in LinkedIn (using OAuth 2.0 protocol).</p>
  * <p>It returns a {@link org.pac4j.oauth.profile.linkedin2.LinkedIn2Profile}.</p>
- * <p>The scope (by default : <code>r_fullprofile</code>) can be specified using the {@link #setScope(String)} method, as well as the returned
- * fields through the {@link #setFields(String)} method.</p>
+ * <p>The scope (by default : <code>r_fullprofile</code>) can be specified using the {@link #setScope(String)} method, as well as the 
+ * returned fields through the {@link #setFields(String)} method.</p>
  * <p>More information at https://developer.linkedin.com/documents/profile-api</p>
  * 
  * @author Jerome Leleu
@@ -24,7 +24,9 @@ public class LinkedIn2Client extends OAuth20Client<LinkedIn2Profile> {
     
     protected String scope = DEFAULT_SCOPE;
     
-    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address";
+    protected String fields = "id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name," 
+        + "formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,"
+        + "positions,picture-url,site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address";
     
     public LinkedIn2Client() {
     }

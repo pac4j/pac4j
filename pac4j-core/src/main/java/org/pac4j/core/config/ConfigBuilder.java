@@ -22,9 +22,9 @@ public final class ConfigBuilder {
             ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             final Class<ConfigFactory> clazz;
             if (tccl == null) {
-            	clazz = (Class<ConfigFactory>) Class.forName(factoryName);
+                clazz = (Class<ConfigFactory>) Class.forName(factoryName);
             } else {
-            	clazz = (Class<ConfigFactory>) Class.forName(factoryName, true, tccl);
+                clazz = (Class<ConfigFactory>) Class.forName(factoryName, true, tccl);
             }
             final ConfigFactory factory = clazz.newInstance();
             return factory.build(parameters);

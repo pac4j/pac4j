@@ -25,7 +25,8 @@ public class DirectKerberosClient extends DirectClient<KerberosCredentials, Kerb
         setAuthenticator(authenticator);
     }
 
-    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials, KerberosProfile> profileCreator) {
+    public DirectKerberosClient(final Authenticator authenticator, final ProfileCreator<KerberosCredentials,
+        KerberosProfile> profileCreator) {
         setAuthenticator(authenticator);
         setProfileCreator(profileCreator);
     }

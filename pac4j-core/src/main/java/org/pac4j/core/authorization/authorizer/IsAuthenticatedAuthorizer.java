@@ -8,7 +8,8 @@ import org.pac4j.core.profile.CommonProfile;
 import java.util.List;
 
 /**
- * The user must be authenticated. This authorizer should never be necessary unless using the {@link org.pac4j.core.client.direct.AnonymousClient}.
+ * The user must be authenticated. This authorizer should never be necessary unless using the 
+ * {@link org.pac4j.core.client.direct.AnonymousClient}.
  *
  * @author Jerome Leleu
  * @since 1.9.0

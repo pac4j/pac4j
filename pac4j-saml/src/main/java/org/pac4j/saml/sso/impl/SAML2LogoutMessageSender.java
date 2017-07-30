@@ -47,10 +47,10 @@ public class SAML2LogoutMessageSender implements SAML2MessageSender<LogoutReques
             final String destinationBindingType,
             final boolean signErrorResponses,
             final boolean forceSignRedirectBindingLogoutRequest) {
-    	this.signatureSigningParametersProvider = signatureSigningParametersProvider;
-    	this.destinationBindingType = destinationBindingType;
-    	this.signErrorResponses = signErrorResponses;
-    	this.forceSignRedirectBindingLogoutRequest = forceSignRedirectBindingLogoutRequest;
+        this.signatureSigningParametersProvider = signatureSigningParametersProvider;
+        this.destinationBindingType = destinationBindingType;
+        this.signErrorResponses = signErrorResponses;
+        this.forceSignRedirectBindingLogoutRequest = forceSignRedirectBindingLogoutRequest;
     }
 
     @Override

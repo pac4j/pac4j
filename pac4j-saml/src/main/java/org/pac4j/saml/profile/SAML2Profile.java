@@ -33,10 +33,10 @@ public class SAML2Profile extends CommonProfile {
     }
     
     public String getIssuerEntityID() {
-    	return (String) getAuthenticationAttribute(SAML2Authenticator.ISSUER_ID);
+        return (String) getAuthenticationAttribute(SAML2Authenticator.ISSUER_ID);
     }
     
     public List<String> getAuthnContexts() {
-    	return (List<String>) getAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT);
+        return (List<String>) getAuthenticationAttribute(SAML2Authenticator.AUTHN_CONTEXT);
     }
 }

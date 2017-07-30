@@ -79,7 +79,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
 
     @SuppressWarnings("unchecked")
     protected final AuthnRequest buildAuthnRequest(final SAML2MessageContext context,
-                                                   final AssertionConsumerService assertionConsumerService, final SingleSignOnService ssoService) {
+                                                   final AssertionConsumerService assertionConsumerService, 
+                                                   final SingleSignOnService ssoService) {
 
         final SAMLObjectBuilder<AuthnRequest> builder = (SAMLObjectBuilder<AuthnRequest>) this.builderFactory
                 .getBuilder(AuthnRequest.DEFAULT_ELEMENT_NAME);

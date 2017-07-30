@@ -45,7 +45,7 @@ public class LinkedIn2ProfileDefinition extends OAuth20ProfileDefinition<LinkedI
 
     public LinkedIn2ProfileDefinition() {
         super(x -> new LinkedIn2Profile());
-        Arrays.stream(new String[] { FIRST_NAME, LAST_NAME, MAIDEN_NAME, FORMATTED_NAME, PHONETIC_FIRST_NAME, PHONETIC_LAST_NAME,
+        Arrays.stream(new String[] {FIRST_NAME, LAST_NAME, MAIDEN_NAME, FORMATTED_NAME, PHONETIC_FIRST_NAME, PHONETIC_LAST_NAME,
                 FORMATTED_PHONETIC_NAME, HEADLINE, INDUSTRY, CURRENT_SHARE, SUMMARY, SPECIALTIES, EMAIL_ADDRESS})
                 .forEach(a -> primary(a, Converters.STRING));
         primary(NUM_CONNECTIONS, Converters.INTEGER);

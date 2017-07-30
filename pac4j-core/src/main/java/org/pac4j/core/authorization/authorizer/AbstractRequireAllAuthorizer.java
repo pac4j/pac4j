@@ -10,7 +10,8 @@ import org.pac4j.core.profile.CommonProfile;
  * @author Jerome Leleu
  * @since 1.8.1
  */
-public abstract class AbstractRequireAllAuthorizer<E extends Object, U extends CommonProfile> extends AbstractRequireElementAuthorizer<E, U> {
+public abstract class AbstractRequireAllAuthorizer<E extends Object, U extends CommonProfile>
+    extends AbstractRequireElementAuthorizer<E, U> {
 
     @Override
     protected boolean isProfileAuthorized(final WebContext context, final U profile) throws HttpAction {

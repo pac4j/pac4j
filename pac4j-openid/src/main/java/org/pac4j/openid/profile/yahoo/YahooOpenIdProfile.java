@@ -19,12 +19,12 @@ public class YahooOpenIdProfile extends OpenIdProfile {
 
     @Override
     public Locale getLocale() {
-    	return (Locale) getAttribute(YahooOpenIdProfileDefinition.LANGUAGE);
+        return (Locale) getAttribute(YahooOpenIdProfileDefinition.LANGUAGE);
     }
     
     @Override
     public String getDisplayName() {
-    	return (String) getAttribute(YahooOpenIdProfileDefinition.FULLNAME);
+        return (String) getAttribute(YahooOpenIdProfileDefinition.FULLNAME);
     }
 
     @Override

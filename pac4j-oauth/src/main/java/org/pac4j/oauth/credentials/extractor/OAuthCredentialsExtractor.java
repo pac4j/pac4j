@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject implements CredentialsExtractor<C> {
+abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends OAuthConfiguration> extends InitializableWebObject
+    implements CredentialsExtractor<C> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -49,7 +50,8 @@ abstract class OAuthCredentialsExtractor<C extends OAuthCredentials, O extends O
         // check errors
         try {
             boolean errorFound = false;
-            final OAuthCredentialsException oauthCredentialsException = new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
+            final OAuthCredentialsException oauthCredentialsException = 
+                new OAuthCredentialsException("Failed to retrieve OAuth credentials, error parameters found");
             for (final String key : OAuthCredentialsException.ERROR_NAMES) {
                 final String value = context.getRequestParameter(key);
                 if (value != null) {

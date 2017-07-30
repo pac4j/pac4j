@@ -45,7 +45,7 @@ public class SAML2Credentials extends Credentials {
     }
     
     public final String getSessionIndex() {
-    	return this.sessionIndex;
+        return this.sessionIndex;
     }
 
     public final List<Attribute> getAttributes() {
@@ -84,11 +84,11 @@ public class SAML2Credentials extends Credentials {
         return "SAMLCredential [nameId=" + this.nameId + ", attributes=" + this.attributes + ", sessionIndex=" + this.sessionIndex + "]";
     }
 
-	public String getIssuerId() {
-		return issuerId;
-	}
+    public String getIssuerId() {
+        return issuerId;
+    }
 
-	public List<String> getAuthnContexts() {
-		return authnContexts;
-	}
+    public List<String> getAuthnContexts() {
+        return authnContexts;
+    }
 }

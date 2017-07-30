@@ -14,7 +14,8 @@ import org.pac4j.oauth.profile.OAuth20Profile;
  * @author Jerome Leleu
  * @since 2.0.0
  */
-public class OAuth20ProfileCreator<U extends OAuth20Profile> extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken> {
+public class OAuth20ProfileCreator<U extends OAuth20Profile>
+    extends OAuthProfileCreator<OAuth20Credentials, U, OAuth20Configuration, OAuth2AccessToken> {
 
     public OAuth20ProfileCreator(final OAuth20Configuration configuration) {
         super(configuration);

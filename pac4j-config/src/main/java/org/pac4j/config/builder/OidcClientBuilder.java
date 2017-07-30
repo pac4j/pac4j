@@ -60,7 +60,8 @@ public class OidcClientBuilder extends AbstractBuilder {
                 }
                 for (int j = 1; j <= MAX_NUM_CUSTOM_PROPERTIES; j++) {
                     if (containsProperty(OIDC_CUSTOM_PARAM_KEY + j, i)) {
-                        configuration.addCustomParam(getProperty(OIDC_CUSTOM_PARAM_KEY + j, i), getProperty(OIDC_CUSTOM_PARAM_VALUE + j, i));
+                        configuration.addCustomParam(getProperty(OIDC_CUSTOM_PARAM_KEY + j, i),
+                            getProperty(OIDC_CUSTOM_PARAM_VALUE + j, i));
                     }
                 }
 

@@ -39,31 +39,31 @@ public class SAML2IdentityProviderMetadataResolver implements SAML2MetadataResol
     private String idpEntityId;
     private DOMMetadataResolver idpMetadataProvider;
 
-	public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration) {
-		this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderEntityId());
-	}
+    public SAML2IdentityProviderMetadataResolver(final SAML2ClientConfiguration configuration) {
+        this(configuration.getIdentityProviderMetadataResource(), configuration.getIdentityProviderEntityId());
+    }
 
-	public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, @Nullable final String idpEntityId) {
-	    CommonHelper.assertNotNull("idpMetadataResource", idpMetadataResource);
-		this.idpMetadataResource = idpMetadataResource;
-		this.idpEntityId = idpEntityId;
-	}
+    public SAML2IdentityProviderMetadataResolver(final Resource idpMetadataResource, @Nullable final String idpEntityId) {
+        CommonHelper.assertNotNull("idpMetadataResource", idpMetadataResource);
+        this.idpMetadataResource = idpMetadataResource;
+        this.idpEntityId = idpEntityId;
+    }
 
     @Override
     public  final MetadataResolver resolve() {
-    	
-    	// No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
-    	// idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
-    	// Usage of locks will adversly impact performance.
-    	if(idpMetadataProvider != null) {
-    		return idpMetadataProvider;
-    	}
-    	
+ 
+        // No locks are used since saml2client's init does in turn invoke resolve and idpMetadataProvider is set.
+        // idpMetadataProvider is initialized by Saml2Client::internalInit->MetadataResolver::initIdentityProviderMetadataResolve->resolve
+        // Usage of locks will adversly impact performance.
+        if (idpMetadataProvider != null) {
+            return idpMetadataProvider;
+        }
+
         try {
 
             if (this.idpMetadataResource == null) {
                 throw new XMLParserException("idp metadata cannot be resolved from " + this.idpMetadataResource);
-			}
+            }
 
             try (final InputStream in = this.idpMetadataResource.getInputStream()) {
                 final Document inCommonMDDoc = Configuration.getParserPool().parse(in);

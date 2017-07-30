@@ -71,15 +71,13 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
 
 
     public SAML2LogoutResponseValidator(final SAML2SignatureTrustEngineProvider engine) {
-    	this(engine, new BasicURLComparator());
+        this(engine, new BasicURLComparator());
     }
 
-    public SAML2LogoutResponseValidator(final SAML2SignatureTrustEngineProvider engine,
-							            final URIComparator uriComparator) {
-		this.signatureTrustEngineProvider = engine;
-		this.uriComparator = uriComparator;
-	}
-
+    public SAML2LogoutResponseValidator(final SAML2SignatureTrustEngineProvider engine, final URIComparator uriComparator) {
+        this.signatureTrustEngineProvider = engine;
+        this.uriComparator = uriComparator;
+    }
 
     /**
      * Validates the SAML protocol response and the SAML SSO response.
@@ -138,9 +136,11 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
         if (messageStorage != null && response.getInResponseTo() != null) {
             final XMLObject xmlObject = messageStorage.retrieveMessage(response.getInResponseTo());
             if (xmlObject == null) {
-                throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " + response.getInResponseTo());
+                throw new SAMLException("InResponseToField of the Response doesn't correspond to sent message " 
+                    + response.getInResponseTo());
             } else if (!(xmlObject instanceof LogoutRequest)) {
-                throw new SAMLException("Sent request was of different type than the expected LogoutRequest " + response.getInResponseTo());
+                throw new SAMLException("Sent request was of different type than the expected LogoutRequest " 
+                    + response.getInResponseTo());
             }
         }
 
@@ -254,7 +254,8 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
                 final URI recipientUri = new URI(data.getRecipient());
                 final URI appEndpointUri = new URI(endpoint.getLocation());
                 if (!UriUtils.urisEqualAfterPortNormalization(recipientUri, appEndpointUri)) {
-                    logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. SP ACS URL from context: {}", recipientUri, appEndpointUri);
+                    logger.debug("SubjectConfirmationData recipient {} does not match SP assertion consumer URL, found. " 
+                        + "SP ACS URL from context: {}", recipientUri, appEndpointUri);
                     return false;
                 }
             }
@@ -379,10 +380,11 @@ public class SAML2LogoutResponseValidator implements SAML2ResponseValidator {
         final DateTime before =  DateTime.now().plusSeconds(acceptedSkew);
         final DateTime after =  DateTime.now().minusSeconds(acceptedSkew + interval);
         boolean isDateValid = issueInstant.isBefore(before) && issueInstant.isAfter(after);
-		if (!isDateValid) {
-			logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstant.getZone()), after.toDateTime(issueInstant.getZone()), issueInstant);
-		}
-	    return isDateValid;
+        if (!isDateValid) {
+            logger.trace("interval={},before={},after={},issueInstant={}", interval, before.toDateTime(issueInstant.getZone()), 
+                after.toDateTime(issueInstant.getZone()), issueInstant);
+        }
+        return isDateValid;
     }
 
     private boolean isIssueInstantValid(final DateTime issueInstant) {

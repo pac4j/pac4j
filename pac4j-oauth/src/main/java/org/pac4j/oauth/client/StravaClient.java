@@ -8,8 +8,10 @@ import org.pac4j.scribe.builder.api.StravaApi20;
 
 /**
  * <p>OAuth20Client for Strava.</p>
- * <p>Use the key as the client_id and secret as the client_secret, both provided by Strava at: <a href="https://www.strava.com/settings/api">https://www.strava.com/settings/api</a> </p>
- * <p>Set approvalPrompt to "force" if you want to force the authorization dialog to always display on Strava, otherwise let it to "auto" (default value). </p>
+ * <p>Use the key as the client_id and secret as the client_secret, both provided by Strava at: 
+ * <a href="https://www.strava.com/settings/api">https://www.strava.com/settings/api</a> </p>
+ * <p>Set approvalPrompt to "force" if you want to force the authorization dialog to always display on Strava, 
+ * otherwise let it to "auto" (default value). </p>
  * <p>More info at: <a href="http://strava.github.io/api/">http://strava.github.io/api/</a></p>
  *
  * @author Adrian Papusoi

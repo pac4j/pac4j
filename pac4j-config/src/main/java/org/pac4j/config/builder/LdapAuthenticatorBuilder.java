@@ -33,7 +33,8 @@ public class LdapAuthenticatorBuilder extends AbstractBuilder {
                 final org.ldaptive.auth.Authenticator ldaptiveAuthenticator = LdaptiveAuthenticatorBuilder.getAuthenticator(ldapProp);
 
                 final LdapProfileService authenticator = new LdapProfileService(ldaptiveAuthenticator, getProperty(LDAP_ATTRIBUTES, i));
-                final PooledConnectionFactoryManager pooledConnectionFactoryManager = (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
+                final PooledConnectionFactoryManager pooledConnectionFactoryManager =
+                    (PooledConnectionFactoryManager) ldaptiveAuthenticator.getAuthenticationHandler();
                 authenticator.setConnectionFactory(pooledConnectionFactoryManager.getConnectionFactory());
                 authenticator.setUsersDn(getProperty(LDAP_USERS_DN, i));
                 if (containsProperty(LDAP_PRINCIPAL_ATTRIBUTE_ID, i)) {

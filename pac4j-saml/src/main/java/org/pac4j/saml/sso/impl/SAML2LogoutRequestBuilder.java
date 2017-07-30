@@ -46,50 +46,52 @@ public class SAML2LogoutRequestBuilder implements SAML2ObjectBuilder<LogoutReque
         this.bindingType = bindingType;
     }
 
-	@Override
-	public LogoutRequest build(SAML2MessageContext context) {
+    @Override
+    public LogoutRequest build(SAML2MessageContext context) {
         final SingleLogoutService ssoService = context.getIDPSingleLogoutService(this.bindingType);
         final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService();
         return buildLogoutRequest(context, assertionConsumerService, ssoService);
-	}
+    }
 
     @SuppressWarnings("unchecked")
     protected final LogoutRequest buildLogoutRequest(final SAML2MessageContext context,
                                                      final AssertionConsumerService assertionConsumerService,
                                                      final SingleLogoutService ssoService) {
-	
-		final SAMLObjectBuilder<LogoutRequest> builder = (SAMLObjectBuilder<LogoutRequest>) this.builderFactory
-		        .getBuilder(LogoutRequest.DEFAULT_ELEMENT_NAME);
-		final LogoutRequest request = builder.buildObject();
 
-		final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
+        final SAMLObjectBuilder<LogoutRequest> builder = (SAMLObjectBuilder<LogoutRequest>) this.builderFactory
+            .getBuilder(LogoutRequest.DEFAULT_ELEMENT_NAME);
+        final LogoutRequest request = builder.buildObject();
 
-		request.setID(generateID());
-		request.setIssuer(getIssuer(selfContext.getEntityId()));
-		request.setIssueInstant(DateTime.now().plusSeconds(this.issueInstantSkewSeconds));
-		request.setVersion(SAMLVersion.VERSION_20);
-		request.setDestination(ssoService.getLocation());
+        final SAMLSelfEntityContext selfContext = context.getSAMLSelfEntityContext();
 
-		// very very bad...
-		ProfileManager manager = new ProfileManager(context.getWebContext());
-		Optional<UserProfile> p = manager.get(true);
-		if(p.isPresent() && p.get() instanceof SAML2Profile) {
-			final SAML2Profile samlP = (SAML2Profile) p.get();
-			// name id added (id of profile)
-			final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory.getBuilder(NameID.DEFAULT_ELEMENT_NAME);
-			final NameID nameId = nameIdBuilder.buildObject();
-			nameId.setValue(samlP.getId());
-			request.setNameID(nameId);
-			// session index added
-			final String sessIdx = (String) samlP.getAttribute("sessionindex");
-			final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory.getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
-			final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
-			sessionIdx.setSessionIndex(sessIdx);
-			request.getSessionIndexes().add(sessionIdx);
-		}
+        request.setID(generateID());
+        request.setIssuer(getIssuer(selfContext.getEntityId()));
+        request.setIssueInstant(DateTime.now().plusSeconds(this.issueInstantSkewSeconds));
+        request.setVersion(SAMLVersion.VERSION_20);
+        request.setDestination(ssoService.getLocation());
 
-		return request;
-	}
+        // very very bad...
+        ProfileManager manager = new ProfileManager(context.getWebContext());
+        Optional<UserProfile> p = manager.get(true);
+        if (p.isPresent() && p.get() instanceof SAML2Profile) {
+            final SAML2Profile samlP = (SAML2Profile) p.get();
+            // name id added (id of profile)
+            final SAMLObjectBuilder<NameID> nameIdBuilder = (SAMLObjectBuilder<NameID>) this.builderFactory
+                .getBuilder(NameID.DEFAULT_ELEMENT_NAME);
+            final NameID nameId = nameIdBuilder.buildObject();
+            nameId.setValue(samlP.getId());
+            request.setNameID(nameId);
+            // session index added
+            final String sessIdx = (String) samlP.getAttribute("sessionindex");
+            final SAMLObjectBuilder<SessionIndex> sessionIndexBuilder = (SAMLObjectBuilder<SessionIndex>) this.builderFactory
+                .getBuilder(SessionIndex.DEFAULT_ELEMENT_NAME);
+            final SessionIndex sessionIdx = sessionIndexBuilder.buildObject();
+            sessionIdx.setSessionIndex(sessIdx);
+            request.getSessionIndexes().add(sessionIdx);
+        }
+
+        return request;
+    }
 
     @SuppressWarnings("unchecked")
     protected final Issuer getIssuer(final String spEntityId) {

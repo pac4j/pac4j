@@ -31,7 +31,8 @@ public class FacebookProfileCreator extends OAuth20ProfileCreator<FacebookProfil
 
     @Override
     protected FacebookProfile retrieveUserProfileFromToken(final OAuth2AccessToken accessToken) throws HttpAction {
-        final OAuth20ProfileDefinition<FacebookProfile> profileDefinition = (OAuth20ProfileDefinition<FacebookProfile>) configuration.getProfileDefinition();
+        final OAuth20ProfileDefinition<FacebookProfile> profileDefinition = (OAuth20ProfileDefinition<FacebookProfile>) configuration
+            .getProfileDefinition();
         final FacebookClient client = (FacebookClient) configuration.getClient();
         final String profileUrl = profileDefinition.getProfileUrl(accessToken, configuration);
         String body = sendRequestForData(accessToken, profileUrl, Verb.GET);

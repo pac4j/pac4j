@@ -60,7 +60,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         this.signatureConfigurations = signatureConfigurations;
     }
 
-    public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations, final List<EncryptionConfiguration> encryptionConfigurations) {
+    public JwtAuthenticator(final List<SignatureConfiguration> signatureConfigurations,
+        final List<EncryptionConfiguration> encryptionConfigurations) {
         this.signatureConfigurations = signatureConfigurations;
         this.encryptionConfigurations = encryptionConfigurations;
     }
@@ -127,8 +128,8 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
             // Parse the token
             JWT jwt = JWTParser.parse(token);
 
-			if (jwt instanceof PlainJWT) {
-			    if (signatureConfigurations.isEmpty()) {
+            if (jwt instanceof PlainJWT) {
+                if (signatureConfigurations.isEmpty()) {
                     logger.debug("JWT is not signed and no signature configurations -> verified");
                 } else {
                     throw new CredentialsException("A non-signed JWT cannot be accepted as signature configurations have been defined");
@@ -184,7 +185,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                                 verified = config.verify(signedJWT);
                                 found = true;
                                 if (verified) {
-                                  break;
+                                    break;
                                 }
                             } catch (final JOSEException e) {
                                 logger.debug("Verification fails with signature configuration: {}, passing to the next one", config);
@@ -200,7 +201,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
                 }
             }
 
-          	createJwtProfile(credentials, jwt);
+            createJwtProfile(credentials, jwt);
 
         } catch (final ParseException e) {
             throw new CredentialsException("Cannot decrypt / verify JWT", e);
@@ -227,9 +228,9 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
         final Map<String, Object> attributes = new HashMap<>(claimSet.getClaims());
         attributes.remove(JwtClaims.SUBJECT);
 
-		final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
+        final List<String> roles = (List<String>) attributes.get(JwtGenerator.INTERNAL_ROLES);
         attributes.remove(JwtGenerator.INTERNAL_ROLES);
-		final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
+        final List<String> permissions = (List<String>) attributes.get(JwtGenerator.INTERNAL_PERMISSIONS);
         attributes.remove(JwtGenerator.INTERNAL_PERMISSIONS);
 
         final CommonProfile profile = ProfileHelper.restoreOrBuildProfile(getProfileDefinition(), subject, attributes);
@@ -281,6 +282,7 @@ public class JwtAuthenticator extends ProfileDefinitionAware<JwtProfile> impleme
 
     @Override
     public String toString() {
-        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations, "encryptionConfigurations", encryptionConfigurations);
+        return CommonHelper.toString(this.getClass(), "signatureConfigurations", signatureConfigurations,
+            "encryptionConfigurations", encryptionConfigurations);
     }
 }

@@ -27,7 +27,7 @@ public class KeycloakOidcConfiguration extends OidcConfiguration {
     
     @Override
     public String getDiscoveryURI() {
-       return baseUri+"/realms/"+realm+"/.well-known/openid-configuration";
+        return baseUri+"/realms/"+realm+"/.well-known/openid-configuration";
     }
     
     public String getRealm() {

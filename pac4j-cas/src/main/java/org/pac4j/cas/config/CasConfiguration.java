@@ -333,7 +333,8 @@ public class CasConfiguration extends InitializableWebObject {
         return CommonHelper.toString(this.getClass(), "loginUrl", this.loginUrl, "prefixUrl", this.prefixUrl, "restUrl", this.restUrl,
                 "protocol", this.protocol, "renew", this.renew, "gateway", this.gateway, "encoding", this.encoding,
                 "logoutHandler", this.logoutHandler, "acceptAnyProxy", this.acceptAnyProxy, "allowedProxyChains", this.allowedProxyChains,
-                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, "postLogoutUrlParameter", this.postLogoutUrlParameter,
+                "proxyReceptor", this.proxyReceptor, "timeTolerance", this.timeTolerance, 
+                "postLogoutUrlParameter", this.postLogoutUrlParameter,
                 "defaultTicketValidator", this.defaultTicketValidator, "urlResolver", this.urlResolver);
     }
 }

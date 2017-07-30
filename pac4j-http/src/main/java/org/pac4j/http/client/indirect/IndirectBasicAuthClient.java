@@ -61,7 +61,7 @@ public class IndirectBasicAuthClient extends IndirectClient<UsernamePasswordCred
             logger.debug("credentials : {}", credentials);
 
             if (credentials == null) {
-              throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
+                throw HttpAction.unauthorized("Requires authentication", context, this.realmName, null);
             }
 
             // validate credentials

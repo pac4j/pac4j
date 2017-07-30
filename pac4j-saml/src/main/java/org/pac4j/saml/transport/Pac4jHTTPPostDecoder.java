@@ -77,7 +77,8 @@ public class Pac4jHTTPPostDecoder extends AbstractMessageDecoder<SAMLObject> {
         }
 
         if(Strings.isNullOrEmpty(encodedMessage)) {
-            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. Invalid request for SAML 2 HTTP POST binding.");
+            throw new MessageDecodingException("Request did not contain either a SAMLRequest or SAMLResponse parameter. " 
+                + "Invalid request for SAML 2 HTTP POST binding.");
         } else {
             logger.trace("Base64 decoding SAML message:\n{}", encodedMessage);
             final byte[] decodedBytes = Base64Support.decode(encodedMessage);

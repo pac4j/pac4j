@@ -16,7 +16,8 @@ import org.pac4j.core.util.CommonHelper;
  * @since 1.4.2
  */
 public class PayPalApi20 extends DefaultApi20 {
-    private static final String AUTHORIZATION_URL = "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize?client_id=%s&redirect_uri=%s&scope=%s&response_type=code&nonce=%s";
+    private static final String AUTHORIZATION_URL = "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize?client_id=%s"
+        + "&redirect_uri=%s&scope=%s&response_type=code&nonce=%s";
 
     @Override
     public String getAuthorizationUrl(final OAuthConfig config, Map<String, String> additionalParams) {

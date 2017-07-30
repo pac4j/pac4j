@@ -99,3 +99,4 @@ public class LdapAuthenticationProperties extends AbstractLdapProperties {
         this.principalAttributePassword = principalAttributePassword;
     }
 }
+

@@ -118,7 +118,8 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
     }
 
     /**
-     * The code in this method is based on this blog post: https://www.sammyk.me/the-single-most-important-way-to-make-your-facebook-app-more-secure
+     * The code in this method is based on this blog post: 
+     * https://www.sammyk.me/the-single-most-important-way-to-make-your-facebook-app-more-secure
      * and this answer: https://stackoverflow.com/questions/7124735/hmac-sha256-algorithm-for-signature-calculation
      *
      * @param url the URL to which we're adding the proof
@@ -131,7 +132,8 @@ public class FacebookProfileDefinition extends OAuth20ProfileDefinition<Facebook
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secret_key = new SecretKeySpec(configuration.getSecret().getBytes("UTF-8"), "HmacSHA256");
             sha256_HMAC.init(secret_key);
-            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken().getBytes("UTF-8")));
+            String proof = org.apache.commons.codec.binary.Hex.encodeHexString(sha256_HMAC.doFinal(token.getAccessToken()
+                .getBytes("UTF-8")));
             final String computedUrl = CommonHelper.addParameter(url, APPSECRET_PARAMETER, proof);
             return computedUrl;
         } catch (final Exception e) {

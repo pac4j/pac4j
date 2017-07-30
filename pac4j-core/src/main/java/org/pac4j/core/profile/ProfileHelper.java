@@ -50,7 +50,8 @@ public final class ProfileHelper {
      * @param parameters additional parameters for the profile definition
      * @return the restored or built profile
      */
-    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, final String typedId, final Map<String, Object> attributes, final Object... parameters) {
+    public static CommonProfile restoreOrBuildProfile(final ProfileDefinition<? extends CommonProfile> profileDefinition, 
+        final String typedId, final Map<String, Object> attributes, final Object... parameters) {
         if (CommonHelper.isBlank(typedId)) {
             return null;
         }
@@ -84,7 +85,8 @@ public final class ProfileHelper {
         try {
             final Constructor<? extends CommonProfile> constructor = getConstructor(completeName);
             return constructor.newInstance();
-        } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+        } catch (final ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException 
+                 | InstantiationException e) {
             throw new TechnicalException(e);
         }
     }
@@ -98,21 +100,20 @@ public final class ProfileHelper {
      * @throws NoSuchMethodException method not found
      */
     @SuppressWarnings("unchecked")
-    private static Constructor<? extends CommonProfile> getConstructor(final String name) throws ClassNotFoundException, NoSuchMethodException {
+    private static Constructor<? extends CommonProfile> getConstructor(final String name)
+        throws ClassNotFoundException, NoSuchMethodException {
         Constructor<? extends CommonProfile> constructor = constructorsCache.get(name);
         if (constructor == null) {
             synchronized (constructorsCache) {
                 constructor = constructorsCache.get(name);
                 if (constructor == null) {
-                	ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-                	
-                	if (tccl == null) {    	
-                		constructor = (Constructor<? extends CommonProfile>) Class
-                            	.forName(name).getDeclaredConstructor();
-                	} else {
-                        constructor = (Constructor<? extends CommonProfile>) Class
-                                .forName(name, true, tccl).getDeclaredConstructor();
-                	}
+                    ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+
+                    if (tccl == null) {
+                        constructor = (Constructor<? extends CommonProfile>) Class.forName(name).getDeclaredConstructor();
+                    } else {
+                        constructor = (Constructor<? extends CommonProfile>) Class.forName(name, true, tccl).getDeclaredConstructor();
+                    }
                     constructorsCache.put(name, constructor);
                 }
             }

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CasRestAuthenticator extends InitializableWebObject implements Authenticator<UsernamePasswordCredentials> {
 
-	private final static Logger logger = LoggerFactory.getLogger(CasRestAuthenticator.class);
+    private final static Logger logger = LoggerFactory.getLogger(CasRestAuthenticator.class);
 
     private CasConfiguration configuration;
 
@@ -53,10 +53,9 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             throw new TechnicalException("Credentials are required");
         }
         final String ticketGrantingTicketId = requestTicketGrantingTicket(credentials.getUsername(), credentials.getPassword(), context);
-		if (CommonHelper.isNotBlank(ticketGrantingTicketId)) {
-			credentials.setUserProfile(new CasRestProfile(ticketGrantingTicketId,
-					credentials.getUsername()));
-		}
+        if (CommonHelper.isNotBlank(ticketGrantingTicketId)) {
+            credentials.setUserProfile(new CasRestProfile(ticketGrantingTicketId, credentials.getUsername()));
+        }
     }
 
     private String requestTicketGrantingTicket(final String username, final String password, final WebContext context) {
@@ -66,7 +65,8 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
             final String payload = HttpUtils.encodeQueryParam(Pac4jConstants.USERNAME, username)
                     + "&" + HttpUtils.encodeQueryParam(Pac4jConstants.PASSWORD, password);
 
-            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), HttpConstants.UTF8_ENCODING));
+            final BufferedWriter out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), 
+                HttpConstants.UTF8_ENCODING));
             out.write(payload);
             out.close();
 
@@ -76,11 +76,10 @@ public class CasRestAuthenticator extends InitializableWebObject implements Auth
                 return locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
             }
 
-			logger.debug("Ticket granting ticket request failed: " + locationHeader + " "
-					+ responseCode +
-                    HttpUtils.buildHttpErrorMessage(connection));
+            logger.debug("Ticket granting ticket request failed: " + locationHeader + " " + responseCode +
+                HttpUtils.buildHttpErrorMessage(connection));
 
-			return null;
+            return null;
         } catch (final IOException e) {
             throw new TechnicalException(e);
         } finally {

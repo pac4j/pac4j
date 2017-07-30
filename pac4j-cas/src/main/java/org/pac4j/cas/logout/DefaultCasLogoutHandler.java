@@ -71,7 +71,8 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
             if (CommonHelper.areEquals(ticket, sessionToTicket)) {
                 destroy(context, sessionStore, "front");
             } else {
-                logger.error("The user profiles (and session) can not be destroyed for CAS front channel logout because the provided ticket is not the same as the one linked to the current session");
+                logger.error("The user profiles (and session) can not be destroyed for CAS front channel logout because the provided "
+                    + "ticket is not the same as the one linked to the current session");
             }
         }
     }
@@ -96,7 +97,8 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
         final Object trackableSession = store.get(ticket);
         logger.debug("ticket: {} -> trackableSession: {}", ticket, trackableSession);
         if (trackableSession == null) {
-            logger.error("No trackable session found for back channel logout. Either the session store does not support to track session or it has expired from the store and the store settings must be updated (expired data)");
+            logger.error("No trackable session found for back channel logout. Either the session store does not support to track session "
+                + "or it has expired from the store and the store settings must be updated (expired data)");
         } else {
             store.remove(ticket);
 

@@ -12,7 +12,8 @@ public class OrcidToken extends OAuth2AccessToken {
 
     private String orcid;
 
-    public OrcidToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope, String orcid, String response) {
+    public OrcidToken(String accessToken, String tokenType, Integer expiresIn, String refreshToken, String scope, String orcid, 
+        String response) {
         super(accessToken, tokenType, expiresIn, refreshToken, scope, response);
         setOrcid(orcid);
     }

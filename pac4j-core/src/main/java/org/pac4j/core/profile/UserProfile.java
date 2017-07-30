@@ -9,7 +9,8 @@ import java.util.*;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
- * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, permissions, client name and linked identifier.
+ * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, permissions, client name and 
+ * linked identifier.
  *
  * @author Jerome Leleu
  * @since 1.0.0
@@ -57,8 +58,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @param authenticationAttributes authentication attributes
      */
     public void build(final Object id, final Map<String, Object> attributes, final Map<String, Object> authenticationAttributes ) {
-    	build(id, attributes);
-    	addAuthenticationAttributes(authenticationAttributes);
+        build(id, attributes);
+        addAuthenticationAttributes(authenticationAttributes);
     }
 
     private void addAttributeToMap(final Map<String, Object> map, final String key, Object value)
@@ -66,17 +67,17 @@ public abstract class UserProfile implements Serializable, Externalizable {
         if (value != null) {
             logger.debug("adding => key: {} / value: {} / {}", key, value, value.getClass());
             map.put(key, ProfileHelper.getInternalAttributeHandler().prepare(value));
-        }    	
+        }
     }
 
-	/**
+    /**
      * Add an attribute.
      *
      * @param key key of the attribute
      * @param value value of the attribute
      */
     public void addAttribute(final String key, Object value) {
-    		addAttributeToMap(this.attributes, key, value);
+        addAttributeToMap(this.attributes, key, value);
     }
     
     /**
@@ -86,9 +87,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @param value
      */
     public void addAuthenticationAttribute(final String key, Object value) {
-    	addAttributeToMap(this.authenticationAttributes, key, value);
+        addAttributeToMap(this.authenticationAttributes, key, value);
     }
-    
+
     
     /**
      * Add attributes.
@@ -114,7 +115,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
                 addAuthenticationAttribute(entry.getKey(), entry.getValue());
             }
         }
-	}
+    }
     /**
      * Remove an attribute by its key.
      *
@@ -186,7 +187,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
      * @return the immutable authentication attributes
      */
     public Map<String, Object> getAuthenticationAttributes() {
-    	return getImmutableAttributeMap(this.authenticationAttributes);
+        return getImmutableAttributeMap(this.authenticationAttributes);
     }
  
     private Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
@@ -197,9 +198,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
             newAttributes.put(key, value);
         }
         return Collections.unmodifiableMap(newAttributes);
-	}
+    }
 
-	/**
+    /**
      * Return the attribute with name.
      *
      * @param name attribute name
@@ -209,7 +210,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         return ProfileHelper.getInternalAttributeHandler().restore(this.attributes.get(name));
     }
     
-	/**
+    /**
      * Return the authentication attribute with name.
      *
      * @param name authentication attribute name
@@ -265,8 +266,8 @@ public abstract class UserProfile implements Serializable, Externalizable {
      */
     public <T> T getAuthenticationAttribute(final String name, final Class<T> clazz)
     {
-    	final Object attribute = getAuthenticationAttribute(name);
-    	return getAttributeByType(name, clazz, attribute);
+        final Object attribute = getAuthenticationAttribute(name);
+        return getAttributeByType(name, clazz, attribute);
     }
 
     private <T> T getAttributeByType(String name, Class<T> clazz, Object attribute) {
@@ -282,9 +283,9 @@ public abstract class UserProfile implements Serializable, Externalizable {
         }
 
         return (T) attribute;
-	}
+    }
 
-	/**
+    /**
      * Add a role.
      *
      * @param role the role to add.

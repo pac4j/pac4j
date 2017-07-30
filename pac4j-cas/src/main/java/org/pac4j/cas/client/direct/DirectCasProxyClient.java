@@ -19,8 +19,8 @@ import org.pac4j.core.util.CommonHelper;
  *
  * <p>As no session is meant to be created, this client does not handle CAS logout requests.</p>
  *
- * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be enabled)
- * and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
+ * <p>For proxy support, a {@link CasProxyReceptor} must be defined in the configuration (the corresponding "callback filter" must be 
+ * enabled) and set to the CAS configuration of this client. In that case, a {@link org.pac4j.cas.profile.CasProxyProfile} will be return
  * (instead of a {@link org.pac4j.cas.profile.CasProfile}) to be able to request proxy tickets.</p>
  *
  * @author Jerome Leleu
@@ -45,7 +45,8 @@ public class DirectCasProxyClient extends DirectClient<TokenCredentials, CommonP
         CommonHelper.assertNotBlank("serviceUrl", this.serviceUrl);
         // must be a CAS proxy protocol
         final CasProtocol protocol = configuration.getProtocol();
-        CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY, "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
+        CommonHelper.assertTrue(protocol == CasProtocol.CAS20_PROXY || protocol == CasProtocol.CAS30_PROXY, 
+            "The DirectCasProxyClient must be configured with a CAS proxy protocol (CAS20_PROXY or CAS30_PROXY)");
         configuration.init(context);
 
         defaultCredentialsExtractor(new ParameterExtractor(CasConfiguration.TICKET_PARAMETER, true, false, getName()));

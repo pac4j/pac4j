@@ -45,7 +45,8 @@ public class OpenIdCredentials extends Credentials {
 
         if (parameterList != null ? !parameterList.equals(that.parameterList) : that.parameterList != null)
             return false;
-        return !(discoveryInformation != null ? !discoveryInformation.equals(that.discoveryInformation) : that.discoveryInformation != null);
+        return !(discoveryInformation != null ? !discoveryInformation.equals(that.discoveryInformation)
+            : that.discoveryInformation != null);
 
     }
 
