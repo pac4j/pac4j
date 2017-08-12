@@ -1,5 +1,5 @@
 ---
-layout: mailing
+layout: content
 title: Mailing lists
 ---
 
