@@ -72,7 +72,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     /**
      * <p>Get the redirectAction computed for this client. All the logic is encapsulated here. It should not be called be directly, the
      * {@link #redirect(WebContext)} should be generally called instead.</p>
-     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is 
+     * <p>If an authentication has already been tried for this client and has failed (<code>null</code> credentials) or if the request is
      * an AJAX one, an authorized response (401 HTTP status code) is returned instead of a redirection.</p>
      *
      * @param context context
@@ -111,7 +111,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
      * <p>Get the credentials from the web context. In some cases, a {@link HttpAction} may be thrown:</p>
      * <ul>
      * <li>if the <code>CasClient</code> receives a logout request, it returns a 200 HTTP status code</li>
-     * <li>for the <code>IndirectBasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response 
+     * <li>for the <code>IndirectBasicAuthClient</code>, if no credentials are sent to the callback url, an unauthorized response
      * (401 HTTP status code) is returned to request credentials through a popup.</li>
      * </ul>
      *
@@ -133,7 +133,7 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
     }
 
     @Override
-    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) {
+    public final RedirectAction getLogoutAction(final WebContext context, final U currentProfile, final String targetUrl) throws HttpAction {
         init(context);
         return logoutActionBuilder.getLogoutAction(context, currentProfile, targetUrl);
     }
