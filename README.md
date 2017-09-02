@@ -51,6 +51,8 @@ There exist extensions to pac4j developed by third parties. The extensions provi
 
 ## Need help?
 
+If you need commercial support (premium support or new/specific features), contact us at [info@pac4j.org](mailto:info@pac4j.org).
+
 If you have any question, please use the [pac4j mailing lists](http://www.pac4j.org/mailing-lists.html):
 
 - [pac4j users](https://groups.google.com/forum/?hl=en#!forum/pac4j-users)
