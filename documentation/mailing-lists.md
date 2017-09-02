@@ -3,6 +3,10 @@ layout: content
 title: Mailing lists
 ---
 
+## <i class="fa fa-life-ring" aria-hidden="true"></i> Commercial support
+
+- If you need commercial support (premium support or new/specific features), contact us at [info@pac4j.org](mailto:info@pac4j.org).
+
 ## <i class="fa fa-envelope" aria-hidden="true"></i> Mailing lists
 
 - If you need help and have any question/issue when using pac4j, please use the [pac4j-users](https://groups.google.com/forum/?fromgroups#!forum/pac4j-users) Google group
