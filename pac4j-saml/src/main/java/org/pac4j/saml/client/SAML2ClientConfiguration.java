@@ -93,6 +93,8 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private String keyStoreAlias;
 
     private String keyStoreType;
+    
+    private int attributeConsumingServiceIndex = -1;
 
     public SAML2ClientConfiguration() {}
 
@@ -415,6 +417,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public boolean isAuthnRequestSigned() {
         return authnRequestSigned;
+    }
+
+    public int getAttributeConsumingServiceIndex() {
+        return attributeConsumingServiceIndex;
+    }
+
+    public void setAttributeConsumingServiceIndex(int attributeConsumingServiceIndex) {
+        this.attributeConsumingServiceIndex = attributeConsumingServiceIndex;
     }
     
     /**
