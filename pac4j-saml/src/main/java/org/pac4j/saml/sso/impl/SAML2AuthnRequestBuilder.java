@@ -20,6 +20,7 @@ import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
 import org.pac4j.saml.context.SAML2MessageContext;
 import org.pac4j.saml.sso.SAML2ObjectBuilder;
 import org.pac4j.saml.util.Configuration;
@@ -45,28 +46,24 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     private String nameIdPolicyFormat = null;
 
     private int issueInstantSkewSeconds = 0;
+    
+    private final int attributeConsumingServiceIndex;
 
     private final XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
 
     /**
      * Instantiates a new Saml 2 authn request builder.
      *
-     * @param forceAuth            the force auth
-     * @param comparisonType       the comparison type
-     * @param bindingType          the binding type
-     * @param authnContextClassRef the authn context class ref
-     * @param nameIdPolicyFormat   the name id policy format
-     * @param passive              the passive
+     * @param cfg Client configuration.
      */
-    public SAML2AuthnRequestBuilder(final boolean forceAuth, final String comparisonType, final String bindingType,
-                                    final String authnContextClassRef, final String nameIdPolicyFormat,
-                                    final boolean passive) {
-        this.forceAuth = forceAuth;
-        this.comparisonType = getComparisonTypeEnumFromString(comparisonType);
-        this.bindingType = bindingType;
-        this.authnContextClassRef = authnContextClassRef;
-        this.nameIdPolicyFormat = nameIdPolicyFormat;
-        this.passive = passive;
+    public SAML2AuthnRequestBuilder(final SAML2ClientConfiguration cfg) {
+        this.forceAuth = cfg.isForceAuth();
+        this.comparisonType = getComparisonTypeEnumFromString(cfg.getComparisonType());
+        this.bindingType = cfg.getDestinationBindingType();
+        this.authnContextClassRef = cfg.getAuthnContextClassRef();
+        this.nameIdPolicyFormat = cfg.getNameIdPolicyFormat();
+        this.passive = cfg.isPassive();
+        this.attributeConsumingServiceIndex = cfg.getAttributeConsumingServiceIndex();
     }
 
     @Override
@@ -117,6 +114,10 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
         request.setDestination(ssoService.getLocation());
         request.setAssertionConsumerServiceURL(assertionConsumerService.getLocation());
         request.setProtocolBinding(assertionConsumerService.getBinding());
+        
+        if (attributeConsumingServiceIndex >= 0) {
+            request.setAttributeConsumingServiceIndex(attributeConsumingServiceIndex);
+        }
         return request;
     }
 
