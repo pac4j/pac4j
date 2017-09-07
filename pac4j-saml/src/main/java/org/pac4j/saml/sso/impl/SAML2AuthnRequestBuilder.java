@@ -72,8 +72,8 @@ public class SAML2AuthnRequestBuilder implements SAML2ObjectBuilder<AuthnRequest
     @Override
     public AuthnRequest build(final SAML2MessageContext context) {
         final SingleSignOnService ssoService = context.getIDPSingleSignOnService(this.bindingType);
-        final AssertionConsumerService assertionConsumerService =
-            context.getSPAssertionConsumerService(this.assertionConsumerServiceIndex > 0 ? String.valueOf(assertionConsumerServiceIndex) : null);
+        final String idx = this.assertionConsumerServiceIndex > 0 ? String.valueOf(assertionConsumerServiceIndex) : null;
+        final AssertionConsumerService assertionConsumerService = context.getSPAssertionConsumerService(idx);
         return buildAuthnRequest(context, assertionConsumerService, ssoService);
     }
 
