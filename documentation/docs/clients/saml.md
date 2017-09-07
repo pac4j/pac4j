@@ -113,11 +113,19 @@ entity ID with the `serviceProviderEntityId` parameter:
 cfg.setServiceProviderEntityId("http://localhost:8080/callback?client_name=SAML2Client");
 ```
 
-To allow the authentication request sent to the identity provider to specify an attribute consuming index, specify the index via the configration object:
+To allow the authentication request sent to the identity provider to specify an attribute consuming index:
 
 ```java
 cfg.setAttributeConsumingServiceIndex(1);
 ```
+
+To allow the authentication request sent to the identity provider to specify an assertion consumer service index:
+
+```java
+cfg.setAssertionConsumerServiceIndex(1);
+```
+
+This will also guide pac4j to pick the ACS url from the metadata indicated by this index.
 
 To configure the supported algorithms and digest methods for the initial authentication request, specify what is supported via the configuration object:
 

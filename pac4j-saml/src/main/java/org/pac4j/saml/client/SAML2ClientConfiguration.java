@@ -93,7 +93,9 @@ public class SAML2ClientConfiguration extends InitializableObject {
     private String keyStoreAlias;
 
     private String keyStoreType;
-    
+
+    private int assertionConsumerServiceIndex = -1;
+
     private int attributeConsumingServiceIndex = -1;
 
     public SAML2ClientConfiguration() {}
@@ -173,6 +175,14 @@ public class SAML2ClientConfiguration extends InitializableObject {
 
     public void setIdentityProviderMetadataPath(final String path) {
         this.identityProviderMetadataResource = mapPathToResource(path);
+    }
+
+    public int getAssertionConsumerServiceIndex() {
+        return assertionConsumerServiceIndex;
+    }
+
+    public void setAssertionConsumerServiceIndex(final int assertionConsumerServiceIndex) {
+        this.assertionConsumerServiceIndex = assertionConsumerServiceIndex;
     }
 
     protected static UrlResource newUrlResource(final String url) {
@@ -423,13 +433,13 @@ public class SAML2ClientConfiguration extends InitializableObject {
         return attributeConsumingServiceIndex;
     }
 
-    public void setAttributeConsumingServiceIndex(int attributeConsumingServiceIndex) {
+    public void setAttributeConsumingServiceIndex(final int attributeConsumingServiceIndex) {
         this.attributeConsumingServiceIndex = attributeConsumingServiceIndex;
     }
-    
+
     /**
      * Initializes the configuration for a particular client.
-     * 
+     *
      * @param clientName
      *            Name of the client. The configuration can use the value or not.
      * @param context
@@ -438,7 +448,7 @@ public class SAML2ClientConfiguration extends InitializableObject {
     protected void init(final String clientName, final WebContext context) {
         init();
     }
-    
+
     private void createKeystore() {
         try {
             Security.addProvider(new BouncyCastleProvider());
