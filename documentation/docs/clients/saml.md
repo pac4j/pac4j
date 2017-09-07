@@ -113,6 +113,12 @@ entity ID with the `serviceProviderEntityId` parameter:
 cfg.setServiceProviderEntityId("http://localhost:8080/callback?client_name=SAML2Client");
 ```
 
+To allow the authentication request sent to the identity provider to specify an attribute consuming index, specify the index via the configration object:
+
+```java
+cfg.setAttributeConsumingServiceIndex(1);
+```
+
 To configure the supported algorithms and digest methods for the initial authentication request, specify what is supported via the configuration object:
 
 ```java
