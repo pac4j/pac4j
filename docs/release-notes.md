@@ -3,6 +3,8 @@ layout: doc
 title: Release notes&#58;
 ---
 
+**v3.0.0**:
+
 **v2.2.0**:
 
 - Added capability to add authentication-related attributes to the user profile with specific attributes added to the SAML client
