@@ -8,7 +8,6 @@ import org.pac4j.core.util.CommonHelper;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -71,28 +70,6 @@ public class IpExtractor implements CredentialsExtractor<TokenCredentials> {
             }
         }
         return null;
-    }
-
-    /**
-     * @return The alternate header to search for IP, or null if absent.
-     * @deprecated Use {@link #getAlternateIpHeaders()} instead.
-     */
-    @Deprecated
-    public String getAlternateIpHeader() {
-        return this.alternateIpHeaders.isEmpty() ? null : alternateIpHeaders.get(0);
-    }
-
-    /**
-     * @param alternateIpHeader The alternate header to search for IP.
-     * @deprecated Use {@link #setAlternateIpHeaders(String...)} instead.
-     */
-    @Deprecated
-    public void setAlternateIpHeader(final String alternateIpHeader) {
-        if (alternateIpHeader == null) {
-            this.alternateIpHeaders = Collections.emptyList();
-        } else {
-            this.alternateIpHeaders = new LinkedList<String>() {{ add(alternateIpHeader); }};
-        }
     }
 
     /**

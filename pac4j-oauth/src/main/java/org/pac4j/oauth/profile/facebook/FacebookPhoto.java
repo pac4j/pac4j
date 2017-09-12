@@ -1,37 +1,37 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pac4j.oauth.profile.JsonObject;
 
 import static org.pac4j.core.util.CommonHelper.newDate;
 
 /**
  * This class represents a Facebook photo.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class FacebookPhoto extends JsonObject {
-    
+public final class FacebookPhoto implements Serializable {
+
     private static final long serialVersionUID = -1230468571423177489L;
-    
+
     private String id;
-    
+
     private FacebookObject from;
-    
+
     private String name;
-    
+
     private String link;
-    
+
     private String coverPhoto;
-    
+
     private String privacy;
-    
+
     private Integer count;
-    
+
     private String type;
 
     @JsonProperty("created_time")
@@ -41,9 +41,9 @@ public final class FacebookPhoto extends JsonObject {
     @JsonProperty("updated_time")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssz")
     private Date updatedTime;
-    
+
     private Boolean canUpload;
-    
+
     public String getId() {
         return id;
     }

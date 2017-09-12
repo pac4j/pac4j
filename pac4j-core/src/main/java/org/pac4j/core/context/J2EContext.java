@@ -3,6 +3,7 @@ package org.pac4j.core.context;
 import org.pac4j.core.context.session.J2ESessionStore;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +33,7 @@ public class J2EContext implements WebContext {
      * @param response the current response
      */
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response) {
-        this(request, response, null);
+        this(request, response, new J2ESessionStore());
     }
 
     /**
@@ -43,23 +44,17 @@ public class J2EContext implements WebContext {
      * @param sessionStore the session store to use
      */
     public J2EContext(final HttpServletRequest request, final HttpServletResponse response, final SessionStore<J2EContext> sessionStore) {
+        CommonHelper.assertNotNull("request", request);
+        CommonHelper.assertNotNull("response", response);
+        CommonHelper.assertNotNull("sessionStore", sessionStore);
         this.request = request;
         this.response = response;
-        setSessionStore(sessionStore);
+        this.sessionStore = sessionStore;
     }
 
     @Override
     public SessionStore getSessionStore() {
         return this.sessionStore;
-    }
-
-    @Override
-    public void setSessionStore(final SessionStore sessionStore) {
-        if (sessionStore == null) {
-            this.sessionStore = new J2ESessionStore();
-        } else {
-            this.sessionStore = sessionStore;
-        }
     }
 
     @Override
@@ -175,9 +170,9 @@ public class J2EContext implements WebContext {
         final String queryString = request.getQueryString();
         if (queryString == null) {
             return requestURL.toString();
-        } 
+        }
         return requestURL.append('?').append(queryString).toString();
-        
+
     }
 
     @Override
@@ -225,7 +220,7 @@ public class J2EContext implements WebContext {
         // it shouldn't be null, but in case it is, it's better to return empty string
         if (fullPath == null) {
             return "";
-        } 
+        }
         final String context = request.getContextPath();
         // this one shouldn't be null either, but in case it is, then let's consider it is empty
         if (context != null) {

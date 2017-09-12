@@ -1,23 +1,23 @@
 package org.pac4j.oauth.profile.yahoo;
 
-import org.pac4j.oauth.profile.JsonObject;
+import java.io.Serializable;
 
 /**
  * This class represents a Yahoo image.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooImage extends JsonObject {
-    
+public final class YahooImage implements Serializable {
+
     private static final long serialVersionUID = 5378229852266815223L;
-    
+
     private String imageUrl;
-    
+
     private Integer width;
-    
+
     private Integer height;
-    
+
     private String size;
 
     public String getImageUrl() {

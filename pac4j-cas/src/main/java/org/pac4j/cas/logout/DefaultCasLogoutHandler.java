@@ -79,7 +79,7 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
 
     protected void destroy(final C context, final SessionStore sessionStore, final String channel) {
         // remove profiles
-        final ProfileManager manager = new ProfileManager(context);
+        final ProfileManager manager = new ProfileManager(context, sessionStore);
         manager.logout();
         logger.debug("destroy the user profiles");
         // and optionally the web session
@@ -110,7 +110,6 @@ public class DefaultCasLogoutHandler<C extends WebContext> implements CasLogoutH
                 final SessionStore<C> newSessionStore = sessionStore.buildFromTrackableSession(context, trackableSession);
                 if (newSessionStore != null) {
                     logger.debug("newSesionStore: {}", newSessionStore);
-                    context.setSessionStore(newSessionStore);
                     final String sessionId = newSessionStore.getOrCreateSessionId(context);
                     logger.debug("remove sessionId: {}", sessionId);
                     store.remove(sessionId);

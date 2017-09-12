@@ -1,29 +1,28 @@
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.oauth.profile.JsonObject;
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This class represents an education object for Facebook.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookEducation extends JsonObject {
-    
+public final class FacebookEducation implements Serializable {
+
     private static final long serialVersionUID = 3587603107957633824L;
-    
+
     private FacebookObject school;
-    
+
     private FacebookObject degree;
-    
+
     private FacebookObject year;
-    
+
     private List<FacebookObject> concentration;
-    
+
     private String type;
-    
+
     public FacebookObject getSchool() {
         return school;
     }
