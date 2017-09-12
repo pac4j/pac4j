@@ -62,11 +62,6 @@ public final class MockWebContext implements WebContext {
         return sessionStore;
     }
 
-    @Override
-    public void setSessionStore(final SessionStore sessionStore) {
-        this.sessionStore = sessionStore;
-    }
-
     /**
      * Create a new instance.
      *
@@ -277,10 +272,6 @@ public final class MockWebContext implements WebContext {
     @Override
     public void setResponseContentType(final String content) {
         this.responseContentType = content;
-    }
-
-    public String getResponseContentType() {
-        return responseContentType;
     }
 
     @Override

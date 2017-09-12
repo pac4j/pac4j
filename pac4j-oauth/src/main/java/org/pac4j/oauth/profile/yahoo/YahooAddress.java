@@ -1,33 +1,32 @@
 package org.pac4j.oauth.profile.yahoo;
 
+import java.io.Serializable;
 import java.util.Locale;
-
-import org.pac4j.oauth.profile.JsonObject;
 
 /**
  * This class represents a Yahoo address.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooAddress extends JsonObject {
-    
+public final class YahooAddress implements Serializable {
+
     private static final long serialVersionUID = 5415315569181241541L;
-    
+
     private Integer id;
-    
+
     private Boolean current;
-    
+
     private Locale country;
-    
+
     private String state;
-    
+
     private String city;
-    
+
     private String postalCode;
-    
+
     private String street;
-    
+
     private String type;
 
     public Integer getId() {

@@ -22,20 +22,6 @@ public interface WebContext {
     SessionStore getSessionStore();
 
     /**
-     * Set the session store.
-     *
-     * WARNING!
-     * This will likely be removed in version 3.0.0
-     * as changing the session during the lifetime of the web context does not make much sense.
-     * Reported by Jez from Vert.x
-     *
-     * @param sessionStore the session store
-     * @deprecated
-     */
-    @Deprecated
-    void setSessionStore(SessionStore sessionStore);
-
-    /**
      * Return a request parameter.
      *
      * @param name name of the parameter
