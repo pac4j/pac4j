@@ -17,9 +17,9 @@ import org.pac4j.core.redirect.RedirectAction;
  * on the provided credentials.</p>
  * <p>Clients can be "direct": in that case, credentials are provided along with the HTTP request and validated by the application.</p>
  * <p>The {@link #redirect(WebContext)} method is not used, the {@link #getCredentials(WebContext)} method is used to retrieve
- * and validate the credentials provided and the {@link #getUserProfile(Credentials, WebContext)} method is called to get the user profile 
+ * and validate the credentials provided and the {@link #getUserProfile(Credentials, WebContext)} method is called to get the user profile
  * from the appropriate system.</p>
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.0
  */
@@ -27,7 +27,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
 
     /**
      * Get the name of the client.
-     * 
+     *
      * @return the name of the client
      */
     String getName();
@@ -42,7 +42,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
     HttpAction redirect(WebContext context) throws HttpAction;
 
     /**
-     * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at 
+     * <p>Get the credentials from the web context. If no validation was made remotely (direct client), credentials must be validated at
      * this step.</p>
      * <p>In some cases, a {@link HttpAction} may be thrown instead.</p>
      *
@@ -54,9 +54,9 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
 
     /**
      * Get the user profile based on the provided credentials.
-     * 
+     *
      * @param credentials credentials
-     * @param context web context 
+     * @param context web context
      * @return the user profile
      * @throws HttpAction whether an additional HTTP action is required
      */
@@ -69,6 +69,7 @@ public interface Client<C extends Credentials, U extends CommonProfile> {
      * @param currentProfile the currentProfile
      * @param targetUrl the target url after logout
      * @return the redirection
+     * @throws HttpAction whether an additional HTTP action is required
      */
-    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl);
+    RedirectAction getLogoutAction(WebContext context, U currentProfile, String targetUrl) throws HttpAction;
 }
