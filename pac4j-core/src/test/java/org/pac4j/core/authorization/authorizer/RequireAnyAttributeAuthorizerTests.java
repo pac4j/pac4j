@@ -7,10 +7,13 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link RequireAnyAttributeAuthorizer}.
@@ -20,7 +23,7 @@ import static org.junit.Assert.*;
  */
 public final class RequireAnyAttributeAuthorizerTests {
 
-    private final J2EContext context = new J2EContext(null, null);
+    private final J2EContext context = new J2EContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
 
     private List<CommonProfile> profiles;
 
@@ -40,7 +43,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         profile.addAttribute("name2", "anything-goes-here");
         assertFalse(authorizer.isAuthorized(context, profiles));
     }
-    
+
     @Test
     public void testNoValueProvided() throws HttpAction {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("");
@@ -48,7 +51,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         profile.addAttribute("name1", "anything-goes-here");
         assertTrue(authorizer.isAuthorized(context, profiles));
     }
-    
+
     @Test
     public void testPatternSingleValuedAttribute() throws HttpAction {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^value.+");
@@ -56,7 +59,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         profile.addAttribute("name1", "valueAddedHere");
         assertTrue(authorizer.isAuthorized(context, profiles));
     }
-    
+
     @Test
     public void testPatternFails() throws HttpAction {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v");
@@ -64,7 +67,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         profile.addAttribute("name1", Lists.newArrayList("v1", "v2", "nothing"));
         assertFalse(authorizer.isAuthorized(context, profiles));
     }
-    
+
     @Test
     public void testMatchesPattern() throws HttpAction {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer("^v\\d");
@@ -73,7 +76,7 @@ public final class RequireAnyAttributeAuthorizerTests {
         profile.addAttribute("name2", "v3");
         assertTrue(authorizer.isAuthorized(context, profiles));
     }
-    
+
     @Test
     public void testMatchesEverythingByDefault() throws HttpAction {
         final RequireAnyAttributeAuthorizer authorizer = new RequireAnyAttributeAuthorizer();

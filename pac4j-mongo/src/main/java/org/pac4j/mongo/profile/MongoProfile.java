@@ -1,12 +1,10 @@
 package org.pac4j.mongo.profile;
 
 import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.mongo.credentials.authenticator.MongoAuthenticator;
 
 /**
  * <p>The user profile returned from a MongoDB.</p>
  *
- * @see MongoAuthenticator
  * @author Jerome Leleu
  * @since 1.8.0
  */

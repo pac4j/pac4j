@@ -1,15 +1,15 @@
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.oauth.profile.JsonObject;
+import java.io.Serializable;
 
 /**
  * This class represents a Facebook group.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class FacebookGroup extends JsonObject {
-    
+public final class FacebookGroup implements Serializable {
+
     private static final long serialVersionUID = -846266834053161809L;
 
     private String id;

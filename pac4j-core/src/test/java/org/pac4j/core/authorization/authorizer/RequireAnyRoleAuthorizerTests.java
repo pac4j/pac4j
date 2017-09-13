@@ -6,13 +6,15 @@ import org.pac4j.core.context.J2EContext;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests {@link RequireAnyRoleAuthorizer}.
@@ -26,7 +28,7 @@ public final class RequireAnyRoleAuthorizerTests {
     private static final String ROLE2 = "role2";
     private static final String ROLE3 = "role3";
 
-    private final J2EContext context = new J2EContext(null, null);
+    private final J2EContext context = new J2EContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class));
 
     private List<CommonProfile> profiles;
 

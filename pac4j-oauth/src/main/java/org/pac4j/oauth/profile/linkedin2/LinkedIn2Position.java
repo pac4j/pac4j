@@ -1,22 +1,23 @@
 package org.pac4j.oauth.profile.linkedin2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pac4j.oauth.profile.JsonObject;
+
+import java.io.Serializable;
 
 /**
  * This class represents a LinkedIn position.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.4.1
  */
-public class LinkedIn2Position extends JsonObject {
-    
+public class LinkedIn2Position implements Serializable {
+
     private static final long serialVersionUID = 5545320712620544612L;
-    
+
     private String id;
-    
+
     private String title;
-    
+
     private String summary;
 
     @JsonProperty("isCurrent")
@@ -27,7 +28,7 @@ public class LinkedIn2Position extends JsonObject {
 
     @JsonProperty("endDate")
     private LinkedIn2Date endDate;
-    
+
     private LinkedIn2Company company;
 
     public String getId() {

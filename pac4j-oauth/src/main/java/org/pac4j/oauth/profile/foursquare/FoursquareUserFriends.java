@@ -1,7 +1,6 @@
 package org.pac4j.oauth.profile.foursquare;
 
-import org.pac4j.oauth.profile.JsonObject;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * @author Alexey Ogarkov
  * @since 1.5.0
  */
-public class FoursquareUserFriends extends JsonObject {
+public class FoursquareUserFriends implements Serializable {
 
     private static final long serialVersionUID = -6264070010780654226L;
 

@@ -1,23 +1,23 @@
 package org.pac4j.oauth.profile.yahoo;
 
-import org.pac4j.oauth.profile.JsonObject;
+import java.io.Serializable;
 
 /**
  * This class represents a Yahoo email.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.1.0
  */
-public final class YahooEmail extends JsonObject {
-    
+public final class YahooEmail implements Serializable {
+
     private static final long serialVersionUID = 1195905995057732685L;
-    
+
     private Integer id;
-    
+
     private Boolean primary;
-    
+
     private String handle;
-    
+
     private String type;
 
     public Integer getId() {
