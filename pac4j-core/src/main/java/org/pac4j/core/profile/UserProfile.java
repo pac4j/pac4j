@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * This class is the user profile retrieved from a provider after successful authentication: it's an identifier (string) and attributes
- * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, permissions, client name and 
+ * (objects). Additional concepts are the "remember me" nature of the user profile, the associated roles, permissions, client name and
  * linked identifier.
  *
  * @author Jerome Leleu
@@ -24,7 +24,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     private String id;
 
     private Map<String, Object> attributes = new HashMap<>();
-    
+
     private Map<String, Object> authenticationAttributes = new HashMap<>();
 
     public transient static final String SEPARATOR = "#";
@@ -49,10 +49,10 @@ public abstract class UserProfile implements Serializable, Externalizable {
         setId(id);
         addAttributes(attributes);
     }
-    
+
     /**
      * Build a profile from user identifier, attributes, and authentication attributes.
-     * 
+     *
      * @param id user identifier
      * @param attributes user attributes
      * @param authenticationAttributes authentication attributes
@@ -79,18 +79,18 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public void addAttribute(final String key, Object value) {
         addAttributeToMap(this.attributes, key, value);
     }
-    
+
     /**
      * Add an authentication-related attribute
-     * 
-     * @param key
-     * @param value
+     *
+     * @param key the attribute key
+     * @param value the attribute value
      */
     public void addAuthenticationAttribute(final String key, Object value) {
         addAttributeToMap(this.authenticationAttributes, key, value);
     }
 
-    
+
     /**
      * Add attributes.
      *
@@ -103,10 +103,10 @@ public abstract class UserProfile implements Serializable, Externalizable {
             }
         }
     }
-    
+
     /**
      * Add authentication attributes.
-     * 
+     *
      * @param attributeMap the authentication attributes
      */
     public void addAuthenticationAttributes(Map<String, Object> attributeMap) {
@@ -125,15 +125,15 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("key", key);
         attributes.remove(key);
     }
-    
+
     /**
      * Remove an authentication attribute by its key
-     * 
+     *
      * @param key the key
      */
     public void removeAuthenticationAttribute(final String key) {
         CommonHelper.assertNotNull("key", key);
-        authenticationAttributes.remove(key);    
+        authenticationAttributes.remove(key);
     }
 
     /**
@@ -183,13 +183,13 @@ public abstract class UserProfile implements Serializable, Externalizable {
 
     /**
      * Get all authentication attributes as an immutable map
-     * 
+     *
      * @return the immutable authentication attributes
      */
     public Map<String, Object> getAuthenticationAttributes() {
         return getImmutableAttributeMap(this.authenticationAttributes);
     }
- 
+
     private Map<String, Object> getImmutableAttributeMap(Map<String, Object> attributeMap) {
         final Map<String, Object> newAttributes = new HashMap<>();
         for (Map.Entry<String, Object> entries : attributeMap.entrySet()) {
@@ -209,7 +209,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
     public Object getAttribute(final String name) {
         return ProfileHelper.getInternalAttributeHandler().restore(this.attributes.get(name));
     }
-    
+
     /**
      * Return the authentication attribute with name.
      *
@@ -230,7 +230,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("name", name);
         return this.attributes.containsKey(name);
     }
-    
+
     /**
      * Check to see if profile contains attribute name.
      *
@@ -241,7 +241,7 @@ public abstract class UserProfile implements Serializable, Externalizable {
         CommonHelper.assertNotNull("name", name);
         return this.authenticationAttributes.containsKey(name);
     }
-    
+
     /**
      * Return the attribute with name.
      *
@@ -255,10 +255,10 @@ public abstract class UserProfile implements Serializable, Externalizable {
         final Object attribute = getAttribute(name);
         return getAttributeByType(name, clazz, attribute);
     }
-    
+
     /**
      * Return authentication attribute with name
-     * 
+     *
      * @param name Name of authentication attribute
      * @param clazz The class of the authentication attribute
      * @param <T> The type of the authentication attribute

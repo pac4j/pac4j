@@ -4,8 +4,10 @@ import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.authorization.authorizer.IsAuthenticatedAuthorizer;
 import org.pac4j.core.context.Pac4jConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.exception.TechnicalException;
+import org.pac4j.core.util.CommonHelper;
 
 import java.util.*;
 
@@ -21,8 +23,19 @@ public class ProfileManager<U extends CommonProfile> {
 
     protected final WebContext context;
 
+    protected final SessionStore sessionStore;
+
     public ProfileManager(final WebContext context) {
+        CommonHelper.assertNotNull("context", context);
         this.context = context;
+        this.sessionStore = context.getSessionStore();
+    }
+
+    public ProfileManager(final WebContext context, final SessionStore sessionStore) {
+        CommonHelper.assertNotNull("context", context);
+        CommonHelper.assertNotNull("sessionStore", sessionStore);
+        this.context = context;
+        this.sessionStore = sessionStore;
     }
 
     /**
@@ -65,7 +78,7 @@ public class ProfileManager<U extends CommonProfile> {
             }
         }
         if (readFromSession) {
-            final Object sessionAttribute = this.context.getSessionAttribute(Pac4jConstants.USER_PROFILES);
+            final Object sessionAttribute = this.sessionStore.get(this.context, Pac4jConstants.USER_PROFILES);
             if  (sessionAttribute instanceof LinkedHashMap) {
                 profiles.putAll((LinkedHashMap<String, U>) sessionAttribute);
             }
@@ -83,7 +96,7 @@ public class ProfileManager<U extends CommonProfile> {
      */
     public void remove(final boolean removeFromSession) {
         if (removeFromSession) {
-            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
+            this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
         }
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, new LinkedHashMap<String, U>());
     }
@@ -108,7 +121,7 @@ public class ProfileManager<U extends CommonProfile> {
         profiles.put(clientName, profile);
 
         if (saveInSession) {
-            this.context.setSessionAttribute(Pac4jConstants.USER_PROFILES, profiles);
+            this.sessionStore.set(this.context, Pac4jConstants.USER_PROFILES, profiles);
         }
         this.context.setRequestAttribute(Pac4jConstants.USER_PROFILES, profiles);
     }

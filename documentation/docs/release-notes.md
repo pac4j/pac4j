@@ -5,6 +5,8 @@ title: Release notes&#58;
 
 **v3.0.0**:
 
+- Handle AJAX requests in the OpenID Connect logout
+
 **v2.2.0**:
 
 - Added capability to add authentication-related attributes to the user profile with specific attributes added to the SAML client

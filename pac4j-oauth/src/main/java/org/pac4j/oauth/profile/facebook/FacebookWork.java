@@ -1,29 +1,29 @@
 package org.pac4j.oauth.profile.facebook;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pac4j.oauth.profile.JsonObject;
 
 import static org.pac4j.core.util.CommonHelper.newDate;
 
 /**
  * This class represents a Facebook work.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.0.0
  */
-public final class FacebookWork extends JsonObject {
+public final class FacebookWork implements Serializable {
 
     private static final long serialVersionUID = -5698634125512204910L;
-    
+
     private FacebookObject employer;
-    
+
     private FacebookObject location;
-    
+
     private FacebookObject position;
-    
+
     private String description;
 
     @JsonProperty("start_date")

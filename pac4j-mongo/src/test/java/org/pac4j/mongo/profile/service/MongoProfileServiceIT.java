@@ -9,7 +9,6 @@ import org.pac4j.core.profile.service.AbstractProfileService;
 import org.pac4j.core.util.TestsConstants;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.util.TestsHelper;
-import org.pac4j.mongo.credentials.authenticator.MongoAuthenticator;
 import org.pac4j.mongo.profile.MongoProfile;
 import org.pac4j.mongo.test.tools.MongoServer;
 
@@ -19,7 +18,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- * Tests the {@link MongoAuthenticator}.
+ * Tests the {@link MongoProfileService}.
  *
  * @author Jerome Leleu
  * @since 1.8.0
@@ -49,41 +48,41 @@ public final class MongoProfileServiceIT implements TestsConstants {
 
     @Test
     public void testNullPasswordEncoder() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME);
+        final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME);
         authenticator.setPasswordEncoder(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "passwordEncoder cannot be null");
     }
 
     @Test
     public void testNullMongoClient() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(null, FIRSTNAME, MongoServer.PASSWORD_ENCODER);
+        final MongoProfileService authenticator = new MongoProfileService(null, FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "mongoClient cannot be null");
     }
 
     @Test
     public void testNullDatabase() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
+        final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsersDatabase(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usersDatabase cannot be blank");
     }
 
     @Test
     public void testNullCollection() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
+        final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsersCollection(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usersCollection cannot be blank");
     }
 
     @Test
     public void testNullUsername() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
+        final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setUsernameAttribute(null);
         TestsHelper.expectException(() -> authenticator.init(null), TechnicalException.class, "usernameAttribute cannot be blank");
     }
 
     @Test
     public void testNullPassword() {
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
+        final MongoProfileService authenticator = new MongoProfileService(getClient(), FIRSTNAME, MongoServer.PASSWORD_ENCODER);
         authenticator.setPasswordAttribute(null);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(GOOD_USERNAME, PASSWORD, CLIENT_NAME);
         TestsHelper.expectException(() -> authenticator.validate(credentials, null), TechnicalException.class, "passwordAttribute cannot be blank");
@@ -94,7 +93,7 @@ public final class MongoProfileServiceIT implements TestsConstants {
     }
 
     private UsernamePasswordCredentials login(final String username, final String password, final String attribute) throws HttpAction, CredentialsException{
-        final MongoAuthenticator authenticator = new MongoAuthenticator(getClient(), attribute);
+        final MongoProfileService authenticator = new MongoProfileService(getClient(), attribute);
         authenticator.setPasswordEncoder(MongoServer.PASSWORD_ENCODER);
         final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password, CLIENT_NAME);
         authenticator.validate(credentials, null);

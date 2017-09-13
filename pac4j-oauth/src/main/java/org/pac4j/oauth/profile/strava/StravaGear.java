@@ -1,7 +1,8 @@
 package org.pac4j.oauth.profile.strava;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pac4j.oauth.profile.JsonObject;
+
+import java.io.Serializable;
 
 /**
  * A Strava gear.
@@ -9,7 +10,7 @@ import org.pac4j.oauth.profile.JsonObject;
  * @author Adrian Papusoi
  * @since 1.7.0
  */
-public class StravaGear extends JsonObject {
+public class StravaGear implements Serializable {
 
     private static final long serialVersionUID = -5738356602119292294L;
 

@@ -1,41 +1,40 @@
 package org.pac4j.oauth.profile.facebook;
 
-import org.pac4j.oauth.profile.JsonObject;
-
+import java.io.Serializable;
 import java.util.Date;
 
 import static org.pac4j.core.util.CommonHelper.newDate;
 
 /**
  * This class represents a Facebook music listened.
- * 
+ *
  * @author Jerome Leleu
  * @since 1.2.0
  */
-public final class FacebookMusicListen extends JsonObject {
-    
+public final class FacebookMusicListen implements Serializable {
+
     private static final long serialVersionUID = 3904637830042371121L;
-    
+
     private String id;
-    
+
     private FacebookObject from;
-    
+
     private Date startTime;
-    
+
     private Date endTime;
-    
+
     private Date publishTime;
-    
+
     private FacebookApplication application;
 
     private FacebookMusicData song;
-    
+
     private FacebookMusicData musician;
-    
+
     private FacebookMusicData radioStation;
-    
+
     private String type;
-    
+
     private Boolean noFeedStory;
 
     public String getId() {
