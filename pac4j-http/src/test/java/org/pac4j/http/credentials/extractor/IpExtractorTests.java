@@ -32,16 +32,6 @@ public final class IpExtractorTests implements TestsConstants {
     }
 
     @Test
-    @Deprecated
-    public void testRetrieveIpFromHeaderDeprecated() throws HttpAction {
-        final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
-        final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
-        ipExtractor.setAlternateIpHeaders(HEADER_NAME);
-        final TokenCredentials credentials = ipExtractor.extract(context);
-        assertEquals(GOOD_IP, credentials.getToken());
-    }
-
-    @Test
     public void testRetrieveIpFromHeaderWithProxyIpCheck() throws HttpAction {
         final MockWebContext context = MockWebContext.create().addRequestHeader(HEADER_NAME, GOOD_IP).setRemoteAddress(LOCALHOST);
         final IpExtractor ipExtractor = new IpExtractor(CLIENT_NAME);
@@ -88,5 +78,4 @@ public final class IpExtractorTests implements TestsConstants {
         final TokenCredentials credentials = extractor.extract(context);
         assertNull(credentials);
     }
-
 }

@@ -156,26 +156,6 @@ public abstract class IndirectClient<C extends Credentials, U extends CommonProf
 
     public String getCallbackUrl() { return this.callbackUrl; }
 
-    /**
-     * Use {@link #getUrlResolver()} instead.
-     *
-     * @return the URL resolver for the callback URL
-     */
-    @Deprecated
-    public UrlResolver getCallbackUrlResolver() {
-        return getUrlResolver();
-    }
-
-    /**
-     * Use {@link #setUrlResolver(UrlResolver)} instead.
-     *
-     * @param callbackUrlResolver the URL resolver for the callback URL
-     */
-    @Deprecated
-    public void setCallbackUrlResolver(final UrlResolver callbackUrlResolver) {
-        setUrlResolver(callbackUrlResolver);
-    }
-
     public UrlResolver getUrlResolver() {
         return urlResolver;
     }

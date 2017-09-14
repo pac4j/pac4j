@@ -58,7 +58,7 @@ public class OAuth20Client<U extends OAuth20Profile> extends IndirectClient<OAut
     @Override
     public String toString() {
         return CommonHelper.toString(this.getClass(), "name", getName(), "callbackUrl", getCallbackUrl(),
-                "callbackUrlResolver", getCallbackUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
+                "urlResolver", getUrlResolver(), "ajaxRequestResolver", getAjaxRequestResolver(),
                 "redirectActionBuilder", getRedirectActionBuilder(), "credentialsExtractor", getCredentialsExtractor(),
                 "authenticator", getAuthenticator(), "profileCreator", getProfileCreator(), "configuration", this.configuration);
     }
